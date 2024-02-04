@@ -941,6 +941,27 @@ def truediv(x, y, name="truediv"):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.15.0 and below": ("float32", "float64")}, "tensorflow")
+def unsorted_segment_max(data, segment_ids, num_segments, name="unsorted_segment_max"):
+    data = ivy.array(data)
+    segment_ids = ivy.array(segment_ids)
+
+    ivy.utils.assertions.assert_equal(
+        list(segment_ids.shape), list(data.shape[:-1]), as_array=False
+    )
+
+    max_values = ivy.full(
+        (num_segments,) + data.shape[1:], float("-inf"), dtype=data.dtype
+    )
+
+    for i in range(data.shape[0]):
+        s_id = int(segment_ids[i])
+        max_values[s_id] = ivy.maximum(max_values[s_id], data[i])
+
+    return max_values
+
+
+@to_ivy_arrays_and_back
 def unsorted_segment_mean(
     data, segment_ids, num_segments, name="unsorted_segment_mean"
 ):
@@ -1047,21 +1068,3 @@ def zero_fraction(value, name="zero_fraction"):
 )
 def zeta(x, q, name=None):
     return ivy.zeta(x, q)
-
-@to_ivy_arrays_and_back
-@with_supported_dtypes({"2.15.0 and below": ("float32", "float64")}, "tensorflow")
-def unsorted_segment_max(data, segment_ids, num_segments, name="unsorted_segment_max"):
-    data = ivy.array(data)
-    segment_ids = ivy.array(segment_ids)
-
-    ivy.utils.assertions.assert_equal(
-        list(segment_ids.shape), list(data.shape[:-1]), as_array=False
-    )
-
-    max_values = ivy.full((num_segments,) + data.shape[1:], float('-inf'), dtype=data.dtype)
-
-    for i in range(data.shape[0]):
-        s_id = int(segment_ids[i])
-        max_values[s_id] = ivy.maximum(max_values[s_id], data[i])
-
-    return max_values
