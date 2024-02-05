@@ -2843,6 +2843,7 @@ def test_tensorflow_softmax(
         axis=axis,
     )
 
+
 # sampled_softmax_loss
 @handle_frontend_test(
     fn_tree="tensorflow.math.sampled_softmax_loss",
@@ -2864,12 +2865,12 @@ def test_tensorflow_softmax(
     test_flags,
     backend_fw,
 ):
-    input_dtype,weight, 
-    labels, 
-    inputs, 
+    input_dtype, weight,
+    labels,
+    inputs,
     num_sampled,
     num_classes,
-    num_true=1, 
+    num_true = (1,)
     sampled_values,
     remove_accidental_hits,
     seed, name
@@ -2891,8 +2892,8 @@ def test_tensorflow_softmax(
         seed=seed,
         name=name,
     )
-        
-        
+
+
 # softplus
 @handle_frontend_test(
     fn_tree="tensorflow.math.softplus",
