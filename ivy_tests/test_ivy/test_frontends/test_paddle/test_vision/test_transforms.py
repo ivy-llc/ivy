@@ -233,4 +233,3 @@ def test_paddle_vflip(
         img=x[0],
         backend_to_test=backend_fw,
     )
-    
