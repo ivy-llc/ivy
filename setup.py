@@ -72,7 +72,8 @@ for tag in all_tags:
             continue
         folders = path.split(os.sep)
         folder_path, file_path = os.sep.join(folders[:-1]), folders[-1]
-        file_name = f"{file_path[:-3]}_{tag}.so"
+        ext = "pyd" if os.name == "nt" else "so"
+        file_name = f"{file_path[:-(len(ext)+1)]}_{tag}.{ext}"
         search_path = f"{module}/{file_name}"
         try:
             response = request.urlopen(
