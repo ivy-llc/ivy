@@ -1201,8 +1201,19 @@ class Tensor:
         return torch_frontend.dot(self, tensor)
 
     @with_supported_dtypes({"2.1.2 and below": ("float32", "float64")}, "torch")
-    def bernoulli(self, *, generator=None, out=None):
-        return torch_frontend.bernoulli(self._ivy_array, generator=generator, out=out)
+    def bernoulli(self, p, *, generator=None, out=None):
+        return torch_frontend.bernoulli(
+            self._ivy_array, p, generator=generator, out=out
+        )
+
+    @with_supported_dtypes({"2.1.2 and below": ("float32", "float64")}, "torch")
+    def bernoulli_(self, p, *, generator=None, out=None):
+        self.ivy_array = self.bernoulli(p, generator=generator, out=out).ivy_array
+        return self
+
+    def numel(self):
+        shape = self.shape
+        return int(ivy.astype(ivy.prod(shape), ivy.int64))
 
     # Special Methods #
     # -------------------#
