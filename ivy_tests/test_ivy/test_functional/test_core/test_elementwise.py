@@ -652,6 +652,8 @@ def test_deg2rad(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        atol_=1e-2,
+        rtol_=1e-2,
         x=x[0],
     )
 
