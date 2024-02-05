@@ -2945,6 +2945,8 @@ def _convert_slices_to_indices(query, x_shape):
             grid = ivy.arange(start, stop, step)
         elif isinstance(q, int):
             grid = ivy.array([q])
+        elif ivy.is_array(q):
+            grid = ivy.array(q)
         else:
             raise ValueError("Query should be slices or integers.")
         grids.append(grid)
