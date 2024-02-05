@@ -2843,7 +2843,56 @@ def test_tensorflow_softmax(
         axis=axis,
     )
 
-
+# sampled_softmax_loss
+@handle_frontend_test(
+    fn_tree="tensorflow.math.sampled_softmax_loss",
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+        allow_inf=False,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_softmax(
+    *,
+    dtype_values_axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype,weight, 
+    labels, 
+    inputs, 
+    num_sampled,
+    num_classes,
+    num_true=1, 
+    sampled_values,
+    remove_accidental_hits,
+    seed, name
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        weight=weight,
+        labels=labels[0],
+        inputs=inputs,
+        num_sampled=num_sampled[0],
+        num_classes=num_classes,
+        num_true=num_true,
+        sampled_values=sampled_values,
+        remove_accidental_hits=remove_accidental_hits,
+        seed=seed,
+        name=name,
+    )
+        
+        
 # softplus
 @handle_frontend_test(
     fn_tree="tensorflow.math.softplus",
