@@ -218,39 +218,6 @@ def paddle_unfold_handler(draw, dtype):
 # ------------ #
 
 
-# bilinear function
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.common.bilinear",
-    dtype_x1_x2_weight_bias=bilinear(
-        dtypes=helpers.get_dtypes("valid", full=False),
-    ),
-)
-def test_bilinear(
-    *,
-    dtype_x1_x2_weight_bias,
-    on_device,
-    fn_tree,
-    backend_fw,
-    frontend,
-    test_flags,
-):
-    dtype, x1, x2, weight, bias = dtype_x1_x2_weight_bias
-    x2_transposed = ivy.swapaxes(x2, -1, -2)
-    result = ivy.linear(ivy.multiply(x1, x2_transposed), weight, bias=bias)
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x1=x1,
-        x2=x2,
-        weight=weight,
-        bias=bias,
-        result=result,
-    )
-
 
 # Cosine Similarity
 @handle_frontend_test(
@@ -548,4 +515,37 @@ def test_paddle_zeropad2d(
         x=x[0],
         padding=padding,
         data_format=dataformat,
+    )
+
+# bilinear function
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.common.bilinear",
+    dtype_x1_x2_weight_bias=bilinear(
+        dtypes=helpers.get_dtypes("valid", full=False),
+    ),
+)
+def test_bilinear(
+    *,
+    dtype_x1_x2_weight_bias,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    dtype, x1, x2, weight, bias = dtype_x1_x2_weight_bias
+    x2_transposed = ivy.swapaxes(x2, -1, -2)
+    result = ivy.linear(ivy.multiply(x1, x2_transposed), weight, bias=bias)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x1,
+        x2=x2,
+        weight=weight,
+        bias=bias,
+        result=result,
     )
