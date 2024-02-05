@@ -13,9 +13,9 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
     "torch",
 )
 @to_ivy_arrays_and_back
-def bernoulli(input, *, generator=None, out=None):
+def bernoulli(input, p, *, generator=None, out=None):
     seed = generator.initial_seed() if generator is not None else None
-    return ivy.bernoulli(input, seed=seed, out=out)
+    return ivy.bernoulli(p, logits=input, seed=seed, out=out)
 
 
 @to_ivy_arrays_and_back

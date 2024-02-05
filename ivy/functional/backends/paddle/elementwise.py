@@ -401,15 +401,14 @@ def divide(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if isinstance(x1, paddle.Tensor) and isinstance(x2, paddle.Tensor):
-        if paddle.is_complex(x1) or paddle.is_complex(x2):
-            angle_value = paddle.angle(x1) - paddle.angle(x2)
-            abs_value = paddle.abs(x1) / paddle.abs(x2)
-            return paddle.complex(
-                abs_value * paddle.cos(angle_value), abs_value * paddle.sin(angle_value)
-            )
-    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    return (x1 / x2).astype(ret_dtype)
+    if paddle.is_complex(x1) or paddle.is_complex(x2):
+        angle_value = paddle.angle(x1) - paddle.angle(x2)
+        abs_value = paddle.abs(x1) / paddle.abs(x2)
+        return paddle.complex(
+            abs_value * paddle.cos(angle_value), abs_value * paddle.sin(angle_value)
+        )
+    x1, x2, _ = _elementwise_helper(x1, x2)
+    return x1 / x2
 
 
 @with_supported_dtypes(
