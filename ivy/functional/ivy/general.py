@@ -2762,8 +2762,7 @@ def get_item(
     *,
     copy: Optional[bool] = None,
 ) -> ivy.Array:
-    """
-    Gather slices from x according to query array, identical to x[query].
+    """Gather slices from x according to query array, identical to x[query].
 
     Parameters
     ----------
@@ -2816,6 +2815,7 @@ def get_item(
         ret = ivy.reshape(ret, target_shape) if target_shape != list(ret.shape) else ret
     return ret
 
+
 import itertools
 
 
@@ -2827,6 +2827,7 @@ get_item.mixed_backend_wrappers = {
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
+
 
 def _parse_query(query, x_shape, scatter=False):
     query = (query,) if not isinstance(query, tuple) else query
@@ -2934,14 +2935,10 @@ def _parse_query(query, x_shape, scatter=False):
                 if len(array_inds) < len(query)
                 else ivy.empty((1, 0))
             )
-            indices = ivy.array(
-                [
-                    (*arr, *post)
-                    for arr, post in itertools.product(
-                        array_queries, post_array_queries
-                    )
-                ]
-            ).reshape((*target_shape, len(x_shape)))
+            indices = ivy.array([
+                (*arr, *post)
+                for arr, post in itertools.product(array_queries, post_array_queries)
+            ]).reshape((*target_shape, len(x_shape)))
         else:
             pre_array_queries = (
                 ivy.stack(
@@ -2965,14 +2962,12 @@ def _parse_query(query, x_shape, scatter=False):
                 if array_inds[-1] < len(query) - 1
                 else ivy.empty((1, 0))
             )
-            indices = ivy.array(
-                [
-                    (*pre, *arr, *post)
-                    for pre, arr, post in itertools.product(
-                        pre_array_queries, array_queries, post_array_queries
-                    )
-                ]
-            ).reshape((*target_shape, len(x_shape)))
+            indices = ivy.array([
+                (*pre, *arr, *post)
+                for pre, arr, post in itertools.product(
+                    pre_array_queries, array_queries, post_array_queries
+                )
+            ]).reshape((*target_shape, len(x_shape)))
 
     return (
         indices.astype(ivy.int64),
@@ -3058,7 +3053,6 @@ def _deep_flatten(iterable):
                 yield item
 
     return list(_flatten_gen(iterable))
-
 
 
 @handle_nestable
