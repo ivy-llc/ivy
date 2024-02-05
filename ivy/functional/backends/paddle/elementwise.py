@@ -341,8 +341,8 @@ def less(
     return paddle.less_than(x1, x2)
 
 
-@with_unsupported_dtypes(
-    {"2.6.0 and below": ("int8", "uint8", "int16", "float16", "bfloat16")},
+@with_supported_dtypes(
+    {"2.6.0 and below": ("bool", "int32", "int64", "float32", "float64", "complex")},
     backend_version,
 )
 def multiply(
@@ -353,6 +353,14 @@ def multiply(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if isinstance(x1, paddle.Tensor) and isinstance(x2, paddle.Tensor):
+        if paddle.is_complex(x1) or paddle.is_complex(x2):
+            a, b = x1.real(), x1.imag()
+            c, d = x2.real(), x2.imag()
+            real = a * c - b * d
+            imag = a * d + b * c
+            return paddle.complex(real, imag)
+
     return paddle.multiply(x1, x2).astype(ret_dtype)
 
 
