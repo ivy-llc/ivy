@@ -1,7 +1,7 @@
 # global
 import ivy
 from collections import OrderedDict
-from typing import Any, Dict, Iterator, List, Optional, Set, Tuple
+from typing import Any, Dict, Iterator, List, Optional, Set, Tuple, Callable
 
 # local
 from ivy.functional.frontends.torch.nn.parameter import Parameter
@@ -115,7 +115,26 @@ class Module(ivy.Module):
         return ret
 
     def add_module(self, name: str, module: Optional["Module"]) -> None:
+        if not isinstance(module, Module) and module is not None:
+            raise TypeError(f"{type(module)} is not a Module subclass")
+        elif not isinstance(name, str):
+            raise TypeError(f"module name should be a string. Got {type(name)}")
+        elif hasattr(self, name) and name not in self._modules:
+            raise KeyError(f"attribute '{name}' already exists")
+        elif "." in name:
+            raise KeyError(f'module name can\'t contain ".", got: {name}')
+        elif name == "":
+            raise KeyError('module name can\'t be empty string ""')
+
+        self._modules[name] = module
+
         super().__setattr__(name, module)
+
+    def apply(self, fn: Callable[["Module"], None]):
+        for module in self.children():
+            module.apply(fn)
+        fn(self)
+        return self
 
     def register_buffer(self, name: str, value: Optional["Tensor"]) -> None:
         super().register_buffer(name, value)
@@ -178,7 +197,7 @@ class Module(ivy.Module):
     def named_parameters(
         self, prefix: str = "", recurse: bool = True, remove_duplicate: bool = True
     ) -> Iterator[Tuple[str, Parameter]]:
-        if not self.built:
+        if not getattr(self, "built", False):
             self.build(
                 *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
             )
@@ -195,6 +214,10 @@ class Module(ivy.Module):
             yield module
 
     def named_children(self) -> Iterator[Tuple[str, "Module"]]:
+        if not getattr(self, "built", False):
+            self.build(
+                *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
+            )
         memo = set()
         for name, module in self._module_dict.items():
             if module is not None and id(module) not in memo:
@@ -211,6 +234,10 @@ class Module(ivy.Module):
         prefix: str = "",
         remove_duplicate: bool = True,
     ):
+        if not getattr(self, "built", False):
+            self.build(
+                *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
+            )
         if memo is None:
             memo = set()
         if id(self) not in memo:
@@ -262,6 +289,23 @@ class Module(ivy.Module):
             if name in mapping:
                 return super().__getattribute__(mapping[name])
         return super().__getattribute__(name)
+
+    def __setattr__(self, name, value) -> None:
+        def remove_from(*dicts_or_sets):
+            for d in dicts_or_sets:
+                if name in d:
+                    if isinstance(d, dict):
+                        del d[name]
+                    else:
+                        d.discard(name)
+
+        params = self.__dict__.get("_v")
+        if params is not None and name in params and isinstance(value, Parameter):
+            remove_from(self.__dict__, self._buffers, self._module_dict)
+            self.register_parameter(name, value)
+            super().__setattr__(name, value)
+        else:
+            super().__setattr__(name, value)
 
     def __repr__(self):
         # We treat the extra repr like the sub-module, one item per line

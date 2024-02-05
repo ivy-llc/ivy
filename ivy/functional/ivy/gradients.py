@@ -337,7 +337,7 @@ def _is_variable(x, exclusive=False, to_ignore=None) -> bool:
 
 
 def _variable_data(
-    x: Union[ivy.Array, ivy.NativeArray]
+    x: Union[ivy.Array, ivy.NativeArray],
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Get the contents of the input.
 
