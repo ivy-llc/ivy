@@ -2921,6 +2921,7 @@ def _parse_query(query, x_shape):
     target_shape = (len(indices),) + x_shape[1:]
     return indices, target_shape
 
+
 # def _parse_query(query, x_shape):
 #     if isinstance(query, tuple):
 #         query = _tuple_query_to_indices(query, x_shape)
@@ -2977,6 +2978,7 @@ def _parse_query(query, x_shape):
 #     indices_array = ivy.stack(flat_indices, axis=-1)
 #     return indices_array
 #
+
 
 def _numel(shape):
     shape = tuple(shape)
