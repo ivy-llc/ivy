@@ -2900,6 +2900,9 @@ set_item.mixed_backend_wrappers = {
 
 
 def _parse_query(query, x_shape):
+    if isinstance(query, tuple):
+        query = _tuple_query_to_indices(query, x_shape)
+
     x_ = ivy.arange(0, _numel(x_shape)).reshape(x_shape)
     x_idxs = ivy.gather_nd(x_, query).expand_dims(axis=1)
     target_shape = x_idxs.shape
@@ -2914,6 +2917,41 @@ def _parse_query(query, x_shape):
     x_idxs = ivy.stack(x_idxs, axis=-1).astype(ivy.int64)
 
     return x_idxs, target_shape
+
+
+def _expand_ellipsis_in_query(query, x_shape):
+    non_ellipsis_count = len([q for q in query if q is not ...])
+    ellipsis_span = len(x_shape) - non_ellipsis_count
+    expanded_query = []
+    for q in query:
+        if q is ...:
+            expanded_query.extend([slice(None)] * ellipsis_span)
+        else:
+            expanded_query.append(q)
+    return tuple(expanded_query)
+
+
+def _tuple_query_to_indices(query, x_shape):
+    query = _expand_ellipsis_in_query(query, x_shape)
+    indices = _convert_slices_to_indices(query, x_shape)
+    return indices
+
+
+def _convert_slices_to_indices(query, x_shape):
+    grids = []
+    for dim, q in zip(x_shape, query):
+        if isinstance(q, slice):
+            start, stop, step = q.indices(dim)
+            grid = ivy.arange(start, stop, step)
+        elif isinstance(q, int):
+            grid = ivy.array([q])
+        else:
+            raise ValueError("Query should be slices or integers.")
+        grids.append(grid)
+    meshgrids = ivy.meshgrid(*grids, indexing='ij')
+    flat_indices = [mg.flatten() for mg in meshgrids]
+    indices_array = ivy.stack(flat_indices, axis=-1)
+    return indices_array
 
 
 def _numel(shape):
