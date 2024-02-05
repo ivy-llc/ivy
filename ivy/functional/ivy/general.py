@@ -2948,7 +2948,7 @@ def _convert_slices_to_indices(query, x_shape):
         else:
             raise ValueError("Query should be slices or integers.")
         grids.append(grid)
-    meshgrids = ivy.meshgrid(*grids, indexing='ij')
+    meshgrids = ivy.meshgrid(*grids, indexing="ij")
     flat_indices = [mg.flatten() for mg in meshgrids]
     indices_array = ivy.stack(flat_indices, axis=-1)
     return indices_array
