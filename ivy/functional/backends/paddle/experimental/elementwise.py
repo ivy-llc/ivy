@@ -214,6 +214,10 @@ def diff(
     )
 
 
+@with_supported_dtypes(
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64", "complex")},
+    backend_version,
+)
 def signbit(
     x: Union[paddle.Tensor, float, int, list, tuple],
     /,
