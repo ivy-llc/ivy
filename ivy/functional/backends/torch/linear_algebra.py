@@ -193,12 +193,12 @@ def matmul(
 matmul.support_native_out = True
 
 
-@with_supported_dtypes({"2.1.2 and below": ("float", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.1.2 and below": ("float16","complex")}, backend_version)
 def matrix_norm(
     x: torch.Tensor,
     /,
     *,
-    ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
+    ord: Union[int, float, Literal[inf, -inf,"fro", "nuc"]] = "fro",
     axis: Tuple[int, int] = (-2, -1),
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
