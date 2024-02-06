@@ -2884,9 +2884,9 @@ trim_zeros.mixed_backend_wrappers = {
 def unflatten(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    *,
     dim: int,
     shape: Tuple[int],
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Expand a dimension of the input tensor over multiple dimensions.
@@ -2930,4 +2930,4 @@ def unflatten(
     >>> ivy.unflatten(torch.randn(5, 12, 3), dim=-2, shape=(2, 2, 3, 1, 1)).shape
     torch.Size([5, 2, 2, 3, 1, 1, 3])
     """
-    return current_backend(x).unflatten(x, dim=dim, shape=shape, out=out)
+    return ivy.current_backend(x).unflatten(x, dim=dim, shape=shape, out=out)

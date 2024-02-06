@@ -607,8 +607,8 @@ put_along_axis.partial_mixed_handler = lambda *args, mode=None, **kwargs: mode i
 def unflatten(
     x: np.ndarray,
     /,
-    dim: int = 0,
     shape: Tuple[int] = None,
+    dim: Optional[int] = 0,
     *,
     out: Optional[np.ndarray] = None,
     order: Optional[str] = None,
