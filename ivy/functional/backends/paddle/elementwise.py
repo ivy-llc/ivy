@@ -406,8 +406,8 @@ def divide(
             return paddle.complex(
                 abs_value * paddle.cos(angle_value), abs_value * paddle.sin(angle_value)
             )
-    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    return (x1 / x2).astype(ret_dtype)
+    x1, x2, _ = _elementwise_helper(x1, x2)
+    return x1 / x2
 
 
 @with_supported_dtypes(
