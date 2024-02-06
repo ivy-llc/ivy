@@ -909,8 +909,7 @@ class Tensor:
     )
     def logical_not(self, out=None, name=None):
         return paddle_frontend.logical_not(self)
-      
-      
+
     @with_supported_dtypes(
         {
             "2.5.1 and below": (
