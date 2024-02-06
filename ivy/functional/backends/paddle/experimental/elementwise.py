@@ -245,7 +245,6 @@ def hypot(
                 "int64",
                 "uint8",
                 "float16",
-                "bfloat16",
                 "complex64",
                 "complex128",
                 "bool",
