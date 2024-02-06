@@ -3306,7 +3306,8 @@ def test_numpy_searchsorted(
         on_device=on_device,
     )
 
-#setfield
+
+# setfield
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
@@ -3337,8 +3338,6 @@ def test_numpy_setfield(
         frontend=frontend,
         on_device=on_device,
     )
-
-
 
 
 # __setitem__
