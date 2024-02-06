@@ -2784,7 +2784,6 @@ def get_item(
 
     Examples
     --------
-
     >>> x = ivy.array([0, -1, 20])
     >>> query = ivy.array([0, 1])
     >>> print(ivy.get_item(x, query))
