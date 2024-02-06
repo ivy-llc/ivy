@@ -4,6 +4,8 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_dtype,
 )
 
+from ivy.func_wrapper import with_unsupported_dtypes
+
 
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
@@ -14,6 +16,7 @@ def array(object, dtype=None, *, copy=True, order="K", subok=False, ndmin=0, lik
     return ret
 
 
+@with_unsupported_dtypes({"1.26.3 and below": ("complex",)}, "numpy")
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 def asarray(
