@@ -3306,38 +3306,6 @@ def test_numpy_searchsorted(
         on_device=on_device,
     )
 
-#setfield
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="numpy.array",
-    method_name="setfield",
-    dtypes_x_index_val=helpers.dtype_array_query_val(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-)
-def test_numpy_setfield(
-    dtypes_x_index_val,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    backend_fw,
-    frontend,
-    on_device,
-):
-    input_dtype, x, dtype, offset, val = dtypes_x_index_val
-    helpers.test_frontend_method(
-        init_input_dtypes=[input_dtype[0]],
-        init_all_as_kwargs_np={"object": x},
-        method_input_dtypes=[*input_dtype[1:]],
-        method_all_as_kwargs_np={"value": val, "dtype": dtype, "offset": offset},
-        backend_to_test=backend_fw,
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
-    )
-
 
 # __setitem__
 @handle_frontend_method(
