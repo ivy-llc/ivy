@@ -183,6 +183,7 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
         if is_frontend_fn:
             frontends = {
                 "jax_frontend": "ivy.functional.frontends.jax",
+                "jnp_frontend": "ivy.functional.frontends.jax.numpy",
                 "np_frontend": "ivy.functional.frontends.numpy",
                 "tf_frontend": "ivy.functional.frontends.tensorflow",
                 "torch_frontend": "ivy.functional.frontends.torch",
