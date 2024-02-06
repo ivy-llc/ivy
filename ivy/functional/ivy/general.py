@@ -4,6 +4,7 @@
 import gc
 import inspect
 import math
+import itertools
 from functools import wraps
 from numbers import Number
 from typing import (
@@ -1574,7 +1575,7 @@ def to_ivy_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.Shape:
 
 @handle_exceptions
 def to_native_shape(
-    shape: Union[ivy.Array, ivy.Shape, ivy.NativeShape, tuple, int, list],
+    shape: Union[ivy.Array, ivy.Shape, ivy.NativeShape, tuple, int, list]
 ) -> ivy.NativeShape:
     """Return the input shape in its native backend framework form.
 
@@ -2781,8 +2782,8 @@ def get_item(
     ret
         New array with the values gathered at the specified indices.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
 
     >>> x = ivy.array([0, -1, 20])
     >>> query = ivy.array([0, 1])
@@ -2814,9 +2815,6 @@ def get_item(
         ret = ivy.gather_nd(x, query)
         ret = ivy.reshape(ret, target_shape) if target_shape != list(ret.shape) else ret
     return ret
-
-
-import itertools
 
 
 get_item.mixed_backend_wrappers = {
@@ -3133,29 +3131,6 @@ set_item.mixed_backend_wrappers = {
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
-#
-#
-# def _parse_query(query, x_shape):
-#     query = query if isinstance(query, tuple) else (query,)
-#     query_ = tuple(q.to_numpy() if ivy.is_array(q) else q for q in query)
-#
-#     # array containing all of x's flat indices
-#     x_ = ivy.arange(0, _numel(x_shape)).reshape(x_shape)
-#
-#     # use numpy's __getitem__ to get the queried indices
-#     x_idxs = ivy.array(x_.to_numpy()[query_])
-#     target_shape = x_idxs.shape
-#
-#     if 0 in x_idxs.shape or 0 in x_shape:
-#         return None, target_shape
-#
-#     # convert the flat indices to multi-D indices
-#     x_idxs = ivy.unravel_index(x_idxs, x_shape)
-#
-#     # stack the multi-D indices to bring them to gather_nd/scatter_nd format
-#     x_idxs = ivy.stack(x_idxs, axis=-1).astype(ivy.int64)
-#
-#     return x_idxs, target_shape
 
 
 def _numel(shape):
