@@ -510,6 +510,50 @@ def test_torch_cartesian_prod(
     )
 
 
+@handle_frontend_test(
+    fn_tree="torch.cdist",
+    dtypes_and_x=helpers.dtype_and_values(
+        shape=st.shared(helpers.get_shape(min_num_dims=2, max_num_dims=3), key="shape"),
+        shared_dtype=True,
+        num_arrays=2,
+        allow_inf=False,
+        available_dtypes=["float32", "float64"],
+    ),
+    p=st.integers(min_value=0, max_value=1000000),
+    compute_mode=st.sampled_from(
+        [
+            "use_mm_for_euclid_dist_if_necessary",
+            "use_mm_for_euclid_dist",
+            "donot_use_mm_for_euclid_dist",
+        ]
+    ),
+)
+def test_torch_cdist(
+    *,
+    dtypes_and_x,
+    p,
+    compute_mode,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, xs = dtypes_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=xs[0],
+        x2=xs[1],
+        p=p,
+        compute_mode=compute_mode,
+    )
+
+
 # clone
 @handle_frontend_test(
     fn_tree="torch.clone",
@@ -543,7 +587,7 @@ def test_torch_clone(
 @handle_frontend_test(
     fn_tree="torch.corrcoef",
     dtypes_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=1,
         min_num_dims=2,
         max_num_dims=2,
@@ -563,7 +607,7 @@ def test_torch_corrcoef(
 ):
     input_dtypes, x = dtypes_and_x
     helpers.test_frontend_function(
-        input_dtypes=["float64"],
+        input_dtypes=input_dtypes,
         frontend=frontend,
         fn_tree=fn_tree,
         test_flags=test_flags,
@@ -970,6 +1014,37 @@ def test_torch_einsum(
         on_device=on_device,
         equation=eq,
         **kw,
+    )
+
+
+# erfinv
+@handle_frontend_test(
+    fn_tree="torch.erfinv",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1,
+        max_value=1,
+        abs_smallest_val=1e-05,
+    ),
+)
+def test_torch_erfinv(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
     )
 
 
@@ -1730,6 +1805,86 @@ def test_torch_triu_indices(
         row=row,
         col=col,
         offset=offset,
+    )
+
+
+# unflatten
+@handle_frontend_test(
+    fn_tree="torch.unflatten",
+    shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        shape_key="shape",
+    ),
+    get_axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        max_size=0,
+        min_size=0,
+        force_int=True,
+    ),
+)
+def test_torch_unflatten(
+    *,
+    dtype_and_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+    shape,
+    get_axis,
+):
+    axis = get_axis
+    if type(axis) is tuple:
+        axis = 0 if not get_axis else get_axis[0]
+    dtype, x = dtype_and_values
+
+    def factorization(n):
+        factors = [1]
+
+        def get_factor(n):
+            x_fixed = 2
+            cycle_size = 2
+            x = 2
+            factor = 1 if n % 2 else 2
+
+            while factor == 1:
+                for count in range(cycle_size):
+                    if factor > 1:
+                        break
+                    x = (x * x + 1) % n
+                    factor = math.gcd(x - x_fixed, n)
+
+                cycle_size *= 2
+                x_fixed = x
+
+            return factor
+
+        while n > 1:
+            next = get_factor(n)
+            factors.append(next)
+            n //= next
+        if len(factors) > 1:
+            factors.remove(1)
+        return factors
+
+    shape_ = (
+        tuple(factorization(shape[axis]))
+        if tuple(factorization(shape[axis]))
+        else shape
+    )
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        input=x[0],
+        dim=axis,
+        sizes=shape_,
     )
 
 

@@ -162,15 +162,15 @@ def _generate_diag_args(draw):
 
 # dot
 @st.composite
-def _generate_dot_dtype_and_arrays(draw):
+def _generate_dot_dtype_and_arrays(draw, min_num_dims=0):
     shape_a = draw(
         helpers.get_shape(
-            min_dim_size=2, max_dim_size=5, min_num_dims=0, max_num_dims=5
+            min_dim_size=2, max_dim_size=5, min_num_dims=min_num_dims, max_num_dims=5
         )
     )
     shape_b = draw(
         helpers.get_shape(
-            min_dim_size=2, max_dim_size=5, min_num_dims=0, max_num_dims=5
+            min_dim_size=2, max_dim_size=5, min_num_dims=min_num_dims, max_num_dims=5
         )
     )
 
@@ -859,7 +859,6 @@ def _tucker_data(draw):
     fn_tree="functional.ivy.experimental.adjoint",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=(
-            ivy.float16,
             ivy.float32,
             ivy.float64,
             ivy.complex64,
@@ -875,7 +874,7 @@ def _tucker_data(draw):
         shared_dtype=True,
     ),
 )
-def test_adjoint(dtype_x, test_flags, backend_fw, fn_name):
+def test_adjoint(dtype_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
     helpers.test_function(
         input_dtypes=dtype,
@@ -883,6 +882,7 @@ def test_adjoint(dtype_x, test_flags, backend_fw, fn_name):
         backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
+        on_device=on_device,
     )
 
 

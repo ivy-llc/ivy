@@ -289,7 +289,7 @@ def test_function_supported_devices(
         res = ivy_backend.function_supported_devices(func)
         exp = set(expected)
 
-        assert sorted(tuple(exp)) == sorted(res)
+        assert sorted(exp) == sorted(res)
 
 
 # function_unsupported_devices
@@ -308,7 +308,7 @@ def test_function_unsupported_devices(
         res = ivy_backend.function_unsupported_devices(func)
         exp = set(expected)
 
-        assert sorted(tuple(exp)) == sorted(res)
+        assert sorted(exp) == sorted(res)
 
 
 @handle_test(
@@ -372,7 +372,7 @@ def test_num_cpu_cores(backend_fw):
         # using multiprocessing module too because ivy uses psutil as basis.
         p_cpu_cores = psutil.cpu_count()
         m_cpu_cores = multiprocessing.cpu_count()
-        assert type(ivy_backend.num_cpu_cores()) == int
+        assert isinstance(ivy_backend.num_cpu_cores(), int)
         assert ivy_backend.num_cpu_cores() == p_cpu_cores
         assert ivy_backend.num_cpu_cores() == m_cpu_cores
 

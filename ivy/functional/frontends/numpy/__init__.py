@@ -425,8 +425,10 @@ def promote_numpy_dtypes(
     type1, type2 = ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2)
     try:
         return numpy_promotion_table[(type1, type2)]
-    except KeyError:
-        raise ivy.utils.exceptions.IvyException("these dtypes are not type promotable")
+    except KeyError as e:
+        raise ivy.utils.exceptions.IvyException(
+            "these dtypes are not type promotable"
+        ) from e
 
 
 @handle_exceptions
@@ -435,9 +437,8 @@ def promote_types_of_numpy_inputs(
     x2: Union[ivy.Array, Number, Iterable[Number]],
     /,
 ) -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Promote the dtype of the given ivy array inputs to a common dtype based on numpy
-    type promotion rules.
+    """Promote the dtype of the given ivy array inputs to a common dtype based
+    on numpy type promotion rules.
 
     While passing float or integer values or any other non-array input
     to this function, it should be noted that the return will be an

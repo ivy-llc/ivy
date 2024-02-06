@@ -15,10 +15,9 @@ class _ArrayWithUtility(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.all. This method simply wraps the
-        function, and so the docstring for ivy.all also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.all. This method simply
+        wraps the function, and so the docstring for ivy.all also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -76,10 +75,9 @@ class _ArrayWithUtility(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.any. This method simply wraps the
-        function, and so the docstring for ivy.any also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.any. This method simply
+        wraps the function, and so the docstring for ivy.any also applies to
+        this method with minimal changes.
 
         Parameters
         ----------

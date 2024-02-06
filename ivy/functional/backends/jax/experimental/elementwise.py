@@ -50,7 +50,7 @@ def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 @with_supported_dtypes(
-    {"0.4.19 and below": ("float16", "float32", "float64")}, backend_version
+    {"0.4.23 and below": ("float16", "float32", "float64")}, backend_version
 )
 def lgamma(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jlax.lgamma(x)
@@ -499,3 +499,12 @@ def erfc(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return js.special.erfc(x)
+
+
+def erfinv(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return js.special.erfinv(x)

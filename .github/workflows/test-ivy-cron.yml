@@ -19,7 +19,7 @@ jobs:
       - name: Install ivy and fetch binaries
         run: |
           cd ivy
-          pip3 install -e .
+          sudo pip3 install -e .
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
@@ -37,8 +37,8 @@ jobs:
         run: |
           cd ivy
           pip3 install pymongo
-          python scripts/setup_tests/cron_tests.py ${{ github.run_number }}
-          python scripts/run_tests/run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} 'false' ${{ steps.jobs.outputs.html_url }}
+          python scripts/setup_tests/cron_tests.py ${{ github.run_number }} false false
+          python scripts/run_tests/run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} 'false' 'false' ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
       - name: Check on failures

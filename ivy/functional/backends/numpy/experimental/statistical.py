@@ -9,7 +9,7 @@ from copy import deepcopy
 
 
 @with_unsupported_dtypes(
-    {"1.26.1 and below": ("bfloat16",)},
+    {"1.26.3 and below": ("bfloat16",)},
     backend_version,
 )
 def histogram(
@@ -534,7 +534,7 @@ def __get_index(lst, indices=None, prefix=None):
     return indices
 
 
-@with_unsupported_dtypes({"1.26.1 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": "bfloat16"}, backend_version)
 def cummin(
     x: np.ndarray,
     /,

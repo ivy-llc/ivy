@@ -11,7 +11,7 @@ import ivy
 
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": ("complex", "float16"),
+        "2.1.2 and below": ("complex", "float16"),
     },
     backend_version,
 )
@@ -63,7 +63,7 @@ def unique_all(
         values_ = torch.moveaxis(values, axis, 0)
         values_ = torch.reshape(values_, (values_.shape[0], -1))
         sort_idx = torch.tensor(
-            [i[0] for i in sorted(list(enumerate(values_)), key=lambda x: tuple(x[1]))]
+            [i[0] for i in sorted(enumerate(values_), key=lambda x: tuple(x[1]))]
         )
     ivy_torch = ivy.current_backend()
     values = ivy_torch.gather(values, sort_idx, axis=axis)
@@ -84,7 +84,7 @@ def unique_all(
 
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": ("float16",),
+        "2.1.2 and below": ("float16",),
     },
     backend_version,
 )
@@ -98,7 +98,7 @@ def unique_counts(x: torch.Tensor, /) -> Tuple[torch.Tensor, torch.Tensor]:
 
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": ("float16",),
+        "2.1.2 and below": ("float16",),
     },
     backend_version,
 )
@@ -114,7 +114,7 @@ def unique_inverse(
         x = torch.flatten(x)
         axis = 0
 
-    values, inverse_indices = torch.unique(x, return_inverse=True, axis=axis)
+    values, inverse_indices = torch.unique(x, return_inverse=True, dim=axis)
     nan_idx = torch.isnan(x)
     if nan_idx.any():
         inverse_indices[nan_idx] = torch.where(torch.isnan(values))[0][0]
@@ -124,7 +124,7 @@ def unique_inverse(
 
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": ("float16", "complex"),
+        "2.1.2 and below": ("float16", "complex"),
     },
     backend_version,
 )

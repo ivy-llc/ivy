@@ -1,5 +1,6 @@
 from collections import namedtuple
 from typing import (
+    Iterable,
     Optional,
     Union,
     Sequence,
@@ -19,6 +20,7 @@ from ivy.func_wrapper import (
     with_unsupported_device_and_dtypes,
     with_supported_dtypes,
     with_unsupported_dtypes,
+    handle_out_argument,
 )
 import paddle
 import ivy
@@ -94,7 +96,7 @@ _i0B = [
 
 @with_unsupported_dtypes(
     {
-        "2.5.2 and below": (
+        "2.6.0 and below": (
             "int16",
             "int8",
             "uint8",
@@ -120,26 +122,34 @@ def moveaxis(
 
 
 @with_supported_dtypes(
-    {"2.5.2 and below": ("float16", "float32", "float64", "int32", "int64")},
+    {"2.6.0 and below": ("float16", "float32", "float64", "int32", "int64")},
     backend_version,
 )
 def pad(
     input: paddle.Tensor,
-    pad_width: Union[Sequence[Sequence[int]], paddle.Tensor, int],
+    pad_width: Union[Iterable[Tuple[int]], int],
     /,
     *,
     mode: Union[
         Literal[
             "constant",
+            "dilated",
             "edge",
+            "linear_ramp",
+            "maximum",
+            "mean",
+            "median",
+            "minimum",
             "reflect",
+            "symmetric",
             "wrap",
+            "empty",
         ],
         Callable,
     ] = "constant",
-    stat_length: Union[Sequence[paddle.Tensor], int] = 1,
-    constant_values: Number = 0,
-    end_values: Number = 0,
+    stat_length: Union[Iterable[Tuple[int]], int] = 1,
+    constant_values: Union[Iterable[Tuple[Number]], Number] = 0,
+    end_values: Union[Iterable[Tuple[Number]], Number] = 0,
     reflect_type: Literal["even", "odd"] = "even",
     **kwargs: Optional[Any],
 ) -> paddle.Tensor:
@@ -178,7 +188,7 @@ pad.partial_mixed_handler = (
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -203,7 +213,7 @@ def heaviside(
 
 
 @with_unsupported_dtypes(
-    {"2.5.2 and below": ("bfloat16", "float16", "int16", "int8", "uint8")},
+    {"2.6.0 and below": ("bfloat16", "float16", "int16", "int8", "uint8")},
     backend_version,
 )
 def flipud(
@@ -228,7 +238,7 @@ def vstack(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("int16", "bfloat16")}},
+    {"2.6.0 and below": {"cpu": ("int16", "bfloat16")}},
     backend_version,
 )
 def hstack(
@@ -245,7 +255,7 @@ def hstack(
 
 
 @with_unsupported_dtypes(
-    {"2.5.2 and below": ("bfloat16", "float16", "int16", "int8", "uint8")},
+    {"2.6.0 and below": ("bfloat16", "float16", "int16", "int8", "uint8")},
     backend_version,
 )
 def rot90(
@@ -261,7 +271,7 @@ def rot90(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.6.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def top_k(
@@ -288,7 +298,7 @@ def top_k(
 
 
 @with_unsupported_dtypes(
-    {"2.5.2 and below": ("bfloat16", "float16", "int16", "int8", "uint8")},
+    {"2.6.0 and below": ("bfloat16", "float16", "int16", "int8", "uint8")},
     backend_version,
 )
 def fliplr(
@@ -456,7 +466,7 @@ def atleast_2d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("float16",)}},
+    {"2.6.0 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def atleast_3d(
@@ -481,7 +491,7 @@ def atleast_3d(
 
 
 @with_unsupported_dtypes(
-    {"2.5.2 and below": ("bfloat16", "bool", "float16", "int16", "int8", "uint8")},
+    {"2.6.0 and below": ("bfloat16", "bool", "float16", "int16", "int8", "uint8")},
     backend_version,
 )
 def take_along_axis(
@@ -603,7 +613,7 @@ def concat_from_sequence(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
+    {"2.6.0 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
 )
 def unique_consecutive(
     x: paddle.Tensor,
@@ -666,7 +676,7 @@ def unique_consecutive(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("int8", "int16", "uint8", "float16")}},
+    {"2.6.0 and below": {"cpu": ("int8", "int16", "uint8", "float16")}},
     backend_version,
 )
 def fill_diagonal(
@@ -732,7 +742,7 @@ def _take_with_axis(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": ("int64", "float64", "int32", "uint8", "float32", "bool")
         }
     },
@@ -765,7 +775,7 @@ def take(
         if ivy.exists(axis):
             try:
                 x_shape = x.shape[axis]
-            except Exception:
+            except Exception as e:
                 rank = len(x.shape)
                 raise IndexError(
                     "(OutOfRange) Attr(axis) is out of range, "
@@ -775,7 +785,7 @@ def take(
                     "(0 - input_dim.size()) == true, "
                     "but received axis < input_dim.size() && axis >= "
                     "(0 - input_dim.size()):0 != true:1.]"
-                )
+                ) from e
         else:
             x_shape = paddle.prod(paddle.to_tensor(x.shape))
 
@@ -869,7 +879,7 @@ def trim_zeros(a: paddle.Tensor, /, *, trim: Optional[str] = "bf") -> paddle.Ten
 
 
 @with_supported_dtypes(
-    {"2.5.2 and below": ("float32", "float64", "int32", "int64")}, backend_version
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
 def put_along_axis(
     arr: paddle.Tensor,
@@ -896,3 +906,30 @@ put_along_axis.partial_mixed_handler = lambda *args, mode="assign", **kwargs: mo
     "sum",
     "mul",
 ]
+
+
+@with_supported_dtypes(
+    {
+        "2.6.0 and below": (
+            "int32",
+            "int64",
+            "float64",
+            "complex128",
+            "float32",
+            "complex64",
+            "bool",
+        )
+    },
+    backend_version,
+)
+@handle_out_argument
+def unflatten(
+    x: paddle.Tensor,
+    /,
+    shape: Tuple[int] = None,
+    dim: int = 0,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    res = paddle.unflatten(x, dim, shape)
+    return res
