@@ -3988,7 +3988,7 @@ def _get_devices_and_dtypes(fn, recurse=True, complement=True):
 
     is_frontend_fn = "frontend" in fn.__module__
     is_backend_fn = "backend" in fn.__module__ and not is_frontend_fn
-    is_einops_fn = "einops" in fn.__name__
+    is_einops_fn = hasattr(fn, "__name__") and "einops" in fn.__name__
     if not is_backend_fn and not is_frontend_fn and not is_einops_fn:
         if complement:
             all_comb = _all_dnd_combinations()
