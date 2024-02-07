@@ -42,7 +42,7 @@ amin.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.26.2 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": ("bfloat16",)}, backend_version)
 def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.sinc(x).astype(x.dtype)
 
@@ -602,3 +602,15 @@ def erfc(
     return np.where(underflow, result_underflow, result_no_underflow).astype(
         input_dtype
     )
+
+
+# TODO: Remove this once native function is available.
+# Compute an approximation of the error function complement (1 - erf(x)).
+def erfinv(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    with ivy.ArrayMode(False):
+        return np.sqrt(2) * erfc(x)

@@ -1637,3 +1637,39 @@ def erfc(
     ivy.array([0.00467773, 1.84270084, 1.        ])
     """
     return ivy.current_backend(x).erfc(x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device
+def erfinv(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+):
+    """Compute the inverse error function.
+
+    Parameters
+    ----------
+    x
+        Input array of real or complex valued argument.
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Values of the inverse error function.
+
+    Examples
+    --------
+    >>> x = ivy.array([0, 0.5, -1.])
+    >>> ivy.erfinv(x)
+    ivy.array([0.0000, 0.4769,   -inf])
+    """
+    return ivy.current_backend(x).erfinv(x, out=out)

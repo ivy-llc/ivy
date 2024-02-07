@@ -5,6 +5,8 @@ import tensorflow as tf
 
 # local
 from ivy.func_wrapper import (
+    inputs_to_ivy_arrays,
+    output_to_native_arrays,
     with_unsupported_dtypes,
     with_supported_dtypes,
     with_supported_device_and_dtypes,
@@ -1401,8 +1403,8 @@ def rfft_operations(x, rank, norm_factor):
             },
         )
     norm_factor = tf.cast(norm_factor, tf.complex128)
-    x = x / norm_factor
     x = tf.cast(x, tf.complex128)
+    x = x / norm_factor
     return x
 
 
@@ -1540,7 +1542,7 @@ def rfftn(
     s: Optional[Union[int, Tuple[int]]] = None,
     axes: Optional[Union[int, Tuple[int]]] = None,
     *,
-    norm: Optional[str] = [("forward", "ortho", "backward")],
+    norm: str = "backward",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     result = _rfftn_helper(x, s, axes, norm)
@@ -1674,4 +1676,35 @@ def sliding_window(
 
     return tf.image.extract_patches(
         images=input, sizes=kernel_size, strides=stride, rates=dilation, padding=padding
+    )
+
+
+def rnn(
+    step_function,
+    inputs,
+    initial_states,
+    /,
+    *,
+    go_backwards: bool = False,
+    mask: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    constants: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    unroll: bool = False,
+    input_length: Optional[int] = None,
+    time_major: bool = False,
+    zero_output_for_mask: bool = False,
+    return_all_outputs: bool = True,
+):
+    step_function = inputs_to_ivy_arrays(output_to_native_arrays(step_function))
+    return tf.keras.backend.rnn(
+        step_function,
+        inputs,
+        initial_states,
+        go_backwards=go_backwards,
+        mask=mask,
+        constants=constants,
+        unroll=unroll,
+        input_length=input_length,
+        time_major=time_major,
+        zero_output_for_mask=zero_output_for_mask,
+        return_all_outputs=return_all_outputs,
     )

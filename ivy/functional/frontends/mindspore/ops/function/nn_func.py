@@ -111,12 +111,12 @@ def adaptive_avg_pool2d(input, output_size):
 @to_ivy_arrays_and_back
 def avg_pool2d(
     input,
-    kernel_size,
-    stride=None,
+    kernel_size=1,
+    stride=1,
     padding=0,
-    pad_mode=False,
+    ceil_mode=False,
     count_include_pad=True,
-    divisor_override=None,
+    divisor_override=0,
 ):
     # Figure out input dims N
     input_rank = input.ndim
@@ -149,7 +149,7 @@ def avg_pool2d(
         stride,
         padding_str,
         data_format=data_format,
-        pad_mode=pad_mode,
+        ceil_mode=ceil_mode,
         count_include_pad=count_include_pad,
         divisor_override=divisor_override,
     )

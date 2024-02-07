@@ -99,6 +99,7 @@ def bernoulli(
     seed: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    dtype = dtype if dtype is not None else probs.dtype
     if seed is not None:
         np.random.seed(seed)
     if logits is not None:

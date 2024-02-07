@@ -15,7 +15,7 @@ import requests
 def get_latest_package_version(package_name):
     try:
         url = f"https://pypi.org/pypi/{package_name}/json"
-        response = requests.get(url)
+        response = requests.get(url, timeout=10)
         response.raise_for_status()
         package_info = response.json()
         return package_info["info"]["version"]
@@ -40,12 +40,19 @@ def install_pkg(path, pkg, base="fw/"):
         subprocess.run(
             f"yes |pip3 install --upgrade {pkg} --target"
             f" {path} --default-timeout=100 --extra-index-url"
-            " https://download.pytorch.org/whl/cu118  --no-cache-dir",
+            "  --no-cache-dir",
+            shell=True,
+        )
+        subprocess.run(
+            f"yes |pip3 install --upgrade torchvision --index-url"
+            f" https://download.pytorch.org/whl/cu121 --target"
+            f" {path} --default-timeout=100 --extra-index-url"
+            " --no-cache-dir",
             shell=True,
         )
     elif pkg.split("==")[0] if "==" in pkg else pkg == "jax":
         subprocess.run(
-            f"yes |pip install --upgrade --target {path} 'jax[cuda11_pip]' -f"
+            f"yes |pip install --upgrade --target {path} 'jax[cuda12_pip]' -f"
             " https://storage.googleapis.com/jax-releases/jax_cuda_releases.html  "
             " --no-cache-dir",
             shell=True,
@@ -53,9 +60,8 @@ def install_pkg(path, pkg, base="fw/"):
     elif pkg.split("==")[0] if "==" in pkg else pkg == "paddle":
         subprocess.run(
             "yes |pip install "
-            f" paddlepaddle-gpu=={get_latest_package_version('paddlepaddle')}.post117"
-            f" --target {path}  -f"
-            " https://www.paddlepaddle.org.cn/whl/linux/mkl/avx/stable.html  "
+            f" paddlepaddle-gpu=={get_latest_package_version('paddlepaddle')}"
+            f" --target {path} -f https://mirror.baidu.com/pypi/simple "
             " --no-cache-dir",
             shell=True,
         )

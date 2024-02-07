@@ -292,6 +292,10 @@ def process_cl_flags(config) -> Dict[str, bool]:
             False,
             getopt("--with-transpile"),
         ),
+        "test_cython_wrapper": (
+            getopt("--skip-cython-wrapper-testing"),
+            getopt("--with-cython-wrapper-testing"),
+        ),
     }
 
     # whether to skip gt testing or not
@@ -358,6 +362,8 @@ def pytest_addoption(parser):
         default=None,
         help="Print test items in my custom format",
     )
+    parser.addoption("--skip-cython-wrapper-testing", action="store_true")
+    parser.addoption("--with-cython-wrapper-testing", action="store_true")
 
 
 def pytest_collection_finish(session):

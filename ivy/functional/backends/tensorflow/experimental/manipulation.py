@@ -16,7 +16,7 @@ from numbers import Number
 import tensorflow as tf
 
 # local
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, handle_out_argument
 from .. import backend_version
 import ivy
 from ivy.functional.ivy.experimental.manipulation import _to_tf_padding
@@ -347,6 +347,10 @@ def expand(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     shape = list(shape)
+    n_extra_dims = len(shape) - len(x.shape)
+    if n_extra_dims > 0:
+        new_shape = (1,) * n_extra_dims + tuple(x.shape)
+        x = tf.reshape(x, new_shape)
     for i, dim in enumerate(shape):
         if dim < 0:
             shape[i] = x.shape[i]
@@ -561,3 +565,19 @@ def trim_zeros(a: tf.Tensor, /, *, trim: Optional[str] = "bf") -> tf.Tensor:
         last = tf.minimum(last, tf.cast(tf.shape(a)[0], tf.int64))
 
     return a[first:last]
+
+
+@handle_out_argument
+def unflatten(
+    x: tf.Tensor,
+    /,
+    shape: Tuple[int] = None,
+    dim: Optional[int] = 0,
+    *,
+    out: Optional[tf.Tensor] = None,
+    name: Optional[str] = None,
+) -> tf.Tensor:
+    dim = abs(len(x.shape) + dim) if dim < 0 else dim
+    res_shape = x.shape[:dim] + tf.TensorShape(shape) + x.shape[dim + 1 :]
+    res = tf.reshape(x, res_shape, name)
+    return res

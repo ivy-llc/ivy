@@ -22,6 +22,10 @@ from ...ivy.manipulation import _calculate_out_shape
 # -------------------#
 
 
+@with_unsupported_dtypes(
+    {"2.6.0 and below": ("bfloat16", "float16")},
+    backend_version,
+)
 def concat(
     xs: Union[Tuple[paddle.Tensor, ...], List[paddle.Tensor]],
     /,
@@ -74,7 +78,7 @@ def expand_dims(
 
 
 @with_unsupported_dtypes(
-    {"2.5.2 and below": ("bfloat16", "float16", "int16", "int8", "uint8")},
+    {"2.6.0 and below": ("bfloat16", "float16", "int16", "int8", "uint8")},
     backend_version,
 )
 def flip(
@@ -91,7 +95,7 @@ def flip(
 
 
 @with_unsupported_dtypes(
-    {"2.5.2 and below": ("int16", "int8", "uint8", "bfloat16")}, backend_version
+    {"2.6.0 and below": ("uint8", "int8", "int16", "bfloat16")}, backend_version
 )
 def permute_dims(
     x: paddle.Tensor,
@@ -159,7 +163,7 @@ def reshape(
 
 
 @with_supported_dtypes(
-    {"2.5.2 and below": ("complex", "float32", "float64", "int32", "int64")},
+    {"2.6.0 and below": ("complex", "float32", "float64", "int32", "int64")},
     backend_version,
 )
 def roll(
@@ -174,7 +178,7 @@ def roll(
 
 
 @with_unsupported_dtypes(
-    {"2.5.2 and below": ("bfloat16", "float16", "int16")}, backend_version
+    {"2.6.0 and below": ("bfloat16", "float16", "int16")}, backend_version
 )
 def squeeze(
     x: paddle.Tensor,
@@ -201,7 +205,7 @@ def squeeze(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("int16", "uint8", "int8", "float16")}},
+    {"2.6.0 and below": {"cpu": ("int16", "uint8", "int8", "float16")}},
     backend_version,
 )
 def stack(
@@ -221,7 +225,7 @@ def stack(
 
     first_shape = arrays[0].shape
     if any(arr.shape != first_shape for arr in arrays):
-        raise Exception("Shapes of all inputs must match")
+        raise ValueError("Shapes of all inputs must match")
     if 0 in first_shape:
         return ivy.empty(
             first_shape[:axis] + [len(arrays)] + first_shape[axis:], dtype=dtype
@@ -249,7 +253,7 @@ def stack(
 # ------#
 
 
-@with_unsupported_dtypes({"2.5.2 and below": ("int16",)}, backend_version)
+@with_unsupported_dtypes({"2.6.0 and below": ("int16",)}, backend_version)
 def split(
     x: paddle.Tensor,
     /,
@@ -299,7 +303,7 @@ def split(
 
 
 @with_supported_dtypes(
-    {"2.5.2 and below": ("complex", "float32", "float64", "int32", "int64")},
+    {"2.6.0 and below": ("complex", "float32", "float64", "int32", "int64")},
     backend_version,
 )
 def repeat(
@@ -335,7 +339,7 @@ def repeat(
 
 
 @with_unsupported_dtypes(
-    {"2.5.2 and below": ("bfloat16", "float16", "int16", "int8", "uint8")},
+    {"2.6.0 and below": ("bfloat16", "float16", "int16", "int8", "uint8")},
     backend_version,
 )
 def tile(
@@ -378,7 +382,7 @@ def tile(
 
 @with_unsupported_dtypes(
     {
-        "2.5.2 and below": (
+        "2.6.0 and below": (
             "bfloat16",
             "float16",
             "int8",
@@ -417,6 +421,22 @@ def zero_pad(
     return paddle_backend.constant_pad(x, pad_width=pad_width, value=0)
 
 
+@with_supported_dtypes(
+    {
+        "2.6.0 and below": (
+            "bool",
+            "int32",
+            "int64",
+            "float16",
+            "bfloat16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
 def swapaxes(
     x: paddle.Tensor,
     axis0: int,
@@ -462,7 +482,7 @@ def clip(
 
 
 @with_unsupported_dtypes(
-    {"2.5.2 and below": ("int16", "int8", "uint8", "bfloat16")}, backend_version
+    {"2.6.0 and below": ("int16", "int8", "uint8", "bfloat16")}, backend_version
 )
 def unstack(
     x: paddle.Tensor,

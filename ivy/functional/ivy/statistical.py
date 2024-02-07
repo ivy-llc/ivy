@@ -48,6 +48,8 @@ def min(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculate the minimum value of the input array ``x``.
@@ -82,6 +84,11 @@ def min(
         compatible with the input array (see :ref:`broadcasting`). Otherwise,
         if ``False``, the reduced axes (dimensions) must not be included in the result.
         Default: ``False``.
+    initial
+        The maximum value of an output element.
+        Must be present to allow computation on empty slice.
+    where
+        Elements to compare for minimum
     out
         optional output array, for writing the result to.
 
@@ -139,7 +146,9 @@ def min(
         b: ivy.array(2)
     }
     """
-    return current_backend(x).min(x, axis=axis, keepdims=keepdims, out=out)
+    return current_backend(x).min(
+        x, axis=axis, keepdims=keepdims, initial=initial, where=where, out=out
+    )
 
 
 @handle_exceptions
@@ -1090,9 +1099,7 @@ def cumprod(
     >>> print(y)
     ivy.array([1, 2, 6])
 
-    >>> x = ivy.array([[2, 3],
-                       [5, 7],
-                       [11, 13]])
+    >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
     >>> y = ivy.zeros((3, 2))
     >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
     >>> print(y)
@@ -1110,7 +1117,7 @@ def cumprod(
     >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
     >>> y = ivy.zeros((3, 2))
     >>> x.cumprod(axis=0, exclusive=True, out=y)
-    >>> print(x)
+    >>> print(y)
     ivy.array([[1.,  1.],
                 [2.,  3.],
                 [10., 21.]])
@@ -1133,12 +1140,7 @@ def cumprod(
         b: ivy.array([1, 3, 12])
     }
 
-    >>> x = ivy.Container(a=ivy.array([[2, 3],
-                                       [5, 7],
-                                       [11, 13]]),
-                          b=ivy.array([[3, 4],
-                                       [4, 5],
-                                       [5, 6]]))
+    >>> x = ivy.Container(a=ivy.array([[2, 3],[5, 7],[11, 13]]), b=ivy.array([[3, 4],[4, 5],[5, 6]]))
     >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
     >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
     >>> print(y)
@@ -1151,12 +1153,7 @@ def cumprod(
                       [1, 5]])
     }
 
-    >>> x = ivy.Container(a=ivy.array([[2, 3],
-                                        [5, 7],
-                                        [11, 13]]),
-                            b=ivy.array([[3, 4],
-                                        [4, 5],
-                                        [5, 6]]))
+    >>> x = ivy.Container(a=ivy.array([[2, 3],[5, 7],[11, 13]]), b=ivy.array([[3, 4],[4, 5],[5, 6]]))
     >>> x.cumprod(axis=0, exclusive=True, out=x)
     >>> print(x)
     {
@@ -1165,9 +1162,9 @@ def cumprod(
                       [10, 21]]),
         b: ivy.array([[1, 1],
                       [3, 4],
-                      [15, 42]])
+                      [12, 20]])
     }
-    """
+    """  # noqa: E501
     return current_backend(x).cumprod(
         x, axis=axis, exclusive=exclusive, reverse=reverse, dtype=dtype, out=out
     )

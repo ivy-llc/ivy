@@ -214,18 +214,11 @@ def get_referrers_recursive(
     Examples
     --------
     >>> import gc
-    >>> def example_function():
-    ...     obj = [1, 2, 3]
-    ...     return get_referrers_recursive(obj, max_depth=2)
+    >>> example_function = lambda: (obj := [1, 2, 3]) and ivy.get_referrers_recursive(obj, max_depth=2)
     >>> result = example_function()
     >>> print(result)
-    Container(
-        'ref_id_1': Container(
-            'ref_id_2': 'tracked',
-            'ref_id_3': 'tracked'
-        )
-    )
-    """
+    {repr:[1,2,3]}
+    """  # noqa: E501
     seen_set = ivy.default(seen_set, set())
     local_set = ivy.default(local_set, set())
     ret_cont = ivy.Container(
@@ -1056,7 +1049,7 @@ def clip_vector_norm(
     >>> print(y)
     {
         a: ivy.array([0., 0.894, 1.79]),
-        b: ivy.array([2.449, 2.65, 2.83])
+        b: ivy.array([1.27279221, 1.69705628, 2.12132034])
     }
     """
     norm = ivy.vector_norm(x, keepdims=True, ord=p)
@@ -1574,7 +1567,7 @@ def to_ivy_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.Shape:
 
 @handle_exceptions
 def to_native_shape(
-    shape: Union[ivy.Array, ivy.Shape, ivy.NativeShape, tuple, int, list]
+    shape: Union[ivy.Array, ivy.Shape, ivy.NativeShape, tuple, int, list],
 ) -> ivy.NativeShape:
     """Return the input shape in its native backend framework form.
 
@@ -2157,13 +2150,16 @@ def set_min_base(val: float) -> None:
     >>> print(x)
     1e-05
 
-    Set the minimum base to 1e-04:
+    >>> # Set the minimum base to 1e-04:
     >>> ivy.set_min_base(1e-04)
 
     Retrieve the minimum base:
     >>> y = ivy.min_base
     >>> print(y)
     1e-04
+
+    >>> # unset the min_base
+    >>> ivy.unset_min_base()
     """
     global min_base_stack
 
@@ -2547,6 +2543,9 @@ def set_tmp_dir(tmp_dr: str) -> None:
     >>> y = ivy.tmp_dir
     >>> print(y)
     /my_tmp
+
+    >>> # Unset the tmp_dr
+    >>> ivy.unset_tmp_dir()
     """
     global tmp_dir_stack
     ivy.utils.assertions.check_isinstance(tmp_dr, str)
@@ -2859,10 +2858,10 @@ def set_item(
     >>> val = ivy.array([10, 10])
     >>> ivy.set_item(x, query, val)
     >>> print(x)
-
     ivy.array([10, 10, 20])
+
     >>> x = ivy.array([[0, -1, 20], [5, 2, -8]])
-    >>> query = ([1, 1])
+    >>> query = ivy.array([1, 1])
     >>> val = ivy.array([10, 10])
     >>> y = ivy.set_item(x, query, val, copy=True)
     >>> print(y)
@@ -3974,7 +3973,7 @@ def _expand_typesets(dtypes):
     return dtypes
 
 
-def _get_devices_and_dtypes(fn, recurse=False, complement=True):
+def _get_devices_and_dtypes(fn, recurse=True, complement=True):
     supported_devices = ivy.function_supported_devices(fn, recurse=recurse)
     supported_dtypes = ivy.function_supported_dtypes(fn, recurse=recurse)
 
@@ -3987,9 +3986,9 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
     for device in supported_devices:
         supported[device] = supported_dtypes
 
-    is_backend_fn = "backend" in fn.__module__
     is_frontend_fn = "frontend" in fn.__module__
-    is_einops_fn = "einops" in fn.__name__
+    is_backend_fn = "backend" in fn.__module__ and not is_frontend_fn
+    is_einops_fn = hasattr(fn, "__name__") and "einops" in fn.__name__
     if not is_backend_fn and not is_frontend_fn and not is_einops_fn:
         if complement:
             all_comb = _all_dnd_combinations()
@@ -4003,7 +4002,7 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
     if hasattr(fn, "supported_device_and_dtype"):
         fn_supported_dnd = fn.supported_device_and_dtype.__get__()
 
-        if "einops" in fn.__name__ and isinstance(fn_supported_dnd, dict):
+        if is_einops_fn and isinstance(fn_supported_dnd, dict):
             fn_supported_dnd = fn_supported_dnd.get(backend, supported)
 
         if fn_supported_dnd:
@@ -4021,7 +4020,7 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
     if hasattr(fn, "unsupported_device_and_dtype"):
         fn_unsupported_dnd = fn.unsupported_device_and_dtype.__get__()
 
-        if "einops" in fn.__name__ and isinstance(fn_unsupported_dnd, dict):
+        if is_einops_fn and isinstance(fn_unsupported_dnd, dict):
             fn_unsupported_dnd = fn_unsupported_dnd.get(backend, supported)
 
         if fn_unsupported_dnd:
@@ -4188,7 +4187,7 @@ def vmap(
     >>> x = ivy.array(ivy.arange(60).reshape((3, 5, 4)))
     >>> y = ivy.array(ivy.arange(40).reshape((5, 4, 2)))
     >>> z = ivy.vmap(ivy.matmul, (1, 0), 1)(x, y)
-    >>> print(z.shape)
+    >>> z.shape
     (3, 5, 2)
     """
     # TODO: optimize in the numpy and tensorflow backends and extend functionality

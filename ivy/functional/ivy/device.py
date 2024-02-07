@@ -297,6 +297,7 @@ def set_soft_device_mode(mode: bool) -> None:
     ---------
     mode
         boolean whether to move input arrays
+
     Examples
     --------
     >>> ivy.set_soft_device_mode(False)
@@ -742,7 +743,7 @@ def tpu_is_available() -> bool:
     --------
     >>> ivy.set_backend("torch")
     >>> print(ivy.tpu_is_available())
-    True
+    False
     """
     return ivy.current_backend().tpu_is_available()
 
@@ -1168,7 +1169,7 @@ def _get_devices(fn: Callable, complement: bool = True) -> Tuple:
 
     is_backend_fn = "backend" in fn.__module__
     is_frontend_fn = "frontend" in fn.__module__
-    is_einops_fn = "einops" in fn.__name__
+    is_einops_fn = hasattr(fn, "__name__") and "einops" in fn.__name__
     if not is_backend_fn and not is_frontend_fn and not is_einops_fn:
         if complement:
             supported = set(all_devices).difference(supported)
@@ -1220,7 +1221,13 @@ def function_supported_devices(
     Examples
     --------
     >>> import ivy
+    >>> ivy.set_backend('numpy')
     >>> print(ivy.function_supported_devices(ivy.ones))
+    ('cpu',)
+
+    >>> ivy.set_backend('torch')
+    >>> x = ivy.function_supported_devices(ivy.ones)
+    >>> x = sorted(x)
     ('cpu', 'gpu')
     """
     ivy.utils.assertions.check_true(
