@@ -153,6 +153,7 @@ def _asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
             dtype = ivy.default_dtype(dtype=dtype, as_native=True)
         return to_ivy(fn(*new_args, dtype=dtype, **kwargs))
 
+    _asarray_to_native_arrays_and_back_wrapper._asarray_to_native_arrays_and_back = True
     return _asarray_to_native_arrays_and_back_wrapper
 
 
