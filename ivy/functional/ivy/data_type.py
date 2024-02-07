@@ -685,7 +685,7 @@ def finfo(
 
     >>> x = ivy.array([1.3,2.1,3.4], dtype=ivy.float64)
     >>> print(ivy.finfo(x))
-    finfo(resolution=1e-15, min=-1.7976931348623157e+308, /
+    finfo(resolution=1e-15, min=-1.7976931348623157e+308, \
     max=1.7976931348623157e+308, dtype=float64)
 
     >>> x = ivy.array([0.7,8.4,3.14], dtype=ivy.float16)
@@ -699,7 +699,7 @@ def finfo(
     >>> print(ivy.finfo(c))
     {
         x: finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04, dtype=float16),
-        y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, /
+        y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, \
             max=1.7976931348623157e+308, dtype=float64)
     }
     """

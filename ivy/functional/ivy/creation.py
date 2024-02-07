@@ -2021,7 +2021,7 @@ def one_hot(
     }
 
     >>> x = ivy.Container(a=ivy.array([2]), \
-        b=ivy.array([]), c=ivy.native_array([4]))
+        b=ivy.array([], dtype=ivy.int32), c=ivy.native_array([4]))
     >>> y = 7
     >>> z = x.one_hot(y)
     >>> print(z)
