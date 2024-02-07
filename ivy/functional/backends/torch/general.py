@@ -324,7 +324,7 @@ def inplace_update(
         if is_variable(x_native):
             x_native.copy_ = val_native
         else:
-            x_native = val_native
+            x_native[()] = val_native
         x_native = x_native.to(val_native.device)
         if ivy.is_native_array(x):
             return x_native

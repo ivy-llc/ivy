@@ -1907,19 +1907,19 @@ def native_array(
 
     >>> x = [1, 2, 3]
     >>> x_native = ivy.native_array(x)
-    >>> x_native
+    >>> print(x_native)
     [1 2 3]
 
     With :class:`np.ndarray` input:
     >>> y = np.array([4, 5, 6])
     >>> y_native = ivy.native_array(y)
-    >>> y_native
+    >>> print(y_native)
     [4 5 6]
 
     With :class:`ivy.Array` input:
     >>> z = ivy.array([7, 8, 9])
     >>> z_native = ivy.native_array(z)
-    >>> z_native
+    >>> print(z_native)
     [7 8 9]
     """
     # ToDo: Make this more efficient,
@@ -2002,7 +2002,7 @@ def one_hot(
     >>> ivy.one_hot(x, 5, out=z)
     ivy.array([[1., 0., 0., 0., 0.]])
     >>> print(z)
-    ivy.array([[1., 0., 0., 0., 0.], [1., 0., 0., 0., 0.]])
+    ivy.array([[1., 0., 0., 0., 0.]])
 
     With :class:`ivy.Container` input:
 

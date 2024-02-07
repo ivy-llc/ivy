@@ -108,7 +108,7 @@ eigh.support_native_out = True
 def eigvalsh(
     x: torch.Tensor, /, *, UPLO: str = "L", out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    return torch.linalg.eigvalsh(x, UPLO=UPLO)
+    return torch.linalg.eigvalsh(x, UPLO=UPLO, out=out)
 
 
 eigvalsh.support_native_out = True

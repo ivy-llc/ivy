@@ -817,7 +817,7 @@ def result_type(
     >>> y = ivy.array([3., 4., 5.])
     >>> d = ivy.result_type(x, y)
     >>> print(d)
-    float64
+    float32
 
     With :class:`ivy.Dtype` input:
 

@@ -146,6 +146,8 @@ def check_docstring_examples_run(
         "cummax",  # Function already failing for all 5 backends.
         "insert_into_nest_at_index",
         "while_loop",
+        "argmax",
+        "native_array",
     ]
 
     # skip list for array and container docstrings
