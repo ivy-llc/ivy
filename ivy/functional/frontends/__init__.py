@@ -11,6 +11,7 @@ versions = {
     "sklearn": "1.3.0",
     "xgboost": "1.7.6",
     "torchvision": "0.15.2.",
+    "mindspore": "2.0.0",
 }
 
 

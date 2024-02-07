@@ -6,6 +6,7 @@ from io import StringIO
 import numpy as np
 import sys
 
+
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 import pytest
 
@@ -115,93 +116,38 @@ def check_docstring_examples_run(
     # the temp skip list consists of functions
     # which have an issue with their implementation
     skip_list_temp = [
-        "outer",
-        "argmax",
-        "split",
-        "det",
-        "cumprod",
-        "sinc",
-        "grad",
-        "try_else_none",
-        # all examples are wrong including functional/ivy
-        "einops_reduce",
-        "max_unpool1d",
-        "pool",
-        "put_along_axis",
-        "result_type",
-        # works only if no backend set
-        "rfftn",
-        # examples works but exec throws error or generate diff results
-        "scaled_dot_product_attention",
-        "searchsorted",
-        # generates different results in different backends
-        "eigh_tridiagonal",
-        "log_poisson_loss",
+        "outer",  # Failing only torch backend as inputs must be 1-D.
+        "pool",  # Maximum recursion depth exceeded ivy.pool
+        "put_along_axis",  # Depends on scatter_nd for numpy.
+        "result_type",  # Different ouput coming for diff backends in 1st example.
+        "scaled_dot_product_attention",  # Different backends giving different answers.
+        "eigh_tridiagonal",  # Failing only for TF backend
         "dct",
-        "idct",
-        "set_item",
-        "l1_normalize",
-        "histogram",
-        "native_array",
-        "function_supported_devices",
-        "acosh",
-        "bitwise_invert",
-        "cosh",
-        "exp",
-        "sinh",
-        "reciprocal",
-        "deg2rad",
-        "value_and_grad",
-        "vector_norm",
-        "set_nest_at_index",
-        "set_nest_at_indices",
-        "layer_norm",
-        "where",
-        "trace",
-        "eigvalsh",
-        "conv2d_transpose",
-        # fails due to different backend and their view types
-        "sequence_length",
-        "max_pool1d",
-        "vmap",
-        "inner",
-        "slogdet",
-        "svdvals",
-        "nested_map",
-        "dill",
-        "hardtanh",
-        "hardshrink",
-        "rfft",
-        "general_inner_product",
-        "l1_loss",
-        "smooth_l1_loss",
-        "poisson_nll_loss",
-        "choose",
-        "cummax",
-        "one_hot",
-        "tpu_is_available",
-        "log2",
-        "maximum",
-        "minimum",
-        "get_referrers_recursive",
-        "clip_vector_norm",
-        "set_min_base",
-        "scatter_flat",
-        "scatter_nd",
+        "choose",  # Maximum recurion depth exceeded (No backend choose fn).
+        "idct",  # Function already failing for all 5 backends.
+        "set_item",  # Different errors for diff backends (jax, torch)
+        "l1_normalize",  # Function already failing for all 5 backends.
+        "histogram",  # Failing for TF, Torch backends (TODO's left)
+        "value_and_grad",  # Failing only for Torch backend. (Requires_grad=True)
+        "layer_norm",  # Failing only for Torch backend.
+        "eigvalsh",  # Failing only Jax Backend + only for Native Array Example.
+        "conv2d_transpose",  # Function already failing for all 5 backends.
+        "solve",
+        "one_hot",  # One small example failing for all backends except torch.
+        "scatter_flat",  # Function Already failing for 3 backends
+        "scatter_nd",  #
+        "execute_with_gradients",  # Function Already failing for 4 backends.
         "gather",
         "multiprocessing",
-        "execute_with_gradients",
-        "solve",
-        "tensordot",
-        "cross_entropy",
-        "binary_cross_entropy",
-        "sparse_cross_entropy",
-        "reptile_step",
-        "insert_into_nest_at_index",
         "if_else",
+        "trace_graph",  # SystemExit: Please sign up for free pilot access.
+        "dill",
+        "smooth_l1_loss",  # Function already failing for all 5 backends.
+        "cummax",  # Function already failing for all 5 backends.
+        "insert_into_nest_at_index",
         "while_loop",
-        "trace_graph",
-        "set_tmp_dir",
+        "argmax",
+        "native_array",
     ]
 
     # skip list for array and container docstrings
