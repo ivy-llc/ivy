@@ -109,7 +109,10 @@ class Module(ivy.Module):
 
     def call(self, inputs, *args, training=None, mask=None, **kwargs):
         if isinstance(inputs, (list, tuple)):
-            return self.forward(*inputs, *args, **kwargs)
+            try:
+                return self.forward(*inputs, *args, **kwargs)
+            except Exception:
+                return self.forward(inputs, *args, **kwargs)
         else:
             return self.forward(inputs, *args, **kwargs)
 
