@@ -123,17 +123,15 @@ def bitwise_and(
 
 @with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
 def bitwise_invert(
-    x: Union[int, bool, tf.Tensor, tf.Variable],
+    x: Union[int, tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if isinstance(x, bool):
-        return not (x)
-    if not isinstance(x, int):
-        if "int" not in str(x.dtype):
-            return tf.logical_not(x)
-    return tf.bitwise.invert(x)
+    if "int" not in str(x.dtype):
+        return tf.logical_not(x)
+    else:
+        return tf.bitwise.invert(x)
 
 
 @with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
