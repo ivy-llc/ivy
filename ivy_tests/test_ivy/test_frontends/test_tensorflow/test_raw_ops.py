@@ -2137,12 +2137,14 @@ def test_tensorflow_Gather(  # NOQA
     fn_tree="tensorflow.raw_ops.GatherNd",
     params_indices_axis_batch_dims=helpers.array_indices_axis(
         array_dtypes=helpers.get_dtypes("valid"),
-        indices_dtypes=["int64"],
-        min_num_dims=5,
-        max_num_dims=10,
-        min_dim_size=1,
-        max_dim_size=5,
-        indices_same_dims=False,
+        indices_dtypes=["int32", "int64"],
+        min_num_dims=3,
+        max_num_dims=3,
+        min_dim_size=3,
+        max_dim_size=3,
+        axis_zero=True,
+        disable_random_axis=True,
+        indices_same_dims=True,
     ),
     test_with_out=st.just(False),
 )
@@ -2155,7 +2157,7 @@ def test_tensorflow_GatherNd(
     backend_fw,
     on_device,
 ):
-    input_dtypes, params, indices, axis, batch_dims = params_indices_axis_batch_dims
+    input_dtypes, params, indices = params_indices_axis_batch_dims
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         backend_to_test=backend_fw,

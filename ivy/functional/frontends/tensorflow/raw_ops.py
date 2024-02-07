@@ -619,6 +619,10 @@ def Gather(*, params, indices, validate_indices=None, name="Gather"):
     return ivy.gather(params, indices, axis=0, batch_dims=0)
 
 
+@with_supported_dtypes(
+    {"2.15.0 and below": ("int32", "int64", "float32", "float64")},
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def GatherNd(*, params, indices, validate_indices=None, name="GatherNd"):
     return ivy.gather_nd(params, indices, batch_dims=0)
