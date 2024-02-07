@@ -743,7 +743,7 @@ def tpu_is_available() -> bool:
     --------
     >>> ivy.set_backend("torch")
     >>> print(ivy.tpu_is_available())
-    True
+    False
     """
     return ivy.current_backend().tpu_is_available()
 
@@ -1221,7 +1221,13 @@ def function_supported_devices(
     Examples
     --------
     >>> import ivy
+    >>> ivy.set_backend('numpy')
     >>> print(ivy.function_supported_devices(ivy.ones))
+    ('cpu',)
+
+    >>> ivy.set_backend('torch')
+    >>> x = ivy.function_supported_devices(ivy.ones)
+    >>> x = sorted(x)
     ('cpu', 'gpu')
     """
     ivy.utils.assertions.check_true(

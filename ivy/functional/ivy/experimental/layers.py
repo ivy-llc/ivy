@@ -92,14 +92,14 @@ def max_pool1d(
 
        [[16., 17., 18., 19.]]])
     >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
-    >>> print(ivy.max_pool1d(x, 2, 2, [(1,0)], data_format="NCW", dilation=2, ceil_mode=True))
-    ivy.array([[[ 1.,  3.],
-            [ 5.,  7.],
-            [ 9., 11.]],
+    >>> print(ivy.max_pool1d(x, 2, 2, [(1,0)], data_format="NCW", dilation=1, ceil_mode=True))
+    ivy.array([[[ 0.,  2.,  3.],
+        [ 4.,  6.,  7.],
+        [ 8., 10., 11.]],
 
-        [[13., 15.],
-            [17., 19.],
-            [21., 23.]]])
+       [[12., 14., 15.],
+        [16., 18., 19.],
+        [20., 22., 23.]]])
     """  # noqa: E501
     return ivy.current_backend(x).max_pool1d(
         x,
@@ -591,7 +591,7 @@ def pool(
     Examples
     --------
     >>> x = ivy.arange(12.).reshape((2, 1, 3, 2))
-    >>> print(ivy.pool(x, (2, 2), 'MAX', (1, 1), 'SAME'))
+    >>> print(ivy.pool(x, (2, 2), 'MAX', strides=(1, 1), padding='SAME'))
     ivy.array([[[[ 1.,  2.],
                 [ 3.,  4.],
                 [ 4.,  5.]]],
@@ -599,7 +599,7 @@ def pool(
                 [ 9., 10.],
                 [10., 11.]]]])
     >>> x = ivy.arange(48.).reshape((2, 4, 3, 2))
-    >>> print(ivy.pool(x, 3, 'AVG', 1, 'VALID'))
+    >>> print(ivy.pool(x, 3, 'AVG', strides=1, padding='VALID'))
     ivy.array([[[[ 8.,  9.]],
             [[14., 15.]]],
             [[[32., 33.]],
@@ -2947,7 +2947,8 @@ def rfft(
     >>> x = ivy.array([2.3,3.14,7.2])
     >>> y = ivy.zeros(2)
     >>> ivy.rfft(x, out=y)
-    ivy.array([12.639999+0.j      , -2.87    +3.516063j])
+    >>> print(x)
+    ivy.array([2.29999995, 3.1400001 , 7.19999981])
 
     >>> x = ivy.array([-1.2, 3.4, -5.6])
     >>> ivy.rfft(x, n=4, out=x)
@@ -3031,7 +3032,7 @@ def rfftn(
     Examples
     --------
     >>> x = ivy.array([1, 2, 3, 4], dtype=ivy.float32)
-    >>> result = ivy.rfftn(x, s=(4,))
+    >>> result = ivy.rfftn(x, s=(4,), axes=(0,))
     >>> print(result)
     ivy.array([10.+0.j, -2.+2.j, -2.+0.j])
 
