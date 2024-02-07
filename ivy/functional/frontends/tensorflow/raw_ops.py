@@ -620,11 +620,6 @@ def Gather(*, params, indices, validate_indices=None, name="Gather"):
 
 
 @to_ivy_arrays_and_back
-def GatherNd(*, params, indices, validate_indices=None, name="GatherNd"):
-    return ivy.gather_nd(params, indices, batch_dims=0)
-
-
-@to_ivy_arrays_and_back
 def Greater(*, x, y, name="Greater"):
     x, y = check_tensorflow_casting(x, y)
     return ivy.greater(x, y)
