@@ -468,11 +468,13 @@ def conv_general_dilated(
             )
         else:
             with ivy.ArrayMode(False):
+                if not isinstance(padding, str):
+                    padding = padding[1:-1]
                 res = depthwise_conv2d(
                     x,
                     tf.transpose(filters, (0, 1, 3, 2)),
                     strides,
-                    padding[1:-1],
+                    padding,
                     data_format=data_format,
                     dilations=dilations,
                 )
