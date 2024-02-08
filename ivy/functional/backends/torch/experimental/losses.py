@@ -152,3 +152,24 @@ def poisson_nll_loss(
     return torch.nn.functional.poisson_nll_loss(
         input, target, log_input=log_input, full=full, eps=eps, reduction=reduction
     )
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.1.2 and below": {
+            "cpu": ("float16", "float32", "float64"),
+            "gpu": ("float16", "float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def hinge_embedding_loss(
+    input: torch.Tensor,
+    target: torch.Tensor,
+    *,
+    margin: float = 1.0,
+    reduction: str = "mean",
+) -> torch.Tensor:
+    return torch.nn.functional.hinge_embedding_loss(
+        input, target, margin=margin, reduction=reduction
+    )

@@ -143,7 +143,7 @@ def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
 
 @with_unsupported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.6.0 and below": (
             "uint8",
             "int8",
             "int16",
@@ -231,7 +231,7 @@ def as_ivy_dtype(dtype_in: Union[paddle.dtype, str, bool, int, float], /) -> ivy
 
 
 def as_native_dtype(
-    dtype_in: Union[paddle.dtype, str, bool, int, float]
+    dtype_in: Union[paddle.dtype, str, bool, int, float],
 ) -> paddle.dtype:
     if dtype_in is int:
         return ivy.default_int_dtype(as_native=True)

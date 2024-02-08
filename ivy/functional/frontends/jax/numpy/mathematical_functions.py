@@ -90,7 +90,7 @@ def ceil(x, /):
     return ivy.ceil(x)
 
 
-@with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.6.0 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def clip(a, a_min=None, a_max=None, out=None):
     return ivy.array(ivy.clip(a, a_min, a_max), dtype=a.dtype)
@@ -315,7 +315,7 @@ def einsum_path(subscripts, *operands, optimize="greedy"):
     elif path_type == "optimal":
         path = optimal_path(input_sets, output_set, dimension_dict, memory_arg)
     else:
-        raise KeyError("Path name %s not found", path_type)
+        raise KeyError(f"Path name {path_type} not found")
 
     cost_list, scale_list, size_list, contraction_list = [], [], [], []
 

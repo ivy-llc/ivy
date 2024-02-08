@@ -47,7 +47,7 @@ def set_item(
     val: np.ndarray,
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: bool = False,
 ) -> np.ndarray:
     if copy:
         x = np.copy(x)
@@ -435,7 +435,7 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_dtypes({"1.26.2 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": ("bfloat16",)}, backend_version)
 def isin(
     elements: np.ndarray,
     test_elements: np.ndarray,

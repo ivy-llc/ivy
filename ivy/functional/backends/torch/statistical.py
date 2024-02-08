@@ -181,7 +181,9 @@ def std(
 
 # Function does support uint8, but allowing support for unsigned will cause
 # the function to break the upcasting rule defined in the Array API Standard
-@with_unsupported_dtypes({"2.1.2 and below": ("uint8",)}, backend_version)
+@with_unsupported_dtypes(
+    {"2.1.2 and below": ("uint8", "float16", "bfloat16")}, backend_version
+)
 def sum(
     x: torch.Tensor,
     /,
@@ -243,7 +245,7 @@ def var(
 # TODO: bfloat16 support is added in PyTorch 1.12.1
 @with_unsupported_dtypes(
     {
-        "2.1.2 and below": ("uint8", "float16", "bfloat16"),
+        "2.1.2 and below": ("uint8", "float16", "bfloat16", "bool"),
     },
     backend_version,
 )
@@ -290,8 +292,8 @@ cumprod.support_native_out = True
 # TODO: bfloat16 support is added in PyTorch 1.12.1
 @with_unsupported_dtypes(
     {
-        "1.12.1 and below": ("uint8", "float16", "bfloat16"),
-        "1.12.1 and above": ("uint8", "float16"),
+        "1.12.1 and below": ("uint8", "bool", "float16", "bfloat16"),
+        "1.12.1 and above": ("uint8", "bool", "float16"),
     },
     backend_version,
 )

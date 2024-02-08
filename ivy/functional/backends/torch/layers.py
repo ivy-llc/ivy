@@ -868,3 +868,58 @@ def scaled_dot_product_attention_v_2p0p0_and_above(
     if isinstance(mask, torch.Tensor):
         mask = torch.where(mask == 0, -torch.inf, 0)
     return torch.nn.functional.scaled_dot_product_attention(q, k, v, attn_mask=mask)
+
+
+def lstm(
+    input: torch.Tensor,
+    initial_states: Tuple[torch.Tensor],
+    all_weights: Tuple[torch.Tensor],
+    num_layers: int,
+    dropout: float,
+    train: bool,
+    bidirectional: bool,
+    batch_first: bool = False,
+    batch_sizes: Sequence = None,
+    weights_transposed: bool = False,
+    has_ih_bias: bool = True,
+    has_hh_bias: bool = True,
+):
+    if weights_transposed:
+        # transpose the weights if they are in the wrong format
+        all_weights = [
+            torch.transpose(weight, 1, 0) if weight.dim() == 2 else weight
+            for weight in all_weights
+        ]
+    else:
+        all_weights = list(all_weights)
+
+    if (has_ih_bias and not has_hh_bias) or (has_hh_bias and not has_ih_bias):
+        # insert zero biases into the weights where one set of biases is not
+        # used, to avoid stride errors in lstm
+        shapes = []
+        for i in range(2, len(all_weights), 3):
+            shapes.append(tuple(all_weights[i].shape))
+        for i, shape in enumerate(shapes):
+            idx = (i + 1) * 4 - (1 if has_ih_bias else 2)
+            all_weights.insert(idx, torch.zeros(shape))
+        has_ih_bias = True
+        has_hh_bias = True
+
+    if initial_states[0].dim() == 2:
+        initial_states[0] = ivy.expand_dims(initial_states[0])
+    if initial_states[1].dim() == 2:
+        initial_states[1] = ivy.expand_dims(initial_states[1])
+
+    ret = torch.lstm(
+        input,
+        initial_states,
+        all_weights,
+        has_ih_bias,
+        num_layers,
+        dropout,
+        train,
+        bidirectional,
+        batch_first,
+    )
+
+    return ret[0][:, -1], ret[0], (ret[1], ret[2])

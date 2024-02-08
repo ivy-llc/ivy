@@ -499,3 +499,12 @@ def erfc(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return js.special.erfc(x)
+
+
+def erfinv(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return js.special.erfinv(x)

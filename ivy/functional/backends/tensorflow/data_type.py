@@ -117,7 +117,7 @@ def broadcast_arrays(
         try:
             desired_shape = tf.broadcast_dynamic_shape(arrays[0].shape, arrays[1].shape)
         except tf.errors.InvalidArgumentError as e:
-            raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
+            raise ivy.utils.exceptions.IvyBroadcastShapeError(e) from e
         if len(arrays) > 2:
             for i in range(2, len(arrays)):
                 try:
@@ -125,7 +125,7 @@ def broadcast_arrays(
                         desired_shape, arrays[i].shape
                     )
                 except tf.errors.InvalidArgumentError as e:
-                    raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
+                    raise ivy.utils.exceptions.IvyBroadcastShapeError(e) from e
     else:
         return [arrays[0]]
     result = []

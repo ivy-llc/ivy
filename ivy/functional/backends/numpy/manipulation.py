@@ -1,12 +1,14 @@
 # global
 import math
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence
+from typing import List, Optional, Sequence, Tuple, Union
+
 import numpy as np
 
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
+
 from . import backend_version
 
 
@@ -189,7 +191,7 @@ def split(
     return np.split(x, num_or_size_splits, axis)
 
 
-@with_unsupported_dtypes({"1.26.2 and below": ("uint64",)}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": ("uint64",)}, backend_version)
 def repeat(
     x: np.ndarray,
     /,
@@ -233,6 +235,8 @@ def swapaxes(
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        x = x.copy()
     return np.swapaxes(x, axis0, axis1)
 
 

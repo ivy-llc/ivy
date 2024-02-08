@@ -427,7 +427,7 @@ def conv_general_transpose(
     filter_format: str = "channel_last",
     data_format: str = "channel_last",
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
-    feature_group_count: Optional[int] = 1,
+    feature_group_count: int = 1,
     bias: Optional[JaxArray] = None,
     out: Optional[JaxArray] = None,
 ):

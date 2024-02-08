@@ -58,8 +58,7 @@ def _mask_to_index(query, x):
             raise ivy.exceptions.IvyException("too many indices")
         elif not len(query.shape):
             query = jnp.tile(query, x.shape[0])
-    expected_shape = x[query].shape
-    return jnp.where(query), expected_shape
+    return jnp.where(query)
 
 
 def get_item(
@@ -75,7 +74,7 @@ def get_item(
                 return jnp.array([], dtype=x.dtype)
             else:
                 return jnp.expand_dims(x, 0)
-        query, _ = _mask_to_index(query, x)
+        query = _mask_to_index(query, x)
     elif isinstance(query, list):
         query = (query,)
     return x.__getitem__(query)
@@ -90,7 +89,9 @@ def set_item(
     copy: Optional[bool] = False,
 ) -> JaxArray:
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
-        query, expected_shape = _mask_to_index(query, x)
+        query = _mask_to_index(query, x)
+    expected_shape = x[query].shape
+    if ivy.is_array(val):
         val = _broadcast_to(val, expected_shape)._data
     ret = x.at[query].set(val)
     if copy:

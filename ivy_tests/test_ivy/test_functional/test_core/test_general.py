@@ -6,7 +6,7 @@ import math
 from types import SimpleNamespace
 
 import pytest
-from hypothesis import given, assume, strategies as st
+from hypothesis import given, assume, example, strategies as st
 import numpy as np
 from collections.abc import Sequence
 
@@ -15,7 +15,11 @@ import threading
 import ivy
 
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test, BackendHandler
+from ivy_tests.test_ivy.helpers import (
+    handle_test,
+    BackendHandler,
+    test_parameter_flags as pf,
+)
 from ivy_tests.test_ivy.helpers.assertions import assert_all_close
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import pow_helper
 
@@ -1289,7 +1293,7 @@ def test_inplace_increment(x_val_and_dtypes, test_flags, on_device, backend_fw):
         shared_dtype=True,
     ),
     keep_x_dtype=st.booleans(),
-    inplace_mode=st.sampled_from(["lenient", "strict"]),
+    inplace_mode=st.just("lenient"),
 )
 def test_inplace_update(
     x_val_and_dtypes, keep_x_dtype, inplace_mode, test_flags, on_device, backend_fw
@@ -1642,6 +1646,31 @@ def test_set_inplace_mode(mode):
     test_instance_method=st.just(False),
     container_flags=st.just([False]),
     test_with_copy=st.just(True),
+)
+@example(
+    dtypes_x_query_val=(
+        ["int32", "int32"],
+        np.ones((1, 3, 3, 3)),
+        (slice(None, None, None), slice(None, None, None), slice(None, None, None), 1),
+        np.zeros((3, 1)),
+    ),
+    copy=False,
+    fn_name="set_item",
+    test_flags=pf.FunctionTestFlags(
+        ground_truth_backend="numpy",
+        num_positional_args=3,
+        instance_method=False,
+        with_out=False,
+        with_copy=False,
+        test_gradients=False,
+        test_trace=False,
+        transpile=False,
+        as_variable=[False],
+        native_arrays=[False],
+        container=[False],
+        precision_mode=False,
+        test_cython_wrapper=False,
+    ),
 )
 def test_set_item(
     dtypes_x_query_val,

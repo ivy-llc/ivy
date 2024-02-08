@@ -68,11 +68,11 @@ def soft_margin_loss(
         return loss
 
 
-def _apply_loss_reduction(loss: tf.Tensor, reduction: str, axis) -> tf.Tensor:
+def _apply_loss_reduction(loss: tf.Tensor, reduction: str) -> tf.Tensor:
     if reduction == "sum":
-        return tf.math.reduce_sum(loss, axis=axis)
+        return tf.math.reduce_sum(loss)
     elif reduction == "mean":
-        return tf.reduce_mean(loss, axis=axis)
+        return tf.reduce_mean(loss)
     else:  # reduction == "none"
         return loss
 
@@ -155,4 +155,31 @@ def poisson_nll_loss(
         ones = tf.ones_like(target_tensor, dtype=target_tensor.dtype)
         cond = tf.math.logical_and(target_tensor >= zeros, target_tensor <= ones)
         loss = loss + tf.where(cond, zeros, stirling_approx)
+    return _apply_loss_reduction(loss, reduction)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.14.0 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def hinge_embedding_loss(
+    input: tf.Tensor,
+    target: tf.Tensor,
+    *,
+    margin: float = 1.0,
+    reduction: str = "mean",
+) -> tf.Tensor:
+    zero_ = tf.zeros([1], dtype=input.dtype)
+
+    relu_part = tf.math.maximum(margin - input, 0)
+
+    loss = tf.where(tf.equal(target, 1.0), input, zero_) + tf.where(
+        tf.equal(target, -1.0), relu_part, zero_
+    )
+
     return _apply_loss_reduction(loss, reduction)

@@ -415,9 +415,10 @@ def modf(
     /,
     *,
     out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    modf_x = torch.modf(x)
-    return torch.resolve_modf(input=modf_x)
+) -> Tuple[torch.Tensor, torch.Tensor]:
+    fractional_part = torch.frac(x)
+    integer_part = torch.floor(x)
+    return fractional_part, integer_part
 
 
 @with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, backend_version)
@@ -441,3 +442,16 @@ def erfc(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.special.erfc(x)
+
+
+@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, backend_version)
+def erfinv(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.special.erfinv(x, out=out)
+
+
+erfinv.support_native_out = True

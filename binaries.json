@@ -4,6 +4,7 @@
             "_compiler.so",
             {
                 "utils": [
+                    "C.so",
                     "CC.so",
                     "CD.so",
                     "CI.so",
@@ -11,8 +12,7 @@
                     "CM.so",
                     "CV.so",
                     "CX.so",
-                    "C.so",
-
+                    "D.so",
                     "DC.so",
                     "DD.so",
                     "DI.so",
@@ -20,17 +20,22 @@
                     "DM.so",
                     "DV.so",
                     "DX.so",
-                    "D.so",
-
+                    "I.so",
                     "IC.so",
                     "ID.so",
                     "II.so",
+                    "IIC.so",
+                    "IID.so",
+                    "III.so",
+                    "IIL.so",
+                    "IIM.so",
+                    "IIV.so",
+                    "IIX.so",
                     "IL.so",
                     "IM.so",
                     "IV.so",
                     "IX.so",
-                    "I.so",
-
+                    "L.so",
                     "LC.so",
                     "LD.so",
                     "LI.so",
@@ -38,8 +43,7 @@
                     "LM.so",
                     "LV.so",
                     "LX.so",
-                    "L.so",
-
+                    "M.so",
                     "MC.so",
                     "MD.so",
                     "MI.so",
@@ -47,8 +51,7 @@
                     "MM.so",
                     "MV.so",
                     "MX.so",
-                    "M.so",
-
+                    "V.so",
                     "VC.so",
                     "VD.so",
                     "VI.so",
@@ -56,18 +59,14 @@
                     "VM.so",
                     "VV.so",
                     "VX.so",
-                    "V.so",
-
+                    "X.so",
                     "XC.so",
                     "XD.so",
                     "XI.so",
                     "XL.so",
                     "XM.so",
                     "XV.so",
-                    "XX.so",
-                    "X.so",
-
-                    "IIC.so"
+                    "XX.so"
                 ]
             }
         ]

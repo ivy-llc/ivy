@@ -48,6 +48,7 @@ BuiltTraceStrategy = DynamicFlag(st.just(False))
 BuiltFrontendArrayStrategy = DynamicFlag(st.booleans())
 BuiltTranspileStrategy = DynamicFlag(st.just(False))
 BuiltPrecisionModeStrategy = DynamicFlag(st.booleans())
+BuiltCythonWrapperStrategy = DynamicFlag(st.just(False))
 
 
 flags_mapping = {
@@ -62,6 +63,7 @@ flags_mapping = {
     "test_trace": "BuiltTraceStrategy",
     "transpile": "BuiltTranspileStrategy",
     "precision_mode": "BuiltPrecisionModeStrategy",
+    "test_cython_wrapper": "BuiltCythonWrapperStrategy",
 }
 
 
@@ -98,6 +100,7 @@ class FunctionTestFlags(TestFlags):
         test_trace,
         transpile,
         precision_mode,
+        test_cython_wrapper,
     ):
         self.ground_truth_backend = ground_truth_backend
         self.num_positional_args = num_positional_args
@@ -111,6 +114,7 @@ class FunctionTestFlags(TestFlags):
         self.test_trace = test_trace
         self.transpile = transpile
         self.precision_mode = precision_mode
+        self.test_cython_wrapper = test_cython_wrapper
 
     def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
@@ -162,6 +166,7 @@ def function_flags(
     native_arrays,
     container_flags,
     precision_mode,
+    test_cython_wrapper,
 ):
     return draw(
         st.builds(
@@ -178,6 +183,7 @@ def function_flags(
             native_arrays=native_arrays,
             container=container_flags,
             precision_mode=precision_mode,
+            test_cython_wrapper=test_cython_wrapper,
         )
     )
 

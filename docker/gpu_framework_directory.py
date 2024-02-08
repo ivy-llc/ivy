@@ -43,6 +43,13 @@ def install_pkg(path, pkg, base="fw/"):
             "  --no-cache-dir",
             shell=True,
         )
+        subprocess.run(
+            f"yes |pip3 install --upgrade torchvision --index-url"
+            f" https://download.pytorch.org/whl/cu121 --target"
+            f" {path} --default-timeout=100 --extra-index-url"
+            " --no-cache-dir",
+            shell=True,
+        )
     elif pkg.split("==")[0] if "==" in pkg else pkg == "jax":
         subprocess.run(
             f"yes |pip install --upgrade --target {path} 'jax[cuda12_pip]' -f"
@@ -53,9 +60,8 @@ def install_pkg(path, pkg, base="fw/"):
     elif pkg.split("==")[0] if "==" in pkg else pkg == "paddle":
         subprocess.run(
             "yes |pip install "
-            f" paddlepaddle-gpu=={get_latest_package_version('paddlepaddle')}.post120"
-            f" --target {path}  -f"
-            " https://www.paddlepaddle.org.cn/whl/linux/mkl/avx/stable.html  "
+            f" paddlepaddle-gpu=={get_latest_package_version('paddlepaddle')}"
+            f" --target {path} -f https://mirror.baidu.com/pypi/simple "
             " --no-cache-dir",
             shell=True,
         )
