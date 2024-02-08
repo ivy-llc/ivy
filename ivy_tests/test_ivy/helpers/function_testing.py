@@ -49,7 +49,9 @@ def traced_if_required(backend: str, fn, test_trace=False, args=None, kwargs=Non
                 ):
                     t_globals.CURRENT_TRACED_DATA[
                         t_globals.CURRENT_RUNNING_TEST.fn_name
-                    ][backend] = ivy_backend.trace_graph(fn, args=args, kwargs=kwargs, backend_compile=True)
+                    ][backend] = ivy_backend.trace_graph(
+                        fn, args=args, kwargs=kwargs, backend_compile=True
+                    )
                 elif (
                     t_globals.CURRENT_RUNNING_TEST.fn_name
                     not in t_globals.CURRENT_TRACED_DATA
@@ -59,7 +61,9 @@ def traced_if_required(backend: str, fn, test_trace=False, args=None, kwargs=Non
                     ] = {}
                     t_globals.CURRENT_TRACED_DATA[
                         t_globals.CURRENT_RUNNING_TEST.fn_name
-                    ][backend] = ivy_backend.trace_graph(fn, args=args, kwargs=kwargs, backend_compile=True)
+                    ][backend] = ivy_backend.trace_graph(
+                        fn, args=args, kwargs=kwargs, backend_compile=True
+                    )
                 fn = t_globals.CURRENT_TRACED_DATA[
                     t_globals.CURRENT_RUNNING_TEST.fn_name
                 ][backend]
