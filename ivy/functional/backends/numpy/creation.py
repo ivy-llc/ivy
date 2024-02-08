@@ -6,6 +6,9 @@ import numpy as np
 
 # local
 import ivy
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+)
 from ivy.functional.ivy.creation import (
     _asarray_to_native_arrays_and_back,
     _asarray_infer_device,
@@ -17,6 +20,7 @@ from ivy.functional.ivy.creation import (
 )
 from .data_type import as_native_dtype
 
+from . import backend_version
 
 # Array API Standard #
 # -------------------#
@@ -43,6 +47,15 @@ def arange(
     return res
 
 
+@with_unsupported_dtypes(
+    {
+        "1.26.3 and below": (
+            "complex",
+            "bool",
+        )
+    },
+    backend_version,
+)
 @_asarray_to_native_arrays_and_back
 @_asarray_infer_device
 @_asarray_handle_nestable

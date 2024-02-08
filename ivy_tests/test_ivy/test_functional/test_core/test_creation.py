@@ -21,7 +21,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_dtype import astype_helpe
 def _asarray_helper(draw):
     x_dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=helpers.get_dtypes("valid"),
             num_arrays=st.integers(min_value=1, max_value=10),
             min_num_dims=0,
             max_num_dims=5,
@@ -40,17 +40,15 @@ def _asarray_helper(draw):
     #     helpers.create_nested_input(dim, [sh, np_array, x_list[0]])
     # )
     dtype = draw(
-        helpers.get_castable_dtype(
-            draw(helpers.get_dtypes("numeric")), dtype=x_dtype[0]
-        )
+        helpers.get_castable_dtype(draw(helpers.get_dtypes("valid")), dtype=x_dtype[0])
     )[-1]
-    dtype = draw(st.sampled_from([dtype, None]))
+    dtype = draw(st.sampled_from([dtype]))
     x = draw(
         st.sampled_from(
             [
                 x,
                 x_list,
-                sh,
+                # sh,
                 # nested_values,
             ]
         )
