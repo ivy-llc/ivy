@@ -311,6 +311,19 @@ def fliplr(
     return paddle.flip(m, axis=1)
 
 
+@with_supported_dtypes(
+    {
+        "2.6.0 and below": (
+            "int32",
+            "int64",
+            "float64",
+            "complex128",
+            "float32",
+            "complex64",
+        )
+    },
+    backend_version,
+)
 def i0(
     x: paddle.Tensor,
     /,
