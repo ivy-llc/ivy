@@ -6,7 +6,7 @@ import numpy as np
 
 
 @handle_frontend_test(
-    fn_tree="your.module.path.recall_score",  # Update with the correct module path
+    fn_tree="sklearn.metrics.recall_score",  
     arrays_and_dtypes=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_integer"),
         num_arrays=2,
