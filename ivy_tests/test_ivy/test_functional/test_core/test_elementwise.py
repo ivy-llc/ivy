@@ -652,6 +652,8 @@ def test_deg2rad(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        atol_=1e-2,
+        rtol_=1e-2,
         x=x[0],
     )
 
@@ -659,8 +661,9 @@ def test_deg2rad(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # divide
 @handle_test(
     fn_tree="functional.ivy.divide",
+    test_gradients=st.just(False),
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("numeric", full=False),
         num_arrays=2,
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,

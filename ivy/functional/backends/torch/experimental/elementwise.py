@@ -442,3 +442,16 @@ def erfc(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.special.erfc(x)
+
+
+@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, backend_version)
+def erfinv(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.special.erfinv(x, out=out)
+
+
+erfinv.support_native_out = True

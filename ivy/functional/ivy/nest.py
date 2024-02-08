@@ -239,7 +239,7 @@ def insert_into_nest_at_index(nest: Iterable, index: Tuple, value) -> None:
     >>> nest = [[1, 2], [3, 4]]
     >>> index = (1, 1)
     >>> value = 99
-    >>> insert_into_nest_at_index(nest, index, value)
+    >>> ivy.insert_into_nest_at_index(nest, index, value)
     >>> print(nest)
     [[1, 2], [3, 99, 4]]
     """
@@ -1093,18 +1093,12 @@ def nested_map(
     ... )
     >>> function = lambda a : a  + 1
     >>> ivy.nested_map(function, x)
-    {
-        a: ivy.array([[2, 3, 4],
-                      [10, 9, 8]]),
-        b: ivy.array([[5, 6, 7],
-                      [13, 14, 15]])
-    }
     >>> print(x)
     {
-        a: ivy.array([[2, 3, 4],
-                      [10, 9, 8]]),
-        b: ivy.array([[5, 6, 7],
-                      [13, 14, 15]])
+        a: ivy.array([[1, 2, 3],
+                      [9, 8, 7]]),
+        b: ivy.array([[4, 5, 6],
+                      [12, 13, 14]])
     }
 
     >>> nest = ([1, 2], [3, 4], [5, 6], {"a": 1, "b": 2, "c": 3})

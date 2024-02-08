@@ -559,15 +559,14 @@ def hardtanh(
     >>> ivy.hardtanh(x, out=y)
     >>> print(y)
     ivy.array([ 1., 0.7, -1.])
-    >>> x = ivy.array([[1.1, 2.2, 3.3],
-    ...                [-0.4, 0.5, -6.6]])
+    >>> x = ivy.array([[1.1, 2.2, 3.3],[-0.4, 0.5, -6.6]])
     >>> ivy.hardtanh(x, out=x)
     >>> print(x)
-    ivy.array([[ 1.,  1., 1.],
-           [-0.4, 0.5, -1.]])
+    ivy.array([[ 1.,  1., 1.],[-0.4, 0.5, -1.]])
+
     With :class:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([0.0, -1.2]), b=ivy.array([0.4, -0.2]))
-    >>> x = ivy.hardtanhx, out=x)
+    >>> x = ivy.hardtanh(x, out=x)
     >>> print(x)
     {
         a: ivy.array([0., -1.]),
@@ -953,7 +952,7 @@ def hardshrink(
     >>> x = ivy.array([-1.0, 1.0, 2.0])
     >>> y = x.hardshrink()
     >>> print(y)
-    ivy.array([-0.5,  0.5,  1.5])
+    ivy.array([-1.,  1.,  2.])
     >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
     >>> y = ivy.hardshrink(x)
     >>> print(y)

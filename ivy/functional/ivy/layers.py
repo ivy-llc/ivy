@@ -518,9 +518,9 @@ def scaled_dot_product_attention(
     >>> result = ivy.scaled_dot_product_attention(q,k,v,scale=1,mask=mask)
     >>> print(result)
 
-    ivy.array([[[0.40000001, 1.29999995],
-    ...         [2.19994521, 3.09994531],
-    ...         [4.30000019, 5.30000019]]])
+    ivy.array([[[2.30000019, 3.23333359],
+        [2.30000019, 3.23333359],
+        [2.30000019, 3.23333359]]])
 
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
     >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
@@ -2397,8 +2397,6 @@ def lstm(
     weights_transposed: bool = False,
     has_ih_bias: bool = True,
     has_hh_bias: bool = True,
-    return_sequences: bool = True,
-    return_states: bool = True,
 ):
     """Applies a multi-layer long-short term memory to an input sequence.
 
@@ -2442,11 +2440,6 @@ def lstm(
         whether the `all_weights` argument includes a input-hidden bias
     has_hh_bias
         whether the `all_weights` argument includes a hidden-hidden bias
-    return_sequences
-        whether to return the last output in the output sequence,
-        or the full sequence
-    return_states
-        whether to return the final hidden and carry states in addition to the output
 
     Returns
     -------
@@ -2567,16 +2560,7 @@ def lstm(
     if batch_sizes is not None:
         output = _pack_padded_sequence(output, batch_sizes)[0]
 
-    if return_states:
-        if return_sequences:
-            return output, h_outs, c_outs
-        else:
-            return output[:, -1], h_outs, c_outs  # TODO: this depends on batch_first
-    else:
-        if return_sequences:
-            return output
-        else:
-            return output[:, -1]
+    return output[:, -1], output, (h_outs, c_outs)
 
 
 # Helpers #
