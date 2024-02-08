@@ -69,7 +69,7 @@ class Module(ivy.Module):
     def _build(self, *args, **kwargs):
         for module in self.__dict__.values():
             if isinstance(module, Module) and module is not self:
-                if not module.built:
+                if not module._built:
                     module.build(
                         *module._args,
                         dynamic_backend=module._dynamic_backend,
@@ -108,7 +108,13 @@ class Module(ivy.Module):
         )
 
     def call(self, inputs, *args, training=None, mask=None, **kwargs):
-        return self.forward(inputs, *args, **kwargs)
+        if isinstance(inputs, (list, tuple)):
+            try:
+                return self.forward(*inputs, *args, **kwargs)
+            except Exception:
+                return self.forward(inputs, *args, **kwargs)
+        else:
+            return self.forward(inputs, *args, **kwargs)
 
     def _forward(self, *a, **kw):
         ret = self._call_impl(*a, **kw)
@@ -197,7 +203,7 @@ class Module(ivy.Module):
     def named_parameters(
         self, prefix: str = "", recurse: bool = True, remove_duplicate: bool = True
     ) -> Iterator[Tuple[str, Parameter]]:
-        if not getattr(self, "built", False):
+        if not getattr(self, "_built", False):
             self.build(
                 *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
             )
@@ -214,7 +220,7 @@ class Module(ivy.Module):
             yield module
 
     def named_children(self) -> Iterator[Tuple[str, "Module"]]:
-        if not getattr(self, "built", False):
+        if not getattr(self, "_built", False):
             self.build(
                 *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
             )
@@ -234,7 +240,7 @@ class Module(ivy.Module):
         prefix: str = "",
         remove_duplicate: bool = True,
     ):
-        if not getattr(self, "built", False):
+        if not getattr(self, "_built", False):
             self.build(
                 *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
             )
