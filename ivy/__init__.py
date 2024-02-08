@@ -294,7 +294,7 @@ class Shape(Sequence):
         return self
 
     def __bool__(self):
-        return self._shape.__bool__()
+        return builtins.bool(self._shape)
 
     def __div__(self, other):
         return self._shape // other
