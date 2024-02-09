@@ -20,7 +20,9 @@ from ivy_tests.test_ivy.helpers import handle_method
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    # method_num_positional_args=helpers.num_positional_args(fn_name="ELU._forward"),
+    method_num_positional_args=helpers.num_positional_args_method(
+        method="ELU._forward"
+    ),
     test_gradients=st.just(True),
     alpha=helpers.floats(min_value=0.1, max_value=1),
 )

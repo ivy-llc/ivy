@@ -675,10 +675,7 @@ def handle_method(
             precision_mode=_get_runtime_flag_value(precision_mode),
         )
 
-        if method_num_positional_args is None:
-            method_num_positional_args = num_positional_args_method(
-                method=callable_method
-            )
+        method_num_positional_args = num_positional_args_method(method=callable_method)
 
         possible_arguments["method_flags"] = pf.method_flags(
             num_positional_args=method_num_positional_args,
