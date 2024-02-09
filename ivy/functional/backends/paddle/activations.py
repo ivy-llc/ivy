@@ -22,7 +22,12 @@ from . import backend_version
 
 
 @with_supported_dtypes(
-    {"2.6.0 and below": ("float32", "float64", "complex")},
+    {
+        "2.6.0 and below": (
+            "float32",
+            "float64",
+        )
+    },
     backend_version,
 )
 def relu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
