@@ -6,6 +6,8 @@ import ivy_tests.test_ivy.helpers as helpers
 
 from ivy_tests.test_ivy.helpers import handle_method
 
+CLASS_TREE = "ivy.Shape"
+
 
 @handle_method(
     method_tree="Shape.__add__",
@@ -45,6 +47,7 @@ def test_shape__add__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Shape.__bool__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
@@ -70,7 +73,7 @@ def test_shape__bool__(
         backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
-        init_all_as_kwargs_np={"data": x[0]},
+        init_all_as_kwargs_np={"shape_tup": (x[0],)},
         init_input_dtypes=dtype,
         method_input_dtypes=[],
         method_all_as_kwargs_np={},
