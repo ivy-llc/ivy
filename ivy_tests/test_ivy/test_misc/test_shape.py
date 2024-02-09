@@ -1,6 +1,7 @@
 from hypothesis import assume, strategies as st
 import numpy as np
 
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 
 from ivy_tests.test_ivy.helpers import handle_method
@@ -682,3 +683,13 @@ def test_shape__sub__(
         class_name=class_name,
         method_name=method_name,
     )
+
+
+def test_shape_in_conditions():
+    shape = ivy.Shape((1, 2))
+    condition_is_true = True if shape else False
+    assert condition_is_true
+
+    shape = ivy.Shape(())
+    condition_is_true = True if shape else False
+    assert not condition_is_true
