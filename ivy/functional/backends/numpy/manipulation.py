@@ -1,12 +1,14 @@
 # global
 import math
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence
+from typing import List, Optional, Sequence, Tuple, Union
+
 import numpy as np
 
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
+
 from . import backend_version
 
 
@@ -233,6 +235,8 @@ def swapaxes(
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        x = x.copy()
     return np.swapaxes(x, axis0, axis1)
 
 

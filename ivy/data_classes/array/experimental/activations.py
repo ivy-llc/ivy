@@ -325,7 +325,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> x = ivy.array([-1., .2, 1.])
         >>> y = x.hardtanh()
         >>> print(y)
-        ivy.array([-1., 1., 1.])
+        ivy.array([-1. ,  0.2,  1. ])
         """
         return ivy.hardtanh(self._data, min_val=min_val, max_val=max_val, out=out)
 

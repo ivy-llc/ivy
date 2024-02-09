@@ -1,15 +1,16 @@
 # global
-from typing import Union, Optional
-
 import math
+from typing import Optional, Union
+
 import paddle
-import ivy.functional.backends.paddle as paddle_backend
+
 import ivy
+import ivy.functional.backends.paddle as paddle_backend
 from ivy import promote_types_of_inputs
 from ivy.func_wrapper import (
-    with_unsupported_device_and_dtypes,
     with_supported_device_and_dtypes,
     with_supported_dtypes,
+    with_unsupported_device_and_dtypes,
     with_unsupported_dtypes,
 )
 
@@ -340,15 +341,8 @@ def less(
     return paddle.less_than(x1, x2)
 
 
-@with_unsupported_dtypes(
-    {
-        "2.6.0 and below": (
-            "int8",
-            "int16",
-            "uint8",
-            "float16",
-        )
-    },
+@with_supported_dtypes(
+    {"2.6.0 and below": ("bool", "int32", "int64", "float32", "float64", "complex")},
     backend_version,
 )
 def multiply(
@@ -359,6 +353,14 @@ def multiply(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if isinstance(x1, paddle.Tensor) and isinstance(x2, paddle.Tensor):
+        if paddle.is_complex(x1) or paddle.is_complex(x2):
+            a, b = x1.real(), x1.imag()
+            c, d = x2.real(), x2.imag()
+            real = a * c - b * d
+            imag = a * d + b * c
+            return paddle.complex(real, imag)
+
     return paddle.multiply(x1, x2).astype(ret_dtype)
 
 
@@ -406,8 +408,8 @@ def divide(
             return paddle.complex(
                 abs_value * paddle.cos(angle_value), abs_value * paddle.sin(angle_value)
             )
-    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    return (x1 / x2).astype(ret_dtype)
+    x1, x2, _ = _elementwise_helper(x1, x2)
+    return x1 / x2
 
 
 @with_supported_dtypes(
