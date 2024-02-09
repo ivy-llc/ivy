@@ -7,7 +7,7 @@ import inspect
 import functools
 from typing import List, Optional
 
-from hypothesis import given, strategies as st
+from hypothesis import given, strategies as st, example
 
 # local
 import ivy.functional.frontends.numpy as np_frontend
@@ -937,3 +937,104 @@ def _create_transpile_report(
     json_object = json.dumps(data, indent=6)
     with open(file_name, "w") as outfile:
         outfile.write(json_object)
+
+
+def handle_example(
+    *,
+    test_example: bool = False,
+    test_frontend_example: bool = False,
+    test_method_example: bool = False,
+    test_frontend_method_example: bool = False,
+    **given_kwargs,
+):
+    # print(given_kwargs)
+    if test_example:
+        given_kwargs["new_test_flags"] = pf.FunctionTestFlags(
+            ground_truth_backend=given_kwargs["test_flags"].get(
+                "ground_truth_backend", "numpy"
+            ),
+            num_positional_args=given_kwargs["test_flags"].get(
+                "num_positional_args", 0
+            ),
+            instance_method=given_kwargs["test_flags"].get("instance_method", False),
+            with_out=given_kwargs["test_flags"].get("with_out", False),
+            with_copy=given_kwargs["test_flags"].get("with_copy", False),
+            test_gradients=given_kwargs["test_flags"].get("test_gradients", False),
+            test_trace=given_kwargs["test_flags"].get("test_trace", False),
+            transpile=given_kwargs["test_flags"].get("transpile", False),
+            as_variable=given_kwargs["test_flags"].get("as_variable", [False]),
+            native_arrays=given_kwargs["test_flags"].get("native_arrays", [False]),
+            container=given_kwargs["test_flags"].get("container", [False]),
+            precision_mode=given_kwargs["test_flags"].get("precision_mode", False),
+            test_cython_wrapper=given_kwargs["test_flags"].get(
+                "test_cython_wrapper", False
+            ),
+        )
+
+    elif test_frontend_example:
+        given_kwargs["new_test_flags"] = pf.FrontendFunctionTestFlags(
+            num_positional_args=given_kwargs["test_flags"].get(
+                "num_positional_args", 0
+            ),
+            with_out=given_kwargs["test_flags"].get("with_out", False),
+            with_copy=given_kwargs["test_flags"].get("with_copy", False),
+            inplace=given_kwargs["test_flags"].get("inplace", False),
+            as_variable=given_kwargs["test_flags"].get("as_variable", [False]),
+            native_arrays=given_kwargs["test_flags"].get("native_arrays", [False]),
+            test_trace=given_kwargs["test_flags"].get("test_trace", False),
+            generate_frontend_arrays=given_kwargs["test_flags"].get(
+                "generate_frontend_arrays", False
+            ),
+            transpile=given_kwargs["test_flags"].get("transpile", False),
+            precision_mode=given_kwargs["test_flags"].get("precision_mode", False),
+        )
+
+    elif test_method_example:
+        given_kwargs["new_test_flags"] = pf.MethodTestFlags(
+            num_positional_args=given_kwargs["test_flags"].get(
+                "num_positional_args", 0
+            ),
+            as_variable=given_kwargs["test_flags"].get("as_variable", [False]),
+            native_arrays=given_kwargs["test_flags"].get("native_arrays", [False]),
+            container_flags=given_kwargs["test_flags"].get("container", [False]),
+            precision_mode=given_kwargs["test_flags"].get("precision_mode", False),
+        )
+
+    else:
+        given_kwargs["new_test_flags"] = pf.FrontendMethodTestFlags(
+            num_positional_args=given_kwargs["test_flags"].get(
+                "num_positional_args", 0
+            ),
+            as_variable=given_kwargs["test_flags"].get("as_variable", [False]),
+            native_arrays=given_kwargs["test_flags"].get("native_arrays", [False]),
+            precision_mode=given_kwargs["test_flags"].get("precision_mode", False),
+            inplace=given_kwargs["test_flags"].get("inplace", False),
+            test_trace=given_kwargs["test_flags"].get("test_trace", False),
+            generate_frontend_arrays=given_kwargs["test_flags"].get(
+                "generate_frontend_arrays", False
+            ),
+        )
+
+    given_kwargs["test_flags"] = given_kwargs["new_test_flags"]
+    del given_kwargs["new_test_flags"]
+    print("given_kwargs:", given_kwargs)
+
+    def decorate(test_fn):
+
+        hypothesis_test_fn = example(**given_kwargs)(test_fn)
+
+        @functools.wraps(hypothesis_test_fn)
+        def wrapped_test(*args, **kwargs):
+            try:
+                hypothesis_test_fn(*args, **kwargs)
+            except Exception as e:
+                # A string matching is used instead of actual exception due to
+                # exception object in with_backend is different from global Ivy
+                if e.__class__.__qualname__ == "IvyNotImplementedException":
+                    pytest.skip("Function not implemented in backend.")
+                else:
+                    raise e
+
+        return wrapped_test
+
+    return decorate
