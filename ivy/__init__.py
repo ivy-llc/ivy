@@ -294,7 +294,7 @@ class Shape(Sequence):
         return self
 
     def __bool__(self):
-        return self._shape.__bool__()
+        return builtins.bool(self._shape)
 
     def __div__(self, other):
         return self._shape // other
@@ -312,7 +312,7 @@ class Shape(Sequence):
         return other % self._shape
 
     def __reduce__(self):
-        return (self._shape,)
+        return (self.__class__, (self._shape,))
 
     def as_dimension(self, other):
         if isinstance(other, self._shape):
