@@ -45,6 +45,7 @@ def leaky_relu(
         "2.15.0 and below": (
             "float",
             "int",
+            "complex",
         )
     },
     backend_version,

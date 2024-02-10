@@ -13,7 +13,13 @@ from . import backend_version
 
 
 @with_supported_dtypes(
-    {"1.26.3 and below": ("float", "int")},
+    {
+        "1.26.3 and below": (
+            "float",
+            "int",
+            "complex",
+        )
+    },
     backend_version,
 )
 @_scalar_output_to_0d_array

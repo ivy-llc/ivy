@@ -26,11 +26,14 @@ from . import backend_version
         "2.6.0 and below": (
             "float32",
             "float64",
+            "complex64",
         )
     },
     backend_version,
 )
-def relu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def relu(
+    x: paddle.Tensor, /, *, complex_mode="jax", out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
     if paddle.is_complex(x):
         return paddle.complex(F.relu(x.real()), F.relu(x.imag()))
     return F.relu(x)
