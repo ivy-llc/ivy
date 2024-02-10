@@ -298,8 +298,8 @@ def astype(
     copy: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Copy an array to a specified data type irrespective of :ref:`type- promotion` rules.
+    """Copy an array to a specified data type irrespective of :ref:`type-
+    promotion` rules.
 
     .. note::
     Casting floating-point ``NaN`` and ``infinity`` values to integral data types
@@ -398,8 +398,7 @@ def astype(
 @handle_array_function
 @handle_device
 def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Array]:
-    """
-    Broadcasts one or more arrays against one another.
+    """Broadcasts one or more arrays against one another.
 
     Parameters
     ----------
@@ -486,8 +485,7 @@ def broadcast_to(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Broadcasts an array to a specified shape.
+    """Broadcasts an array to a specified shape.
 
     Parameters
     ----------
@@ -555,9 +553,8 @@ def can_cast(
     to: ivy.Dtype,
     /,
 ) -> bool:
-    """
-    Determine if one data type can be cast to another data type according to :ref:`type-
-    promotion` rules.
+    """Determine if one data type can be cast to another data type according to
+    :ref:`type- promotion` rules.
 
     Parameters
     ----------
@@ -630,8 +627,7 @@ def finfo(
     type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray],
     /,
 ) -> Finfo:
-    """
-    Machine limits for floating-point data types.
+    """Machine limits for floating-point data types.
 
     Parameters
     ----------
@@ -718,8 +714,7 @@ def iinfo(
     type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray],
     /,
 ) -> Iinfo:
-    """
-    Machine limits for integer data types.
+    """Machine limits for integer data types.
 
     Parameters
     ----------
@@ -795,9 +790,8 @@ def iinfo(
 def result_type(
     *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
 ) -> ivy.Dtype:
-    """
-    Return the dtype that results from applying the type promotion rules (see
-    :ref:`type-promotion`) to the arguments.
+    """Return the dtype that results from applying the type promotion rules
+    (see :ref:`type-promotion`) to the arguments.
 
     .. note::
     If provided mixed dtypes (e.g., integer and floating-point), the returned dtype
@@ -950,8 +944,7 @@ class DefaultComplexDtype:
 
 @handle_exceptions
 def dtype_bits(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str], /) -> int:
-    """
-    Get the number of bits used for representing the input data type.
+    """Get the number of bits used for representing the input data type.
 
     Parameters
     ----------
@@ -986,8 +979,7 @@ def dtype_bits(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str], /) -> int:
 
 @handle_exceptions
 def is_hashable_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
-    """
-    Check if the given data type is hashable or not.
+    """Check if the given data type is hashable or not.
 
     Parameters
     ----------
@@ -1012,8 +1004,7 @@ def is_hashable_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
 
 @handle_exceptions
 def as_ivy_dtype(dtype_in: Union[ivy.Dtype, str], /) -> ivy.Dtype:
-    """
-    Convert native data type to string representation.
+    """Convert native data type to string representation.
 
     Parameters
     ----------
@@ -1030,8 +1021,7 @@ def as_ivy_dtype(dtype_in: Union[ivy.Dtype, str], /) -> ivy.Dtype:
 
 @handle_exceptions
 def as_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> ivy.NativeDtype:
-    """
-    Convert data type string representation to native data type.
+    """Convert data type string representation to native data type.
 
     Parameters
     ----------
@@ -1067,8 +1057,7 @@ def _check_complex128(input) -> bool:
 
 @handle_exceptions
 def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype, str]:
-    """
-    Determine the closest valid datatype to the datatype passed as input.
+    """Determine the closest valid datatype to the datatype passed as input.
 
     Parameters
     ----------
@@ -1205,8 +1194,7 @@ def default_float_dtype(
 def infer_default_dtype(
     dtype: Union[ivy.Dtype, ivy.NativeDtype, str], as_native: bool = False
 ) -> Union[ivy.Dtype, ivy.NativeDtype]:
-    """
-    Summary.
+    """Summary.
 
     Parameters
     ----------
@@ -1662,8 +1650,7 @@ def default_complex_dtype(
 def dtype(
     x: Union[ivy.Array, ivy.NativeArray], *, as_native: bool = False
 ) -> Union[ivy.Dtype, ivy.NativeDtype]:
-    """
-    Get the data type for input array x.
+    """Get the data type for input array x.
 
     Parameters
     ----------
@@ -1700,10 +1687,10 @@ def dtype(
 @handle_exceptions
 @handle_nestable
 def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Union[Tuple, dict]:
-    """
-    Return the supported data types of the current backend's function. The function
-    returns a dict containing the supported dtypes for the compositional and primary
-    implementations in case of partial mixed functions.
+    """Return the supported data types of the current backend's function. The
+    function returns a dict containing the supported dtypes for the
+    compositional and primary implementations in case of partial mixed
+    functions.
 
     Parameters
     ----------
@@ -1751,10 +1738,10 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Union[Tuple
 def function_unsupported_dtypes(
     fn: Callable, recurse: bool = True
 ) -> Union[Tuple, dict]:
-    """
-    Return the unsupported data types of the current backend's function. The function
-    returns a dict containing the unsupported dtypes for the compositional and primary
-    implementations in case of partial mixed functions.
+    """Return the unsupported data types of the current backend's function. The
+    function returns a dict containing the unsupported dtypes for the
+    compositional and primary implementations in case of partial mixed
+    functions.
 
     Parameters
     ----------
@@ -1800,8 +1787,8 @@ def function_unsupported_dtypes(
 
 @handle_exceptions
 def invalid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bool:
-    """
-    Determine whether the provided data type is not support by the current framework.
+    """Determine whether the provided data type is not support by the current
+    framework.
 
     Parameters
     ----------
@@ -1839,8 +1826,7 @@ def is_bool_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
     /,
 ) -> bool:
-    """
-    Determine whether the input data type is a bool data type.
+    """Determine whether the input data type is a bool data type.
 
     Parameters
     ----------
@@ -1879,8 +1865,7 @@ def is_int_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
     /,
 ) -> bool:
-    """
-    Determine whether the input data type is an int data type.
+    """Determine whether the input data type is an int data type.
 
     Parameters
     ----------
@@ -1955,8 +1940,7 @@ def is_int_dtype(
 
 @handle_exceptions
 def check_float(x: Any) -> bool:
-    """
-    Check if the input is a float or a float-like object.
+    """Check if the input is a float or a float-like object.
 
     Parameters
     ----------
@@ -1978,8 +1962,7 @@ def is_float_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
     /,
 ) -> bool:
-    """
-    Determine whether the input data type is a float dtype.
+    """Determine whether the input data type is a float dtype.
 
     Parameters
     ----------
@@ -2027,8 +2010,7 @@ def is_uint_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
     /,
 ) -> bool:
-    """
-    Determine whether the input data type is a uint dtype.
+    """Determine whether the input data type is a uint dtype.
 
     Parameters
     ----------
@@ -2075,8 +2057,7 @@ def is_complex_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
     /,
 ) -> bool:
-    """
-    Determine whether the input data type is a complex dtype.
+    """Determine whether the input data type is a complex dtype.
 
     Parameters
     ----------
@@ -2124,8 +2105,8 @@ def promote_types(
     *,
     array_api_promotion: bool = False,
 ) -> ivy.Dtype:
-    """
-    Promote the datatypes type1 and type2, returning the data type they promote to.
+    """Promote the datatypes type1 and type2, returning the data type they
+    promote to.
 
     Parameters
     ----------
@@ -2159,8 +2140,7 @@ def promote_types(
 
 @handle_exceptions
 def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str], /):
-    """
-    Set the datatype `dtype` as default data type.
+    """Set the datatype `dtype` as default data type.
 
     Parameters
     ----------
@@ -2195,8 +2175,7 @@ def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str], /):
 
 @handle_exceptions
 def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str], /):
-    """
-    Set the 'float_dtype' as the default data type.
+    """Set the 'float_dtype' as the default data type.
 
     Parameters
     ----------
@@ -2223,8 +2202,7 @@ def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str], /):
 
 @handle_exceptions
 def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str], /):
-    """
-    Set the 'int_dtype' as the default data type.
+    """Set the 'int_dtype' as the default data type.
 
     Parameters
     ----------
@@ -2251,8 +2229,7 @@ def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str], /):
 
 @handle_exceptions
 def set_default_uint_dtype(uint_dtype: Union[ivy.Dtype, str], /):
-    """
-    Set the uint dtype to be default.
+    """Set the uint dtype to be default.
 
     Parameters
     ----------
@@ -2277,8 +2254,7 @@ def set_default_uint_dtype(uint_dtype: Union[ivy.Dtype, str], /):
 
 @handle_exceptions
 def set_default_complex_dtype(complex_dtype: Union[ivy.Dtype, str], /):
-    """
-    Set the 'complex_dtype' as the default data type.
+    """Set the 'complex_dtype' as the default data type.
 
     Parameters
     ----------
@@ -2309,9 +2285,8 @@ def type_promote_arrays(
     x2: Union[ivy.Array, ivy.NativeArray],
     /,
 ) -> Tuple:
-    """
-    Type promote the input arrays, returning new arrays with the shared correct data
-    type.
+    """Type promote the input arrays, returning new arrays with the shared
+    correct data type.
 
     Parameters
     ----------
@@ -2331,8 +2306,7 @@ def type_promote_arrays(
 
 @handle_exceptions
 def unset_default_dtype():
-    """
-    Reset the current default dtype to the previous state.
+    """Reset the current default dtype to the previous state.
 
     Examples
     --------
@@ -2356,8 +2330,7 @@ def unset_default_dtype():
 
 @handle_exceptions
 def unset_default_float_dtype():
-    """
-    Reset the current default float dtype to the previous state.
+    """Reset the current default float dtype to the previous state.
 
     Examples
     --------
@@ -2377,8 +2350,7 @@ def unset_default_float_dtype():
 
 @handle_exceptions
 def unset_default_int_dtype():
-    """
-    Reset the current default int dtype to the previous state.
+    """Reset the current default int dtype to the previous state.
 
     Examples
     --------
@@ -2397,8 +2369,7 @@ def unset_default_int_dtype():
 
 @handle_exceptions
 def unset_default_uint_dtype():
-    """
-    Reset the current default uint dtype to the previous state.
+    """Reset the current default uint dtype to the previous state.
 
     Examples
     --------
@@ -2417,8 +2388,7 @@ def unset_default_uint_dtype():
 
 @handle_exceptions
 def unset_default_complex_dtype():
-    """
-    Reset the current default complex dtype to the previous state.
+    """Reset the current default complex dtype to the previous state.
 
     Examples
     --------
@@ -2438,8 +2408,8 @@ def unset_default_complex_dtype():
 
 @handle_exceptions
 def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bool:
-    """
-    Determine whether the provided data type is supported by the current framework.
+    """Determine whether the provided data type is supported by the current
+    framework.
 
     Parameters
     ----------
@@ -2478,9 +2448,8 @@ def promote_types_of_inputs(
     *,
     array_api_promotion: bool = False,
 ) -> Tuple[ivy.NativeArray, ivy.NativeArray]:
-    """
-    Promote the dtype of the given native array inputs to a common dtype based on type
-    promotion rules.
+    """Promote the dtype of the given native array inputs to a common dtype
+    based on type promotion rules.
 
     While passing float or integer values or any other non-array input
     to this function, it should be noted that the return will be an
@@ -2528,8 +2497,7 @@ def promote_types_of_inputs(
 
 @handle_exceptions
 def is_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
-    """
-    Determine whether the input dtype is a Native dtype.
+    """Determine whether the input dtype is a Native dtype.
 
     Parameters
     ----------
