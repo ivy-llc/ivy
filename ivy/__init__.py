@@ -7,6 +7,7 @@ import builtins
 import numpy as np
 import sys
 import inspect
+import importlib
 import os
 from collections.abc import Sequence
 
@@ -1539,6 +1540,13 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
                 " for setting its value!"
             )
         self.__dict__[name] = value
+
+    def __reduce__(self):
+        def _get_module_and_replace_name(module_name: str):
+            module = importlib.import_module(module_name)
+            module.__class__ = self.__class__
+            return module
+        return (_get_module_and_replace_name, (self.__name__, ))
 
 
 if (
