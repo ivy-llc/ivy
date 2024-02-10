@@ -337,6 +337,9 @@ class ndarray:
     def searchsorted(self, v, side="left", sorter=None):
         return np_frontend.searchsorted(self, v, side=side, sorter=sorter)
 
+    def setfield(self, value, dtype=None, offset=0):
+        return np_frontend.setfield(self, value, dtype=dtype, offset=offset)
+
     def squeeze(self, axis=None):
         return np_frontend.squeeze(self, axis=axis)
 
