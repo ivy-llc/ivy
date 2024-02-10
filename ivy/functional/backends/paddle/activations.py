@@ -16,6 +16,7 @@ import ivy
 from ivy.func_wrapper import (
     with_unsupported_device_and_dtypes,
     with_supported_dtypes,
+    with_unsupported_dtypes,
     with_supported_device_and_dtypes,
 )
 from . import backend_version
@@ -87,8 +88,8 @@ def sigmoid(
     return F.sigmoid(x)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.6.0 and below": {"cpu": ("bfloat16", "float16")}}, backend_version
+@with_unsupported_dtypes(
+    {"2.6.0 and below": ("bfloat16", "float16", "complex128")}, backend_version
 )
 def softmax(
     x: paddle.Tensor,
