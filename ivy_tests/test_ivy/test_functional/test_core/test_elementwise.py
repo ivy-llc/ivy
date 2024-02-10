@@ -2,15 +2,17 @@
 
 # global
 import math
+
 import numpy as np
-from hypothesis import assume, strategies as st
+from hypothesis import assume
+from hypothesis import strategies as st
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+import ivy_tests.test_ivy.helpers.globals as test_globals
 from ivy_tests.test_ivy.helpers import handle_test
 from ivy_tests.test_ivy.helpers.pipeline_helper import BackendHandler
-import ivy_tests.test_ivy.helpers.globals as test_globals
 
 _one = np.asarray(1, dtype="uint8")
 _zero = np.asarray(0, dtype="uint8")
@@ -1483,8 +1485,9 @@ def test_minimum(
 @handle_test(
     fn_tree="functional.ivy.multiply",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
     ),
+    ground_truth_backend="torch",
 )
 def test_multiply(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
