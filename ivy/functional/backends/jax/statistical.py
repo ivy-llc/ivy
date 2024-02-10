@@ -42,7 +42,7 @@ def max(
 
 
 @with_unsupported_dtypes(
-    {"0.4.23 and below": "bfloat16"},
+    {"0.4.24 and below": "bfloat16"},
     backend_version,
 )
 def mean(
@@ -147,7 +147,7 @@ def var(
 # ------#
 
 
-@with_unsupported_dtypes({"0.4.23 and below": ("bfloat16", "bool")}, backend_version)
+@with_unsupported_dtypes({"0.4.24 and below": ("bfloat16", "bool")}, backend_version)
 def cumprod(
     x: JaxArray,
     /,
@@ -183,7 +183,7 @@ def cumprod(
         return jnp.flip(x, axis=axis)
 
 
-@with_unsupported_dtypes({"0.4.23 and below": "bool"}, backend_version)
+@with_unsupported_dtypes({"0.4.24 and below": "bool"}, backend_version)
 def cumsum(
     x: JaxArray,
     axis: int = 0,
