@@ -74,6 +74,9 @@ def check_tensorflow_casting(x1, x2):
     if hasattr(x1, "dtype") and not hasattr(x2, "dtype"):
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2, dtype=x1.dtype)
+    elif hasattr(x2, "dtype") and not hasattr(x1, "dtype"):
+        x2 = ivy.asarray(x2)
+        x1 = ivy.asarray(x1, dtype=x2.dtype)
     else:
         x1 = ivy.asarray(x1)
         if not hasattr(x2, "dtype"):

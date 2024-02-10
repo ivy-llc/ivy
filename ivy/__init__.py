@@ -7,6 +7,7 @@ import builtins
 import numpy as np
 import sys
 import inspect
+import importlib
 import os
 from collections.abc import Sequence
 
@@ -294,7 +295,7 @@ class Shape(Sequence):
         return self
 
     def __bool__(self):
-        return self._shape.__bool__()
+        return builtins.bool(self._shape)
 
     def __div__(self, other):
         return self._shape // other
@@ -312,7 +313,7 @@ class Shape(Sequence):
         return other % self._shape
 
     def __reduce__(self):
-        return (self._shape,)
+        return (self.__class__, (self._shape,))
 
     def as_dimension(self, other):
         if isinstance(other, self._shape):
@@ -1539,6 +1540,14 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
                 " for setting its value!"
             )
         self.__dict__[name] = value
+
+    def __reduce__(self):
+        def _get_module_and_replace_name(module_name: str):
+            module = importlib.import_module(module_name)
+            module.__class__ = self.__class__
+            return module
+
+        return (_get_module_and_replace_name, (self.__name__,))
 
 
 if (
