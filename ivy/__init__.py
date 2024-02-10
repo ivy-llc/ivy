@@ -1546,7 +1546,8 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
             module = importlib.import_module(module_name)
             module.__class__ = self.__class__
             return module
-        return (_get_module_and_replace_name, (self.__name__, ))
+
+        return (_get_module_and_replace_name, (self.__name__,))
 
 
 if (
