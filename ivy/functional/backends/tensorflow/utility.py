@@ -15,7 +15,6 @@ def all(
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x = tf.constant(x)
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
@@ -35,7 +34,6 @@ def any(
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x = tf.constant(x)
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))

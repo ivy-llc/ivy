@@ -1,15 +1,163 @@
 # global
 from __future__ import annotations
 import re
+import os
 import tensorflow as tf
-from typing import Union
 import functools
 import logging
 from tensorflow.python.util import nest
+from typing import NamedTuple, Callable, Any, Tuple, List, Dict, Type, Union
+
+# A NodeDef holds two callables:
+# - flatten_fn should take the collection and return a flat list of values.
+#   It can also return some context that is used in reconstructing the
+#   collection.
+# - unflatten_fn should take a flat list of values and some context
+#   (returned by flatten_fn). It returns the collection by reconstructing
+#   it from the list and the context.
+Context = Any
+PyTree = Any
+FlattenFunc = Callable[[PyTree], Tuple[List, Context]]
+UnflattenFunc = Callable[[List, Context], PyTree]
+
+
+class NodeDef(NamedTuple):
+    flatten_fn: FlattenFunc
+    unflatten_fn: UnflattenFunc
+
+
+SUPPORTED_NODES: Dict[Type[Any], NodeDef] = {}
+
+
+def _register_pytree_node(
+    typ: Any, flatten_fn: FlattenFunc, unflatten_fn: UnflattenFunc
+) -> None:
+    SUPPORTED_NODES[typ] = NodeDef(flatten_fn, unflatten_fn)
+
+
+def _dict_flatten(d: Dict[Any, Any]) -> Tuple[List[Any], Context]:
+    return list(d.values()), list(d.keys())
+
+
+def _dict_unflatten(values: List[Any], context: Context) -> Dict[Any, Any]:
+    return {key: value for key, value in zip(context, values)}
+
+
+_register_pytree_node(dict, _dict_flatten, _dict_unflatten)
+
+
+def _get_node_type(pytree: Any) -> Any:
+    return type(pytree)
+
+
+# A leaf is defined as anything that is not a Node.
+def _is_leaf(pytree: PyTree) -> bool:
+    return _get_node_type(pytree) not in SUPPORTED_NODES.keys()
+
+
+# A TreeSpec represents the structure of a pytree. It holds:
+# "type": the type of root Node of the pytree
+# context: some context that is useful in unflattening the pytree
+# children_specs: specs for each child of the root Node
+# num_leaves: the number of leaves
+class TreeSpec:
+    def __init__(self, type, context, children_specs):
+        self.type: Any = type
+        self.context: Context = context
+        self.children_specs: List["TreeSpec"] = children_specs
+        self.num_leaves: int = sum([spec.num_leaves for spec in self.children_specs])
+
+    def get_keychains(self, prefix="", sep="/"):
+        keychains = []
+        for key, child_spec in zip(self.context, self.children_specs):
+            new_prefix = prefix + key + sep if prefix else key + sep
+            if child_spec.children_specs:  # Non-leaf node
+                keychains.extend(child_spec.get_keychains(new_prefix, sep))
+            else:  # Leaf node
+                keychains.append(new_prefix[: -len(sep)])
+        return keychains
+
+    def __repr__(self, indent: int = 0) -> str:
+        repr_prefix: str = f"TreeSpec({self.type.__name__}, {self.context}, ["
+        children_specs_str: str = ""
+        if len(self.children_specs):
+            indent += len(repr_prefix)
+            children_specs_str += self.children_specs[0].__repr__(indent)
+            children_specs_str += "," if len(self.children_specs) > 1 else ""
+            children_specs_str += ",".join([
+                "\n" + " " * indent + child.__repr__(indent)
+                for child in self.children_specs[1:]
+            ])
+        repr_suffix: str = f"{children_specs_str}])"
+        return repr_prefix + repr_suffix
+
+
+class LeafSpec(TreeSpec):
+    def __init__(self) -> None:
+        super().__init__(None, None, [])
+        self.num_leaves = 1
+
+    def __repr__(self, indent: int = 0) -> str:
+        return "*"
+
+
+def tree_flatten(pytree: PyTree) -> Tuple[List[Any], TreeSpec]:
+    """Flattens a pytree into a list of values and a TreeSpec that can be used
+    to reconstruct the pytree."""
+    if _is_leaf(pytree):
+        return [pytree], LeafSpec()
+
+    node_type = _get_node_type(pytree)
+    flatten_fn = _dict_flatten
+    child_pytrees, context = flatten_fn(pytree)
+
+    # Recursively flatten the children
+    result: List[Any] = []
+    children_specs: List["TreeSpec"] = []
+    for child in child_pytrees:
+        flat, child_spec = tree_flatten(child)
+        result += flat
+        children_specs.append(child_spec)
+
+    return result, TreeSpec(node_type, context, children_specs)
+
+
+def tree_unflatten(values: List[Any], spec: TreeSpec) -> PyTree:
+    """Given a list of values and a TreeSpec, builds a pytree.
+
+    This is the inverse operation of `tree_flatten`.
+    """
+    if not isinstance(spec, TreeSpec):
+        raise TypeError(
+            f"tree_unflatten(values, spec): Expected `spec` to be instance of "
+            f"TreeSpec but got item of type {type(spec)}."
+        )
+    if len(values) != spec.num_leaves:
+        raise TypeError(
+            f"tree_unflatten(values, spec): `values` has length {len(values)} "
+            f"but the spec refers to a pytree that holds {spec.num_leaves} "
+            f"items ({spec})."
+        )
+    if isinstance(spec, LeafSpec):
+        return values[0]
+
+    unflatten_fn = _dict_unflatten
+
+    # Recursively unflatten the children
+    start = 0
+    end = 0
+    child_pytrees = []
+    for child_spec in spec.children_specs:
+        end += child_spec.num_leaves
+        child_pytrees.append(tree_unflatten(values[start:end], child_spec))
+        start = end
+
+    return unflatten_fn(child_pytrees, spec.context)
 
 
 class ModelHelpers:
     @staticmethod
+    @tf.autograph.experimental.do_not_convert
     def _get_first_array(*args, **kwargs):
         arr = None
         flattened_args = tf.nest.flatten((args, kwargs))
@@ -24,6 +172,21 @@ class ModelHelpers:
         return arr
 
     @staticmethod
+    @tf.autograph.experimental.do_not_convert
+    def _get_input_shapes(*args, **kwargs):
+        flattened_args = tf.nest.flatten((args, kwargs))
+        arr_candidates = tf.nest.map_structure(
+            lambda x: x if isinstance(x, (tf.Tensor, tf.Variable)) else False,
+            flattened_args,
+        )
+        input_shapes = []
+        for arr_candidate in arr_candidates:
+            if arr_candidate is not False:
+                input_shapes.append(arr_candidate.shape)
+        return input_shapes
+
+    @staticmethod
+    @tf.autograph.experimental.do_not_convert
     def _extract_v(v, keychain_mappings: dict, orig_key_chain, /):
         if ModelHelpers._dict_has_key_chain(v, orig_key_chain):
             ret_cont = ModelHelpers._dict_at_key_chain(v, orig_key_chain)
@@ -43,6 +206,7 @@ class ModelHelpers:
         return ret_cont
 
     @staticmethod
+    @tf.autograph.experimental.do_not_convert
     def _remove_duplicate_variables(vs, created, /):
         created_ids = tf.nest.map_structure(lambda x: id(x), created)
         vs_ids = tf.nest.map_structure(lambda x: id(x), vs)
@@ -75,6 +239,7 @@ class ModelHelpers:
         return vs, keychain_mappings
 
     @staticmethod
+    @tf.autograph.experimental.do_not_convert
     def _dict_set_at_key_chain(in_dict, key_chain, val, inplace=False):
         keys = re.split("[/.]", key_chain)
         if inplace:
@@ -90,6 +255,7 @@ class ModelHelpers:
         return cont
 
     @staticmethod
+    @tf.autograph.experimental.do_not_convert
     def _dict_at_key_chain(dict, key_chain, ignore_key_errors=False):
         keys = re.split("[/.]", key_chain)
         ret = dict
@@ -103,6 +269,7 @@ class ModelHelpers:
         return ret
 
     @staticmethod
+    @tf.autograph.experimental.do_not_convert
     def _dict_has_key_chain(dict, key_chain):
         keys = re.split("[/.]", key_chain)
         ret = dict
@@ -114,6 +281,7 @@ class ModelHelpers:
         return True
 
     @staticmethod
+    @tf.autograph.experimental.do_not_convert
     def _dict_prune_key_chain(in_dict, key_chain):
         keys_in_chain = re.split("[/.]", key_chain)
         out_dict = {}
@@ -138,6 +306,7 @@ class ModelHelpers:
         return out_dict
 
     @staticmethod
+    @tf.autograph.experimental.do_not_convert
     def _addindent(s_, numSpaces):
         s = s_.split("\n")
         # don't do anything for single-line stuff
@@ -155,7 +324,6 @@ class Model(tf.keras.Model, ModelHelpers):
     _with_partial_v = None
     _store_vars = True
     _built = False
-    _keras_built = False
     _v = None
     _buffers = None
     _module_dict = None
@@ -192,7 +360,6 @@ class Model(tf.keras.Model, ModelHelpers):
         self._with_partial_v = with_partial_v
         self._store_vars = store_vars
         self._built = False
-        self._keras_built = False
         self._v_from_constructor = v if isinstance(v, dict) or v is None else dict(v)
         self._v = v if v is not None else dict()
         self._buffers = dict(buffers or {})
@@ -210,6 +377,7 @@ class Model(tf.keras.Model, ModelHelpers):
             return
         self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
 
+    @tf.autograph.experimental.do_not_convert
     def _find_variables(
         self,
         /,
@@ -224,8 +392,7 @@ class Model(tf.keras.Model, ModelHelpers):
             return vs
         _visited[id(obj)] = True
         if isinstance(obj, Model) and obj is not self:
-
-            if not obj.built and without_initialisation:
+            if not obj._built and without_initialisation:
                 return lambda: obj._build_and_return_v(
                     *obj._args, dynamic_backend=self._dynamic_backend, **obj._kwargs
                 )
@@ -273,63 +440,66 @@ class Model(tf.keras.Model, ModelHelpers):
                     vs[k[1:] if k[0] == "_" else k] = ret
         return vs
 
+    @tf.autograph.experimental.do_not_convert
     def _find_buffers(self):
         if hasattr(self, "_module_dict"):
             for key, sub_module in self._module_dict.items():
                 if len(sub_module._buffers) > 0:
                     self._buffers[key] = sub_module._buffers
 
+    @tf.autograph.experimental.do_not_convert
     def _build_and_return_v(self, *args, **kwargs):
         if not self._built:
             self.build(*args, **kwargs)
         return self.v
 
+    @tf.autograph.experimental.do_not_convert
     def _assign_weights(self):
-        model_weights = []
+        model_weights = {}
+        existing_ids = [id(w) for w in self.weights]
 
         # trainable weights
-        for kc, x in self.v.items():
-
-            # Only add weights for this layer
-            if isinstance(x, dict):
-                continue
-
-            self.v[kc] = (
+        flattened_v, v_spec = tree_flatten(self.v)
+        flattened_kc = v_spec.get_keychains()
+        new_weights = [None] * len(flattened_v)
+        for i, (kc, x) in enumerate(zip(flattened_kc, flattened_v)):
+            new_weights[i] = (
                 self.add_weight(name=kc, shape=x.shape, dtype=x.dtype, trainable=True)
-                if x is not None
+                if x is not None and id(x) not in existing_ids
                 else x
             )
             if isinstance(x, tf.Variable):
-                self.v[kc].assign(x.value())
-            (
-                model_weights.append(self.v[kc].numpy())
-                if self.v[kc] is not None
-                else self.v[kc]
-            )
+                new_weights[i].assign(x.value())
+            if new_weights[i] is not None:
+                model_weights[id(new_weights[i])] = new_weights[i].numpy()
+        self.v = tree_unflatten(new_weights, v_spec)
 
         # non-trainable weights
-        for kc, x in self.buffers.items():
-
-            # Only add weights for this layer
-            if isinstance(x, dict):
-                continue
-
-            self.buffers[kc] = (
+        flattened_buf, buf_spec = tree_flatten(self.buffers)
+        flattened_kc = buf_spec.get_keychains()
+        new_buf = [None] * len(flattened_buf)
+        for i, (kc, x) in enumerate(zip(flattened_kc, flattened_buf)):
+            new_buf[i] = (
                 self.add_weight(name=kc, shape=x.shape, dtype=x.dtype, trainable=False)
-                if x is not None
+                if x is not None and id(x) not in existing_ids
                 else x
             )
             if isinstance(x, tf.Variable):
-                self.buffers[kc].assign(x.value())
-            (
-                model_weights.append(self.buffers[kc].numpy())
-                if self.buffers[kc] is not None
-                else self.buffers[kc]
-            )
+                new_buf[i].assign(x.value())
+            if new_buf[i] is not None:
+                model_weights[id(new_buf[i])] = new_buf[i].numpy()
+        self.buffers = tree_unflatten(new_buf, buf_spec)
+
+        def _sort_weights(model_weights, weights):
+            sorted_weights = []
+            for weight in weights:
+                sorted_weights.append(model_weights[id(weight)])
+            return sorted_weights
 
         if model_weights:
-            self.set_weights(model_weights)
+            self.set_weights(_sort_weights(model_weights, self.weights))
 
+    @tf.autograph.experimental.do_not_convert
     def build(
         self,
         *args,
@@ -403,6 +573,7 @@ class Model(tf.keras.Model, ModelHelpers):
 
         return v_ret if bool(v_ret) or isinstance(built, bool) else built
 
+    @tf.autograph.experimental.do_not_convert
     def _wrap_call_methods(
         self, keychain_mappings, /, *, key="", obj=None, _visited=None
     ):
@@ -443,11 +614,11 @@ class Model(tf.keras.Model, ModelHelpers):
                 )
         return
 
+    @tf.autograph.experimental.do_not_convert
     def _call(self, *args, v=None, buffers=None, **kwargs):
-        if not self._built or not self._keras_built:
-            first_arr = self._get_first_array(*args, **kwargs)
-
+        if not self._built or not self.built:
             if not self._built:
+                first_arr = self._get_first_array(*args, **kwargs)
                 self.build(
                     *args,
                     **kwargs,
@@ -455,11 +626,18 @@ class Model(tf.keras.Model, ModelHelpers):
                     dtype=first_arr.dtype if first_arr is not None else tf.float32,
                 )
 
-            if not self._keras_built:
-                self.inputs = tf.nest.flatten(args)
-                super(Model, self).build(  # noqa: UP008
-                    first_arr.shape if first_arr is not None else tf.TensorShape(None)
-                )
+            if not self.built:
+                # Don't use `keras` build method
+                if os.environ.get("USE_KERAS_BUILD", "False").lower() == "false":
+                    self.inputs = tf.nest.flatten(args)
+
+                input_shapes = self._get_input_shapes(*args, **kwargs)
+                if len(input_shapes) == 0:
+                    input_shapes = tf.TensorShape(None)
+                elif len(input_shapes) == 1:
+                    input_shapes = input_shapes[0]
+
+                super(Model, self).build(input_shapes)  # noqa: UP008
 
         # If `v` was provided, replace with the module's v
         replace_v = False
@@ -486,6 +664,7 @@ class Model(tf.keras.Model, ModelHelpers):
             return self.__call__(*args, **kwargs)
         return super(Model, self).__call__(*args, **kwargs)  # noqa: UP008
 
+    @tf.autograph.experimental.do_not_convert
     def _rebuild(self):
         logging.warning(
             "Building the module again as a trainable module was modified, "
@@ -496,6 +675,7 @@ class Model(tf.keras.Model, ModelHelpers):
         self._built = False
         self.build(*self._args, **self._kwargs)
 
+    @tf.autograph.experimental.do_not_convert
     def _compute_module_dict(self):
         self._module_dict = dict()
         for key, value in self.__dict__.items():
@@ -505,6 +685,7 @@ class Model(tf.keras.Model, ModelHelpers):
                 else:
                     self._module_dict[key] = value._module_dict
 
+    @tf.autograph.experimental.do_not_convert
     def _fn_with_var_arg_wrapper(
         self, *a, fn, v_fn, keychain_mappings, orig_key_chain, **kw
     ):
@@ -513,6 +694,7 @@ class Model(tf.keras.Model, ModelHelpers):
         v = v_fn(self.v, keychain_mappings, orig_key_chain)
         return fn(*a, **kw, v=v)
 
+    @tf.autograph.experimental.do_not_convert
     def _fn_with_var_arg(self, fn, v_fn, /, keychain_mappings, orig_key_chain):
         _fn_with_var_arg_wrapper = functools.partial(
             self._fn_with_var_arg_wrapper,
@@ -524,22 +706,30 @@ class Model(tf.keras.Model, ModelHelpers):
         _fn_with_var_arg_wrapper.wrapped = True
         return _fn_with_var_arg_wrapper
 
+    @tf.autograph.experimental.do_not_convert
     def register_buffer(self, name: str, value: Union[tf.Tensor, tf.Variable]):
         if value is not None:
             self._buffers.update({name: value})
         else:
             self.__setattr__(name, value)
 
+    @tf.autograph.experimental.do_not_convert
     def register_parameter(self, name: str, value: Union[tf.Tensor, tf.Variable]):
         self._v.update({name: value})
 
+    @tf.autograph.experimental.do_not_convert
     def train(self, mode: bool = True):
         self._training = mode
+        for module in self.children():
+            module.train(mode)
         self.trainable = mode
+        return self
 
+    @tf.autograph.experimental.do_not_convert
     def eval(self):
         return self.train(mode=False)
 
+    @tf.autograph.experimental.do_not_convert
     def call(self, inputs, training=None, mask=None):
         raise NotImplementedError(
             "When subclassing the `Model` class, you should implement a `call` method."
@@ -548,18 +738,22 @@ class Model(tf.keras.Model, ModelHelpers):
     # Methods to be Optionally Overridden #
     # -----------------------------------#
 
+    @tf.autograph.experimental.do_not_convert
     def _create_variables(self, *, device=None, dtype=None):
         return {}
 
+    @tf.autograph.experimental.do_not_convert
     def _build(self, *args, **kwargs) -> bool:
         return True
 
+    @tf.autograph.experimental.do_not_convert
     def _forward(self, *args, **kwargs):
         raise NotImplementedError(
             "When subclassing the `Model` class, you should "
             "implement a `_forward` method."
         )
 
+    @tf.autograph.experimental.do_not_convert
     def _extra_repr(self) -> str:
         return ""
 
@@ -601,6 +795,7 @@ class Model(tf.keras.Model, ModelHelpers):
     # Dunder Methods #
     # ---------------#
 
+    @tf.autograph.experimental.do_not_convert
     def __call__(
         self,
         *args,
@@ -608,12 +803,18 @@ class Model(tf.keras.Model, ModelHelpers):
         buffers=None,
         **kwargs,
     ):
+        # TODO: Temp workaround to avoid `call`` from being transformed by AutoGraph
+        if not hasattr(self.__class__.call, "autograph_info__"):
+            setattr(self.__class__.call, "autograph_info__", True)
         ret = self._call(*args, v=v, buffers=buffers, **kwargs)
         return ret
 
+    @tf.autograph.experimental.do_not_convert
     def __getattr__(self, name):
         if name == "v":
-            if not super().__getattribute__("_v") and not self.built:
+            if not super().__getattribute__("_v") and not getattr(  # noqa: E501
+                self, "_built", False
+            ):
                 return self._build_and_return_v(
                     *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
                 )
@@ -627,6 +828,7 @@ class Model(tf.keras.Model, ModelHelpers):
 
         return super().__getattribute__(name)
 
+    @tf.autograph.experimental.do_not_convert
     def __setattr__(self, name, value):
         if name in ["v", "buffers"]:
             name = "_" + name
@@ -635,7 +837,7 @@ class Model(tf.keras.Model, ModelHelpers):
             if (
                 hasattr(self, "_build_mode")
                 and self.build_mode == "on_init"
-                and self.built
+                and getattr(self, "_built", False)
             ):
                 self._rebuild()
             return ret
@@ -644,12 +846,13 @@ class Model(tf.keras.Model, ModelHelpers):
             if (
                 hasattr(self, "_build_mode")
                 and self.build_mode == "on_init"
-                and self.built
+                and getattr(self, "_built", False)
             ):
                 self._rebuild()
             return ret
         return super().__setattr__(name, value)
 
+    @tf.autograph.experimental.do_not_convert
     def __delattr__(self, name):
         if hasattr(self, name):
             if isinstance(getattr(self, name), Model):
@@ -659,6 +862,7 @@ class Model(tf.keras.Model, ModelHelpers):
                 return
         super().__delattr__(name)
 
+    @tf.autograph.experimental.do_not_convert
     def __repr__(self):
         extra_lines = []
         extra_repr = self._extra_repr()

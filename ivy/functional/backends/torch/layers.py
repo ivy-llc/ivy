@@ -14,7 +14,7 @@ from ivy.functional.ivy.layers import _get_embed_dim, _handle_padding, _deconv_l
 
 
 @with_supported_dtypes(
-    {"2.1.2 and below": ("float32", "float64", "complex")},
+    {"2.2 and below": ("float32", "float64", "complex")},
     backend_version,
 )
 def multi_head_attention(
@@ -117,7 +117,7 @@ multi_head_attention.partial_mixed_handler = (
 
 
 @with_unsupported_dtypes(
-    {"2.1.2 and below": ("float16", "bfloat16", "complex")},
+    {"2.2 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 def linear(
@@ -254,7 +254,7 @@ def _tranpose_padding(
 
 
 @with_unsupported_dtypes(
-    {"2.1.2 and below": ("float16", "bfloat16", "complex")},
+    {"2.2 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 # noinspection PyUnresolvedReferences
@@ -287,7 +287,7 @@ def conv1d(
 
 
 @with_unsupported_dtypes(
-    {"2.1.2 and below": ("float16", "bfloat16", "complex")},
+    {"2.2 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 def conv1d_v_1p9p0_and_above(
@@ -325,7 +325,7 @@ def conv1d_v_1p9p0_and_above(
 
 @with_unsupported_dtypes(
     {
-        "2.1.2 and below": (
+        "2.2 and below": (
             "float16",
             "bfloat16",
             "complex",
@@ -379,7 +379,7 @@ def conv1d_transpose(
 
 
 @with_unsupported_dtypes(
-    {"2.1.2 and below": ("float16", "bfloat16", "complex")},
+    {"2.2 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 # noinspection PyUnresolvedReferences
@@ -412,7 +412,7 @@ def conv2d(
 
 
 @with_unsupported_dtypes(
-    {"2.1.2 and below": ("float16", "bfloat16", "complex")},
+    {"2.2 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 def conv2d_v_1p9p0_and_above(
@@ -450,7 +450,7 @@ def conv2d_v_1p9p0_and_above(
 
 @with_unsupported_dtypes(
     {
-        "2.1.2 and below": (
+        "2.2 and below": (
             "float16",
             "bfloat16",
             "complex",
@@ -507,7 +507,7 @@ def conv2d_transpose(
 
 @with_unsupported_dtypes(
     {
-        "2.1.2 and below": (
+        "2.2 and below": (
             "float16",
             "bfloat16",
             "complex",
@@ -548,7 +548,7 @@ def depthwise_conv2d(
 
 
 @with_unsupported_dtypes(
-    {"2.1.2 and below": ("float16", "bfloat16", "complex")}, backend_version
+    {"2.2 and below": ("float16", "bfloat16", "complex")}, backend_version
 )
 # noinspection PyUnresolvedReferences
 def conv3d(
@@ -580,7 +580,7 @@ def conv3d(
 
 
 @with_unsupported_dtypes(
-    {"2.1.2 and below": ("float16", "bfloat16", "complex")}, backend_version
+    {"2.2 and below": ("float16", "bfloat16", "complex")}, backend_version
 )
 def conv3d_v_1p9p0_and_above(
     x: torch.Tensor,
@@ -616,7 +616,7 @@ def conv3d_v_1p9p0_and_above(
 
 
 @with_unsupported_dtypes(
-    {"2.1.2 and below": ("float16", "bfloat16", "complex")},
+    {"2.2 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 # noinspection PyUnresolvedReferences
@@ -669,7 +669,7 @@ def conv3d_transpose(
 
 
 @with_unsupported_dtypes(
-    {"2.1.2 and below": ("float16", "bfloat16", "complex")},
+    {"2.2 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 def conv_general_dilated(
@@ -718,7 +718,7 @@ def conv_general_dilated(
 
 
 @with_unsupported_dtypes(
-    {"2.1.2 and below": ("float16", "bfloat16", "complex")},
+    {"2.2 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 def conv_general_dilated_v_1p9p0_and_above(
@@ -772,7 +772,7 @@ def conv_general_dilated_v_1p9p0_and_above(
 
 
 @with_unsupported_dtypes(
-    {"2.1.2 and below": ("float16", "bfloat16", "complex")},
+    {"2.2 and below": ("float16", "bfloat16", "complex")},
     backend_version,
 )
 def conv_general_transpose(
@@ -874,22 +874,52 @@ def lstm(
     input: torch.Tensor,
     initial_states: Tuple[torch.Tensor],
     all_weights: Tuple[torch.Tensor],
-    has_biases: bool,
     num_layers: int,
     dropout: float,
     train: bool,
     bidirectional: bool,
     batch_first: bool = False,
     batch_sizes: Sequence = None,
+    weights_transposed: bool = False,
+    has_ih_bias: bool = True,
+    has_hh_bias: bool = True,
 ):
-    return torch.lstm(
+    if weights_transposed:
+        # transpose the weights if they are in the wrong format
+        all_weights = [
+            torch.transpose(weight, 1, 0) if weight.dim() == 2 else weight
+            for weight in all_weights
+        ]
+    else:
+        all_weights = list(all_weights)
+
+    if (has_ih_bias and not has_hh_bias) or (has_hh_bias and not has_ih_bias):
+        # insert zero biases into the weights where one set of biases is not
+        # used, to avoid stride errors in lstm
+        shapes = []
+        for i in range(2, len(all_weights), 3):
+            shapes.append(tuple(all_weights[i].shape))
+        for i, shape in enumerate(shapes):
+            idx = (i + 1) * 4 - (1 if has_ih_bias else 2)
+            all_weights.insert(idx, torch.zeros(shape))
+        has_ih_bias = True
+        has_hh_bias = True
+
+    if initial_states[0].dim() == 2:
+        initial_states[0] = ivy.expand_dims(initial_states[0])
+    if initial_states[1].dim() == 2:
+        initial_states[1] = ivy.expand_dims(initial_states[1])
+
+    ret = torch.lstm(
         input,
         initial_states,
         all_weights,
-        has_biases,
+        has_ih_bias,
         num_layers,
         dropout,
         train,
         bidirectional,
         batch_first,
     )
+
+    return ret[0][:, -1], ret[0], (ret[1], ret[2])

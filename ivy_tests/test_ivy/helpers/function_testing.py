@@ -49,7 +49,9 @@ def traced_if_required(backend: str, fn, test_trace=False, args=None, kwargs=Non
                 ):
                     t_globals.CURRENT_TRACED_DATA[
                         t_globals.CURRENT_RUNNING_TEST.fn_name
-                    ][backend] = ivy_backend.trace_graph(fn, args=args, kwargs=kwargs)
+                    ][backend] = ivy_backend.trace_graph(
+                        fn, args=args, kwargs=kwargs, backend_compile=True
+                    )
                 elif (
                     t_globals.CURRENT_RUNNING_TEST.fn_name
                     not in t_globals.CURRENT_TRACED_DATA
@@ -59,7 +61,9 @@ def traced_if_required(backend: str, fn, test_trace=False, args=None, kwargs=Non
                     ] = {}
                     t_globals.CURRENT_TRACED_DATA[
                         t_globals.CURRENT_RUNNING_TEST.fn_name
-                    ][backend] = ivy_backend.trace_graph(fn, args=args, kwargs=kwargs)
+                    ][backend] = ivy_backend.trace_graph(
+                        fn, args=args, kwargs=kwargs, backend_compile=True
+                    )
                 fn = t_globals.CURRENT_TRACED_DATA[
                     t_globals.CURRENT_RUNNING_TEST.fn_name
                 ][backend]
@@ -983,6 +987,11 @@ def test_frontend_function(
             ret_ = ret_.data
             if hasattr(first_array, "requires_grad"):
                 first_array = first_array.detach()
+            if hasattr(ret_, "requires_grad"):
+                ret_ = ret_.detach()
+            if backend_to_test == "tensorflow":
+                first_array = first_array.numpy()
+                ret_ = ret_.numpy()
             assert not np.may_share_memory(first_array, ret_)
         elif test_flags.inplace:
             assert _is_frontend_array(ret)
