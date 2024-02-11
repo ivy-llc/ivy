@@ -2897,104 +2897,45 @@ set_item.mixed_backend_wrappers = {
 }
 
 
-# def _parse_query(query, x_shape):
-#     query = query if isinstance(query, tuple) else (query,)
-#     query_ = tuple(q.to_numpy() if ivy.is_array(q) else q for q in query)
-#
-#     # array containing all of x's flat indices
-#     x_ = ivy.arange(0, _numel(x_shape)).reshape(x_shape)
-#
-#     # use numpy's __getitem__ to get the queried indices
-#     x_idxs = ivy.array(x_.to_numpy()[query_])
-#     target_shape = x_idxs.shape
-#
-#     if 0 in x_idxs.shape or 0 in x_shape:
-#         return None, target_shape
-#
-#     # convert the flat indices to multi-D indices
-#     x_idxs = ivy.unravel_index(x_idxs, x_shape)
-#
-#     # stack the multi-D indices to bring them to gather_nd/scatter_nd format
-#     x_idxs = ivy.stack(x_idxs, axis=-1).astype(ivy.int64)
-#
-#     return x_idxs, target_shape
-
-import ivy
-
-
-def _parse_ellipsis_optimized(query, ndims):
-    # Check for Ellipsis and calculate how many dimensions it spans
+def _parse_ellipsis(query, ndims):
     ellipsis_present = any(item is Ellipsis for item in query)
-
     if ellipsis_present:
-        ellipsis_index = query.index(
-            Ellipsis
-        )  # Getting the index after confirming existence
+        ellipsis_index = query.index(Ellipsis)
         num_slices = ndims - (len(query) - 1)
-        query = (
-            query[:ellipsis_index]
-            + (slice(None),) * num_slices
-            + query[ellipsis_index + 1 :]
-        )
-
+        query = query[:ellipsis_index] + (slice(None),) * num_slices + query[ellipsis_index + 1:]
     return query
 
 
-def _parse_slice_optimized(slice_obj, length):
-    # Calculate start, stop, and step for the slice object
+def _parse_slice(slice_obj, length):
     start, stop, step = slice_obj.indices(length)
-    # Use ivy.arange to generate indices based on the slice object
     return ivy.arange(start, stop, step).astype(ivy.int64)
 
 
 def _parse_query(query, x_shape):
-    # Convert query to a standard format if not already a tuple
     query = (query,) if not isinstance(query, tuple) else query
-    query = [
-        _parse_slice_optimized(q, x_shape[i]) if isinstance(q, slice) else q
-        for i, q in enumerate(query)
-    ]
-    query = _parse_ellipsis_optimized(query, len(x_shape))
-    # Use array operations to simplify handling of different query types
-    array_queries = []
-    slice_queries = []
+    query = [_parse_slice(q, x_shape[i]) if isinstance(q, slice) else q for i, q in enumerate(query)]
+    query = _parse_ellipsis(query, len(x_shape))
+    array_queries, slice_queries = [], []
     for i, q in enumerate(query):
         if isinstance(q, slice):
             slice_queries.append(ivy.arange(*q.indices(x_shape[i])).astype(ivy.int64))
         elif isinstance(q, (list, tuple, int)):
             array_queries.append(ivy.array(q).astype(ivy.int64))
         elif q is None:
-            # Handle newaxis queries directly in target shape calculation
-            pass
+            pass  # todo: handle this case - newaxis
         else:
-            array_queries.append(q)  # For array queries that are already ivy.Array
+            array_queries.append(q)
 
     # Simplify broadcasting of array queries
     if array_queries:
         broadcasted_array_queries = ivy.broadcast_arrays(*array_queries)
-        # Update array_queries with broadcasted versions
         array_queries = [q.astype(ivy.int64) for q in broadcasted_array_queries]
 
-    # Combine slice and array queries, ignoring newaxis (None) for now
+    # Combine slice and array queries and construct indices
     combined_queries = slice_queries + array_queries
-
-    # Calculate target shape based on combined queries
     target_shape = [q.shape for q in combined_queries]
-
-    # Construct indices for gather_nd from combined queries
-    # This part needs to be adjusted based on how ivy expects indices for gather_nd
-    indices = ivy.concat(
-        [ivy.expand_dims(q, axis=-1) for q in combined_queries], axis=-1
-    )
-
-    # Placeholder for handling newaxis, ellipsis, etc., as needed
-    # This might involve adjusting target_shape or indices based on specific rules
-
-    return indices, target_shape  # Adjust return values as needed
-
-
-# Note: This is a simplified version focusing on the main optimization strategies.
-# Additional logic may be needed to fully replicate the original function's behavior.
+    indices = ivy.concat([ivy.expand_dims(q, axis=-1) for q in combined_queries], axis=-1)
+    return indices, target_shape
 
 
 def _numel(shape):
