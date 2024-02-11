@@ -3,7 +3,6 @@ from hypothesis import strategies as st
 
 # local
 import ivy
-from ivy.functional.frontends.paddle.nn.functional.common import bilinear
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_frontends.test_torch.test_nn.test_functional.test_linear_functions import (  # noqa: E501
