@@ -65,7 +65,7 @@ ignore = [
     "D213", # Multi-line docstring summary should start at the second line.
     "D209", # Multi-line docstring closing quotes should be on a separate line.
     "D400", # First line should end with a period.
-    "D413", # Missing blank line after last section.
+    "D413", # Missing blank line after last section of docstrings.
     "D401", # First line of docstring should be in imperative mood.
     "D415", # First line should end with a period, question mark, or exclamation point.
     "D416", # Section name should end with a colon ("Attributes").
