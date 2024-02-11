@@ -17,7 +17,7 @@ Top Contributors
      - Merging Master Gold, Ivy Inspector Bronze
    * - samunder singh
      - `samthakur587 <https://github.com/samthakur587>`_
-     - Merging Master Gold, Ivy Inspector Bronze
+     - Merging Master Gold, Merging Wizard, Ivy Inspector Bronze
 Core Contributors
 -----------------
 .. list-table::
@@ -27,15 +27,57 @@ Core Contributors
    * - Name
      - Github ID
      - Badges
-   * - Sanjay Suthar
+   * - Sanjay Suthar 
      - `Sanjay8602 <https://github.com/Sanjay8602>`_
      - Merging Master Bronze, Ivy Inspector Bronze
-   * - Muhammad ishaque
+   * - Muhammad ishaque 
      - `MuhammadNizamani <https://github.com/MuhammadNizamani>`_
-     - Merging Master Bronze
+     - Merging Master Bronze, Merging Wizard
    * - nitesh kesharwani
      - `NiteshK84 <https://github.com/NiteshK84>`_
      - Ivy Inspector Bronze
    * - sarvesh kesharwani
      - `Sarvesh-Kesharwani <https://github.com/Sarvesh-Kesharwani>`_
      - Ivy Inspector Bronze
+Contributors
+------------
+.. list-table::
+   :widths: 50 50 50
+   :header-rows: 1
+
+   * - Name
+     - Github ID
+     - Badges
+   * - David Adlai Nettey
+     - `Adlai-1 <https://github.com/Adlai-1>`_
+     - Merging Master
+   * - Garima Saroj
+     - `AndroGari <https://github.com/AndroGari>`_
+     - Merging Master, Ivy Inspector
+   * - Jackson McClintock
+     - `jacksondm33 <https://github.com/jacksondm33>`_
+     - Merging Master, Ivy Inspector
+   * - Kacper Kożdoń
+     - `Kacper-W-Kozdon <https://github.com/Kacper-W-Kozdon>`_
+     - Merging Master
+   * - Mostafa Gamal
+     - `Mr-Array22 <https://github.com/Mr-Array22>`_
+     - Merging Master, Ivy Inspector
+   * - R E Zera Marveen Lyngkhoi 
+     - `fleventy-5 <https://github.com/fleventy-5>`_
+     - Merging Master
+   * - Rahul Prem
+     - `rp097 <https://github.com/rp097>`_
+     - Merging Master, Ivy Inspector
+   * - Rohit Kumar Salla
+     - `rohitsalla <https://github.com/rohitsalla>`_
+     - Merging Master, Ivy Inspector
+   * - Sheroz Khan
+     - `ksheroz <https://github.com/ksheroz>`_
+     - Merging Master
+   * - Suyash Gupta
+     - `sgalpha01 <https://github.com/sgalpha01>`_
+     - Debugging Dynamo, Merging Master, Merging Wizard
+   * - Waqar Ahmed
+     - `waqaarahmed <https://github.com/waqaarahmed>`_
+     - Merging Master, Ivy Inspector
