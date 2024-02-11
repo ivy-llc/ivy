@@ -264,6 +264,10 @@ class Tensor:
     def __long__(self):
         return int(self._ivy_array)
 
+    @with_unsupported_dtypes({"2.6.0 and below": ("int32", "int64")}, "paddle")
+    def __mod__(self, y, /, name=None):
+        return paddle_frontend.Tensor(ivy.fmod(self._ivy_array, _to_ivy_array(y)))
+
     # Instance Methods #
     # ---------------- #
 
