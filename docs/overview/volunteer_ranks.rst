@@ -27,10 +27,10 @@ Core Contributors
    * - Name
      - Github ID
      - Badges
-   * - Sanjay Suthar 
+   * - Sanjay Suthar
      - `Sanjay8602 <https://github.com/Sanjay8602>`_
      - Merging Master Bronze, Ivy Inspector Bronze
-   * - Muhammad ishaque 
+   * - Muhammad ishaque
      - `MuhammadNizamani <https://github.com/MuhammadNizamani>`_
      - Merging Master Bronze
    * - nitesh kesharwani
