@@ -2902,7 +2902,11 @@ def _parse_ellipsis(query, ndims):
     if ellipsis_present:
         ellipsis_index = query.index(Ellipsis)
         num_slices = ndims - (len(query) - 1)
-        query = query[:ellipsis_index] + (slice(None),) * num_slices + query[ellipsis_index + 1:]
+        query = (
+            query[:ellipsis_index]
+            + (slice(None),) * num_slices
+            + query[ellipsis_index + 1 :]
+        )
     return query
 
 
@@ -2913,7 +2917,10 @@ def _parse_slice(slice_obj, length):
 
 def _parse_query(query, x_shape):
     query = (query,) if not isinstance(query, tuple) else query
-    query = [_parse_slice(q, x_shape[i]) if isinstance(q, slice) else q for i, q in enumerate(query)]
+    query = [
+        _parse_slice(q, x_shape[i]) if isinstance(q, slice) else q
+        for i, q in enumerate(query)
+    ]
     query = _parse_ellipsis(query, len(x_shape))
     array_queries, slice_queries = [], []
     for i, q in enumerate(query):
@@ -2934,7 +2941,9 @@ def _parse_query(query, x_shape):
     # Combine slice and array queries and construct indices
     combined_queries = slice_queries + array_queries
     target_shape = [q.shape for q in combined_queries]
-    indices = ivy.concat([ivy.expand_dims(q, axis=-1) for q in combined_queries], axis=-1)
+    indices = ivy.concat(
+        [ivy.expand_dims(q, axis=-1) for q in combined_queries], axis=-1
+    )
     return indices, target_shape
 
 
