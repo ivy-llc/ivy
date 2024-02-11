@@ -1,7 +1,7 @@
 Contributor Leaderboard
 =======================
 
-This page lists all of our amazing Contributors who have contributed to the project! We are grateful for your contributions and we hope to see you grow with the project! The ranks listed here are based on the `level of contribution <https://unify.ai/docs/ivy/overview/contributing/volunteer_workflow.html>`_\.
+This page lists all of our amazing Contributors who have contributed to the project! We are grateful for your contributions and we hope to see you grow with the project! The ranks listed here are based on the `level of contribution <contributing/volunteer_program.rst>`_\.
 
 Top Contributors
 ----------------
@@ -27,10 +27,10 @@ Core Contributors
    * - Name
      - Github ID
      - Badges
-   * - Sanjay Suthar
+   * - Sanjay Suthar 
      - `Sanjay8602 <https://github.com/Sanjay8602>`_
      - Merging Master Bronze, Ivy Inspector Bronze
-   * - Muhammad ishaque
+   * - Muhammad ishaque 
      - `MuhammadNizamani <https://github.com/MuhammadNizamani>`_
      - Merging Master Bronze
    * - nitesh kesharwani
