@@ -1530,7 +1530,6 @@ def test_paddle_add_(
     )
 
 
-# add_n
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
@@ -1707,7 +1706,6 @@ def test_paddle_allclose(
     )
 
 
-# any
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
@@ -2199,7 +2197,6 @@ def test_paddle_bitwise_not(
     )
 
 
-# bitwise_or
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
@@ -2445,7 +2442,6 @@ def test_paddle_cholesky(
     )
 
 
-# clip
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
