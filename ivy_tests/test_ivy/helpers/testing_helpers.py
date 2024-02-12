@@ -947,77 +947,87 @@ def handle_example(
     test_frontend_method_example: bool = False,
     **given_kwargs,
 ):
-    # print(given_kwargs)
     if test_example:
-        given_kwargs["new_test_flags"] = pf.FunctionTestFlags(
-            ground_truth_backend=given_kwargs["test_flags"].get(
-                "ground_truth_backend", "numpy"
-            ),
-            num_positional_args=given_kwargs["test_flags"].get(
-                "num_positional_args", 0
-            ),
-            instance_method=given_kwargs["test_flags"].get("instance_method", False),
-            with_out=given_kwargs["test_flags"].get("with_out", False),
-            with_copy=given_kwargs["test_flags"].get("with_copy", False),
-            test_gradients=given_kwargs["test_flags"].get("test_gradients", False),
-            test_trace=given_kwargs["test_flags"].get("test_trace", False),
-            transpile=given_kwargs["test_flags"].get("transpile", False),
-            as_variable=given_kwargs["test_flags"].get("as_variable", [False]),
-            native_arrays=given_kwargs["test_flags"].get("native_arrays", [False]),
-            container=given_kwargs["test_flags"].get("container", [False]),
-            precision_mode=given_kwargs["test_flags"].get("precision_mode", False),
-            test_cython_wrapper=given_kwargs["test_flags"].get(
-                "test_cython_wrapper", False
-            ),
+        test_flags = given_kwargs.get("test_flags", {})
+        flags = pf.FunctionTestFlags(
+            ground_truth_backend=test_flags.get("ground_truth_backend", "numpy"),
+            num_positional_args=test_flags.get("num_positional_args", 0),
+            instance_method=test_flags.get("instance_method", False),
+            with_out=test_flags.get("with_out", False),
+            with_copy=test_flags.get("with_copy", False),
+            test_gradients=test_flags.get("test_gradients", False),
+            test_trace=test_flags.get("test_trace", False),
+            transpile=test_flags.get("transpile", False),
+            as_variable=test_flags.get("as_variable", [False]),
+            native_arrays=test_flags.get("native_arrays", [False]),
+            container=test_flags.get("container", [False]),
+            precision_mode=test_flags.get("precision_mode", False),
+            test_cython_wrapper=test_flags.get("test_cython_wrapper", False),
         )
+
+        given_kwargs["test_flags"] = flags
 
     elif test_frontend_example:
-        given_kwargs["new_test_flags"] = pf.FrontendFunctionTestFlags(
-            num_positional_args=given_kwargs["test_flags"].get(
-                "num_positional_args", 0
-            ),
-            with_out=given_kwargs["test_flags"].get("with_out", False),
-            with_copy=given_kwargs["test_flags"].get("with_copy", False),
-            inplace=given_kwargs["test_flags"].get("inplace", False),
-            as_variable=given_kwargs["test_flags"].get("as_variable", [False]),
-            native_arrays=given_kwargs["test_flags"].get("native_arrays", [False]),
-            test_trace=given_kwargs["test_flags"].get("test_trace", False),
-            generate_frontend_arrays=given_kwargs["test_flags"].get(
-                "generate_frontend_arrays", False
-            ),
-            transpile=given_kwargs["test_flags"].get("transpile", False),
-            precision_mode=given_kwargs["test_flags"].get("precision_mode", False),
+        test_flags = given_kwargs.get("test_flags", {})
+        flags = pf.FrontendFunctionTestFlags(
+            num_positional_args=test_flags.get("num_positional_args", 0),
+            with_out=test_flags.get("with_out", False),
+            with_copy=test_flags.get("with_copy", False),
+            inplace=test_flags.get("inplace", False),
+            as_variable=test_flags.get("as_variable", [False]),
+            native_arrays=test_flags.get("native_arrays", [False]),
+            test_trace=test_flags.get("test_trace", False),
+            generate_frontend_arrays=test_flags.get("generate_frontend_arrays", False),
+            transpile=test_flags.get("transpile", False),
+            precision_mode=test_flags.get("precision_mode", False),
         )
+
+        given_kwargs["test_flags"] = flags
 
     elif test_method_example:
-        given_kwargs["new_test_flags"] = pf.MethodTestFlags(
-            num_positional_args=given_kwargs["test_flags"].get(
-                "num_positional_args", 0
-            ),
-            as_variable=given_kwargs["test_flags"].get("as_variable", [False]),
-            native_arrays=given_kwargs["test_flags"].get("native_arrays", [False]),
-            container_flags=given_kwargs["test_flags"].get("container", [False]),
-            precision_mode=given_kwargs["test_flags"].get("precision_mode", False),
+        method_flags = given_kwargs.get("method_flags", {})
+        init_flags = given_kwargs.get("init_flags", {})
+        flags_1 = pf.MethodTestFlags(
+            num_positional_args=method_flags.get("num_positional_args", 0),
+            as_variable=method_flags.get("as_variable", [False]),
+            native_arrays=method_flags.get("native_arrays", [False]),
+            container_flags=method_flags.get("container", [False]),
+            precision_mode=method_flags.get("precision_mode", False),
         )
 
-    else:
-        given_kwargs["new_test_flags"] = pf.FrontendMethodTestFlags(
-            num_positional_args=given_kwargs["test_flags"].get(
-                "num_positional_args", 0
-            ),
-            as_variable=given_kwargs["test_flags"].get("as_variable", [False]),
-            native_arrays=given_kwargs["test_flags"].get("native_arrays", [False]),
-            precision_mode=given_kwargs["test_flags"].get("precision_mode", False),
-            inplace=given_kwargs["test_flags"].get("inplace", False),
-            test_trace=given_kwargs["test_flags"].get("test_trace", False),
-            generate_frontend_arrays=given_kwargs["test_flags"].get(
+        flags_2 = pf.InitMethodTestFlags(
+            num_positional_args=init_flags.get("num_positional_args", 0),
+            as_variable=init_flags.get("as_variable", [False]),
+            native_arrays=init_flags.get("native_arrays", [False]),
+            precision_mode=init_flags.get("precision_mode", False),
+        )
+
+        given_kwargs["method_flags"] = flags_1
+        given_kwargs["init_flags"] = flags_2
+
+    elif test_frontend_method_example:
+        method_flags = given_kwargs.get("method_flags", {})
+        init_flags = given_kwargs.get("init_flags", {})
+        flags_1 = pf.FrontendMethodTestFlags(
+            num_positional_args=method_flags.get("num_positional_args", 0),
+            as_variable=method_flags.get("as_variable", [False]),
+            native_arrays=method_flags.get("native_arrays", [False]),
+            precision_mode=method_flags.get("precision_mode", False),
+            inplace=method_flags.get("inplace", False),
+            test_trace=method_flags.get("test_trace", False),
+            generate_frontend_arrays=method_flags.get(
                 "generate_frontend_arrays", False
             ),
         )
 
-    given_kwargs["test_flags"] = given_kwargs["new_test_flags"]
-    del given_kwargs["new_test_flags"]
-    print("given_kwargs:", given_kwargs)
+        flags_2 = pf.FrontendInitTestFlags(
+            num_positional_args=init_flags.get("num_positional_args", 0),
+            as_variable=init_flags.get("as_variable", [False]),
+            native_arrays=init_flags.get("native_arrays", [False]),
+        )
+
+        given_kwargs["method_flags"] = flags_1
+        given_kwargs["init_flags"] = flags_2
 
     def decorate(test_fn):
 
