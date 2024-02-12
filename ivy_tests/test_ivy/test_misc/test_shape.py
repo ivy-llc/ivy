@@ -461,18 +461,14 @@ def test_shape__mul__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Shape.__radd__",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=2,
-        large_abs_safety_factor=2.5,
-        small_abs_safety_factor=2.5,
-        safety_factor_scale="log",
-        shared_dtype=True,
-    ),
+    shape_1=helpers.get_shape(),
+    shape_2=helpers.get_shape(),
 )
 def test_shape__radd__(
-    dtype_and_x,
+    shape_1,
+    shape_2,
     method_name,
     class_name,
     backend_fw,
@@ -481,17 +477,16 @@ def test_shape__radd__(
     method_flags,
     on_device,
 ):
-    dtype, x = dtype_and_x
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
-        init_all_as_kwargs_np={"shape": x[0]},
-        init_input_dtypes=dtype,
-        method_input_dtypes=dtype,
-        method_all_as_kwargs_np={"other": x[1]},
+        init_all_as_kwargs_np={"shape_tup": shape_1},
+        init_input_dtypes=DUMMY_DTYPE,
+        method_input_dtypes=DUMMY_DTYPE,
+        method_all_as_kwargs_np={"other": shape_2},
         class_name=class_name,
         method_name=method_name,
     )
