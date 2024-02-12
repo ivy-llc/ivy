@@ -1473,7 +1473,11 @@ def nearest_interpolate(x, dims, size, scale, exact):
     for d in range(dims):
         n = size[d]
         offsets = (ivy.arange(n, dtype="float32") + off) * scale[d]
-        offsets = ivy.astype(ivy.floor(ivy.astype(offsets, "float32")), "int32")
+        offsets = ivy.astype(ivy.floor(ivy.astype(offsets, "float32")), "int64")
+        num_dims_to_add = x.ndim - offsets.ndim
+        if num_dims_to_add > 0:
+            for _ in range(num_dims_to_add):
+                offsets = ivy.expand_dims(offsets, axis=0)
         x = ivy.gather(x, offsets, axis=d + 2)
     return x
 
