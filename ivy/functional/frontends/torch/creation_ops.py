@@ -178,6 +178,7 @@ def frombuffer(
     return ivy.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
 
 
+@with_unsupported_dtypes({"2.2.0 and below": ("bfloat16",)}, "torch")
 @to_ivy_arrays_and_back
 def full(
     size,
