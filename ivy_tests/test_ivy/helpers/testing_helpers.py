@@ -1029,7 +1029,7 @@ def handle_example(
         given_kwargs["method_flags"] = flags_1
         given_kwargs["init_flags"] = flags_2
 
-    def decorate(test_fn):
+    def test_wrapper(test_fn):
 
         hypothesis_test_fn = example(**given_kwargs)(test_fn)
 
@@ -1047,4 +1047,4 @@ def handle_example(
 
         return wrapped_test
 
-    return decorate
+    return test_wrapper
