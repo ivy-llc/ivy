@@ -118,13 +118,18 @@ def astype(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     dtype = ivy.as_native_dtype(dtype)
-
-    if copy and 0 in x.shape:
-        return paddle.empty(x.shape, dtype=dtype)
-
-    if x.dtype == dtype:
-        return x.clone() if copy else x
-    return x.clone().cast(dtype) if copy else x.cast(dtype)
+    if copy:
+        # Checking if the tensor is not empty
+        # As clone is not supported for empty tensors
+        if 0 in x.shape:
+            return paddle.to_tensor(
+                x,
+                dtype=dtype,
+                place=x.place,
+                stop_gradient=x.stop_gradient,
+            )
+        return x.clone() if x.dtype == dtype else x.clone().cast(dtype)
+    return x if x.dtype == dtype else x.cast(dtype)
 
 
 def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
