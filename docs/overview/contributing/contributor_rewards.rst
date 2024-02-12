@@ -8,7 +8,7 @@ Badges
 
 **Debugging Dynamos** - These badges are earned by creating useful issues. If you find a problem that isn't listed as an open task, report it by creating a new issue. Make sure to describe the problem thoroughly. If your issue is confirmed as useful and marked as a "Useful Issue" by our team, you'll receive the badge as recognition for your valuable contribution to improving our codebase.
 
-**Merging Master** - These badges are formal recognitions for contributors whose pull requests consistently meet our high standards of quality and are successfully merged into the main codebase.
+**Merging Master** - These badges are formal recognitions for contributors whose pull requests consistently meet our standards of quality and are successfully merged into the main codebase.
 
 **Merging Wizard** - These exclusive badges are awarded to contributors who successfully get *priority* pull requests merged. This recognition is for handling complex, high-priority tasks that have a substantial impact on the project's progress and success. Priority pull requests are those that close `"Priority Open" issues <https://github.com/unifyai/ivy/labels/Failing%20Test>`_ found within each framework.
 
