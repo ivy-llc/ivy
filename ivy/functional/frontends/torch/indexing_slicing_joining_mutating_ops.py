@@ -398,7 +398,9 @@ def squeeze(input, dim=None):
 
 
 @to_ivy_arrays_and_back
-def stack(tensors, dim=0, *, out=None):
+def stack(tensors, dim=0, *, out=None, axis=None):
+    if axis is not None:
+        dim = axis
     return ivy.stack(tensors, axis=dim, out=out)
 
 
