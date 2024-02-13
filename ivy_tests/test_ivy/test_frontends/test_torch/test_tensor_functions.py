@@ -16,7 +16,7 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipul
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
-        num_arrays=2,
+        num_arrays=helpers.ints(min_value=2, max_value=5),
     ),
 )
 def test_torch_broadcast_tensors(
