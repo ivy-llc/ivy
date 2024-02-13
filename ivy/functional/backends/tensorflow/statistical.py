@@ -80,8 +80,6 @@ def mean(
     axis = tuple(axis) if isinstance(axis, list) else axis
     if dtype is not None:
         x = tf.cast(x, dtype)
-    else:
-        dtype = x.dtype
     return tf.math.reduce_mean(x, axis=axis, keepdims=keepdims)
 
 
