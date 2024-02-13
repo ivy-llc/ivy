@@ -739,7 +739,7 @@ def reduce_max(input_tensor, axis=None, keepdims=False, name="reduce_max"):
 
 @to_ivy_arrays_and_back
 def reduce_mean(
-    input_tensor, axis=None, keepdims=False, dtype=False, name="reduce_mean"
+    input_tensor, axis=None, keepdims=False, dtype=None, name="reduce_mean"
 ):
     if ivy.exists(axis):
         axis = ivy.to_list(axis)
