@@ -115,6 +115,7 @@ def _reshape_fortran_paddle(x, shape):
         paddle.reshape(x, shape[::-1]), list(range(len(shape)))[::-1]
     )
 
+
 @with_unsupported_dtypes(
     {"2.6.0 and below": ("int8", "int16", "uint8", "float16", "bool", "bfloat16")},
     backend_version,
