@@ -823,6 +823,9 @@ class Tensor:
     def pow(self, exponent):
         return torch_frontend.pow(self, exponent)
 
+    def unflatten(self, dim, sizes):
+        return torch_frontend.unflatten(self, dim, sizes)
+
     @with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
     def pow_(self, exponent):
         self.ivy_array = self.pow(exponent).ivy_array
@@ -1023,6 +1026,10 @@ class Tensor:
     )
     def clamp_min(self, min=None):
         return torch_frontend.clamp(self, min=min)
+
+    def clamp_min_(self, min=None):
+        self.ivy_array = self.clamp_min(min).ivy_array
+        return self
 
     @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
     def sqrt(self):

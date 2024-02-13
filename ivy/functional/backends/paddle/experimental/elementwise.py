@@ -137,6 +137,9 @@ def ldexp(
         return ivy.astype(ret, out_dtype, copy=False)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
+)
 def copysign(
     x1: Union[paddle.Tensor, Number],
     x2: Union[paddle.Tensor, Number],
@@ -214,6 +217,9 @@ def diff(
     )
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("float16",)}}, backend_version
+)
 def signbit(
     x: Union[paddle.Tensor, float, int, list, tuple],
     /,
