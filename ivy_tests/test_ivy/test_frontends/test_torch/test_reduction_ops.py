@@ -471,7 +471,6 @@ def test_torch_mean(
     *,
     dtype_and_x,
     keepdims,
-    dtypes,
     on_device,
     fn_tree,
     frontend,
