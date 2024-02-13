@@ -6,8 +6,10 @@ from hypothesis import assume, strategies as st, given
 import ivy
 from ivy.functional.frontends.numpy import ndarray
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy_tests.test_ivy.helpers import (
     handle_frontend_method,
+    handle_example,
     assert_all_close,
     BackendHandler,
 )
@@ -2930,6 +2932,17 @@ def test_numpy_mean(
         force_int_axis=True,
     ),
     keepdims=st.booleans(),
+)
+@handle_example(
+    test_frontend_method_example=True,
+    frontend_method_data=FrontendMethodData(
+        ivy_init_module="ivy.functional.frontends.numpy",
+        framework_init_module="numpy",
+        init_name="array",
+        method_name="min",
+    ),
+    dtype_x_axis=(["float32"], [np.array([6], dtype=np.float32)], 0),
+    keepdims=True,
 )
 def test_numpy_min(
     dtype_x_axis,

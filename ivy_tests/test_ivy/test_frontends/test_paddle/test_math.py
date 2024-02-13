@@ -6,7 +6,7 @@ import sys
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_frontend_test, handle_example
 from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
     _get_dtype_input_and_matrices,
     _get_dtype_and_3dbatch_matrices,
@@ -97,6 +97,16 @@ def test_paddle_abs(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
+)
+@handle_example(
+    test_frontend_example=True,
+    dtype_and_x=(["float32"], [np.array(9.0, dtype=np.float32)]),
+    fn_tree="ivy.functional.frontends.paddle.acos",
+    test_flags={
+        "native_arrays": [True],
+        "with_copy": True,
+        "with_out": True,
+    },
 )
 def test_paddle_acos(
     *,
