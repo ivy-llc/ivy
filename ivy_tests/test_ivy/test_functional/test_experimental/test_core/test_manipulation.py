@@ -2,11 +2,11 @@
 from hypothesis import strategies as st, assume
 import hypothesis.extra.numpy as nph
 import numpy as np
-import math
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import sizes_
 from ivy_tests.test_ivy.helpers import handle_test, create_concatenable_arrays_dtypes
 from ivy.functional.ivy.experimental.manipulation import _check_bounds
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
@@ -1480,7 +1480,7 @@ def test_trim_zeros(
         min_num_dims=1,
         shape_key="shape",
     ),
-    get_axis=helpers.get_axis(
+    axis=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
         max_size=0,
         min_size=0,
@@ -1495,48 +1495,10 @@ def test_unflatten(
     test_flags,
     backend_fw,
     shape,
-    get_axis,
+    axis,
 ):
-    axis = get_axis
-    if type(axis) is tuple:
-        axis = 0 if not get_axis else get_axis[0]
+    shape_ = sizes_(shape, axis)
     dtype, x = dtype_and_values
-
-    def factorization(n):
-        factors = [1]
-
-        def get_factor(n):
-            x_fixed = 2
-            cycle_size = 2
-            x = 2
-            factor = 1 if n % 2 else 2
-
-            while factor == 1:
-                for count in range(cycle_size):
-                    if factor > 1:
-                        break
-                    x = (x * x + 1) % n
-                    factor = math.gcd(x - x_fixed, n)
-
-                cycle_size *= 2
-                x_fixed = x
-
-            return factor
-
-        while n > 1:
-            next = get_factor(n)
-            factors.append(next)
-            n //= next
-
-        if len(factors) > 1:
-            factors.remove(1)
-        return factors
-
-    shape_ = (
-        tuple(factorization(shape[axis]))
-        if tuple(factorization(shape[axis]))
-        else shape
-    )
     helpers.test_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
