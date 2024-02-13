@@ -84,10 +84,12 @@ class TreeSpec:
             indent += len(repr_prefix)
             children_specs_str += self.children_specs[0].__repr__(indent)
             children_specs_str += "," if len(self.children_specs) > 1 else ""
-            children_specs_str += ",".join([
-                "\n" + " " * indent + child.__repr__(indent)
-                for child in self.children_specs[1:]
-            ])
+            children_specs_str += ",".join(
+                [
+                    "\n" + " " * indent + child.__repr__(indent)
+                    for child in self.children_specs[1:]
+                ]
+            )
         repr_suffix: str = f"{children_specs_str}])"
         return repr_prefix + repr_suffix
 
@@ -426,10 +428,12 @@ class Model(tf.keras.Model, ModelHelpers):
             if (
                 v is not None
                 and k[0:2] != "__"
-                and not k.startswith((
-                    "_module_dict",
-                    "_self_",
-                ))
+                and not k.startswith(
+                    (
+                        "_module_dict",
+                        "_self_",
+                    )
+                )
             ):
                 ret = self._find_variables(
                     obj=v,
