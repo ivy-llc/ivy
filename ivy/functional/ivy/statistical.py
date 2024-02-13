@@ -271,9 +271,9 @@ def max(
 @handle_device
 def mean(
     x: Union[ivy.Array, ivy.NativeArray],
-    /,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    /,
     *,
     dtype: Optional[type] = None,
     out: Optional[ivy.Array] = None,
@@ -374,9 +374,7 @@ def mean(
         b: ivy.array([4.5, 5.5, 6.5])
     }
     """
-    return current_backend(x).mean(
-        x, axis=axis, keepdims=keepdims, dtype=dtype, out=out
-    )
+    return current_backend(x).mean(x, axis, keepdims, dtype=dtype, out=out)
 
 
 @handle_exceptions
