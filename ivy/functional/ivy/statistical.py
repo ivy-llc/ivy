@@ -275,6 +275,7 @@ def mean(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    dtype: Optional[type] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculate the arithmetic mean of the input array ``x``.
@@ -299,6 +300,10 @@ def mean(
         as singleton dimensions, and, accordingly, the result must be compatible with
         the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced
         axes (dimensions) must not be included in the result. Default: ``False``.
+    dtype
+        the desired data type of returned tensor. If specified, the input tensor
+        is casted to dtype before the operation is performed. This is useful for
+        preventing data type overflows. Default: None.
     out
         optional output array, for writing the result to.
 
@@ -369,7 +374,9 @@ def mean(
         b: ivy.array([4.5, 5.5, 6.5])
     }
     """
-    return current_backend(x).mean(x, axis=axis, keepdims=keepdims, out=out)
+    return current_backend(x).mean(
+        x, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+    )
 
 
 @handle_exceptions
