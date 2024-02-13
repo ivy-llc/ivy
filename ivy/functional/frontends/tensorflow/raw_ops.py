@@ -624,7 +624,7 @@ def Gather(*, params, indices, validate_indices=None, name="Gather"):
     "tensorflow",
 )
 @to_ivy_arrays_and_back
-def GatherNd(*, params, indices, validate_indices=None, name="GatherNd"):
+def GatherNd(*, params, indices, name=None):
     return ivy.gather_nd(params, indices, batch_dims=0)
 
 
