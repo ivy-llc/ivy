@@ -4212,19 +4212,19 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         With 'ivy.Container' input:
 
         >>> x = ivy.Container(a = ivy.array([[True, False, False, True],
-                                            [False, True, False, True]])),
+        ...                                 [False, True, False, True]]),
         ...                     b = ivy.array([[1.2, 2.3, 3.4, 4.5],
-                                            [5.6, 6.7, 7.8, 8.9]]),
+        ...                                   [5.6, 6.7, 7.8, 8.9]]),
         ...                     c = ivy.array([[1, 2, 3, 4],
-                                            [5, 6, 7, 8]]))
+        ...                                   [5, 6, 7, 8]]))
         >>> dim = 1
         >>> shape = (2, 2)
         >>> y = x.unflatten(shape=shape, dim=dim)
         >>> print(y)
         {
             a: ivy.array([[[True, False], [False, True]],
-                          [[False, True], [False, True]]])
-            b: ivy.array([[[1.2, 2.3], [3.4, 4.5]], [[5.6, 6.7], [7.8, 8.9]]])
+                          [[False, True], [False, True]]]),
+            b: ivy.array([[[1.2, 2.3], [3.4, 4.5]], [[5.6, 6.7], [7.8, 8.9]]]),
             c: ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
         }
         """

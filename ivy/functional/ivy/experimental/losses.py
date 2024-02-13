@@ -138,11 +138,11 @@ def l1_loss(
     --------
     >>> x = ivy.array([1.0, 2.0, 3.0])
     >>> y = ivy.array([0.5, 2.5, 2.0])
-    >>> print(ivy.l1_loss(x, y))
-    ivy.array(0.6)
+    >>> ivy.l1_loss(x, y)
+    ivy.array(0.666)
     >>> a = ivy.array([[1.0, 2.0], [3.0, 4.0]])
     >>> b = ivy.array([[0.5, 1.5], [2.5, 3.5]])
-    >>> print(ivy.l1_loss(a, b))
+    >>> ivy.l1_loss(a, b)
     ivy.array(0.5)
     """
     loss = ivy.abs(target - input)
@@ -258,12 +258,12 @@ def smooth_l1_loss(
 
     Examples
     --------
-    >>> input = ivy.array([1.0, 2.0, 3.0])
-    >>> target = ivy.array([2.5, 1.8, 3.2])
+    >>> x = ivy.array([1.0, 2.0, 3.0])
+    >>> y = ivy.array([2.5, 1.8, 3.2])
     >>> ivy.smooth_l1_loss(x, y, beta=1.0)
     ivy.array(0.3467)
-    >>> input = ivy.array([1.0, 2.0, 3.0])
-    >>> target = ivy.array([6.0, 2.0, 3.0])
+    >>> x = ivy.array([1.0, 2.0, 3.0])
+    >>> y = ivy.array([6.0, 2.0, 3.0])
     >>> ivy.smooth_l1_loss(x, y, beta=1.0)
     ivy.array(1.5)
     >>> input = ivy.array([2.0, 3.0, 5.0, 7.0])
@@ -559,7 +559,7 @@ def poisson_nll_loss(
     --------
     >>> input_tensor = ivy.array([1, 2, 3, 4], dtype=ivy.float64)
     >>> target_tensor = ivy.array([2, 2, 2, 2], dtype=ivy.float64)
-    >>> loss = poisson_nll_loss(input_tensor, target_tensor, log_input=False)
+    >>> loss = ivy.poisson_nll_loss(input_tensor, target_tensor, log_input=False)
     >>> print(loss)
     ivy.array(0.91097307)
     """

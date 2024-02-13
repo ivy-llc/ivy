@@ -90,7 +90,7 @@ def permute_dims(
 
 
 @with_unsupported_dtypes(
-    {"2.1.2 and below": ("bfloat16",)},
+    {"2.2 and below": ("bfloat16",)},
     backend_version,
 )
 def reshape(
@@ -241,13 +241,15 @@ def split(
                 torch.tensor(dim_size) / torch.tensor(num_or_size_splits)
             )
     elif isinstance(num_or_size_splits, list):
+        if num_or_size_splits[-1] == -1:
+            # infer the final size split
+            remaining_size = dim_size - sum(num_or_size_splits[:-1])
+            num_or_size_splits[-1] = remaining_size
         num_or_size_splits = tuple(num_or_size_splits)
     return list(torch.split(x, num_or_size_splits, axis))
 
 
-@with_unsupported_dtypes(
-    {"2.1.2 and below": ("int8", "int16", "uint8")}, backend_version
-)
+@with_unsupported_dtypes({"2.2 and below": ("int8", "int16", "uint8")}, backend_version)
 def repeat(
     x: torch.Tensor,
     /,
@@ -315,7 +317,7 @@ def swapaxes(
 
 
 @with_unsupported_dtypes(
-    {"2.1.2 and below": ("bool", "float16", "complex")}, backend_version
+    {"2.2 and below": ("bool", "float16", "complex")}, backend_version
 )
 def clip(
     x: torch.Tensor,
