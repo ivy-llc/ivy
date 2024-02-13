@@ -4871,6 +4871,41 @@ def test_torch_clamp_min(
     )
 
 
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="clamp_min_",
+    input_and_ranges=_get_clip_min_inputs(),
+    test_inplace=st.just(True),
+)
+def test_torch_clamp_min_(
+    input_and_ranges,
+    frontend_method_data,
+    init_flags,
+    backend_fw,
+    frontend,
+    on_device,
+    method_flags,
+):
+    x_dtype, x, min = input_and_ranges
+    helpers.test_frontend_method(
+        init_input_dtypes=x_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=x_dtype,
+        method_all_as_kwargs_np={
+            "min": min,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # clip
 @handle_frontend_method(
     class_tree=CLASS_TREE,

@@ -1027,6 +1027,10 @@ class Tensor:
     def clamp_min(self, min=None):
         return torch_frontend.clamp(self, min=min)
 
+    def clamp_min_(self, min=None):
+        self.ivy_array = self.clamp_min(min).ivy_array
+        return self
+
     @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
     def sqrt(self):
         return torch_frontend.sqrt(self)
