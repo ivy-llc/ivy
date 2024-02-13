@@ -73,9 +73,12 @@ def mean(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
+    if dtype is not None:
+        x = x.astype(dtype)
     return tf.math.reduce_mean(x, axis=axis, keepdims=keepdims)
 
 
