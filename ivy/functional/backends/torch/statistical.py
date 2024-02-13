@@ -93,7 +93,7 @@ def mean(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
-    dtype: Optional[type] = None,
+    dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
