@@ -626,6 +626,7 @@ def vecdot(
             "float16",
             "bfloat16",
             "integer",
+            "complex64",
         )
     },
     backend_version,
