@@ -1,6 +1,5 @@
 # global
 from hypothesis import strategies as st
-from hypothesis import reproduce_failure
 
 # local
 import ivy
@@ -468,10 +467,6 @@ def test_torch_max(
     ),
     keepdims=st.booleans(),
     dtypes=helpers.get_dtypes("valid", none=True, full=False, prune_function=True),
-)
-@reproduce_failure(
-    "6.97.0",
-    b"AXicY2BkYGRgYGJkPMAAAYwsbAwHpFaBAQMHJ2MDUEzmUx5QmpGBiY2dBaiUgZERAOl7CJA=",
 )
 def test_torch_mean(
     *,
