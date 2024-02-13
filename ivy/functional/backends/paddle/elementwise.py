@@ -907,15 +907,14 @@ def logaddexp2(
                 "float32",
                 "float64",
                 "bool",
+                "bfloat16",
             )
         }
     },
     backend_version,
 )
 def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    if paddle.is_complex(x):
-        return paddle.real(x)
-    return x
+    return paddle.real(x)
 
 
 @with_supported_device_and_dtypes(

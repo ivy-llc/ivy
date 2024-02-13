@@ -486,7 +486,7 @@ def logaddexp(
     return tf.experimental.numpy.logaddexp(x1, x2)
 
 
-@with_unsupported_dtypes({"2.15.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bool",)}, backend_version)
 def real(
     x: Union[tf.Tensor, tf.Variable],
     /,
