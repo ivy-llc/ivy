@@ -137,9 +137,8 @@ def ldexp(
         return ivy.astype(ret, out_dtype, copy=False)
 
 
-@with_supported_dtypes(
-    {"2.6.0 and below": ("float32", "float64", "int32", "int64", "complex")},
-    backend_version,
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
 )
 def copysign(
     x1: Union[paddle.Tensor, Number],
