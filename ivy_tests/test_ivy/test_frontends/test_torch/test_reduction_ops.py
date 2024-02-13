@@ -489,7 +489,7 @@ def test_torch_mean(
         on_device=on_device,
         input=x[0],
         dim=axis,
-        keepdim=keepdims,
+        keepdims=keepdims,
         dtype=dtypes[0],
         atol=1e-2,
     )
