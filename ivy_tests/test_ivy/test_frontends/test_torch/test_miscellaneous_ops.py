@@ -1017,6 +1017,37 @@ def test_torch_einsum(
     )
 
 
+# erfinv
+@handle_frontend_test(
+    fn_tree="torch.erfinv",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1,
+        max_value=1,
+        abs_smallest_val=1e-05,
+    ),
+)
+def test_torch_erfinv(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
+
+
 @handle_frontend_test(
     fn_tree="torch.flatten",
     dtype_input_axes=helpers.dtype_values_axis(
@@ -1788,8 +1819,8 @@ def test_torch_triu_indices(
     ),
     get_axis=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
-        max_size=1,
-        min_size=1,
+        max_size=0,
+        min_size=0,
         force_int=True,
     ),
 )
@@ -1804,10 +1835,9 @@ def test_torch_unflatten(
     shape,
     get_axis,
 ):
-    if type(get_axis) is not tuple:
-        axis = get_axis
-    else:
-        axis = 0 if get_axis is None else get_axis[0]
+    axis = get_axis
+    if type(axis) is tuple:
+        axis = 0 if not get_axis else get_axis[0]
     dtype, x = dtype_and_values
 
     def factorization(n):
@@ -1835,7 +1865,8 @@ def test_torch_unflatten(
             next = get_factor(n)
             factors.append(next)
             n //= next
-
+        if len(factors) > 1:
+            factors.remove(1)
         return factors
 
     shape_ = (

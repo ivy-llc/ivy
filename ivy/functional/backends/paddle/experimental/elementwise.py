@@ -815,3 +815,13 @@ def erfc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
         result = paddle.squeeze(result, axis=-1)
 
     return result
+
+
+@with_supported_dtypes(
+    {"2.6.0 and below": ("float32", "float64")},
+    backend_version,
+)
+def erfinv(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    return paddle.erfinv(x)

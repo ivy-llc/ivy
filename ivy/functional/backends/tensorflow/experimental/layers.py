@@ -1403,8 +1403,8 @@ def rfft_operations(x, rank, norm_factor):
             },
         )
     norm_factor = tf.cast(norm_factor, tf.complex128)
-    x = x / norm_factor
     x = tf.cast(x, tf.complex128)
+    x = x / norm_factor
     return x
 
 
@@ -1542,7 +1542,7 @@ def rfftn(
     s: Optional[Union[int, Tuple[int]]] = None,
     axes: Optional[Union[int, Tuple[int]]] = None,
     *,
-    norm: Optional[str] = [("forward", "ortho", "backward")],
+    norm: str = "backward",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     result = _rfftn_helper(x, s, axes, norm)
