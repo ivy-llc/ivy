@@ -11501,12 +11501,9 @@ def test_torch_scatter_(
     kwargs_np = {
         "dim": axis,
         "index": indices,
-        "src": values,
+        "value" if use_value_arg else "src": 1 if use_value_arg else values,
         "reduce": reduce,
     }
-    if use_value_arg:
-        kwargs_np.pop("src")
-        kwargs_np["value"] = 1
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtypes[0]],
         backend_to_test=backend_fw,
