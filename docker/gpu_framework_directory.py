@@ -43,6 +43,13 @@ def install_pkg(path, pkg, base="fw/"):
             "  --no-cache-dir",
             shell=True,
         )
+        subprocess.run(
+            f"yes |pip3 install --upgrade torchvision --index-url"
+            f" https://download.pytorch.org/whl/cu121 --target"
+            f" {path} --default-timeout=100 --extra-index-url"
+            " --no-cache-dir",
+            shell=True,
+        )
     elif pkg.split("==")[0] if "==" in pkg else pkg == "jax":
         subprocess.run(
             f"yes |pip install --upgrade --target {path} 'jax[cuda12_pip]' -f"
