@@ -395,6 +395,7 @@ def interpolate(
 
 @to_ivy_arrays_and_back
 def pad(input, pad, mode="constant", value=0):
+    value = 0 if value is None else value
     mode_dict = {
         "constant": "constant",
         "reflect": "reflect",
