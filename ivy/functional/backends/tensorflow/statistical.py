@@ -82,7 +82,7 @@ def mean(
         x = tf.cast(x, dtype)
     else:
         dtype = x.dtype
-    return tf.math.reduce_mean(x, axis=axis, keepdims=keepdims).astype(dtype)
+    return tf.math.reduce_mean(x, axis=axis, keepdims=keepdims)
 
 
 def _infer_dtype(dtype: tf.DType):
