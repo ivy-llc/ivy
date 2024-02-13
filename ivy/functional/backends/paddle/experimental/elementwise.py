@@ -217,6 +217,9 @@ def diff(
     )
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("float16",)}}, backend_version
+)
 def signbit(
     x: Union[paddle.Tensor, float, int, list, tuple],
     /,
