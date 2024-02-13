@@ -11,3 +11,8 @@ from ivy.functional.frontends.torch.func_wrapper import (
 @to_ivy_arrays_and_back
 def erfc(input, *, out=None):
     return 1.0 - ivy.erf(input, out=out)
+
+
+@to_ivy_arrays_and_back
+def erfinv(input, *, out=None):
+    return ivy.erfinv(input, out=out)
