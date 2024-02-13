@@ -823,6 +823,9 @@ class Tensor:
     def pow(self, exponent):
         return torch_frontend.pow(self, exponent)
 
+    def unflatten(self, dim, sizes):
+        return torch_frontend.unflatten(self, dim, sizes)
+
     @with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
     def pow_(self, exponent):
         self.ivy_array = self.pow(exponent).ivy_array
