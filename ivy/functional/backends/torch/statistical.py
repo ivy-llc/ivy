@@ -97,8 +97,8 @@ def mean(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
-        return torch.mean(x, dtype=dtype, out=out)
-    return torch.mean(x, dim=axis, keepdim=keepdims, dtype=dtype, out=out)
+        return torch.mean(x, dtype=dtype)
+    return torch.mean(x, dim=axis, keepdim=keepdims, dtype=dtype)
 
 
 mean.support_native_out = True

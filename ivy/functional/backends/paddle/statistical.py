@@ -110,12 +110,13 @@ def max(
 def mean(
     x: paddle.Tensor,
     /,
-    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    *,
+    dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    ret_dtype = x.dtype
+    ret_dtype = x.dtype if dtype is None else dtype
     if paddle.is_complex(x):
         ret = paddle.complex(
             paddle.mean(x.real(), axis=axis, keepdim=keepdims),
