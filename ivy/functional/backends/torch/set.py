@@ -66,7 +66,7 @@ def unique_all(
             [i[0] for i in sorted(enumerate(values_), key=lambda x: tuple(x[1]))]
         )
     ivy_torch = ivy.current_backend()
-    values = ivy_torch.gather(values, sort_idx, axis=axis)
+    values = values.index_select(dim=axis, index=sort_idx)
     counts = ivy_torch.gather(counts, sort_idx)
     indices = ivy_torch.gather(indices, sort_idx)
     inv_sort_idx = ivy_torch.invert_permutation(sort_idx)
