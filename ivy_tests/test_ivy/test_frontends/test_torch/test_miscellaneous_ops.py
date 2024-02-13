@@ -1820,8 +1820,6 @@ def test_torch_triu_indices(
     ),
     axis=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
-        max_size=0,
-        min_size=0,
         force_int=True,
     ),
 )
