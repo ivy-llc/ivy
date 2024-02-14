@@ -5,6 +5,11 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
 @to_ivy_arrays_and_back
+def broadcast_tensors(*tensors):
+    return ivy.broadcast_arrays(*tensors)
+
+
+@to_ivy_arrays_and_back
 def is_complex(input):
     return ivy.is_complex_dtype(input)
 

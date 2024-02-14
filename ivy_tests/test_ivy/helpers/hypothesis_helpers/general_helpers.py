@@ -648,3 +648,40 @@ def embedding_helper(draw, mixed_fn_compos=True):
     )
     padding_idx = draw(st.integers(min_value=0, max_value=num_embeddings - 1))
     return dtype_indices + dtype_weight, indices[0], weight[0], padding_idx
+
+
+def sizes_(shape, axis):
+    def factorization(n):
+        factors = [1]
+
+        def get_factor(n):
+            x_fixed = 2
+            cycle_size = 2
+            x = 2
+            factor = 1 if n % 2 else 2
+            while factor == 1:
+                for count in range(cycle_size):
+                    if factor > 1:
+                        break
+                    x = (x * x + 1) % n
+                    factor = math.gcd(x - x_fixed, n)
+
+                cycle_size *= 2
+                x_fixed = x
+
+            return factor
+
+        while n > 1:
+            next = get_factor(n)
+            factors.append(next)
+            n //= next
+        if len(factors) > 1:
+            factors.remove(1)
+        return factors
+
+    shape_ = (
+        tuple(factorization(shape[axis]))
+        if tuple(factorization(shape[axis]))
+        else shape
+    )
+    return shape_
