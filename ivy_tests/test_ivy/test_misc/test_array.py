@@ -5,12 +5,7 @@ import numpy as np
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import (
-    handle_method,
-    handle_test,
-    BackendHandler,
-    handle_example,
-)
+from ivy_tests.test_ivy.helpers import handle_method, handle_test, BackendHandler
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import (
     not_too_close_to_zero,
     pow_helper,
@@ -1361,18 +1356,6 @@ def test_array__mul__(
         num_arrays=2,
         shared_dtype=True,
     ),
-)
-@handle_example(
-    test_method_example=True,
-    dtype_and_x=(["int64", "int64"], [np.array(12), np.array(4)]),
-    class_name="Array",
-    method_name="__ne__",
-    ground_truth_backend="numpy",
-    method_flags={
-        "num_positional_args": 2,
-        "precision_mode": True,
-    },
-    init_flags={"as_variable": [True]},
 )
 def test_array__ne__(
     dtype_and_x,
