@@ -1165,6 +1165,9 @@ class Tensor:
     def log_softmax(self, dim=None, _stack_level=3, dtype=None):
         return torch_frontend.nn.functional.log_softmax(self, dim=dim, dtype=dtype)
 
+    def isfinite(self):
+        return torch_frontend.isfinite(self)
+
     def msort(self):
         return torch_frontend.msort(self)
 
