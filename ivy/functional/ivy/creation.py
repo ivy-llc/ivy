@@ -153,6 +153,7 @@ def _asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
             dtype = ivy.default_dtype(dtype=dtype, as_native=True)
         return to_ivy(fn(*new_args, dtype=dtype, **kwargs))
 
+    _asarray_to_native_arrays_and_back_wrapper._asarray_to_native_arrays_and_back = True
     return _asarray_to_native_arrays_and_back_wrapper
 
 
@@ -2021,7 +2022,7 @@ def one_hot(
     }
 
     >>> x = ivy.Container(a=ivy.array([2]), \
-        b=ivy.array([]), c=ivy.native_array([4]))
+        b=ivy.array([], dtype=ivy.int32), c=ivy.native_array([4]))
     >>> y = 7
     >>> z = x.one_hot(y)
     >>> print(z)

@@ -968,10 +968,10 @@ class _ContainerWithActivationExperimental(ContainerBase):
         Examples
         --------
         >>> x = x = ivy.Container(a=ivy.array([0.39, -2.0]), b=ivy.array([2., -0.2]))
-        >>> y = ivy.Container.static_hardtanh(x)
+        >>> y = ivy.Container._static_hardtanh(x)
         >>> print(y)
         {
-            a: ivy.array([0.39, -1.]),
+            a: ivy.array([0.3899, -1.]),
             b: ivy.array([1., -0.2])
         }
         """
@@ -1033,11 +1033,11 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
-        >>> x = x = ivy.Container(a=ivy.array([0.39, -2.0]), b=ivy.array([2., -0.2]))
-        >>> y = ivy.Container.static_hardtanh(x)
+        >>> x = ivy.Container(a=ivy.array([0.39, -2.0]), b=ivy.array([2., -0.2]))
+        >>> y = ivy.Container.hardtanh(x)
         >>> print(y)
         {
-            a: ivy.array([0.39, -1.]),
+            a: ivy.array([0.389999, -1.]),
             b: ivy.array([1., -0.2])
         }
         """
@@ -1820,8 +1820,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
-        >>> import ivy.numpy as np
-        >>> x = ivy.Container(a=np.array([1., -2.]), b=np.array([0.4, -0.2]))
+        >>> x = ivy.Container(a=ivy.array([1., -2.]), b=ivy.array([0.4, -0.2]))
         >>> y = ivy.Container.hardshrink(x)
         >>> print(y)
         {

@@ -8,6 +8,7 @@ import hypothesis.extra.numpy as nph
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import sizes_
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_value1_value2_axis_for_tensordot,
@@ -1017,6 +1018,38 @@ def test_torch_einsum(
     )
 
 
+# erfinv
+@handle_frontend_test(
+    fn_tree="torch.special.erfinv",
+    aliases=["torch.erfinv"],
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1,
+        max_value=1,
+        abs_smallest_val=1e-05,
+    ),
+)
+def test_torch_erfinv(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
+
+
 @handle_frontend_test(
     fn_tree="torch.flatten",
     dtype_input_axes=helpers.dtype_values_axis(
@@ -1786,10 +1819,8 @@ def test_torch_triu_indices(
         min_num_dims=1,
         shape_key="shape",
     ),
-    get_axis=helpers.get_axis(
+    axis=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
-        max_size=1,
-        min_size=1,
         force_int=True,
     ),
 )
@@ -1802,47 +1833,10 @@ def test_torch_unflatten(
     test_flags,
     backend_fw,
     shape,
-    get_axis,
+    axis,
 ):
-    if type(get_axis) is not tuple:
-        axis = get_axis
-    else:
-        axis = 0 if get_axis is None else get_axis[0]
     dtype, x = dtype_and_values
-
-    def factorization(n):
-        factors = [1]
-
-        def get_factor(n):
-            x_fixed = 2
-            cycle_size = 2
-            x = 2
-            factor = 1 if n % 2 else 2
-
-            while factor == 1:
-                for count in range(cycle_size):
-                    if factor > 1:
-                        break
-                    x = (x * x + 1) % n
-                    factor = math.gcd(x - x_fixed, n)
-
-                cycle_size *= 2
-                x_fixed = x
-
-            return factor
-
-        while n > 1:
-            next = get_factor(n)
-            factors.append(next)
-            n //= next
-
-        return factors
-
-    shape_ = (
-        tuple(factorization(shape[axis]))
-        if tuple(factorization(shape[axis]))
-        else shape
-    )
+    sizes = sizes_(shape, axis)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -1853,7 +1847,7 @@ def test_torch_unflatten(
         test_values=False,
         input=x[0],
         dim=axis,
-        sizes=shape_,
+        sizes=sizes,
     )
 
 

@@ -92,14 +92,14 @@ def max_pool1d(
 
        [[16., 17., 18., 19.]]])
     >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
-    >>> print(ivy.max_pool1d(x, 2, 2, [(1,0)], data_format="NCW", dilation=2, ceil_mode=True))
-    ivy.array([[[ 1.,  3.],
-            [ 5.,  7.],
-            [ 9., 11.]],
+    >>> print(ivy.max_pool1d(x, 2, 2, [(1,0)], data_format="NCW", dilation=1, ceil_mode=True))
+    ivy.array([[[ 0.,  2.,  3.],
+        [ 4.,  6.,  7.],
+        [ 8., 10., 11.]],
 
-        [[13., 15.],
-            [17., 19.],
-            [21., 23.]]])
+       [[12., 14., 15.],
+        [16., 18., 19.],
+        [20., 22., 23.]]])
     """  # noqa: E501
     return ivy.current_backend(x).max_pool1d(
         x,
@@ -591,7 +591,7 @@ def pool(
     Examples
     --------
     >>> x = ivy.arange(12.).reshape((2, 1, 3, 2))
-    >>> print(ivy.pool(x, (2, 2), 'MAX', (1, 1), 'SAME'))
+    >>> print(ivy.pool(x, (2, 2), 'MAX', strides=(1, 1), padding='SAME'))
     ivy.array([[[[ 1.,  2.],
                 [ 3.,  4.],
                 [ 4.,  5.]]],
@@ -599,7 +599,7 @@ def pool(
                 [ 9., 10.],
                 [10., 11.]]]])
     >>> x = ivy.arange(48.).reshape((2, 4, 3, 2))
-    >>> print(ivy.pool(x, 3, 'AVG', 1, 'VALID'))
+    >>> print(ivy.pool(x, 3, 'AVG', strides=1, padding='VALID'))
     ivy.array([[[[ 8.,  9.]],
             [[14., 15.]]],
             [[[32., 33.]],
@@ -1405,11 +1405,13 @@ def _tf_area_interpolate(x, size, scale, dims):
                             d_in, d_in1, d_index = _tf_area_indices(d_dim, scale[0])
                             h_in, h_in1, h_index = _tf_area_indices(h_dim, scale[1])
                             w_in, w_in1, w_index = _tf_area_indices(w_dim, scale[2])
-                            sum_data = ivy.zeros((
-                                d_index[1] - d_index[0],
-                                h_index[1] - h_index[0],
-                                w_index[1] - w_index[0],
-                            ))
+                            sum_data = ivy.zeros(
+                                (
+                                    d_index[1] - d_index[0],
+                                    h_index[1] - h_index[0],
+                                    w_index[1] - w_index[0],
+                                )
+                            )
                             for d_ind in range(d_index[0], d_index[1]):
                                 scale_z = _tf_area_dim_scale(
                                     d_ind, d_in, scale[0], d_in1
@@ -1473,7 +1475,11 @@ def nearest_interpolate(x, dims, size, scale, exact):
     for d in range(dims):
         n = size[d]
         offsets = (ivy.arange(n, dtype="float32") + off) * scale[d]
-        offsets = ivy.astype(ivy.floor(ivy.astype(offsets, "float32")), "int32")
+        offsets = ivy.astype(ivy.floor(ivy.astype(offsets, "float32")), "int64")
+        num_dims_to_add = x.ndim - offsets.ndim
+        if num_dims_to_add > 0:
+            for _ in range(num_dims_to_add):
+                offsets = ivy.expand_dims(offsets, axis=0)
         x = ivy.gather(x, offsets, axis=d + 2)
     return x
 
@@ -1908,14 +1914,18 @@ def interpolate(
                     right = int(math.ceil(p_j + 2))
                     top = int(math.floor(p_i - 2))
                     bottom = int(math.ceil(p_i + 2))
-                    kernel_w = ivy.array([
-                        _mitchellcubic_kernel((p_j - j) * scale_w)
-                        for i in range(left, right)
-                    ])
-                    kernel_h = ivy.array([
-                        _mitchellcubic_kernel((p_i - i) * scale_h)
-                        for j in range(top, bottom)
-                    ])
+                    kernel_w = ivy.array(
+                        [
+                            _mitchellcubic_kernel((p_j - j) * scale_w)
+                            for i in range(left, right)
+                        ]
+                    )
+                    kernel_h = ivy.array(
+                        [
+                            _mitchellcubic_kernel((p_i - i) * scale_h)
+                            for j in range(top, bottom)
+                        ]
+                    )
                     left_pad = max(0, -left)
                     right_pad = max(0, right - in_width)
                     top_pad = max(0, -top)
@@ -2947,7 +2957,8 @@ def rfft(
     >>> x = ivy.array([2.3,3.14,7.2])
     >>> y = ivy.zeros(2)
     >>> ivy.rfft(x, out=y)
-    ivy.array([12.639999+0.j      , -2.87    +3.516063j])
+    >>> print(x)
+    ivy.array([2.29999995, 3.1400001 , 7.19999981])
 
     >>> x = ivy.array([-1.2, 3.4, -5.6])
     >>> ivy.rfft(x, n=4, out=x)
@@ -3031,7 +3042,7 @@ def rfftn(
     Examples
     --------
     >>> x = ivy.array([1, 2, 3, 4], dtype=ivy.float32)
-    >>> result = ivy.rfftn(x, s=(4,))
+    >>> result = ivy.rfftn(x, s=(4,), axes=(0,))
     >>> print(result)
     ivy.array([10.+0.j, -2.+2.j, -2.+0.j])
 

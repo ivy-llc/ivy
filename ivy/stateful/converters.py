@@ -507,7 +507,7 @@ class ModuleConverters:
                         module = module.__getattribute__(key)
                     if hasattr(module, "_update_v"):
                         module._update_v({keys[-1]: self._parameters[kc]})
-                    return self._parameters[kc]
+                    return getattr(module, keys[-1])
 
                 self._ivy_module.v = self._ivy_module.v.cont_map(
                     functools.partial(__update_param, self._ivy_module),

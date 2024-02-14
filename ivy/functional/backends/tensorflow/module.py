@@ -1,6 +1,7 @@
 # global
 from __future__ import annotations
 import re
+import os
 import tensorflow as tf
 import functools
 import logging
@@ -83,10 +84,12 @@ class TreeSpec:
             indent += len(repr_prefix)
             children_specs_str += self.children_specs[0].__repr__(indent)
             children_specs_str += "," if len(self.children_specs) > 1 else ""
-            children_specs_str += ",".join([
-                "\n" + " " * indent + child.__repr__(indent)
-                for child in self.children_specs[1:]
-            ])
+            children_specs_str += ",".join(
+                [
+                    "\n" + " " * indent + child.__repr__(indent)
+                    for child in self.children_specs[1:]
+                ]
+            )
         repr_suffix: str = f"{children_specs_str}])"
         return repr_prefix + repr_suffix
 
@@ -156,6 +159,7 @@ def tree_unflatten(values: List[Any], spec: TreeSpec) -> PyTree:
 
 class ModelHelpers:
     @staticmethod
+    @tf.autograph.experimental.do_not_convert
     def _get_first_array(*args, **kwargs):
         arr = None
         flattened_args = tf.nest.flatten((args, kwargs))
@@ -170,6 +174,21 @@ class ModelHelpers:
         return arr
 
     @staticmethod
+    @tf.autograph.experimental.do_not_convert
+    def _get_input_shapes(*args, **kwargs):
+        flattened_args = tf.nest.flatten((args, kwargs))
+        arr_candidates = tf.nest.map_structure(
+            lambda x: x if isinstance(x, (tf.Tensor, tf.Variable)) else False,
+            flattened_args,
+        )
+        input_shapes = []
+        for arr_candidate in arr_candidates:
+            if arr_candidate is not False:
+                input_shapes.append(arr_candidate.shape)
+        return input_shapes
+
+    @staticmethod
+    @tf.autograph.experimental.do_not_convert
     def _extract_v(v, keychain_mappings: dict, orig_key_chain, /):
         if ModelHelpers._dict_has_key_chain(v, orig_key_chain):
             ret_cont = ModelHelpers._dict_at_key_chain(v, orig_key_chain)
@@ -189,6 +208,7 @@ class ModelHelpers:
         return ret_cont
 
     @staticmethod
+    @tf.autograph.experimental.do_not_convert
     def _remove_duplicate_variables(vs, created, /):
         created_ids = tf.nest.map_structure(lambda x: id(x), created)
         vs_ids = tf.nest.map_structure(lambda x: id(x), vs)
@@ -221,6 +241,7 @@ class ModelHelpers:
         return vs, keychain_mappings
 
     @staticmethod
+    @tf.autograph.experimental.do_not_convert
     def _dict_set_at_key_chain(in_dict, key_chain, val, inplace=False):
         keys = re.split("[/.]", key_chain)
         if inplace:
@@ -236,6 +257,7 @@ class ModelHelpers:
         return cont
 
     @staticmethod
+    @tf.autograph.experimental.do_not_convert
     def _dict_at_key_chain(dict, key_chain, ignore_key_errors=False):
         keys = re.split("[/.]", key_chain)
         ret = dict
@@ -249,6 +271,7 @@ class ModelHelpers:
         return ret
 
     @staticmethod
+    @tf.autograph.experimental.do_not_convert
     def _dict_has_key_chain(dict, key_chain):
         keys = re.split("[/.]", key_chain)
         ret = dict
@@ -260,6 +283,7 @@ class ModelHelpers:
         return True
 
     @staticmethod
+    @tf.autograph.experimental.do_not_convert
     def _dict_prune_key_chain(in_dict, key_chain):
         keys_in_chain = re.split("[/.]", key_chain)
         out_dict = {}
@@ -284,6 +308,7 @@ class ModelHelpers:
         return out_dict
 
     @staticmethod
+    @tf.autograph.experimental.do_not_convert
     def _addindent(s_, numSpaces):
         s = s_.split("\n")
         # don't do anything for single-line stuff
@@ -301,7 +326,6 @@ class Model(tf.keras.Model, ModelHelpers):
     _with_partial_v = None
     _store_vars = True
     _built = False
-    _keras_built = False
     _v = None
     _buffers = None
     _module_dict = None
@@ -338,7 +362,6 @@ class Model(tf.keras.Model, ModelHelpers):
         self._with_partial_v = with_partial_v
         self._store_vars = store_vars
         self._built = False
-        self._keras_built = False
         self._v_from_constructor = v if isinstance(v, dict) or v is None else dict(v)
         self._v = v if v is not None else dict()
         self._buffers = dict(buffers or {})
@@ -356,6 +379,7 @@ class Model(tf.keras.Model, ModelHelpers):
             return
         self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
 
+    @tf.autograph.experimental.do_not_convert
     def _find_variables(
         self,
         /,
@@ -370,7 +394,7 @@ class Model(tf.keras.Model, ModelHelpers):
             return vs
         _visited[id(obj)] = True
         if isinstance(obj, Model) and obj is not self:
-            if not obj.built and without_initialisation:
+            if not obj._built and without_initialisation:
                 return lambda: obj._build_and_return_v(
                     *obj._args, dynamic_backend=self._dynamic_backend, **obj._kwargs
                 )
@@ -404,10 +428,12 @@ class Model(tf.keras.Model, ModelHelpers):
             if (
                 v is not None
                 and k[0:2] != "__"
-                and not k.startswith((
-                    "_module_dict",
-                    "_self_",
-                ))
+                and not k.startswith(
+                    (
+                        "_module_dict",
+                        "_self_",
+                    )
+                )
             ):
                 ret = self._find_variables(
                     obj=v,
@@ -418,17 +444,20 @@ class Model(tf.keras.Model, ModelHelpers):
                     vs[k[1:] if k[0] == "_" else k] = ret
         return vs
 
+    @tf.autograph.experimental.do_not_convert
     def _find_buffers(self):
         if hasattr(self, "_module_dict"):
             for key, sub_module in self._module_dict.items():
                 if len(sub_module._buffers) > 0:
                     self._buffers[key] = sub_module._buffers
 
+    @tf.autograph.experimental.do_not_convert
     def _build_and_return_v(self, *args, **kwargs):
         if not self._built:
             self.build(*args, **kwargs)
         return self.v
 
+    @tf.autograph.experimental.do_not_convert
     def _assign_weights(self):
         model_weights = {}
         existing_ids = [id(w) for w in self.weights]
@@ -474,6 +503,7 @@ class Model(tf.keras.Model, ModelHelpers):
         if model_weights:
             self.set_weights(_sort_weights(model_weights, self.weights))
 
+    @tf.autograph.experimental.do_not_convert
     def build(
         self,
         *args,
@@ -547,6 +577,7 @@ class Model(tf.keras.Model, ModelHelpers):
 
         return v_ret if bool(v_ret) or isinstance(built, bool) else built
 
+    @tf.autograph.experimental.do_not_convert
     def _wrap_call_methods(
         self, keychain_mappings, /, *, key="", obj=None, _visited=None
     ):
@@ -587,11 +618,11 @@ class Model(tf.keras.Model, ModelHelpers):
                 )
         return
 
+    @tf.autograph.experimental.do_not_convert
     def _call(self, *args, v=None, buffers=None, **kwargs):
-        if not self._built or not self._keras_built:
-            first_arr = self._get_first_array(*args, **kwargs)
-
+        if not self._built or not self.built:
             if not self._built:
+                first_arr = self._get_first_array(*args, **kwargs)
                 self.build(
                     *args,
                     **kwargs,
@@ -599,11 +630,18 @@ class Model(tf.keras.Model, ModelHelpers):
                     dtype=first_arr.dtype if first_arr is not None else tf.float32,
                 )
 
-            if not self._keras_built:
-                self.inputs = tf.nest.flatten(args)
-                super(Model, self).build(  # noqa: UP008
-                    first_arr.shape if first_arr is not None else tf.TensorShape(None)
-                )
+            if not self.built:
+                # Don't use `keras` build method
+                if os.environ.get("USE_KERAS_BUILD", "False").lower() == "false":
+                    self.inputs = tf.nest.flatten(args)
+
+                input_shapes = self._get_input_shapes(*args, **kwargs)
+                if len(input_shapes) == 0:
+                    input_shapes = tf.TensorShape(None)
+                elif len(input_shapes) == 1:
+                    input_shapes = input_shapes[0]
+
+                super(Model, self).build(input_shapes)  # noqa: UP008
 
         # If `v` was provided, replace with the module's v
         replace_v = False
@@ -630,6 +668,7 @@ class Model(tf.keras.Model, ModelHelpers):
             return self.__call__(*args, **kwargs)
         return super(Model, self).__call__(*args, **kwargs)  # noqa: UP008
 
+    @tf.autograph.experimental.do_not_convert
     def _rebuild(self):
         logging.warning(
             "Building the module again as a trainable module was modified, "
@@ -640,6 +679,7 @@ class Model(tf.keras.Model, ModelHelpers):
         self._built = False
         self.build(*self._args, **self._kwargs)
 
+    @tf.autograph.experimental.do_not_convert
     def _compute_module_dict(self):
         self._module_dict = dict()
         for key, value in self.__dict__.items():
@@ -649,6 +689,7 @@ class Model(tf.keras.Model, ModelHelpers):
                 else:
                     self._module_dict[key] = value._module_dict
 
+    @tf.autograph.experimental.do_not_convert
     def _fn_with_var_arg_wrapper(
         self, *a, fn, v_fn, keychain_mappings, orig_key_chain, **kw
     ):
@@ -657,6 +698,7 @@ class Model(tf.keras.Model, ModelHelpers):
         v = v_fn(self.v, keychain_mappings, orig_key_chain)
         return fn(*a, **kw, v=v)
 
+    @tf.autograph.experimental.do_not_convert
     def _fn_with_var_arg(self, fn, v_fn, /, keychain_mappings, orig_key_chain):
         _fn_with_var_arg_wrapper = functools.partial(
             self._fn_with_var_arg_wrapper,
@@ -668,15 +710,18 @@ class Model(tf.keras.Model, ModelHelpers):
         _fn_with_var_arg_wrapper.wrapped = True
         return _fn_with_var_arg_wrapper
 
+    @tf.autograph.experimental.do_not_convert
     def register_buffer(self, name: str, value: Union[tf.Tensor, tf.Variable]):
         if value is not None:
             self._buffers.update({name: value})
         else:
             self.__setattr__(name, value)
 
+    @tf.autograph.experimental.do_not_convert
     def register_parameter(self, name: str, value: Union[tf.Tensor, tf.Variable]):
         self._v.update({name: value})
 
+    @tf.autograph.experimental.do_not_convert
     def train(self, mode: bool = True):
         self._training = mode
         for module in self.children():
@@ -684,9 +729,11 @@ class Model(tf.keras.Model, ModelHelpers):
         self.trainable = mode
         return self
 
+    @tf.autograph.experimental.do_not_convert
     def eval(self):
         return self.train(mode=False)
 
+    @tf.autograph.experimental.do_not_convert
     def call(self, inputs, training=None, mask=None):
         raise NotImplementedError(
             "When subclassing the `Model` class, you should implement a `call` method."
@@ -695,18 +742,22 @@ class Model(tf.keras.Model, ModelHelpers):
     # Methods to be Optionally Overridden #
     # -----------------------------------#
 
+    @tf.autograph.experimental.do_not_convert
     def _create_variables(self, *, device=None, dtype=None):
         return {}
 
+    @tf.autograph.experimental.do_not_convert
     def _build(self, *args, **kwargs) -> bool:
         return True
 
+    @tf.autograph.experimental.do_not_convert
     def _forward(self, *args, **kwargs):
         raise NotImplementedError(
             "When subclassing the `Model` class, you should "
             "implement a `_forward` method."
         )
 
+    @tf.autograph.experimental.do_not_convert
     def _extra_repr(self) -> str:
         return ""
 
@@ -748,6 +799,7 @@ class Model(tf.keras.Model, ModelHelpers):
     # Dunder Methods #
     # ---------------#
 
+    @tf.autograph.experimental.do_not_convert
     def __call__(
         self,
         *args,
@@ -755,12 +807,18 @@ class Model(tf.keras.Model, ModelHelpers):
         buffers=None,
         **kwargs,
     ):
+        # TODO: Temp workaround to avoid `call`` from being transformed by AutoGraph
+        if not hasattr(self.__class__.call, "autograph_info__"):
+            setattr(self.__class__.call, "autograph_info__", True)
         ret = self._call(*args, v=v, buffers=buffers, **kwargs)
         return ret
 
+    @tf.autograph.experimental.do_not_convert
     def __getattr__(self, name):
         if name == "v":
-            if not super().__getattribute__("_v") and not self.built:
+            if not super().__getattribute__("_v") and not getattr(  # noqa: E501
+                self, "_built", False
+            ):
                 return self._build_and_return_v(
                     *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
                 )
@@ -774,6 +832,7 @@ class Model(tf.keras.Model, ModelHelpers):
 
         return super().__getattribute__(name)
 
+    @tf.autograph.experimental.do_not_convert
     def __setattr__(self, name, value):
         if name in ["v", "buffers"]:
             name = "_" + name
@@ -782,7 +841,7 @@ class Model(tf.keras.Model, ModelHelpers):
             if (
                 hasattr(self, "_build_mode")
                 and self.build_mode == "on_init"
-                and self.built
+                and getattr(self, "_built", False)
             ):
                 self._rebuild()
             return ret
@@ -791,12 +850,13 @@ class Model(tf.keras.Model, ModelHelpers):
             if (
                 hasattr(self, "_build_mode")
                 and self.build_mode == "on_init"
-                and self.built
+                and getattr(self, "_built", False)
             ):
                 self._rebuild()
             return ret
         return super().__setattr__(name, value)
 
+    @tf.autograph.experimental.do_not_convert
     def __delattr__(self, name):
         if hasattr(self, name):
             if isinstance(getattr(self, name), Model):
@@ -806,6 +866,7 @@ class Model(tf.keras.Model, ModelHelpers):
                 return
         super().__delattr__(name)
 
+    @tf.autograph.experimental.do_not_convert
     def __repr__(self):
         extra_lines = []
         extra_repr = self._extra_repr()
