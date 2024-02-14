@@ -523,6 +523,7 @@ def nms(
             order = order.at[forward].set(order[forward[::-1]])
             boxes = boxes.at[forward].set(boxes[forward[::-1]])
             areas = areas.at[forward].set(areas[forward[::-1]])
+            unique_size -= 1
 
             return keep, keep_idx, boxes, areas, order, unique_size
 
