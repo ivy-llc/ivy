@@ -1402,6 +1402,10 @@ class Tensor:
     def __and__(self, other):
         return torch_frontend.bitwise_and(self, other)
 
+    def __iand__(self, other):
+        self.ivy_array = self.bitwise_and(other).ivy_array
+        return self
+
     def __array__(self, dtype=None):
         if dtype is None:
             return ivy.to_numpy(self.ivy_array)
