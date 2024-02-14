@@ -2242,6 +2242,7 @@ class Tensor:
                 "float16",
                 "complex128",
                 "complex64",
+                "bool",
             )
         },
         "torch",
