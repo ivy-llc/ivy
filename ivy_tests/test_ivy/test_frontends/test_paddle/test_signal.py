@@ -5,13 +5,6 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-
-
-
-# --- Main --- #
-# ------------ #
-
-
 # Updated test function
 @handle_frontend_test(
     fn_tree="paddle.signal.stft",
