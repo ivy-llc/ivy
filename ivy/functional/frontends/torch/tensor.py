@@ -1161,6 +1161,10 @@ class Tensor:
     def fmin(self, other):
         return torch_frontend.fmin(self, other)
 
+    @with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
+    def log_softmax(self, dim=None, _stack_level=3, dtype=None):
+        return torch_frontend.nn.functional.log_softmax(self, dim=dim, dtype=dtype)
+
     def msort(self):
         return torch_frontend.msort(self)
 
