@@ -500,9 +500,10 @@ def nms(
         areas = jnp.pad(areas, [0, pad_width - size])
         keep = jnp.zeros((size,), dtype=jnp.int64)
         keep_idx = 0
+        unique_size = jnp.unique(order).size
 
         def body_fn(loop_vars):
-            keep, keep_idx, boxes, areas, order = loop_vars
+            keep, keep_idx, boxes, areas, order, unique_size = loop_vars
             max_iou_idx = order[0]
             keep = keep.at[keep_idx].set(max_iou_idx)
             keep_idx += 1
@@ -523,15 +524,14 @@ def nms(
             boxes = boxes.at[forward].set(boxes[forward[::-1]])
             areas = areas.at[forward].set(areas[forward[::-1]])
 
-            return keep, keep_idx, boxes, areas, order
+            return keep, keep_idx, boxes, areas, order, unique_size
 
         def cond_fn(loop_vars):
-            _, _, _, _, order = loop_vars
-            unique_size = len(order)
-            return jnp.unique(order, size=unique_size).size > 1
+            _, _, _, _, _, unique_size = loop_vars
+            return unique_size > 1
 
-        init_vars = (keep, keep_idx, boxes, areas, order)
-        keep, keep_idx, boxes, _, _ = jlax.while_loop(cond_fn, body_fn, init_vars)
+        init_vars = (keep, keep_idx, boxes, areas, order, unique_size)
+        keep, keep_idx, boxes, _, _, _ = jlax.while_loop(cond_fn, body_fn, init_vars)
 
         ret = jnp.array(keep[:keep_idx], dtype=jnp.int64)
 
