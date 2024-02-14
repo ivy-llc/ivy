@@ -5,6 +5,32 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+@st.composite
+def _valid_stft(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["complex64", "complex128"],
+            max_value=65280,
+            min_value=-65280,
+            min_num_dims=1,
+            min_dim_size=2,
+            shared_dtype=True,
+        )
+    )
+    nfft = draw(helpers.ints(min_value=16, max_value=100))
+    h_size = draw(helpers.ints(min_value=1, max_value=50))
+
+    return dtype, x, nfft, h_size
+
+
+# --- Main --- #
+# ------------ #
+
+
 # Updated test function
 @handle_frontend_test(
     fn_tree="paddle.signal.stft",
@@ -20,7 +46,7 @@ def test_paddle_stft(
     backend_fw,
     on_device,
 ):
-    input_dtype, x, n_fft, hop_length = dtype_x_and_args
+    input_dtype, x, nfft, h_size = dtype_x_and_args
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -29,8 +55,8 @@ def test_paddle_stft(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        n_fft=n_fft,
-        hop_length=hop_length,
+        nfft=nfft,
+        h_size=h_size,
         win_length=None,
         window=None,
         center=True,
