@@ -89,16 +89,16 @@ max.support_native_out = True
 @handle_out_argument
 def mean(
     x: torch.Tensor,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
     /,
     *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
         return torch.mean(x, dtype)
-    return torch.mean(x, axis, keepdims, dtype=dtype)
+    return torch.mean(x, dim=axis, keepdim=keepdims, dtype=dtype)
 
 
 mean.support_native_out = True

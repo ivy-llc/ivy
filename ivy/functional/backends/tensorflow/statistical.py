@@ -70,19 +70,19 @@ def max(
 @handle_out_argument
 def mean(
     x: Union[tf.Tensor, tf.Variable],
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
     /,
     *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
     if dtype is not None:
         x = tf.cast(x, dtype)
-        ret = tf.cast(tf.math.reduce_mean(x, axis, keepdims), dtype)
+        ret = tf.cast(tf.math.reduce_mean(x, axis=axis, keepdims=keepdims), dtype=dtype)
     else:
-        ret = tf.math.reduce_mean(x, axis, keepdims)
+        ret = tf.math.reduce_mean(x, axis=axis, keepdims=keepdims)
     return ret
 
 
