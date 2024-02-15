@@ -97,7 +97,7 @@ def mean(
     if axis is None:
         ret = torch.mean(x, dtype=dtype)
     else:
-        ret = torch.mean(x, dim=axis, keepdim=keepdims, dtype=dtype)
+        ret = torch.mean(x, dim=axis, keepdim=keepdims, dtype=dtype, out=None)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
