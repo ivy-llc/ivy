@@ -45,7 +45,7 @@ def _statistical_dtype_values(draw, *, function, min_value=None, max_value=None)
         small_abs_safety_factor = 24
     dtype, values, axis = draw(
         helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("valid"),
+            available_dtypes=helpers.get_dtypes("numeric"),
             large_abs_safety_factor=large_abs_safety_factor,
             small_abs_safety_factor=small_abs_safety_factor,
             safety_factor_scale="log",
@@ -63,7 +63,7 @@ def _statistical_dtype_values(draw, *, function, min_value=None, max_value=None)
     shape = values[0].shape
     size = values[0].size
     max_correction = np.min(shape)
-    if "complex" in dtype[0] and "mean" not in function:
+    if "complex" in dtype[0]:
         # TODO skip complex median test until added ?
         #  because it is not supported in tensorflow (ground truth backend)
         dtype = ["float32"]
