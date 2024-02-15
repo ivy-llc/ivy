@@ -98,10 +98,7 @@ def mean(
 ) -> torch.Tensor:
     if axis is None:
         return torch.mean(x, dtype)
-    return torch.mean(x, dim=axis, keepdim=keepdims, dtype=dtype, out=out)
-
-
-mean.support_native_out = True
+    return torch.mean(x, dim=axis, keepdim=keepdims, dtype=dtype)
 
 
 def _infer_dtype(dtype: torch.dtype) -> torch.dtype:
