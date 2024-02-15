@@ -63,7 +63,7 @@ def _statistical_dtype_values(draw, *, function, min_value=None, max_value=None)
     shape = values[0].shape
     size = values[0].size
     max_correction = np.min(shape)
-    if "complex" in dtype[0]:
+    if "complex" in dtype[0] and "mean" not in function:
         # TODO skip complex median test until added ?
         #  because it is not supported in tensorflow (ground truth backend)
         dtype = ["float32"]
