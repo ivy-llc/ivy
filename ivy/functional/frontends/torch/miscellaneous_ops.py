@@ -5,6 +5,9 @@ from ivy.functional.frontends.torch import promote_types_of_torch_inputs
 import ivy.functional.frontends.torch as torch_frontend
 
 
+erfinv = torch_frontend.special.erfinv
+
+
 @to_ivy_arrays_and_back
 def atleast_1d(*tensors):
     return ivy.atleast_1d(*tensors)
@@ -237,11 +240,6 @@ def einsum(equation, *operands):
     if len(operands) == 1 and isinstance(operands[0], (list, tuple)):
         operands = operands[0]
     return ivy.einsum(equation, *operands)
-
-
-@to_ivy_arrays_and_back
-def erfinv(input, *, out=None):
-    return ivy.erfinv(input, out=out)
 
 
 @to_ivy_arrays_and_back

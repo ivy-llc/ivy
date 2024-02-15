@@ -1051,12 +1051,14 @@ def svd_flip(
         )
         V = V * signs[:, None]
         if ivy.shape(U)[1] > ivy.shape(V)[0]:
-            signs = ivy.concat((
-                signs,
-                ivy.ones(
-                    ivy.shape(U)[1] - ivy.shape(V)[0],
-                ),
-            ))
+            signs = ivy.concat(
+                (
+                    signs,
+                    ivy.ones(
+                        ivy.shape(U)[1] - ivy.shape(V)[0],
+                    ),
+                )
+            )
         U = U * signs[: ivy.shape(U)[1]]
 
     return U, V
