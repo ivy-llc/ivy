@@ -94,6 +94,8 @@ def mean(
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if dtype is not None:
+        dtype = ivy.as_native_dtype(dtype)
     if axis is None:
         ret = torch.mean(x, dtype=dtype)
     else:
