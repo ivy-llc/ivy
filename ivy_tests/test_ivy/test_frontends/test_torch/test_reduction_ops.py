@@ -466,7 +466,7 @@ def test_torch_max(
         max_value=1e04,
     ),
     keepdims=st.booleans(),
-    dtype=helpers.get_dtypes("valid"),
+    dtype=helpers.get_dtypes("float_and_complex", none=True, full=False),
 )
 def test_torch_mean(
     *,
