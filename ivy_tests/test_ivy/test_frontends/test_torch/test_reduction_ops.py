@@ -466,11 +466,13 @@ def test_torch_max(
         max_value=1e04,
     ),
     keepdims=st.booleans(),
+    dtype=helpers.get_dtypes("valid"),
 )
 def test_torch_mean(
     *,
     dtype_and_x,
     keepdims,
+    dtype,
     on_device,
     fn_tree,
     frontend,
@@ -488,6 +490,7 @@ def test_torch_mean(
         input=x[0],
         dim=axis,
         keepdims=keepdims,
+        dtype=dtype,
         atol=1e-2,
     )
 
