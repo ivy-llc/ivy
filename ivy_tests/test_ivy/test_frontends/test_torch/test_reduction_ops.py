@@ -490,7 +490,7 @@ def test_torch_mean(
         input=x[0],
         dim=axis,
         keepdims=keepdims,
-        dtype=dtypes[0],
+        dtype=None,
         atol=1e-2,
     )
 

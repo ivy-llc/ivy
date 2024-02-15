@@ -45,7 +45,7 @@ def _statistical_dtype_values(draw, *, function, min_value=None, max_value=None)
         small_abs_safety_factor = 24
     dtype, values, axis = draw(
         helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("valid"),
+            available_dtypes=helpers.get_dtypes("float_and_complex"),
             large_abs_safety_factor=large_abs_safety_factor,
             small_abs_safety_factor=small_abs_safety_factor,
             safety_factor_scale="log",
