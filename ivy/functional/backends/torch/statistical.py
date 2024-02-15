@@ -10,7 +10,6 @@ from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
     with_supported_dtypes,
-    handle_out_argument,
 )
 from . import backend_version
 
@@ -86,7 +85,6 @@ max.support_native_out = True
 
 
 @with_supported_dtypes({"2.2 and below": ("float", "complex")}, backend_version)
-@handle_out_argument
 def mean(
     x: torch.Tensor,
     /,
@@ -97,8 +95,15 @@ def mean(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
-        return torch.mean(x, dtype)
-    return torch.mean(x, dim=axis, keepdim=keepdims, dtype=dtype)
+        ret = torch.mean(x, dtype=dtype)
+    else:
+        ret = torch.mean(x, dim=axis, keepdim=keepdims, dtype=dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+mean.support_native_out = True
 
 
 def _infer_dtype(dtype: torch.dtype) -> torch.dtype:
