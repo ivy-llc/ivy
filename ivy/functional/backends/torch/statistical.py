@@ -95,9 +95,9 @@ def mean(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
-        ret = torch.mean(x, dtype=dtype)
+        ret = torch.mean(input=x, dtype=dtype)
     else:
-        ret = torch.mean(x, dim=axis, keepdim=keepdims, dtype=dtype, out=None)
+        ret = torch.mean(input=x, dim=axis, keepdim=keepdims, dtype=dtype, out=None)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
