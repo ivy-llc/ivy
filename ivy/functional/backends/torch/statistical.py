@@ -88,16 +88,16 @@ max.support_native_out = True
 def mean(
     x: torch.Tensor,
     /,
-    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    *,
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
         ret = torch.mean(x, dtype=dtype)
     else:
-        ret = torch.mean(x, axis, keepdims, dtype=dtype)
+        ret = torch.mean(x, dim=axis, keepdim=keepdims, dtype=dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret

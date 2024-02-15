@@ -272,9 +272,9 @@ def max(
 def mean(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    *,
     dtype: Optional[type] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
