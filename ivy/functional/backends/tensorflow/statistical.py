@@ -70,9 +70,9 @@ def max(
 @handle_out_argument
 def mean(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
-    /,
     *,
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,

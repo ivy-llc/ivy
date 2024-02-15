@@ -121,7 +121,7 @@ def max(*input, dim=None, keepdim=False, out=None):
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
-def mean(input, dim=None, keepdims=False, *, dtype=None, out=None):
+def mean(input, /, dim=None, keepdims=False, *, dtype=None, out=None):
     return ivy.mean(input, axis=dim, keepdims=keepdims, dtype=dtype, out=out)
 
 
