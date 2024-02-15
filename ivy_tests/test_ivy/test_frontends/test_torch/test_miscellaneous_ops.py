@@ -1579,10 +1579,10 @@ def test_torch_rot90(
         max_num_dims=1,
         num_arrays=2,
     ),
-    side=st.sampled_from(["left", "right"]),
+    side=st.sampled_from(["left", "right", None]),
     out_int32=st.booleans(),
-    right=st.just(False),
-    test_with_out=st.just(False),
+    right=st.sampled_from([True, False, None]),
+    test_with_out=st.booleans(),
 )
 def test_torch_searchsorted(
     dtype_x_v,
@@ -1595,6 +1595,13 @@ def test_torch_searchsorted(
     backend_fw,
     on_device,
 ):
+    potential_kwargs = {}
+    if side == "left" and right:
+        right = None  # this combo will cause an exception
+    if side is not None:
+        potential_kwargs["side"] = side
+    if right is not None:
+        potential_kwargs["right"] = right
     input_dtypes, xs = dtype_x_v
     use_sorter = st.booleans()
     if use_sorter:
@@ -1612,10 +1619,9 @@ def test_torch_searchsorted(
         on_device=on_device,
         sorted_sequence=xs[0],
         values=xs[1],
-        side=side,
         out_int32=out_int32,
-        right=right,
         sorter=sorter,
+        **potential_kwargs,
     )
 
 
