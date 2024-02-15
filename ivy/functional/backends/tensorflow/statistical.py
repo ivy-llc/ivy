@@ -79,6 +79,7 @@ def mean(
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
     if dtype is not None:
+        dtype = ivy.as_native_dtype(dtype)
         x = tf.cast(x, dtype)
         ret = tf.cast(tf.math.reduce_mean(x, axis=axis, keepdims=keepdims), dtype=dtype)
     else:
