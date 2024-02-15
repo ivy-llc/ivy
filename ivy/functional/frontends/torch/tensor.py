@@ -576,7 +576,9 @@ class Tensor:
                     )
                     return cast_tensor
             if (
-                isinstance(args[0], (ivy.Dtype, ivy.NativeDtype))
+                isinstance(args[0], ivy.NativeDtype)
+                or isinstance(args[0], ivy.Dtype)
+                and hasattr(args[0], "as_native_dtype")
                 or args[0] in ivy._all_ivy_dtypes_str
             ):
                 if self.dtype == ivy.as_ivy_dtype(args[0]):
