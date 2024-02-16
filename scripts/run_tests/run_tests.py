@@ -61,7 +61,7 @@ if __name__ == "__main__":
         for line in f:
             print(f"\n{'*' * 100}")
             print(f"{line[:-1]}")
-            print(f"{'*' * 100}\n")
+            print(f"{'*' * 100}\n") 
 
             # get the test, submodule, backend and version
             test_path, backend = line.strip().split(",")
@@ -229,14 +229,16 @@ if __name__ == "__main__":
                 if is_frontend_test:
                     test_info = {
                         **test_info,
-                        "fw_time": report_content["fw_time"],
-                        "ivy_nodes": report_content["ivy_nodes"],
+                        "fw_time": report_content.get("fw_time", None),
+                        "ivy_nodes": report_content.get("ivy_nodes", None),
                     }
+                
+                backend_data = report_content.get("nodes", {}).get(backend, {})
                 transpilation_metrics = {
-                    "nodes": report_content["nodes"][backend],
-                    "time": report_content["time"][backend],
-                    "args": report_content["args"][backend],
-                    "kwargs": report_content["kwargs"][backend],
+                    "nodes": backend_data.get("nodes", None),
+                    "time": backend_data.get("time", None),
+                    "args": backend_data.get("args", None),
+                    "kwargs": backend_data.get("kwargs", None),
                 }
                 for metric, value in transpilation_metrics.items():
                     test_info[f"{prefix_str}{backend}.{version}.{metric}"] = value
