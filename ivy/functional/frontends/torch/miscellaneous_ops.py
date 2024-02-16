@@ -491,17 +491,18 @@ def searchsorted(
     *,
     out_int32=False,
     right=False,
-    side="left",
+    side=None,
     out=None,
     sorter=None,
 ):
-    if right and side == "left":
-        raise ivy.exceptions.IvyError(
-            "side and right can't be set to opposites, got side of left"
-            " while right was True"
-        )
-    if right:
-        side = "right"
+    if side == "left":
+        if right:
+            raise ivy.exceptions.IvyError(
+                "side and right can't be set to opposites, got side of left"
+                " while right was True"
+            )
+    elif side is None:
+        side = "right" if right else "left"
     ret = ivy.searchsorted(sorted_sequence, values, side=side, out=out, sorter=sorter)
     if out_int32:
         ret = ivy.astype(ret, "int32")
