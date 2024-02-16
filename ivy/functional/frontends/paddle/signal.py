@@ -18,8 +18,8 @@ from ivy.func_wrapper import with_supported_dtypes
 @to_ivy_arrays_and_back
 def stft(
     x,
-    nfft,
-    h_size=None,
+    n_fft,
+    hop_length=None,
     win_length=None,
     window=None,
     center=True,
@@ -31,8 +31,8 @@ def stft(
     x = ivy.asarray(x)
     return ivy.stft(
         x,
-        nfft,
-        h_size=h_size,
+        n_fft,
+        hop_lengthize=hop_legth,
         win_length=win_length,
         window=window,
         center=center,
