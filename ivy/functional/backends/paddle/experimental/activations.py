@@ -62,7 +62,9 @@ def relu6(
     x: paddle.Tensor, /, *, complex_mode="jax", out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     if paddle.is_complex(x):
-        return paddle.complex(F.relu6(x.real()), F.relu6(x.imag()))
+        return paddle.complex(
+            paddle_backend.minimum(paddle_backend.maximum(0.0, x)), 6.0
+        )
     return F.relu6(x)
 
 
