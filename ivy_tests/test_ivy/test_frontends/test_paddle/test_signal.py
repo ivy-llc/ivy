@@ -35,7 +35,7 @@ def _valid_stft(draw):
 @handle_frontend_test(
     fn_tree="paddle.signal.stft",
     dtype_x_and_args=_valid_stft(),
-    test_with_out=st.just(False),
+    test_with_out=st.just(True),
 )
 def test_paddle_stft(
     *,
