@@ -1405,11 +1405,13 @@ def _tf_area_interpolate(x, size, scale, dims):
                             d_in, d_in1, d_index = _tf_area_indices(d_dim, scale[0])
                             h_in, h_in1, h_index = _tf_area_indices(h_dim, scale[1])
                             w_in, w_in1, w_index = _tf_area_indices(w_dim, scale[2])
-                            sum_data = ivy.zeros((
-                                d_index[1] - d_index[0],
-                                h_index[1] - h_index[0],
-                                w_index[1] - w_index[0],
-                            ))
+                            sum_data = ivy.zeros(
+                                (
+                                    d_index[1] - d_index[0],
+                                    h_index[1] - h_index[0],
+                                    w_index[1] - w_index[0],
+                                )
+                            )
                             for d_ind in range(d_index[0], d_index[1]):
                                 scale_z = _tf_area_dim_scale(
                                     d_ind, d_in, scale[0], d_in1
@@ -1912,14 +1914,18 @@ def interpolate(
                     right = int(math.ceil(p_j + 2))
                     top = int(math.floor(p_i - 2))
                     bottom = int(math.ceil(p_i + 2))
-                    kernel_w = ivy.array([
-                        _mitchellcubic_kernel((p_j - j) * scale_w)
-                        for i in range(left, right)
-                    ])
-                    kernel_h = ivy.array([
-                        _mitchellcubic_kernel((p_i - i) * scale_h)
-                        for j in range(top, bottom)
-                    ])
+                    kernel_w = ivy.array(
+                        [
+                            _mitchellcubic_kernel((p_j - j) * scale_w)
+                            for i in range(left, right)
+                        ]
+                    )
+                    kernel_h = ivy.array(
+                        [
+                            _mitchellcubic_kernel((p_i - i) * scale_h)
+                            for j in range(top, bottom)
+                        ]
+                    )
                     left_pad = max(0, -left)
                     right_pad = max(0, right - in_width)
                     top_pad = max(0, -top)

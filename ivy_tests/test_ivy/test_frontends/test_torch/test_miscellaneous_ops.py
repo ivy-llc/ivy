@@ -1020,7 +1020,8 @@ def test_torch_einsum(
 
 # erfinv
 @handle_frontend_test(
-    fn_tree="torch.erfinv",
+    fn_tree="torch.special.erfinv",
+    aliases=["torch.erfinv"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-1,

@@ -6,7 +6,7 @@ import math
 from types import SimpleNamespace
 
 import pytest
-from hypothesis import given, assume, example, strategies as st
+from hypothesis import given, assume, strategies as st
 import numpy as np
 from collections.abc import Sequence
 
@@ -18,7 +18,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import (
     handle_test,
     BackendHandler,
-    test_parameter_flags as pf,
+    handle_example,
 )
 from ivy_tests.test_ivy.helpers.assertions import assert_all_close
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import pow_helper
@@ -1647,7 +1647,11 @@ def test_set_inplace_mode(mode):
     container_flags=st.just([False]),
     test_with_copy=st.just(True),
 )
-@example(
+@handle_example(
+    test_example=True,
+    test_flags={
+        "num_positional_args": 3,
+    },
     dtypes_x_query_val=(
         ["int32", "int32"],
         np.ones((1, 3, 3, 3)),
@@ -1656,21 +1660,6 @@ def test_set_inplace_mode(mode):
     ),
     copy=False,
     fn_name="set_item",
-    test_flags=pf.FunctionTestFlags(
-        ground_truth_backend="numpy",
-        num_positional_args=3,
-        instance_method=False,
-        with_out=False,
-        with_copy=False,
-        test_gradients=False,
-        test_trace=False,
-        transpile=False,
-        as_variable=[False],
-        native_arrays=[False],
-        container=[False],
-        precision_mode=False,
-        test_cython_wrapper=False,
-    ),
 )
 def test_set_item(
     dtypes_x_query_val,
