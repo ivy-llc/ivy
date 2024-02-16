@@ -21,8 +21,8 @@ def _valid_stft(draw):
             shared_dtype=True,
         )
     )
-    nfft = draw(helpers.ints(min_value=16, max_value=100))
-    h_size = draw(helpers.ints(min_value=1, max_value=50))
+    n_fft = draw(helpers.ints(min_value=16, max_value=100))
+    hop_length = draw(helpers.ints(min_value=1, max_value=50))
 
     return dtype, x, nfft, h_size
 
@@ -46,7 +46,7 @@ def test_paddle_stft(
     backend_fw,
     on_device,
 ):
-    input_dtype, x, nfft, h_size = dtype_x_and_args
+    input_dtype, x, n_fft, hop_length = dtype_x_and_args
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -55,8 +55,8 @@ def test_paddle_stft(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        nfft=nfft,
-        h_size=h_size,
+        n_fft=n_fft,
+        hop_length=hop_length,
         win_length=None,
         window=None,
         center=True,
