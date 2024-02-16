@@ -32,7 +32,7 @@ def stft(
     return ivy.stft(
         x,
         n_fft,
-        hop_length=hop_legth,
+        hop_length=hop_length,
         win_length=win_length,
         window=window,
         center=center,
