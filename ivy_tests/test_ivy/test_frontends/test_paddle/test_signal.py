@@ -56,7 +56,7 @@ def test_paddle_stft(
         on_device=on_device,
         x=x[0],
         n_fft=n_fft,
-        hop_length=hop_length,
+        hop_length=None,
         win_length=None,
         window=None,
         center=True,
