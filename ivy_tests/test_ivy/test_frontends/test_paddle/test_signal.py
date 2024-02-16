@@ -24,7 +24,7 @@ def _valid_stft(draw):
     n_fft = draw(helpers.ints(min_value=16, max_value=100))
     hop_length = draw(helpers.ints(min_value=1, max_value=50))
 
-    return dtype, x, nfft, h_size
+    return dtype, x, n_fft, hop_length
 
 
 # --- Main --- #
