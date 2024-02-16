@@ -48,7 +48,7 @@ def test_paddle_stft(
 ):
     input_dtype, x, n_fft, hop_length = dtype_x_and_args
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
