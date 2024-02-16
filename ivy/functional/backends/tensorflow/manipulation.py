@@ -124,6 +124,8 @@ def reshape(
         ]
     if order == "F":
         return _reshape_fortran_tf(x, shape)
+    if isinstance(shape, (int, list, tuple)):
+        shape = tf.TensorShape(shape)
     return tf.reshape(x, shape)
 
 
