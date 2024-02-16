@@ -61,7 +61,7 @@ if __name__ == "__main__":
         for line in f:
             print(f"\n{'*' * 100}")
             print(f"{line[:-1]}")
-            print(f"{'*' * 100}\n") 
+            print(f"{'*' * 100}\n")
 
             # get the test, submodule, backend and version
             test_path, backend = line.strip().split(",")
@@ -232,7 +232,7 @@ if __name__ == "__main__":
                         "fw_time": report_content.get("fw_time", None),
                         "ivy_nodes": report_content.get("ivy_nodes", None),
                     }
-                
+
                 backend_data = report_content.get("nodes", {}).get(backend, {})
                 transpilation_metrics = {
                     "nodes": backend_data.get("nodes", None),
