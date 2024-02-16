@@ -352,11 +352,12 @@ def _repeat_helper(draw):
 
 
 @st.composite
-def _requires_grad(draw):
-    dtype = draw(_dtypes())[0]
+def _requires_grad_and_dtypes(draw):
+    dtypes = draw(_dtypes())
+    dtype = dtypes[0]
     if ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype):
-        return draw(st.just(False))
-    return draw(st.booleans())
+        return draw(st.just(False)), dtypes
+    return draw(st.booleans()), dtypes
 
 
 @st.composite
@@ -10404,14 +10405,12 @@ def test_torch_new_full(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtypes=_dtypes(),
-    requires_grad=_requires_grad(),
+    requires_grad_and_dtypes=_requires_grad_and_dtypes(),
 )
 def test_torch_new_ones(
     dtype_and_x,
     size,
-    dtypes,
-    requires_grad,
+    requires_grad_and_dtypes,
     on_device,
     frontend_method_data,
     init_flags,
@@ -10420,6 +10419,7 @@ def test_torch_new_ones(
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
+    requires_grad, dtypes = requires_grad_and_dtypes
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -10493,14 +10493,12 @@ def test_torch_new_tensor(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtypes=_dtypes(),
-    requires_grad=_requires_grad(),
+    requires_grad_and_dtypes=_requires_grad_and_dtypes(),
 )
 def test_torch_new_zeros(
     dtype_and_x,
     size,
-    dtypes,
-    requires_grad,
+    requires_grad_and_dtypes,
     on_device,
     frontend_method_data,
     init_flags,
@@ -10509,6 +10507,7 @@ def test_torch_new_zeros(
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
+    requires_grad, dtypes = requires_grad_and_dtypes
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
