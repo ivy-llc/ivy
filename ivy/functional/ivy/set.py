@@ -38,10 +38,10 @@ def unique_all(
     Union[ivy.Array, ivy.NativeArray],
     Union[ivy.Array, ivy.NativeArray],
 ]:
-    """
-    Return the unique elements of an input array ``x``, the first occurring indices for
-    each unique element in ``x``, the indices from the set of unique elements that
-    reconstruct ``x``, and the corresponding counts for each unique element in ``x``.
+    """Return the unique elements of an input array ``x``, the first occurring
+    indices for each unique element in ``x``, the indices from the set of
+    unique elements that reconstruct ``x``, and the corresponding counts for
+    each unique element in ``x``.
 
     .. admonition:: Data-dependent output shape
         :class: important
@@ -160,9 +160,8 @@ def unique_inverse(
     *,
     axis: Optional[int] = None,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
-    """
-    Return the unique elements of an input array ``x``, and the indices from the set of
-    unique elements that reconstruct ``x``.
+    """Return the unique elements of an input array ``x``, and the indices from
+    the set of unique elements that reconstruct ``x``.
 
      .. admonition:: Data-dependent output shape
         :class: important
@@ -261,8 +260,7 @@ def unique_values(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the unique elements of an input array ``x``.
+    """Return the unique elements of an input array ``x``.
 
     .. admonition:: Data-dependent output shape
         :class: important
@@ -352,9 +350,8 @@ def unique_counts(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
-    """
-    Return the unique elements of an input array ``x`` and the corresponding counts for
-    each unique element in ``x``.
+    """Return the unique elements of an input array ``x`` and the corresponding
+    counts for each unique element in ``x``.
 
     .. admonition:: Data-dependent output shape
         :class: important
