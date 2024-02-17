@@ -227,6 +227,25 @@ def diagflat(
         out=out,
     )
 
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device
+def lu(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    offset: int = 0,
+    padding_value: float = 0,
+    align: str = "RIGHT_LEFT",
+    num_rows: int = -1,
+    num_cols: int = -1,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
+    pass
 
 @handle_exceptions
 @handle_backend_invalid
