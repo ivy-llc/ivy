@@ -3,7 +3,8 @@ import ivy
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 
-
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
 def bilinear(x1, x2, weight, bias=None, name=None):
     weight = ivy.swapaxes(weight, -1, -2)
     bilinear_prod = ivy.expand_dims(x1, -1) * ivy.expand_dims(x2, -2)
