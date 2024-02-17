@@ -12,7 +12,6 @@ def bilinear(x1, x2, weight, bias=None, name=None):
     return result
 
 
-
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
 def cosine_similarity(x1, x2, *, axis=1, eps=1e-08):
