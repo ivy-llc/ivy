@@ -633,3 +633,9 @@ def weighted_moments(x, axes, frequency_weights, keepdims=False, name=None):
         weighted_mean = ivy.squeeze(weighted_mean, axis=axes)
         weighted_variance = ivy.squeeze(weighted_variance, axis=axes)
     return weighted_mean, weighted_variance
+
+
+@with_unsupported_dtypes({"2.15.0 and below": ("float32",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def zero_fraction(value, name=None):
+    return ivy.zero_fraction(value)
