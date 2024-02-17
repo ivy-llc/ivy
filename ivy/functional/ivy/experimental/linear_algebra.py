@@ -238,14 +238,35 @@ def lu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    offset: int = 0,
-    padding_value: float = 0,
-    align: str = "RIGHT_LEFT",
-    num_rows: int = -1,
-    num_cols: int = -1,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    pass
+    """
+    Perform LU decomposition of a square matrix using Doolittle's method.
+
+    Args:
+    - x: a square numpy array representing the input matrix
+
+    Returns:
+    - L: Lower triangular matrix
+    - U: Upper triangular matrix
+    """
+    n = len(x)
+    L = ivy.zeros((n,n))
+    U = ivy.zeros((n,n))
+
+    for j in range(n):
+        L[j][j] = 1.0
+        for i in range(j + 1):
+            s1 = sum(U[k][j] * L[i][k] for k in range(i))
+            U[i][j] = x[i][j] - s1
+
+        for i in range(j, n):
+            s2 = sum(U[k][j] * L[i][k] for k in range(j))
+            L[i][j] = (x[i][j] - s2) / U[j][j]
+
+    # TODO: return something like that:
+    # TODO: implement lu in container linear_algebra.py and in array/.../linear_algebra.py
+    return current_backend(a, b).kron(a, b, out=out)
 
 @handle_exceptions
 @handle_backend_invalid
