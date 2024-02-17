@@ -265,8 +265,10 @@ def lu(
             L[i][j] = (x[i][j] - s2) / U[j][j]
 
     # TODO: return something like that:
-    # TODO: implement lu in container linear_algebra.py and in array/.../linear_algebra.py
-    return current_backend(a, b).kron(a, b, out=out)
+    # TODO: implement lu in container/.../linear_algebra.py (a static method and a call for it) the implementation in the static
+    #  and in array/.../linear_algebra.py
+    #   Ask a question
+    return current_backend(x).lu(x, out=out)
 
 @handle_exceptions
 @handle_backend_invalid
