@@ -3,15 +3,6 @@ import ivy
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 
-
-@to_ivy_arrays_and_back
-@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
-def bilinear(x1, x2, weight, bias=None, name=None):
-    x2_transposed = ivy.swapaxes(x2, -1, -2)
-    result = ivy.linear(ivy.multiply(x1, x2_transposed), weight, bias=bias)
-    return result
-
-
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
 def cosine_similarity(x1, x2, *, axis=1, eps=1e-08):
@@ -203,3 +194,13 @@ def zeropad2d(x, padding, data_format="NCHW", name=None):
     else:
         raise ValueError(f"Unknown data_format: {data_format}")
     return ivy.pad(x, padding, mode="constant", constant_values=0.0)
+
+
+def bilinear(x1, x2, weight, bias=None, name=None):
+    weight = ivy.swapaxes(weight, -1, -2)
+    bilinear_prod = ivy.expand_dims(x1, -1) * ivy.expand_dims(x2, -2)
+    bilinear_prod_flat = ivy.reshape(
+        bilinear_prod, (-1, ivy.shape(x1)[-1] * ivy.shape(x2)[-1])
+    )
+    output = ivy.linear(bilinear_prod_flat, weight, bias=bias)
+    return output
