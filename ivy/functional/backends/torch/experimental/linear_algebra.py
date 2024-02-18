@@ -6,7 +6,6 @@ from typing import Optional, Tuple, Sequence, Union
 
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.utils.exceptions import IvyNotImplementedException
 from .. import backend_version
 
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
@@ -210,7 +209,7 @@ def lu_factor(
     pivot: Optional[bool] = True,
     out: Optional[torch.Tensor] = None,
 ) -> Tuple[torch.Tensor]:
-    raise IvyNotImplementedException()
+    return torch.linalg.lu_factor(x, pivot=pivot, out=out)
 
 
 @with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)

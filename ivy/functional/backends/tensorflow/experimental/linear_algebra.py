@@ -7,7 +7,6 @@ import ivy
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
-from ivy.utils.exceptions import IvyNotImplementedException
 from .. import backend_version
 
 
@@ -236,7 +235,7 @@ def lu_factor(
     pivot: Optional[bool] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tuple[tf.Tensor]:
-    raise IvyNotImplementedException()
+    return tf.linalg.lu(x)
 
 
 @with_supported_dtypes(
