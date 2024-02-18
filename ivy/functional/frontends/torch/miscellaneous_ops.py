@@ -5,6 +5,9 @@ from ivy.functional.frontends.torch import promote_types_of_torch_inputs
 import ivy.functional.frontends.torch as torch_frontend
 
 
+erfinv = torch_frontend.special.erfinv
+
+
 @to_ivy_arrays_and_back
 def atleast_1d(*tensors):
     return ivy.atleast_1d(*tensors)
@@ -208,6 +211,55 @@ def diag(input, diagonal=0, *, out=None):
     return ivy.diag(input, k=diagonal)
 
 
+@to_ivy_arrays_and_back
+def diag_embed(
+    input,
+    offset=0,
+    dim1=-2,
+    dim2=-1,
+):
+    def _handle_dim(rank, idx):
+        if idx >= 0 and idx < rank:
+            return idx
+        if idx < 0:
+            idx = idx + rank
+        if idx < 0 or idx >= rank:
+            raise IndexError
+        return idx
+
+    input_type = ivy.dtype(input)
+    rank = input.ndim + 1
+    dim1 = _handle_dim(rank, dim1)
+    dim2 = _handle_dim(rank, dim2)
+    if dim1 > dim2:
+        dim1, dim2 = dim2, dim1
+        offset = -offset
+    last_dim = list(input.shape)[-1]
+    if offset != 0:
+        # add padding to match the new size
+        t_shape = list(input.shape)
+        t_shape[-1] = abs(offset)
+        z = ivy.zeros(t_shape, dtype=input.dtype, device=input.device)
+        pair = (z, input) if offset > 0 else (input, z)
+        input = ivy.concat(pair, axis=-1)
+        last_dim += abs(offset)
+    input = input.expand_dims(axis=dim1).moveaxis(-1, dim2)
+    # generate ranges shifting indices based on offset
+    a_range = ivy.arange(last_dim, device=input.device, dtype=ivy.int64)
+    b_range = ivy.arange(
+        offset, last_dim + offset, device=input.device, dtype=ivy.int64
+    )
+    # broadcast
+    cond = a_range == b_range.expand_dims(axis=-1)
+    cond_shape = [last_dim if i in (dim1, dim2) else 1 for i in range(len(input.shape))]
+    cond = cond.reshape(cond_shape)
+    if input.dtype == ivy.bool:
+        ret = cond.logical_and(input)
+    else:
+        ret = ivy.where(cond, input, 0)
+    return ret.astype(input_type)
+
+
 @with_supported_dtypes(
     {"2.2 and below": ("float32", "float64", "int32", "int64")}, "torch"
 )
@@ -237,11 +289,6 @@ def einsum(equation, *operands):
     if len(operands) == 1 and isinstance(operands[0], (list, tuple)):
         operands = operands[0]
     return ivy.einsum(equation, *operands)
-
-
-@to_ivy_arrays_and_back
-def erfinv(input, *, out=None):
-    return ivy.erfinv(input, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -493,17 +540,18 @@ def searchsorted(
     *,
     out_int32=False,
     right=False,
-    side="left",
+    side=None,
     out=None,
     sorter=None,
 ):
-    if right and side == "left":
-        raise ivy.exceptions.IvyError(
-            "side and right can't be set to opposites, got side of left"
-            " while right was True"
-        )
-    if right:
-        side = "right"
+    if side == "left":
+        if right:
+            raise ivy.exceptions.IvyError(
+                "side and right can't be set to opposites, got side of left"
+                " while right was True"
+            )
+    elif side is None:
+        side = "right" if right else "left"
     ret = ivy.searchsorted(sorted_sequence, values, side=side, out=out, sorter=sorter)
     if out_int32:
         ret = ivy.astype(ret, "int32")
@@ -555,7 +603,7 @@ def triu_indices(row, col, offset=0, dtype="int64", device="cpu", layout=None):
 
 
 @to_ivy_arrays_and_back
-def unflatten(input, /, *, dim, sizes):
+def unflatten(input, dim, sizes):
     return ivy.unflatten(input, dim=dim, shape=sizes, out=None)
 
 

@@ -802,6 +802,12 @@ def array_indices_axis(
     *,
     array_dtypes,
     indices_dtypes=get_dtypes("valid"),
+    abs_smallest_val=None,
+    min_value=None,
+    max_value=None,
+    large_abs_safety_factor=1.1,
+    small_abs_safety_factor=1.1,
+    safety_factor_scale="linear",
     disable_random_axis=False,
     axis_zero=False,
     allow_inf=False,
@@ -826,6 +832,37 @@ def array_indices_axis(
         list of data type to draw the array dtype from.
     indices_dtypes
         list of data type to draw the indices dtype from.
+    abs_smallest_val
+        sets the absolute smallest value to be generated for float data types,
+        this has no effect on integer data types. If none, the default data type
+        absolute smallest value is used.
+    min_value
+        minimum value of elements in the array.
+    max_value
+        maximum value of elements in the array.
+    large_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+
+        when a "linear" safety factor scaler is used, a safety factor of 2 means
+        that only 50% of the range is included, a safety factor of 3 means that
+        only 33% of the range is included etc.
+
+        when a "log" safety factor scaler is used, a data type with maximum
+        value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.
+    small_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+        this has no effect on integer data types.
+
+        when a "linear" safety factor scaler is used, a data type with minimum
+        representable number of 0.0001 and a safety factor of 2 transforms the
+        minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
+
+        when a "log" safety factor scaler is used, a data type with minimum
+        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
+    safety_factor_scale
+        The operation to use for the safety factor scaling. Can be "linear" or "log".
+        Default value = "linear".
     disable_random_axis
         axis is randomly generated with hypothesis if False. If True, axis is set
         to 0 if axis_zero is True, -1 otherwise.
@@ -961,6 +998,12 @@ def array_indices_axis(
             max_num_dims=max_num_dims,
             min_dim_size=min_dim_size,
             max_dim_size=max_dim_size,
+            abs_smallest_val=abs_smallest_val,
+            min_value=min_value,
+            max_value=max_value,
+            large_abs_safety_factor=large_abs_safety_factor,
+            small_abs_safety_factor=small_abs_safety_factor,
+            safety_factor_scale=safety_factor_scale,
         )
     )
     x_dtype = x_dtype[0]
