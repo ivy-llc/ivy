@@ -124,7 +124,8 @@ def reshape(
         ]
     if order == "F":
         return _reshape_fortran_tf(x, shape)
-    if isinstance(shape, (int, list, tuple)):
+    # TensorShape objects can't be created with negative shape
+    if all(dim >= 0 for dim in shape) and isinstance(shape, (int, list, tuple)):
         shape = tf.TensorShape(shape)
     return tf.reshape(x, shape)
 

@@ -1935,6 +1935,7 @@ def dtype_array_query(
     )
     index_types = [v if shape[i] > 0 else "slice" for i, v in enumerate(index_types)]
     index = []
+    empty_array = prod(shape) == 0
     for s, index_type in zip(shape, index_types):
         if index_type == "int":
             new_index = draw(st.integers(min_value=-s + 1, max_value=s - 1))
@@ -1942,8 +1943,8 @@ def dtype_array_query(
             new_index = draw(
                 st.lists(
                     st.integers(min_value=-s + 1, max_value=s - 1),
-                    min_size=1,
-                    max_size=20,
+                    min_size=1 if not empty_array else 0,
+                    max_size=20 if not empty_array else 0,
                 )
             )
         elif index_type == "array":
@@ -1953,6 +1954,8 @@ def dtype_array_query(
                     max_value=s - 1,
                     dtype=["int64"],
                     max_num_dims=4,
+                    min_dim_size=1 if not empty_array else 0,
+                    max_dim_size=10 if not empty_array else 0,
                 )
             )
             new_index = new_index[0]
