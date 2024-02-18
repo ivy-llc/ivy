@@ -118,7 +118,7 @@ def mean(
 ) -> paddle.Tensor:
     if dtype is not None:
         dtype = ivy.as_native_dtype(dtype)
-        x = paddle.cast(x, dtype=dtype)
+        x = ivy.astype(x, dtype)
     ret_dtype = x.dtype if dtype is None else dtype
     if paddle.is_complex(x):
         ret = paddle.complex(
