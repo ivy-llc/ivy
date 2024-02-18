@@ -293,7 +293,7 @@ def matrix_norm(
 ) -> Union[tf.Tensor, tf.Variable]:
     if dtype is not None:
         dtype = ivy.as_native_dtype(dtype)
-        x = tf.cast(dtype)
+        x = ivy.astype(x, dtype)
     if ord == "nuc":
         x = tf.experimental.numpy.moveaxis(x, axis, (-2, -1))
         ret = tf.reduce_sum(

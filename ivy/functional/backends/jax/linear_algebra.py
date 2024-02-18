@@ -196,7 +196,7 @@ def matrix_norm(
 ) -> JaxArray:
     if dtype is not None:
         dtype = ivy.as_native_dtype(dtype)
-        x = x.astype(dtype)
+        x = ivy.astype(x, dtype)
     if hasattr(axis, "__iter__"):
         if not isinstance(axis, tuple):
             axis = tuple(axis)
