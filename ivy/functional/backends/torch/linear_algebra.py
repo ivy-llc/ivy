@@ -206,6 +206,8 @@ def matrix_norm(
 ) -> torch.Tensor:
     if dtype is not None:
         dtype = ivy.as_native_dtype(dtype)
+    if "complex" not in ivy.as_ivy_dtype(x.dtype) and "complex" in dtype:
+        x = ivy.astype(x, dtype)
     return torch.linalg.matrix_norm(
         x, ord=ord, dim=axis, keepdim=keepdims, dtype=dtype, out=out
     )
