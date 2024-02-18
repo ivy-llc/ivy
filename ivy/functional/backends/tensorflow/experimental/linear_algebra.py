@@ -1,7 +1,7 @@
 from typing import Union, Optional, Tuple, List, Sequence
 import tensorflow as tf
 from functools import reduce as _reduce
-
+from collections import namedtuple
 import ivy
 
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
@@ -235,7 +235,9 @@ def lu_factor(
     pivot: Optional[bool] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tuple[tf.Tensor]:
-    return tf.linalg.lu(x)
+    ret = tf.linalg.lu(x)
+    ret_tuple = namedtuple("lu_factor", ["LU", "p"])
+    return ret_tuple(ret.lu, ret.p)
 
 
 @with_supported_dtypes(

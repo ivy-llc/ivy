@@ -2,7 +2,7 @@ import math
 from typing import Optional, Tuple, Sequence, Union
 import jax.numpy as jnp
 import jax.scipy.linalg as jla
-
+from collections import namedtuple
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.backends.jax import JaxArray
 
@@ -180,7 +180,10 @@ def lu_factor(
     pivot: Optional[bool] = True,
     out: Optional[JaxArray] = None,
 ) -> Tuple[JaxArray]:
-    return jla.lu(x)
+    ret = jla.lu(x)
+    ret_tuple = namedtuple("lu_factor", ["LU", "p"])
+    ret_1 = ret[1]
+    return ret_tuple((ret_1 - jnp.eye(*ret_1.shape)) + ret[2], ret[0])
 
 
 def dot(
