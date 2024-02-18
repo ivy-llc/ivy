@@ -186,7 +186,7 @@ def multi_dot(
     return dot_out
 
 
-@with_unsupported_dtypes({"1.25.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, backend_version)
 def cond(
     x: Union[tf.Tensor, tf.Variable],
     /,
