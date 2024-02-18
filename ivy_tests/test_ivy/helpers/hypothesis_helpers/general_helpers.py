@@ -685,3 +685,17 @@ def sizes_(shape, axis):
         else shape
     )
     return shape_
+
+
+@st.composite
+def dims_and_offset(draw, shape, ensure_dim_unique=False):
+    shape_actual = draw(shape)
+    dim1 = draw(get_axis(shape=shape, force_int=True))
+    dim2 = draw(get_axis(shape=shape, force_int=True))
+    if ensure_dim_unique:
+        while dim1 == dim2:
+            dim2 = draw(get_axis(shape=shape, force_int=True))
+    offset = draw(
+        st.integers(min_value=-shape_actual[dim1], max_value=shape_actual[dim1])
+    )
+    return dim1, dim2, offset

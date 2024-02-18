@@ -14,6 +14,7 @@ from ivy.func_wrapper import (
     with_unsupported_device_and_dtypes,
     with_unsupported_dtypes,
     with_supported_dtypes,
+    with_supported_device_and_dtypes,
 )
 from .elementwise import _elementwise_helper
 
@@ -398,6 +399,14 @@ def matrix_transpose(
     return paddle.transpose(x, perm=perm)
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.6.0 and below": {
+            "cpu": ("int32", "int64", "float64", "complex128" "float32", "complex64")
+        }
+    },
+    backend_version,
+)
 def outer(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
