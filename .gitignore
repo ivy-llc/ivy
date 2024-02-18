@@ -45,3 +45,5 @@ venv.bak/
 ivy_dev/
 *venv/
 venv*
+ivy/functional/ivy/experimental/ivyin-vyin-vyin-nmw.code-workspace
+.devcontainer/devcontainer.json
