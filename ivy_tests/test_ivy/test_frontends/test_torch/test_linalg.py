@@ -432,6 +432,7 @@ def test_torch_det(
     ),
     dims_and_offsets=helpers.dims_and_offset(
         shape=st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=2), key="shape"),
+        ensure_dim_unique=True,
     ),
 )
 def test_torch_diag_embed(
