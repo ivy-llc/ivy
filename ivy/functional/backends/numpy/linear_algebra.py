@@ -148,8 +148,12 @@ def matrix_norm(
     ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
     axis: Tuple[int, int] = (-2, -1),
     keepdims: bool = False,
+    dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if dtype is not None:
+        dtype = ivy.as_native_dtype(dtype)
+        x = x.astype(dtype)
     if not isinstance(axis, tuple):
         axis = tuple(axis)
     return np.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)

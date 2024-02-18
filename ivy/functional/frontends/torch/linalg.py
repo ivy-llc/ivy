@@ -154,11 +154,9 @@ def matrix_exp(A):
     {"2.2 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
 )
 def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, out=None):
-    if "complex" in ivy.as_ivy_dtype(input.dtype):
-        input = ivy.abs(input)
-    if dtype:
-        input = ivy.astype(input, ivy.as_ivy_dtype(dtype))
-    return ivy.matrix_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
+    return ivy.matrix_norm(
+        input, ord=ord, axis=dim, keepdims=keepdim, dtype=dtype, out=out
+    )
 
 
 @to_ivy_arrays_and_back

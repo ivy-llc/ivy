@@ -201,9 +201,14 @@ def matrix_norm(
     ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
     axis: Tuple[int, int] = (-2, -1),
     keepdims: bool = False,
+    dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.linalg.matrix_norm(x, ord=ord, dim=axis, keepdim=keepdims, out=out)
+    if dtype is not None:
+        dtype = ivy.as_native_dtype(dtype)
+    return torch.linalg.matrix_norm(
+        x, ord=ord, dim=axis, keepdim=keepdims, dtype=dtype, out=out
+    )
 
 
 matrix_norm.support_native_out = True

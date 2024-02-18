@@ -288,8 +288,12 @@ def matrix_norm(
     ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
     axis: Tuple[int, int] = (-2, -1),
     keepdims: bool = False,
+    dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if dtype is not None:
+        dtype = ivy.as_native_dtype(dtype)
+        x = tf.cast(dtype)
     if ord == "nuc":
         x = tf.experimental.numpy.moveaxis(x, axis, (-2, -1))
         ret = tf.reduce_sum(
