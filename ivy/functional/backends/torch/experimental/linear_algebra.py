@@ -208,7 +208,7 @@ def lu_factor(
     *,
     pivot: Optional[bool] = True,
     out: Optional[torch.Tensor] = None,
-) -> Tuple[torch.Tensor]:
+) -> Tuple[torch.Tensor, torch.Tensor]:
     ret = torch.linalg.lu_factor(x, pivot=pivot, out=out)
     ret_tuple = namedtuple("lu_factor", ["LU", "p"])
     return ret_tuple(ret.LU, ret.pivots)

@@ -234,7 +234,7 @@ def lu_factor(
     *,
     pivot: Optional[bool] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Tuple[tf.Tensor]:
+) -> Tuple[tf.Tensor, tf.Tensor]:
     ret = tf.linalg.lu(x)
     ret_tuple = namedtuple("lu_factor", ["LU", "p"])
     return ret_tuple(ret.lu, ret.p)

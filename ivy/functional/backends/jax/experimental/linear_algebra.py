@@ -179,7 +179,7 @@ def lu_factor(
     *,
     pivot: Optional[bool] = True,
     out: Optional[JaxArray] = None,
-) -> Tuple[JaxArray]:
+) -> Tuple[JaxArray, JaxArray]:
     ret = jla.lu(x)
     ret_tuple = namedtuple("lu_factor", ["LU", "p"])
     ret_1 = ret[1]
