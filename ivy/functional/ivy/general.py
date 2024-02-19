@@ -2918,8 +2918,7 @@ def _parse_query(query, x_shape, scatter=False):
     to_front = len(non_slice_q_idxs) > 1 and any(ivy.diff(non_slice_q_idxs) != 1)
 
     # extract newaxis queries
-    if not scatter:
-        new_axes = [i for i, q in enumerate(query) if q is None]
+    new_axes = [i for i, q in enumerate(query) if q is None]
     query = [q for q in query if q is not None]
     query = [Ellipsis] if query == [] else query
 
@@ -2977,12 +2976,11 @@ def _parse_query(query, x_shape, scatter=False):
             + [target_shape[ellipsis_inds[0] : ellipsis_inds[1]]]
             + target_shape[ellipsis_inds[1] :]
         )
-    if not scatter:
-        for i, ax in enumerate(new_axes):
-            if len(array_inds) and to_front:
-                ax -= sum(1 for x in array_inds if x < ax) - 1
-                ax = ax + i
-            target_shape = [*target_shape[:ax], 1, *target_shape[ax:]]
+    for i, ax in enumerate(new_axes):
+        if len(array_inds) and to_front:
+            ax -= sum(1 for x in array_inds if x < ax) - 1
+            ax = ax + i
+        target_shape = [*target_shape[:ax], 1, *target_shape[ax:]]
     target_shape = _deep_flatten(target_shape)
 
     # calculate the indices mesh (indices in gather_nd/scatter_nd format)
