@@ -2257,7 +2257,7 @@ def adaptive_max_pool3d(
     )
 
     if not (adaptive_d or adaptive_h or adaptive_w):
-        ret = ivy.max(vals, axis=(-4, -3, -1))
+        ret = ivy.max(vals, axis=(-3, -1))
         ret = ivy.squeeze(ret, axis=0) if squeeze else ret
         return ret
 
@@ -2273,14 +2273,13 @@ def adaptive_max_pool3d(
 
     ret = None
     for i, j, k in itertools.product(
-        range(vals.shape[-3]), range(vals.shape[-2]), range(vals.shape[-1])
+        range(vals.shape[-4]), range(vals.shape[-2]), range(vals.shape[-1])
     ):
         if ret is None:
-            ret = vals[..., :, i, j, k]
+            ret = vals[..., i, :, j, k]
         else:
-            ret = ivy.maximum(ret, vals[..., :, i, j, k])
+            ret = ivy.maximum(ret, vals[..., i, :, j, k])
     pooled_output = ret.astype(vals.dtype)
-
     pooled_output = ivy.squeeze(pooled_output, axis=0) if squeeze else pooled_output
     return pooled_output
 
