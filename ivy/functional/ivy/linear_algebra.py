@@ -1144,7 +1144,7 @@ def matrix_norm(
     ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
     axis: Tuple[int, int] = (-2, -1),
     keepdims: bool = False,
-    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    dtypes: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Compute the matrix p-norm.
@@ -1290,7 +1290,7 @@ def matrix_norm(
     }
     """
     return current_backend(x).matrix_norm(
-        x, ord=ord, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+        x, ord=ord, axis=axis, keepdims=keepdims, dtypes=dtypes, out=out
     )
 
 
