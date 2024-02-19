@@ -228,6 +228,9 @@ def cond(
     return k
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("integer", "float16", "bfloat16")}, backend_version
+)
 def lu_factor(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -238,6 +241,17 @@ def lu_factor(
     ret = tf.linalg.lu(x)
     ret_tuple = namedtuple("lu_factor", ["LU", "p"])
     return ret_tuple(ret.lu, ret.p)
+
+
+def lu_solve(
+    lu: Union[tf.Tensor, tf.Variable],
+    p: Union[tf.Tensor, tf.Variable],
+    b: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.linalg.lu_solve(lu, p, b)
 
 
 @with_supported_dtypes(

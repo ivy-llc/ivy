@@ -186,6 +186,17 @@ def lu_factor(
     return ret_tuple((ret_1 - jnp.eye(*ret_1.shape)) + ret[2], ret[0])
 
 
+def lu_solve(
+    lu: Tuple[JaxArray, JaxArray],
+    p: JaxArray,
+    b: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jla.lu_solve((lu, p), b)
+
+
 def dot(
     a: JaxArray,
     b: JaxArray,

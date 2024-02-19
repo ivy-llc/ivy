@@ -252,3 +252,10 @@ def hardshrink(
             F.hardshrink(x.img(), threshold=lambd),
         )
     return F.hardshrink(x.cast("float32"), threshold=lambd).cast(x.dtype)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, backend_version)
+def hardsilu(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    return F.hardswish(x)

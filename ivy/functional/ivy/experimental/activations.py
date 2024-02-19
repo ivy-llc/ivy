@@ -960,3 +960,55 @@ def hardshrink(
        [ 1.70000005,  4.19999981, -6.5999999 ]])
     """
     return current_backend(x).hardshrink(x, lambd=lambd, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device
+def hardsilu(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """Apply the hardsilu/hardswish function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+        an array containing the output of the hardsilu/hardswish function applied
+        to each element in ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1., 2., 3.])
+    >>> y = ivy.hardsilu(x)
+    >>> print(y)
+    ivy.array([0.66666667, 1.66666667, 3.])
+    >>> x = ivy.array([-2.1241, 1.4897, 4.4090])
+    >>> y = ivy.zeros(3)
+    >>> ivy.hardsilu(x, out=y)
+    >>> print(y)
+    ivy.array([-0.3101, 1.1147, 4.4090])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-0.5, -1, 0]), b=ivy.array([0.5, 1., 2]))
+    >>> y = ivy.hardsilu(x)
+    >>> print(y)
+    {
+        a: ivy.array([-0.20833333, 0.33333333, 0.]),
+        b: ivy.array([0.29166667, 0.66666667, 1.66666667])
+    }
+    """
+    return current_backend(x).hardsilu(x, out=out)
