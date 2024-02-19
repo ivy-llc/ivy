@@ -1442,7 +1442,7 @@ def test_lu_solve(dtype_x, test_flags, backend_fw, fn_name, on_device):
     ivy.set_backend(backend_fw)
     lu_ = ivy.lu_factor(A)
     lu, p = lu_.LU, lu_.p
-    X = helpers.test_function(
+    X, X_gt = helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
@@ -1453,6 +1453,7 @@ def test_lu_solve(dtype_x, test_flags, backend_fw, fn_name, on_device):
         b=B,
         test_values=False,
     )
+
     assert np.allclose(A @ X, B)
 
 

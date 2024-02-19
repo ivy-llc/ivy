@@ -150,6 +150,10 @@ def lu_factor_ex(A, *, pivot=True, check_errors=False, out=None):
             return matrix, info
 
 
+def lu_solve(LU, pivots, B, *, left=True, adjoint=False, out=None):
+    return ivy.lu_solve(LU, pivots, B, out=out)
+
+
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {"2.2 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
