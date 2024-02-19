@@ -5,6 +5,7 @@ from hypothesis import assume
 import numpy as np
 import pytest
 import itertools
+import sys
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -1389,6 +1390,9 @@ def test_kronecker(*, data, test_flags, backend_fw, fn_name, on_device):
         max_num_dims=2,
         min_dim_size=2,
         max_dim_size=5,
+    ).filter(
+        lambda x: np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
     test_gradients=st.just(False),
 )
