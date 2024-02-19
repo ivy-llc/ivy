@@ -839,7 +839,7 @@ def test_torch_matrix_norm(
     input_dtype, x, axis = dtype_values_axis
     if dtype[0] is not None and "complex128" in input_dtype[0]:
         dtype[0] = input_dtype[0]
-    dtype[0] = input_dtype[0][:-2] + max([input_dtype[0][:-2], dtype[0][:-2]])
+    dtype[0] = input_dtype[0][:-2] + max([input_dtype[0][-2:], dtype[0][-2:]])
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
