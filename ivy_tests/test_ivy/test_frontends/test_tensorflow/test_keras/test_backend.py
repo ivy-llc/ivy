@@ -70,6 +70,47 @@ def test_tensorflow_keras_backend_bias_add(
     )
 
 
+# mean
+@handle_frontend_test(
+    fn_tree="tensorflow.keras.backend.mean",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        force_int_axis=True,
+        valid_axis=True,
+        min_num_dims=1,
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
+    ),
+    keepdims=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_keras_backend_mean(
+    *,
+    dtype_x_axis,
+    keepdims,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        atol=1e-1,
+        rtol=1e-1,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        keepdims=keepdims,
+    )
+
+
 @handle_frontend_test(
     fn_tree="tensorflow.keras.backend.rnn",
     rnn_args=_lstm_helper(),
