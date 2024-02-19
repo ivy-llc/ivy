@@ -2915,7 +2915,11 @@ def _parse_query(query, x_shape, scatter=False):
     # if so, they have to be moved to the front
     # https://numpy.org/neps/nep-0021-advanced-indexing.html#mixed-indexing
     non_slice_q_idxs = [i for i, q in enumerate(query) if ivy.is_array(q)]
-    to_front = len(non_slice_q_idxs) > 1 and any(ivy.diff(non_slice_q_idxs) != 1)
+    to_front = (
+        len(non_slice_q_idxs) > 1
+        and any(ivy.diff(non_slice_q_idxs) != 1)
+        and non_slice_q_idxs[-1] < len(x_shape)
+    )
 
     # extract newaxis queries
     new_axes = [i for i, q in enumerate(query) if q is None]
