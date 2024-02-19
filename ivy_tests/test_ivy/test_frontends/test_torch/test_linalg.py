@@ -2,7 +2,7 @@
 import math
 import sys
 import numpy as np
-from hypothesis import strategies as st, assume
+from hypothesis import strategies as st, assume, settings, HealthCheck
 
 # local
 import ivy
@@ -435,6 +435,7 @@ def test_torch_det(
         ensure_dim_unique=True,
     ),
 )
+@settings(suppress_health_check=list(HealthCheck))
 def test_torch_diag_embed(
     *,
     dtype_and_values,
@@ -447,6 +448,11 @@ def test_torch_diag_embed(
 ):
     input_dtype, value = dtype_and_values
     dim1, dim2, offset = dims_and_offsets
+    num_of_dims = len(np.shape(value[0]))
+    if dim1 < 0:
+        assume(dim1 + num_of_dims != dim2)
+    if dim2 < 0:
+        assume(dim1 != dim2 + num_of_dims)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
