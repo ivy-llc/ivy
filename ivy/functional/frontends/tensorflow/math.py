@@ -536,9 +536,11 @@ def is_non_decreasing(x, name="is_non_decreasing"):
 def is_strictly_increasing(x, name="is_strictly_increasing"):
     if ivy.array(x).size < 2:
         return ivy.array(True)
-    if ivy.array(x).size == 2:
-        return ivy.array(x[0] < x[1])
-    return ivy.all(ivy.less(x, ivy.roll(x, -1)))
+    x = ivy.flatten(x)
+    res = ivy.less(x, ivy.roll(x, -1))
+    if res.size >= 2:
+        res[res.size - 1] = True  # The last comparison must be set to true.
+    return ivy.all(res)
 
 
 @to_ivy_arrays_and_back
