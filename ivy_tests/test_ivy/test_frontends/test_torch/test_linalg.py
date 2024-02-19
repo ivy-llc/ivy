@@ -735,7 +735,7 @@ def test_torch_lu_factor(
     backend_fw,
 ):
     dtype, input = input_dtype_and_input
-    helpers.test_frontend_function(
+    ret = helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
         test_flags=test_flags,
@@ -745,7 +745,59 @@ def test_torch_lu_factor(
         rtol=1e-03,
         atol=1e-02,
         A=input[0],
+        test_values=False,
     )
+    ret_f, ret_gt = ret
+    LU, p = ret_f.LU, ret_f.p
+    L = np.tril(LU, -1) + np.eye(LU.shape[0])
+    U = np.triu(LU)
+    P = np.eye(LU.shape[0])[p]
+    assert np.allclose(L @ U, P @ input[0])
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.lu_factor_ex",
+    input_dtype_and_input=_get_dtype_and_matrix(
+        batch=True, square=True, invertible=True
+    ),
+)
+def test_torch_lu_factor_ex(
+    *,
+    input_dtype_and_input,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, input = input_dtype_and_input
+    ret = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-03,
+        atol=1e-02,
+        A=input[0],
+        check_errors=False,
+        test_values=False,
+    )
+    ret_f, ret_gt = ret
+    ret_f_matrix, ret_f_info = ret_f
+    if ret_f_info == 0:
+        (
+            LU,
+            p,
+        ) = (
+            ret_f_matrix.LU,
+            ret_f_matrix.p,
+        )
+        L = np.tril(LU, -1) + np.eye(LU.shape[0])
+        U = np.triu(LU)
+        P = np.eye(LU.shape[0])[p]
+        assert np.allclose(L @ U, P @ input[0])
 
 
 @handle_frontend_test(
