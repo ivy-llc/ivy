@@ -155,7 +155,7 @@ def matrix_exp(A):
 )
 def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, out=None):
     return ivy.matrix_norm(
-        input, ord=ord, axis=dim, keepdims=keepdim, dtypes=dtype, out=out
+        input, ord=ord, axis=dim, keepdims=keepdim, dtype=dtype, out=out
     )
 
 
