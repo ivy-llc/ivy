@@ -209,8 +209,8 @@ def matrix_norm(
     ret = torch.linalg.matrix_norm(
         x, ord=ord, dim=axis, keepdim=keepdims, dtype=dtype, out=out
     )
-    ret_dtype = ret.dtype
-    return ret.to(ret_dtype)
+    ret = torch.real(ret)
+    return ret
 
 
 matrix_norm.support_native_out = True
