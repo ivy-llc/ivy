@@ -218,6 +218,7 @@ def test_prelu(*, dtype_and_x, slope, test_flags, backend_fw, fn_name, on_device
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="log",
+        min_value=1e-15,
     ),
     complex_mode=st.sampled_from(["jax", "split", "magnitude"]),
 )
