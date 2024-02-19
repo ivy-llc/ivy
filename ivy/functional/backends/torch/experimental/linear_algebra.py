@@ -202,6 +202,7 @@ def cond(
 cond.support_native_out = False
 
 
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
 def lu_factor(
     x: torch.Tensor,
     /,

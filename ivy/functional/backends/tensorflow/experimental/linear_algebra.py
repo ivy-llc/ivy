@@ -228,6 +228,9 @@ def cond(
     return k
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("integer", "float16", "bfloat16")}, backend_version
+)
 def lu_factor(
     x: Union[tf.Tensor, tf.Variable],
     /,
