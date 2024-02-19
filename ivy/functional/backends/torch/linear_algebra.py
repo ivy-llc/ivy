@@ -212,7 +212,7 @@ def matrix_norm(
         x, ord=ord, dim=axis, keepdim=keepdims, dtype=dtype, out=out
     )
     ret_dtype = ret.dtype
-    return ret.astype(ret_dtype)
+    return ret.to(ret_dtype)
 
 
 matrix_norm.support_native_out = True
