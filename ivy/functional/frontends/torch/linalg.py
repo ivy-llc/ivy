@@ -156,8 +156,9 @@ def matrix_exp(A):
 def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, out=None):
     if dtype is not None:
         dtype = ivy.as_native_dtype(dtype)
-        input = ivy.astype(input, dtype)
-    return ivy.matrix_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
+    return ivy.matrix_norm(
+        input, ord=ord, axis=dim, keepdims=keepdim, dtype=dtype, out=out
+    )
 
 
 @to_ivy_arrays_and_back
