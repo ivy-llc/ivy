@@ -57,7 +57,7 @@ def mean(
     axis = tuple(axis) if isinstance(axis, list) else axis
     if dtype is not None:
         dtype = ivy.as_native_dtype(dtype)
-        x = ivy.astype(x, dtype)
+        x = x.astype(dtype)
     return jnp.mean(x, axis=axis, keepdims=keepdims, dtype=x.dtype)
 
 

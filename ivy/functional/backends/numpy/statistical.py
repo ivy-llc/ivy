@@ -65,7 +65,7 @@ def mean(
 ) -> np.ndarray:
     if dtype is not None:
         dtype = ivy.as_native_dtype(dtype)
-        x = ivy.astype(x, dtype)
+        x = x.astype(dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
     return np.mean(x, axis=axis, keepdims=keepdims, dtype=x.dtype, out=out)
 
