@@ -1406,11 +1406,13 @@ def test_lu_factor(dtype_x, test_flags, backend_fw, fn_name, on_device):
         fn_name=fn_name,
         x=x[0],
         test_values=False,
-        return_flat_np_arrays=True,
     )
     # check decomp is correct manually by getting the values from test_function above
     # this is because the decomposition is not unique and test_values will not work
-    LU, p = ret.LU, ret.p
+    ret_f, ret_gt = ret
+
+    # check that the decomposition is correct for current fw at least
+    LU, p = ret_f.LU, ret_f.p
     L = np.tril(LU, -1) + np.eye(LU.shape[0])
     U = np.triu(LU)
     P = np.eye(LU.shape[0])[p]
