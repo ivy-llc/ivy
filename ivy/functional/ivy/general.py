@@ -2887,7 +2887,7 @@ def set_item(
         target_shape = ivy.get_item(x, query).shape
         indices = ivy.nonzero(query, as_tuple=False)
     else:
-        indices, target_shape = _parse_query(query, x.shape)
+        indices, target_shape, _ = _parse_query(query, x.shape, scatter=True)
         if indices is None:
             return x
     val = _broadcast_to(val, target_shape).astype(x.dtype)

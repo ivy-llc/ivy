@@ -1914,6 +1914,7 @@ def dtype_array_query(
             shape=shape,
             large_abs_safety_factor=2,
             small_abs_safety_factor=2,
+            safety_factor_scale="log",
         )
     )
     if allow_mask and draw(st.booleans()):
@@ -2035,6 +2036,7 @@ def dtype_array_query_val(
             shape=val_shape,
             large_abs_safety_factor=2,
             small_abs_safety_factor=2,
+            safety_factor_scale="log",
         )
     )
     val_dtype = draw(
