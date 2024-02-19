@@ -1418,6 +1418,43 @@ def test_lu_factor(dtype_x, test_flags, backend_fw, fn_name, on_device):
 
 
 @handle_test(
+    fn_tree="functional.ivy.experimental.lu_solve",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=helpers.get_shape(
+            min_num_dims=2, max_num_dims=2, min_dim_size=2, max_dim_size=2
+        ),
+        num_arrays=2,
+        shared_dtype=True,
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
+    ),
+    test_gradients=st.just(False),
+)
+def test_lu_solve(dtype_x, test_flags, backend_fw, fn_name, on_device):
+    dtype, arr = dtype_x
+    A, B = arr[0], arr[1]
+    ivy.set_backend(backend_fw)
+    lu_ = ivy.lu_factor(A)
+    lu, p = lu_.LU, lu_.p
+    X = helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        lu=lu,
+        p=p,
+        b=B,
+        test_values=False,
+    )
+    assert np.allclose(A @ X, B)
+
+
+@handle_test(
     fn_tree="functional.ivy.experimental.make_svd_non_negative",
     data=_make_svd_nn_data(),
     test_with_out=st.just(False),

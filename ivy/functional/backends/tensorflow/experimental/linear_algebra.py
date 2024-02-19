@@ -243,6 +243,17 @@ def lu_factor(
     return ret_tuple(ret.lu, ret.p)
 
 
+def lu_solve(
+    lu: Union[tf.Tensor, tf.Variable],
+    p: Union[tf.Tensor, tf.Variable],
+    b: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.linalg.lu_solve(lu, p, b)
+
+
 @with_supported_dtypes(
     {
         "2.15.0 and below": (

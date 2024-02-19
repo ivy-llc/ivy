@@ -215,6 +215,17 @@ def lu_factor(
     return ret_tuple(ret.LU, ret.pivots)
 
 
+def lu_solve(
+    lu: Tuple[torch.Tensor, torch.Tensor],
+    p: torch.Tensor,
+    b: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.linalg.lu_solve(lu, p, b, out=out)
+
+
 @with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
 def dot(
     a: torch.Tensor,
