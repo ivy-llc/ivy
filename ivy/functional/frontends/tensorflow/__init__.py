@@ -103,6 +103,7 @@ from . import math
 from .math import *
 from . import nest
 from . import nn
+from . import __operators__
 from . import quantization
 from . import random
 from . import general_functions

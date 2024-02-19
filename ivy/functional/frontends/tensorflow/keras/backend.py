@@ -29,6 +29,10 @@ def dot(x, y):
     return ivy.dot(x, y)
 
 
+def mean(x, axis=None, keepdims=False):
+    return tf_frontend.reduce_mean(x, axis, keepdims)
+
+
 @to_ivy_arrays_and_back
 def rnn(
     step_function,
