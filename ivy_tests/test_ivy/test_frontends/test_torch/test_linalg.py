@@ -838,7 +838,7 @@ def test_torch_matrix_norm(
 ):
     input_dtype, x, axis = dtype_values_axis
     if int(dtype[0][-2:]) < int(input_dtype[0][-2:]) and "128" not in dtype[0]:
-        dtype[0] = dtype[0][:-1] + input_dtype[0][-2:]
+        dtype[0] = dtype[0][:-2] + input_dtype[0][-2:]
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
