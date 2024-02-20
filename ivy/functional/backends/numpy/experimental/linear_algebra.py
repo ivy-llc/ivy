@@ -217,6 +217,17 @@ def lu_factor(
     raise IvyNotImplementedException()
 
 
+def lu_solve(
+    lu: Tuple[np.ndarray],
+    p: np.ndarray,
+    b: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    raise IvyNotImplementedException()
+
+
 def dot(
     a: np.ndarray,
     b: np.ndarray,

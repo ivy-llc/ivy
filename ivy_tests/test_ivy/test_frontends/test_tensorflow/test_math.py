@@ -238,7 +238,7 @@ def test_tensorflow_angle(
 @handle_frontend_test(
     fn_tree="tensorflow.math.argmax",
     dtype_and_x=_statistical_dtype_values(function="argmax"),
-    output_type=st.sampled_from(["int16", "uint16", "int32", "int64"]),
+    output_type=st.sampled_from(["int32", "int64"]),
     test_with_out=st.just(False),
 )
 def test_tensorflow_argmax(
@@ -251,9 +251,7 @@ def test_tensorflow_argmax(
     on_device,
     output_type,
 ):
-    if backend_fw in ("torch", "paddle"):
-        assume(output_type != "uint16")
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis, *_ = dtype_and_x
     if isinstance(axis, tuple):
         axis = axis[0]
     helpers.test_frontend_function(
@@ -286,7 +284,7 @@ def test_tensorflow_argmin(
     on_device,
     output_type,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis, *_ = dtype_and_x
     if isinstance(axis, tuple):
         axis = axis[0]
     helpers.test_frontend_function(

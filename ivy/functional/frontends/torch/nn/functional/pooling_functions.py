@@ -57,6 +57,24 @@ def adaptive_max_pool2d(
 
 
 @with_unsupported_dtypes(
+    {
+        "2.2 and below": (
+            "bfloat16",
+            "float16",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def adaptive_max_pool3d(
+    input,
+    output_size,
+    return_indices=False,
+):
+    return ivy.adaptive_max_pool3d(input, output_size)
+
+
+@with_unsupported_dtypes(
     {"2.2 and below": ("float16",)},
     "torch",
 )
