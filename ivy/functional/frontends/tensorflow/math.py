@@ -196,7 +196,7 @@ def angle(input, name=None):
 @to_ivy_arrays_and_back
 def argmax(input, axis, output_type=None, name=None):
     output_type = to_ivy_dtype(output_type)
-    if output_type in ["uint16", "int16", "int32", "int64"]:
+    if output_type in ["int32", "int64"]:
         return ivy.astype(ivy.argmax(input, axis=axis), output_type)
     else:
         return ivy.astype(ivy.argmax(input, axis=axis), "int64")
