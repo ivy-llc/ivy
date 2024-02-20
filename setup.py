@@ -27,8 +27,9 @@ import re
 def _get_paths_from_binaries(binaries, root_dir=""):
     """Get all the paths from the binaries.json into a list."""
     paths = []
+    ext = "pyd" if os.name == "nt" else "so"
     if isinstance(binaries, str):
-        return [os.path.join(root_dir, binaries)]
+        return [os.path.join(root_dir, binaries + "." + ext)]
     elif isinstance(binaries, dict):
         for k, v in binaries.items():
             paths += _get_paths_from_binaries(v, os.path.join(root_dir, k))
