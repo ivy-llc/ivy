@@ -69,7 +69,7 @@ def min_max_helper(draw):
     if use_where:
         dtype_and_x = draw(
             helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("numeric"),
+                available_dtypes=helpers.get_dtypes("numeric", full=False),
                 num_arrays=2,
                 small_abs_safety_factor=6,
                 large_abs_safety_factor=6,
@@ -79,7 +79,7 @@ def min_max_helper(draw):
     else:
         dtype_and_x = draw(
             helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("numeric"),
+                available_dtypes=helpers.get_dtypes("numeric", full=False),
                 num_arrays=2,
                 min_value=-1e5,
                 max_value=1e5,
@@ -1438,6 +1438,7 @@ def test_logical_xor(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
     fn_tree="functional.ivy.maximum",
     dtype_and_x_and_use_where=min_max_helper(),
     test_gradients=st.just(False),
+    ground_truth_backend="jax",
 )
 def test_maximum(
     *, dtype_and_x_and_use_where, test_flags, backend_fw, fn_name, on_device
