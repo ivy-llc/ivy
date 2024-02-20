@@ -224,12 +224,11 @@ def paddle_unfold_handler(draw, dtype):
         dtypes=helpers.get_dtypes("valid", full=False),
     ),
 )
-
 def test_bilinear(
     *,
     dtype_x1_x2_weight_bias,
     on_device,
-    fn_tree, 
+    fn_tree,
     backend_fw,
     frontend,
     test_flags,
