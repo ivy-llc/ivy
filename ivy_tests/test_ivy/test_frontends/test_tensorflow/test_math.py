@@ -284,7 +284,7 @@ def test_tensorflow_argmin(
     on_device,
     output_type,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis, *_ = dtype_and_x
     if isinstance(axis, tuple):
         axis = axis[0]
     helpers.test_frontend_function(
