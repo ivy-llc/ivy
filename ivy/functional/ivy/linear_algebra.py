@@ -762,7 +762,8 @@ def eigvalsh(
 
     >>> x = ivy.array([[[3.0,2.0],[2.0,3.0]]])
     >>> y = ivy.zeros([1,2])
-    >>> ivy.eigvalsh(x)
+    >>> ivy.eigvalsh(x,out=y)
+    >>> print(y)
     ivy.array([[1., 5.]])
 
     >>> x = ivy.array([[[4.0,2.0],[2.0,4.0]]])
