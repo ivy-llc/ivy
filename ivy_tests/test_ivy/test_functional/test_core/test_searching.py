@@ -64,7 +64,7 @@ def _dtype_x_limited_axis(draw, *, allow_none=False):
     fn_tree="functional.ivy.argmax",
     dtype_x_axis=_dtype_x_limited_axis(allow_none=True),
     keepdims=st.booleans(),
-    dtype=helpers.get_dtypes("valid", full=False, none=True),
+    dtype=helpers.get_dtypes("numeric", full=False, none=True),
     select_last_index=st.booleans(),
 )
 def test_argmax(

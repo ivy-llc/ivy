@@ -285,13 +285,17 @@ def floor_mod(x, y, name=None):
     return ivy.remainder(x, y)
 
 
-@with_unsupported_dtypes({"2.6.0 and below": "bfloat16"}, "paddle")
+@with_supported_dtypes(
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
 @to_ivy_arrays_and_back
 def fmax(x, y, name=None):
     return ivy.fmax(x, y)
 
 
-@with_unsupported_dtypes({"2.6.0 and below": "bfloat16"}, "paddle")
+@with_supported_dtypes(
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
 @to_ivy_arrays_and_back
 def fmin(x, y, name=None):
     return ivy.fmin(x, y)

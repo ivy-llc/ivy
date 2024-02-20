@@ -90,8 +90,6 @@ def _lstm_helper(draw):
     has_ih_bias = draw(st.booleans())
     has_hh_bias = draw(st.booleans())
     weights_transposed = draw(st.booleans())
-    return_sequences = draw(st.booleans())
-    return_states = draw(st.booleans())
     bidirectional = draw(st.booleans())
     dropout = draw(st.floats(min_value=0, max_value=0.99))
     train = draw(st.booleans()) and not dropout
@@ -217,8 +215,6 @@ def _lstm_helper(draw):
             "weights_transposed": weights_transposed,
             "has_ih_bias": has_ih_bias,
             "has_hh_bias": has_hh_bias,
-            "return_sequences": return_sequences,
-            "return_states": return_states,
         }
     else:
         dtypes = dtype
@@ -234,8 +230,6 @@ def _lstm_helper(draw):
             "weights_transposed": weights_transposed,
             "has_ih_bias": has_ih_bias,
             "has_hh_bias": has_hh_bias,
-            "return_sequences": return_sequences,
-            "return_states": return_states,
         }
     return dtypes, kwargs
 
