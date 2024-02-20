@@ -373,6 +373,11 @@ def logcumsumexp(input, dim, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def lu_solve(b, LU_data, LU_pivots, *, out=None):
+    return torch_frontend.linalg.lu_solve(LU_data, LU_pivots, b, out=out)
+
+
+@to_ivy_arrays_and_back
 def meshgrid(*tensors, indexing=None):
     if indexing is None:
         indexing = "ij"

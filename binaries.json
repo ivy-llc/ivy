@@ -1,7 +1,7 @@
 {
     "ivy": {
         "compiler": [
-            "_compiler.so",
+            "_compiler",
             {
                 "utils": [
                     "C",

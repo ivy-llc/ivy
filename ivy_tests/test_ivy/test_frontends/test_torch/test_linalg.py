@@ -271,6 +271,37 @@ def _vander_helper(draw):
 
 
 @handle_frontend_test(
+    fn_tree="torch.linalg.lu_solve",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=helpers.get_shape(
+            min_num_dims=2, max_num_dims=2, min_dim_size=2, max_dim_size=2
+        ),
+        num_arrays=2,
+        shared_dtype=True,
+    ).filter(lambda x: helpers.matrix_is_stable(x[1][0], cond_limit=10)),
+)
+def test_lu_solve(dtype_x, test_flags, backend_fw, fn_name, on_device):
+    dtype, arr = dtype_x
+    A, B = arr[0], arr[1]
+    ivy.set_backend(backend_fw)
+    lu_ = ivy.lu_factor(A)
+    lu, p = lu_.LU, lu_.p
+    X, X_gt = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        lu=lu,
+        p=p,
+        b=B,
+        test_values=False,
+    )
+    assert np.allclose(A @ X, B)
+
+
+@handle_frontend_test(
     fn_tree="torch.linalg.cholesky",
     aliases=["torch.cholesky"],
     dtype_and_x=_get_dtype_and_matrix(square=True),
@@ -735,7 +766,7 @@ def test_torch_lu_factor(
     backend_fw,
 ):
     dtype, input = input_dtype_and_input
-    helpers.test_frontend_function(
+    ret = helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
         test_flags=test_flags,
@@ -745,7 +776,59 @@ def test_torch_lu_factor(
         rtol=1e-03,
         atol=1e-02,
         A=input[0],
+        test_values=False,
     )
+    ret_f, ret_gt = ret
+    LU, p = ret_f.LU, ret_f.p
+    L = np.tril(LU, -1) + np.eye(LU.shape[0])
+    U = np.triu(LU)
+    P = np.eye(LU.shape[0])[p]
+    assert np.allclose(L @ U, P @ input[0])
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.lu_factor_ex",
+    input_dtype_and_input=_get_dtype_and_matrix(
+        batch=True, square=True, invertible=True
+    ),
+)
+def test_torch_lu_factor_ex(
+    *,
+    input_dtype_and_input,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, input = input_dtype_and_input
+    ret = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-03,
+        atol=1e-02,
+        A=input[0],
+        check_errors=False,
+        test_values=False,
+    )
+    ret_f, ret_gt = ret
+    ret_f_matrix, ret_f_info = ret_f
+    if ret_f_info == 0:
+        (
+            LU,
+            p,
+        ) = (
+            ret_f_matrix.LU,
+            ret_f_matrix.p,
+        )
+        L = np.tril(LU, -1) + np.eye(LU.shape[0])
+        U = np.triu(LU)
+        P = np.eye(LU.shape[0])[p]
+        assert np.allclose(L @ U, P @ input[0])
 
 
 @handle_frontend_test(

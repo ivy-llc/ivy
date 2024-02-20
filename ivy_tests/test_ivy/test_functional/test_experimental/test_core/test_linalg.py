@@ -1406,11 +1406,13 @@ def test_lu_factor(dtype_x, test_flags, backend_fw, fn_name, on_device):
         fn_name=fn_name,
         x=x[0],
         test_values=False,
-        return_flat_np_arrays=True,
     )
     # check decomp is correct manually by getting the values from test_function above
     # this is because the decomposition is not unique and test_values will not work
-    LU, p = ret.LU, ret.p
+    ret_f, ret_gt = ret
+
+    # check that the decomposition is correct for current fw at least
+    LU, p = ret_f.LU, ret_f.p
     L = np.tril(LU, -1) + np.eye(LU.shape[0])
     U = np.triu(LU)
     P = np.eye(LU.shape[0])[p]
@@ -1440,7 +1442,7 @@ def test_lu_solve(dtype_x, test_flags, backend_fw, fn_name, on_device):
     ivy.set_backend(backend_fw)
     lu_ = ivy.lu_factor(A)
     lu, p = lu_.LU, lu_.p
-    X = helpers.test_function(
+    X, X_gt = helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
@@ -1451,6 +1453,7 @@ def test_lu_solve(dtype_x, test_flags, backend_fw, fn_name, on_device):
         b=B,
         test_values=False,
     )
+
     assert np.allclose(A @ X, B)
 
 
