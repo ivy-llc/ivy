@@ -193,15 +193,23 @@ def angle(input, name=None):
     return ivy.angle(input)
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("complex",)},
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def argmax(input, axis, output_type=None, name=None):
     output_type = to_ivy_dtype(output_type)
-    if output_type in ["uint16", "int16", "int32", "int64"]:
+    if output_type in ["int32", "int64"]:
         return ivy.astype(ivy.argmax(input, axis=axis), output_type)
     else:
         return ivy.astype(ivy.argmax(input, axis=axis), "int64")
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("complex",)},
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def argmin(input, axis=None, output_type="int64", name=None):
     output_type = to_ivy_dtype(output_type)
