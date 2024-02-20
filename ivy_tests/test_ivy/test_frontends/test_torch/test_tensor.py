@@ -352,11 +352,12 @@ def _repeat_helper(draw):
 
 
 @st.composite
-def _requires_grad(draw):
-    dtype = draw(_dtypes())[0]
+def _requires_grad_and_dtypes(draw):
+    dtypes = draw(_dtypes())
+    dtype = dtypes[0]
     if ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype):
-        return draw(st.just(False))
-    return draw(st.booleans())
+        return draw(st.just(False)), dtypes
+    return draw(st.booleans()), dtypes
 
 
 @st.composite
@@ -414,18 +415,6 @@ def _unfold_args(draw):
         )
     )
     return values_dtype, values, axis, size, step
-
-
-# diagonal
-@st.composite
-def dims_and_offset(draw, shape):
-    shape_actual = draw(shape)
-    dim1 = draw(helpers.get_axis(shape=shape, force_int=True))
-    dim2 = draw(helpers.get_axis(shape=shape, force_int=True))
-    offset = draw(
-        st.integers(min_value=-shape_actual[dim1], max_value=shape_actual[dim1])
-    )
-    return dim1, dim2, offset
 
 
 # --- Main --- #
@@ -5897,7 +5886,7 @@ def test_torch_diag(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ),
-    dims_and_offset=dims_and_offset(
+    dims_and_offset=helpers.dims_and_offset(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape")
     ),
 )
@@ -10404,14 +10393,12 @@ def test_torch_new_full(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtypes=_dtypes(),
-    requires_grad=_requires_grad(),
+    requires_grad_and_dtypes=_requires_grad_and_dtypes(),
 )
 def test_torch_new_ones(
     dtype_and_x,
     size,
-    dtypes,
-    requires_grad,
+    requires_grad_and_dtypes,
     on_device,
     frontend_method_data,
     init_flags,
@@ -10420,6 +10407,7 @@ def test_torch_new_ones(
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
+    requires_grad, dtypes = requires_grad_and_dtypes
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -10493,14 +10481,12 @@ def test_torch_new_tensor(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtypes=_dtypes(),
-    requires_grad=_requires_grad(),
+    requires_grad_and_dtypes=_requires_grad_and_dtypes(),
 )
 def test_torch_new_zeros(
     dtype_and_x,
     size,
-    dtypes,
-    requires_grad,
+    requires_grad_and_dtypes,
     on_device,
     frontend_method_data,
     init_flags,
@@ -10509,6 +10495,7 @@ def test_torch_new_zeros(
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
+    requires_grad, dtypes = requires_grad_and_dtypes
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,

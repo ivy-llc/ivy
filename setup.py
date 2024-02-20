@@ -27,8 +27,9 @@ import re
 def _get_paths_from_binaries(binaries, root_dir=""):
     """Get all the paths from the binaries.json into a list."""
     paths = []
+    ext = "pyd" if os.name == "nt" else "so"
     if isinstance(binaries, str):
-        return [os.path.join(root_dir, binaries)]
+        return [os.path.join(root_dir, binaries + "." + ext)]
     elif isinstance(binaries, dict):
         for k, v in binaries.items():
             paths += _get_paths_from_binaries(v, os.path.join(root_dir, k))
@@ -72,7 +73,8 @@ for tag in all_tags:
             continue
         folders = path.split(os.sep)
         folder_path, file_path = os.sep.join(folders[:-1]), folders[-1]
-        file_name = f"{file_path[:-3]}_{tag}.so"
+        ext = "pyd" if os.name == "nt" else "so"
+        file_name = f"{file_path[:-(len(ext)+1)]}_{tag}.{ext}"
         search_path = f"{module}/{file_name}"
         try:
             response = request.urlopen(

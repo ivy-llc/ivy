@@ -962,6 +962,13 @@ def adaptive_max_pool2d(
 
 
 @with_unsupported_dtypes({"2.2 and below": ("bfloat16", "float16")}, backend_version)
+def adaptive_max_pool3d(
+    input: torch.Tensor, output_size: Union[Sequence[int], int]
+) -> torch.Tensor:
+    return torch.nn.functional.adaptive_max_pool3d(input, output_size)
+
+
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16", "float16")}, backend_version)
 def adaptive_avg_pool1d(input, output_size):
     return torch.nn.functional.adaptive_avg_pool1d(input, output_size)
 

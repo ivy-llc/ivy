@@ -2197,6 +2197,106 @@ adaptive_max_pool2d.mixed_backend_wrappers = {
 
 @handle_nestable
 @inputs_to_ivy_arrays
+def adaptive_max_pool3d(
+    input: Union[ivy.Array, ivy.NativeArray],
+    output_size: Union[Sequence[int], int],
+):
+    """Apply a 3D adaptive maximum pooling over an input signal composed of
+    several input planes.
+
+    Parameters
+    ----------
+    input
+        Input array. Must have shape (N, C, D_in, H_in, W_in) or (C, D_in, H_in, W_in) where N is
+        the batch dimension, C is the feature dimension, and D_in, H_in, and W_in are the 3
+        spatial dimensions.
+    output_size
+        Spatial output size.
+
+    Returns
+    -------
+        The result of the pooling operation. Will have shape (N, C, D_out, H_out, W_out) or
+        (C, D_out, H_out, W_out), where D_out, H_out, W_out = `output_size`
+    """
+    squeeze = False
+    if input.ndim == 4:
+        input = ivy.expand_dims(input, axis=0)
+        squeeze = True
+    elif input.ndim != 5:
+        raise ivy.utils.exceptions.IvyException(
+            f"Got {len(input.shape)}D input, but only 4D and 5D inputs are supported.",
+        )
+
+    if isinstance(output_size, int):
+        output_size = (output_size, output_size, output_size)
+
+    if all(i_s % o_s == 0 for i_s, o_s in zip(input.shape[-3:], output_size)):
+        stride = tuple(i_s // o_s for i_s, o_s in zip(input.shape[-3:], output_size))
+        kernel_size = stride
+        pooled_output = ivy.max_pool3d(
+            input, kernel_size, stride, "VALID", data_format="NCDHW"
+        )
+        if squeeze:
+            return ivy.squeeze(pooled_output, axis=0)
+        return pooled_output
+
+    idxd, length_d, range_max_d, adaptive_d = _compute_idx(
+        input.shape[-3], output_size[-3], input.device
+    )
+    idxh, length_h, range_max_h, adaptive_h = _compute_idx(
+        input.shape[-2], output_size[-2], input.device
+    )
+    idxw, length_w, range_max_w, adaptive_w = _compute_idx(
+        input.shape[-1], output_size[-1], input.device
+    )
+
+    # to numpy and back in order to bypass a slicing error in tensorflow
+    vals = ivy.array(
+        input.to_numpy()[..., _expand_to_dim(idxd, 5), _expand_to_dim(idxh, 4), idxw],
+        device=input.device,
+    )
+
+    if not (adaptive_d or adaptive_h or adaptive_w):
+        ret = ivy.max(vals, axis=(-3, -1))
+        ret = ivy.squeeze(ret, axis=0) if squeeze else ret
+        return ret
+
+    vals, length_d = _mask(
+        vals, length_d, range_max_d, dim=-3, mask_value=float("-inf")
+    )
+    vals, length_h = _mask(
+        vals, length_h, range_max_h, dim=-2, mask_value=float("-inf")
+    )
+    vals, length_w = _mask(
+        vals, length_w, range_max_w, dim=-1, mask_value=float("-inf")
+    )
+
+    ret = None
+    for i, j, k in itertools.product(
+        range(vals.shape[-4]), range(vals.shape[-2]), range(vals.shape[-1])
+    ):
+        if ret is None:
+            ret = vals[..., i, :, j, k]
+        else:
+            ret = ivy.maximum(ret, vals[..., i, :, j, k])
+    pooled_output = ret.astype(vals.dtype)
+    pooled_output = ivy.squeeze(pooled_output, axis=0) if squeeze else pooled_output
+    return pooled_output
+
+
+adaptive_max_pool3d.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_device",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
+
+
+@handle_nestable
+@inputs_to_ivy_arrays
 def adaptive_avg_pool1d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: int,
