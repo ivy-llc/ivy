@@ -1188,7 +1188,6 @@ def test_less(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 )
 def test_less_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
-    print(f"input_dtype: {input_dtype}")
     # bfloat16 is not supported by numpy
     assume("bfloat16" not in input_dtype)
     # make sure they're not too close together
