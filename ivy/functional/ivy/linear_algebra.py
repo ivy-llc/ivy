@@ -3084,41 +3084,6 @@ def vector_to_skew_symmetric_matrix(
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device
-def lu_factor(
-    A: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    pivot: bool = True,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
-    """
-    Parameters
-    ----------
-    A
-        tensor of shape (*, m, n) where * is zero or more batch dimensions.
-
-    pivot
-        Whether to compute the LU decomposition with partial pivoting, or the regular LU
-        decomposition. pivot = False not supported on CPU. Default: True.
-
-    out
-        tuple of two tensors to write the output to. Ignored if None. Default: None.
-
-    Returns
-    -------
-    ret
-        A named tuple (LU, pivots).
-    """
-    return current_backend(A).lu_factor(A, pivot=pivot, out=out)
-
-
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
