@@ -899,32 +899,37 @@ def test_torch_matrix_exp(
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_norm",
     dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_num_dims=2,
         min_axes_size=2,
         max_axes_size=2,
-        min_value=-1e04,
-        max_value=1e04,
+        max_value=10e4,
+        min_value=-10e4,
+        abs_smallest_val=10e-4,
         valid_axis=True,
         force_tuple_axis=True,
     ),
     ord=st.sampled_from(["fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
     keepdim=st.booleans(),
-    dtype=helpers.get_dtypes("valid", none=True, full=False),
+    dtypes=helpers.get_dtypes("float_and_complex", none=True, full=False),
 )
 def test_torch_matrix_norm(
     *,
     dtype_values_axis,
     ord,
     keepdim,
-    dtype,
     frontend,
+    dtypes,
     test_flags,
     fn_tree,
     backend_fw,
     on_device,
 ):
     input_dtype, x, axis = dtype_values_axis
+    if dtypes[0] is not None and "complex128" in input_dtype[0]:
+        dtypes[0] = input_dtype[0]
+    if dtypes[0] is not None:
+        dtypes[0] = input_dtype[0][:-2] + max([input_dtype[0][-2:], dtypes[0][-2:]])
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -939,7 +944,7 @@ def test_torch_matrix_norm(
         ord=ord,
         dim=axis,
         keepdim=keepdim,
-        dtype=dtype[0],
+        dtype=dtypes[0],
     )
 
 
