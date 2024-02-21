@@ -626,6 +626,7 @@ def maximum(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, "tensorflow")
 def minimum(x, y, name=None):
     return ivy.minimum(x, y)
 
