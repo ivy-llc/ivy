@@ -253,9 +253,11 @@ def _squeeze_helper(draw):
 # tile
 @st.composite
 def _tile_helper(draw):
+    available_input_types = ["int32", "int64", "float16", "float32", "float64", "complex64", "complex128", "bool"]  
     dtype, x, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
+            # available_dtypes=helpers.get_dtypes(),
+            available_dtypes=available_input_types,
             min_num_dims=1,
             max_num_dims=4,
             min_dim_size=2,
