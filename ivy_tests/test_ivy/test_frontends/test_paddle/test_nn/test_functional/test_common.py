@@ -220,7 +220,7 @@ def paddle_unfold_handler(draw, dtype):
 # test function for bilinear
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.common.bilinear",
-    dtype_x1_x2_weight_bias=bilinear(
+    dtype_x1_x2_weight_bias=helpers.dtype_and_values(
         dtypes=helpers.get_dtypes("valid", full=False),
     ),
 )
