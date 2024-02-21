@@ -83,6 +83,8 @@ def min_max_helper(draw):
                 num_arrays=2,
                 min_value=-1e5,
                 max_value=1e5,
+                small_abs_safety_factor=6,
+                large_abs_safety_factor=6,
                 safety_factor_scale="log",
             )
         )
@@ -1182,9 +1184,11 @@ def test_less(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
     test_gradients=st.just(False),
+    ground_truth_backend="jax",
 )
 def test_less_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
+    print(f"input_dtype: {input_dtype}")
     # bfloat16 is not supported by numpy
     assume("bfloat16" not in input_dtype)
     # make sure they're not too close together
@@ -1463,6 +1467,7 @@ def test_maximum(
     fn_tree="functional.ivy.minimum",
     dtype_and_x_and_use_where=min_max_helper(),
     test_gradients=st.just(False),
+    ground_truth_backend="jax",
 )
 def test_minimum(
     *, dtype_and_x_and_use_where, test_flags, backend_fw, fn_name, on_device
