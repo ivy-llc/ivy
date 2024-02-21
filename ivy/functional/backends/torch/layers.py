@@ -910,6 +910,11 @@ def lstm(
     if initial_states[1].dim() == 2:
         initial_states[1] = ivy.expand_dims(initial_states[1])
 
+    # ensure all weights are contiguous, so they will work on gpu
+    for i, w in enumerate(all_weights):
+        if not w.is_contiguous():
+            all_weights[i] = w.contiguous()
+
     ret = torch.lstm(
         input,
         initial_states,
