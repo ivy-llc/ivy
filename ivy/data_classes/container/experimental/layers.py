@@ -2015,6 +2015,44 @@ class _ContainerWithLayersExperimental(ContainerBase):
         )
 
     @staticmethod
+    def static_adaptive_max_pool3d(
+        input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        output_size: Union[Sequence[int], int, ivy.Container],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        return ContainerBase.cont_multi_map_in_function(
+            "adaptive_max_pool3d",
+            input,
+            output_size,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def adaptive_max_pool3d(
+        self: ivy.Container,
+        output_size: Union[int, ivy.Container],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        return self.static_adaptive_max_pool3d(
+            self,
+            output_size,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
     def static_ifftn(
         x: ivy.Container,
         s: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
@@ -2896,4 +2934,78 @@ class _ContainerWithLayersExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+
+    def static_rnn(
+        step_function: Callable,
+        inputs: ivy.Array,
+        initial_states: List[ivy.Array],
+        /,
+        *,
+        go_backwards: bool = False,
+        mask: Optional[ivy.Array] = None,
+        constants: Optional[ivy.Array] = None,
+        unroll: bool = False,
+        input_length: Optional[int] = None,
+        time_major: bool = False,
+        zero_output_for_mask: bool = False,
+        return_all_outputs: bool = True,
+    ) -> ivy.Container:
+        """ivy.Container static method variant of ivy.rnn.
+
+        Parameters
+        ----------
+        step_function
+            RNN step function.
+        inputs
+            Array of temporal data of shape (samples, time, ...).
+        initial_states
+            Array with shape (samples, state_size).
+        go_backwards
+            If True, do the iteration over the time dimension in reverse order and
+            return the reversed sequence.
+        mask
+            Binary array with shape (samples, time, 1), with a zero for every element
+            that is masked.
+        constants
+            List of constant values passed at each step.
+        unroll
+            Whether to use a pythonic while loop or ivy.while_loop
+        input_length
+            An integer or 1-D array, depending on whether the time dimension is
+            fixed-length. In case of variable length input, it is used for masking in
+            case there is no mask specified.
+        time_major
+            If True, the inputs and outputs will be in shape (timesteps, batch, ...)
+            whereas in the False case, it will be (batch, timesteps, ...).
+        zero_output_for_mask
+            If True, the otput for masked timestep will be zeros, whereas in the False
+            case, output from previous timestep is returned
+        return_all_outputs
+            If True, return the recurrent outputs for all timesteps in the sequence. If
+            False, only return the output for the last timestep.
+
+        Returns
+        -------
+        ret
+            A tuple of
+            -   the latest output of the rnn of shape (samples, ...)
+            -   the output of the rnn of shape (samples, time, ...) if
+                return_all_outputs=True else (samples, 1, ...)
+            -   list of tensors, latest states returned by the step funciton, of shape
+                (samples, ...)
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "rnn",
+            step_function,
+            inputs,
+            initial_states,
+            go_backwards=go_backwards,
+            mask=mask,
+            constants=constants,
+            unroll=unroll,
+            input_length=input_length,
+            time_major=time_major,
+            zero_output_for_mask=zero_output_for_mask,
+            return_all_outputs=return_all_outputs,
+
         )

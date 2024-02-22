@@ -74,7 +74,7 @@ def conj(input):
 # diagonal_scatter
 @with_unsupported_dtypes(
     {
-        "2.1.2 and below": (
+        "2.2 and below": (
             "bfloat16",
             "float16",
         )
@@ -215,7 +215,7 @@ def index_copy(input, dim, index, source, *, out=None):
 
 @with_unsupported_dtypes(
     {
-        "2.1.2 and below": (
+        "2.2 and below": (
             "uint16",
             "uint32",
             "uint64",
@@ -342,13 +342,9 @@ def narrow(input, dim, start, length):
 
 @to_ivy_arrays_and_back
 def nonzero(input, *, out=None, as_tuple=False):
-    ret = ivy.nonzero(input)
-    if as_tuple is False:
-        ret = ivy.matrix_transpose(ivy.stack(ret))
-
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    if as_tuple:
+        return ivy.nonzero(input, as_tuple=as_tuple)
+    return ivy.argwhere(input != 0, out=out)
 
 
 @to_ivy_arrays_and_back

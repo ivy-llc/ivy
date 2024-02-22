@@ -121,7 +121,7 @@ def abs(
         a: ivy.array([0., 2.6, 3.5]),
         b: ivy.array([4.5, 5.3, 0., 2.3])
     }
-    """
+    """  # noqa: E501
     return ivy.current_backend(x).abs(x, out=out)
 
 
@@ -333,7 +333,7 @@ def acosh(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([1, 2, 10]), b=ivy.array([1., 10, 6]))
+    >>> x = ivy.Container(a=ivy.array([1., 2., 10.]), b=ivy.array([1., 10., 6.]))
     >>> y = ivy.acosh(x)
     >>> print(y)
     {
@@ -1200,7 +1200,8 @@ def bitwise_invert(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=[False, True, False], b=[True, True, False])
+    >>> x = ivy.Container(a=ivy.array([False, True, False]),
+    ...                   b=ivy.array([True, True, False]))
     >>> y = ivy.bitwise_invert(x)
     >>> print(y)
     {
@@ -1220,7 +1221,7 @@ def bitwise_invert(
     >>> x = False
     >>> y = ivy.bitwise_invert(x)
     >>> print(y)
-    ivy.array(True)
+    True
     """
     return ivy.current_backend(x).bitwise_invert(x, out=out)
 
@@ -1851,7 +1852,7 @@ def cosh(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.array([1, 2, 3, 4])
+    >>> x = ivy.array([1., 2., 3., 4.])
     >>> y = ivy.cosh(x)
     >>> print(y)
     ivy.array([1.54,3.76,10.1,27.3])
@@ -2287,7 +2288,7 @@ def exp(
     --------
     With :class:Number:
 
-    >>> x = 3
+    >>> x = 3.
     >>> y = ivy.exp(x)
     >>> print(y)
     ivy.array(20.08553692)
@@ -4230,12 +4231,12 @@ def log2(
     >>> y = ivy.empty_like(x)
     >>> ivy.log2(x, out=y)
     >>> print(y)
-    ivy.array([[nan, 0., 2.58, inf],[inf, nan, nan, nan]])
+    ivy.array([[nan, 0., 2.58, inf],[-inf, nan, nan, nan]])
     >>> x = ivy.array([[float('nan'), 1, 7.0, float('+inf')],
     ...               [+0, -3.0, -8, float('-inf')]])
     >>> ivy.log2(x, out=x)
     >>> print(x)
-    ivy.array([[nan, 0., 2.81, inf],[inf, nan, nan, nan]])
+    ivy.array([[nan, 0., 2.81, inf],[-inf, nan, nan, nan]])
 
     With :class:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),
@@ -5959,7 +5960,7 @@ def sinh(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.array([1, 2, 3])
+    >>> x = ivy.array([1., 2., 3.])
     >>> y = ivy.sinh(x)
     >>> print(y)
         ivy.array([1.18, 3.63, 10.])
@@ -6109,7 +6110,7 @@ def sqrt(
         b: ivy.array([[7., 1.],
                       [0., 4.47]])
     }
-    """
+    """  # noqa: E501
     return ivy.current_backend(x).sqrt(x, out=out)
 
 
@@ -6757,12 +6758,12 @@ def maximum(
 
     >>> x = ivy.array([1, 5, 9, 8, 3, 7])
     >>> y = ivy.array([[9], [3], [2]])
-    >>> z = ivy.zeros((3, 6))
+    >>> z = ivy.zeros((3, 6), dtype=ivy.int32)
     >>> ivy.maximum(x, y, out=z)
     >>> print(z)
-    ivy.array([[9., 9., 9., 9., 9., 9.],
-           [3., 5., 9., 8., 3., 7.],
-           [2., 5., 9., 8., 3., 7.]])
+    ivy.array([[9, 9, 9, 9, 9, 9],
+               [3, 5, 9, 8, 3, 7],
+               [2, 5, 9, 8, 3, 7]])
 
     >>> x = ivy.array([[7, 3]])
     >>> y = ivy.array([0, 7])
@@ -6847,12 +6848,12 @@ def minimum(
 
     >>> x = ivy.array([1, 5, 9, 8, 3, 7])
     >>> y = ivy.array([[9], [3], [2]])
-    >>> z = ivy.zeros((3, 6))
+    >>> z = ivy.zeros((3, 6), dtype=ivy.int32)
     >>> ivy.minimum(x, y, out=z)
     >>> print(z)
-    ivy.array([[1.,5.,9.,8.,3.,7.],
-               [1.,3.,3.,3.,3.,3.],
-               [1.,2.,2.,2.,2.,2.]])
+    ivy.array([[1, 5, 9, 8, 3, 7],
+               [1, 3, 3, 3, 3, 3],
+               [1, 2, 2, 2, 2, 2]])
 
     >>> x = ivy.array([[7, 3]])
     >>> y = ivy.array([0, 7])
@@ -6962,7 +6963,7 @@ def deg2rad(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x=ivy.array([0,90,180,270,360])
+    >>> x=ivy.array([0,90,180,270,360], dtype=ivy.float32)
     >>> y=ivy.deg2rad(x)
     >>> print(y)
     ivy.array([0., 1.57079633, 3.14159265, 4.71238898, 6.28318531])
@@ -6988,7 +6989,7 @@ def deg2rad(
     With :class:`ivy.Container` input:
 
     >>> x=ivy.Container(a=ivy.array([-0,20.1,-50.5,-ivy.nan]),
-    ...                 b=ivy.array([0,90,180,270,360]))
+    ...                 b=ivy.array([0,90.,180,270,360], dtype=ivy.float32))
     >>> y=ivy.deg2rad(x)
     >>> print(y)
     {
@@ -6996,7 +6997,7 @@ def deg2rad(
         b: ivy.array([0., 1.57079633, 3.14159265, 4.71238898, 6.28318531])
     }
 
-    >>> x=ivy.Container(a=ivy.array([0,90,180,270,360]),
+    >>> x=ivy.Container(a=ivy.array([0,90,180,270,360], dtype=ivy.float32),
     ...                 b=ivy.native_array([0,-1.5,-50,ivy.nan]))
     >>> y=ivy.deg2rad(x)
     >>> print(y)

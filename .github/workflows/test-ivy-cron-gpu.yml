@@ -1,8 +1,8 @@
 name: test-ivy-cron-gpu
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '25 * * * *'
+  # schedule:
+  #   - cron: '25 * * * *'
 permissions:
   actions: read
 concurrency:
@@ -56,7 +56,7 @@ jobs:
         run: |
           cd ivy
           export TAG="cp310-cp310-manylinux_2_17_x86_64"
-          pip3 install -e .
+          sudo pip3 install -e .
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
@@ -74,8 +74,8 @@ jobs:
         run: |
           pip3 install pymongo
           cd ivy
-          python3 scripts/setup_tests/cron_tests.py ${{ github.run_number }} true
-          python3 scripts/run_tests/run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'true' ${{ github.run_id }} 'false' ${{ steps.jobs.outputs.html_url }}
+          python3 scripts/setup_tests/cron_tests.py ${{ github.run_number }} true false
+          python3 scripts/run_tests/run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'true' ${{ github.run_id }} 'false' 'false' ${{ steps.jobs.outputs.html_url }}
 
   stop-vm:
     needs: run-gpu-tests

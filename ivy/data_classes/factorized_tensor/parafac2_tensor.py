@@ -419,7 +419,7 @@ class Parafac2Tensor(FactorizedTensor):
             weights = None
 
         decomposition = weights, (A, B, C), projections
-        I, _ = A.shape
+        I, _ = A.shape  # noqa: E741
         return [
             ivy.Parafac2Tensor.parafac2_to_slice(decomposition, i, validate=False)
             for i in range(I)

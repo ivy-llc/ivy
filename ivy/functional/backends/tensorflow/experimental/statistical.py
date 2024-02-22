@@ -53,6 +53,15 @@ def median(
     # TODO: Implement in pure tensorflow
 
 
+@with_supported_dtypes(
+    {
+        "2.15.0 and below": (
+            "float",
+            "complex",
+        )
+    },
+    backend_version,
+)
 def nanmean(
     a: Union[tf.Tensor, tf.Variable],
     /,
@@ -301,7 +310,7 @@ def bincount(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.bincount(
-        x.numpy().tolist(),
+        x,
         weights=weights,
         minlength=minlength,
         dtype=x.dtype if weights is None else weights.dtype,

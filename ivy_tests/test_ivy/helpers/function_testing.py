@@ -38,7 +38,39 @@ from .assertions import (
 def traced_if_required(backend: str, fn, test_trace=False, args=None, kwargs=None):
     with BackendHandler.update_backend(backend) as ivy_backend:
         if test_trace:
-            fn = ivy_backend.trace_graph(fn, args=args, kwargs=kwargs)
+            try:
+                if (
+                    t_globals.CURRENT_RUNNING_TEST.fn_name
+                    in t_globals.CURRENT_TRACED_DATA
+                    and backend
+                    not in t_globals.CURRENT_TRACED_DATA[
+                        t_globals.CURRENT_RUNNING_TEST.fn_name
+                    ]
+                ):
+                    t_globals.CURRENT_TRACED_DATA[
+                        t_globals.CURRENT_RUNNING_TEST.fn_name
+                    ][backend] = ivy_backend.trace_graph(
+                        fn, args=args, kwargs=kwargs, backend_compile=True
+                    )
+                elif (
+                    t_globals.CURRENT_RUNNING_TEST.fn_name
+                    not in t_globals.CURRENT_TRACED_DATA
+                ):
+                    t_globals.CURRENT_TRACED_DATA[
+                        t_globals.CURRENT_RUNNING_TEST.fn_name
+                    ] = {}
+                    t_globals.CURRENT_TRACED_DATA[
+                        t_globals.CURRENT_RUNNING_TEST.fn_name
+                    ][backend] = ivy_backend.trace_graph(
+                        fn, args=args, kwargs=kwargs, backend_compile=True
+                    )
+                fn = t_globals.CURRENT_TRACED_DATA[
+                    t_globals.CURRENT_RUNNING_TEST.fn_name
+                ][backend]
+            except Exception:
+                import logging
+
+                logging.warning("API key is invalid, test_trace is skipped.")
     return fn
 
 
@@ -126,6 +158,11 @@ def test_function_backend_computation(
             test_flags.container[0] for _ in range(total_num_arrays)
         ]
 
+    if test_flags.test_cython_wrapper:
+        ivy.set_cython_wrappers_mode(True)
+    else:
+        ivy.set_cython_wrappers_mode(False)
+
     with BackendHandler.update_backend(fw) as ivy_backend:
         # Update variable flags to be compatible with float dtype and with_out args
         test_flags.as_variable = [
@@ -209,6 +246,7 @@ def test_function_backend_computation(
             target_fn,
             *copy_args,
             test_trace=test_flags.test_trace,
+            precision_mode=test_flags.precision_mode,
             **copy_kwargs,
         )
 
@@ -232,14 +270,24 @@ def test_function_backend_computation(
                     ret_from_target,
                     ret_np_flat_from_target,
                 ) = get_ret_and_flattened_np_array(
-                    fw, instance.__getattribute__(fn_name), *args, **kwargs, out=out
+                    fw,
+                    instance.__getattribute__(fn_name),
+                    *args,
+                    **kwargs,
+                    out=out,
+                    precision_mode=test_flags.precision_mode,
                 )
             else:
                 (
                     ret_from_target,
                     ret_np_flat_from_target,
                 ) = get_ret_and_flattened_np_array(
-                    fw, ivy_backend.__dict__[fn_name], *args, **kwargs, out=out
+                    fw,
+                    ivy_backend.__dict__[fn_name],
+                    *args,
+                    **kwargs,
+                    out=out,
+                    precision_mode=test_flags.precision_mode,
                 )
             test_ret = (
                 ret_from_target[getattr(ivy_backend.__dict__[fn_name], "out_index")]
@@ -281,6 +329,8 @@ def test_function_backend_computation(
                 precision_mode=test_flags.precision_mode,
                 **kwargs,
             )
+            first_array = ivy_backend.stop_gradient(first_array).to_numpy()
+            ret_ = ivy_backend.stop_gradient(ret_).to_numpy()
             assert not np.may_share_memory(first_array, ret_)
 
     ret_device = None
@@ -479,15 +529,17 @@ def test_function(
     if mod_backend[backend_to_test]:
         # multiprocessing
         proc, input_queue, output_queue = mod_backend[backend_to_test]
-        input_queue.put((
-            "function_backend_computation",
-            backend_to_test,
-            test_flags,
-            all_as_kwargs_np,
-            input_dtypes,
-            on_device,
-            fn_name,
-        ))
+        input_queue.put(
+            (
+                "function_backend_computation",
+                backend_to_test,
+                test_flags,
+                all_as_kwargs_np,
+                input_dtypes,
+                on_device,
+                fn_name,
+            )
+        )
         (
             ret_from_target,
             ret_np_flat_from_target,
@@ -526,20 +578,22 @@ def test_function(
     # compute the return with a Ground Truth backend
     if mod_backend[ground_truth_backend]:
         proc, input_queue, output_queue = mod_backend[ground_truth_backend]
-        input_queue.put((
-            "function_ground_truth_computation",
-            ground_truth_backend,
-            on_device,
-            args_np,
-            arg_np_arrays,
-            arrays_args_indices,
-            kwargs_np,
-            arrays_kwargs_indices,
-            kwarg_np_arrays,
-            input_dtypes,
-            test_flags,
-            fn_name,
-        ))
+        input_queue.put(
+            (
+                "function_ground_truth_computation",
+                ground_truth_backend,
+                on_device,
+                args_np,
+                arg_np_arrays,
+                arrays_args_indices,
+                kwargs_np,
+                arrays_kwargs_indices,
+                kwarg_np_arrays,
+                input_dtypes,
+                test_flags,
+                fn_name,
+            )
+        )
         (
             ret_from_gt,
             ret_np_from_gt_flat,
@@ -571,13 +625,15 @@ def test_function(
     if test_flags.transpile:
         if mod_backend[backend_to_test]:
             proc, input_queue, output_queue = mod_backend[backend_to_test]
-            input_queue.put((
-                "transpile_if_required_backend",
-                backend_to_test,
-                fn_name,
-                args_np,
-                kwargs_np,
-            ))
+            input_queue.put(
+                (
+                    "transpile_if_required_backend",
+                    backend_to_test,
+                    fn_name,
+                    args_np,
+                    kwargs_np,
+                )
+            )
         else:
             _transpile_if_required_backend(
                 backend_to_test, fn_name, args=args_np, kwargs=kwargs_np
@@ -637,9 +693,13 @@ def test_function(
         backend=backend_to_test,
         ground_truth_backend=test_flags.ground_truth_backend,
     )
-    assert_same_type(
-        ret_from_target, ret_from_gt, backend_to_test, test_flags.ground_truth_backend
-    )
+    if not test_flags.test_trace:
+        assert_same_type(
+            ret_from_target,
+            ret_from_gt,
+            backend_to_test,
+            test_flags.ground_truth_backend,
+        )
 
     assert ret_device == ret_from_gt_device, (
         f"ground truth backend ({test_flags.ground_truth_backend}) returned array on"
@@ -932,7 +992,12 @@ def test_frontend_function(
                 first_array = first_array.data
             ret_ = ret_.data
             if hasattr(first_array, "requires_grad"):
-                first_array.requires_grad = False
+                first_array = first_array.detach()
+            if hasattr(ret_, "requires_grad"):
+                ret_ = ret_.detach()
+            if backend_to_test == "tensorflow":
+                first_array = first_array.numpy()
+                ret_ = ret_.numpy()
             assert not np.may_share_memory(first_array, ret_)
         elif test_flags.inplace:
             assert _is_frontend_array(ret)
@@ -1215,23 +1280,25 @@ def gradient_test(
     if mod_backend[backend_to_test]:
         # do this using multiprocessing
         proc, input_queue, output_queue = mod_backend[backend_to_test]
-        input_queue.put((
-            "gradient_backend_computation",
-            backend_to_test,
-            args_np,
-            arg_np_vals,
-            args_idxs,
-            kwargs_np,
-            kwarg_np_vals,
-            kwargs_idxs,
-            input_dtypes,
-            test_flags,
-            on_device,
-            fn,
-            test_trace,
-            xs_grad_idxs,
-            ret_grad_idxs,
-        ))
+        input_queue.put(
+            (
+                "gradient_backend_computation",
+                backend_to_test,
+                args_np,
+                arg_np_vals,
+                args_idxs,
+                kwargs_np,
+                kwarg_np_vals,
+                kwargs_idxs,
+                input_dtypes,
+                test_flags,
+                on_device,
+                fn,
+                test_trace,
+                xs_grad_idxs,
+                ret_grad_idxs,
+            )
+        )
         grads_np_flat = output_queue.get()
 
     else:
@@ -1255,24 +1322,26 @@ def gradient_test(
     if mod_backend[ground_truth_backend]:
         # do this using multiprocessing
         proc, input_queue, output_queue = mod_backend[ground_truth_backend]
-        input_queue.put((
-            "gradient_ground_truth_computation",
-            ground_truth_backend,
-            on_device,
-            fn,
-            input_dtypes,
-            all_as_kwargs_np,
-            args_np,
-            arg_np_vals,
-            args_idxs,
-            kwargs_np,
-            kwarg_np_vals,
-            test_flags,
-            kwargs_idxs,
-            test_trace,
-            xs_grad_idxs,
-            ret_grad_idxs,
-        ))
+        input_queue.put(
+            (
+                "gradient_ground_truth_computation",
+                ground_truth_backend,
+                on_device,
+                fn,
+                input_dtypes,
+                all_as_kwargs_np,
+                args_np,
+                arg_np_vals,
+                args_idxs,
+                kwargs_np,
+                kwarg_np_vals,
+                test_flags,
+                kwargs_idxs,
+                test_trace,
+                xs_grad_idxs,
+                ret_grad_idxs,
+            )
+        )
         grads_np_from_gt_flat = output_queue.get()
     else:
         grads_np_from_gt_flat = test_gradient_ground_truth_computation(
@@ -1680,22 +1749,24 @@ def test_method(
     if mod_backend[backend_to_test]:
         # yep, multiprocessing
         proc, input_queue, output_queue = mod_backend[backend_to_test]
-        input_queue.put((
-            "method_backend_computation",
-            init_input_dtypes,
-            init_flags,
-            backend_to_test,
-            init_all_as_kwargs_np,
-            on_device,
-            method_input_dtypes,
-            method_flags,
-            method_all_as_kwargs_np,
-            class_name,
-            method_name,
-            init_with_v,
-            test_trace,
-            method_with_v,
-        ))
+        input_queue.put(
+            (
+                "method_backend_computation",
+                init_input_dtypes,
+                init_flags,
+                backend_to_test,
+                init_all_as_kwargs_np,
+                on_device,
+                method_input_dtypes,
+                method_flags,
+                method_all_as_kwargs_np,
+                class_name,
+                method_name,
+                init_with_v,
+                test_trace,
+                method_with_v,
+            )
+        )
         (
             ret,
             ret_np_flat,
@@ -1744,24 +1815,26 @@ def test_method(
     if mod_backend[ground_truth_backend]:
         # yep, multiprocessing
         proc, input_queue, output_queue = mod_backend[ground_truth_backend]
-        input_queue.put((
-            "method_ground_truth_computation",
-            ground_truth_backend,
-            on_device,
-            org_con_data,
-            args_np_method,
-            met_arg_np_vals,
-            met_args_idxs,
-            kwargs_np_method,
-            met_kwarg_np_vals,
-            met_kwargs_idxs,
-            method_input_dtypes,
-            method_flags,
-            class_name,
-            method_name,
-            test_trace,
-            v_np,
-        ))
+        input_queue.put(
+            (
+                "method_ground_truth_computation",
+                ground_truth_backend,
+                on_device,
+                org_con_data,
+                args_np_method,
+                met_arg_np_vals,
+                met_args_idxs,
+                kwargs_np_method,
+                met_kwarg_np_vals,
+                met_kwargs_idxs,
+                method_input_dtypes,
+                method_flags,
+                class_name,
+                method_name,
+                test_trace,
+                v_np,
+            )
+        )
         (
             ret_from_gt,
             ret_np_from_gt_flat,

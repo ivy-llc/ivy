@@ -2,7 +2,7 @@
 import math
 import sys
 import numpy as np
-from hypothesis import strategies as st, assume
+from hypothesis import strategies as st, assume, settings, HealthCheck
 
 # local
 import ivy
@@ -271,6 +271,37 @@ def _vander_helper(draw):
 
 
 @handle_frontend_test(
+    fn_tree="torch.linalg.lu_solve",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=helpers.get_shape(
+            min_num_dims=2, max_num_dims=2, min_dim_size=2, max_dim_size=2
+        ),
+        num_arrays=2,
+        shared_dtype=True,
+    ).filter(lambda x: helpers.matrix_is_stable(x[1][0], cond_limit=10)),
+)
+def test_lu_solve(dtype_x, test_flags, backend_fw, fn_name, on_device):
+    dtype, arr = dtype_x
+    A, B = arr[0], arr[1]
+    ivy.set_backend(backend_fw)
+    lu_ = ivy.lu_factor(A)
+    lu, p = lu_.LU, lu_.p
+    X, X_gt = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        lu=lu,
+        p=p,
+        b=B,
+        test_values=False,
+    )
+    assert np.allclose(A @ X, B)
+
+
+@handle_frontend_test(
     fn_tree="torch.linalg.cholesky",
     aliases=["torch.cholesky"],
     dtype_and_x=_get_dtype_and_matrix(square=True),
@@ -424,6 +455,49 @@ def test_torch_det(
     )
 
 
+@handle_frontend_test(
+    fn_tree="torch.diag_embed",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=2), key="shape"),
+    ),
+    dims_and_offsets=helpers.dims_and_offset(
+        shape=st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=2), key="shape"),
+        ensure_dim_unique=True,
+    ),
+)
+@settings(suppress_health_check=list(HealthCheck))
+def test_torch_diag_embed(
+    *,
+    dtype_and_values,
+    dims_and_offsets,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+):
+    input_dtype, value = dtype_and_values
+    dim1, dim2, offset = dims_and_offsets
+    num_of_dims = len(np.shape(value[0]))
+    if dim1 < 0:
+        assume(dim1 + num_of_dims != dim2)
+    if dim2 < 0:
+        assume(dim1 != dim2 + num_of_dims)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
+        offset=offset,
+        dim1=dim1,
+        dim2=dim2,
+    )
+
+
 # eig
 # TODO: Test for all valid dtypes once ivy.eig supports complex data types
 @handle_frontend_test(
@@ -458,7 +532,7 @@ def test_torch_eig(
     ret = [ivy.to_numpy(x).astype("float64") for x in ret]
     frontend_ret = [np.asarray(x, dtype=np.float64) for x in frontend_ret]
 
-    l, v = ret
+    l, v = ret  # noqa: E741
     front_l, front_v = frontend_ret
 
     assert_all_close(
@@ -467,6 +541,7 @@ def test_torch_eig(
         rtol=1e-2,
         atol=1e-2,
         ground_truth_backend=frontend,
+        backend=backend_fw,
     )
 
 
@@ -511,6 +586,7 @@ def test_torch_eigh(
         ret_np=Q @ np.diag(L) @ Q.T,
         ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
         atol=1e-02,
+        backend=backend_fw,
     )
 
 
@@ -581,6 +657,7 @@ def test_torch_eigvals(
         rtol=1e-2,
         atol=1e-2,
         ground_truth_backend=frontend,
+        backend=backend_fw,
     )
 
 
@@ -689,7 +766,7 @@ def test_torch_lu_factor(
     backend_fw,
 ):
     dtype, input = input_dtype_and_input
-    helpers.test_frontend_function(
+    ret = helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
         test_flags=test_flags,
@@ -699,7 +776,59 @@ def test_torch_lu_factor(
         rtol=1e-03,
         atol=1e-02,
         A=input[0],
+        test_values=False,
     )
+    ret_f, ret_gt = ret
+    LU, p = ret_f.LU, ret_f.p
+    L = np.tril(LU, -1) + np.eye(LU.shape[0])
+    U = np.triu(LU)
+    P = np.eye(LU.shape[0])[p]
+    assert np.allclose(L @ U, P @ input[0])
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.lu_factor_ex",
+    input_dtype_and_input=_get_dtype_and_matrix(
+        batch=True, square=True, invertible=True
+    ),
+)
+def test_torch_lu_factor_ex(
+    *,
+    input_dtype_and_input,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, input = input_dtype_and_input
+    ret = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-03,
+        atol=1e-02,
+        A=input[0],
+        check_errors=False,
+        test_values=False,
+    )
+    ret_f, ret_gt = ret
+    ret_f_matrix, ret_f_info = ret_f
+    if ret_f_info == 0:
+        (
+            LU,
+            p,
+        ) = (
+            ret_f_matrix.LU,
+            ret_f_matrix.p,
+        )
+        L = np.tril(LU, -1) + np.eye(LU.shape[0])
+        U = np.triu(LU)
+        P = np.eye(LU.shape[0])[p]
+        assert np.allclose(L @ U, P @ input[0])
 
 
 @handle_frontend_test(
@@ -770,32 +899,37 @@ def test_torch_matrix_exp(
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_norm",
     dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_num_dims=2,
         min_axes_size=2,
         max_axes_size=2,
-        min_value=-1e04,
-        max_value=1e04,
+        max_value=10e4,
+        min_value=-10e4,
+        abs_smallest_val=10e-4,
         valid_axis=True,
         force_tuple_axis=True,
     ),
     ord=st.sampled_from(["fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
     keepdim=st.booleans(),
-    dtype=helpers.get_dtypes("valid", none=True, full=False),
+    dtypes=helpers.get_dtypes("float_and_complex", none=True, full=False),
 )
 def test_torch_matrix_norm(
     *,
     dtype_values_axis,
     ord,
     keepdim,
-    dtype,
     frontend,
+    dtypes,
     test_flags,
     fn_tree,
     backend_fw,
     on_device,
 ):
     input_dtype, x, axis = dtype_values_axis
+    if dtypes[0] is not None and "complex128" in input_dtype[0]:
+        dtypes[0] = input_dtype[0]
+    if dtypes[0] is not None:
+        dtypes[0] = input_dtype[0][:-2] + max([input_dtype[0][-2:], dtypes[0][-2:]])
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -810,7 +944,7 @@ def test_torch_matrix_norm(
         ord=ord,
         dim=axis,
         keepdim=keepdim,
-        dtype=dtype[0],
+        dtype=dtypes[0],
     )
 
 
@@ -1001,6 +1135,7 @@ def test_torch_qr(
         rtol=1e-2,
         atol=1e-2,
         ground_truth_backend=frontend,
+        backend=backend_fw,
     )
     ivy.previous_backend()
 
@@ -1150,6 +1285,7 @@ def test_torch_svd(
         rtol=1e-2,
         atol=1e-2,
         ground_truth_backend=frontend,
+        backend=backend_fw,
     )
 
 

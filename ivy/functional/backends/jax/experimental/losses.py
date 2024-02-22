@@ -1,5 +1,4 @@
 import jax.numpy as jnp
-from typing import Optional
 from ivy.functional.backends.jax import JaxArray
 
 # local
@@ -30,8 +29,8 @@ def smooth_l1_loss(
     target: JaxArray,
     /,
     *,
-    beta: Optional[float] = 1.0,
-    reduction: Optional[str] = "mean",
+    beta: float = 1.0,
+    reduction: str = "mean",
 ) -> JaxArray:
     if beta < 1e-5:
         loss = jnp.abs(input - target)
@@ -52,7 +51,7 @@ def soft_margin_loss(
     target: JaxArray,
     /,
     *,
-    reduction: Optional[str] = "mean",
+    reduction: str = "mean",
 ) -> JaxArray:
     loss = jnp.sum(jnp.log1p(jnp.exp(-input * target))) / jnp.size(input)
 
@@ -64,11 +63,11 @@ def soft_margin_loss(
         return loss
 
 
-def _apply_loss_reduction(loss: JaxArray, reduction: str, axis=None) -> JaxArray:
+def _apply_loss_reduction(loss: JaxArray, reduction: str) -> JaxArray:
     if reduction == "sum":
-        return jnp.sum(loss, axis=axis)
+        return jnp.sum(loss)
     elif reduction == "mean":
-        return jnp.mean(loss, axis=axis)
+        return jnp.mean(loss)
     else:  # reduction == "none"
         return loss
 
@@ -114,7 +113,7 @@ def _validate_poisson_nll_params(
 
 @with_supported_device_and_dtypes(
     {
-        "0.4.14 and below": {
+        "0.4.18 and below": {
             "cpu": ("float16", "float32", "float64"),
         }
     },
@@ -152,4 +151,29 @@ def poisson_nll_loss(
         ones = jnp.ones_like(target_arr, dtype=target_arr.dtype)
         cond = jnp.logical_and(target_arr >= zeroes, target_arr <= ones)
         loss = loss + jnp.where(cond, zeroes, striling_approx_term)
+    return _apply_loss_reduction(loss, reduction)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "0.4.18 and below": {
+            "cpu": ("float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def hinge_embedding_loss(
+    input: JaxArray,
+    target: JaxArray,
+    *,
+    margin: float = 1.0,
+    reduction: str = "mean",
+) -> JaxArray:
+    zero_ = jnp.zeros([1], dtype=input.dtype)
+
+    relu_part = jnp.maximum(margin - input, 0)
+
+    loss = jnp.where(target == 1.0, input, zero_) + jnp.where(
+        target == -1.0, relu_part, zero_
+    )
     return _apply_loss_reduction(loss, reduction)

@@ -3,6 +3,7 @@ import ast
 import logging
 import inspect
 import math
+import functools
 from numbers import Number
 from typing import Union, Tuple, List, Optional, Callable, Iterable, Any
 import numpy as np
@@ -48,6 +49,7 @@ def _is_valid_dtypes_attributes(fn: Callable) -> bool:
 
 
 def _handle_nestable_dtype_info(fn):
+    @functools.wraps(fn)
     def _handle_nestable_dtype_info_wrapper(type):
         if isinstance(type, ivy.Container):
             type = type.cont_map(lambda x, kc: fn(x))
@@ -96,9 +98,10 @@ def _get_function_list(func):
                     hasattr(nodef, "value")
                     and hasattr(nodef.value, "id")
                     and nodef.value.id not in ["ivy", "self"]
+                    and "_frontend" not in nodef.value.id
                 ):
                     continue
-                names[nodef.attr] = getattr(
+                names[ast.unparse(nodef)] = getattr(
                     func,
                     "__self__",
                     getattr(
@@ -115,13 +118,14 @@ def _get_function_list(func):
 def _get_functions_from_string(func_names, module):
     ret = set()
     # We only care about the functions in the ivy or the same module
-    for func_name in func_names.keys():
+    for orig_func_name in func_names.keys():
+        func_name = orig_func_name.split(".")[-1]
         if hasattr(ivy, func_name) and callable(getattr(ivy, func_name, None)):
             ret.add(getattr(ivy, func_name))
-        elif hasattr(module, func_name) and callable(getattr(ivy, func_name, None)):
+        elif hasattr(module, func_name) and callable(getattr(module, func_name, None)):
             ret.add(getattr(module, func_name))
-        elif callable(getattr(func_names[func_name], func_name, None)):
-            ret.add(getattr(func_names[func_name], func_name))
+        elif callable(getattr(func_names[orig_func_name], func_name, None)):
+            ret.add(getattr(func_names[orig_func_name], func_name))
     return ret
 
 
@@ -147,7 +151,10 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
         # if it's einops, we need to recurse
         if not getattr(fn, "__module__", None):
             continue
-        if "backend" in fn.__module__:
+        is_frontend_fn = "frontend" in fn.__module__
+        is_backend_fn = "backend" in fn.__module__ and not is_frontend_fn
+        is_einops_fn = hasattr(fn, "__name__") and "einops" in fn.__name__
+        if is_backend_fn:
             f_supported = get_fn(fn, False)
             if hasattr(fn, "partial_mixed_handler"):
                 f_supported = merge_fn(
@@ -162,9 +169,7 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
                 )
             out = merge_fn(wrapper(f_supported), out)
             continue
-        elif "frontend" in fn.__module__ or (
-            hasattr(fn, "__name__") and "einops" in fn.__name__
-        ):
+        elif is_frontend_fn or (hasattr(fn, "__name__") and is_einops_fn):
             f_supported = wrapper(get_fn(fn, False))
             out = merge_fn(f_supported, out)
 
@@ -174,8 +179,36 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
             continue
 
         fl = _get_function_list(fn)
-        res = _get_functions_from_string(fl, __import__(fn.__module__))
-        to_visit.extend(res)
+        res = list(_get_functions_from_string(fl, __import__(fn.__module__)))
+        if is_frontend_fn:
+            frontends = {
+                "jax_frontend": "ivy.functional.frontends.jax",
+                "jnp_frontend": "ivy.functional.frontends.jax.numpy",
+                "np_frontend": "ivy.functional.frontends.numpy",
+                "tf_frontend": "ivy.functional.frontends.tensorflow",
+                "torch_frontend": "ivy.functional.frontends.torch",
+                "paddle_frontend": "ivy.functional.frontends.paddle",
+            }
+            for key in fl:
+                if "frontend" in key:
+                    frontend_fn = fl[key]
+                    for frontend in frontends:
+                        if frontend in key:
+                            key = key.replace(frontend, frontends[frontend])
+                    if "(" in key:
+                        key = key.split("(")[0]
+                    frontend_module = ".".join(key.split(".")[:-1])
+                    if (
+                        frontend_module == ""
+                    ):  # single edge case: fn='frontend_outputs_to_ivy_arrays'
+                        continue
+                    frontend_fl = {key: frontend_fn}
+                    res += list(
+                        _get_functions_from_string(
+                            frontend_fl, importlib.import_module(frontend_module)
+                        )
+                    )
+        to_visit.extend(set(res))
 
     return out
 
@@ -208,8 +241,8 @@ def _get_dtypes(fn, complement=True):
     # We only care about getting dtype info from the base function
     # if we do need to at some point use dtype information from the parent function
     # we can comment out the following condition
-    is_backend_fn = "backend" in fn.__module__
     is_frontend_fn = "frontend" in fn.__module__
+    is_backend_fn = "backend" in fn.__module__ and not is_frontend_fn
     has_unsupported_dtypes_attr = hasattr(fn, "unsupported_dtypes")
     if not is_backend_fn and not is_frontend_fn and not has_unsupported_dtypes_attr:
         if complement:
@@ -652,7 +685,7 @@ def finfo(
 
     >>> x = ivy.array([1.3,2.1,3.4], dtype=ivy.float64)
     >>> print(ivy.finfo(x))
-    finfo(resolution=1e-15, min=-1.7976931348623157e+308, /
+    finfo(resolution=1e-15, min=-1.7976931348623157e+308, \
     max=1.7976931348623157e+308, dtype=float64)
 
     >>> x = ivy.array([0.7,8.4,3.14], dtype=ivy.float16)
@@ -666,7 +699,7 @@ def finfo(
     >>> print(ivy.finfo(c))
     {
         x: finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04, dtype=float16),
-        y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, /
+        y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, \
             max=1.7976931348623157e+308, dtype=float64)
     }
     """

@@ -66,7 +66,7 @@ def expand_dims(
         ret = tf.reshape(x, shape=out_shape)
         return ret
     except (tf.errors.InvalidArgumentError, np.AxisError) as error:
-        raise ivy.utils.exceptions.IvyIndexError(error)
+        raise ivy.utils.exceptions.IvyIndexError(error) from error
 
 
 def flip(
@@ -85,7 +85,7 @@ def flip(
             new_axis = list(range(num_dims))
         else:
             new_axis = axis
-        if type(new_axis) is int:
+        if isinstance(new_axis, int):
             new_axis = [new_axis]
         else:
             new_axis = new_axis
@@ -196,7 +196,7 @@ def stack(
     try:
         return tf.experimental.numpy.stack(arrays, axis)
     except ValueError as e:
-        raise ivy.utils.exceptions.IvyIndexError(e)
+        raise ivy.utils.exceptions.IvyIndexError(e) from e
 
 
 # Extra #
@@ -226,7 +226,6 @@ def split(
         num_or_size_splits = int(dim_size)
     if isinstance(num_or_size_splits, (tf.Tensor, tf.Variable)):
         num_or_size_splits = tf.cast(num_or_size_splits, tf.int32)
-        num_or_size_splits = num_or_size_splits.numpy().tolist()
     elif isinstance(num_or_size_splits, int) and with_remainder:
         num_chunks = x.shape[axis] / num_or_size_splits
         num_chunks_int = math.floor(num_chunks)

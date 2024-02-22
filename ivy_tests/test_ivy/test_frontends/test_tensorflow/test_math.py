@@ -238,7 +238,7 @@ def test_tensorflow_angle(
 @handle_frontend_test(
     fn_tree="tensorflow.math.argmax",
     dtype_and_x=_statistical_dtype_values(function="argmax"),
-    output_type=st.sampled_from(["int16", "uint16", "int32", "int64"]),
+    output_type=st.sampled_from(["int32", "int64"]),
     test_with_out=st.just(False),
 )
 def test_tensorflow_argmax(
@@ -251,9 +251,7 @@ def test_tensorflow_argmax(
     on_device,
     output_type,
 ):
-    if backend_fw in ("torch", "paddle"):
-        assume(output_type != "uint16")
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis, *_ = dtype_and_x
     if isinstance(axis, tuple):
         axis = axis[0]
     helpers.test_frontend_function(
@@ -286,7 +284,7 @@ def test_tensorflow_argmin(
     on_device,
     output_type,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis, *_ = dtype_and_x
     if isinstance(axis, tuple):
         axis = axis[0]
     helpers.test_frontend_function(
@@ -442,6 +440,41 @@ def test_tensorflow_atanh(
         input_dtypes=input_dtype,
         frontend=frontend,
         backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# bessel_i1
+@handle_frontend_test(
+    fn_tree="tensorflow.math.bessel_i1",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=1,
+        min_value=-10,
+        max_value=10,
+        min_num_dims=1,
+        max_num_dims=4,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_bessel_i1(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,

@@ -171,17 +171,6 @@ def _transpose_helper(draw):
     return dtype, x, perm
 
 
-@st.composite
-def dims_and_offset(draw, shape):
-    shape_actual = draw(shape)
-    dim1 = draw(helpers.get_axis(shape=shape, force_int=True))
-    dim2 = draw(helpers.get_axis(shape=shape, force_int=True))
-    offset = draw(
-        st.integers(min_value=-shape_actual[dim1], max_value=shape_actual[dim1])
-    )
-    return dim1, dim2, offset
-
-
 # Helpers #
 # ------ #
 
@@ -569,7 +558,7 @@ def test_paddle_eig(
     ret = [ivy.to_numpy(x).astype("float64") for x in ret]
     frontend_ret = [np.asarray(x, dtype=np.float64) for x in frontend_ret]
 
-    l, v = ret
+    l, v = ret  # noqa: E741
     front_l, front_v = frontend_ret
 
     assert_all_close(
@@ -619,7 +608,7 @@ def test_paddle_eigh(
     ret = [ivy.to_numpy(x).astype("float64") for x in ret]
     frontend_ret = [np.asarray(x, dtype=np.float64) for x in frontend_ret]
 
-    l, v = ret
+    l, v = ret  # noqa: E741
     front_l, front_v = frontend_ret
 
     assert_all_close(
@@ -706,7 +695,7 @@ def test_paddle_eigvalsh(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ),
-    axis_and_offset=dims_and_offset(
+    axis_and_offset=helpers.dims_and_offset(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape")
     ),
 )

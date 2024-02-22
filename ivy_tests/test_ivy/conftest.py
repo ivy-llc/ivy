@@ -198,12 +198,14 @@ def pytest_configure(config):
                 continue
             for trace_graph in trace_modes:
                 for implicit in implicit_modes:
-                    TEST_PARAMS_CONFIG.append((
-                        device,
-                        backend_str,
-                        trace_graph,
-                        implicit,
-                    ))
+                    TEST_PARAMS_CONFIG.append(
+                        (
+                            device,
+                            backend_str,
+                            trace_graph,
+                            implicit,
+                        )
+                    )
 
     process_cl_flags(config)
 
@@ -292,6 +294,10 @@ def process_cl_flags(config) -> Dict[str, bool]:
             False,
             getopt("--with-transpile"),
         ),
+        "test_cython_wrapper": (
+            getopt("--skip-cython-wrapper-testing"),
+            getopt("--with-cython-wrapper-testing"),
+        ),
     }
 
     # whether to skip gt testing or not
@@ -358,6 +364,8 @@ def pytest_addoption(parser):
         default=None,
         help="Print test items in my custom format",
     )
+    parser.addoption("--skip-cython-wrapper-testing", action="store_true")
+    parser.addoption("--with-cython-wrapper-testing", action="store_true")
 
 
 def pytest_collection_finish(session):

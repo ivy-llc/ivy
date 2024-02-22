@@ -52,7 +52,7 @@ def random_normal(
     return np.asarray(np.random.normal(mean, std, shape), dtype=dtype)
 
 
-@with_unsupported_dtypes({"1.26.2 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -69,10 +69,12 @@ def multinomial(
         np.random.seed(seed)
     if probs is None:
         probs = (
-            np.ones((
-                batch_size,
-                population_size,
-            ))
+            np.ones(
+                (
+                    batch_size,
+                    population_size,
+                )
+            )
             / population_size
         )
     orig_probs_shape = list(probs.shape)

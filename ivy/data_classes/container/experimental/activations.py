@@ -968,10 +968,10 @@ class _ContainerWithActivationExperimental(ContainerBase):
         Examples
         --------
         >>> x = x = ivy.Container(a=ivy.array([0.39, -2.0]), b=ivy.array([2., -0.2]))
-        >>> y = ivy.Container.static_hardtanh(x)
+        >>> y = ivy.Container._static_hardtanh(x)
         >>> print(y)
         {
-            a: ivy.array([0.39, -1.]),
+            a: ivy.array([0.3899, -1.]),
             b: ivy.array([1., -0.2])
         }
         """
@@ -1033,11 +1033,11 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
-        >>> x = x = ivy.Container(a=ivy.array([0.39, -2.0]), b=ivy.array([2., -0.2]))
-        >>> y = ivy.Container.static_hardtanh(x)
+        >>> x = ivy.Container(a=ivy.array([0.39, -2.0]), b=ivy.array([2., -0.2]))
+        >>> y = ivy.Container.hardtanh(x)
         >>> print(y)
         {
-            a: ivy.array([0.39, -1.]),
+            a: ivy.array([0.389999, -1.]),
             b: ivy.array([1., -0.2])
         }
         """
@@ -1820,8 +1820,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
-        >>> import ivy.numpy as np
-        >>> x = ivy.Container(a=np.array([1., -2.]), b=np.array([0.4, -0.2]))
+        >>> x = ivy.Container(a=ivy.array([1., -2.]), b=ivy.array([0.4, -0.2]))
         >>> y = ivy.Container.hardshrink(x)
         >>> print(y)
         {
@@ -1832,6 +1831,120 @@ class _ContainerWithActivationExperimental(ContainerBase):
         return self._static_hardshrink(
             self,
             lambd=lambd,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def _static_hardsilu(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container static method which acts as a wrapper for
+        ivy.hardsilu.
+
+        Parameters
+        ----------
+        x
+            input container
+        key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        a container containing the output of the hardsilu/hardswish function applied
+        to each element in ``x``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-0.5, -1, 0]), b=ivy.array([0.5, 1., 2]))
+        >>> y = ivy.Container._static_hardsilu(x)
+        >>> print(y)
+        {
+            a: ivy.array([-0.20833333, -0.33333334, 0.]),
+            b: ivy.array([0.29166666, 0.66666669, 1.66666663])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "hardsilu",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def hardsilu(
+        self,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method which acts as a wrapper for
+        ivy.hardsilu.
+
+        Parameters
+        ----------
+        self
+            input container
+        key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        a container containing the output of the hardsilu/hardswish function applied
+        to each element in the input container.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-0.5, -1, 0]), b=ivy.array([0.5, 1., 2]))
+        >>> y = x.hardsilu()
+        >>> print(y)
+        {
+            a: ivy.array([-0.20833333, -0.33333334, 0.]),
+            b: ivy.array([0.29166666, 0.66666669, 1.66666663])
+        }
+        """
+        return self._static_hardsilu(
+            self,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
