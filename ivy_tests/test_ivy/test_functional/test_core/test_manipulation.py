@@ -152,9 +152,8 @@ def _get_splits(
     allow_array_indices=True,
     is_mod_split=False,
 ):
-    """Generate valid splits, either by generating an integer that evenly
-    divides the axis or a list of splits that sum to the length of the axis
-    being split."""
+    """Generate valid splits, either by generating an integer that evenly divides the
+    axis or a list of splits that sum to the length of the axis being split."""
     shape = draw(
         st.shared(helpers.get_shape(min_num_dims=min_num_dims), key="value_shape")
     )
@@ -701,29 +700,25 @@ def test_swapaxes(
 @handle_test(
     fn_tree="functional.ivy.tile",
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
-    ),
-    repeat=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("signed_integer"),
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape").map(
-            lambda rep: (len(rep),)
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(
+            helpers.get_shape(min_dim_size=0, max_num_dims=8), key="value_shape"
         ),
-        min_value=0,
-        max_value=10,
     ),
+    repeats=st.lists(st.integers(min_value=0, max_value=5), max_size=8),
 )
-def test_tile(*, dtype_value, repeat, test_flags, backend_fw, fn_name, on_device):
+def test_tile(*, dtype_value, repeats, test_flags, backend_fw, fn_name, on_device):
     dtype, value = dtype_value
-    repeat_dtype, repeat_list = repeat
+    # Empty tensors do not copy correctly in paddle
+    assume(backend_fw != "paddle" or 0 not in value[0].shape)
     helpers.test_function(
-        input_dtypes=dtype + repeat_dtype,
+        input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
-        repeats=repeat_list[0],
+        repeats=repeats,
         rtol_=1e-2,
         atol_=1e-2,
         xs_grad_idxs=[[0, 0]],
