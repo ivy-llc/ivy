@@ -651,19 +651,28 @@ def test_matmul(*, x, y, test_flags, backend_fw, fn_name, on_device):
         valid_axis=True,
         min_axes_size=2,
         max_axes_size=2,
+        max_value=10e4,
+        min_value=-10e4,
+        abs_smallest_val=10e-4,
         force_tuple_axis=True,
         allow_neg_axes=False,
     ),
     kd=st.booleans(),
     ord=st.sampled_from((-2, -1, 1, 2, -float("inf"), float("inf"), "fro", "nuc")),
+    dtypes=helpers.get_dtypes("float_and_complex", none=True, full=False),
 )
 def test_matrix_norm(
-    *, dtype_value_axis, kd, ord, test_flags, backend_fw, fn_name, on_device
+    *, dtype_value_axis, kd, ord, dtypes, test_flags, backend_fw, fn_name, on_device
 ):
-    dtype, x, axis = dtype_value_axis
+    input_dtype, x, axis = dtype_value_axis
+    if dtypes[0] is not None and "complex128" in input_dtype[0]:
+        dtypes[0] = input_dtype[0]
+    if dtypes[0] is not None:
+        dtypes[0] = input_dtype[0][:-2] + max([input_dtype[0][-2:], dtypes[0][-2:]])
+
     assume(matrix_is_stable(x[0], cond_limit=10))
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_name=fn_name,
@@ -673,6 +682,7 @@ def test_matrix_norm(
         x=x[0],
         axis=axis,
         keepdims=kd,
+        dtype=dtypes[0],
         ord=ord,
     )
 
