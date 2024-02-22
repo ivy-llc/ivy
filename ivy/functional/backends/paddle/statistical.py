@@ -187,7 +187,7 @@ def mean(
     if 0 in x.shape:
         shape = _calculate_reduced_shape(x, axis, keepdims)
         ret = paddle.empty(shape)
-    if paddle.is_complex(x):
+    elif paddle.is_complex(x):
         ret = paddle.complex(
             paddle.mean(x.real(), axis=axis, keepdim=keepdims),
             paddle.mean(x.imag(), axis=axis, keepdim=keepdims),
