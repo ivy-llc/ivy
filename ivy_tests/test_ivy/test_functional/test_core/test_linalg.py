@@ -682,7 +682,6 @@ def test_matrix_norm(
         x=x[0],
         axis=axis,
         keepdims=kd,
-        dtype=dtypes[0],
         ord=ord,
     )
 
