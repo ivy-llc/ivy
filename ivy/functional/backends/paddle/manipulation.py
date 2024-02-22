@@ -363,38 +363,42 @@ def repeat(
 def tile(
     x: paddle.Tensor, /, repeats: Sequence[int], *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    if x.ndim >= 7:
-        repeats = (
-            repeats.numpy().tolist() if isinstance(repeats, paddle.Tensor) else repeats
-        )
-        new_shape = [*x.shape[:5], -1]
-        reshaped_tensor = paddle.reshape(x, new_shape)
-        new_repeats = repeats[:5] + [math.prod(repeats[5:])]
-        tiled_reshaped_tensor = tile(reshaped_tensor, new_repeats)
-        tiled_shape = tuple(s * r for s, r in zip(x.shape, repeats))
-        result = paddle.reshape(tiled_reshaped_tensor, tiled_shape)
-        return result
-    if ivy.min(repeats) == 0:
-        # This logic is to mimic other backends behaviour when a 0 in repeat
-        # is received since paddle doesn't natively support it
-        if len(repeats) < x.ndim:
+    repeats = repeats.tolist() if isinstance(repeats, paddle.Tensor) else list(repeats)
+    # Paddle doesn't natively support repeats containing zeros
+    if len(repeats) > 0 and min(repeats) == 0:
+        if x.ndim == 0:
+            shape = repeats
+        elif len(repeats) <= x.ndim:
             shape = x.shape
-            shape[-len(repeats) :] = paddle_backend.multiply(
-                shape[-len(repeats) :], repeats
-            ).tolist()
-        elif len(repeats) > x.ndim:
-            shape = (
-                repeats.tolist()
-                if isinstance(repeats, paddle.Tensor)
-                else list(repeats)
-            )
-            shape[-x.ndim - 1 :] = paddle_backend.multiply(
-                shape[-x.ndim - 1 :], repeats
-            ).tolist()
+            shape[-len(repeats) :] = [
+                s * r for s, r in zip(shape[-len(repeats) :], repeats)
+            ]
         else:
-            shape = paddle_backend.multiply(x.shape, repeats).tolist()
-        return paddle.zeros(shape).cast(x.dtype)
-
+            shape = repeats.copy()
+            shape[-x.ndim :] = [s * r for r, s in zip(shape[-x.ndim :], x.shape)]
+        return paddle.empty(shape, dtype=x.dtype)
+    # Paddle doesn't natively support tensors containing more than 6 dimensions
+    if x.ndim > 6 or len(repeats) > 6:
+        if len(repeats) < x.ndim:
+            repeats = [1] * (x.ndim - len(repeats)) + repeats
+        elif len(repeats) > x.ndim:
+            shape = [1] * (len(repeats) - x.ndim) + x.shape
+            x = paddle.reshape(x, shape)
+        cur_shape = x.shape
+        cur_tensor = x
+        for i in range(0, x.ndim, 5):
+            size = 5 if i <= x.ndim - 5 else x.ndim - i
+            red_shape = [*cur_shape[:size], -1]
+            red_tensor = paddle.reshape(cur_tensor, red_shape)
+            red_repeats = [*repeats[i : i + size], 1]
+            tiled_red_tensor = paddle.tile(red_tensor, red_repeats)
+            perm = [size, *list(range(size))]
+            tiled_red_tensor = paddle.transpose(tiled_red_tensor, perm)
+            cur_shape = cur_shape[size:] + [
+                s * r for s, r in zip(cur_shape[:size], repeats[i : i + size])
+            ]
+            cur_tensor = paddle.reshape(tiled_red_tensor, cur_shape)
+        return cur_tensor
     return paddle.tile(x, repeats)
 
 
