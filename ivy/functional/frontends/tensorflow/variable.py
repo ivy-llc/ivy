@@ -53,7 +53,7 @@ class Variable:
 
     def assign(self, value, use_locking=None, name=None, read_value=True):
         ivy.utils.assertions.check_equal(
-            value.shape if hasattr(value, "ivy_array") else ivy.shape(value),
+            value.ivy_array.shape if hasattr(value, "ivy_array") else ivy.shape(value),
             self.shape,
             as_array=False,
         )
@@ -61,7 +61,7 @@ class Variable:
 
     def assign_add(self, delta, use_locking=None, name=None, read_value=True):
         ivy.utils.assertions.check_equal(
-            delta.shape if hasattr(delta, "ivy_array") else ivy.shape(delta),
+            delta.ivy_array.shape if hasattr(delta, "ivy_array") else ivy.shape(delta),
             self.shape,
             as_array=False,
         )
@@ -69,7 +69,7 @@ class Variable:
 
     def assign_sub(self, delta, use_locking=None, name=None, read_value=True):
         ivy.utils.assertions.check_equal(
-            delta.shape if hasattr(delta, "ivy_array") else ivy.shape(delta),
+            delta.ivy_array.shape if hasattr(delta, "ivy_array") else ivy.shape(delta),
             self.shape,
             as_array=False,
         )
