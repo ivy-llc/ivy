@@ -266,7 +266,7 @@ def tile(
 ) -> torch.Tensor:
     if isinstance(repeats, torch.Tensor):
         repeats = repeats.detach().cpu().numpy().tolist()
-    return x.repeat(repeats)
+    return torch.tile(x, repeats)
 
 
 def constant_pad(
