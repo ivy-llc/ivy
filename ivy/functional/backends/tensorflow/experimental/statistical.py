@@ -310,7 +310,7 @@ def bincount(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.bincount(
-        x.numpy().tolist(),
+        x,
         weights=weights,
         minlength=minlength,
         dtype=x.dtype if weights is None else weights.dtype,
