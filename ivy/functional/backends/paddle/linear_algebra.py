@@ -268,10 +268,11 @@ def matrix_norm(
 ) -> paddle.Tensor:
     if dtype is not None:
         dtype = ivy.as_ivy_dtype(dtype) if dtype is not str else dtype
-        x = x.astype(dtype)
+    else:
+        dtype = x.dtype
     axis_ = list(axis)  # paddle.moveaxis doesn't support tuple axes
     if ord == "nuc":
-        x = paddle.moveaxis(x, axis_, [-2, -1])
+        x = paddle.moveaxis(x.astype(dtype), axis_, [-2, -1])
         # backend implementation is used here instead of native implementation
         # because native implementation causes issues when the return should be
         # a scalar which is solved in the backend implementation
@@ -281,42 +282,42 @@ def matrix_norm(
         )
     elif ord == 1:
         ret = paddle_backend.max(
-            paddle.sum(paddle_backend.abs(x), axis=axis[0], keepdim=True),
+            paddle.sum(paddle_backend.abs(x.astype(dtype)), axis=axis[0], keepdim=True),
             axis=axis,
             keepdims=keepdims,
         )
     elif ord == -1:
         ret = paddle_backend.min(
-            paddle.sum(paddle_backend.abs(x), axis=axis[0], keepdim=True),
+            paddle.sum(paddle_backend.abs(x.astype(dtype)), axis=axis[0], keepdim=True),
             axis=axis,
             keepdims=keepdims,
         )
     elif ord == 2:
-        x = paddle.moveaxis(x, axis_, [-2, -1])
+        x = paddle.moveaxis(x.astype(dtype), axis_, [-2, -1])
         ret = paddle_backend.max(
             paddle_backend.svd(x)[1],
             axis=-1,
         )
     elif ord == -2:
-        x = paddle.moveaxis(x, axis_, [-2, -1])
+        x = paddle.moveaxis(x.astype(dtype), axis_, [-2, -1])
         ret = paddle_backend.min(
             paddle_backend.svd(x)[1],
             axis=-1,
         )
     elif ord == float("inf"):
         ret = paddle_backend.max(
-            paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
+            paddle.sum(paddle.abs(x.astype(dtype)), axis=axis[1], keepdim=True),
             axis=axis,
             keepdims=keepdims,
         )
     elif ord == float("-inf"):
         ret = paddle_backend.min(
-            paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
+            paddle.sum(paddle.abs(x.astype(dtype)), axis=axis[1], keepdim=True),
             axis=axis,
             keepdims=keepdims,
         )
     else:
-        ret = paddle.linalg.norm(x, p=ord, axis=axis, keepdim=keepdims)
+        ret = paddle.linalg.norm(x.astype(dtype), p=ord, axis=axis, keepdim=keepdims)
     if x.ndim == 2 and not keepdims:
         ret = paddle.squeeze(ret)
     elif keepdims and ord in ["nuc", -2, 2]:
