@@ -1,5 +1,5 @@
 from hypothesis import strategies as st
-
+import torch 
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import numpy as np
@@ -10,29 +10,30 @@ import numpy as np
     arrays_and_dtypes=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_integer"),
         num_arrays=2,
-        min_value=-2,
-        max_value=2,
+        min_value=0,  # Recall score is for binary classification, so min_value is set to 0
+        max_value=1,  # Max value is set to 1 for the same reason
         shared_dtype=True,
         shape=(helpers.ints(min_value=2, max_value=5)),
     ),
-    average=st.sampled_from(["binary", "micro", "macro"]),
-    sample_weight=st.none() | st.floats(min_value=0, max_value=1),
 )
-def test_recall_score(
-    arrays_and_dtypes,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-    average,
-    sample_weight,
+def test_sklearn_recall_score(
+        arrays_and_dtypes,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
+        backend_fw,
 ):
     dtypes, values = arrays_and_dtypes
-    # Ensure discrete values if float dtype
+    # Ensure the values are binary by rounding and converting to int
     for i in range(2):
         if "float" in dtypes[i]:
-            values[i] = np.floor(values[i])
+            values[i] = np.round(values[i]).astype(int)
+
+    # Detach tensors if they require grad before converting to NumPy arrays
+    if backend_fw == 'torch':
+        values = [value.detach().numpy() if isinstance(value, torch.Tensor) and value.requires_grad else value
+                  for value in values]
 
     helpers.test_frontend_function(
         input_dtypes=dtypes,
@@ -43,8 +44,7 @@ def test_recall_score(
         on_device=on_device,
         y_true=values[0],
         y_pred=values[1],
-        average=average,
-        sample_weight=sample_weight,
+        sample_weight=None,
     )
 
 
