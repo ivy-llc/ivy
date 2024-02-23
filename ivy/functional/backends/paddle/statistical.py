@@ -163,7 +163,7 @@ def max(
 def _calculate_reduced_shape(x, axis, keepdims):
     if axis is None:
         axis = tuple(range(len(x.shape)))
-    elif type(axis) not in (tuple, list):
+    elif isinstance(axis, int):
         axis = (axis,)
     if keepdims:
         return [1 if i in axis else x.shape[i] for i in range(len(x.shape))]
@@ -186,7 +186,7 @@ def mean(
         x = ivy.astype(x, dtype).to_native()
     if 0 in x.shape:
         shape = _calculate_reduced_shape(x, axis, keepdims)
-        ret = paddle.empty(shape)
+        ret = paddle.full(shape, float("nan"))
     elif paddle.is_complex(x):
         ret = paddle.complex(
             paddle.mean(x.real(), axis=axis, keepdim=keepdims),
