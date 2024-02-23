@@ -453,6 +453,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
         axis: Tuple[int, int] = (-2, -1),
         keepdims: bool = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.matrix_norm. This method
@@ -472,6 +473,10 @@ class _ArrayWithLinearAlgebra(abc.ABC):
             If this is set to True, the axes which are normed over are left in
             the result as dimensions with size one. With this option the result will
             broadcast correctly against the original x. Default is False.
+        dtype
+            If specified, the input tensor is cast to dtype before
+            performingthe operation, and the returned tensor's type
+            will be dtype. Default: None
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -495,7 +500,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
                 [[11.4 ]]])
         """
         return ivy.matrix_norm(
-            self._data, ord=ord, axis=axis, keepdims=keepdims, out=out
+            self._data, ord=ord, axis=axis, keepdims=keepdims, dtype=dtype, out=out
         )
 
     def matrix_power(
