@@ -16,6 +16,7 @@ def _from_transformers_tensors(x):
         return x
     return x
 
+
 def _to_transformers_tensors(x, tokenizer):
     if isinstance(x, str):
         return tokenizer(x, return_tensors="pt")
