@@ -29,13 +29,17 @@ def precision_score(y_true, y_pred, *, sample_weight=None):
     if sample_weight is not None:
         sample_weight = ivy.array(sample_weight)
         if sample_weight.shape[0] != y_true.shape[0]:
-            raise IvyValueError("sample_weight must have the same length as y_true and y_pred")
+            raise IvyValueError(
+                "sample_weight must have the same length as y_true and y_pred"
+            )
         sample_weight = sample_weight / ivy.sum(sample_weight)
     else:
         sample_weight = ivy.ones_like(y_true)
 
     # Calculate true positives and predicted positives
-    true_positives = ivy.logical_and(ivy.equal(y_true, 1), ivy.equal(y_pred, 1)).astype("int64")
+    true_positives = ivy.logical_and(ivy.equal(y_true, 1), ivy.equal(y_pred, 1)).astype(
+        "int64"
+    )
     predicted_positives = ivy.equal(y_pred, 1).astype("int64")
 
     # Apply sample weights

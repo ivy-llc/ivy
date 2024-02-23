@@ -1,4 +1,4 @@
-#Still working on it
+# Still working on it
 
 import functools
 import torch
@@ -6,8 +6,15 @@ from typing import Callable
 
 from transformers import PreTrainedModel, PreTrainedTokenizer
 
+
 # --- Helpers --- #
 # --------------- #
+
+
+def _from_transformers_tensors(x):
+    if isinstance(x, dict):
+        return x
+    return x
 
 def _to_transformers_tensors(x, tokenizer):
     if isinstance(x, str):
@@ -16,15 +23,14 @@ def _to_transformers_tensors(x, tokenizer):
         return x
     return x
 
-def _from_transformers_tensors(x):
-    if isinstance(x, dict):
-        return x
-    return x
 
 # --- Main --- #
 # ------------ #
 
-def inputs_to_transformers_tensors(fn: Callable, model: PreTrainedModel, tokenizer: PreTrainedTokenizer) -> Callable:
+
+def inputs_to_transformers_tensors(
+    fn: Callable, model: PreTrainedModel, tokenizer: PreTrainedTokenizer
+) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_transformers_tensors(*args, **kwargs):
         """
@@ -36,11 +42,15 @@ def inputs_to_transformers_tensors(fn: Callable, model: PreTrainedModel, tokeniz
         """
         # Convert input data to Transformers tensors
         new_args = [_to_transformers_tensors(arg, tokenizer) for arg in args]
-        new_kwargs = {_to_transformers_tensors(key, tokenizer): value for key, value in kwargs.items()}
-        
+        new_kwargs = {
+            _to_transformers_tensors(key, tokenizer): value
+            for key, value in kwargs.items()
+        }
+
         return fn(*new_args, **new_kwargs)
 
     return _inputs_to_transformers_tensors
+
 
 def outputs_to_pytorch_tensors(fn: Callable) -> Callable:
     @functools.wraps(fn)
@@ -60,7 +70,10 @@ def outputs_to_pytorch_tensors(fn: Callable) -> Callable:
 
     return _outputs_to_pytorch_tensors
 
-def to_transformers_tensors_and_back(fn: Callable, model: PreTrainedModel, tokenizer: PreTrainedTokenizer) -> Callable:
+
+def to_transformers_tensors_and_back(
+    fn: Callable, model: PreTrainedModel, tokenizer: PreTrainedTokenizer
+) -> Callable:
     """
     Wrap `fn` to work with Transformers tensors.
 
@@ -68,4 +81,6 @@ def to_transformers_tensors_and_back(fn: Callable, model: PreTrainedModel, token
     (PyTorch tensors or dictionaries), and output data is converted to
     PyTorch tensors.
     """
-    return outputs_to_pytorch_tensors(inputs_to_transformers_tensors(fn, model, tokenizer))
+    return outputs_to_pytorch_tensors(
+        inputs_to_transformers_tensors(fn, model, tokenizer)
+    )
