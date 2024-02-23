@@ -8,16 +8,16 @@ import ivy
 
 class _ArrayWithLinearAlgebraExperimental(abc.ABC):
     def eigh_tridiagonal(
-            self: Union[ivy.Array, ivy.NativeArray],
-            beta: Union[ivy.Array, ivy.NativeArray],
-            /,
-            *,
-            eigvals_only: bool = True,
-            select: str = "a",
-            select_range: Optional[
-                Union[Tuple[int, int], List[int], ivy.Array, ivy.NativeArray]
-            ] = None,
-            tol: Optional[float] = None,
+        self: Union[ivy.Array, ivy.NativeArray],
+        beta: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        eigvals_only: bool = True,
+        select: str = "a",
+        select_range: Optional[
+            Union[Tuple[int, int], List[int], ivy.Array, ivy.NativeArray]
+        ] = None,
+        tol: Optional[float] = None,
     ) -> Union[ivy.Array, Tuple[ivy.Array, ivy.Array]]:
         """ivy.Array instance method variant of ivy.eigh_tridiagonal. This
         method simply wraps the function, and so the docstring for
@@ -78,15 +78,15 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         )
 
     def diagflat(
-            self: Union[ivy.Array, ivy.NativeArray],
-            /,
-            *,
-            offset: int = 0,
-            padding_value: float = 0,
-            align: str = "RIGHT_LEFT",
-            num_rows: int = -1,
-            num_cols: int = -1,
-            out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        offset: int = 0,
+        padding_value: float = 0,
+        align: str = "RIGHT_LEFT",
+        num_rows: int = -1,
+        num_cols: int = -1,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.diagflat. This method
         simply wraps the function, and so the docstring for ivy.diagflat also
@@ -111,10 +111,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         )
 
     def kron(
-            self: ivy.Array,
-            /,
-            *,
-            out: Optional[ivy.Array] = None,
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.lu. This method simply
         wraps the function, and so the docstring for ivy.lu also applies to
@@ -130,11 +130,11 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         return ivy.lu(self._data, out=out)
 
     def kron(
-            self: ivy.Array,
-            b: ivy.Array,
-            /,
-            *,
-            out: Optional[ivy.Array] = None,
+        self: ivy.Array,
+        b: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.kron. This method simply
         wraps the function, and so the docstring for ivy.kron also applies to
@@ -169,8 +169,8 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         return ivy.matrix_exp(self._data, out=out)
 
     def eig(
-            self: ivy.Array,
-            /,
+        self: ivy.Array,
+        /,
     ) -> Tuple[ivy.Array, ...]:
         """ivy.Array instance method variant of ivy.eig. This method simply
         wraps the function, and so the docstring for ivy.eig also applies to
@@ -189,8 +189,8 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         return ivy.eig(self._data)
 
     def eigvals(
-            self: ivy.Array,
-            /,
+        self: ivy.Array,
+        /,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.eigvals. This method simply
         wraps the function, and so the docstring for ivy.eigvals also applies
@@ -205,10 +205,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         return ivy.eigvals(self._data)
 
     def adjoint(
-            self: ivy.Array,
-            /,
-            *,
-            out: Optional[ivy.Array] = None,
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.adjoint. This method simply
         wraps the function, and so the docstring for ivy.adjoint also applies
@@ -229,11 +229,11 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         )
 
     def multi_dot(
-            self: ivy.Array,
-            x: Sequence[Union[ivy.Array, ivy.NativeArray]],
-            /,
-            *,
-            out: Optional[ivy.Array] = None,
+        self: ivy.Array,
+        x: Sequence[Union[ivy.Array, ivy.NativeArray]],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.multi_dot. This method
         simply wraps the function, and so the docstring for ivy.multi_dot also
@@ -251,7 +251,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         return ivy.multi_dot((self._data, *x), out=out)
 
     def cond(
-            self: ivy.Array, /, *, p: Optional[Union[int, float, str]] = None
+        self: ivy.Array, /, *, p: Optional[Union[int, float, str]] = None
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.cond. This method simply
         wraps the function, and so the docstring for ivy.cond also applies to
@@ -270,13 +270,13 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         return ivy.cond(self._data, p=p)
 
     def mode_dot(
-            self: Union[ivy.Array, ivy.NativeArray],
-            /,
-            matrix_or_vector: Union[ivy.Array, ivy.NativeArray],
-            mode: int,
-            transpose: Optional[bool] = False,
-            *,
-            out: Optional[ivy.Array] = None,
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        matrix_or_vector: Union[ivy.Array, ivy.NativeArray],
+        mode: int,
+        transpose: Optional[bool] = False,
+        *,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.mode_dot. This method
         simply wraps the function, and so the docstring for ivy.mode_dot also
@@ -310,14 +310,14 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         return ivy.mode_dot(self._data, matrix_or_vector, mode, transpose, out=out)
 
     def multi_mode_dot(
-            self: Union[ivy.Array, ivy.NativeArray],
-            mat_or_vec_list: Sequence[Union[ivy.Array, ivy.NativeArray]],
-            /,
-            modes: Optional[Sequence[int]] = None,
-            skip: Optional[Sequence[int]] = None,
-            transpose: Optional[bool] = False,
-            *,
-            out: Optional[ivy.Array] = None,
+        self: Union[ivy.Array, ivy.NativeArray],
+        mat_or_vec_list: Sequence[Union[ivy.Array, ivy.NativeArray]],
+        /,
+        modes: Optional[Sequence[int]] = None,
+        skip: Optional[Sequence[int]] = None,
+        transpose: Optional[bool] = False,
+        *,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         r"""ivy.Array instance method variant of ivy.multi_mode_dot. This method
         simply wraps the function, and so the docstring for ivy.multi_mode_dot
@@ -360,10 +360,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         )
 
     def svd_flip(
-            self: Union[ivy.Array, ivy.NativeArray],
-            V: Union[ivy.Array, ivy.NativeArray],
-            /,
-            u_based_decision: Optional[bool] = True,
+        self: Union[ivy.Array, ivy.NativeArray],
+        V: Union[ivy.Array, ivy.NativeArray],
+        /,
+        u_based_decision: Optional[bool] = True,
     ) -> Tuple[ivy.Array, ivy.Array]:
         """ivy.Array instance method variant of ivy.svd_flip. This method
         simply wraps the function, and so the docstring for ivy.svd_flip also
@@ -387,13 +387,13 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         return ivy.svd_flip(self._data, V, u_based_decision)
 
     def make_svd_non_negative(
-            self: Union[ivy.Array, ivy.NativeArray],
-            U: Union[ivy.Array, ivy.NativeArray],
-            S: Union[ivy.Array, ivy.NativeArray],
-            V: Union[ivy.Array, ivy.NativeArray],
-            /,
-            *,
-            nntype: Optional[Literal["nndsvd", "nndsvda"]] = "nndsvd",
+        self: Union[ivy.Array, ivy.NativeArray],
+        U: Union[ivy.Array, ivy.NativeArray],
+        S: Union[ivy.Array, ivy.NativeArray],
+        V: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        nntype: Optional[Literal["nndsvd", "nndsvda"]] = "nndsvd",
     ) -> Tuple[ivy.Array, ivy.Array]:
         """ivy.Array instance method variant of ivy.make_svd_non_negative. This
         method simply wraps the function, and so the docstring for
@@ -419,11 +419,11 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         return ivy.make_svd_non_negative(self._data, U, S, V, nntype=nntype)
 
     def tensor_train(
-            self: Union[ivy.Array, ivy.NativeArray],
-            rank: Union[int, Sequence[int]],
-            /,
-            svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
-            verbose: Optional[bool] = False,
+        self: Union[ivy.Array, ivy.NativeArray],
+        rank: Union[int, Sequence[int]],
+        /,
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        verbose: Optional[bool] = False,
     ) -> ivy.TTTensor:
         """ivy.Array instance method variant of ivy.tensor_train. This method
         simply wraps the function, and so the docstring for ivy.tensor_train
@@ -449,10 +449,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         return ivy.tensor_train(self._data, rank, svd=svd, verbose=verbose)
 
     def truncated_svd(
-            self: Union[ivy.Array, ivy.NativeArray],
-            /,
-            compute_uv: bool = True,
-            n_eigenvecs: Optional[int] = None,
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        compute_uv: bool = True,
+        n_eigenvecs: Optional[int] = None,
     ) -> Union[ivy.Array, Tuple[ivy.Array, ivy.Array, ivy.Array]]:
         """ivy.Array instance method variant of ivy.make_svd_non_negative. This
         method simply wraps the function, and so the docstring for
@@ -481,17 +481,17 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         return ivy.truncated_svd(self._data, compute_uv, n_eigenvecs)
 
     def initialize_tucker(
-            self: Union[ivy.Array, ivy.NativeArray],
-            rank: Sequence[int],
-            modes: Sequence[int],
-            /,
-            *,
-            init: Optional[Union[Literal["svd", "random"], ivy.TuckerTensor]] = "svd",
-            seed: Optional[int] = None,
-            svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
-            non_negative: Optional[bool] = False,
-            mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-            svd_mask_repeats: Optional[int] = 5,
+        self: Union[ivy.Array, ivy.NativeArray],
+        rank: Sequence[int],
+        modes: Sequence[int],
+        /,
+        *,
+        init: Optional[Union[Literal["svd", "random"], ivy.TuckerTensor]] = "svd",
+        seed: Optional[int] = None,
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        non_negative: Optional[bool] = False,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        svd_mask_repeats: Optional[int] = 5,
     ) -> Tuple[ivy.Array, Sequence[ivy.Array]]:
         """ivy.Array instance method variant of ivy.initialize_tucker. This
         method simply wraps the function, and so the docstring for
@@ -543,20 +543,20 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         )
 
     def partial_tucker(
-            self: Union[ivy.Array, ivy.NativeArray],
-            rank: Optional[Sequence[int]] = None,
-            modes: Optional[Sequence[int]] = None,
-            /,
-            *,
-            n_iter_max: Optional[int] = 100,
-            init: Optional[Union[Literal["svd", "random"], ivy.TuckerTensor]] = "svd",
-            svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
-            seed: Optional[int] = None,
-            mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-            svd_mask_repeats: Optional[int] = 5,
-            tol: Optional[float] = 10e-5,
-            verbose: Optional[bool] = False,
-            return_errors: Optional[bool] = False,
+        self: Union[ivy.Array, ivy.NativeArray],
+        rank: Optional[Sequence[int]] = None,
+        modes: Optional[Sequence[int]] = None,
+        /,
+        *,
+        n_iter_max: Optional[int] = 100,
+        init: Optional[Union[Literal["svd", "random"], ivy.TuckerTensor]] = "svd",
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        seed: Optional[int] = None,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        svd_mask_repeats: Optional[int] = 5,
+        tol: Optional[float] = 10e-5,
+        verbose: Optional[bool] = False,
+        return_errors: Optional[bool] = False,
     ) -> Tuple[ivy.Array, Sequence[ivy.Array]]:
         """ivy.Array instance method variant of ivy.partial_tucker. This method
         simply wraps the function, and so the docstring for ivy.partial_tucker
@@ -624,20 +624,20 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         )
 
     def tucker(
-            self: Union[ivy.Array, ivy.NativeArray],
-            rank: Optional[Sequence[int]] = None,
-            /,
-            *,
-            fixed_factors: Optional[Sequence[int]] = None,
-            n_iter_max: Optional[int] = 100,
-            init: Optional[Union[Literal["svd", "random"], ivy.TuckerTensor]] = "svd",
-            svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
-            seed: Optional[int] = None,
-            mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-            svd_mask_repeats: Optional[int] = 5,
-            tol: Optional[float] = 10e-5,
-            verbose: Optional[bool] = False,
-            return_errors: Optional[bool] = False,
+        self: Union[ivy.Array, ivy.NativeArray],
+        rank: Optional[Sequence[int]] = None,
+        /,
+        *,
+        fixed_factors: Optional[Sequence[int]] = None,
+        n_iter_max: Optional[int] = 100,
+        init: Optional[Union[Literal["svd", "random"], ivy.TuckerTensor]] = "svd",
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        seed: Optional[int] = None,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        svd_mask_repeats: Optional[int] = 5,
+        tol: Optional[float] = 10e-5,
+        verbose: Optional[bool] = False,
+        return_errors: Optional[bool] = False,
     ):
         """ivy.Array instance method variant of ivy.tucker. This method simply
         wraps the function, and so the docstring for ivy.tucker also applies to
@@ -711,10 +711,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         )
 
     def tt_matrix_to_tensor(
-            self: Union[ivy.Array, ivy.NativeArray],
-            /,
-            *,
-            out: Optional[ivy.Array] = None,
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """Ivy.Array instance method variant of ivy.tt_matrix_to_tensor. This
         method simply wraps the function, and so the docstring for
@@ -763,11 +763,11 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         return ivy.tt_matrix_to_tensor(self._data, out=out)
 
     def dot(
-            self: Union[ivy.Array, ivy.NativeArray],
-            b: Union[ivy.Array, ivy.NativeArray],
-            /,
-            *,
-            out: Optional[ivy.Array] = None,
+        self: Union[ivy.Array, ivy.NativeArray],
+        b: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
     ):
         """Compute the dot product between two arrays `a` and `b` using the
         current backend's implementation. The dot product is defined as the sum
@@ -815,12 +815,12 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         return ivy.dot(self._data, b, out=out)
 
     def general_inner_product(
-            self: Union[ivy.Array, ivy.NativeArray],
-            b: Union[ivy.Array, ivy.NativeArray],
-            n_modes: Optional[int] = None,
-            /,
-            *,
-            out: Optional[ivy.Array] = None,
+        self: Union[ivy.Array, ivy.NativeArray],
+        b: Union[ivy.Array, ivy.NativeArray],
+        n_modes: Optional[int] = None,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.general_inner_product. This
         method simply wraps the function, and so the docstring for
@@ -871,11 +871,11 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         return ivy.general_inner_product(self, b, n_modes, out=out)
 
     def higher_order_moment(
-            self: Union[ivy.Array, ivy.NativeArray],
-            order: int,
-            /,
-            *,
-            out: Optional[ivy.Array] = None,
+        self: Union[ivy.Array, ivy.NativeArray],
+        order: int,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.higher_order_moment. This
         method simply wraps the function, and so the docstring for
@@ -912,11 +912,11 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         return ivy.higher_order_moment(self._data, order, out=out)
 
     def batched_outer(
-            self: ivy.Array,
-            tensors: Sequence[Union[ivy.Array, ivy.NativeArray]],
-            /,
-            *,
-            out: Optional[ivy.Array] = None,
+        self: ivy.Array,
+        tensors: Sequence[Union[ivy.Array, ivy.NativeArray]],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """Ivy Array instance method variant of ivy.batched_outer. This method
         simply wraps the function, and so the docstring for ivy.batched_outer

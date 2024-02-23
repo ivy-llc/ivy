@@ -14,15 +14,15 @@ from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimensio
 
 @with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
 def diagflat(
-        x: torch.Tensor,
-        /,
-        *,
-        offset: int = 0,
-        padding_value: float = 0,
-        align: str = "RIGHT_LEFT",
-        num_rows: int = -1,
-        num_cols: int = -1,
-        out: Optional[torch.Tensor] = None,
+    x: torch.Tensor,
+    /,
+    *,
+    offset: int = 0,
+    padding_value: float = 0,
+    align: str = "RIGHT_LEFT",
+    num_rows: int = -1,
+    num_cols: int = -1,
+    out: Optional[torch.Tensor] = None,
 ):
     if len(x.shape) > 1:
         x = torch.flatten(x)
@@ -101,20 +101,20 @@ diagflat.support_native_out = False
 
 
 def lu(
-        x: torch.Tensor,
-        /,
-        *,
-        out: Optional[torch.Tensor] = None,
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.tensor:
     return torch.linalg.lu(x)
 
 
 def kron(
-        a: torch.Tensor,
-        b: torch.Tensor,
-        /,
-        *,
-        out: Optional[torch.Tensor] = None,
+    a: torch.Tensor,
+    b: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.tensor:
     return torch.kron(a, b, out=out)
 
@@ -123,10 +123,10 @@ kron.support_native_out = True
 
 
 def matrix_exp(
-        x: torch.Tensor,
-        /,
-        *,
-        out: Optional[torch.Tensor] = None,
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.linalg.matrix_exp(x)
 
@@ -135,7 +135,7 @@ matrix_exp.support_native_out = True
 
 
 def eig(
-        x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> Tuple[torch.Tensor]:
     if not torch.is_complex(x):
         x = x.to(torch.complex128)
@@ -155,24 +155,24 @@ eigvals.support_native_out = False
 
 
 def adjoint(
-        x: torch.Tensor,
-        /,
-        *,
-        out: Optional[torch.Tensor] = None,
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     _check_valid_dimension_size(x)
     return torch.adjoint(x).resolve_conj()
 
 
 def solve_triangular(
-        x1: torch.Tensor,
-        x2: torch.Tensor,
-        /,
-        *,
-        upper: bool = True,
-        adjoint: bool = False,
-        unit_diagonal: bool = False,
-        out: Optional[torch.Tensor] = None,
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    upper: bool = True,
+    adjoint: bool = False,
+    unit_diagonal: bool = False,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if adjoint:
         x1 = torch.adjoint(x1)
@@ -187,10 +187,10 @@ solve_triangular.support_native_out = True
 
 @with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
 def multi_dot(
-        x: Sequence[torch.Tensor],
-        /,
-        *,
-        out: Optional[torch.Tensor] = None,
+    x: Sequence[torch.Tensor],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.linalg.multi_dot(x, out=out)
 
@@ -200,11 +200,11 @@ multi_dot.support_native_out = True
 
 @with_unsupported_dtypes({"2.0.0 and below": ("float16", "bfloat16")}, backend_version)
 def cond(
-        x: torch.Tensor,
-        /,
-        *,
-        p: Optional[Union[None, int, str]] = None,
-        out: Optional[torch.Tensor] = None,
+    x: torch.Tensor,
+    /,
+    *,
+    p: Optional[Union[None, int, str]] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.linalg.cond(x, p=p, out=out)
 
@@ -213,22 +213,22 @@ cond.support_native_out = False
 
 
 def lu_factor(
-        x: torch.Tensor,
-        /,
-        *,
-        pivot: Optional[bool] = True,
-        out: Optional[torch.Tensor] = None,
+    x: torch.Tensor,
+    /,
+    *,
+    pivot: Optional[bool] = True,
+    out: Optional[torch.Tensor] = None,
 ) -> Tuple[torch.Tensor]:
     raise IvyNotImplementedException()
 
 
 @with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
 def dot(
-        a: torch.Tensor,
-        b: torch.Tensor,
-        /,
-        *,
-        out: Optional[torch.Tensor] = None,
+    a: torch.Tensor,
+    b: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     a, b = ivy.promote_types_of_inputs(a, b)
     if a.dim() == 0 or b.dim() == 0:

@@ -19,6 +19,7 @@ def lu(
 ) -> np.ndarray:
     return sla.lu(x)
 
+
 def diagflat(
     x: np.ndarray,
     /,
