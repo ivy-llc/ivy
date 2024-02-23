@@ -250,24 +250,6 @@ def lu(
     - L: Lower triangular matrix
     - U: Upper triangular matrix
     """
-    n = len(x)
-    L = ivy.zeros((n,n))
-    U = ivy.zeros((n,n))
-
-    for j in range(n):
-        L[j][j] = 1.0
-        for i in range(j + 1):
-            s1 = sum(U[k][j] * L[i][k] for k in range(i))
-            U[i][j] = x[i][j] - s1
-
-        for i in range(j, n):
-            s2 = sum(U[k][j] * L[i][k] for k in range(j))
-            L[i][j] = (x[i][j] - s2) / U[j][j]
-
-    # TODO: return something like that:
-    # TODO: implement lu in container/.../linear_algebra.py (a static method and a call for it) the implementation in the static
-    #  and in array/.../linear_algebra.py
-    #   Ask a question
     return current_backend(x).lu(x, out=out)
 
 @handle_exceptions
@@ -310,6 +292,8 @@ def kron(
     ivy.array([3, 4, 6, 8])
     """
     return current_backend(a, b).kron(a, b, out=out)
+
+
 
 
 @handle_exceptions

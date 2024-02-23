@@ -350,6 +350,55 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         )
 
     @staticmethod
+    def static_lu(
+            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            /,
+            *,
+            key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+            to_apply: Union[bool, ivy.Container] = True,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.cont_multi_map_in_function(
+            "lu",
+            x,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+        )
+
+    def lu(
+            self: ivy.Container,
+            /,
+            *,
+            key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+            to_apply: Union[bool, ivy.Container] = True,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.diagflat. This method
+        simply wraps the function, and so the docstring for ivy.diagflat also
+        applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([[[1., 0.],
+                            [0., 1.]],
+                            [[2., 0.],
+                            [0., 2.]]])
+        >>> ivy.matrix_exp(x)
+        ivy.array([[[2.7183, 1.0000],
+                    [1.0000, 2.7183]],
+                    [[7.3891, 1.0000],
+                    [1.0000, 7.3891]]])
+        """
+        return self.static_lu(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            out=out,
+        )
+
+
+    @staticmethod
     def static_matrix_exp(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,

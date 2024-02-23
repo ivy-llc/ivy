@@ -15,16 +15,16 @@ from .. import backend_version
     {"2.15.0 and below": ("int", "float16", "bfloat16")}, backend_version
 )
 def eigh_tridiagonal(
-    alpha: Union[tf.Tensor, tf.Variable],
-    beta: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    eigvals_only: bool = True,
-    select: str = "a",
-    select_range: Optional[
-        Union[Tuple[int, int], List[int], tf.Tensor, tf.Variable]
-    ] = None,
-    tol: Optional[float] = None,
+        alpha: Union[tf.Tensor, tf.Variable],
+        beta: Union[tf.Tensor, tf.Variable],
+        /,
+        *,
+        eigvals_only: bool = True,
+        select: str = "a",
+        select_range: Optional[
+            Union[Tuple[int, int], List[int], tf.Tensor, tf.Variable]
+        ] = None,
+        tol: Optional[float] = None,
 ) -> Union[
     tf.Tensor,
     tf.Variable,
@@ -41,15 +41,15 @@ def eigh_tridiagonal(
 
 
 def diagflat(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    offset: int = 0,
-    padding_value: float = 0,
-    align: str = "RIGHT_LEFT",
-    num_rows: Optional[int] = None,
-    num_cols: Optional[int] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+        x: Union[tf.Tensor, tf.Variable],
+        /,
+        *,
+        offset: int = 0,
+        padding_value: float = 0,
+        align: str = "RIGHT_LEFT",
+        num_rows: Optional[int] = None,
+        num_cols: Optional[int] = None,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     if len(x.shape) > 1:
         x = tf.reshape(x, [-1])
@@ -75,21 +75,30 @@ def diagflat(
     return ret
 
 
+def lu(
+        x: Union[tf.Tensor, tf.Variable],
+        /,
+        *,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.linalg.lu(x)
+
+
 def kron(
-    a: Union[tf.Tensor, tf.Variable],
-    b: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+        a: Union[tf.Tensor, tf.Variable],
+        b: Union[tf.Tensor, tf.Variable],
+        /,
+        *,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.kron(a, b)
 
 
 def matrix_exp(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+        x: Union[tf.Tensor, tf.Variable],
+        /,
+        *,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.linalg.expm(x)
 
@@ -97,18 +106,18 @@ def matrix_exp(
 @with_supported_dtypes(
     {
         "2.15.0 and below": (
-            "complex",
-            "float32",
-            "float64",
+                "complex",
+                "float32",
+                "float64",
         )
     },
     backend_version,
 )
 def eig(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+        x: Union[tf.Tensor, tf.Variable],
+        /,
+        *,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tuple[tf.Tensor]:
     return tf.linalg.eig(x)
 
@@ -116,25 +125,25 @@ def eig(
 @with_supported_dtypes(
     {
         "2.15.0 and below": (
-            "complex",
-            "float32",
-            "float64",
+                "complex",
+                "float32",
+                "float64",
         )
     },
     backend_version,
 )
 def eigvals(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
+        x: Union[tf.Tensor, tf.Variable],
+        /,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.linalg.eigvals(x)
 
 
 def adjoint(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+        x: Union[tf.Tensor, tf.Variable],
+        /,
+        *,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     _check_valid_dimension_size(x)
     return tf.linalg.adjoint(x)
@@ -144,14 +153,14 @@ def adjoint(
     {"2.13.0 and below": ("int", "float16", "bfloat16", "float64")}, backend_version
 )
 def solve_triangular(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    upper: bool = True,
-    adjoint: bool = False,
-    unit_diagonal: bool = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+        x1: Union[tf.Tensor, tf.Variable],
+        x2: Union[tf.Tensor, tf.Variable],
+        /,
+        *,
+        upper: bool = True,
+        adjoint: bool = False,
+        unit_diagonal: bool = False,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     # Multiplying with a mask matrix can stop gradients on the diagonal.
     if unit_diagonal:
@@ -163,21 +172,21 @@ def solve_triangular(
 @with_supported_dtypes(
     {
         "2.15.0 and below": (
-            "bfloat16",
-            "float16",
-            "float32",
-            "float64",
-            "int32",
-            "int64",
+                "bfloat16",
+                "float16",
+                "float32",
+                "float64",
+                "int32",
+                "int64",
         )
     },
     backend_version,
 )
 def multi_dot(
-    x: Sequence[Union[tf.Tensor, tf.Variable]],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+        x: Sequence[Union[tf.Tensor, tf.Variable]],
+        /,
+        *,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> tf.Tensor:
     # This implementation simply chains tf.tensordot multiple times
     # TODO: reimplement this function once tf adds multi_dot or inplace updates
@@ -189,11 +198,11 @@ def multi_dot(
 
 @with_unsupported_dtypes({"1.25.0 and below": ("float16", "bfloat16")}, backend_version)
 def cond(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    p: Optional[Union[None, int, str]] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+        x: Union[tf.Tensor, tf.Variable],
+        /,
+        *,
+        p: Optional[Union[None, int, str]] = None,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     svd = tf.linalg.svd(x, compute_uv=False)
     if len(x.shape) >= 3:
@@ -230,11 +239,11 @@ def cond(
 
 
 def lu_factor(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    pivot: Optional[bool] = True,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+        x: Union[tf.Tensor, tf.Variable],
+        /,
+        *,
+        pivot: Optional[bool] = True,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tuple[tf.Tensor]:
     raise IvyNotImplementedException()
 
@@ -242,25 +251,25 @@ def lu_factor(
 @with_supported_dtypes(
     {
         "2.15.0 and below": (
-            "bfloat16",
-            "float16",
-            "float32",
-            "float64",
-            "int32",
-            "int64",
-            "complex64",
-            "complex128",
-            "bfloat16",
+                "bfloat16",
+                "float16",
+                "float32",
+                "float64",
+                "int32",
+                "int64",
+                "complex64",
+                "complex128",
+                "bfloat16",
         )
     },
     backend_version,
 )
 def dot(
-    a: tf.Tensor,
-    b: tf.Tensor,
-    /,
-    *,
-    out: Optional[tf.Tensor] = None,
+        a: tf.Tensor,
+        b: tf.Tensor,
+        /,
+        *,
+        out: Optional[tf.Tensor] = None,
 ) -> tf.Tensor:
     a, b = ivy.promote_types_of_inputs(a, b)
     return tf.experimental.numpy.dot(a, b)

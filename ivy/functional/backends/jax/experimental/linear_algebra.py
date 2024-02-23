@@ -13,6 +13,14 @@ from ivy.utils.exceptions import IvyNotImplementedException
 from . import backend_version
 
 
+def lu(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jla.lu(x)
+
 def diagflat(
     x: JaxArray,
     /,

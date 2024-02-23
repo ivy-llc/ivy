@@ -1,6 +1,7 @@
 import math
 from typing import Optional, Tuple, Sequence, Union, Any
 import numpy as np
+import scipy.linalg as sla
 
 import ivy
 from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
@@ -9,6 +10,14 @@ from .. import backend_version
 
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 
+
+def lu(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return sla.lu(x)
 
 def diagflat(
     x: np.ndarray,
