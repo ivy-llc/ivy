@@ -21,31 +21,16 @@ def accuracy_score(y_true, y_pred, *, normalize=True, sample_weight=None):
 
 
 @to_ivy_arrays_and_back
-def recall_score(y_true, y_pred, *, average="binary", sample_weight=None):
-    # Determine the type of the target variable
+def recall_score(y_true, y_pred, *, sample_weight=None):
+    # TODO: implement sample_weight
     y_type = type_of_target(y_true)
-    # Check if the 'average' parameter has a valid value
-    if average != "binary" and average != "micro" and average != "macro":
-        raise IvyValueError(
-            "Invalid value for 'average'. Supported values are 'binary', 'micro', or"
-            " 'macro'."
-        )
-    # Calculate true positive and actual positive counts based on the target type
     if y_type.startswith("multilabel"):
-        true_positive = ivy.sum(ivy.logical_and(y_true, y_pred) * sample_weight, axis=1)
-        actual_positive = ivy.sum(y_true * sample_weight, axis=1)
+        raise ValueError("Multilabel not supported for recall score")
     else:
-        true_positive = ivy.sum(ivy.logical_and(y_true, y_pred) * sample_weight)
-        actual_positive = ivy.sum(y_true * sample_weight)
-    # Calculate recall for each class or overall
-    recall = true_positive / ivy.maximum(
-        actual_positive, ivy.to_scalar(ivy.array([1], "float64"))
-    )
-    # Perform additional calculations for micro or macro averaging
-    if average == "micro":
-        recall = ivy.sum(true_positive) / ivy.maximum(
-            ivy.sum(actual_positive), ivy.to_scalar(ivy.array([1], "float64"))
-        )
-    elif average == "macro":
-        recall = ivy.mean(recall)
-    return recall
+        true_positives = ivy.logical_and(ivy.equal(y_true, 1), ivy.equal(y_pred, 1)).astype("int64")
+        actual_positives = ivy.equal(y_true, 1).astype("int64")
+        ret = ivy.sum(true_positives).astype("int64")
+        actual_pos_count = ivy.sum(actual_positives).astype("int64")
+        ret = ret / actual_pos_count
+        ret = ret.astype("float64")
+    return ret
