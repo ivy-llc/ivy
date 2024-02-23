@@ -268,7 +268,7 @@ def matrix_norm(
 ) -> paddle.Tensor:
     if dtype is not None:
         dtype = ivy.as_ivy_dtype(dtype) if dtype is not str else dtype
-        x = x.astype(dtype)
+        x = ivy.native_array(x, dtype)
     axis_ = list(axis)  # paddle.moveaxis doesn't support tuple axes
     if ord == "nuc":
         x = paddle.moveaxis(x, axis_, [-2, -1])
