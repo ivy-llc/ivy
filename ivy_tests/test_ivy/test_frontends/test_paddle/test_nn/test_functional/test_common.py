@@ -224,7 +224,7 @@ def paddle_unfold_handler(draw, dtype):
         dtypes=helpers.get_dtypes("valid", full=False),
     ),
 )
-def test_bilinear(
+def test_paddle_bilinear(
     *,
     dtype_x1_x2_weight_bias,
     on_device,
