@@ -1,7 +1,7 @@
 h5py # unpinned
 pytest # unpinned
 networkx # unpinned
-hypothesis==6.98.10 # the latest release has some issue added previous version till issue get solved: https://github.com/HypothesisWorks/hypothesis/issues/3896
+hypothesis==6.98.10 # fixed version till this get solved: https://github.com/HypothesisWorks/hypothesis/issues/3896
 pymongo # unpinned
 redis # unpinned
 matplotlib # unpinned
