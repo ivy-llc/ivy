@@ -119,6 +119,9 @@ def nonzero(
     return res.T
 
 
+@with_supported_dtypes(
+    {"2.6.0 and below": ("in32", "int64", "float32", "float64")}, backend_version
+)
 def where(
     condition: paddle.Tensor,
     x1: Union[float, int, paddle.Tensor],
