@@ -78,6 +78,9 @@ def permute_dims(
     copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if copy:
+        newarr = jnp.copy(x)
+        return jnp.transpose(newarr, axes)
     return jnp.transpose(x, axes)
 
 
@@ -230,7 +233,7 @@ def clip(
     return x
 
 
-@with_unsupported_dtypes({"0.4.23 and below": ("uint64",)}, backend_version)
+@with_unsupported_dtypes({"0.4.24 and below": ("uint64",)}, backend_version)
 def constant_pad(
     x: JaxArray,
     /,

@@ -393,9 +393,9 @@ def one_hot(
 @with_unsupported_dtypes({"2.15.0 and below": ("uint32", "uint64")}, backend_version)
 def frombuffer(
     buffer: bytes,
-    dtype: Optional[tf.DType] = float,
-    count: Optional[int] = -1,
-    offset: Optional[int] = 0,
+    dtype: tf.DType = float,
+    count: int = -1,
+    offset: int = 0,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(buffer, bytearray):
         buffer = bytes(buffer)

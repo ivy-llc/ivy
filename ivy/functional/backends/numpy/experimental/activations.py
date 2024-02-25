@@ -202,3 +202,15 @@ def hardshrink(
 
 
 hardshrink.support_native_out = True
+
+
+@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
+@_scalar_output_to_0d_array
+def hardsilu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    ret = x * np.divide(relu6(x + 3), 6)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+hardsilu.support_native_out = True

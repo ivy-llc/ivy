@@ -2,6 +2,6 @@
   "jax": ["dm-haiku", "flax"],
   "numpy": ["numpy"],
   "mxnet": ["mxnet"],
-  "torch": ["torch-scatter", "torchvision"],
+  "torch": ["torchvision", "torch-scatter"],
   "tensorflow": ["tensorflow-probability"]
 }

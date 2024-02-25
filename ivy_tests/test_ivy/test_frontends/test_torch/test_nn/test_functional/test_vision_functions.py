@@ -106,7 +106,7 @@ def _pad_helper(draw):
     )
     padding = draw(_pad_generator(shape, mode))
     if mode == "constant":
-        value = draw(helpers.ints(min_value=0, max_value=4))
+        value = draw(helpers.ints(min_value=0, max_value=4) | st.none())
     else:
         value = 0.0
     return dtype, input[0], padding, value, mode

@@ -475,8 +475,8 @@ def trim_zeros(a: JaxArray, /, *, trim: Optional[str] = "bf") -> JaxArray:
 def unflatten(
     x: JaxArray,
     /,
-    dim: int = 0,
     shape: Tuple[int] = None,
+    dim: int = 0,
     *,
     out: Optional[JaxArray] = None,
     order: Optional[str] = None,
