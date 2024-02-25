@@ -108,8 +108,8 @@ def test_sklearn_recall_score(
         y_pred=values[1],
         sample_weight=sample_weight,
     )
-    
-    
+
+
     @handle_frontend_test(
     fn_tree="sklearn.metrics.precision_score",
     arrays_and_dtypes=helpers.dtype_and_values(

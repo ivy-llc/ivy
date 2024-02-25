@@ -50,8 +50,8 @@ def recall_score(y_true, y_pred, *, sample_weight=None):
 
     ret = ret.astype("float64")
     return ret
-  
-  
+
+
   @to_ivy_arrays_and_back
   def precision_score(y_true, y_pred, *, sample_weight=None):
       # Ensure that y_true and y_pred have the same shape
