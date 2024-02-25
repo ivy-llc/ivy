@@ -137,6 +137,9 @@ def ldexp(
         return ivy.astype(ret, out_dtype, copy=False)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
+)
 def copysign(
     x1: Union[paddle.Tensor, Number],
     x2: Union[paddle.Tensor, Number],
@@ -162,7 +165,7 @@ def nansum(
     *,
     axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[paddle.dtype] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     result = paddle.nansum(x, axis=axis, dtype=dtype, keepdim=keepdims)
@@ -179,9 +182,9 @@ def isclose(
     b: paddle.Tensor,
     /,
     *,
-    rtol: Optional[float] = 1e-05,
-    atol: Optional[float] = 1e-08,
-    equal_nan: Optional[bool] = False,
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
@@ -214,6 +217,9 @@ def diff(
     )
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("float16",)}}, backend_version
+)
 def signbit(
     x: Union[paddle.Tensor, float, int, list, tuple],
     /,
@@ -258,9 +264,9 @@ def allclose(
     x2: paddle.Tensor,
     /,
     *,
-    rtol: Optional[float] = 1e-05,
-    atol: Optional[float] = 1e-08,
-    equal_nan: Optional[bool] = False,
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> bool:
     return paddle.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan).squeeze(0)
@@ -404,9 +410,9 @@ def gradient(
     x: paddle.Tensor,
     /,
     *,
-    spacing: Optional[Union[int, list, tuple]] = 1,
+    spacing: Union[int, list, tuple] = 1,
     axis: Optional[Union[int, list, tuple]] = None,
-    edge_order: Optional[int] = 1,
+    edge_order: int = 1,
 ) -> Union[paddle.Tensor, List[paddle.Tensor]]:
     """Https://github.com/numpy/numpy/blob/v1.24.3/numpy/lib/
     function_base.py#L969-L1312."""
@@ -645,7 +651,7 @@ def count_nonzero(
     /,
     *,
     axis: Optional[Union[int, list, tuple]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
@@ -709,45 +715,53 @@ def digamma(
 # --- erfc --- #
 # Polynomials for computing erf/erfc. Originally from cephes library.
 # https://netlib.org/cephes/doubldoc.html
-kErfcPCoefficient = paddle.to_tensor([
-    2.46196981473530512524e-10,
-    5.64189564831068821977e-1,
-    7.46321056442269912687e0,
-    4.86371970985681366614e1,
-    1.96520832956077098242e2,
-    5.26445194995477358631e2,
-    9.34528527171957607540e2,
-    1.02755188689515710272e3,
-    5.57535335369399327526e2,
-])
-kErfcQCoefficient = paddle.to_tensor([
-    1.00000000000000000000e0,
-    1.32281951154744992508e1,
-    8.67072140885989742329e1,
-    3.54937778887819891062e2,
-    9.75708501743205489753e2,
-    1.82390916687909736289e3,
-    2.24633760818710981792e3,
-    1.65666309194161350182e3,
-    5.57535340817727675546e2,
-])
-kErfcRCoefficient = paddle.to_tensor([
-    5.64189583547755073984e-1,
-    1.27536670759978104416e0,
-    5.01905042251180477414e0,
-    6.16021097993053585195e0,
-    7.40974269950448939160e0,
-    2.97886665372100240670e0,
-])
-kErfcSCoefficient = paddle.to_tensor([
-    1.00000000000000000000e0,
-    2.26052863220117276590e0,
-    9.39603524938001434673e0,
-    1.20489539808096656605e1,
-    1.70814450747565897222e1,
-    9.60896809063285878198e0,
-    3.36907645100081516050e0,
-])
+kErfcPCoefficient = paddle.to_tensor(
+    [
+        2.46196981473530512524e-10,
+        5.64189564831068821977e-1,
+        7.46321056442269912687e0,
+        4.86371970985681366614e1,
+        1.96520832956077098242e2,
+        5.26445194995477358631e2,
+        9.34528527171957607540e2,
+        1.02755188689515710272e3,
+        5.57535335369399327526e2,
+    ]
+)
+kErfcQCoefficient = paddle.to_tensor(
+    [
+        1.00000000000000000000e0,
+        1.32281951154744992508e1,
+        8.67072140885989742329e1,
+        3.54937778887819891062e2,
+        9.75708501743205489753e2,
+        1.82390916687909736289e3,
+        2.24633760818710981792e3,
+        1.65666309194161350182e3,
+        5.57535340817727675546e2,
+    ]
+)
+kErfcRCoefficient = paddle.to_tensor(
+    [
+        5.64189583547755073984e-1,
+        1.27536670759978104416e0,
+        5.01905042251180477414e0,
+        6.16021097993053585195e0,
+        7.40974269950448939160e0,
+        2.97886665372100240670e0,
+    ]
+)
+kErfcSCoefficient = paddle.to_tensor(
+    [
+        1.00000000000000000000e0,
+        2.26052863220117276590e0,
+        9.39603524938001434673e0,
+        1.20489539808096656605e1,
+        1.70814450747565897222e1,
+        9.60896809063285878198e0,
+        3.36907645100081516050e0,
+    ]
+)
 
 
 # Evaluate the polynomial given coefficients and `x`.
@@ -815,3 +829,13 @@ def erfc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
         result = paddle.squeeze(result, axis=-1)
 
     return result
+
+
+@with_supported_dtypes(
+    {"2.6.0 and below": ("float32", "float64")},
+    backend_version,
+)
+def erfinv(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    return paddle.erfinv(x)

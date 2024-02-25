@@ -872,6 +872,7 @@ def deg2rad(
     return radians
 
 
+@with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
 def rad2deg(
     x: Union[tf.Tensor, tf.Variable],
     /,

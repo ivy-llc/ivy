@@ -1144,6 +1144,7 @@ def matrix_norm(
     ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
     axis: Tuple[int, int] = (-2, -1),
     keepdims: bool = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Compute the matrix p-norm.
@@ -1198,6 +1199,9 @@ def matrix_norm(
         If this is set to True, the axes which are normed over are left in the result as
         dimensions with size one. With this option the result will broadcast correctly
         against the original x. Default is ``False``.
+    dtype
+        If specified, the input tensor is cast to dtype before performing the operation,
+        and the returned tensor's type will be dtype. Default: None
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1286,7 +1290,7 @@ def matrix_norm(
     }
     """
     return current_backend(x).matrix_norm(
-        x, ord=ord, axis=axis, keepdims=keepdims, out=out
+        x, ord=ord, axis=axis, keepdims=keepdims, dtype=dtype, out=out
     )
 
 
@@ -1661,16 +1665,8 @@ def outer(
                 [3.],
                 [4.]])
 
-    A 3-D Example
-
-    >>> x = ivy.array([[[1., 2.],
-                        [3., 4.]],
-                       [[5., 6.],
-                        [7., 8.]]])
-    >>> y = ivy.array([[[9., 10.],
-                        [11., 12.]],
-                       [[13., 14.],
-                        [15., 16.]]])
+    >>> x = ivy.array([[[1., 2.],[3., 4.]],[[5., 6.],[7., 8.]]])
+    >>> y = ivy.array([[[9., 10.],[11., 12.]],[[13., 14.],[15., 16.]]])
     >>> d = ivy.outer(x, y)
     >>> print(d)
     ivy.array([[  9.,  10.,  11.,  12.,  13.,  14.,  15.,  16.],
@@ -1953,6 +1949,7 @@ def slogdet(
     >>> print(y)
     slogdet(sign=ivy.array(1.), logabsdet=ivy.array(1.60943794))
 
+    >>> ivy.set_backend('numpy') # As the precision of results depends on backend.
     >>> x = ivy.array([[1.2, 2.0, 3.1],
     ...                [6.0, 5.2, 4.0],
     ...                [9.0, 8.0, 7.0]])
@@ -1962,6 +1959,7 @@ def slogdet(
 
     With :class:`ivy.Container` input:
 
+    >>> ivy.unset_backend() # unset backend again.
     >>> x = ivy.Container(a=ivy.array([[1.0, 2.0],
     ...                                [3.0, 4.0]]),
     ...                   b=ivy.array([[1.0, 2.0],
@@ -2037,13 +2035,9 @@ def solve(
     Examples
     --------
     With class:`ivy.Array` input:
-    >>> A = ivy.array([[1.1, 1.2, 1.3],
-                       [2.1, 2.2, 2.3],
-                       [3.1, 3.2, 3.3]]),
-    >>> B = ivy.array([[1.1],
-                       [2.1],
-                       [3.1]]),
-    >>> x = solve(A,B);
+    >>> A = ivy.array([[1.1, 1.2, 1.3], [2.1, 2.2, 2.3], [3.1, 3.2, 3.3]]),
+    >>> B = ivy.array([[1.1], [2.1], [3.1]]),
+    >>> x = ivy.solve(A,B);
     >>> print(x)
     ivy.array([[1],
                [0],
@@ -2052,20 +2046,14 @@ def solve(
     (1,3)
 
     With shape(A) = (2,3,3) and shape(B) = (2,3,1):
-    >>> A = ivy.array([[[11.1, 11.2, 11.3],
-                        [12.1, 12.2, 12.3],
-                        [13.1, 13.2, 13.3]],
-                       [[21.1, 21.2, 21.3],
-                        [22.1, 22.2, 22.3],
-                        [23.1, 23.2, 23.3]]
-                        ]),
+    >>> A = ivy.array([[[11.1, 11.2, 11.3],[12.1, 12.2, 12.3],[13.1, 13.2, 13.3]], [[21.1, 21.2, 21.3],[22.1, 22.2, 22.3],[23.1, 23.2, 23.3]]]),
     >>> B = ivy.array([[[11.1],
                         [12.1],
                         [13.1]],
                        [[21.1],
                         [22.1],
                         [23.1]]]),
-    >>> x = solve(A,B);
+    >>> x = ivy.solve(A,B);
     >>> print(x)
     ivy.array([[[1],
                 [0],
@@ -2077,13 +2065,9 @@ def solve(
     (2,1,3)
 
     With shape(A) = (3,3) and shape(B) = (3,2):
-    >>> A = ivy.array([[1.1, 1.2, 1.3],
-                       [2.1, 2.2, 2.3],
-                       [3.1, 3.2, 3.3]]),
-    >>> B = ivy.array([[1.1, 2.2],
-                       [2.1, 4.2],
-                       [3.1, 6.2]]),
-    >>> x = solve(A,B);
+    >>> A = ivy.array([[1.1, 1.2, 1.3], [2.1, 2.2, 2.3], [3.1, 3.2, 3.3]]),
+    >>> B = ivy.array([[1.1, 2.2], [2.1, 4.2], [3.1, 6.2]]),
+    >>> x = ivy.solve(A,B);
     >>> print(x)
     ivy.array([[[1],
                 [0],
@@ -2095,18 +2079,16 @@ def solve(
     (2,1,3)
 
     With class:`ivy.Container` input:
-    >>> A = ivy.array([[1.1, 1.2, 1.3],
-                       [2.1, 2.2, 2.3],
-                       [3.1, 3.2, 3.3]]),
+    >>> A = ivy.array([[1.1, 1.2, 1.3], [2.1, 2.2, 2.3], [3.1, 3.2, 3.3]]),
     >>> B = ivy.container(B1 = ivy.array([[1.1], [2.1], [3.1]]),
                           B2 = ivy.array([[2.2], [4.2], [6.2]]))
-    >>> x = solve(A,B);
+    >>> x = ivy.solve(A,B);
     >>> print(x)
     {
         B1:([[1],[0],[0]]),
         B2:([[2],[0],[0]])
     }
-    """
+    """  # noqa: E501
     return current_backend(x1, x2).solve(x1, x2, adjoint=adjoint, out=out)
 
 
@@ -2317,7 +2299,7 @@ def svdvals(
 
     >>> x = ivy.native_array([[1.0, 2.0, 3.0], [2.0, 3.0, 4.0],
     ...                       [2.0, 1.0, 3.0], [3.0, 4.0, 5.0]])
-    >>> print(x.shape)
+    >>> x.shape
     (4, 3)
 
     >>> x = ivy.native_array([[1.0, 2.0, 3.0], [2.0, 3.0, 4.0],
@@ -2450,7 +2432,7 @@ def tensordot(
 
     >>> x = ivy.native_array([[1., 2.], [2., 3.]])
     >>> y = ivy.native_array([[3., 4.], [4., 5.]])
-    >>> res = ivy.tensordot(x, y, axes = (1,1))
+    >>> res = ivy.tensordot(x, y, axes = ([1],[1]))
     >>> print(res)
     ivy.array([[11., 14.],
             [18., 23.]])
@@ -2632,7 +2614,7 @@ def trace(
     ...                       [7, 0, 6]])
     ...    )
     >>> offset = ivy.Container(a=1, b=0)
-    >>> y = ivy.trace(x, offset)
+    >>> y = ivy.trace(x, offset=offset)
     >>> print(y)
     {
         a: ivy.array(6),
@@ -2882,13 +2864,13 @@ def vector_norm(
 
     ivy.array([4.64158917])
 
-    >>> x = ivy.array([1,2,3,4], dtype = ivy.float16)
-    >>> z = ivy.empty(shape = 1)
+    >>> x = ivy.array([1.,2.,3.,4.], dtype = ivy.float16)
+    >>> z = ivy.empty(shape = 1, dtype=ivy.float16)
     >>> y = ivy.vector_norm(x, ord = 0, out = z)
     >>> print(y)
     ivy.array(4.)
 
-    >>> x = ivy.arange(8).reshape((2,2,2))
+    >>> x = ivy.arange(8, dtype=ivy.float32).reshape((2,2,2))
     >>> y = ivy.vector_norm(x, axis = (0,1), ord = float("-inf"))
     >>> print(y)
     ivy.array([0, 1])
@@ -3101,41 +3083,6 @@ def vector_to_skew_symmetric_matrix(
     instances in place of any of the arguments.
     """
     return current_backend(vector).vector_to_skew_symmetric_matrix(vector, out=out)
-
-
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device
-def lu_factor(
-    A: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    pivot: bool = True,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
-    """
-    Parameters
-    ----------
-    A
-        tensor of shape (*, m, n) where * is zero or more batch dimensions.
-
-    pivot
-        Whether to compute the LU decomposition with partial pivoting, or the regular LU
-        decomposition. pivot = False not supported on CPU. Default: True.
-
-    out
-        tuple of two tensors to write the output to. Ignored if None. Default: None.
-
-    Returns
-    -------
-    ret
-        A named tuple (LU, pivots).
-    """
-    return current_backend(A).lu_factor(A, pivot=pivot, out=out)
 
 
 @handle_exceptions
