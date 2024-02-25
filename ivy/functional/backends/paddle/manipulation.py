@@ -436,6 +436,7 @@ def constant_pad(
     return paddle.nn.functional.pad(x=x, pad=paddings, value=value)
 
 
+@with_unsupported_dtypes({"2.6.0 and below": ("float16",)}, backend_version)
 def zero_pad(
     x: paddle.Tensor,
     /,
