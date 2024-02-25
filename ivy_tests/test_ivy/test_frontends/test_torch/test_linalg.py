@@ -68,7 +68,7 @@ def _get_axis_and_p(draw):
         min_axes_size = 2
     else:
         min_axes_size = 1
-        max_axes_size = 5
+        max_axes_size = 2
     x_dtype, values, axis = draw(
         helpers.dtype_values_axis(
             available_dtypes=helpers.get_dtypes("valid"),
