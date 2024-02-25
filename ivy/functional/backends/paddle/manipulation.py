@@ -108,18 +108,8 @@ def flip(
     return paddle.flip(x, axis)
 
 
-@with_supported_dtypes(
-    {
-        "2.6.0 and below": (
-            "int32",
-            "int64",
-            "float64",
-            "complex128",
-            "float32",
-            "complex64",
-            "bool",
-        )
-    },
+@with_unsupported_dtypes(
+    {"2.6.0 and below": ("uint8", "int8", "int16", "bfloat16", "float16")},
     backend_version,
 )
 def permute_dims(
@@ -130,6 +120,9 @@ def permute_dims(
     copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if copy:
+        newarr = paddle.clone(x)
+        return paddle.transpose(newarr, axes)
     return paddle.transpose(x, axes)
 
 
