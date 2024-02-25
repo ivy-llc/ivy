@@ -81,7 +81,7 @@ def _as_tensor_helper(draw):
 @st.composite
 def _fill_value(draw):
     with_array = draw(st.sampled_from([True, False]))
-    dtype = draw(st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"))[0]
+    dtype = draw(st.shared(helpers.get_dtypes("valid", full=False), key="dtype"))[0]
     with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
         if ivy_backend.is_uint_dtype(dtype):
             ret = draw(helpers.ints(min_value=0, max_value=5))
@@ -512,7 +512,7 @@ def test_torch_frombuffer(
         max_dim_size=10,
     ),
     fill_value=_fill_value(),
-    dtype=st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"),
+    dtype=st.shared(helpers.get_dtypes("valid", full=False), key="dtype"),
 )
 def test_torch_full(
     *,
