@@ -121,8 +121,8 @@ def isinf(
     return paddle.zeros(shape=x.shape, dtype=bool)
 
 
-@with_unsupported_dtypes(
-    {"2.6.0 and below": ("bfloat16",)},
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("bfloat16", "complex128", "float64", "float32")}},
     backend_version,
 )
 def equal(
