@@ -619,7 +619,7 @@ class Tensor:
     def bitwise_xor(self, y, out=None, name=None):
         return paddle_frontend.bitwise_xor(self, y)
 
-    @with_supported_dtypes({"2.6.0 and below": ("float16", "bfloat16")}, "paddle")
+    @with_unsupported_dtypes({"2.6.0 and below": ("float16", "bfloat16")}, "paddle")
     def any(self, axis=None, keepdim=False, name=None):
         return paddle_frontend.any(self, axis=axis, keepdim=keepdim)
 
@@ -984,6 +984,18 @@ class Tensor:
     def trace(self, offset=0, axis1=0, axis2=1, name=None):
         return paddle_frontend.Tensor(
             ivy.trace(self._ivy_array, offset=offset, axis1=axis1, axis2=axis2)
+        )
+
+    @with_supported_dtypes({"2.6.0 and below": ("float64", "float32")}, "paddle")
+    def cov(self, rowvar=True, ddof=True, fweights=None, aweights=None):
+        return paddle_frontend.Tensor(
+            ivy.cov(
+                self._ivy_array,
+                rowVar=rowvar,
+                ddof=int(ddof),
+                fweights=fweights,
+                aweights=aweights,
+            )
         )
 
     @with_supported_dtypes(

@@ -7,7 +7,8 @@ import ivy
 
 folder_path = os.sep.join(__file__.split(os.sep)[:-3])
 wrappers_path = os.path.join(folder_path, "wrappers.json")
-wrappers = json.loads(open(wrappers_path).read())
+if os.path.exists(wrappers_path):
+    wrappers = json.loads(open(wrappers_path).read())
 wrapers_dir = os.path.join(folder_path, "ivy/wrappers")
 
 

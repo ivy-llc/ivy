@@ -88,10 +88,12 @@ def _compute_cost_and_update_grads(
             else variables.cont_prune_key_chains(outer_v, ignore_none=True)
         )
 
-        inner_grads = ivy.Container({
-            k: ivy.zeros_like(v) if k not in inner_grads else inner_grads[k]
-            for k, v in var.cont_to_iterator()
-        })
+        inner_grads = ivy.Container(
+            {
+                k: ivy.zeros_like(v) if k not in inner_grads else inner_grads[k]
+                for k, v in var.cont_to_iterator()
+            }
+        )
 
         if batched:
             inner_grads = ivy.multiply(inner_grads, num_tasks)
@@ -151,14 +153,16 @@ def _train_task(
             if keep_innver_v
             else variables.cont_prune_key_chains(inner_v, ignore_none=True)
         )
-        inner_update_grads = ivy.Container({
-            k: (
-                ivy.zeros_like(v)
-                if k not in inner_update_grads
-                else inner_update_grads[k]
-            )
-            for k, v in var.cont_to_iterator()
-        })
+        inner_update_grads = ivy.Container(
+            {
+                k: (
+                    ivy.zeros_like(v)
+                    if k not in inner_update_grads
+                    else inner_update_grads[k]
+                )
+                for k, v in var.cont_to_iterator()
+            }
+        )
         if batched:
             inner_update_grads = ivy.multiply(inner_update_grads, num_tasks)
 
