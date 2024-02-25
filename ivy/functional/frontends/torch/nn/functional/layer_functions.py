@@ -26,7 +26,7 @@ def _lstm_full(
     bidirectional,
     batch_first,
 ):
-    return ivy.lstm(
+    ret = ivy.lstm(
         input,
         hx,
         params,
@@ -38,6 +38,7 @@ def _lstm_full(
         has_ih_bias=has_biases,
         has_hh_bias=has_biases,
     )
+    return ret[1], ret[2][0], ret[2][1]
 
 
 def _lstm_packed(
@@ -51,7 +52,7 @@ def _lstm_packed(
     train,
     bidirectional,
 ):
-    return ivy.lstm(
+    ret = ivy.lstm(
         data,
         hx,
         params,
@@ -63,6 +64,7 @@ def _lstm_packed(
         has_ih_bias=has_biases,
         has_hh_bias=has_biases,
     )
+    return ret[1], ret[2][0], ret[2][1]
 
 
 # --- Main --- #
@@ -70,7 +72,7 @@ def _lstm_packed(
 
 
 @with_supported_device_and_dtypes(
-    {"2.1.2 and below": {"cpu": ("float32", "float64")}},
+    {"2.2 and below": {"cpu": ("float32", "float64")}},
     "torch",
 )
 @to_ivy_arrays_and_back
@@ -82,7 +84,7 @@ def lstm(*args, **kwargs):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.1.2 and below": ("float32", "float64")}, "torch")
+@with_supported_dtypes({"2.2 and below": ("float32", "float64")}, "torch")
 def multi_head_attention_forward(
     query,
     key,

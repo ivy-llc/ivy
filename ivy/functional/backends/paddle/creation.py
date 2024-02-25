@@ -11,6 +11,7 @@ import ivy.functional.backends.paddle as paddle_backend
 import ivy
 from ivy.func_wrapper import (
     with_unsupported_device_and_dtypes,
+    with_supported_device_and_dtypes,
 )
 from ivy.functional.ivy.creation import (
     _asarray_to_native_arrays_and_back,
@@ -471,6 +472,22 @@ def ones(
     return paddle.ones(shape=shape).cast(dtype)
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.6.0 and below": {
+            "cpu": (
+                "int32",
+                "int64",
+                "float64",
+                "float32",
+                "complex128",
+                "complex64",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
 def ones_like(
     x: paddle.Tensor,
     /,
