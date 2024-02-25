@@ -108,6 +108,8 @@ def reshape(
             new_s if con else old_s
             for new_s, con, old_s in zip(shape, np.array(shape) != 0, x.shape)
         ]
+    if copy:
+        x = x.copy()
     return np.reshape(x, shape, order=order)
 
 
