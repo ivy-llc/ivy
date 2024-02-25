@@ -257,9 +257,7 @@ def expm1(x, name=None):
     return ivy.expm1(x)
 
 
-@with_supported_dtypes(
-    {"2.6.0 and below": ("bfloat16", "float32", "float64")}, "paddle"
-)
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def floor(x, name=None):
     return ivy.floor(x)
