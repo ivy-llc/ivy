@@ -887,7 +887,7 @@ def lstm(
     if weights_transposed:
         # transpose the weights if they are in the wrong format
         all_weights = [
-            torch.transpose(weight, 1, 0) if weight.dim() == 2 else weight
+            torch.transpose(weight, 1, 0).contiguous() if weight.dim() == 2 else weight
             for weight in all_weights
         ]
     else:

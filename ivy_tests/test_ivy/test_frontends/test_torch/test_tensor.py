@@ -21,6 +21,7 @@ from hypothesis import strategies as st, given, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import sizes_
 from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
     _get_dtype_and_3dbatch_matrices,
     _get_dtype_input_and_matrices,
@@ -351,11 +352,12 @@ def _repeat_helper(draw):
 
 
 @st.composite
-def _requires_grad(draw):
-    dtype = draw(_dtypes())[0]
+def _requires_grad_and_dtypes(draw):
+    dtypes = draw(_dtypes())
+    dtype = dtypes[0]
     if ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype):
-        return draw(st.just(False))
-    return draw(st.booleans())
+        return draw(st.just(False)), dtypes
+    return draw(st.booleans()), dtypes
 
 
 @st.composite
@@ -413,18 +415,6 @@ def _unfold_args(draw):
         )
     )
     return values_dtype, values, axis, size, step
-
-
-# diagonal
-@st.composite
-def dims_and_offset(draw, shape):
-    shape_actual = draw(shape)
-    dim1 = draw(helpers.get_axis(shape=shape, force_int=True))
-    dim2 = draw(helpers.get_axis(shape=shape, force_int=True))
-    offset = draw(
-        st.integers(min_value=-shape_actual[dim1], max_value=shape_actual[dim1])
-    )
-    return dim1, dim2, offset
 
 
 # --- Main --- #
@@ -774,6 +764,47 @@ def test_torch___gt__(
             assume(False)
         else:
             raise
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="__iand__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
+    test_inplace=st.just(True),
+)
+def test_torch___iand__(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
 
 
 # __invert__
@@ -4870,6 +4901,41 @@ def test_torch_clamp_min(
     )
 
 
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="clamp_min_",
+    input_and_ranges=_get_clip_min_inputs(),
+    test_inplace=st.just(True),
+)
+def test_torch_clamp_min_(
+    input_and_ranges,
+    frontend_method_data,
+    init_flags,
+    backend_fw,
+    frontend,
+    on_device,
+    method_flags,
+):
+    x_dtype, x, min = input_and_ranges
+    helpers.test_frontend_method(
+        init_input_dtypes=x_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=x_dtype,
+        method_all_as_kwargs_np={
+            "min": min,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # clip
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -5820,7 +5886,7 @@ def test_torch_diag(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ),
-    dims_and_offset=dims_and_offset(
+    dims_and_offset=helpers.dims_and_offset(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape")
     ),
 )
@@ -8123,6 +8189,44 @@ def test_torch_is_quantized(
     ivy.previous_backend()
 
 
+# isfinite
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="isfinite",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-np.inf,
+        max_value=np.inf,
+    ),
+)
+def test_torch_isfinite(
+    *,
+    dtype_and_input,
+    on_device,
+    frontend,
+    backend_fw,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # isinf
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -8780,6 +8884,51 @@ def test_torch_log_(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="log_softmax",
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_axes_size=1,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    dtypes=helpers.get_dtypes("float", none=False, full=False),
+)
+def test_torch_log_softmax(
+    *,
+    dtype_x_and_axis,
+    dtypes,
+    on_device,
+    frontend,
+    backend_fw,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, axis = dtype_x_and_axis
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "dtype": dtypes[0],
+        },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -10120,6 +10269,39 @@ def test_torch_negative(
     )
 
 
+# new
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="new",
+    dtype_and_x=helpers.dtype_and_values(),
+)
+def test_torch_new_(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # new_empty (not actually intuitive for testing)
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -10211,14 +10393,12 @@ def test_torch_new_full(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtypes=_dtypes(),
-    requires_grad=_requires_grad(),
+    requires_grad_and_dtypes=_requires_grad_and_dtypes(),
 )
 def test_torch_new_ones(
     dtype_and_x,
     size,
-    dtypes,
-    requires_grad,
+    requires_grad_and_dtypes,
     on_device,
     frontend_method_data,
     init_flags,
@@ -10227,6 +10407,7 @@ def test_torch_new_ones(
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
+    requires_grad, dtypes = requires_grad_and_dtypes
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -10300,14 +10481,12 @@ def test_torch_new_tensor(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtypes=_dtypes(),
-    requires_grad=_requires_grad(),
+    requires_grad_and_dtypes=_requires_grad_and_dtypes(),
 )
 def test_torch_new_zeros(
     dtype_and_x,
     size,
-    dtypes,
-    requires_grad,
+    requires_grad_and_dtypes,
     on_device,
     frontend_method_data,
     init_flags,
@@ -10316,6 +10495,7 @@ def test_torch_new_zeros(
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
+    requires_grad, dtypes = requires_grad_and_dtypes
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -13791,6 +13971,54 @@ def test_torch_unbind(
         method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={
             "dim": axis,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="unflatten",
+    shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        shape_key="shape",
+    ),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        force_int=True,
+    ),
+)
+def test_torch_unflatten(
+    *,
+    dtype_and_values,
+    on_device,
+    frontend,
+    backend_fw,
+    shape,
+    axis,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+):
+    dtype, x = dtype_and_values
+    sizes = sizes_(shape, axis)
+    helpers.test_frontend_method(
+        init_input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=dtype,
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "sizes": sizes,
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,

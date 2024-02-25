@@ -7,13 +7,13 @@ repos:
       - id: check-toml
       - id: end-of-file-fixer
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.2.1
+    rev: v0.2.2
     hooks:
       # Run the linter.
       - id: ruff
         args: [ --fix ]
   - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 24.1.1
+    rev: 24.2.0
     hooks:
       - id: black
         language_version: python3
@@ -26,7 +26,7 @@ repos:
             ivy_tests/test_ivy/(?!.*(?:__init__\.py|conftest\.py|helpers/.*|test_frontends/config/.*$)).*
           )
   - repo: https://github.com/PyCQA/autoflake
-    rev: v2.2.1
+    rev: v2.3.0
     hooks:
       - id: autoflake
   - repo: https://github.com/PyCQA/docformatter

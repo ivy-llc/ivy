@@ -1098,7 +1098,13 @@ def minimum(
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if paddle.is_complex(x1):
-        use_where = True
+        real_comparison = paddle.real(x1) < paddle.real(x2)
+        imag_comparison = paddle_backend.logical_and(
+            paddle.real(x1) == paddle.real(x2), paddle.imag(x1) < paddle.imag(x2)
+        )
+        return paddle_backend.where(
+            paddle_backend.logical_or(real_comparison, imag_comparison), x1, x2
+        ).astype(ret_dtype)
 
     if use_where:
         return paddle_backend.where(paddle_backend.less_equal(x1, x2), x1, x2).astype(
@@ -1122,7 +1128,13 @@ def maximum(
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if paddle.is_complex(x1):
-        use_where = True
+        real_comparison = paddle.real(x1) > paddle.real(x2)
+        imag_comparison = paddle_backend.logical_and(
+            paddle.real(x1) == paddle.real(x2), paddle.imag(x1) > paddle.imag(x2)
+        )
+        return paddle_backend.where(
+            paddle_backend.logical_or(real_comparison, imag_comparison), x1, x2
+        ).astype(ret_dtype)
     if use_where:
         return paddle_backend.where(
             paddle_backend.greater_equal(x1, x2), x1, x2

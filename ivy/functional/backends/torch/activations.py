@@ -18,7 +18,15 @@ from . import backend_version
 import ivy.functional.backends.torch as torch_backend
 
 
-@with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "2.1.2 and below": (
+            "float16",
+            "bool",
+        )
+    },
+    backend_version,
+)
 def relu(
     x: torch.Tensor, /, *, complex_mode="jax", out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
