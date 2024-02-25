@@ -1630,8 +1630,8 @@ def test_pow(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
             backend_to_test=backend_fw,
             fn_name=fn_name,
             on_device=on_device,
-            rtol_=1e-2,
-            atol_=1e-2,
+            rtol_=1e-3,
+            atol_=1e-3,
             x1=x[0],
             x2=x[1],
         )
