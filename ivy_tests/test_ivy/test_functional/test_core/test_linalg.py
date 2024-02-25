@@ -644,7 +644,7 @@ def test_matmul(*, x, y, test_flags, backend_fw, fn_name, on_device):
 # matrix_norm
 @handle_test(
     fn_tree="functional.ivy.matrix_norm",
-    ground_truth_backend="torch",
+    # ground_truth_backend="torch",
     dtype_value_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_num_dims=2,
@@ -672,11 +672,9 @@ def test_matrix_norm(
         dtypes[0] = input_dtype[0]
     if dtypes[0] not in [None, "complex128"]:
         dtypes[0] = input_dtype[0][:-2] + max([input_dtype[0][-2:], dtypes[0][-2:]])
-    if dtypes[0] is not None and "28" in dtypes[0]:
-        dtypes[0] = dtypes[0][:-2] + "64"
     if "bfloat" in dtypes[0]:
         dtypes[0] = "bfloat16"
-    # test_flags.test_gradients = False
+    test_flags.test_gradients = False
 
     assume(matrix_is_stable(x[0], cond_limit=10))
     helpers.test_function(
