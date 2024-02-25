@@ -674,6 +674,7 @@ def test_matrix_norm(
         dtypes[0] = input_dtype[0][:-2] + max([input_dtype[0][-2:], dtypes[0][-2:]])
 
     # test_flags.test_gradients = False
+    test_flags.ground_truth_backend = "numpy"
     assume(matrix_is_stable(x[0], cond_limit=10))
     helpers.test_function(
         input_dtypes=input_dtype,
