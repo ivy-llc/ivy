@@ -27,7 +27,7 @@ Rising Contributors
    * - Name
      - Github ID
      - Badges
-   * - Muhammad ishaque
+   * - Muhammad ishaque 
      - `MuhammadNizamani <https://github.com/MuhammadNizamani>`_
      - Merging Master Silver, Merging Wizard, Ivy Inspector
 Core Contributors
@@ -42,10 +42,10 @@ Core Contributors
    * - Suyash Gupta
      - `sgalpha01 <https://github.com/sgalpha01>`_
      - Debugging Dynamo, Merging Master Bronze, Merging Wizard Bronze
-   * - Sanjay Suthar
+   * - Sanjay Suthar 
      - `Sanjay8602 <https://github.com/Sanjay8602>`_
      - Merging Master Bronze, Ivy Inspector Bronze
-   * - R E Zera Marveen Lyngkhoi
+   * - R E Zera Marveen Lyngkhoi 
      - `fleventy-5 <https://github.com/fleventy-5>`_
      - Merging Master Bronze
    * - nitesh kesharwani
@@ -93,8 +93,11 @@ Contributors
    * - Waqar Ahmed
      - `waqaarahmed <https://github.com/waqaarahmed>`_
      - Merging Master, Ivy Inspector
-   * - Aryan Pandey
+   * - Aryan Pandey 
      - `Aryan8912 <https://github.com/Aryan8912>`_
+     - Merging Master
+   * - Dhruv Sharma
+     - `druvdub <https://github.com/druvdub>`_
      - Merging Master
    * - Kacper Kożdoń
      - `Kacper-W-Kozdon <https://github.com/Kacper-W-Kozdon>`_
@@ -104,4 +107,7 @@ Contributors
      - Merging Master
    * - Sheroz Khan
      - `ksheroz <https://github.com/ksheroz>`_
+     - Merging Master
+   * - Syed Muzakkir Hussain
+     - `muzakkirhussain011 <https://github.com/muzakkirhussain011>`_
      - Merging Master
