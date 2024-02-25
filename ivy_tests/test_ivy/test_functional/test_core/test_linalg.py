@@ -672,6 +672,8 @@ def test_matrix_norm(
         dtypes[0] = input_dtype[0]
     if dtypes[0] is not None:
         dtypes[0] = input_dtype[0][:-2] + max([input_dtype[0][-2:], dtypes[0][-2:]])
+    if dtypes[0] is not None and "28" in dtypes[0]:
+        dtypes[0] = dtypes[0][:-2] + "64"
 
     # test_flags.test_gradients = False
 
