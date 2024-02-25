@@ -157,12 +157,10 @@ def squeeze(
                 f"Expected size of axis to be 1 but was {x.shape[axis]}"
             )
         return torch.squeeze(x, axis)
+    if copy:
+        x = x.clone()
     if axis is None:
-        if copy:
-            newarr = torch.clone(x)
-            return torch.squeeze(newarr)
         return torch.squeeze(x)
-    newarr = torch.clone(x)
     if isinstance(axis, tuple):
         axis = list(axis)
     normalise_axis = [
@@ -179,12 +177,7 @@ def squeeze(
                 f" {shape}"
             )
         else:
-            if copy:
-                newarr = torch.squeeze(newarr, i)
-            else:
-                x = torch.squeeze(x, i)
-    if copy:
-        return newarr
+            x = torch.squeeze(x, i)
     return x
 
 

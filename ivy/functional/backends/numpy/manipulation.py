@@ -134,6 +134,8 @@ def squeeze(
 ) -> np.ndarray:
     if isinstance(axis, list):
         axis = tuple(axis)
+    if copy:
+        x = x.copy()
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
             return x
