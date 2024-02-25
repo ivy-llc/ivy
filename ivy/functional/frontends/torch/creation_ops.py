@@ -12,7 +12,7 @@ import ivy.functional.frontends.torch as torch_frontend
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 def arange(
     start=0,
     end=None,
@@ -74,7 +74,7 @@ def asarray(
     return ivy.asarray(obj, copy=copy, dtype=dtype, device=device)
 
 
-@with_supported_dtypes({"2.1.2 and below": ("float32", "float64")}, "torch")
+@with_supported_dtypes({"2.2 and below": ("float32", "float64")}, "torch")
 @to_ivy_arrays_and_back
 def complex(
     real,
@@ -214,7 +214,7 @@ def heaviside(input, values, *, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 def linspace(
     start,
     end,
@@ -226,12 +226,12 @@ def linspace(
     layout=None,
     requires_grad=False,
 ):
-    ret = ivy.linspace(start, end, num=steps, dtype=dtype, device=device, out=out)
-    return ret
+    dtype = torch_frontend.get_default_dtype() if dtype is None else dtype
+    return ivy.linspace(start, end, num=steps, dtype=dtype, device=device, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 def logspace(
     start,
     end,
@@ -283,7 +283,7 @@ def ones_like_v_0p4p0_and_above(
     return ret
 
 
-@with_supported_dtypes({"2.1.2 and below": ("float32", "float64")}, "torch")
+@with_supported_dtypes({"2.2 and below": ("float32", "float64")}, "torch")
 @to_ivy_arrays_and_back
 def polar(
     abs,
@@ -295,7 +295,7 @@ def polar(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.1.2 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 def range(
     *args,
     dtype=None,

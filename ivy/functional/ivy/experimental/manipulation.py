@@ -1797,10 +1797,10 @@ def put_along_axis(
     >>> axis = 1
     >>> indices = ivy.argmax(arr, axis=axis, keepdims=True)
     >>> value = 100
-    >>> ivy.put_along_axis(arr, indices, value, axis, mode='add')
+    >>> ivy.put_along_axis(arr, indices, value, axis, mode='sum')
     >>> print(arr)
-    ivy.array([[ 10, 130, 20],
-               [ 160, 40, 50]])
+    ivy.array([[10, 30, 20],
+              [60, 40, 50]])
     """
     arr_shape = arr.shape
 
@@ -2627,17 +2627,17 @@ def choose(
     Examples
     --------
     >>> choices = ivy.array([[0, 1, 2, 3], [10, 11, 12, 13],
-                        [20, 21, 22, 23], [30, 31, 32, 33]])
-    >>> print(choose(ivy.array([2, 3, 1, 0]), choices))
+    ...                     [20, 21, 22, 23],[30, 31, 32, 33]])
+    >>> print(ivy.choose(choices, ivy.array([2, 3, 1, 0]))
     ivy.array([20, 31, 12, 3])
     >>> arr = ivy.array([2, 4, 1, 0])
-    >>> print(choose(arr, choices, mode='clip')) # 4 goes to 3 (4-1)
+    >>> print(ivy.choose(choices, arr, mode='clip')) # 4 goes to 3 (4-1)
     ivy.array([20, 31, 12, 3])
     >>> arr = ivy.array([2, 4, 1, 0])
-    >>> print(choose(arr, choices, mode='wrap')) # 4 goes to (4 mod 4)
+    >>> print(ivy.choose(choices, arr, mode='wrap')) # 4 goes to (4 mod 4)
     ivy.array([20, 1, 12, 3])
     """
-    return ivy.current_backend(arr).choose(arr, choices, out=out, mode=mode)
+    return ivy.current_backend().choose(arr, choices, out=out, mode=mode)
 
 
 @handle_array_function
@@ -2884,9 +2884,9 @@ trim_zeros.mixed_backend_wrappers = {
 def unflatten(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    *,
     dim: int,
     shape: Tuple[int],
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Expand a dimension of the input tensor over multiple dimensions.
@@ -2930,4 +2930,4 @@ def unflatten(
     >>> ivy.unflatten(torch.randn(5, 12, 3), dim=-2, shape=(2, 2, 3, 1, 1)).shape
     torch.Size([5, 2, 2, 3, 1, 1, 3])
     """
-    return current_backend(x).unflatten(x, dim=dim, shape=shape, out=out)
+    return ivy.current_backend(x).unflatten(x, dim=dim, shape=shape, out=out)
