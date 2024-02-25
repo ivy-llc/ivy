@@ -554,3 +554,28 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([0., 0., 0.])
         """
         return ivy.hardshrink(self._data, lambd=lambd, out=out)
+
+    def hardsilu(self, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """ivy.Array instance method which acts as a wrapper for ivy.hardsilu.
+
+        Parameters
+        ----------
+        self
+            input array
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+            an array containing the output of the hardsilu/hardswish function applied
+            to each element in ``x``.
+
+        Examples
+        --------
+        >>> x = ivy.array([1., 2., 3.])
+        >>> y = x.hardsilu()
+        >>> print(y)
+        ivy.array([0.66666667, 1.66666667, 3.])
+        """
+        return ivy.hardsilu(self._data, out=out)
