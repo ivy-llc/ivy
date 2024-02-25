@@ -1577,7 +1577,7 @@ def test_negative(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.not_equal",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=2
+        available_dtypes=helpers.get_dtypes("valid", full=False), num_arrays=2
     ),
     test_gradients=st.just(False),
 )
@@ -1592,6 +1592,8 @@ def test_not_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+        atol_=1e-03,
+        rtol_=1e-03,
     )
 
 

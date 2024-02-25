@@ -615,8 +615,8 @@ def negative(
     return paddle.neg(x)
 
 
-@with_supported_dtypes(
-    {"2.6.0 and below": ("float32", "float64", "int32", "int64")},
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("bfloat16", "complex128", "float64", "float32")}},
     backend_version,
 )
 def not_equal(
