@@ -832,7 +832,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
 
         >>> a = ivy.array([1, 2, 3])
         >>> b = ivy.array([4, 5, 6])
-        >>> result = a.general_inner_product(b, n_modes=1)
+        >>> result = a.general_inner_product(b, 1)
         >>> print(result)
         ivy.array(32)
 
@@ -844,7 +844,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
 
         >>> a = ivy.array([[1, 1], [1, 1]])
         >>> b = ivy.array([[1, 2, 3, 4],[1, 1, 1, 1]])
-        >>> result = a.general_inner_product(b, n_modes=1)
+        >>> result = a.general_inner_product(b, 1)
         >>> print(result)
         ivy.array([[2, 3, 4, 5],
             [2, 3, 4, 5]])

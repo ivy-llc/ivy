@@ -14,6 +14,7 @@ from ivy.func_wrapper import (
     with_unsupported_device_and_dtypes,
     with_unsupported_dtypes,
     with_supported_dtypes,
+    with_supported_device_and_dtypes,
 )
 from .elementwise import _elementwise_helper
 
@@ -144,7 +145,7 @@ def eigh(
     x: paddle.Tensor,
     /,
     *,
-    UPLO: Optional[str] = "L",
+    UPLO: str = "L",
     out: Optional[paddle.Tensor] = None,
 ) -> Tuple[paddle.Tensor]:
     result_tuple = NamedTuple(
@@ -158,7 +159,7 @@ def eigvalsh(
     x: paddle.Tensor,
     /,
     *,
-    UPLO: Optional[str] = "L",
+    UPLO: str = "L",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.linalg.eigvalsh(x, UPLO=UPLO)
@@ -259,11 +260,14 @@ def matrix_norm(
     x: paddle.Tensor,
     /,
     *,
-    ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    axis: Optional[Tuple[int, int]] = (-2, -1),
+    ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
+    axis: Tuple[int, int] = (-2, -1),
     keepdims: bool = False,
+    dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if dtype is not None:
+        x = ivy.astype(x, dtype=dtype)
     axis_ = list(axis)  # paddle.moveaxis doesn't support tuple axes
     if ord == "nuc":
         x = paddle.moveaxis(x, axis_, [-2, -1])
@@ -353,7 +357,7 @@ def matrix_rank(
     *,
     atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
-    hermitian: Optional[bool] = False,
+    hermitian: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if (x.ndim < 2) or (0 in x.shape):
@@ -398,6 +402,14 @@ def matrix_transpose(
     return paddle.transpose(x, perm=perm)
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.6.0 and below": {
+            "cpu": ("int32", "int64", "float64", "complex128" "float32", "complex64")
+        }
+    },
+    backend_version,
+)
 def outer(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
@@ -592,8 +604,8 @@ def vector_norm(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: Optional[bool] = False,
-    ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+    keepdims: bool = False,
+    ord: Union[int, float, Literal[inf, -inf]] = 2,
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:

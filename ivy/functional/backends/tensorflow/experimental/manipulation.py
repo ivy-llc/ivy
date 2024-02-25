@@ -571,8 +571,8 @@ def trim_zeros(a: tf.Tensor, /, *, trim: Optional[str] = "bf") -> tf.Tensor:
 def unflatten(
     x: tf.Tensor,
     /,
-    dim: int = 0,
     shape: Tuple[int] = None,
+    dim: Optional[int] = 0,
     *,
     out: Optional[tf.Tensor] = None,
     name: Optional[str] = None,

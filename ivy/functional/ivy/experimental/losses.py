@@ -107,7 +107,7 @@ def l1_loss(
     target: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    reduction: Optional[str] = "mean",
+    reduction: str = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -138,11 +138,11 @@ def l1_loss(
     --------
     >>> x = ivy.array([1.0, 2.0, 3.0])
     >>> y = ivy.array([0.5, 2.5, 2.0])
-    >>> print(ivy.l1_loss(x, y))
-    ivy.array(0.6)
+    >>> ivy.l1_loss(x, y)
+    ivy.array(0.666)
     >>> a = ivy.array([[1.0, 2.0], [3.0, 4.0]])
     >>> b = ivy.array([[0.5, 1.5], [2.5, 3.5]])
-    >>> print(ivy.l1_loss(a, b))
+    >>> ivy.l1_loss(a, b)
     ivy.array(0.5)
     """
     loss = ivy.abs(target - input)
@@ -165,8 +165,8 @@ def huber_loss(
     pred: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    delta: Optional[float] = 1.0,
-    reduction: Optional[str] = "mean",
+    delta: float = 1.0,
+    reduction: str = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Compute the Huber loss (smooth L1 loss) between true and predicted
@@ -230,8 +230,8 @@ def smooth_l1_loss(
     target: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    beta: Optional[float] = 1.0,
-    reduction: Optional[str] = "mean",
+    beta: float = 1.0,
+    reduction: str = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Compute the smooth L1 loss between two input tensors.
@@ -258,12 +258,12 @@ def smooth_l1_loss(
 
     Examples
     --------
-    >>> input = ivy.array([1.0, 2.0, 3.0])
-    >>> target = ivy.array([2.5, 1.8, 3.2])
+    >>> x = ivy.array([1.0, 2.0, 3.0])
+    >>> y = ivy.array([2.5, 1.8, 3.2])
     >>> ivy.smooth_l1_loss(x, y, beta=1.0)
     ivy.array(0.3467)
-    >>> input = ivy.array([1.0, 2.0, 3.0])
-    >>> target = ivy.array([6.0, 2.0, 3.0])
+    >>> x = ivy.array([1.0, 2.0, 3.0])
+    >>> y = ivy.array([6.0, 2.0, 3.0])
     >>> ivy.smooth_l1_loss(x, y, beta=1.0)
     ivy.array(1.5)
     >>> input = ivy.array([2.0, 3.0, 5.0, 7.0])
@@ -359,7 +359,7 @@ def soft_margin_loss(
     target: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    reduction: Optional[str] = "mean",
+    reduction: str = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Compute the soft-margin hinge loss between predicted scores and true
@@ -419,7 +419,7 @@ def kl_div(
     target: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    reduction: Optional[str] = "mean",
+    reduction: str = "mean",
     log_target=False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -559,7 +559,7 @@ def poisson_nll_loss(
     --------
     >>> input_tensor = ivy.array([1, 2, 3, 4], dtype=ivy.float64)
     >>> target_tensor = ivy.array([2, 2, 2, 2], dtype=ivy.float64)
-    >>> loss = poisson_nll_loss(input_tensor, target_tensor, log_input=False)
+    >>> loss = ivy.poisson_nll_loss(input_tensor, target_tensor, log_input=False)
     >>> print(loss)
     ivy.array(0.91097307)
     """

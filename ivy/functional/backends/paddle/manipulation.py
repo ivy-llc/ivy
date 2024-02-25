@@ -22,6 +22,10 @@ from ...ivy.manipulation import _calculate_out_shape
 # -------------------#
 
 
+@with_unsupported_dtypes(
+    {"2.6.0 and below": ("bfloat16", "float16")},
+    backend_version,
+)
 def concat(
     xs: Union[Tuple[paddle.Tensor, ...], List[paddle.Tensor]],
     /,
@@ -58,6 +62,20 @@ def concat(
     return ret
 
 
+@with_supported_dtypes(
+    {
+        "2.6.0 and below": (
+            "int32",
+            "int64",
+            "float64",
+            "complex128",
+            "float32",
+            "complex64",
+            "bool",
+        )
+    },
+    backend_version,
+)
 def expand_dims(
     x: paddle.Tensor,
     /,
@@ -411,6 +429,7 @@ def constant_pad(
     return paddle.nn.functional.pad(x=x, pad=paddings, value=value)
 
 
+@with_unsupported_dtypes({"2.6.0 and below": ("float16",)}, backend_version)
 def zero_pad(
     x: paddle.Tensor,
     /,

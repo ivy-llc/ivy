@@ -1,12 +1,12 @@
 # global
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
 
 
-@with_unsupported_dtypes({"2.6.0 and below": ("float16", "bfloat16")}, "paddle")
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def mean(input, axis=None, keepdim=False, out=None):
     ret = ivy.mean(input, axis=axis, keepdims=keepdim, out=out)
