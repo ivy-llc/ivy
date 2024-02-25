@@ -185,3 +185,13 @@ def hardshrink(
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)
+
+
+@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
+def hardsilu(
+    x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None
+) -> Tensor:
+    ret = tf.multiply(x, tf.nn.relu6(tf.math.add(x, 3)) / 6)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)

@@ -62,7 +62,10 @@ def relu6(
     x: paddle.Tensor, /, *, complex_mode="jax", out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     if paddle.is_complex(x):
-        return paddle.complex(F.relu6(x.real()), F.relu6(x.imag()))
+        if x.real > 0 and x.real <= 6:
+            return x.astype(x.dtype)
+        else:
+            return paddle_backend.zeros_like(x).astype(x.dtype)
     return F.relu6(x)
 
 
@@ -252,3 +255,10 @@ def hardshrink(
             F.hardshrink(x.img(), threshold=lambd),
         )
     return F.hardshrink(x.cast("float32"), threshold=lambd).cast(x.dtype)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, backend_version)
+def hardsilu(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    return F.hardswish(x)
