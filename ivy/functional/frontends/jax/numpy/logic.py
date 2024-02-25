@@ -101,7 +101,7 @@ def equal(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.4.14 and below": ("bfloat16",)}, "jax")
+@with_unsupported_dtypes({"0.4.24 and below": ("bfloat16",)}, "jax")
 def fromfunction(function, shape, *, dtype=float, **kwargs):
     def canonicalize_shape(shape, context="shape argument"):
         if isinstance(shape, int):
@@ -111,8 +111,8 @@ def fromfunction(function, shape, *, dtype=float, **kwargs):
         elif isinstance(shape, tuple):
             return shape
         else:
-            msg = "{} must be an int, list, or tuple, but got {}."
-            raise TypeError(msg.format(context, type(shape)))
+            msg = f"{context} must be an int, list, or tuple, but got {type(shape)}."
+            raise TypeError(msg)
 
     arr = ivy.zeros(shape, dtype=dtype)
     shape = canonicalize_shape(shape)
@@ -285,7 +285,7 @@ def right_shift(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.4.14 and below": ("bfloat16", "bool")}, "jax")
+@with_unsupported_dtypes({"0.4.24 and below": ("bfloat16", "bool")}, "jax")
 def setxor1d(ar1, ar2, assume_unique=False):
     common_dtype = ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2))
     ar1 = ivy.asarray(ar1, dtype=common_dtype)

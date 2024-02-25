@@ -9,7 +9,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -25,7 +25,7 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def unique_all(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -38,10 +38,10 @@ def unique_all(
     Union[ivy.Array, ivy.NativeArray],
     Union[ivy.Array, ivy.NativeArray],
 ]:
-    """
-    Return the unique elements of an input array ``x``, the first occurring indices for
-    each unique element in ``x``, the indices from the set of unique elements that
-    reconstruct ``x``, and the corresponding counts for each unique element in ``x``.
+    """Return the unique elements of an input array ``x``, the first occurring
+    indices for each unique element in ``x``, the indices from the set of
+    unique elements that reconstruct ``x``, and the corresponding counts for
+    each unique element in ``x``.
 
     .. admonition:: Data-dependent output shape
         :class: important
@@ -154,14 +154,15 @@ def unique_all(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def unique_inverse(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
+    *,
+    axis: Optional[int] = None,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
-    """
-    Return the unique elements of an input array ``x``, and the indices from the set of
-    unique elements that reconstruct ``x``.
+    """Return the unique elements of an input array ``x``, and the indices from
+    the set of unique elements that reconstruct ``x``.
 
      .. admonition:: Data-dependent output shape
         :class: important
@@ -192,8 +193,12 @@ def unique_inverse(
     Parameters
     ----------
     x
-        input array. If ``x`` has more than one dimension, the function must flatten
-        ``x`` and return the unique elements of the flattened array.
+        the array that will be inputted into the "unique_inverse" function
+
+    axis
+        the axis to apply unique on. If None, the unique elements of the flattened ``x``
+        are returned.
+
 
     Returns
     -------
@@ -238,22 +243,8 @@ def unique_inverse(
     >>> print(y)
     Results(values=ivy.array([0.2, 0.3, 0.5, 0.8, 1.2, 2.4]),
             inverse_indices=ivy.array([2, 1, 3, 0, 4, 5, 1]))
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1., 4., 3. , 5. , 3. , 7.]),
-    ...                   b=ivy.array([3, 2, 6, 3, 7, 4, 9]))
-    >>> y = ivy.ivy.unique_inverse(x)
-    >>> print(y)
-    [{
-        a: ivy.array([1., 3., 4., 5., 7.]),
-        b: ivy.array([2, 3, 4, 6, 7, 9])
-    }, {
-        a: ivy.array([0, 2, 1, 3, 1, 4]),
-        b: ivy.array([1, 0, 3, 1, 4, 2, 5])
-    }]
     """
-    return ivy.current_backend(x).unique_inverse(x)
+    return ivy.current_backend(x).unique_inverse(x, axis=axis)
 
 
 @handle_exceptions
@@ -263,15 +254,14 @@ def unique_inverse(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def unique_values(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the unique elements of an input array ``x``.
+    """Return the unique elements of an input array ``x``.
 
     .. admonition:: Data-dependent output shape
         :class: important
@@ -356,14 +346,13 @@ def unique_values(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def unique_counts(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
-    """
-    Return the unique elements of an input array ``x`` and the corresponding counts for
-    each unique element in ``x``.
+    """Return the unique elements of an input array ``x`` and the corresponding
+    counts for each unique element in ``x``.
 
     .. admonition:: Data-dependent output shape
         :class: important

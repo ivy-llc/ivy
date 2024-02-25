@@ -1,14 +1,27 @@
-"""Collection of Numpy activation functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Numpy activation functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 import numpy as np
 
 # local
 import ivy
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+from ivy.func_wrapper import with_supported_dtypes
+from . import backend_version
 
 
+@with_supported_dtypes(
+    {
+        "1.26.3 and below": (
+            "float",
+            "int",
+            "complex",
+        )
+    },
+    backend_version,
+)
 @_scalar_output_to_0d_array
 def relu(
     x: np.ndarray, /, *, complex_mode="jax", out: Optional[np.ndarray] = None
@@ -46,7 +59,9 @@ def gelu(
     return ivy.astype(ret, x.dtype, copy=False)
 
 
-def sigmoid(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def sigmoid(
+    x: np.ndarray, /, *, complex_mode="jax", out: Optional[np.ndarray] = None
+) -> np.ndarray:
     if not ivy.is_array(x):
         return np.asarray(1 / (1 + np.exp(-x)))
     return np.asarray(1 / (1 + np.exp(-x))).astype(x.dtype)
@@ -108,22 +123,18 @@ softsign.support_native_out = True
 
 @_scalar_output_to_0d_array
 def log_softmax(
-    x: np.ndarray, /, *, axis: Optional[int] = None, out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[int] = -1,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if axis is None:
-        axis = -1
     x_max = np.max(x, axis=axis, keepdims=True)
-    if x_max.ndim > 0:
-        x_max[~np.isfinite(x_max)] = 0
-    elif not np.isfinite(x_max):
-        x_max = 0
-    exp_tmp = np.exp(x - x_max)
-
-    with np.errstate(divide="ignore"):
-        s = np.sum(exp_tmp, axis=axis, keepdims=True)
-        ret = np.log(s)
-
-    ret = x - x_max - ret
+    sub_tmp = np.subtract(x, x_max)
+    ret = np.sum(np.exp(sub_tmp), axis=axis, keepdims=True)
+    ret = np.log(ret)
+    ret = np.subtract(sub_tmp, ret)
     return ret
 
 
@@ -131,7 +142,13 @@ log_softmax.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def mish(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def mish(
+    x: np.ndarray,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
     return x * np.tanh(np.log1p(np.exp(x)))
 
 
@@ -139,7 +156,13 @@ mish.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def hardswish(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def hardswish(
+    x: np.ndarray,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
     max_x_3 = np.maximum(x + 3, 0, dtype=x.dtype)
     return (x * np.minimum(max_x_3, 6, out=out, dtype=x.dtype) / 6).astype(x.dtype)
 

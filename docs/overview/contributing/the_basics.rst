@@ -3,14 +3,12 @@ The Basics
 
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`todo list issues channel`: https://discord.com/channels/799879767196958751/982728618469912627
+.. _`todo list issues thread`: https://discord.com/channels/799879767196958751/1189903501011202128
 .. _`Atlassian tutorial`: https://www.atlassian.com/git/tutorials/saving-changes/git-stash
-.. _`fork management channel`: https://discord.com/channels/799879767196958751/982728689408167956
+.. _`fork management thread`: https://discord.com/channels/799879767196958751/1189903708465672272
 .. _`pull requests channel`: https://discord.com/channels/799879767196958751/982728733859414056
-.. _`commit frequency channel`: https://discord.com/channels/799879767196958751/982728822317256712
 .. _`PyCharm blog`: https://www.jetbrains.com/help/pycharm/finding-and-replacing-text-in-file.html
 .. _`Debugging`: https://www.jetbrains.com/help/pycharm/debugging-code.html
-.. _`Ivy Experimental API Open Task`: https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#ivy-experimental-api
 
 Getting Help
 ------------
@@ -54,7 +52,7 @@ We make extensive use of `ToDo list issues <https://github.com/unifyai/ivy/issue
 
 We have a clear process for contributors to engage with such ToDo lists:
 
-a. Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and (iii) is not mentioned in the comments. Currently, there are three open tasks: `function reformatting <https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#function-formatting>`_, `frontend APIs <https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#frontend-apis>`_ and `ivy experimental API <https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#ivy-experimental-api>`_.
+a. Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and (iii) is not mentioned in the comments. Currently, there are three open tasks: :ref:`overview/contributing/open_tasks:Fixing Failing Tests`, :ref:`overview/contributing/open_tasks:Function Formatting`, :ref:`overview/contributing/open_tasks:Frontend APIs` and :ref:`overview/contributing/open_tasks:Ivy Experimental API`.
 
 b. Create a new issue with the title being just the name of the sub-task you would like to work on.
 
@@ -71,7 +69,7 @@ d. Start working on the task, and open a PR as soon as you have a full or partia
 
    :code:`Close #Issue_number`
 
-   This is important, so that the merging of your PR will automatically close the associated issue. Make sure this is in the 
+   This is important, so that the merging of your PR will automatically close the associated issue. Make sure this is in the
    description of the PR, otherwise it might not link correctly. If you have a partial solution, the Ivy team can help to guide you through the process of getting it working 🙂
    Also, remember to make the PR name well described and if there are some details that can support your changes add them to the description of the PR.
 
@@ -114,7 +112,7 @@ For example, a sequence of comments like this :code:`- [ ] #Issue_number` will r
 
 |
 
-For questions, please reach out on `discord`_ in the `todo list issues channel`_!
+For questions, please reach out on `discord`_ in the `todo list issues thread`_!
 
 Managing Your Fork
 ------------------
@@ -130,9 +128,9 @@ This can be done using:
 The main branch then simply has the role of being kept up to date with upstream.
 You *can* create PRs based on the main branch of your fork, but this will make things more complicated if you would then like to create additional PRs in the future.
 
-For keeping any branch on your fork up to date, there is a script in the root folder of the repo `merge_with_upstream.sh <https://github.com/unifyai/ivy/blob/2994da4f7347b0b3fdd81b91c83bcbaa5580e7fb/merge_with_upstream.sh>`_.
-To update your fork's branch to the upstream main branch, simply run :code:`./merge_with_upstream.sh name_of_your_branch`.
-To update the main branch, this would then be: :code:`./merge_with_upstream.sh main`.
+For keeping any branch on your fork up to date, there is a script in the root folder of the repo `scripts/shell/merge_with_upstream.sh <https://github.com/unifyai/ivy/blob/bcddc79978afe447958dfa3ea660716845c85846/scripts/shell/merge_with_upstream.sh>`_.
+To update your fork's branch to the upstream main branch, simply run :code:`./scripts/shell/merge_with_upstream.sh name_of_your_branch`.
+To update the main branch, this would then be: :code:`./scripts/shell/merge_with_upstream.sh main`.
 
 When making a PR (explained in the next sub-section), sometimes you will see that changes to upstream have caused conflicts with your PR.
 In this case, you will need to either resolve these conflicts in the browser, or clone your fork and make changes locally in the terminal and push once resolved.
@@ -155,7 +153,7 @@ For a comprehensive explanation of git stashing, check out this `Atlassian tutor
 
 |
 
-For questions, please reach out on `discord`_ in the `fork management channel`_!
+For questions, please reach out on `discord`_ in the `fork management thread`_!
 
 Who To Ask
 ----------
@@ -250,7 +248,7 @@ The code review process is explained in more detail in the following video.
 
 |
 
-For questions, please reach out on `discord`_ in the `pull requests channel`_!
+For questions, please reach out on `discord`_ in the `pull requests thread`_!
 
 Small Commits Often
 -------------------
@@ -296,7 +294,7 @@ As a final note, a beautiful commit history is not something we particularly car
 We're much more concerned that the code itself is good, that things are updated as quickly as possible, and that all developers are able to work efficiently.
 If a mistake is committed into the history, it's generally not too difficult to simply undo this in future commits, so don't stress about this too much 🙂
 
-For questions, please reach out on the on `discord`_ in the `commit frequency channel`_!
+For questions, please reach out on the on `discord`_ in the `commit frequency thread`_!
 
 Interactive Ivy Docker Container
 --------------------------------
@@ -340,16 +338,16 @@ With Docker
 
 #. With PyCharm (With or without docker):
     1. PyCharm enables users to run pytest using the green button present near every function declaration inside the :code:`ivy_tests` folder.
-        
+
     .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/the_basics/pytest_with_pycharm/pytest_button_pycharm.png?raw=true
         :width: 420
-        
+
     2. Testing can be done for the entire project, individual submodules, individual files, and individual tests.
        This can be done by selecting the appropriate configuration from the top pane in PyCharm.
-        
+
     .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/the_basics/pytest_with_pycharm/pytest_with_pycharm.png?raw=true
         :width: 420
-        
+
 
 #. Through the command line (With docker):
     1. We need to replace the folder inside the container with the current local ivy directory to run tests on the current local code.
@@ -357,29 +355,29 @@ With Docker
     .. code-block:: none
 
         docker exec <container-name> rm -rf ivy
-        docker cp ivy <container-name>:/ 
+        docker cp ivy <container-name>:/
 
     2. We need to then enter inside the docker container and change into the :code:`ivy` directory using the following command.
 
     .. code-block:: none
 
-        docker exec -it ivy_container bash 
+        docker exec -it ivy_container bash
         cd ivy
 
     3. Run the test using the pytest command.
 
         1. Ivy Tests:
 
-            1. For a single function: 
+            1. For a single function:
 
             .. code-block:: none
-            
+
                 pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py::test_random_crop --no-header --no-summary -q
-            
+
             2. For a single file:
 
             .. code-block:: none
-            
+
                 pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py --no-header --no-summary -q
 
             3. For all tests:
@@ -390,28 +388,28 @@ With Docker
 
         2.  Array API Tests:
 
-            1. For a single function: 
+            1. For a single function:
 
             .. code-block:: none
-            
+
                 pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py::test_arange --no-header --no-summary -q
-            
+
             2. For a single file:
 
             .. code-block:: none
-            
+
                 pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py --no-header --no-summary -q
-            
+
             3. For all tests:
 
             .. code-block:: none
 
                 pytest ivy_tests/array_api_testing/test_array_api/ --no-header --no-summary -q
-        
+
         3. For the entire project:
 
         .. code-block:: none
-            
+
             pytest ivy_tests/ --no-header --no-summary -q
 
 #. Through the command line (Without docker):
@@ -435,16 +433,16 @@ With Docker
 
         1. Ivy Tests:
 
-            1. For a single function: 
+            1. For a single function:
 
             .. code-block:: none
-            
+
                 python -m pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py::test_random_crop --no-header --no-summary -q
-            
+
             2. For a single file:
 
             .. code-block:: none
-            
+
                 python -m pytest ivy_tests/test_ivy/test_functional/test_core/test_image.py --no-header --no-summary -q
 
             3. For all tests:
@@ -453,34 +451,34 @@ With Docker
 
                 python -m pytest ivy_tests/test_ivy/ --no-header --no-summary -q
 
-        2.  Array API Tests 
+        2.  Array API Tests
 
-            1. For a single function: 
+            1. For a single function:
 
                 .. code-block:: none
-                
+
                     python -m pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py::test_arange --no-header --no-summary -q
-            
+
             2. For a single file:
 
             .. code-block:: none
-            
+
                 python -m pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py --no-header --no-summary -q
-            
+
             3. For all tests:
 
             .. code-block:: none
 
                 python -m pytest ivy_tests/array_api_testing/test_array_api/ --no-header --no-summary -q
-        
+
         3. For the entire project
 
         .. code-block:: none
-            
+
             python -m pytest ivy_tests/ --no-header --no-summary -q
 
 #. Optional Flags: Various optional flags are available for running the tests such as :code:`device`, :code:`backend`, etc.
-    1. :code:`device`: 
+    1. :code:`device`:
         1. This flag enables the setting of the device where the tests would be run.
         2. Possible values being :code:`cpu` and :code:`gpu`.
         3. Default value is :code:`cpu`
@@ -542,7 +540,7 @@ with PyCharm
            :align: center
 
     3. Stepping through the code:
-        1. Step over: 
+        1. Step over:
             Steps over the current line of code and takes you to the next line even if the highlighted line has method calls in it.
 
             1. Click the Step Over button or press :code:`F8`
@@ -568,7 +566,7 @@ with PyCharm
 
                 2. Click the desired method.
 
-    4. Python Console: 
+    4. Python Console:
         1. Click the Console option on Debug Tool Window:
             This currently stores variables and their values upto which the code has been executed.
             You can print outputs and debug the code further on.
@@ -600,4 +598,4 @@ with PyCharm
 
 This should have hopefully given you a good understanding of the basics for contributing.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `todo list issues channel`_, `fork management channel`_, `pull requests channel`_, `commit frequency channel`_ depending on the question!
+If you have any questions, please feel free to reach out on `discord`_ in the `todo list issues thread`_, `fork management thread`_, `pull requests thread`_, depending on the question!

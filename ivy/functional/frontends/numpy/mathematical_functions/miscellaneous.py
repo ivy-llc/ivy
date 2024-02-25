@@ -147,7 +147,7 @@ def _fabs(
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 @with_supported_dtypes(
-    {"1.25.2 and below": ("int8", "int16", "int32", "int64")}, "numpy"
+    {"1.26.3 and below": ("int8", "int16", "int32", "int64")}, "numpy"
 )  # Add
 def _gcd(
     x1,
@@ -359,4 +359,17 @@ def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
 
 @to_ivy_arrays_and_back
 def real_if_close(a, tol=100):
-    return ivy.array(a)  # ivy doesn't yet support complex numbers
+    a = ivy.array(a, dtype=a.dtype)
+    dtype_ = a.dtype
+
+    if not ivy.is_complex_dtype(dtype_):
+        return a
+
+    if tol > 1:
+        f = ivy.finfo(dtype_)
+        tol = f.eps * tol
+
+    if ivy.all(ivy.abs(ivy.imag(a)) < tol):
+        a = ivy.real(a)
+
+    return a

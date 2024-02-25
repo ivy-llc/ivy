@@ -13,6 +13,64 @@ else:
 use = ivy.utils.backend.ContextManager(_module_in_memory)
 
 
+# wrap dunder methods of native tensors to return NotImplemented to prioritize Ivy array methods.
+def dunder_wrapper(func):
+    def rep_method(*args, **kwargs):
+        for arg in args:
+            if ivy.is_ivy_array(arg):
+                return NotImplemented
+        return func(*args, **kwargs)
+
+    return rep_method
+
+
+# check for previously imported mxnet modules
+modules_to_patch = []
+tensors_to_patch = []
+tmp_globals = dict(globals())
+for name, value in tmp_globals.items():
+    if value == "mxnet.ndarray.ndarray.NDArray":
+        tensors_to_patch.append(name)
+    try:
+        if value.__name__ == "mxnet":
+            modules_to_patch.append(name)
+    except AttributeError:
+        pass
+
+methods_to_patch = [
+    "__add__",
+    "__sub__",
+    "__mul__",
+    "__div__",
+    "__truediv__",
+    "__mod__",
+    "__lt__",
+    "__le__",
+    "__gt__",
+    "__ge__",
+    "__ne__",
+    "__eq__",
+    "__pow__",
+]
+
+for module in modules_to_patch:
+    for method in methods_to_patch:
+        exec(
+            module
+            + ".ndarray.NDArray."
+            + method
+            + " = dunder_wrapper("
+            + module
+            + ".ndarray.NDArray."
+            + method
+            + ")"
+        )
+
+for tensor in tensors_to_patch:
+    for method in methods_to_patch:
+        exec(tensor + "." + method + " = dunder_wrapper(" + tensor + "." + method + ")")
+
+
 NativeArray = mx.ndarray.NDArray
 NativeDevice = str
 NativeDtype = np.dtype
@@ -143,3 +201,8 @@ from . import control_flow_ops
 from .control_flow_ops import *
 from . import sub_backends
 from .sub_backends import *
+from . import module
+from .module import *
+
+
+NativeModule = mx.gluon.nn.Block

@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Tuple, List
+from typing import Optional, Union, Tuple, List, Sequence
 from numbers import Number
 import torch
 
@@ -14,12 +14,60 @@ from ivy.func_wrapper import (
 from .. import backend_version
 
 
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "2.2 and below": (
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
+def amax(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return torch.amax(x, dim=axis, keepdim=keepdims)
+
+
+amax.support_native_out = True
+
+
+@with_unsupported_dtypes(
+    {
+        "2.2 and below": (
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
+def amin(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return torch.amin(x, dim=axis, keepdim=keepdims)
+
+
+amin.support_native_out = True
+
+
+@with_supported_dtypes({"2.2 and below": ("float32", "float64")}, backend_version)
 def lgamma(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.lgamma(x, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("complex",)}, backend_version)
 def fmax(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -34,7 +82,7 @@ def fmax(
 fmax.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
 def sinc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.sinc(x, out=out)
@@ -95,14 +143,14 @@ def count_nonzero(
         return x
     if isinstance(axis, int):
         if axis == -1:
-            temp = x.dim() - 2
+            temp = x.dim() - 1
             if temp < -1:
                 temp = 0
             return x.unsqueeze(temp)
-        return x.unsqueeze(axis - 1)
+        return x.unsqueeze(axis)
     elif axis is not None:
         for d in sorted(axis):
-            x = x.unsqueeze(d - 1)
+            x = x.unsqueeze(d)
         return x
     return x
 
@@ -110,7 +158,7 @@ def count_nonzero(
 count_nonzero.support_native_out = False
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("complex",)}, backend_version)
 def nansum(
     x: torch.Tensor,
     /,
@@ -179,7 +227,7 @@ def signbit(
 signbit.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
 def hypot(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -204,7 +252,7 @@ def allclose(
     return torch.tensor(ret)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
 def fix(
     x: torch.Tensor,
     /,
@@ -217,7 +265,7 @@ def fix(
 fix.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
 def nextafter(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -271,7 +319,7 @@ def gradient(
 
 
 @with_supported_dtypes(
-    {"2.0.1 and below": ("float16", "float32", "float64")},
+    {"2.2 and below": ("float16", "float32", "float64")},
     backend_version,
 )
 def xlogy(
@@ -334,7 +382,7 @@ def _are_suitable_types_for_torch_lerp(input, end, weight):
     return True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def lerp(
     input: torch.Tensor,
     end: torch.Tensor,
@@ -367,12 +415,13 @@ def modf(
     /,
     *,
     out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    modf_x = torch.modf(x)
-    return torch.resolve_modf(input=modf_x)
+) -> Tuple[torch.Tensor, torch.Tensor]:
+    fractional_part = torch.frac(x)
+    integer_part = torch.floor(x)
+    return fractional_part, integer_part
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
 def digamma(
     x: torch.Tensor,
     /,
@@ -383,3 +432,26 @@ def digamma(
 
 
 digamma.support_native_out = True
+
+
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
+def erfc(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.special.erfc(x)
+
+
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
+def erfinv(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.special.erfinv(x, out=out)
+
+
+erfinv.support_native_out = True

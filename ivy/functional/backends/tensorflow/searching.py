@@ -12,7 +12,7 @@ from . import backend_version
 # ------------------ #
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
 def argmax(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -45,6 +45,7 @@ def argmax(
     return tf.cast(ret, dtype) if dtype is not None else ret
 
 
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
 def argmin(
     x: Union[tf.Tensor, tf.Variable],
     /,

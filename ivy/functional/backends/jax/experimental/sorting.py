@@ -23,7 +23,7 @@ def invert_permutation(
 
 
 # lexsort
-@with_unsupported_dtypes({"0.4.14 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.24 and below": ("bfloat16",)}, backend_version)
 def lexsort(
     keys: JaxArray,
     /,

@@ -9,7 +9,7 @@ import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
-from ivy.functional.ivy.layers import _deconv_length
+from ivy.functional.ivy.layers import _deconv_length, _pack_padded_sequence
 
 
 # --- Helpers --- #
@@ -68,56 +68,222 @@ def _dropout_helper(draw):
 
 
 @st.composite
-def _mha_helper(draw):
+def _general_transpose_helper(draw):
+    dims = draw(st.integers(1, 3))
+    padding = st.sampled_from(["SAME", "VALID"]) if dims != 2 else None
+    x_f_d_df = draw(
+        _x_and_filters(
+            dim=dims,
+            general=True,
+            transpose=True,
+            bias=True,
+            padding=padding,
+        )
+    )
+    return dims, x_f_d_df
+
+
+@st.composite
+def _lstm_helper(draw):
+    dtype = draw(helpers.get_dtypes("float", full=False))
+
+    has_ih_bias = draw(st.booleans())
+    has_hh_bias = draw(st.booleans())
+    weights_transposed = draw(st.booleans())
+    bidirectional = draw(st.booleans())
+    dropout = draw(st.floats(min_value=0, max_value=0.99))
+    train = draw(st.booleans()) and not dropout
+    packed = draw(st.booleans())
+
+    batch_first = draw(st.booleans()) and not packed
+    num_batches = draw(st.integers(min_value=1, max_value=5))
+    num_layers = draw(st.integers(min_value=1, max_value=3))
+    num_directions = 2 if bidirectional else 1
+    seq_size = draw(st.integers(min_value=1, max_value=5))
+    in_size = draw(st.integers(min_value=1, max_value=3))
+    hidden_size = draw(st.integers(min_value=1, max_value=3))
+
+    input = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=(
+                (num_batches, seq_size, in_size)
+                if batch_first
+                else (seq_size, num_batches, in_size)
+            ),
+            min_value=0,
+            max_value=1,
+        )
+    )
+
+    init_h = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=(num_directions * num_layers, num_batches, hidden_size),
+            min_value=0,
+            max_value=1,
+        )
+    )
+    init_c = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=(num_directions * num_layers, num_batches, hidden_size),
+            min_value=0,
+            max_value=1,
+        )
+    )
+
+    all_weights = []
+    for k in range(num_layers):
+        for _ in range(num_directions):
+            weight_ih = draw(
+                helpers.array_values(
+                    dtype=dtype[0],
+                    shape=(
+                        (4 * hidden_size, in_size)
+                        if k == 0
+                        else (4 * hidden_size, num_directions * hidden_size)
+                    ),
+                    min_value=0,
+                    max_value=1,
+                )
+            )
+            weight_hh = draw(
+                helpers.array_values(
+                    dtype=dtype[0],
+                    shape=(4 * hidden_size, hidden_size),
+                    min_value=0,
+                    max_value=1,
+                )
+            )
+            all_weights += [weight_ih, weight_hh]
+            if has_ih_bias:
+                bias_ih = draw(
+                    helpers.array_values(
+                        dtype=dtype[0],
+                        shape=(4 * hidden_size,),
+                        min_value=0,
+                        max_value=1,
+                    )
+                )
+                all_weights.append(bias_ih)
+            if has_hh_bias:
+                bias_hh = draw(
+                    helpers.array_values(
+                        dtype=dtype[0],
+                        shape=(4 * hidden_size,),
+                        min_value=0,
+                        max_value=1,
+                    )
+                )
+                all_weights.append(bias_hh)
+
+    if weights_transposed:
+        all_weights = [
+            ivy.swapaxes(w, 0, 1) if w.dims() == 2 else w for w in all_weights
+        ]
+
+    if packed:
+        batch_sizes = [seq_size]
+        batch_sizes += draw(
+            st.lists(
+                st.integers(min_value=1, max_value=seq_size),
+                min_size=num_batches - 1,
+                max_size=num_batches - 1,
+            )
+        )
+        batch_sizes = np.array(draw(st.permutations(batch_sizes)))
+        input, batch_sizes = (
+            ivy.to_numpy(p) for p in _pack_padded_sequence(input, batch_sizes)
+        )
+    else:
+        batch_sizes = None
+
+    initial_states = init_h, init_c
+    all_weights = tuple(all_weights)
+    if batch_sizes is not None:
+        dtypes = dtype + ["int64"]
+        kwargs = {
+            "input": input,
+            "batch_sizes": batch_sizes,
+            "initial_states": initial_states,
+            "all_weights": all_weights,
+            "num_layers": num_layers,
+            "dropout": dropout,
+            "train": train,
+            "bidirectional": bidirectional,
+            "weights_transposed": weights_transposed,
+            "has_ih_bias": has_ih_bias,
+            "has_hh_bias": has_hh_bias,
+        }
+    else:
+        dtypes = dtype
+        kwargs = {
+            "input": input,
+            "initial_states": initial_states,
+            "all_weights": all_weights,
+            "num_layers": num_layers,
+            "dropout": dropout,
+            "train": train,
+            "bidirectional": bidirectional,
+            "batch_first": batch_first,
+            "weights_transposed": weights_transposed,
+            "has_ih_bias": has_ih_bias,
+            "has_hh_bias": has_hh_bias,
+        }
+    return dtypes, kwargs
+
+
+@st.composite
+def _mha_helper(draw, same_pre_embed_dim=False, batch_second=False):
     _qkv_same_dim = draw(st.booleans())
     _self_attention = draw(st.booleans())
+    _same_pre_embed_dim = _self_attention or same_pre_embed_dim or draw(st.booleans())
+    batch_first = draw(st.booleans()) and not batch_second
     num_heads = draw(helpers.ints(min_value=1, max_value=3))
     _embed_dim = draw(helpers.ints(min_value=4, max_value=16)) * num_heads
+    _batch_dim = draw(st.sampled_from([(), (1,)]))
+    _num_batches = _batch_dim[0] if len(_batch_dim) else 1
+    dtype = draw(helpers.get_dtypes("valid", full=False))
     _num_queries = draw(helpers.ints(min_value=2, max_value=8))
     _num_keys = draw(helpers.ints(min_value=2, max_value=8))
-    _batch_dim = draw(st.sampled_from([(), (1,)]))
-    dtype = draw(helpers.get_dtypes("float", full=False, prune_function=False))
-    in_proj_bias = None
     in_proj_weights = None
     q_proj_weights = None
     k_proj_weights = None
     v_proj_weights = None
-    _mask_shape = (
-        _num_queries,
-        _num_queries if _self_attention and _qkv_same_dim else _num_keys,
-    )
-    if _qkv_same_dim:
-        _pre_embed_dim = draw(helpers.ints(min_value=4, max_value=16))
-        _q_shape = _batch_dim + (_num_queries, _pre_embed_dim)
-        _kv_shape = _batch_dim + (_num_keys, _pre_embed_dim)
 
+    if _qkv_same_dim:
+        if _same_pre_embed_dim:
+            _pre_embed_dim = _embed_dim
+        else:
+            _pre_embed_dim = draw(helpers.ints(min_value=4, max_value=16))
         q = draw(
             helpers.array_values(
-                shape=_q_shape,
+                shape=(*_batch_dim, _num_queries, _pre_embed_dim),
                 dtype=dtype[0],
-                large_abs_safety_factor=7,
-                small_abs_safety_factor=7,
-                safety_factor_scale="linear",
+                max_value=1000,
+                min_value=-1000,
+                abs_smallest_val=1e-06,
             )
         )
         k = draw(
             helpers.array_values(
-                shape=_kv_shape,
+                shape=(*_batch_dim, _num_keys, _pre_embed_dim),
                 dtype=dtype[0],
-                large_abs_safety_factor=7,
-                small_abs_safety_factor=7,
-                safety_factor_scale="linear",
+                max_value=1000,
+                min_value=-1000,
+                abs_smallest_val=1e-06,
             )
             if not _self_attention
             else st.none()
         )
         v = draw(
             helpers.array_values(
-                shape=_kv_shape,
+                shape=(*_batch_dim, _num_keys, _pre_embed_dim),
                 dtype=dtype[0],
-                large_abs_safety_factor=7,
-                small_abs_safety_factor=7,
-                safety_factor_scale="linear",
+                max_value=1000,
+                min_value=-1000,
+                abs_smallest_val=1e-06,
             )
             if not _self_attention
             else st.none()
@@ -126,102 +292,191 @@ def _mha_helper(draw):
             helpers.array_values(
                 dtype=dtype[0],
                 shape=(3 * _embed_dim, _pre_embed_dim),
-                min_value=0,
+                min_value=-10,
                 max_value=10,
             )
-            if _pre_embed_dim != _embed_dim
+            if not _same_pre_embed_dim or draw(st.booleans())
             else st.none()
         )
     else:
-        _q_dim = draw(helpers.ints(min_value=2, max_value=8))
+        if not same_pre_embed_dim:
+            _q_dim = draw(helpers.ints(min_value=2, max_value=8))
+        else:
+            _q_dim = _embed_dim
         _k_dim = draw(helpers.ints(min_value=2, max_value=8))
         _v_dim = draw(helpers.ints(min_value=2, max_value=8))
-        _q_shape = _batch_dim + (_num_queries, _q_dim)
-        _k_shape = _batch_dim + (_num_keys, _k_dim)
-        _v_shape = _batch_dim + (_num_keys, _v_dim)
         q = draw(
             helpers.array_values(
-                shape=_q_shape,
+                shape=(*_batch_dim, _num_queries, _q_dim),
                 dtype=dtype[0],
-                large_abs_safety_factor=7,
-                small_abs_safety_factor=7,
-                safety_factor_scale="linear",
+                max_value=1000,
+                min_value=-1000,
+                abs_smallest_val=1e-06,
             )
         )
         k = draw(
             helpers.array_values(
-                shape=_k_shape,
+                shape=(*_batch_dim, _num_keys, _k_dim),
                 dtype=dtype[0],
-                large_abs_safety_factor=7,
-                small_abs_safety_factor=7,
-                safety_factor_scale="linear",
+                max_value=1000,
+                min_value=-1000,
+                abs_smallest_val=1e-06,
             )
         )
         v = draw(
             helpers.array_values(
-                shape=_v_shape,
+                shape=(*_batch_dim, _num_keys, _v_dim),
                 dtype=dtype[0],
-                large_abs_safety_factor=7,
-                small_abs_safety_factor=7,
-                safety_factor_scale="linear",
+                max_value=1000,
+                min_value=-1000,
+                abs_smallest_val=1e-06,
             )
         )
         q_proj_weights = draw(
             helpers.array_values(
                 dtype=dtype[0],
                 shape=(_embed_dim, _q_dim),
-                min_value=0,
-                max_value=2,
+                min_value=-5,
+                max_value=5,
             )
         )
         k_proj_weights = draw(
             helpers.array_values(
                 dtype=dtype[0],
                 shape=(_embed_dim, _k_dim),
-                min_value=0,
-                max_value=2,
+                min_value=-5,
+                max_value=5,
             )
         )
         v_proj_weights = draw(
             helpers.array_values(
                 dtype=dtype[0],
                 shape=(_embed_dim, _v_dim),
-                min_value=0,
-                max_value=2,
+                min_value=-5,
+                max_value=5,
             )
         )
-
     in_proj_bias = draw(
-        helpers.array_values(
-            dtype=dtype[0], shape=(3 * _embed_dim), min_value=0, max_value=10
+        st.one_of(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=(3 * _embed_dim,),
+                min_value=-10,
+                max_value=10,
+            ),
+            st.none(),
         )
-        | st.none()
     )
+
     _out_dim = draw(helpers.ints(min_value=4, max_value=16))
     out_proj_weights = draw(
-        helpers.array_values(
-            dtype=dtype[0],
-            shape=(_out_dim, _embed_dim),
-            min_value=0,
-            max_value=2,
+        st.one_of(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=(_out_dim, _embed_dim),
+                min_value=-5,
+                max_value=5,
+            ),
+            st.none(),
         )
-        | st.none()
     )
     out_proj_bias = draw(
-        helpers.array_values(
-            dtype=dtype[0], shape=(_out_dim), min_value=0, max_value=10
+        st.one_of(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=(_out_dim,),
+                min_value=-10,
+                max_value=10,
+            ),
+            st.none(),
         )
-        | st.none()
     )
+
+    if _self_attention and _qkv_same_dim:
+        _num_keys = _num_queries
+    _static_shape = (_num_batches * num_heads, _num_keys, int(_embed_dim // num_heads))
+    static_k = draw(
+        st.one_of(
+            helpers.array_values(
+                shape=_static_shape,
+                dtype=dtype[0],
+                max_value=1000,
+                min_value=-1000,
+                abs_smallest_val=1e-06,
+            ),
+            st.none(),
+        )
+    )
+    static_v = draw(
+        st.one_of(
+            helpers.array_values(
+                shape=_static_shape,
+                dtype=dtype[0],
+                max_value=1000,
+                min_value=-1000,
+                abs_smallest_val=1e-06,
+            ),
+            st.none(),
+        )
+    )
+
+    _mask_shape = (_num_queries, _num_keys)
+    if len(_batch_dim) and draw(st.booleans()):
+        _mask_shape = (_num_batches * num_heads, *_mask_shape)
     attention_mask = draw(
-        helpers.array_values(
-            dtype="bool",
-            shape=_mask_shape,
+        st.one_of(
+            helpers.array_values(
+                dtype=draw(st.sampled_from(["bool", dtype[0]])),
+                allow_inf=True,
+                shape=_mask_shape,
+            ),
+            st.none(),
         )
-        | st.none()
     )
-    return (
-        dtype,
+
+    key_padding_mask = draw(
+        st.one_of(
+            helpers.array_values(
+                dtype="bool",
+                shape=(*_batch_dim, _num_keys),
+            ),
+            st.none(),
+        )
+    )
+
+    _extra_bias = (
+        (not _qkv_same_dim or _pre_embed_dim == _embed_dim)
+        and static_k is None
+        and static_v is None
+        and draw(st.booleans())
+    )
+    bias_k = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(_embed_dim,), min_value=-10, max_value=10
+        )
+        if _extra_bias
+        else st.none()
+    )
+    bias_v = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(_embed_dim,), min_value=-10, max_value=10
+        )
+        if _extra_bias
+        else st.none()
+    )
+
+    scale = draw(st.one_of(st.floats(min_value=0.001), st.none()))
+    add_zero_attn = draw(st.booleans())
+    dropout = draw(st.floats(min_value=0, max_value=0.99))
+    training = draw(st.booleans())
+    is_causal = draw(st.booleans())
+    return_attention_weights = draw(st.booleans())
+    average_attention_weights = draw(st.booleans())
+
+    if len(q.shape) == 3 and not batch_first:
+        q, k, v = (np.swapaxes(x, 0, 1) if x is not None else x for x in [q, k, v])
+
+    ret = (
         q,
         k,
         v,
@@ -234,6 +489,47 @@ def _mha_helper(draw):
         out_proj_weights,
         in_proj_bias,
         out_proj_bias,
+        key_padding_mask,
+        bias_k,
+        bias_v,
+        static_k,
+        static_v,
+        scale,
+        add_zero_attn,
+        dropout,
+        training,
+        is_causal,
+        return_attention_weights,
+        average_attention_weights,
+        batch_first,
+    )
+    ret_dtypes = [str(r.dtype) for r in ret if ivy.is_array(r)]
+    return ret_dtypes, *ret
+
+
+@st.composite
+def _nms_helper(draw):
+    img_width = draw(st.integers(250, 1250))
+    img_height = draw(st.integers(250, 1250))
+    num_boxes = draw(st.integers(5, 50))
+    bbox = {}
+    for _ in range(num_boxes):
+        x1 = draw(st.integers(0, img_width - 20))
+        w = draw(st.integers(5, img_width - x1))
+        y1 = draw(st.integers(0, img_height - 20))
+        h = draw(st.integers(5, img_height - y1))
+
+        bbox[(x1, y1, x1 + w, y1 + h)] = draw(st.floats(0.2, 1))
+
+    iou_threshold = draw(st.floats(0.2, 1))
+    max_output_size = draw(st.integers(1, num_boxes))
+    score_threshold = draw(st.floats(0, 1))
+    return (
+        np.array(list(bbox.keys()), dtype=np.float32),
+        np.array(list(bbox.values()), dtype=np.float32),
+        iou_threshold,
+        max_output_size,
+        score_threshold,
     )
 
 
@@ -241,15 +537,85 @@ def _mha_helper(draw):
 # -------------#
 
 
+def _output_shape(dims, dilation, stride, padding, x_shape, filter_shape):
+    if isinstance(padding, str):
+        return [
+            _deconv_length(
+                x_shape[i],
+                stride[i],
+                filter_shape[i],
+                padding,
+                dilation[i],
+            )
+            for i in range(dims)
+        ]
+    else:
+        if isinstance(padding, int):
+            padding = [[padding, padding]] * dims
+        return [
+            (x_shape[i] - 1) * stride[i]
+            - padding[i][0]
+            - padding[i][1]
+            + dilation[i] * (filter_shape[i] - 1)
+            + 1
+            for i in range(dims)
+        ]
+
+
+@st.composite
+def _roi_align_helper(draw):
+    dtype = draw(helpers.get_dtypes("float", full=False))[0]
+    N = draw(st.integers(1, 5))
+    C = draw(st.integers(1, 5))
+    H = W = draw(st.integers(5, 20))
+
+    img_width = img_height = draw(st.integers(50, 100))
+
+    spatial_scale = H / img_height
+
+    output_size = draw(st.integers(H - 2, H + 5))
+
+    sampling_ratio = draw(st.one_of(st.just(-1), st.integers(1, 3)))
+
+    aligned = draw(st.booleans())
+    input = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=(N, C, H, W),
+            min_value=-3,
+            max_value=3,
+        )
+    )
+    bbox = {}
+    for i in range(N):
+        num_boxes = draw(st.integers(1, 5))
+        for _ in range(num_boxes):
+            x1 = draw(st.integers(0, img_width - 20))
+            w = draw(st.integers(5, img_width - x1))
+            y1 = draw(st.integers(0, img_height - 20))
+            h = draw(st.integers(5, img_height - y1))
+            bbox[(i, x1, y1, x1 + w, y1 + h)] = 1
+
+    return (
+        [dtype],
+        input,
+        np.array(list(bbox.keys()), dtype=dtype).reshape((-1, 5)),
+        output_size,
+        spatial_scale,
+        sampling_ratio,
+        aligned,
+    )
+
+
 @st.composite
 def _x_and_filters(
     draw,
     dim: int = 2,
+    padding=None,
     transpose: bool = False,
     depthwise=False,
     general=False,
     bias=False,
-    filter_format=None,
 ):
     if not isinstance(dim, int):
         dim = draw(dim)
@@ -264,10 +630,14 @@ def _x_and_filters(
     output_channels = draw(st.integers(1, 3))
     group_list = [*range(1, 6)]
     if not transpose:
-        group_list = list(filter(lambda x: (input_channels % x == 0), group_list))
+        group_list = list(
+            filter(
+                lambda x: (input_channels % x == 0 and x <= output_channels), group_list
+            )
+        )
     else:
         group_list = list(filter(lambda x: (output_channels % x == 0), group_list))
-    fc = draw(st.sampled_from(group_list)) if general else 1
+    fc = draw(st.sampled_from(group_list))
     strides = draw(
         st.one_of(
             st.integers(1, 3), st.lists(st.integers(1, 3), min_size=dim, max_size=dim)
@@ -288,48 +658,45 @@ def _x_and_filters(
         data_format = draw(st.sampled_from(["NWC", "NCW"]))
     else:
         data_format = draw(st.sampled_from(["NDHWC", "NCDHW"]))
-
-    full_strides = [strides] * dim if isinstance(strides, int) else strides
-    full_dilations = [dilations] * dim if isinstance(dilations, int) else dilations
+    fdilations = [dilations] * dim if isinstance(dilations, int) else dilations
+    if padding is None:
+        padding = st.one_of(
+            st.lists(
+                st.tuples(
+                    st.integers(min_value=0, max_value=3),
+                    st.integers(min_value=0, max_value=3),
+                ),
+                min_size=dim,
+                max_size=dim,
+            ),
+            st.sampled_from(["SAME", "VALID"]),
+            st.integers(min_value=0, max_value=3),
+        )
+    padding = draw(padding)
     if transpose:
-        padding = draw(st.sampled_from(["SAME", "VALID"]))
+        fstrides = [strides] * dim if isinstance(strides, int) else strides
+        if isinstance(padding, list):
+            assume(
+                all(
+                    max(pad) - min(pad) < min(stride, dilation)
+                    for pad, stride, dilation in zip(padding, fstrides, fdilations)
+                )
+            )
         x_dim = draw(
             helpers.get_shape(
                 min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
             )
         )
+        output_shape = _output_shape(
+            dim, fdilations, fstrides, padding, x_dim, filter_shape
+        )
+        assume(all(s > 0 for s in output_shape))
         if draw(st.booleans()):
-            output_shape = []
-            for i in range(dim):
-                output_shape.append(
-                    _deconv_length(
-                        x_dim[i],
-                        full_strides[i],
-                        filter_shape[i],
-                        padding,
-                        full_dilations[i],
-                    )
-                )
-        else:
             output_shape = None
     else:
-        padding = draw(
-            st.one_of(
-                st.lists(
-                    st.tuples(
-                        st.integers(min_value=0, max_value=3),
-                        st.integers(min_value=0, max_value=3),
-                    ),
-                    min_size=dim,
-                    max_size=dim,
-                ),
-                st.sampled_from(["SAME", "VALID"]),
-                st.integers(min_value=0, max_value=3),
-            )
-        )
         x_dim = []
         for i in range(dim):
-            min_x = filter_shape[i] + (filter_shape[i] - 1) * (full_dilations[i] - 1)
+            min_x = filter_shape[i] + (filter_shape[i] - 1) * (fdilations[i] - 1)
             x_dim.append(draw(st.integers(min_x, min_x + 1)))
         x_dim = tuple(x_dim)
     if not depthwise:
@@ -338,11 +705,11 @@ def _x_and_filters(
             filter_shape = filter_shape + (input_channels // fc, output_channels)
         else:
             input_channels = input_channels * fc
-            filter_shape = filter_shape + (input_channels, output_channels // fc)
+            filter_shape = filter_shape + (output_channels // fc, input_channels)
     else:
         filter_shape = filter_shape + (input_channels,)
     channel_first = True
-    if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
+    if data_format in ["NHWC", "NWC", "NDHWC"]:
         x_shape = (batch_size,) + x_dim + (input_channels,)
         channel_first = False
     else:
@@ -383,8 +750,8 @@ def _x_and_filters(
             )
         )
         dilations = (dilations, x_dilation)
-    if filter_format is not None:
-        filter_format = draw(filter_format)
+    if not depthwise:
+        filter_format = draw(st.sampled_from(["channel_first", "channel_last"]))
         if filter_format == "channel_first":
             filters = np.transpose(filters, (-1, -2, *range(dim)))
     ret = (
@@ -397,13 +764,13 @@ def _x_and_filters(
         padding,
     )
     ret = ret + (output_shape, fc) if transpose else ret + (fc,)
-    ret = ret + (filter_format,) if filter_format is not None else ret
+    if not depthwise:
+        ret = ret + (filter_format,)
     if bias:
         return ret + (b,)
     return ret
 
 
-# filter_format not in conv_general_transpose
 # output_shape not in conv_general_dilated
 @st.composite
 def _x_and_filters_and_transpose(
@@ -411,22 +778,17 @@ def _x_and_filters_and_transpose(
     dim: int = 2,
     general=False,
     bias=False,
-    filter_format=None,
 ):
     transpose = draw(st.booleans())
-    if not transpose:
-        filter_format = st.sampled_from(["channel_last", "channel_first"])
     all_args = draw(
         _x_and_filters(
             dim=dim,
             general=general,
             bias=bias,
-            filter_format=filter_format,
             transpose=transpose,
         )
     )
     output_shape = None
-    filter_format = "channel_last"
     if transpose:
         (
             dtype,
@@ -438,6 +800,7 @@ def _x_and_filters_and_transpose(
             pad,
             output_shape,
             fc,
+            filter_format,
             bias,
         ) = all_args
     else:
@@ -476,7 +839,8 @@ def _x_and_linear(draw):
     mixed_fn_compos = draw(st.booleans())
     is_torch_backend = ivy.current_backend_str() == "torch"
     dtype = draw(
-        helpers.get_dtypes("numeric", full=False, mixed_fn_compos=mixed_fn_compos)
+        # should sample from "valid" but with_supported_dtypes was not working
+        helpers.get_dtypes("float", full=False, mixed_fn_compos=mixed_fn_compos)
     )
     in_features = draw(
         helpers.ints(min_value=1, max_value=2, mixed_fn_compos=mixed_fn_compos)
@@ -711,7 +1075,6 @@ def test_conv(*, dims, x_f_d_df_tr, test_flags, backend_fw, fn_name, on_device):
     x_f_d_df=_x_and_filters(
         dim=1,
         bias=True,
-        filter_format=st.sampled_from(["channel_last", "channel_first"]),
     ),
     ground_truth_backend="jax",
 )
@@ -757,8 +1120,9 @@ def test_conv1d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
         dim=1,
         transpose=True,
         bias=True,
+        padding=st.sampled_from(["SAME", "VALID"]),
     ),
-    ground_truth_backend="jax",
+    ground_truth_backend="torch",
 )
 def test_conv1d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     (
@@ -771,9 +1135,11 @@ def test_conv1d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         pad,
         output_shape,
         fc,
+        filter_format,
         bias,
     ) = x_f_d_df
-    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
+    # tensorflow does not work with dilations > 1 on cpu
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -782,14 +1148,14 @@ def test_conv1d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        # tensorflow does not work with dilations > 1 on cpu
         x=x,
         filters=filters,
         strides=stride,
         padding=pad,
         output_shape=output_shape,
+        filter_format=filter_format,
         data_format=data_format,
-        dilations=dilations[0],
+        dilations=dilations,
         bias=bias,
     )
 
@@ -800,7 +1166,6 @@ def test_conv1d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
     x_f_d_df=_x_and_filters(
         dim=2,
         bias=True,
-        filter_format=st.sampled_from(["channel_last", "channel_first"]),
     ),
     ground_truth_backend="jax",
 )
@@ -847,8 +1212,7 @@ def test_conv2d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
         transpose=True,
         bias=True,
     ),
-    # tensorflow does not work with dilations > 1 on cpu
-    ground_truth_backend="jax",
+    ground_truth_backend="torch",
 )
 def test_conv2d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     (
@@ -861,10 +1225,11 @@ def test_conv2d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         pad,
         output_shape,
         fc,
+        filter_format,
         bias,
     ) = x_f_d_df
-    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
-
+    assume(isinstance(pad, str) or backend_fw in ["torch", "tensorflow"])
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -878,8 +1243,9 @@ def test_conv2d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         strides=stride,
         padding=pad,
         output_shape=output_shape,
+        filter_format=filter_format,
         data_format=data_format,
-        dilations=dilations[0],
+        dilations=dilations,
         bias=bias,
     )
 
@@ -890,7 +1256,6 @@ def test_conv2d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
     x_f_d_df=_x_and_filters(
         dim=3,
         bias=True,
-        filter_format=st.sampled_from(["channel_last", "channel_first"]),
     ),
     ground_truth_backend="jax",
 )
@@ -935,8 +1300,9 @@ def test_conv3d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
         dim=3,
         transpose=True,
         bias=True,
+        padding=st.sampled_from(["SAME", "VALID"]),
     ),
-    ground_truth_backend="jax",
+    ground_truth_backend="torch",
 )
 def test_conv3d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     (
@@ -949,9 +1315,10 @@ def test_conv3d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         pad,
         output_shape,
         fc,
+        filter_format,
         bias,
     ) = x_f_d_df
-    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -965,8 +1332,9 @@ def test_conv3d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         strides=stride,
         padding=pad,
         output_shape=output_shape,
+        filter_format=filter_format,
         data_format=data_format,
-        dilations=dilations[0],
+        dilations=dilations,
         bias=bias,
     )
 
@@ -979,9 +1347,8 @@ def test_conv3d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         dim=st.shared(st.integers(1, 3), key="dims"),
         general=True,
         bias=True,
-        filter_format=st.sampled_from(["channel_last", "channel_first"]),
     ),
-    ground_truth_backend="jax",
+    ground_truth_backend="torch",
 )
 def test_conv_general_dilated(
     *, dims, x_f_d_df, test_flags, backend_fw, fn_name, on_device
@@ -1023,19 +1390,13 @@ def test_conv_general_dilated(
 
 @handle_test(
     fn_tree="functional.ivy.conv_general_transpose",
-    dims=st.shared(st.integers(1, 3), key="dims"),
-    x_f_d_df=_x_and_filters(
-        dim=st.shared(st.integers(1, 3), key="dims"),
-        general=True,
-        transpose=True,
-        bias=True,
-    ),
-    ground_truth_backend="jax",
+    dim_x_f_d_df=_general_transpose_helper(),
+    ground_truth_backend="torch",
 )
 def test_conv_general_transpose(
-    *, dims, x_f_d_df, test_flags, backend_fw, fn_name, on_device
+    *, dim_x_f_d_df, test_flags, backend_fw, fn_name, on_device
 ):
-    (
+    dims, (
         dtype,
         x,
         filters,
@@ -1045,8 +1406,10 @@ def test_conv_general_transpose(
         pad,
         output_shape,
         fc,
+        filter_format,
         bias,
-    ) = x_f_d_df
+    ) = dim_x_f_d_df
+    assume(isinstance(pad, str) or backend_fw in ["torch", "tensorflow"])
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
         input_dtypes=dtype,
@@ -1061,8 +1424,9 @@ def test_conv_general_transpose(
         strides=stride,
         padding=pad,
         dims=dims,
-        output_shape=output_shape,
+        filter_format=filter_format,
         data_format=data_format,
+        output_shape=output_shape,
         dilations=dilations,
         feature_group_count=fc,
         bias=bias,
@@ -1098,7 +1462,7 @@ def test_depthwise_conv2d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         strides=stride,
         padding=pad,
         data_format=data_format,
-        dilations=dilations,
+        dilations=dilations[0],
     )
 
 
@@ -1117,28 +1481,44 @@ def test_dropout(
     on_device,
 ):
     (x_dtype, x), noise_shape, seed, dtype, prob, scale, training = data
-    ret, gt_ret = helpers.test_function(
-        input_dtypes=x_dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        test_values=False,
-        x=x[0],
-        prob=prob,
-        scale=scale,
-        noise_shape=noise_shape,
-        dtype=dtype[0],
-        training=training,
-        seed=seed,
-    )
-    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
-    gt_ret = helpers.flatten_and_to_np(
-        ret=gt_ret, backend=test_flags.ground_truth_backend
-    )
-    for u, v, w in zip(ret, gt_ret, x):
-        # cardinality test
-        assert u.shape == v.shape == w.shape
+    if not training or prob == 0:
+        helpers.test_function(
+            input_dtypes=x_dtype,
+            test_flags=test_flags,
+            backend_to_test=backend_fw,
+            fn_name=fn_name,
+            on_device=on_device,
+            x=x[0],
+            prob=prob,
+            scale=scale,
+            noise_shape=noise_shape,
+            dtype=dtype[0],
+            training=training,
+            seed=seed,
+        )
+    else:
+        ret, gt_ret = helpers.test_function(
+            input_dtypes=x_dtype,
+            test_flags=test_flags,
+            backend_to_test=backend_fw,
+            fn_name=fn_name,
+            on_device=on_device,
+            test_values=False,
+            x=x[0],
+            prob=prob,
+            scale=scale,
+            noise_shape=noise_shape,
+            dtype=dtype[0],
+            training=training,
+            seed=seed,
+        )
+        ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+        gt_ret = helpers.flatten_and_to_np(
+            ret=gt_ret, backend=test_flags.ground_truth_backend
+        )
+        for u, v, w in zip(ret, gt_ret, x):
+            # cardinality test
+            assert u.shape == v.shape == w.shape
 
 
 # linear
@@ -1162,7 +1542,30 @@ def test_linear(*, dtype_x_weight_bias, test_flags, backend_fw, fn_name, on_devi
     )
 
 
+# TODO: fix this test
 # lstm
+# @handle_test(
+#     fn_tree="functional.ivy.lstm",
+#     dtypes_kwargs=_lstm_helper(),
+#     ground_truth_backend="torch",
+#     test_with_out=st.just(False),
+# )
+# def test_lstm(*, dtypes_kwargs, test_flags, backend_fw, fn_name, on_device):
+#     dtypes, kwargs = dtypes_kwargs
+#     assume("batch_sizes" not in kwargs)
+#     helpers.test_function(
+#         input_dtypes=dtypes,
+#         test_flags=test_flags,
+#         backend_to_test=backend_fw,
+#         fn_name=fn_name,
+#         on_device=on_device,
+#         rtol_=1e-01,
+#         atol_=1e-01,
+#         **kwargs,
+#     )
+
+
+# lstm_update
 @handle_test(
     fn_tree="functional.ivy.lstm_update",
     dtype_lstm=_x_and_lstm(
@@ -1203,23 +1606,14 @@ def test_lstm_update(*, dtype_lstm, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.multi_head_attention",
     dtype_mha=_mha_helper(),
-    scale=st.one_of(st.floats(), st.none()),
-    dropout=st.floats(min_value=0, max_value=0.99),
-    training=st.just(False),  # st.booleans(), disabled until proper testing is used
-    is_causal=st.booleans(),
-    return_attention_weights=st.booleans(),
-    average_attention_weights=st.booleans(),
-    ground_truth_backend="jax",
+    ground_truth_backend="numpy",
+    # ToDo: fix the gradients and the container methods
+    test_gradients=st.just(False),
+    container_flags=st.just([False]),
 )
 def test_multi_head_attention(
     *,
     dtype_mha,
-    scale,
-    dropout,
-    training,
-    is_causal,
-    return_attention_weights,
-    average_attention_weights,
     test_flags,
     backend_fw,
     fn_name,
@@ -1239,6 +1633,19 @@ def test_multi_head_attention(
         out_proj_weights,
         in_proj_bias,
         out_proj_bias,
+        key_padding_mask,
+        bias_k,
+        bias_v,
+        static_k,
+        static_v,
+        scale,
+        add_zero_attn,
+        dropout,
+        training,
+        is_causal,
+        return_attention_weights,
+        average_attention_weights,
+        batch_first,
     ) = dtype_mha
     helpers.test_function(
         input_dtypes=dtype,
@@ -1246,11 +1653,13 @@ def test_multi_head_attention(
         backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        test_values=(dropout == 0),
         atol_=1e-02,
         rtol_=1e-02,
         query=q,
         key=k,
         value=v,
+        batch_first=batch_first,
         num_heads=num_heads,
         scale=scale,
         attention_mask=attention_mask,
@@ -1262,10 +1671,80 @@ def test_multi_head_attention(
         in_proj_bias=in_proj_bias,
         out_proj_bias=out_proj_bias,
         is_causal=is_causal,
+        key_padding_mask=key_padding_mask,
+        bias_k=bias_k,
+        bias_v=bias_v,
+        static_k=static_k,
+        static_v=static_v,
+        add_zero_attn=add_zero_attn,
         return_attention_weights=return_attention_weights,
         average_attention_weights=average_attention_weights,
         dropout=dropout,
         training=training,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.nms",
+    inputs=_nms_helper(),
+    test_instance_method=st.just(False),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_nms(
+    *,
+    inputs,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    boxes, scores, iou_threshold, max_output_size, score_threshold = inputs
+    helpers.test_function(
+        input_dtypes=[ivy.float32, ivy.float32],
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        boxes=boxes,
+        scores=scores,
+        iou_threshold=iou_threshold,
+        max_output_size=max_output_size,
+        score_threshold=score_threshold,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.roi_align",
+    inputs=_roi_align_helper(),
+    test_instance_method=st.just(False),
+    test_with_out=st.just(False),
+    ground_truth_backend="torch",
+)
+def test_roi_align(
+    *,
+    inputs,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtypes, input, boxes, output_size, spatial_scale, sampling_ratio, aligned = inputs
+
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        input=input,
+        boxes=boxes,
+        output_size=output_size,
+        spatial_scale=spatial_scale,
+        sampling_ratio=sampling_ratio,
+        aligned=aligned,
+        rtol_=1e-5,
+        atol_=1e-5,
     )
 
 

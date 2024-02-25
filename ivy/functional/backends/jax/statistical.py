@@ -19,10 +19,14 @@ def min(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[JaxArray] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return jnp.min(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
+    return jnp.min(
+        a=jnp.asarray(x), axis=axis, keepdims=keepdims, initial=initial, where=where
+    )
 
 
 def max(
@@ -37,6 +41,10 @@ def max(
     return jnp.max(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
 
 
+@with_unsupported_dtypes(
+    {"0.4.24 and below": "bfloat16"},
+    backend_version,
+)
 def mean(
     x: JaxArray,
     /,
@@ -46,7 +54,7 @@ def mean(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return jnp.mean(x, axis=axis, keepdims=keepdims)
+    return jnp.mean(x, axis=axis, keepdims=keepdims, dtype=x.dtype)
 
 
 def _infer_dtype(dtype: jnp.dtype):
@@ -139,7 +147,7 @@ def var(
 # ------#
 
 
-@with_unsupported_dtypes({"0.4.14 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes({"0.4.24 and below": ("bfloat16", "bool")}, backend_version)
 def cumprod(
     x: JaxArray,
     /,
@@ -175,6 +183,7 @@ def cumprod(
         return jnp.flip(x, axis=axis)
 
 
+@with_unsupported_dtypes({"0.4.24 and below": "bool"}, backend_version)
 def cumsum(
     x: JaxArray,
     axis: int = 0,

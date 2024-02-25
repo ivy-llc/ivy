@@ -129,9 +129,7 @@ def iinfo(type: Union[str, mx.ndarray.NDArray, np.dtype], /) -> np.iinfo:
     return np.iinfo(ivy.as_native_dtype(type))
 
 
-def result_type(
-    *arrays_and_dtypes: Union[(None, mx.ndarray.NDArray, None)]
-) -> ivy.Dtype:
+def result_type(*arrays_and_dtypes: Union[(None, mx.ndarray.NDArray)]) -> ivy.Dtype:
     raise IvyNotImplementedException()
 
 

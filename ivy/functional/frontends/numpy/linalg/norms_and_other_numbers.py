@@ -23,11 +23,11 @@ def matrix_rank(A, tol=None, hermitian=False):
 
 
 # solve
-@with_unsupported_dtypes({"1.25.2 and below": ("float16",)}, "numpy")
+@with_unsupported_dtypes({"1.26.3 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def norm(x, ord=None, axis=None, keepdims=False):
-    if axis is None and not (ord is None):
+    if axis is None and (ord is not None):
         if x.ndim not in (1, 2):
             raise ValueError("Improper number of dimensions to norm.")
         else:
@@ -46,7 +46,7 @@ def norm(x, ord=None, axis=None, keepdims=False):
 
 
 # slogdet
-@with_unsupported_dtypes({"1.25.2 and below": ("float16",)}, "numpy")
+@with_unsupported_dtypes({"1.26.3 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def slogdet(a):

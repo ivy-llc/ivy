@@ -11,7 +11,8 @@ path_hooks = []
 # If they do, the behavior of ivy.with_backend is undefined and may not function as
 # expected. Import these modules along with Ivy initialization, as the import logic
 # assumes they exist in sys.modules.
-MODULES_TO_SKIP = ["ivy.compiler"]
+
+MODULES_TO_SKIP = ["ivy.compiler", "ivy.engines", "ivy.wrappers"]
 
 IS_COMPILING_WITH_BACKEND = False
 
@@ -73,8 +74,7 @@ def _from_import(name: str, package=None, mod_globals=None, from_list=(), level=
 
 
 def _absolute_import(name: str, asname=None, mod_globals=None):
-    """
-    Handle absolute import statement :param name:
+    """Handle absolute import statement :param name:
 
     :return:
     """

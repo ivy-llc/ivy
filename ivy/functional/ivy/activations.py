@@ -11,7 +11,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     handle_array_like_without_promotion,
-    handle_device_shifting,
+    handle_device,
     handle_complex_input,
     handle_backend_invalid,
 )
@@ -38,7 +38,7 @@ def _gelu_jax_like(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 @handle_complex_input
 def gelu(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -48,8 +48,7 @@ def gelu(
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply the Gaussian error linear unit (GELU) activation function.
+    """Apply the Gaussian error linear unit (GELU) activation function.
 
     Parameters
     ----------
@@ -128,7 +127,7 @@ def _leaky_relu_jax_like(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 @handle_complex_input
 def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -138,8 +137,7 @@ def leaky_relu(
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply the leaky rectified linear unit function element-wise.
+    """Apply the leaky rectified linear unit function element-wise.
 
     If the input is complex, then by default each element is scaled by `alpha` if
     either its real part is strictly negative or if its real part is zero and its
@@ -209,16 +207,16 @@ leaky_relu.jax_like = _leaky_relu_jax_like
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def log_softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     axis: Optional[int] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply the log_softmax function element-wise.
+    """Apply the log_softmax function element-wise.
 
     Parameters
     ----------
@@ -226,6 +224,9 @@ def log_softmax(
         Input array.
     axis
         The dimension log_softmax would be performed on. The default is ``None``.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -301,7 +302,7 @@ def _relu_jax_like(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 @handle_complex_input
 def relu(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -310,8 +311,7 @@ def relu(
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply the rectified linear unit function element-wise.
+    """Apply the rectified linear unit function element-wise.
 
     If the input is complex, then by default each element is set to zero  if
     either its real part is strictly negative or if its real part is zero and its
@@ -373,17 +373,24 @@ relu.jax_like = _relu_jax_like
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
+@handle_complex_input
 def sigmoid(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply the sigmoid function element-wise.
+    """Apply the sigmoid function element-wise.
 
     Parameters
     ----------
     x
         input array.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
     out
         optional output array, for writing the result to. It must have a shape that the
         input broadcast to.
@@ -451,16 +458,17 @@ def sigmoid(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
+@handle_complex_input
 def softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     axis: Optional[int] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply the softmax function element-wise.
+    """Apply the softmax function element-wise.
 
     Parameters
     ----------
@@ -468,6 +476,9 @@ def softmax(
         Input array.
     axis
         The dimension softmax would be performed on. The default is ``None``.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -543,7 +554,7 @@ def _softplus_jax_like(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 @handle_complex_input
 def softplus(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -554,8 +565,7 @@ def softplus(
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply the softplus function element-wise.
+    """Apply the softplus function element-wise.
 
     If the input is complex, then by default we apply the softplus operation
     `log(1+ exp(x))` to  each element
@@ -617,14 +627,13 @@ softplus.jax_like = _softplus_jax_like
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def softsign(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply the softsign function element-wise.
+    """Apply the softsign function element-wise.
 
     Parameters
     ----------
@@ -657,17 +666,24 @@ def softsign(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
+@handle_complex_input
 def mish(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply the mish activation function element-wise.
+    """Apply the mish activation function element-wise.
 
     Parameters
     ----------
     x
         input array
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -706,6 +722,19 @@ def mish(
     return current_backend(x).mish(x, out=out)
 
 
+def _hardswish_jax_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    fn_original=None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    def hard_sigmoid(x):
+        return ivy.relu6(x + 3.0) / 6
+
+    return ivy.multiply(x, hard_sigmoid(x).astype(x.dtype))
+
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -713,16 +742,23 @@ def mish(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_complex_input
 def hardswish(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply the hardswish activation function element-wise.
+    """Apply the hardswish activation function element-wise.
 
     Parameters
     ----------
     x
         input array
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -752,3 +788,6 @@ def hardswish(
     }
     """
     return current_backend(x).hardswish(x, out=out)
+
+
+hardswish.jax_like = _hardswish_jax_like

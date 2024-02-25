@@ -4,6 +4,7 @@ from ivy.functional.frontends.jax import Array
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
+from ivy.functional.frontends.numpy.linalg import lstsq as numpy_lstsq
 
 
 @to_ivy_arrays_and_back
@@ -53,6 +54,23 @@ def inv(a):
     return ivy.inv(a)
 
 
+# TODO: replace this with function from API
+# As the composition provides numerically unstable results
+@to_ivy_arrays_and_back
+def lstsq(a, b, rcond=None, *, numpy_resid=False):
+    if numpy_resid:
+        return numpy_lstsq(a, b, rcond=rcond)
+    least_squares_solution = ivy.matmul(
+        ivy.pinv(a, rtol=1e-15).astype(ivy.float64), b.astype(ivy.float64)
+    )
+    residuals = ivy.sum((b - ivy.matmul(a, least_squares_solution)) ** 2).astype(
+        ivy.float64
+    )
+    svd_values = ivy.svd(a, compute_uv=False)
+    rank = ivy.matrix_rank(a).astype(ivy.int32)
+    return (least_squares_solution, residuals, rank, svd_values[0])
+
+
 @to_ivy_arrays_and_back
 def matrix_power(a, n):
     return ivy.matrix_power(a, n)
@@ -70,7 +88,7 @@ def multi_dot(arrays, *, precision=None):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"0.4.14 and below": ("float32", "float64")},
+    {"0.4.24 and below": ("float32", "float64")},
     "jax",
 )
 def norm(x, ord=None, axis=None, keepdims=False):
@@ -109,7 +127,7 @@ def svd(a, /, *, full_matrices=True, compute_uv=True, hermitian=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.4.14 and below": ("float16", "bfloat16")}, "jax")
+@with_unsupported_dtypes({"0.4.24 and below": ("float16", "bfloat16")}, "jax")
 def tensorinv(a, ind=2):
     old_shape = ivy.shape(a)
     prod = 1
@@ -121,7 +139,7 @@ def tensorinv(a, ind=2):
         raise ValueError("Invalid ind argument.")
     a = ivy.reshape(a, shape=(prod, -1))
     ia = ivy.inv(a)
-    new_shape = tuple([*invshape])
+    new_shape = (*invshape,)
     return Array(ivy.reshape(ia, shape=new_shape))
 
 

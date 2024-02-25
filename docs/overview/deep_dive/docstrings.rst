@@ -5,7 +5,7 @@ Docstrings
 .. _`spec/API_specification/array_api`: https://github.com/data-apis/array-api/blob/main
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`docstrings channel`: https://discord.com/channels/799879767196958751/982738313897197600
+.. _`docstrings thread`: https://discord.com/channels/799879767196958751/1189906836426596412
 
 
 All functions in the Ivy API at :mod:`ivy/functional/ivy/category_name.py` should have full and thorough docstrings.
@@ -17,7 +17,7 @@ Firstly, if the function exists in the `Array API Standard`_, then we start with
 These docstrings can be found under `spec/API_specification/array_api`_.
 
 Important: you should open the file in **raw** format.
-If you copy directly from the file preview on GitHub before clicking **raw**, then the newlines will **not** be copied over, and the docstring will rendering incorrectly in the online docs.
+If you copy directly from the file preview on GitHub before clicking **raw**, then the newlines will **not** be copied over, and the docstring will render incorrectly in the online docs.
 
 The `Array API Standard`_ docstring for :code:`tan` is as follows:
 
@@ -181,7 +181,7 @@ However, the docstrings for `ivy.Array.add <https://github.com/unifyai/ivy/blob/
 Likewise, the docstrings for the special methods `ivy.Array.__add__ <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/array/array.py#L310>`_, `ivy.Array.__radd__ <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/array/array.py#L359>`_, `ivy.Container.__add__ <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/container.py#L106>`_, and `ivy.Container.__radd__ <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/container.py#L171>`_, also follow the succinct pattern outlined above.
 Note that these docstrings all *also* include examples, which we will cover in the next section.
 
-For all other classes, such as the various layers at :code:`ivy/ivy/stateful/layers`, then we should add full and thorough docstrings for both the **contstructor** and also **all methods**.
+For all other classes, such as the various layers at :code:`ivy/ivy/stateful/layers`, then we should add full and thorough docstrings for both the **constructor** and also **all methods**.
 
 This is the case even when the class directly wraps a function in the functional API.
 For example, the class `ivy.Linear <https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/stateful/layers.py#L13>`_ wraps the function `ivy.linear <https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/functional/ivy/layers.py#L22>`_, but does so in a stateful manner with the variables stored internally in the instance of the class.
@@ -193,7 +193,7 @@ Therefore, with the exception of the :class:`ivy.Array` and :class:`ivy.Containe
 
 These examples should hopefully give you a good understanding of what is required when adding docstings.
 
-If you have any questions,please feel free to reach out on `discord`_ in the `docstrings channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `docstrings thread`_!
 
 
 **Video**

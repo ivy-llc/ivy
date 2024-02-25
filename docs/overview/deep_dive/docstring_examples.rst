@@ -3,13 +3,13 @@ Docstring Examples
 
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`docstring examples channel`: https://discord.com/channels/799879767196958751/982738352103129098
+.. _`docstring examples thread`: https://discord.com/channels/799879767196958751/1189906990307233822
 
 After writing the general docstrings, the final step is to add helpful examples to the docstrings.
 
 There are eight types of examples, which each need to be added:
 
-**Functional** examples show the function being called like so :code:`ivy.func_name(...)`, and these should be added to docstring of the function in the Ivy API :func:`ivy.func_name`.
+**Functional** examples show the function being called like so :code:`ivy.func_name(...)`, and these should be added to the docstring of the function in the Ivy API :func:`ivy.func_name`.
 
 **Array instance method** examples show the method being called like so :code:`x.func_name(...)` on an :class:`ivy.Array` instance, and these should be added to the docstring of the :class:`ivy.Array` instance method :meth:`ivy.Array.func_name`.
 
@@ -34,7 +34,7 @@ These special methods in turn call the functions in the Ivy API mentioned above.
 
 **Functional Examples**
 
-To recap, *functional* examples show the function being called like so :code:`ivy.func_name(...)`, and these should be added to docstring of the function in the Ivy API :func:`ivy.func_name`.
+To recap, *functional* examples show the function being called like so :code:`ivy.func_name(...)`, and these should be added to the docstring of the function in the Ivy API :func:`ivy.func_name`.
 
 Firstly, we should include *functional* examples with :class:`ivy.Array` instances in the input.
 
@@ -221,7 +221,7 @@ Let's start with the functional examples, with :class:`ivy.Array` instances in t
 
 These examples cover points 1, 2, 3, 4 and 5.
 
-Please note that in the above case of `x` having multi-line input, it is necessary for each line of the input to be seperated by a '...\' so that they can be parsed by the script that tests the examples in the docstrings.
+Please note that in the above case of `x` having multi-line input, it is necessary for each line of the input to be separated by a '...\' so that they can be parsed by the script that tests the examples in the docstrings.
 
 Point 1 is simple to satisfy.
 Ignoring the union over :class:`ivy.Array` and :class:`ivy.NativeArray` which is covered by points 6 and 7, and ignoring the *nestable* nature of the function which is covered by points 8 and 9, then as far as point 1 is concerned, the input :code:`x` only has one possible variation.
@@ -291,7 +291,7 @@ Point 12 is not relevant as :func:`ivy.tan` is not an *operator* function.
 
 **Container Operator Examples**
 
-Points 13, 14 and 15 are not relevant as :func:`ivy.tan` is not an *operator* function.
+Points 13, 14, and 15 are not relevant as :func:`ivy.tan` is not an *operator* function.
 
 **Container Reverse Operator Example**
 
@@ -349,7 +349,7 @@ Let's start with the functional examples, with :class:`ivy.Array` instances in t
 
 These examples cover points 1, 2, 3, 4 and 5.
 
-Again, please note that in the above case of `x` having multi-line input, it is necessary for each line of the input to be seperated by a '...\' so that they can be parsed by the script that tests the examples in the docstrings.
+Again, please note that in the above case of `x` having multi-line input, it is necessary for each line of the input to be separated by a '...\' so that they can be parsed by the script that tests the examples in the docstrings.
 
 Point 1 is a bit less trivial to satisfy than it was for :func:`ivy.tan` above.
 While :code:`x` again only has one variation (for the same reason as explained in the :func:`ivy.tan` example above), :code:`shift` has two variations (:code:`int` or sequence of :code:`int`), and :code:`axis` has three variations (:code:`int`, :sequence of :code:`int`, or :code:`None`).
@@ -440,7 +440,7 @@ Point 12 is not relevant as :func:`ivy.roll` is not an *operator* function.
 
 **Container Operator Examples**
 
-Points 13, 14 and 15 are not relevant as :func:`ivy.roll` is not an *operator* function.
+Points 13, 14, and 15 are not relevant as :func:`ivy.roll` is not an *operator* function.
 
 **Container Reverse Operator Example**
 
@@ -497,7 +497,7 @@ Let's start with the functional examples, with :class:`ivy.Array` instances in t
 
 These examples cover points 1, 2, 3, 4 and 5.
 
-Again, please note that in the above case of `x` having multi-line input, it is necessary for each line of the input to be seperated by a '...\' so that they can be parsed by the script that tests the examples in the docstrings.
+Again, please note that in the above case of `x` having multi-line input, it is necessary for each line of the input to be separated by a '...\' so that they can be parsed by the script that tests the examples in the docstrings.
 
 Point 1 is again trivial to satisfy, as was the case for :func:`ivy.tan`.
 Ignoring the union over :class:`ivy.Array` and :class:`ivy.NativeArray` which is covered by points 6 and 7, and also ignoring the *nestable* nature of the function which is covered by points 8 and 9, then as far as point 1 is concerned, inputs :code:`x1` and :code:`x2` both only have one possible variation.
@@ -533,7 +533,7 @@ We then also add an example with an :class:`ivy.Container` for one of the inputs
                       [8.1, 9.3, 3.4]])
     }
 
-Again, unlike :func:`ivy.tan`, point 7 is relevant in this case, as there are two function inputs in total (exluding :code:`out`).
+Again, unlike :func:`ivy.tan`, point 7 is relevant in this case, as there are two function inputs in total (excluding :code:`out`).
 We can therefore add an example with multiple :class:`ivy.Container` inputs, in order to satisfy point 7.
 
 .. parsed-literal::
@@ -734,7 +734,7 @@ as shown below:
     .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/deep_dive/docstring_examples/docstring_log.png
            :width: 420
 
-It can be quite tedious to go through the output diffs and spot the exact error, so you can take help of online tools like `text compare <https://text-compare.com/>`_ to spot the minutest of differences.
+It can be quite tedious to go through the output diffs and spot the exact error, so you can take the help of online tools like `text compare <https://text-compare.com/>`_ to spot the minutest of differences.
 
 Once you make the necessary changes and the function you are working on doesn't cause the docstring tests to fail, you should be good to go.
 However, one of the reviewers might ask you to make additional changes involving examples.
@@ -747,7 +747,7 @@ Passing docstring tests is a necessary but not sufficient condition for the comp
 
 These three examples should give you a good understanding of what is required when adding docstring examples.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `docstring examples channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `docstring examples thread`_!
 
 
 **Video**

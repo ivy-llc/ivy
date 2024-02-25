@@ -10,7 +10,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -41,17 +41,18 @@ def _get_promoted_type_of_operands(operands):
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def min(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Calculate the minimum value of the input array ``x``.
+    """Calculate the minimum value of the input array ``x``.
 
     .. note::
        When the number of elements over which to compute the minimum value is zero, the
@@ -83,6 +84,11 @@ def min(
         compatible with the input array (see :ref:`broadcasting`). Otherwise,
         if ``False``, the reduced axes (dimensions) must not be included in the result.
         Default: ``False``.
+    initial
+        The maximum value of an output element.
+        Must be present to allow computation on empty slice.
+    where
+        Elements to compare for minimum
     out
         optional output array, for writing the result to.
 
@@ -140,7 +146,9 @@ def min(
         b: ivy.array(2)
     }
     """
-    return current_backend(x).min(x, axis=axis, keepdims=keepdims, out=out)
+    return current_backend(x).min(
+        x, axis=axis, keepdims=keepdims, initial=initial, where=where, out=out
+    )
 
 
 @handle_exceptions
@@ -150,7 +158,7 @@ def min(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def max(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -159,8 +167,7 @@ def max(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Calculate the maximum value of the input array ``x``.
+    """Calculate the maximum value of the input array ``x``.
 
     .. note::
        When the number of elements over which to compute the maximum value is zero, the
@@ -261,7 +268,7 @@ def max(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def mean(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -270,8 +277,7 @@ def mean(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Calculate the arithmetic mean of the input array ``x``.
+    """Calculate the arithmetic mean of the input array ``x``.
 
     **Special Cases**
 
@@ -373,7 +379,7 @@ def mean(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def prod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -383,8 +389,7 @@ def prod(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Calculate the product of input array x elements.
+    """Calculate the product of input array x elements.
 
     **Special Cases**
 
@@ -509,7 +514,7 @@ def prod(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def std(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -519,8 +524,7 @@ def std(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Calculate the standard deviation of the input array ``x``.
+    """Calculate the standard deviation of the input array ``x``.
 
     **Special Cases**
 
@@ -648,7 +652,7 @@ def std(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def sum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -658,8 +662,7 @@ def sum(
     keepdims: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Calculate the sum of the input array x.
+    """Calculate the sum of the input array x.
 
     **Special Cases**
 
@@ -789,7 +792,7 @@ def sum(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def var(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -799,8 +802,7 @@ def var(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Calculate the variance of the input array x.
+    """Calculate the variance of the input array x.
 
     **Special Cases**
 
@@ -906,7 +908,7 @@ def var(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
@@ -916,8 +918,7 @@ def cumsum(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the cumulative sum of the elements along a given axis.
+    """Return the cumulative sum of the elements along a given axis.
 
     Parameters
     ----------
@@ -1051,7 +1052,7 @@ def cumsum(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1062,8 +1063,7 @@ def cumprod(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the cumulative product of the elements along a given axis.
+    """Return the cumulative product of the elements along a given axis.
 
     Parameters
     ----------
@@ -1099,9 +1099,7 @@ def cumprod(
     >>> print(y)
     ivy.array([1, 2, 6])
 
-    >>> x = ivy.array([[2, 3],
-                       [5, 7],
-                       [11, 13]])
+    >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
     >>> y = ivy.zeros((3, 2))
     >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
     >>> print(y)
@@ -1119,7 +1117,7 @@ def cumprod(
     >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
     >>> y = ivy.zeros((3, 2))
     >>> x.cumprod(axis=0, exclusive=True, out=y)
-    >>> print(x)
+    >>> print(y)
     ivy.array([[1.,  1.],
                 [2.,  3.],
                 [10., 21.]])
@@ -1142,12 +1140,7 @@ def cumprod(
         b: ivy.array([1, 3, 12])
     }
 
-    >>> x = ivy.Container(a=ivy.array([[2, 3],
-                                       [5, 7],
-                                       [11, 13]]),
-                          b=ivy.array([[3, 4],
-                                       [4, 5],
-                                       [5, 6]]))
+    >>> x = ivy.Container(a=ivy.array([[2, 3],[5, 7],[11, 13]]), b=ivy.array([[3, 4],[4, 5],[5, 6]]))
     >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
     >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
     >>> print(y)
@@ -1160,12 +1153,7 @@ def cumprod(
                       [1, 5]])
     }
 
-    >>> x = ivy.Container(a=ivy.array([[2, 3],
-                                        [5, 7],
-                                        [11, 13]]),
-                            b=ivy.array([[3, 4],
-                                        [4, 5],
-                                        [5, 6]]))
+    >>> x = ivy.Container(a=ivy.array([[2, 3],[5, 7],[11, 13]]), b=ivy.array([[3, 4],[4, 5],[5, 6]]))
     >>> x.cumprod(axis=0, exclusive=True, out=x)
     >>> print(x)
     {
@@ -1174,9 +1162,9 @@ def cumprod(
                       [10, 21]]),
         b: ivy.array([[1, 1],
                       [3, 4],
-                      [15, 42]])
+                      [12, 20]])
     }
-    """
+    """  # noqa: E501
     return current_backend(x).cumprod(
         x, axis=axis, exclusive=exclusive, reverse=reverse, dtype=dtype, out=out
     )
@@ -1189,15 +1177,14 @@ def cumprod(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def einsum(
     equation: str,
     *operands: Union[ivy.Array, ivy.NativeArray],
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Sum the product of the elements of the input operands along dimensions specified
-    using a notation based on the Einstein summation convention.
+    """Sum the product of the elements of the input operands along dimensions
+    specified using a notation based on the Einstein summation convention.
 
     Parameters
     ----------

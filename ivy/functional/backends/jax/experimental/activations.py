@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 
 # global
 import jax
@@ -6,6 +6,8 @@ import jax.numpy as jnp
 from ivy.functional.backends.jax import JaxArray
 from jax import lax
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
 def logit(
@@ -13,6 +15,7 @@ def logit(
     /,
     *,
     eps: Optional[float] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[JaxArray] = None,
 ):
     if eps is None:
@@ -22,7 +25,9 @@ def logit(
     return jnp.log(x / (1 - x))
 
 
-def relu6(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def relu6(
+    x: JaxArray, /, *, complex_mode="jax", out: Optional[JaxArray] = None
+) -> JaxArray:
     relu6_func = jax.nn.relu6
 
     # sets gradient at 0 and 6 to 0 instead of 0.5
@@ -30,7 +35,7 @@ def relu6(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     # https://github.com/google/jax/pull/14682
     def custom_grad_func(x_and_grad, one):
         return lax.select(
-            (6 > x_and_grad[0]) & (x_and_grad[0] > 0), one, lax.full_like(one, 0)
+            (x_and_grad[0] < 6) & (x_and_grad[0] > 0), one, lax.full_like(one, 0)
         )
 
     new_func = ivy.bind_custom_gradient_function(relu6_func, custom_grad_func)
@@ -48,7 +53,9 @@ def thresholded_relu(
     return jnp.where(x > threshold, x, 0).astype(x.dtype)
 
 
-def logsigmoid(input: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def logsigmoid(
+    input: JaxArray, /, *, complex_mode="jax", out: Optional[JaxArray] = None
+) -> JaxArray:
     return jax.nn.log_sigmoid(input)
 
 
@@ -66,10 +73,98 @@ def silu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return ret
 
 
+@with_unsupported_dtypes({"0.4.14 and below": ("float16", "bfloat16")}, backend_version)
 def elu(
     x: JaxArray, /, *, alpha: float = 1.0, out: Optional[JaxArray] = None
 ) -> JaxArray:
     ret = jax.nn.elu(x, alpha)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret
+
+
+def celu(
+    x: JaxArray,
+    /,
+    *,
+    alpha: float = 1.0,
+    complex_mode="jax",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jax.nn.celu(x, alpha=alpha)
+
+
+@with_unsupported_dtypes({"0.4.14 and below": ("float16", "bfloat16")}, backend_version)
+def hardtanh(
+    x: JaxArray,
+    /,
+    *,
+    max_val: float = 1.0,
+    min_val: float = -1.0,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    ret = jnp.where(x > max_val, max_val, jnp.where(x < min_val, min_val, x))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+def tanhshrink(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    ret = jnp.subtract(x, jax.nn.tanh(x))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret
+
+
+def threshold(
+    x: JaxArray,
+    /,
+    *,
+    threshold: Union[int, float],
+    value: Union[int, float],
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    ret = jnp.where(x > threshold, x, value).astype(x.dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)  # type: ignore
+    return ret
+
+
+@with_unsupported_dtypes({"0.4.16 and below": ("float16", "bfloat16")}, backend_version)
+def softshrink(
+    x: JaxArray, /, *, lambd: float = 0.5, out: Optional[JaxArray] = None
+) -> JaxArray:
+    ret = jnp.where(x > lambd, x - lambd, jnp.where(x < -lambd, x + lambd, 0))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret
+
+
+@with_unsupported_dtypes({"0.4.17 and below": ("float64",)}, backend_version)
+def scaled_tanh(
+    x: JaxArray,
+    /,
+    *,
+    alpha: float = 1.7159,
+    beta: float = 0.67,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return alpha * jax.nn.tanh(beta * x)
+
+
+@with_unsupported_dtypes({"0.4.16 and below": ("float16", "bfloat16")}, backend_version)
+def hardshrink(
+    x: JaxArray, /, *, lambd: float = 0.5, out: Optional[JaxArray] = None
+) -> JaxArray:
+    ret = jnp.where(x > lambd, x, jnp.where(x < -lambd, x, 0))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret
+
+
+@with_unsupported_dtypes({"0.4.16 and below": ("float16", "bfloat16")}, backend_version)
+def hardsilu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    ret = jax.nn.hard_silu(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ret

@@ -1,5 +1,6 @@
 # local
 from typing import (
+    Iterable,
     Optional,
     Union,
     Sequence,
@@ -14,6 +15,7 @@ import jax.numpy as jnp
 import jax.lax as jlax
 from numbers import Number
 from collections import namedtuple
+from ivy.func_wrapper import handle_out_argument
 
 # local
 import ivy
@@ -146,7 +148,7 @@ def _to_nested_tuple(nested_list):
 
 def pad(
     input: JaxArray,
-    pad_width: Union[Sequence[Sequence[int]], JaxArray, int],
+    pad_width: Union[Iterable[Tuple[int]], int],
     /,
     *,
     mode: Union[
@@ -166,9 +168,9 @@ def pad(
         ],
         Callable,
     ] = "constant",
-    stat_length: Union[Sequence[Sequence[int]], int] = 1,
-    constant_values: Union[Sequence[Sequence[Number]], Number] = 0,
-    end_values: Union[Sequence[Sequence[Number]], Number] = 0,
+    stat_length: Union[Iterable[Tuple[int]], int] = 1,
+    constant_values: Union[Iterable[Tuple[Number]], Number] = 0,
+    end_values: Union[Iterable[Tuple[Number]], Number] = 0,
     reflect_type: Literal["even", "odd"] = "even",
     **kwargs: Optional[Any],
 ) -> JaxArray:
@@ -412,3 +414,74 @@ def fill_diagonal(
     a = a.at[:end:step].set(jnp.array(v).astype(a.dtype))
     a = jnp.reshape(a, shape)
     return a
+
+
+def take(
+    x: Union[int, JaxArray],
+    indices: Union[int, JaxArray],
+    /,
+    *,
+    axis: Optional[int] = None,
+    mode: str = "fill",
+    fill_value: Optional[Number] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if mode not in ["raise", "wrap", "clip", "fill"]:
+        raise ValueError("mode must be one of 'clip', 'raise', 'wrap', or 'fill'")
+    if not isinstance(x, JaxArray):
+        x = jnp.array(x)
+    if len(x.shape) == 0:
+        x = jnp.array([x])
+    if not isinstance(indices, JaxArray):
+        indices = jnp.array(indices)
+    if jnp.issubdtype(indices.dtype, jnp.floating):
+        indices = indices.astype(jnp.int64)
+
+    # raise
+    if mode == "raise":
+        mode = "fill"
+        if ivy.exists(axis):
+            try:
+                x_shape = x.shape[axis]
+            except Exception as e:
+                raise ValueError(
+                    f"axis {axis} is out of bounds for array of dimension"
+                    f" {len(x.shape)}"
+                ) from e
+        else:
+            x_shape = jnp.prod(x.shape)
+
+        bound_check = (indices < -x_shape) | (indices >= x_shape)
+        if jnp.any(bound_check):
+            if len(indices.shape) != 0:
+                indices = indices[bound_check].flatten()[0]
+            raise IndexError(
+                f"index {indices} is out of bounds for axis "
+                f"{axis if axis else 0} with size {x_shape}"
+            )
+
+    # clip, wrap, fill
+    ret = jnp.take(x, indices, axis=axis, mode=mode, fill_value=fill_value)
+    if ivy.exists(out):
+        ivy.inplace_update(out, ret)
+    return ret
+
+
+def trim_zeros(a: JaxArray, /, *, trim: Optional[str] = "bf") -> JaxArray:
+    return jnp.trim_zeros(a, trim=trim)
+
+
+@handle_out_argument
+def unflatten(
+    x: JaxArray,
+    /,
+    shape: Tuple[int] = None,
+    dim: int = 0,
+    *,
+    out: Optional[JaxArray] = None,
+    order: Optional[str] = None,
+) -> JaxArray:
+    dim = abs(len(x.shape) + dim) if dim < 0 else dim
+    res_shape = x.shape[:dim] + shape + x.shape[dim + 1 :]
+    res = jnp.reshape(x, res_shape)
+    return res

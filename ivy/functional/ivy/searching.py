@@ -12,7 +12,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 
@@ -28,7 +28,7 @@ from ivy.func_wrapper import (
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -39,10 +39,9 @@ def argmax(
     select_last_index: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the indices of the maximum values along a specified axis. When the maximum
-    value occurs multiple times, only the indices corresponding to the first occurrence
-    are returned.
+    """Return the indices of the maximum values along a specified axis. When
+    the maximum value occurs multiple times, only the indices corresponding to
+    the first occurrence are returned.
 
     Parameters
     ----------
@@ -93,9 +92,10 @@ def argmax(
     ivy.array([1])
 
     >>> x = ivy.array([-0., 1., -1.])
-    >>> ivy.argmax(x, out=x)
-    >>> print(x)
-    ivy.array([1])
+    >>> z = ivy.zeros((1,3), dtype=ivy.int64)
+    >>> ivy.argmax(x, out=z)
+    >>> print(z)
+    ivy.array(1)
 
     >>> x = ivy.array([[1., -0., -1.], [-2., 3., 2.]])
     >>> y = ivy.argmax(x, axis=1)
@@ -113,7 +113,7 @@ def argmax(
     ivy.array([0, 2]) int64
 
     >>> x = ivy.array([[4., 0., -1.],[2., -3., 6], [2., -3., 6]])
-    >>> z = ivy.zeros((1,3), dtype=ivy.int64)
+    >>> z = ivy.zeros((3,1), dtype=ivy.int64)
     >>> y = ivy.argmax(x, axis=1, keepdims=True, out=z)
     >>> print(z)
     ivy.array([[0],[2],[2]])
@@ -145,7 +145,7 @@ def argmax(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -156,10 +156,9 @@ def argmin(
     select_last_index: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the indices of the minimum values along a specified axis. When the minimum
-    value occurs multiple times, only the indices corresponding to the first occurrence
-    are returned.
+    """Return the indices of the minimum values along a specified axis. When
+    the minimum value occurs multiple times, only the indices corresponding to
+    the first occurrence are returned.
 
     Parameters
     ----------
@@ -255,7 +254,7 @@ def argmin(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def nonzero(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -264,8 +263,7 @@ def nonzero(
     size: Optional[int] = None,
     fill_value: Number = 0,
 ) -> Union[Tuple[ivy.Array], ivy.Array]:
-    """
-    Return the indices of the array elements which are non-zero.
+    """Return the indices of the array elements which are non-zero.
 
     .. note::
         If ``x`` has a complex floating-point data type, non-zero elements
@@ -392,7 +390,7 @@ def nonzero(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -401,8 +399,7 @@ def where(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return elements chosen from x or y depending on condition.
+    """Return elements chosen from x or y depending on condition.
 
     Parameters
     ----------
@@ -478,15 +475,14 @@ def where(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def argwhere(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the indices of all non-zero elements of the input array.
+    """Return the indices of all non-zero elements of the input array.
 
     Parameters
     ----------

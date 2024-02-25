@@ -31,7 +31,7 @@ Containers
 .. _`__truediv__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L399
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`containers channel`: https://discord.com/channels/799879767196958751/982738042886422598
+.. _`containers thread`: https://discord.com/channels/799879767196958751/1189906066549506048
 
 
 The `ivy.Container`_ inherits from `dict`_, and is useful for storing nested data.
@@ -73,7 +73,7 @@ If the only array argument is the :code:`out` argument, then we do not implement
 For example, we do not implement an instance method for `ivy.zeros <https://github.com/unifyai/ivy/blob/1dba30aae5c087cd8b9ffe7c4b42db1904160873/ivy/functional/ivy/creation.py#L116>`_.
 
 As is the case for :class:`ivy.Array`, the organization of these instance methods follows the same organizational structure as the files in the functional API.
-The :class:`ivy.Container` class `inherits`_ from many category-specific array classes, such as `ContainerWithElementwise`_, each of which implement the category-specific instance methods.
+The :class:`ivy.Container` class `inherits`_ from many category-specific array classes, such as `ContainerWithElementwise`_, each of which implements the category-specific instance methods.
 
 As with :class:`ivy.Array`, given the simple set of rules which underpin how these instance methods should all be implemented, if a source-code implementation is not found, then this `instance method is added`_ programmatically. This serves as a helpful backup in cases where some instance methods are accidentally missed out.
 
@@ -85,7 +85,7 @@ API Special Methods
 
 All non-operator special methods are implemented in `ContainerBase`_, which is the abstract base class for all containers.
 These special methods include `__repr__`_ which controls how the container is printed in the terminal, `__getattr__`_ that primarily enables keys in the underlying :code:`dict` to be queried as attributes, whereas if no attribute, item or method is found which matches the name provided on the container itself, then the leaves will also be recursively traversed, searching for the attribute.
-If it turns out to be a callable function on the leaves, then it will call the function on each leaf and update the leaves with the returned results, for more detailed explanation with examples, see code block below.
+If it turns out to be a callable function on the leaves, then it will call the function on each leaf and update the leaves with the returned results, for a more detailed explanation with examples, see the code block below.
 `__setattr__`_ that enables attribute setting to update the underlying :code:`dict`, `__getitem__`_ that enables the underlying :code:`dict` to be queried via a chain of keys, `__setitem__`_ that enables the underlying :code:`dict` to be set via a chain of keys, `__contains__`_ that enables us to check for chains of keys in the underlying :code:`dict`, and `__getstate__`_ and `__setstate__`_ which combined enable the container to be pickled and unpickled.
 
 .. code-block:: python
@@ -128,7 +128,7 @@ If it turns out to be a callable function on the leaves, then it will call the f
     }
 
     print(len(x.shape))
-    # doesn't work because Python in low-level C has restriction on return type of `len` to be `int`
+    # doesn't work because Python in low-level C has a restriction on the return type of `len` to be `int`
 
     print(num_dims.real)
     {
@@ -140,7 +140,7 @@ If it turns out to be a callable function on the leaves, then it will call the f
     }
 
     print(bin(num_dims))
-    # doesn't work because some Python built-in functions have enforce on input argument types
+    # doesn't work because some Python built-in functions have enforcement on input argument types
 
     # external method flexibility enables positional and keyword arguments to be passed into the attribute
     y = ivy.Container(l1=[1, 2, 3], c1=ivy.Container(l1=[3, 2, 1], l2=[4, 5, 6]))
@@ -185,18 +185,18 @@ As for the special methods which are `implemented`_ in the main :class:`ivy.Cont
 
 As a result, the operator functions will make use of the special methods of the lefthand passed input objects if available, otherwise it will make use of the reverse special method of the righthand operand.
 For instance, if the lefthand operand at any given leaf of the container in an :class:`ivy.Array`, then the operator function will make calls to the special methods of this array object.
-As explained in the :ref:`Arrays` section of the Deep Dive, these special methods will in turn call the corresponding functions from the ivy functional API.
- 
+As explained in the `Arrays <arrays.rst>`_ section of the Deep Dive, these special methods will in turn call the corresponding functions from the ivy functional API.
+
 Examples include `__add__`_, `__sub__`_, `__mul__`_ and `__truediv__`_ which will make calls to :func:`ivy.add`, :func:`ivy.subtract`, :func:`ivy.multiply` and :func:`ivy.divide` respectively if the lefthand operand is an :class:`ivy.Array` object.
 Otherwise, these special methods will be called on whatever objects are at the leaves of the container, such as int, float, :class:`ivy.NativeArray` etc.
 
 Nestable Functions
 ------------------
 
-As introduced in the :ref:`Function Types` section, most functions in Ivy are *nestable*, which means that they can accept :class:`ivy.Container` instances in place of **any** of the arguments.
+As introduced in the `Function Types <function_types.rst>`_ section, most functions in Ivy are *nestable*, which means that they can accept :class:`ivy.Container` instances in place of **any** of the arguments.
 
 Here, we expand on this explanation.
-Please check out the explanation in the :ref:`Function Types` section first.
+Please check out the explanation in the `Function Types <function_types.rst>`_ section first.
 
 **Explicitly Nestable Functions**
 
@@ -205,7 +205,7 @@ This wrapper causes the function to be applied at each leaf of any containers pa
 More information on this can be found in the `Function Wrapping <https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/docs/partial_source/deep_dive/function_wrapping.rst>`_ section of the Deep Dive.
 
 Additionally, any nestable function which returns multiple arrays, will return the same number of containers for its container counterpart.
-This property makes the function symmetric with regards to the input-output behavior, irrespective of whether :class:`ivy.Array` or :class:`ivy.Container` instances are based used.
+This property makes the function symmetric with regards to the input-output behavior, irrespective of whether :class:`ivy.Array` or :class:`ivy.Container` instances are used.
 Any argument in the input can be replaced with a container without changing the number of inputs, and the presence or absence of ivy.Container instances in the input should not change the number of return values of the function.
 In other words, if containers are detected in the input, then we should return a separate container for each array that the function would otherwise return.
 
@@ -252,8 +252,8 @@ There may be some compositional functions which are not implicitly nestable for 
 One such example is the :func:`ivy.linear` function which is not implicitly nestable despite being compositional. This is because of the use of special functions like :func:`__len__` and :func:`__list__` which, among other functions, are not nestable and can't be made nestable.
 But we should try to avoid this, in order to make the flow of computation as intuitive to the user as possible.
 
-When compiling the code, the computation graph is **identical** in either case, and there will be no implications on performance whatsoever.
-The implicit nestable solution may be slightly less efficient in eager mode, as the leaves of the container are traversed multiple times rather than once, but if performance is of concern then the code should always be compiled in any case.
+When tracing the code, the computation graph is **identical** in either case, and there will be no implications on performance whatsoever.
+The implicit nestable solution may be slightly less efficient in eager mode, as the leaves of the container are traversed multiple times rather than once, but if performance is of concern then the code should always be traced in any case.
 The distinction is only really relevant when stepping through and debugging with eager mode execution, and for the reasons outlined above, the preference is to keep compositional functions implicitly nestable where possible.
 
 **Shared Nested Structure**
@@ -271,7 +271,7 @@ Take the example below, the nested structures of containers :code:`x` and :code:
 The shared key chains (chains of keys, used for indexing the container) are :code:`a` and :code:`d`.
 The key chains unique to :code:`x` are :code:`a/b`, :code:`a/c`, :code:`d/e` and :code:`d/f`.
 The unique key chains all share the same base structure as all other containers (in this case only one other container, :code:`y`).
-Therefore, the containers :code:`x` and :code:`y` have shared nested structure.
+Therefore, the containers :code:`x` and :code:`y` have a shared nested structure.
 
 When calling *nestable* functions on containers with non-identical structure, then the shared leaves of the shallowest container are broadcast to the leaves of the deepest container.
 
@@ -320,7 +320,7 @@ Adding these containers together would result in the following:
         }
     }
 
-An example of containers which **do not** have shared nested structure is given below:
+An example of containers which **do not** have a shared nested structure is given below:
 
 .. code-block:: python
 
@@ -334,7 +334,7 @@ This is for three reasons, (a) the key chain :code:`g` is not shared by any cont
 
 This should have hopefully given you a good feel for containers, and how these are handled in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `containers channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `containers thread`_!
 
 
 **Video**

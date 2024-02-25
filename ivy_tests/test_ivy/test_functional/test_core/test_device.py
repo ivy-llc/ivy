@@ -258,7 +258,7 @@ def test_dev_util(backend_fw):
         devices = _get_possible_devices()
         for device in devices:
             # The internally called psutil.cpu_percent() has a unique behavior where it
-            # returns 0 as usage when run the second time in same line so simple
+            # returns 0 as usage when run the second time in same line so simple
             # assert psutil.cpu_percent() == ivy.dev_util(device) isn't possible
             if "cpu" in device:
                 assert 100 >= ivy_backend.dev_util(device) >= 0
@@ -289,7 +289,7 @@ def test_function_supported_devices(
         res = ivy_backend.function_supported_devices(func)
         exp = set(expected)
 
-        assert sorted(tuple(exp)) == sorted(res)
+        assert sorted(exp) == sorted(res)
 
 
 # function_unsupported_devices
@@ -308,7 +308,7 @@ def test_function_unsupported_devices(
         res = ivy_backend.function_unsupported_devices(func)
         exp = set(expected)
 
-        assert sorted(tuple(exp)) == sorted(res)
+        assert sorted(exp) == sorted(res)
 
 
 @handle_test(
@@ -372,7 +372,7 @@ def test_num_cpu_cores(backend_fw):
         # using multiprocessing module too because ivy uses psutil as basis.
         p_cpu_cores = psutil.cpu_count()
         m_cpu_cores = multiprocessing.cpu_count()
-        assert type(ivy_backend.num_cpu_cores()) == int
+        assert isinstance(ivy_backend.num_cpu_cores(), int)
         assert ivy_backend.num_cpu_cores() == p_cpu_cores
         assert ivy_backend.num_cpu_cores() == m_cpu_cores
 
@@ -460,7 +460,7 @@ def test_print_all_ivy_arrays_on_dev(
             del item
 
         # Apply the regex search
-        assert all([re.match(regex, line) for line in written])
+        assert all(re.match(regex, line) for line in written)
 
 
 # profiler
@@ -691,7 +691,7 @@ def test_to_device(
 
             # check if native arrays are the same
             # these backends do not support native inplace updates
-            assume(not (backend_fw in ["tensorflow", "jax"]))
+            assume(backend_fw not in ["tensorflow", "jax"])
 
             assert x_on_dev.data is out.data
 

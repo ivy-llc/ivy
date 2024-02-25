@@ -56,7 +56,7 @@ def beta(
     return jax.random.beta(rng_input, a, b, shape, dtype)
 
 
-@with_unsupported_dtypes({"0.4.14 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.24 and below": ("bfloat16",)}, backend_version)
 def gamma(
     alpha: Union[float, JaxArray],
     beta: Union[float, JaxArray],
@@ -117,6 +117,7 @@ def bernoulli(
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    dtype = dtype if dtype is not None else probs.dtype
     if seed:
         rng_input = jax.random.PRNGKey(seed)
     else:
@@ -124,6 +125,6 @@ def bernoulli(
         _setRNG(RNG_)
     if logits is not None:
         probs = jax.nn.softmax(logits, axis=-1)
-    if not _check_shapes_broadcastable(shape, probs.shape):
+    if hasattr(probs, "shape") and not _check_shapes_broadcastable(shape, probs.shape):
         shape = probs.shape
-    return jax.random.bernoulli(rng_input, probs, shape=shape)
+    return jax.random.bernoulli(rng_input, probs, shape=shape).astype(dtype)

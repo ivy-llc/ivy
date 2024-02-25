@@ -5,7 +5,7 @@ from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
 def cosine_similarity(x1, x2, *, axis=1, eps=1e-08):
     if len(x1.shape) == len(x2.shape) and len(x2.shape) >= 2:
         numerator = ivy.sum(x1 * x2, axis=axis)
@@ -26,9 +26,9 @@ def cosine_similarity(x1, x2, *, axis=1, eps=1e-08):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
 def dropout(x, p=0.5, axis=None, training=True, mode="upscale_in_train", name=None):
-    if axis > 1:
+    if axis is not None and axis > 1:
         raise ValueError("Axis value can only be 0 or 1 or None.")
     elif axis is None or (isinstance(axis, list) and len(axis) == 2):
         mask = get_mask(shape=x.shape, device=ivy.dev(x), prob=p, seed=None)
@@ -53,13 +53,13 @@ def dropout(x, p=0.5, axis=None, training=True, mode="upscale_in_train", name=No
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
 def dropout2d(x, *, p=0.5, training=True, data_format="NCHW", name=None):
-    return ivy.dropout2d(x, p=p, training=training, data_format=data_format)
+    return ivy.dropout2d(x, p, training=training, data_format=data_format)
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
 def dropout3d(x, p=0.5, training=True, data_format="NCDHW", name=None):
     return ivy.dropout3d(x, p, training=training, data_format=data_format)
 
@@ -74,7 +74,7 @@ def get_mask(shape, device, prob, seed=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
 def interpolate(
     x,
     size=None,
@@ -91,19 +91,19 @@ def interpolate(
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
 def linear(x, weight, bias=None, name=None):
     weight = ivy.swapaxes(weight, -1, -2)
     return ivy.linear(x, weight, bias=bias)
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
 def unfold(x, kernel_sizes, strides=1, paddings=0, dilations=1, name=None):
     # Input checking
     if isinstance(kernel_sizes, int):
         kernel_sizes = [kernel_sizes, kernel_sizes]
-    elif not (isinstance(kernel_sizes, list) or isinstance(kernel_sizes, tuple)):
+    elif not isinstance(kernel_sizes, (list, tuple)):
         raise ivy.exceptions.IvyError(
             "Expected kernel size input as type int, tuple or list but got"
             f" {type(kernel_sizes)}"
@@ -111,14 +111,14 @@ def unfold(x, kernel_sizes, strides=1, paddings=0, dilations=1, name=None):
 
     if isinstance(strides, int):
         strides = [strides, strides]
-    elif not (isinstance(strides, list) or isinstance(strides, tuple)):
+    elif not isinstance(strides, (list, tuple)):
         raise ivy.exceptions.IvyError(
             f"Expected strides input as type int, tuple or list but got {type(strides)}"
         )
 
     if isinstance(dilations, int):
         dilations = [dilations, dilations]
-    elif not (isinstance(dilations, list) or isinstance(dilations, tuple)):
+    elif not isinstance(dilations, (list, tuple)):
         raise ivy.exceptions.IvyError(
             "Expected dilations input as type int, tuple or list but got"
             f" {type(dilations)}"
@@ -126,7 +126,7 @@ def unfold(x, kernel_sizes, strides=1, paddings=0, dilations=1, name=None):
 
     if isinstance(paddings, int):
         paddings = [paddings, paddings]
-    elif not (isinstance(paddings, list) or isinstance(paddings, tuple)):
+    elif not isinstance(paddings, (list, tuple)):
         raise ivy.exceptions.IvyError(
             "Expected paddings, input as type int, tuple or list but got"
             f" {type(paddings)}"
@@ -178,7 +178,7 @@ def unfold(x, kernel_sizes, strides=1, paddings=0, dilations=1, name=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
 def zeropad2d(x, padding, data_format="NCHW", name=None):
     if ivy.is_array(padding):
         padding = padding.to_list()
@@ -193,5 +193,5 @@ def zeropad2d(x, padding, data_format="NCHW", name=None):
     elif data_format == "NHWC":
         padding = ((0, 0), (padding[2], padding[3]), (padding[0], padding[1]), (0, 0))
     else:
-        raise ValueError("Unknown data_format: {}".format(data_format))
+        raise ValueError(f"Unknown data_format: {data_format}")
     return ivy.pad(x, padding, mode="constant", constant_values=0.0)

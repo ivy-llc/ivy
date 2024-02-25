@@ -170,6 +170,8 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
     fn_tree="functional.ivy.experimental.batch_norm",
     data=_instance_and_batch_norm_helper(min_dims=2, test_function="batch_norm"),
     training=st.booleans(),
+    test_instance_method=st.just(False),
+    container_flags=st.just([False]),
 )
 def test_batch_norm(*, data, training, test_flags, backend_fw, fn_name, on_device):
     x_dtype, x, mean, variance, offset, scale, eps, momentum, data_format = data
@@ -267,9 +269,61 @@ def test_l1_normalize(*, dtype_values_axis, test_flags, backend_fw, fn_name, on_
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
-        rtol_=1e-1,
-        atol_=1e-1,
         input_dtypes=x_dtype,
         x=x,
         axis=axis,
+    )
+
+
+# local_response_norm
+@handle_test(
+    fn_tree="functional.ivy.experimental.local_response_norm",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=4,
+        max_num_dims=4,
+        min_dim_size=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
+    size=st.integers(min_value=1, max_value=10),
+    bias=st.floats(min_value=0.1, max_value=1.5),
+    alpha=st.floats(min_value=1e-4, max_value=1.2),
+    beta=st.floats(min_value=0.1, max_value=1.5),
+    average=st.booleans(),
+    data_format=st.sampled_from(["NHWC", "NCHW"]),
+    test_with_out=st.just(False),
+    test_instance_method=st.just(False),
+    container_flags=st.just([False]),
+    test_gradients=st.just(False),
+)
+def test_local_response_norm(
+    *,
+    dtype_and_x,
+    size,
+    bias,
+    alpha,
+    beta,
+    average,
+    data_format,
+    test_flags,
+    fn_name,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        input=x[0],
+        size=size,
+        bias=bias,
+        alpha=alpha,
+        beta=beta,
+        average=average,
+        data_format=data_format,
     )

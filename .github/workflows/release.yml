@@ -10,6 +10,11 @@ jobs:
     uses: unifyai/workflows/.github/workflows/docs.yml@main
     secrets: inherit
 
+  publish-binaries:
+    name: Publish Binaries
+    uses: ./.github/workflows/binaries.yml
+    secrets: inherit
+
   deploy:
     name: Deploy to PyPI
     uses: ./.github/workflows/pypi.yml

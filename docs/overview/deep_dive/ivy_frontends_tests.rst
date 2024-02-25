@@ -1,23 +1,22 @@
 Ivy Frontend Tests
 ==================
 
-.. _`here`: https://unify.ai/docs/ivy/design/ivy_as_a_transpiler.html
-.. _`ivy frontends tests channel`: https://discord.com/channels/799879767196958751/1028267758028337193
+.. _`here`: ../design/ivy_as_a_transpiler.rst
+.. _`ivy frontends tests thread`: https://discord.com/channels/799879767196958751/1190246804940402738
 .. _`test ivy`: https://github.com/unifyai/ivy/tree/db9a22d96efd3820fb289e9997eb41dda6570868/ivy_tests/test_ivy
 .. _`test_frontend_function`: https://github.com/unifyai/ivy/blob/591ac37a664ebdf2ca50a5b0751a3a54ee9d5934/ivy_tests/test_ivy/helpers.py#L1047
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`Function Wrapping`: https://unify.ai/docs/ivy/overview/deep_dive/function_wrapping.html
-.. _`open task`: https://unify.ai/docs/ivy/overview/contributing/open_tasks.html
-.. _`Ivy Tests`: https://unify.ai/docs/ivy/overview/deep_dive/ivy_tests.html
+.. _`Function Wrapping`: function_wrapping.rst
+.. _`open task`: ../contributing/open_tasks.rst
+.. _`Ivy Tests`: ivy_tests.rst
 .. _`Function Testing Helpers`: https://github.com/unifyai/ivy/blob/bf0becd459004ae6cffeb3c38c02c94eab5b7721/ivy_tests/test_ivy/helpers/function_testing.py
-.. _`CI Pipeline`: https://unify.ai/docs/ivy/overview/deep_dive/continuous_integration.html
-.. _`setting up`: https://unify.ai/docs/ivy/compiler/setting_up.html#setting-up-testing
+.. _`CI Pipeline`: continuous_integration.rst
 
 
 Introduction
 ------------
 
-Just like the backend functional API, our frontend functional API has a collection of Ivy tests located in subfolder `test ivy`_.
+Just like the backend functional API, our frontend functional API has a collection of Ivy tests located in the subfolder `test ivy`_.
 In this section of the deep dive we are going to jump into Ivy Frontend Tests!
 
 **Writing Ivy Frontend Tests**
@@ -27,7 +26,7 @@ We assume knowledge of hypothesis data generation strategies and how to implemen
 
 **Ivy Decorators**
 
-Ivy provides test decorators for frontend tests to make it easier and more maintainable, currently there are two:
+Ivy provides test decorators for frontend tests to make them easier and more maintainable, currently there are two:
 
 * :func:`@handle_frontend_test` a decorator which is used to test frontend functions, for example :func:`np.zeros` and :func:`tensorflow.tan`.
 * :func:`@handle_frontend_method` a decorator which is used to test frontend methods and special methods, for example :func:`torch.Tensor.add` and :func:`numpy.ndarray.__add__`.
@@ -62,7 +61,7 @@ Frontend Test Examples
 -----------------------
 
 Before you begin writing a frontend test, make sure you are placing it in the correct location.
-See the 'Where to place a frontend function' sub-section of the frontend APIs `open task`_ for more details.
+See the :ref:`/overview/contributing/open_tasks:Where to place a frontend function` sub-section of the frontend APIs `open task`_ for more details.
 
 ivy.tan()
 ^^^^^^^^^
@@ -168,7 +167,7 @@ ivy.tan()
 **TensorFlow**
 
 .. code-block:: python
-        
+
     # ivy_tests/test_ivy/test_frontends/test_tensorflow/test_math.py
     @handle_frontend_test(
         fn_tree="tensorflow.math.tan",
@@ -363,7 +362,7 @@ This function requires us to create extra functions for generating :code:`shape`
         )
 
 * We use :func:`helpers.get_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for NumPy.
-* :func:`numpy.full` does not have a :code:`where` argument so we can use :func:`helpers.test_frontend_function`, we specify the `out` flag explicitely.
+* :func:`numpy.full` does not have a :code:`where` argument so we can use :func:`helpers.test_frontend_function`, we specify the `out` flag explicitly.
 
 **TensorFlow**
 
@@ -419,7 +418,7 @@ This function requires us to create extra functions for generating :code:`shape`
 
 * We use :func:`helpers.get_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for this function.
 * Tensorflow's version of :func:`full` is named :func:`Fill` therefore we specify the :code:`fn_tree` argument to be :code:`"Fill"`
-* When running the test there were some small discrepancies between the values so we can use :code:`rtol` to specify the relative tolerance. We specify the `out` flag explicitely.
+* When running the test there were some small discrepancies between the values so we can use :code:`rtol` to specify the relative tolerance. We specify the `out` flag explicitly.
 
 
 **PyTorch**
@@ -486,7 +485,7 @@ Testing Without Using Tests Values
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 While even using hypothesis, there are some cases in which we set :code:`test_values=False` for example, we have a
-function add_noise() and we call it on x and we try to assert (we interally use assert np.all_close) that the result
+function add_noise() and we call it on x and we try to assert (we internally use assert np.all_close) that the result
 from torch backend matches tensorflow and the test will always fail, because the function add_noise() depends on a random
 seed internally that we have no control over, what we change is only how we test for equality, in which in that case
 we can not and we have to reconstruct the output as shown in the example below.
@@ -535,9 +534,9 @@ we can not and we have to reconstruct the output as shown in the example below.
                 ground_truth_backend=frontend,
             )
 
-* The parameter :code:`test_values=False` is explicitly set to "False" as there can be multiple solutions for this and those multiple solutions can all be correct, so we have to test with reconstructing the output.
+* The parameter :code:`test_values=False` is explicitly set to "False" as there can be multiple solutions for this and those multiple solutions can all be correct, so we have to test by reconstructing the output.
 
-What assert_all_close() actually does is, it checks for values and dtypes, if even one of them is not same it will cause
+What assert_all_close() actually does is, it checks for values and dtypes, if even one of them is not the same it will cause
 an assertion, the examples given below will make it clearer.
 
 .. code-block:: python
@@ -553,7 +552,7 @@ an assertion, the examples given below will make it clearer.
     >>> a = np.array([[1., 5.]], dtype='float64')
     >>> b = np.array([[2., 4.]], dtype='float32')
     >>> print(helpers.assert_all_close(a, b))
-    AssertionError: the return with a TensorFlow backend produced data type of float32, while the return with a  backend returned a data type of float64.
+    AssertionError: the return with a TensorFlow backend produced a data type of float32, while the return with a  backend returned a data type of float64.
 
 
 Alias functions
@@ -620,20 +619,20 @@ Frontend Instance Method Tests
 
 The frontend instance method tests are similar to the frontend function test, but instead of testing the function directly we test the instance method of the frontend class.
 major difference is that we have more flags to pass now, most initialization functions take an array as an input. also some methods may take an array as input,
-for example, :code:`ndarray.__add__` would expect an array as input, despite the :code:`self.array`. and to make our test **complete** we need to generate seperate flags for each.
+for example, :code:`ndarray.__add__` would expect an array as input, despite the :code:`self.array`. and to make our test **complete** we need to generate separate flags for each.
 
 **Important Helper Functions**
 
 :func:`@handle_frontend_method` requires 3 keyword only parameters:
-    - :code:`class_tree` A full path to the array class in **Ivy** namespace. 
+    - :code:`class_tree` A full path to the array class in **Ivy** namespace.
     - :code:`init_tree` A full path to initialization function.
-    - :code:`method_name` The name of the method to test. 
+    - :code:`method_name` The name of the method to test.
 
 :func:`helpers.test_frontend_method` is used to test frontend instance methods. It is used in the same way as :func:`helpers.test_frontend_function`. A few important arguments for this function are following:
   - :code:`init_input_dtypes` Input dtypes of the arguments on which we are initializing the array on.
-  - :code:`init_all_as_kwargs_np` The data to be passed when intializing, this will be a dictionary in which the numpy array which will contain the data will be passed in the :code:`data` key.
-  - :code:`method_input_dtypes` The input dtypes of the arguemnt which are to be passed to the instance method after the intialization of the array.
-  - :code:`method_all_as_kwargs_np` All the arguments which are to be passed to instance method.
+  - :code:`init_all_as_kwargs_np` The data to be passed when initializing, this will be a dictionary in which the numpy array which will contain the data will be passed in the :code:`data` key.
+  - :code:`method_input_dtypes` The input dtypes of the argument which are to be passed to the instance method after the initialization of the array.
+  - :code:`method_all_as_kwargs_np` All the arguments which are to be passed to the instance method.
 
 
 Frontend Instance Method Test Examples
@@ -802,7 +801,7 @@ The CI Pipeline runs the entire collection of Frontend Tests for the frontend th
 You will need to make sure the Frontend Test is passing for each Ivy Frontend function you introduce/modify.
 If a test fails on the CI, you can see details about the failure under `Details -> Run Frontend Tests` as shown in `CI Pipeline`_.
 
-You can also run the tests locally before making a PR. See the relevant `setting up`_ section for instructions on how to do so.
+You can also run the tests locally before making a PR. See the relevant :ref:`overview/contributing/setting_up:Setting Up Testing in PyCharm` section for instructions on how to do so.
 
 Frontend Framework Testing Configuration
 ----------------------------------------
@@ -817,7 +816,7 @@ The configuration files are located at: :code:`ivy_tests/test_ivy/test_frontends
 
 This should have hopefully given you a good understanding of Ivy Frontend Tests!
 
-If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends tests channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends tests thread`_!
 
 
 **Video**

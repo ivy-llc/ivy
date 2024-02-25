@@ -80,23 +80,35 @@ def test_torch_dropout(
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
-    ret = helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x[0],
-        p=prob,
-        training=training,
-        test_values=False,
-    )
-    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
-    x = np.asarray(x[0], input_dtype[0])
-    for u in ret:
-        # cardinality test
-        assert u.shape == x.shape
+    if not training or prob == 0:
+        helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            input=x[0],
+            p=prob,
+            training=training,
+        )
+    else:
+        ret = helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            input=x[0],
+            p=prob,
+            training=training,
+            test_values=False,
+        )
+        ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+        for u in ret:
+            # cardinality test
+            assert u.shape == x[0].shape
 
 
 @handle_frontend_test(

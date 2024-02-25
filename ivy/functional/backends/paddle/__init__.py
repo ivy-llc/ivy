@@ -16,6 +16,70 @@ else:
 
 use = ivy.utils.backend.ContextManager(_module_in_memory)
 
+
+# wrap dunder methods of native tensors to return NotImplemented to prioritize Ivy array methods.
+def dunder_wrapper(func):
+    def rep_method(*args, **kwargs):
+        for arg in args:
+            if ivy.is_ivy_array(arg):
+                return NotImplemented
+        return func(*args, **kwargs)
+
+    return rep_method
+
+
+# check for previously imported paddle modules
+modules_to_patch = []
+tensors_to_patch = []
+tmp_globals = dict(globals())
+for name, value in tmp_globals.items():
+    if value == "paddle.Tensor":
+        tensors_to_patch.append(name)
+    try:
+        if value.__name__ == "paddle":
+            modules_to_patch.append(name)
+    except AttributeError:
+        pass
+
+methods_to_patch = [
+    "__add__",
+    "__sub__",
+    "__mul__",
+    "__div__",
+    "__truediv__",
+    "__floordiv__",
+    "__mod__",
+    "__lt__",
+    "__le__",
+    "__gt__",
+    "__ge__",
+    "__ne__",
+    "__eq__",
+    "__and__",
+    "__or__",
+    "__xor__",
+    "__pow__",
+    "__matmul__",
+]
+
+for module in modules_to_patch:
+    for method in methods_to_patch:
+        exec(
+            module
+            + ".Tensor."
+            + method
+            + " = dunder_wrapper("
+            + module
+            + ".Tensor."
+            + method
+            + ")"
+        )
+
+for tensor in tensors_to_patch:
+    for method in methods_to_patch:
+        exec(tensor + "." + method + " = dunder_wrapper(" + tensor + "." + method + ")")
+
+
 NativeArray = paddle.Tensor
 NativeVariable = paddle.Tensor  # paddle.fluid.framework.Variable
 NativeDevice = paddle.device.core.Place
@@ -53,7 +117,7 @@ native_bool = paddle.bool
 
 # update these to add new dtypes
 valid_dtypes = {
-    "2.4.0 and below": (
+    "2.4.2 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -66,7 +130,7 @@ valid_dtypes = {
         ivy.complex128,
         ivy.bool,
     ),
-    "2.4.1 and above": (
+    "2.5.0 and above": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -82,7 +146,7 @@ valid_dtypes = {
     ),
 }
 valid_numeric_dtypes = {
-    "2.4.0 and below": (
+    "2.4.2 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -95,7 +159,7 @@ valid_numeric_dtypes = {
         ivy.complex128,
         ivy.bool,
     ),
-    "2.4.1 and above": (
+    "2.5.0 and above": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -111,20 +175,20 @@ valid_numeric_dtypes = {
     ),
 }
 valid_int_dtypes = {
-    "2.5.1 and below": (
+    "2.6.0 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
         ivy.int64,
         ivy.uint8,
-    )
+    ),
 }
 valid_float_dtypes = {
-    "2.4.0 and below": (ivy.float16, ivy.float32, ivy.float64),
-    "2.4.1 and above": (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64),
+    "2.4.2 and below": (ivy.float16, ivy.float32, ivy.float64),
+    "2.5.0 and above": (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64),
 }
-valid_uint_dtypes = {"2.5.1 and below": (ivy.uint8,)}
-valid_complex_dtypes = {"2.5.1 and below": (ivy.complex64, ivy.complex128)}
+valid_uint_dtypes = {"2.6.0 and below": (ivy.uint8,)}
+valid_complex_dtypes = {"2.6.0 and below": (ivy.complex64, ivy.complex128)}
 
 # leave these untouched
 valid_dtypes = _dtype_from_version(valid_dtypes, backend_version)
@@ -137,13 +201,13 @@ valid_complex_dtypes = _dtype_from_version(valid_complex_dtypes, backend_version
 
 # update these to add new dtypes
 invalid_dtypes = {
-    "2.4.0 and below": (
+    "2.4.2 and below": (
         ivy.uint16,
         ivy.uint32,
         ivy.uint64,
         ivy.bfloat16,
     ),
-    "2.4.1 and above": (
+    "2.5.0 and above": (
         ivy.uint16,
         ivy.uint32,
         ivy.uint64,
@@ -151,23 +215,23 @@ invalid_dtypes = {
 }
 
 invalid_numeric_dtypes = {
-    "2.4.0 and below": (
+    "2.4.2 and below": (
         ivy.uint16,
         ivy.uint32,
         ivy.uint64,
         ivy.bfloat16,
     ),
-    "2.4.1 and above": (
+    "2.5.0 and above": (
         ivy.uint16,
         ivy.uint32,
         ivy.uint64,
     ),
 }
 
-invalid_int_dtypes = {"2.5.1 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
-invalid_float_dtypes = {"2.4.0 and below": (ivy.bfloat16,), "2.4.1 and above": ()}
-invalid_uint_dtypes = {"2.5.1 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
-invalid_complex_dtypes = {"2.5.1 and below": ()}
+invalid_int_dtypes = {"2.6.0 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
+invalid_float_dtypes = {"2.4.2 and below": (ivy.bfloat16,), "2.5.0 and above": ()}
+invalid_uint_dtypes = {"2.6.0 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
+invalid_complex_dtypes = {"2.6.0 and below": ()}
 
 # leave these untouched
 invalid_dtypes = _dtype_from_version(invalid_dtypes, backend_version)
@@ -233,3 +297,14 @@ from . import experimental
 from .experimental import *
 from . import control_flow_ops
 from .control_flow_ops import *
+from . import module
+from .module import *
+
+
+# sub-backends
+
+from . import sub_backends
+from .sub_backends import *
+
+
+NativeModule = paddle.nn.Layer

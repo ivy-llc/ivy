@@ -7,7 +7,6 @@ import ivy
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
 from ivy.func_wrapper import (
-    infer_device,
     outputs_to_ivy_arrays,
     handle_nestable,
     to_native_arrays_and_back,
@@ -15,7 +14,7 @@ from ivy.func_wrapper import (
     infer_dtype,
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
     handle_array_function,
 )
@@ -27,16 +26,15 @@ from ivy.func_wrapper import (
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
-@handle_device_shifting
+@handle_device
 def vorbis_window(
     window_length: Union[ivy.Array, ivy.NativeArray],
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return an array that contains a vorbis power complementary window of size
-    window_length.
+    """Return an array that contains a vorbis power complementary window of
+    size window_length.
 
     Parameters
     ----------
@@ -69,7 +67,7 @@ def vorbis_window(
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
-@handle_device_shifting
+@handle_device
 def hann_window(
     size: int,
     *,
@@ -77,9 +75,8 @@ def hann_window(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Generate a Hann window. The Hanning window is a taper formed by using a weighted
-    cosine.
+    """Generate a Hann window. The Hanning window is a taper formed by using a
+    weighted cosine.
 
     Parameters
     ----------
@@ -117,7 +114,7 @@ def hann_window(
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
-@handle_device_shifting
+@handle_device
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
@@ -126,8 +123,8 @@ def kaiser_window(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the Kaiser window with window length window_length and shape beta.
+    """Compute the Kaiser window with window length window_length and shape
+    beta.
 
     Parameters
     ----------
@@ -173,9 +170,8 @@ def kaiser_bessel_derived_window(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the Kaiser bessel derived window with window length window_length and shape
-    beta.
+    """Compute the Kaiser bessel derived window with window length
+    window_length and shape beta.
 
     Parameters
     ----------
@@ -227,8 +223,7 @@ def hamming_window(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the Hamming window with window length window_length.
+    """Compute the Hamming window with window length window_length.
 
     Parameters
     ----------
@@ -276,7 +271,7 @@ hamming_window.mixed_backend_wrappers = {
     "to_add": (
         "handle_backend_invalid",
         "handle_out_argument",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": (),
 }
@@ -285,7 +280,7 @@ hamming_window.mixed_backend_wrappers = {
 @handle_exceptions
 @handle_nestable
 @outputs_to_ivy_arrays
-@infer_device
+@handle_device
 def tril_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -293,16 +288,16 @@ def tril_indices(
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Tuple[ivy.Array, ...]:
-    """
-    Return the indices of the lower triangular part of a row by col matrix in a 2-by-N
-    shape (tuple of two N dimensional arrays), where the first row contains row
-    coordinates of all indices and the second row contains column coordinates. Indices
-    are ordered based on rows and then columns.  The lower triangular part of the matrix
-    is defined as the elements on and below the diagonal.  The argument k controls which
-    diagonal to consider. If k = 0, all elements on and below the main diagonal are
-    retained. A positive value excludes just as many diagonals below the main diagonal,
-    and similarly a negative value includes just as many diagonals above the main
-    diagonal. The main diagonal are the set of indices {(i,i)} for i∈[0,min{n_rows,
+    """Return the indices of the lower triangular part of a row by col matrix
+    in a 2-by-N shape (tuple of two N dimensional arrays), where the first row
+    contains row coordinates of all indices and the second row contains column
+    coordinates. Indices are ordered based on rows and then columns.  The lower
+    triangular part of the matrix is defined as the elements on and below the
+    diagonal.  The argument k controls which diagonal to consider. If k = 0,
+    all elements on and below the main diagonal are retained. A positive value
+    excludes just as many diagonals below the main diagonal, and similarly a
+    negative value includes just as many diagonals above the main diagonal. The
+    main diagonal are the set of indices {(i,i)} for i∈[0,min{n_rows,
     n_cols}−1].
 
     Notes
@@ -382,7 +377,7 @@ def tril_indices(
 @handle_out_argument
 @inputs_to_ivy_arrays
 @infer_dtype
-@infer_device
+@handle_device
 def eye_like(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -391,10 +386,9 @@ def eye_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return a 2D array filled with ones on the k diagonal and zeros elsewhere. having the
-    same ``shape`` as the first and last dim of input array ``x``. input array ``x``
-    should to be 2D.
+    """Return a 2D array filled with ones on the k diagonal and zeros
+    elsewhere. having the same ``shape`` as the first and last dim of input
+    array ``x``. input array ``x`` should to be 2D.
 
     Parameters
     ----------
@@ -484,8 +478,7 @@ def _iter_product(*args, repeat=1):
 def ndenumerate(
     input: Iterable,
 ) -> Generator:
-    """
-    Multidimensional index iterator.
+    """Multidimensional index iterator.
 
     Parameters
     ----------
@@ -516,7 +509,7 @@ def ndenumerate(
             for idx in _iter_product(*i):
                 yield idx, input[idx]
 
-    input = ivy.array(input) if not ivy.is_ivy_array(input) else input
+    input = input if ivy.is_ivy_array(input) else ivy.array(input)
     return _ndenumerate(input)
 
 
@@ -524,8 +517,7 @@ def ndenumerate(
 def ndindex(
     shape: Tuple,
 ) -> Generator:
-    """
-    Multidimensional index iterator.
+    """Multidimensional index iterator.
 
     Parameters
     ----------
@@ -558,8 +550,7 @@ def indices(
     dtype: Union[ivy.Dtype, ivy.NativeDtype] = ivy.int64,
     sparse: bool = False,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
-    """
-    Return an array representing the indices of a grid.
+    """Return an array representing the indices of a grid.
 
     Parameters
     ----------
@@ -605,7 +596,7 @@ def indices(
 
 
 indices.mixed_backend_wrappers = {
-    "to_add": ("handle_device_shifting",),
+    "to_add": ("handle_device",),
     "to_skip": (),
 }
 
@@ -619,9 +610,8 @@ def unsorted_segment_min(
     segment_ids: Union[ivy.Array, ivy.NativeArray],
     num_segments: Union[int, ivy.Array, ivy.NativeArray],
 ) -> ivy.Array:
-    """
-    Compute the minimum along segments of an array. Segments are defined by an integer
-    array of segment IDs.
+    """Compute the minimum along segments of an array. Segments are defined by
+    an integer array of segment IDs.
 
     Note
     ----
@@ -659,9 +649,8 @@ def unsorted_segment_sum(
     segment_ids: Union[ivy.Array, ivy.NativeArray],
     num_segments: Union[int, ivy.Array, ivy.NativeArray],
 ) -> ivy.Array:
-    """
-    Compute the sum of elements along segments of an array. Segments are defined by an
-    integer array of segment IDs.
+    """Compute the sum of elements along segments of an array. Segments are
+    defined by an integer array of segment IDs.
 
     Parameters
     ----------
@@ -691,7 +680,7 @@ def unsorted_segment_sum(
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
-@handle_device_shifting
+@handle_device
 def blackman_window(
     size: int,
     *,
@@ -699,10 +688,10 @@ def blackman_window(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Generate a Blackman window. The Blackman window is a taper formed by using the first
-    three terms of a summation of cosines. It was designed to have close to the minimal
-    leakage possible. It is close to optimal, only slightly worse than a Kaiser window.
+    """Generate a Blackman window. The Blackman window is a taper formed by
+    using the first three terms of a summation of cosines. It was designed to
+    have close to the minimal leakage possible. It is close to optimal, only
+    slightly worse than a Kaiser window.
 
     Parameters
     ----------
@@ -748,8 +737,7 @@ def random_tucker(
     seed: Optional[int] = None,
     non_negative: Optional[bool] = False,
 ) -> Union[ivy.TuckerTensor, ivy.Array]:
-    """
-    Generate a random Tucker tensor.
+    """Generate a random Tucker tensor.
 
     Parameters
     ----------
@@ -818,8 +806,7 @@ def random_cp(
     seed: Optional[int] = None,
     normalise_factors: Optional[bool] = True,
 ) -> Union[ivy.CPTensor, ivy.Array]:
-    """
-    Generate a random CP tensor.
+    """Generate a random CP tensor.
 
     Parameters
     ----------
@@ -861,12 +848,185 @@ def random_cp(
         return ivy.CPTensor((weights, factors))
 
 
+@handle_exceptions
+@handle_nestable
+@infer_dtype
+def random_tr(
+    shape: Sequence[int],
+    rank: Sequence[int],
+    /,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    full: Optional[bool] = False,
+    seed: Optional[int] = None,
+) -> Union[ivy.TRTensor, ivy.Array]:
+    """Generate a random TR tensor.
+
+    Parameters
+    ----------
+    shape : tuple
+        shape of the tensor to generate
+    rank : Sequence[int]
+        rank of the TR decomposition
+        must verify rank[0] == rank[-1] (boundary conditions)
+        and len(rank) == len(shape)+1
+    full : bool, optional, default is False
+        if True, a full tensor is returned
+        otherwise, the decomposed tensor is returned
+    seed :
+        seed for generating random numbers
+    context : dict
+        context in which to create the tensor
+
+    Returns
+    -------
+    ivy.TRTensor or ivy.Array if full is True
+    """
+    rank = ivy.TRTensor.validate_tr_rank(shape, rank)
+    # Make sure it's not a tuple but a list
+    rank = list(rank)
+    _check_first_and_last_rank_elements_are_equal(rank)
+    factors = [
+        ivy.random_uniform(shape=(rank[i], s, rank[i + 1]), dtype=dtype, seed=seed)
+        for i, s in enumerate(shape)
+    ]
+    if full:
+        return ivy.TRTensor.tr_to_tensor(factors)
+    else:
+        return ivy.TRTensor(factors)
+
+
+def _check_first_and_last_rank_elements_are_equal(rank):
+    if rank[0] != rank[-1]:
+        message = (
+            f"Provided rank[0] == {rank[0]} and rank[-1] == {rank[-1]} "
+            "but boundary conditions dictate rank[0] == rank[-1]."
+        )
+        raise ValueError(message)
+
+
+@handle_exceptions
+@handle_nestable
+@infer_dtype
+def random_parafac2(
+    shapes: Sequence[int],
+    rank: int,
+    /,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    full: Optional[bool] = False,
+    seed: Optional[int] = None,
+    normalise_factors: Optional[bool] = True,
+) -> Union[ivy.Parafac2Tensor, ivy.Array]:
+    """Generate a random PARAFAC2 tensor.
+
+    Parameters
+    ----------
+    shapes
+        A shapes of the tensor to generate
+    rank
+        rank of the Parafac2 decomposition
+    full
+        if True, a full tensor is returned otherwise,
+        the decomposed tensor is returned
+     seed
+        seed for generating random numbers
+
+    Returns
+    -------
+      ivy.Parafac2Tensor
+    """
+    if any(shape[1] != shapes[0][1] for shape in shapes):
+        raise ValueError("All matrices must have equal number of columns.")
+
+    projection_matrices = [
+        ivy.qr(ivy.random_uniform(shape=(shape[0], rank), dtype=dtype, seed=seed))[0]
+        for shape in shapes
+    ]
+    weights, factors = ivy.random_cp(
+        [len(shapes), rank, shapes[0][1]],
+        rank,
+        normalise_factors=False,
+        seed=seed,
+        dtype=dtype,
+    )
+
+    parafac2_tensor = ivy.Parafac2Tensor((weights, factors, projection_matrices))
+
+    if normalise_factors:
+        parafac2_tensor = ivy.Parafac2Tensor.parafac2_normalise(parafac2_tensor)
+
+    if full:
+        return ivy.Parafac2Tensor.parafac2_to_tensor(parafac2_tensor)
+    else:
+        return parafac2_tensor
+
+
+@handle_exceptions
+@handle_nestable
+@infer_dtype
+def random_tt(
+    shape: Sequence[int],
+    rank: Union[Sequence[int], int],
+    /,
+    *,
+    full: Optional[bool] = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    seed: Optional[int] = None,
+) -> Union[ivy.TTTensor, ivy.Array]:
+    """Generate a random TT/MPS tensor.
+
+    Parameters
+    ----------
+    shape
+        shape of the tensor to generate
+    rank
+        rank of the TT decomposition
+        must verify rank[0] == rank[-1] ==1 (boundary conditions)
+        and len(rank) == len(shape)+1
+    full
+        if True, a full tensor is returned
+        otherwise, the decomposed tensor is returned
+    seed
+        seed for generating random numbers
+
+    Returns
+    -------
+        ivy.TTTensor
+    """
+    rank = ivy.TTTensor.validate_tt_rank(shape, rank)
+
+    rank = list(rank)
+    if rank[0] != 1:
+        message = (
+            f"Provided rank[0] == {rank[0]} but boundaring conditions dictatate rank[0]"
+            " == rank[-1] == 1."
+        )
+        raise ValueError(message)
+    if rank[-1] != 1:
+        message = (
+            f"Provided rank[-1] == {rank[-1]} but boundaring conditions dictatate"
+            " rank[0] == rank[-1] == 1."
+        )
+        raise ValueError(message)
+
+    factors = [
+        (ivy.random_uniform(shape=(rank[i], s, rank[i + 1]), dtype=dtype, seed=seed))
+        for i, s in enumerate(shape)
+    ]
+
+    if full:
+        return ivy.TTTensor.tt_to_tensor(factors)
+    else:
+        return ivy.TTTensor(factors)
+
+
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def trilu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -876,8 +1036,9 @@ def trilu(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Return the upper or lower triangular part of a matrix (or a stack of matrices) ``x``
-    .. note::
+    Return the upper or lower triangular part of a matrix
+    (or a stack of matrices) ``x``.
+     note::
         The upper triangular part of the matrix is defined as the elements
         on and above the specified diagonal ``k``. The lower triangular part
         of the matrix is defined as the elements on and below the specified
@@ -910,3 +1071,124 @@ def trilu(
     instances in place of any of the arguments.
     """
     return current_backend(x).trilu(x, k=k, upper=upper, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
+def mel_weight_matrix(
+    num_mel_bins: int,
+    dft_length: int,
+    sample_rate: int,
+    lower_edge_hertz: float = 0.0,
+    upper_edge_hertz: float = 3000.0,
+):
+    """Generate a MelWeightMatrix that can be used to re-weight a Tensor
+    containing a linearly sampled frequency spectra (from DFT or STFT) into
+    num_mel_bins frequency information based on the [lower_edge_hertz,
+    upper_edge_hertz]
+
+    range on the mel scale. This function defines the mel scale in terms of a frequency
+    in hertz according to the following formula: mel(f) = 2595 * log10(1 + f/700)
+
+    Parameters
+    ----------
+    num_mel_bins
+        The number of bands in the mel spectrum.
+    dft_length
+        The size of the original DFT obtained from (n_fft / 2 + 1).
+    sample_rate
+        Samples per second of the input signal.
+    lower_edge_hertz
+        Lower bound on the frequencies to be included in the mel spectrum.
+    upper_edge_hertz
+        The desired top edge of the highest frequency band.
+
+    Returns
+    -------
+    ret
+        MelWeightMatrix of shape:  [frames, num_mel_bins].
+
+    Examples
+    --------
+    >>> ivy.mel_weight_matrix(3,3,8000)
+    ivy.array([[0.        ,0.        , 0.],
+              [0.        ,0. , 0.75694758],
+              [0.        ,0. , 0.       ]])
+    """
+    return ivy.current_backend().mel_weight_matrix(
+        num_mel_bins,
+        dft_length,
+        sample_rate,
+        lower_edge_hertz,
+        upper_edge_hertz,
+    )
+
+
+# unsorted_segment_mean
+@handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
+def unsorted_segment_mean(
+    data: Union[ivy.Array, ivy.NativeArray],
+    segment_ids: Union[ivy.Array, ivy.NativeArray],
+    num_segments: Union[int, ivy.Array, ivy.NativeArray],
+) -> ivy.Array:
+    """Compute the mean of elements along segments of an array. Segments are
+    defined by an integer array of segment IDs.
+
+    Parameters
+    ----------
+    data : Union[ivy.Array, ivy.NativeArray]
+        The array from which to gather values.
+
+    segment_ids : Union[ivy.Array, ivy.NativeArray]
+        Must be in the same size with the first dimension of `data`. Has to be
+        of integer data type. The index-th element of `segment_ids` array is
+        the segment identifier for the index-th element of `data`.
+
+    num_segments : Union[int, ivy.Array, ivy.NativeArray]
+        An integer or array representing the total number of distinct segment IDs.
+
+    Returns
+    -------
+    ivy.Array
+        The output array, representing the result of a segmented mean operation.
+        For each segment, it computes the mean value in `data` where `segment_ids`
+        equals to segment ID.
+    """
+    return ivy.current_backend().unsorted_segment_mean(data, segment_ids, num_segments)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_function
+@to_native_arrays_and_back
+def polyval(
+    coeffs: Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray],
+):
+    """Evaluate and return a polynomial at specific given values.
+
+    Parameters
+    ----------
+    coeffs
+        Polynomial coefficients (including zero) from highest degree to constant term.
+    x
+        The value of the indeterminate variable at which to evaluate the polynomial.
+
+    Returns
+    -------
+    ret
+       Simplified result of substituting x in the coefficients - final value
+       of polynomial.
+
+    Examples
+    --------
+    >>> ivy.polyval([3, 0, 1], 5)
+    ivy.array(76)
+    """
+    return ivy.current_backend().polyval(
+        coeffs,
+        x,
+    )

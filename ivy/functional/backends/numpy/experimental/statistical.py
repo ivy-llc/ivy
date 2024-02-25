@@ -9,7 +9,7 @@ from copy import deepcopy
 
 
 @with_unsupported_dtypes(
-    {"1.25.2 and below": ("bfloat16",)},
+    {"1.26.3 and below": ("bfloat16",)},
     backend_version,
 )
 def histogram(
@@ -167,6 +167,57 @@ def nanmean(
 nanmean.support_native_out = True
 
 
+def nanmin(
+    a: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[np.ndarray] = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    if where is None:
+        where = True
+    return np.nanmin(
+        a=a,
+        axis=axis,
+        keepdims=keepdims,
+        out=out,
+        initial=initial,
+        where=where,
+    )
+
+
+nanmin.support_native_out = True
+
+
+def nanprod(
+    a: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[np.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[np.ndarray] = None,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(a.dtype)
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return np.asarray(
+        np.nanprod(
+            a=a, axis=axis, dtype=dtype, keepdims=keepdims, out=out, initial=initial
+        )
+    )
+
+
+nanprod.support_native_out = True
+
+
 def _validate_quantile(q):
     if isinstance(q, float):
         q = np.asarray(q)
@@ -175,7 +226,7 @@ def _validate_quantile(q):
             if not (0.0 <= q[i] <= 1.0):
                 return False
     else:
-        if not (np.all(0 <= q) and np.all(q <= 1)):
+        if not (np.all(q >= 0) and np.all(q <= 1)):
             return False
     return True
 
@@ -403,13 +454,6 @@ def cummax(
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
-    if x.dtype in (np.bool_, np.float16):
-        x = x.astype(np.float64)
-    elif x.dtype in (np.int16, np.int8, np.uint8):
-        x = x.astype(np.int64)
-    elif x.dtype in (np.complex128, np.complex64):
-        x = np.real(x).astype(np.float64)
-
     if exclusive or reverse:
         if exclusive and reverse:
             indices = __find_cummax_indices(np.flip(x, axis=axis), axis=axis)
@@ -490,7 +534,7 @@ def __get_index(lst, indices=None, prefix=None):
     return indices
 
 
-@with_unsupported_dtypes({"1.25.2 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": "bfloat16"}, backend_version)
 def cummin(
     x: np.ndarray,
     /,
@@ -502,10 +546,7 @@ def cummin(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None:
-        if x.dtype == "bool":
-            dtype = ivy.default_int_dtype(as_native=True)
-        else:
-            dtype = _infer_dtype(x.dtype)
+        dtype = _infer_dtype(x.dtype)
     if not (reverse):
         return np.minimum.accumulate(x, axis, dtype=dtype, out=out)
     elif reverse:

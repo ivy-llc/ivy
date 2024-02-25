@@ -270,6 +270,40 @@ def _reshape_helper(draw):
     return x, dtype, reshape_shape
 
 
+# sequence_mask
+@st.composite
+def _sequence_mask_helper(draw):
+    max_val = draw(st.integers(min_value=1, max_value=100000))
+    in_dtype, lens = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            num_arrays=1,
+            min_value=-max_val,
+            max_value=max_val,
+        )
+    )
+
+    max_len = draw(st.integers(min_value=max_val, max_value=max_val))
+    dtype = draw(
+        st.sampled_from(
+            [
+                "float16",
+                "uint8",
+                "complex128",
+                "bool",
+                "float64",
+                "int8",
+                "int16",
+                "complex64",
+                "float32",
+                "int32",
+                "int64",
+            ]
+        )
+    )
+    return in_dtype, lens, max_len, dtype
+
+
 @st.composite
 def _slice_helper(draw):
     dtype, x, shape = draw(
@@ -612,9 +646,11 @@ def test_tensorflow_cond(
     frontend,
     backend_fw,
 ):
-    _test_true_fn = lambda: var + var
+    def _test_true_fn():
+        return var + var
 
-    _test_false_fn = lambda: var * var
+    def _test_false_fn():
+        return var * var
 
     input_dtype, _ = dtype_and_x
     helpers.test_frontend_function(
@@ -716,7 +752,7 @@ def test_tensorflow_einsum(
     kw = {}
     i = 0
     for x_ in operands:
-        kw["x{}".format(i)] = x_
+        kw[f"x{i}"] = x_
         i += 1
     # len(operands) + 1 because of the equation
     test_flags.num_positional_args = len(operands) + 1
@@ -794,7 +830,8 @@ def test_tensorflow_expand_dims(
 
 # eye
 @handle_frontend_test(
-    fn_tree="tensorflow.eye",
+    fn_tree="tensorflow.linalg.eye",
+    gt_fn_tree="tensorflow.eye",
     n_rows=helpers.ints(min_value=0, max_value=10),
     n_cols=st.none() | helpers.ints(min_value=0, max_value=10),
     batch_shape=st.lists(
@@ -812,6 +849,7 @@ def test_tensorflow_eye(
     backend_fw,
     test_flags,
     fn_tree,
+    gt_fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
@@ -820,6 +858,7 @@ def test_tensorflow_eye(
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
         on_device=on_device,
         num_rows=n_rows,
         num_columns=n_cols,
@@ -1045,6 +1084,7 @@ def test_tensorflow_gather_nd(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_tensorflow_identity(
     dtype_and_x,
@@ -1073,6 +1113,7 @@ def test_tensorflow_identity(
         available_dtypes=helpers.get_dtypes("valid"), max_num_dims=5
     ),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_tensorflow_identity_n(
     dtype_and_x,
@@ -1148,6 +1189,51 @@ def test_tensorflow_linspace(
         num=num,
         axis=axis,
         on_device=on_device,
+    )
+
+
+# meshgrid
+@handle_frontend_test(
+    fn_tree="tensorflow.meshgrid",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        max_num_dims=2,
+        min_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=5,
+    ),
+    indexing=st.sampled_from(["xy", "ij"]),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_meshgrid(
+    *,
+    dtype_and_values,
+    indexing,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    dtype, arrays = dtype_and_values
+    arrays = arrays[0]
+    kwargs = {}
+
+    for i, array in enumerate(arrays):
+        kwargs[f"a{i}"] = array
+
+    kwargs["indexing"] = indexing
+
+    test_flags.num_positional_args = len(arrays)
+    test_flags.generate_frontend_arrays = False
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **kwargs,
     )
 
 
@@ -1651,6 +1737,34 @@ def test_tensorflow_searchsorted(
     )
 
 
+@handle_frontend_test(
+    fn_tree="tensorflow.sequence_mask",
+    dtype_lens_maxlen=_sequence_mask_helper(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_sequence_mask(
+    *,
+    dtype_lens_maxlen,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    input_dtype, lens, max_len, dtype = dtype_lens_maxlen
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        lengths=lens[0],
+        maxlen=max_len,
+        dtype=dtype,
+    )
+
+
 # shape
 @handle_frontend_test(
     fn_tree="tensorflow.shape",
@@ -1984,6 +2098,50 @@ def test_tensorflow_strided_slice(
         ):
             assume(False)
         raise e
+
+
+# tensor_scatter_nd_add
+@handle_frontend_test(
+    fn_tree="tensorflow.tensor_scatter_nd_add",
+    all_arguments=_multiple_shape_helper(),
+    tensor=helpers.array_values(
+        dtype=helpers.get_dtypes("numeric"), shape=(8,), min_value=2, max_value=49
+    ),
+    indices=helpers.array_values(
+        dtype=helpers.get_dtypes("integer"), shape=(4, 1), min_value=0, max_value=7
+    ),
+    updates=helpers.array_values(
+        dtype=helpers.get_dtypes("integer"),
+        shape=(4,),
+        min_value=9,
+        max_value=12,
+    ),
+)
+def test_tensorflow_tensor_scatter_nd_add(
+    *,
+    all_arguments,
+    tensor,
+    indices,
+    updates,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    input_dtype, input_matrix, dt_and_multiples = all_arguments
+    dt_mul, multiples = dt_and_multiples
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype + dt_mul,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=tensor[0],
+        indices=indices[0],
+        updates=updates[0],
+    )
 
 
 @handle_frontend_test(fn_tree="tensorflow.tile", all_arguments=_multiple_shape_helper())

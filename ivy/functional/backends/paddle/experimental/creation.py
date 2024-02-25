@@ -4,7 +4,6 @@ import math
 import paddle
 import ivy.functional.backends.paddle as paddle_backend
 from paddle.device import core
-from ivy.functional.backends.paddle.device import to_device
 from ivy.func_wrapper import (
     with_supported_dtypes,
     with_unsupported_device_and_dtypes,
@@ -57,7 +56,7 @@ def vorbis_window(
 ) -> paddle.Tensor:
     if window_length == 0:
         return paddle.to_tensor([], dtype=dtype)
-    i = paddle_backend.arange(1, window_length * 2, 2, device=ivy.default_device())
+    i = paddle_backend.arange(1, window_length * 2, 2)
     pi = paddle.full(shape=i.shape, fill_value=math.pi)
     return paddle.sin((pi / 2) * (paddle.sin(pi * i / (window_length * 2)) ** 2)).cast(
         dtype
@@ -87,18 +86,12 @@ def tril_indices(
     k: Optional[int] = 0,
     /,
     *,
-    device: core.Place,
+    device: core.Place = None,
 ) -> Tuple[paddle.Tensor, ...]:
     # special case due to inconsistent behavior when n_cols=1 and n_rows=0
     if not (n_cols and n_rows):
-        return paddle.to_tensor([], place=device, dtype="int64"), paddle.to_tensor(
-            [], place=device, dtype="int64"
-        )
-    return tuple(
-        to_device(
-            paddle.tril_indices(n_rows, col=n_cols, offset=k, dtype="int64"), device
-        )
-    )
+        return paddle.to_tensor([], dtype="int64"), paddle.to_tensor([], dtype="int64")
+    return tuple(paddle.tril_indices(n_rows, col=n_cols, offset=k, dtype="int64"))
 
 
 @with_supported_dtypes(
@@ -110,7 +103,7 @@ def unsorted_segment_min(
     segment_ids: paddle.Tensor,
     num_segments: Union[int, paddle.Tensor],
 ) -> paddle.Tensor:
-    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
         data, segment_ids, num_segments
     )
     if data.dtype == paddle.float32:
@@ -122,8 +115,8 @@ def unsorted_segment_min(
     elif data.dtype == paddle.int64:
         init_val = 9223372036854775807
     else:
-        raise ValueError("Unsupported data type")
-    # Using paddle.full is causing interger overflow for int64
+        raise TypeError("Unsupported data type")
+    # Using paddle.full is causing integer overflow for int64
     res = paddle.empty((num_segments,) + tuple(data.shape[1:]), dtype=data.dtype)
     res[:] = init_val
     for i in range(num_segments):
@@ -163,7 +156,7 @@ def unsorted_segment_sum(
     # check should be same
     # Might require to change the assertion function name to
     # check_unsorted_segment_valid_params
-    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
         data, segment_ids, num_segments
     )
 
@@ -190,7 +183,7 @@ def unsorted_segment_sum(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -212,3 +205,74 @@ def trilu(
     if upper:
         return paddle.triu(x=x, diagonal=k)
     return paddle.tril(x=x, diagonal=k)
+
+
+def mel_weight_matrix(
+    num_mel_bins: int,
+    dft_length: int,
+    sample_rate: int,
+    lower_edge_hertz: float = 0.0,
+    upper_edge_hertz: float = 3000.0,
+):
+    n_fft = (dft_length - 1) * 2
+    mel_mat = paddle.audio.functional.compute_fbank_matrix(
+        sample_rate,
+        n_fft,
+        num_mel_bins,
+        lower_edge_hertz,
+        upper_edge_hertz,
+    )
+    return paddle.transpose(mel_mat, (1, 0))
+
+
+def unsorted_segment_mean(
+    data: paddle.Tensor,
+    segment_ids: paddle.Tensor,
+    num_segments: Union[int, paddle.Tensor],
+) -> paddle.Tensor:
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
+        data, segment_ids, num_segments
+    )
+
+    # Sum computation in paddle does not support int32, so needs to
+    # be converted to float32
+    needs_conv = False
+    if data.dtype == paddle.int32:
+        data = paddle.cast(data, "float32")
+        needs_conv = True
+
+    res = paddle.zeros((num_segments,) + tuple(data.shape[1:]), dtype=data.dtype)
+
+    count = paddle.bincount(segment_ids)
+    count = paddle.where(count > 0, count, paddle.to_tensor([1], dtype="int32"))
+    res = unsorted_segment_sum(data, segment_ids, num_segments)
+    res = res / paddle.reshape(count, (-1, 1))
+
+    # condition for converting float32 back to int32
+    if needs_conv is True:
+        res = paddle.cast(res, "int32")
+
+    return res
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.6.0 and below": {
+            "cpu": ("float16", "int8", "int16", "uint8", "complex", "bool")
+        }
+    },
+    backend_version,
+)
+def polyval(
+    coeffs: paddle.Tensor,
+    x: paddle.Tensor,
+) -> paddle.Tensor:
+    with ivy.PreciseMode(True):
+        promoted_type = ivy.promote_types(ivy.dtype(coeffs[0]), ivy.dtype(x[0]))
+    coeffs, x = ivy.promote_types_of_inputs(coeffs, x)
+    y = paddle.zeros_like(x)
+    for coeff in coeffs:
+        y = y * x + coeff
+    y = paddle.to_tensor(y)
+    y = y.astype(promoted_type)
+    return y
