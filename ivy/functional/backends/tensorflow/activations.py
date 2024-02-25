@@ -40,6 +40,16 @@ def leaky_relu(
     return tf.nn.leaky_relu(x, alpha)
 
 
+@with_supported_dtypes(
+    {
+        "2.15.0 and below": (
+            "float",
+            "int",
+            "complex",
+        )
+    },
+    backend_version,
+)
 def relu(x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.relu(x)
 

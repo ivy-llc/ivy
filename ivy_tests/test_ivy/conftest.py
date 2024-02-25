@@ -198,12 +198,14 @@ def pytest_configure(config):
                 continue
             for trace_graph in trace_modes:
                 for implicit in implicit_modes:
-                    TEST_PARAMS_CONFIG.append((
-                        device,
-                        backend_str,
-                        trace_graph,
-                        implicit,
-                    ))
+                    TEST_PARAMS_CONFIG.append(
+                        (
+                            device,
+                            backend_str,
+                            trace_graph,
+                            implicit,
+                        )
+                    )
 
     process_cl_flags(config)
 

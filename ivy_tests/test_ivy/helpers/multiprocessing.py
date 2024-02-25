@@ -101,19 +101,21 @@ def backend_proc(input_queue, output_queue):
             )
             # ret_from_target to be none, because main process has
             # framework imports blocked
-            output_queue.put((
-                (None),
-                ret_np_flat_from_target,
-                ret_device,
-                args_np,
-                arg_np_arrays,
-                arrays_args_indices,
-                kwargs_np,
-                arrays_kwargs_indices,
-                kwarg_np_arrays,
-                test_flags,
-                input_dtypes,
-            ))
+            output_queue.put(
+                (
+                    (None),
+                    ret_np_flat_from_target,
+                    ret_device,
+                    args_np,
+                    arg_np_arrays,
+                    arrays_args_indices,
+                    kwargs_np,
+                    arrays_kwargs_indices,
+                    kwarg_np_arrays,
+                    test_flags,
+                    input_dtypes,
+                )
+            )
         elif data[0] == "function_ground_truth_computation":
             # it's the ground_truth return computation
             (
@@ -150,13 +152,15 @@ def backend_proc(input_queue, output_queue):
                 fn_name,
             )
             # ret_from gt is none because main process has frameworks is None
-            output_queue.put((
-                (None),
-                ret_np_from_gt_flat,
-                ret_from_gt_device,
-                test_flags,
-                fw_list,
-            ))
+            output_queue.put(
+                (
+                    (None),
+                    ret_np_from_gt_flat,
+                    ret_from_gt_device,
+                    test_flags,
+                    fw_list,
+                )
+            )
         elif data[0] == "gradient_backend_computation":
             # gradient testing , part where it uses the backend
             (
@@ -279,20 +283,22 @@ def backend_proc(input_queue, output_queue):
                 method_with_v,
             )
             # ret is none here, because main process doesn't import framework
-            output_queue.put((
-                (None),
-                ret_np_flat,
-                ret_device,
-                org_con_data,
-                args_np_method,
-                met_arg_np_vals,
-                met_args_idxs,
-                kwargs_np_method,
-                met_kwarg_np_vals,
-                met_kwargs_idxs,
-                v_np,
-                fw_list,
-            ))
+            output_queue.put(
+                (
+                    (None),
+                    ret_np_flat,
+                    ret_device,
+                    org_con_data,
+                    args_np_method,
+                    met_arg_np_vals,
+                    met_args_idxs,
+                    kwargs_np_method,
+                    met_kwarg_np_vals,
+                    met_kwargs_idxs,
+                    v_np,
+                    fw_list,
+                )
+            )
 
         elif data[0] == "method_ground_truth_computation":
             (

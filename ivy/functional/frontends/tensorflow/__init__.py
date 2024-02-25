@@ -94,6 +94,7 @@ from .tensor import EagerTensor, Tensor
 from .tensorarray import TensorArray
 from . import variable
 from .variable import Variable, IndexedSlices
+from .python.ops.resource_variable_ops import ResourceVariable
 from . import keras
 from . import compat
 from . import image
@@ -103,6 +104,7 @@ from . import math
 from .math import *
 from . import nest
 from . import nn
+from . import __operators__
 from . import quantization
 from . import random
 from . import general_functions
