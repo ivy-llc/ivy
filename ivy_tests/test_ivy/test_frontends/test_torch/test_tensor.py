@@ -11338,6 +11338,12 @@ def test_torch_repeat(
     backend_fw,
 ):
     input_dtype, x, repeats = dtype_x_repeats
+
+    if backend_fw == "paddle":
+        # paddle only supports size of the shape of repeats
+        # to be less than or equal to 6
+        assume(len(repeats) <= 6)
+
     repeat = {
         "repeats": repeats,
     }
