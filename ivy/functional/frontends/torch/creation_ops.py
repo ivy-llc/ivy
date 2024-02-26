@@ -178,6 +178,7 @@ def frombuffer(
     return ivy.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
 
 
+@with_unsupported_dtypes({"2.2.0 and below": ("bfloat16",)}, "torch")
 @to_ivy_arrays_and_back
 def full(
     size,
@@ -226,8 +227,8 @@ def linspace(
     layout=None,
     requires_grad=False,
 ):
-    ret = ivy.linspace(start, end, num=steps, dtype=dtype, device=device, out=out)
-    return ret
+    dtype = torch_frontend.get_default_dtype() if dtype is None else dtype
+    return ivy.linspace(start, end, num=steps, dtype=dtype, device=device, out=out)
 
 
 @to_ivy_arrays_and_back

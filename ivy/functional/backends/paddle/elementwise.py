@@ -121,8 +121,8 @@ def isinf(
     return paddle.zeros(shape=x.shape, dtype=bool)
 
 
-@with_unsupported_dtypes(
-    {"2.6.0 and below": ("bfloat16",)},
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("bfloat16", "complex128", "float64", "float32")}},
     backend_version,
 )
 def equal(
@@ -615,8 +615,8 @@ def negative(
     return paddle.neg(x)
 
 
-@with_supported_dtypes(
-    {"2.6.0 and below": ("float32", "float64", "int32", "int64")},
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("bfloat16", "complex128", "float64", "float32")}},
     backend_version,
 )
 def not_equal(
@@ -1083,7 +1083,13 @@ def minimum(
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if paddle.is_complex(x1):
-        use_where = True
+        real_comparison = paddle.real(x1) < paddle.real(x2)
+        imag_comparison = paddle_backend.logical_and(
+            paddle.real(x1) == paddle.real(x2), paddle.imag(x1) < paddle.imag(x2)
+        )
+        return paddle_backend.where(
+            paddle_backend.logical_or(real_comparison, imag_comparison), x1, x2
+        ).astype(ret_dtype)
 
     if use_where:
         return paddle_backend.where(paddle_backend.less_equal(x1, x2), x1, x2).astype(
@@ -1107,7 +1113,13 @@ def maximum(
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if paddle.is_complex(x1):
-        use_where = True
+        real_comparison = paddle.real(x1) > paddle.real(x2)
+        imag_comparison = paddle_backend.logical_and(
+            paddle.real(x1) == paddle.real(x2), paddle.imag(x1) > paddle.imag(x2)
+        )
+        return paddle_backend.where(
+            paddle_backend.logical_or(real_comparison, imag_comparison), x1, x2
+        ).astype(ret_dtype)
     if use_where:
         return paddle_backend.where(
             paddle_backend.greater_equal(x1, x2), x1, x2

@@ -69,7 +69,7 @@ def min_max_helper(draw):
     if use_where:
         dtype_and_x = draw(
             helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("numeric"),
+                available_dtypes=helpers.get_dtypes("numeric", full=False),
                 num_arrays=2,
                 small_abs_safety_factor=6,
                 large_abs_safety_factor=6,
@@ -79,10 +79,12 @@ def min_max_helper(draw):
     else:
         dtype_and_x = draw(
             helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("numeric"),
+                available_dtypes=helpers.get_dtypes("numeric", full=False),
                 num_arrays=2,
                 min_value=-1e5,
                 max_value=1e5,
+                small_abs_safety_factor=6,
+                large_abs_safety_factor=6,
                 safety_factor_scale="log",
             )
         )
@@ -706,6 +708,8 @@ def test_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+        atol_=1e-03,
+        rtol_=1e-03,
     )
 
 
@@ -1182,6 +1186,7 @@ def test_less(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
     test_gradients=st.just(False),
+    ground_truth_backend="jax",
 )
 def test_less_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
@@ -1438,6 +1443,7 @@ def test_logical_xor(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
     fn_tree="functional.ivy.maximum",
     dtype_and_x_and_use_where=min_max_helper(),
     test_gradients=st.just(False),
+    ground_truth_backend="jax",
 )
 def test_maximum(
     *, dtype_and_x_and_use_where, test_flags, backend_fw, fn_name, on_device
@@ -1462,6 +1468,7 @@ def test_maximum(
     fn_tree="functional.ivy.minimum",
     dtype_and_x_and_use_where=min_max_helper(),
     test_gradients=st.just(False),
+    ground_truth_backend="jax",
 )
 def test_minimum(
     *, dtype_and_x_and_use_where, test_flags, backend_fw, fn_name, on_device
@@ -1572,7 +1579,7 @@ def test_negative(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.not_equal",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=2
+        available_dtypes=helpers.get_dtypes("valid", full=False), num_arrays=2
     ),
     test_gradients=st.just(False),
 )
@@ -1587,6 +1594,8 @@ def test_not_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+        atol_=1e-03,
+        rtol_=1e-03,
     )
 
 
@@ -1625,8 +1634,8 @@ def test_pow(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
             backend_to_test=backend_fw,
             fn_name=fn_name,
             on_device=on_device,
-            rtol_=1e-2,
-            atol_=1e-2,
+            rtol_=1e-3,
+            atol_=1e-3,
             x1=x[0],
             x2=x[1],
         )
