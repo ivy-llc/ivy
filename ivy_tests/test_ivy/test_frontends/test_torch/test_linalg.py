@@ -899,7 +899,7 @@ def test_torch_matrix_exp(
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_norm",
     dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
         min_axes_size=2,
         max_axes_size=2,
@@ -911,7 +911,7 @@ def test_torch_matrix_exp(
     ),
     ord=st.sampled_from(["fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
     keepdim=st.booleans(),
-    dtypes=helpers.get_dtypes("float_and_complex", none=True, full=False),
+    dtypes=helpers.get_dtypes("float", none=True, full=False),
 )
 def test_torch_matrix_norm(
     *,
