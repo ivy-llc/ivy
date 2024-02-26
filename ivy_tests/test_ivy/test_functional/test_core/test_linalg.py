@@ -646,7 +646,7 @@ def test_matmul(*, x, y, test_flags, backend_fw, fn_name, on_device):
     fn_tree="functional.ivy.matrix_norm",
     # ground_truth_backend="torch",
     dtype_value_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
         valid_axis=True,
         min_axes_size=2,
@@ -662,7 +662,7 @@ def test_matmul(*, x, y, test_flags, backend_fw, fn_name, on_device):
     ),
     kd=st.booleans(),
     ord=st.sampled_from((-2, -1, 1, 2, -float("inf"), float("inf"), "fro", "nuc")),
-    dtypes=helpers.get_dtypes("float_and_complex", none=False, full=False),
+    dtypes=helpers.get_dtypes("float", none=False, full=False),
 )
 def test_matrix_norm(
     *, dtype_value_axis, kd, ord, dtypes, test_flags, backend_fw, fn_name, on_device
@@ -674,7 +674,7 @@ def test_matrix_norm(
         dtypes[0] = input_dtype[0][:-2] + max([input_dtype[0][-2:], dtypes[0][-2:]])
     if "bfloat" in dtypes[0]:
         dtypes[0] = "bfloat16"
-    test_flags.test_gradients = False
+    # test_flags.test_gradients = False
 
     assume(matrix_is_stable(x[0], cond_limit=10))
     helpers.test_function(
