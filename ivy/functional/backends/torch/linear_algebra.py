@@ -193,7 +193,9 @@ def matmul(
 matmul.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.2 and below": ("float16", "complex")}, backend_version)
+@with_supported_dtypes(
+    {"2.2 and below": ("float32", "float64", "complex32", "complex64")}, backend_version
+)
 def matrix_norm(
     x: torch.Tensor,
     /,
