@@ -1806,9 +1806,7 @@ class Tensor:
     @with_supported_dtypes(
         {"2.2 and below": ("float32", "float64", "int32", "int64")}, "torch"
     )
-    def scatter_(self, dim, index, src=None, *, reduce=None, value=None):
-        if src is None and value is not None:
-            src = value
+    def scatter_(self, dim, index, src, *, reduce=None):
         if reduce is None:
             reduce = "replace"
         else:

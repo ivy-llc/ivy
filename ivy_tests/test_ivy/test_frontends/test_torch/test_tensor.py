@@ -11484,12 +11484,10 @@ def test_torch_scatter(
     method_name="scatter_",
     args=put_along_axis_helper(),
     reduce=st.sampled_from(["add", "multiply"]),
-    use_value_arg=st.booleans(),
 )
 def test_torch_scatter_(
     args,
     reduce,
-    use_value_arg,
     frontend,
     frontend_method_data,
     init_flags,
@@ -11498,18 +11496,17 @@ def test_torch_scatter_(
     backend_fw,
 ):
     input_dtypes, x, indices, values, axis = args
-    kwargs_np = {
-        "dim": axis,
-        "index": indices,
-        "value" if use_value_arg else "src": 1 if use_value_arg else values,
-        "reduce": reduce,
-    }
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtypes[0]],
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x},
         method_input_dtypes=["int64", input_dtypes[0]],
-        method_all_as_kwargs_np=kwargs_np,
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "index": indices,
+            "src": values,
+            "reduce": reduce,
+        },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
