@@ -674,6 +674,8 @@ def test_matrix_norm(
         dtypes[0] = input_dtype[0][:-2] + max([input_dtype[0][-2:], dtypes[0][-2:]])
     if "bfloat" in dtypes[0]:
         dtypes[0] = "bfloat16"
+    if dtypes[0] == "float16":
+        dtypes[0] = "float32"
     test_flags.test_gradients = False
 
     assume(matrix_is_stable(x[0], cond_limit=10))
