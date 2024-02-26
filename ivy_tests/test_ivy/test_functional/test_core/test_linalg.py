@@ -673,7 +673,7 @@ def test_matrix_norm(
     if dtypes[0] not in [None, "complex128"]:
         dtypes[0] = input_dtype[0][:-2] + max([input_dtype[0][-2:], dtypes[0][-2:]])
     if "bfloat" in dtypes[0]:
-        dtypes[0] = "bfloat16"
+        dtypes[0] = "float32"
     if dtypes[0] == "float16":
         dtypes[0] = "float32"
     test_flags.test_gradients = False
