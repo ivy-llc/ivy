@@ -262,8 +262,7 @@ def _train_tasks_batched(
     num_tasks,
     stop_gradients,
 ):
-    """
-    Train tasks in a batched manner.
+    """Train tasks in a batched manner.
 
     This function trains tasks in a batched manner with optional inner and outer batch functions.
 
