@@ -4,6 +4,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import numpy as np
 
+
 @handle_frontend_test(
     fn_tree="sklearn.metrics.accuracy_score",
     arrays_and_dtypes=helpers.dtype_and_values(
@@ -16,7 +17,6 @@ import numpy as np
     ),
     normalize=st.booleans(),
 )
-
 def test_sklearn_accuracy_score(
     arrays_and_dtypes,
     on_device,
@@ -108,6 +108,7 @@ def test_sklearn_precision_score(
         y_pred=values[1],
         sample_weight=sample_weight,
     )
+
 
 @handle_frontend_test(
     fn_tree="sklearn.metrics.recall_score",
