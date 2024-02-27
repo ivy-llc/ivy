@@ -1,13 +1,12 @@
+from hypothesis import strategies as st
+import torch
+import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_frontend_test
+import numpy as np
 import jax
 
 # Enable X64 mode
 with jax.experimental.enable_x64():
-    from hypothesis import strategies as st
-    import torch
-    import ivy_tests.test_ivy.helpers as helpers
-    from ivy_tests.test_ivy.helpers import handle_frontend_test
-    import numpy as np
-
     @handle_frontend_test(
         fn_tree="sklearn.metrics.accuracy_score",
         arrays_and_dtypes=helpers.dtype_and_values(
@@ -46,6 +45,7 @@ with jax.experimental.enable_x64():
             normalize=normalize,
             sample_weight=None,
         )
+
 
     @handle_frontend_test(
         fn_tree="sklearn.metrics.precision_score",
@@ -111,6 +111,7 @@ with jax.experimental.enable_x64():
             sample_weight=sample_weight,
         )
 
+
     @handle_frontend_test(
         fn_tree="sklearn.metrics.recall_score",
         arrays_and_dtypes=helpers.dtype_and_values(
@@ -174,26 +175,3 @@ with jax.experimental.enable_x64():
             y_pred=values[1],
             sample_weight=sample_weight,
         )
-
-    # Detach tensors if they require grad before converting to NumPy arrays
-    if backend_fw == "torch":
-        values = [
-            (
-                value.detach().numpy()
-                if isinstance(value, torch.Tensor) and value.requires_grad
-                else value
-            )
-            for value in values
-        ]
-
-    helpers.test_frontend_function(
-        input_dtypes=dtypes,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        frontend=frontend,
-        on_device=on_device,
-        y_true=values[0],
-        y_pred=values[1],
-        sample_weight=sample_weight,
-    )
