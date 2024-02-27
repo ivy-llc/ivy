@@ -1,5 +1,3 @@
-jax.config.update('jax_enable_x64', True)
-
 from hypothesis import strategies as st
 import torch
 import ivy_tests.test_ivy.helpers as helpers
@@ -175,3 +173,6 @@ def test_sklearn_recall_score(
         y_pred=values[1],
         sample_weight=sample_weight,
     )
+
+
+jax.config.update("jax_enable_x64", True)
