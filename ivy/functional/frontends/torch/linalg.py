@@ -136,6 +136,25 @@ def lu_factor(A, *, pivot=True, out=None):
 
 
 @to_ivy_arrays_and_back
+def lu_factor_ex(A, *, pivot=True, check_errors=False, out=None):
+    try:
+        LU = ivy.lu_factor(A, pivot=pivot, out=out)
+        info = ivy.zeros(A.shape[:-2], dtype=ivy.int32)
+        return LU, info
+    except RuntimeError as e:
+        if check_errors:
+            raise RuntimeError(e) from e
+        else:
+            matrix = A * math.nan
+            info = ivy.ones(A.shape[:-2], dtype=ivy.int32)
+            return matrix, info
+
+
+def lu_solve(LU, pivots, B, *, left=True, adjoint=False, out=None):
+    return ivy.lu_solve(LU, pivots, B, out=out)
+
+
+@to_ivy_arrays_and_back
 @with_supported_dtypes(
     {"2.2 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
 )
@@ -154,10 +173,8 @@ def matrix_exp(A):
     {"2.2 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
 )
 def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, out=None):
-    if "complex" in ivy.as_ivy_dtype(input.dtype):
-        input = ivy.abs(input)
-    if dtype:
-        input = ivy.astype(input, ivy.as_ivy_dtype(dtype))
+    if dtype is not None:
+        input = ivy.astype(input, dtype)
     return ivy.matrix_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
 
 
@@ -198,10 +215,14 @@ def norm(input, ord=None, dim=None, keepdim=False, *, dtype=None, out=None):
     elif dim is None and ord is None:
         input = ivy.flatten(input)
         ret = ivy.vector_norm(input, axis=0, keepdims=keepdim, ord=2)
-    if isinstance(dim, int):
+    elif isinstance(dim, int):
         ret = ivy.vector_norm(input, axis=dim, keepdims=keepdim, ord=ord)
-    elif isinstance(dim, tuple):
+    elif isinstance(dim, tuple) and len(dim) <= 2:
         ret = ivy.matrix_norm(input, axis=dim, keepdims=keepdim, ord=ord)
+    elif isinstance(dim, tuple) and len(dim) > 2:
+        raise RuntimeError(
+            f"linalg.norm: If dim is specified, it must be of length 1 or 2. Got {dim}"
+        )
     return ret
 
 

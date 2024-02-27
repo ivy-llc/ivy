@@ -25,8 +25,57 @@ def bias_add(x, bias, data_format=None):
 
 
 @to_ivy_arrays_and_back
+def depthwise_conv2d(
+    x,
+    depthwise_kernel,
+    strides=(1, 1),
+    padding="valid",
+    data_format=None,
+    dilation_rate=(1, 1),
+):
+    data_format = "channels_last" if data_format is None else data_format
+    if data_format not in {"channels_first", "channels_last"}:
+        raise ValueError("Unknown data_format: " + str(data_format))
+
+    tf_data_format = "NHWC"
+    permuted_x = False
+    if data_format == "channels_first":
+        if ivy.dev(x) == "cpu":
+            x = tf_frontend.transpose(x, (0, 2, 3, 1))  # NCHW -> NHWC
+            permuted_x = True
+        else:
+            tf_data_format = "NCHW"
+
+    padding = padding.upper()
+    if padding not in {"VALID", "SAME"}:
+        raise ValueError("Unknown padding: " + str(padding))
+
+    if tf_data_format == "NHWC":
+        strides = (1,) + strides + (1,)
+    else:
+        strides = (1, 1) + strides
+
+    x = tf_frontend.nn.depthwise_conv2d(
+        x,
+        depthwise_kernel,
+        strides=strides,
+        padding=padding,
+        dilations=dilation_rate,
+        data_format=tf_data_format,
+    )
+
+    if permuted_x:
+        x = tf_frontend.transpose(x, (0, 3, 1, 2))  # NHWC -> NCHW
+    return x
+
+
+@to_ivy_arrays_and_back
 def dot(x, y):
     return ivy.dot(x, y)
+
+
+def mean(x, axis=None, keepdims=False):
+    return tf_frontend.reduce_mean(x, axis, keepdims)
 
 
 @to_ivy_arrays_and_back

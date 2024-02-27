@@ -292,15 +292,17 @@ def generate(config_file):
         generated_file.write(astunparse.unparse(tree_to_write))
 
     subprocess.run(["black", "-q", backend_generation_path])
-    subprocess.run([
-        "autoflake",
-        "-i",
-        "--remove-all-unused-imports",
-        "--ignore-init-module-imports",
-        "--quiet",
-        "-r",
-        backend_generation_path,
-    ])
+    subprocess.run(
+        [
+            "autoflake",
+            "-i",
+            "--remove-all-unused-imports",
+            "--ignore-init-module-imports",
+            "--quiet",
+            "-r",
+            backend_generation_path,
+        ]
+    )
 
 
 if __name__ == "__main__":

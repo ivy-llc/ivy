@@ -576,7 +576,9 @@ class Tensor:
                     )
                     return cast_tensor
             if (
-                isinstance(args[0], (ivy.Dtype, ivy.NativeDtype))
+                isinstance(args[0], ivy.NativeDtype)
+                or isinstance(args[0], ivy.Dtype)
+                and hasattr(args[0], "as_native_dtype")
                 or args[0] in ivy._all_ivy_dtypes_str
             ):
                 if self.dtype == ivy.as_ivy_dtype(args[0]):
@@ -1161,6 +1163,13 @@ class Tensor:
     def fmin(self, other):
         return torch_frontend.fmin(self, other)
 
+    @with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
+    def log_softmax(self, dim=None, _stack_level=3, dtype=None):
+        return torch_frontend.nn.functional.log_softmax(self, dim=dim, dtype=dtype)
+
+    def isfinite(self):
+        return torch_frontend.isfinite(self)
+
     def msort(self):
         return torch_frontend.msort(self)
 
@@ -1394,6 +1403,13 @@ class Tensor:
 
     def __and__(self, other):
         return torch_frontend.bitwise_and(self, other)
+
+    def __iand__(self, other):
+        self.ivy_array = self.bitwise_and(other).ivy_array
+        return self
+
+    def new(self):
+        return torch_frontend.tensor([], dtype=self.dtype, device=self.device)
 
     def __array__(self, dtype=None):
         if dtype is None:
@@ -2242,6 +2258,7 @@ class Tensor:
                 "float16",
                 "complex128",
                 "complex64",
+                "bool",
             )
         },
         "torch",
