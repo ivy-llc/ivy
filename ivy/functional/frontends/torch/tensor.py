@@ -280,7 +280,8 @@ class Tensor:
         return torch_frontend.atan2(self, other)
 
     def view(self, *args, size=None):
-        """Reshape Tensor.
+        """
+        Reshape Tensor.
 
         possible arguments are either:
             - size
@@ -1061,6 +1062,21 @@ class Tensor:
     def acosh(self):
         return torch_frontend.acosh(self)
 
+    @with_unsupported_dtypes(
+        {
+            "2.2 and below": (
+                "uint8",
+                "int8",
+                "int16",
+                "int32",
+                "float16",
+                "float32",
+                "bfloat16",
+                "bool",
+            )
+        },
+        "torch",
+    )
     def masked_fill(self, mask, value):
         return torch_frontend.tensor(
             torch_frontend.where(mask, value, self), dtype=self.dtype
