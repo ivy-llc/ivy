@@ -7,6 +7,7 @@ import jax
 
 # Enable X64 mode
 with jax.experimental.enable_x64():
+
     @handle_frontend_test(
         fn_tree="sklearn.metrics.accuracy_score",
         arrays_and_dtypes=helpers.dtype_and_values(
@@ -45,7 +46,6 @@ with jax.experimental.enable_x64():
             normalize=normalize,
             sample_weight=None,
         )
-
 
     @handle_frontend_test(
         fn_tree="sklearn.metrics.precision_score",
@@ -111,7 +111,6 @@ with jax.experimental.enable_x64():
             sample_weight=sample_weight,
         )
 
-
     @handle_frontend_test(
         fn_tree="sklearn.metrics.recall_score",
         arrays_and_dtypes=helpers.dtype_and_values(
@@ -175,6 +174,7 @@ with jax.experimental.enable_x64():
             y_pred=values[1],
             sample_weight=sample_weight,
         )
+
     # Detach tensors if they require grad before converting to NumPy arrays
     if backend_fw == "torch":
         values = [
