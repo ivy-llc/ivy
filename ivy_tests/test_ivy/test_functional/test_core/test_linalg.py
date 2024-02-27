@@ -644,7 +644,6 @@ def test_matmul(*, x, y, test_flags, backend_fw, fn_name, on_device):
 # matrix_norm
 @handle_test(
     fn_tree="functional.ivy.matrix_norm",
-    ground_truth_backend="tensorflow",
     dtype_value_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
