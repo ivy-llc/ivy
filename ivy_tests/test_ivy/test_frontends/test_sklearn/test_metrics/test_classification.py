@@ -92,7 +92,7 @@ def test_sklearn_precision_score(
     else:
         # Keep the input arrays as they are
         pass
-    
+
     # Detach tensors if they require grad before converting to NumPy arrays
     if backend_fw == "torch":
         values = [
