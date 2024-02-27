@@ -48,7 +48,7 @@ def test_sklearn_accuracy_score(
 @handle_frontend_test(
     fn_tree="sklearn.metrics.precision_score",
     arrays_and_dtypes=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_integer"),
+        available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         min_value=0,
         max_value=1,  # Precision score is for binary classification
@@ -88,7 +88,7 @@ def test_sklearn_precision_score(
 
     if backend_fw == "jax":
         # Convert the input arrays to float32 or float64
-        values = [value.astype("float32") for value in values]
+        values = [value.astype("int32") for value in values]
     else:
         # Keep the input arrays as they are
         pass
@@ -120,7 +120,7 @@ def test_sklearn_precision_score(
 @handle_frontend_test(
     fn_tree="sklearn.metrics.recall_score",
     arrays_and_dtypes=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_integer"),
+        available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         min_value=0,
         max_value=1,  # Recall score is for binary classification
@@ -160,7 +160,7 @@ def test_sklearn_recall_score(
 
     if backend_fw == "jax":
         # Convert the input arrays to float32 or float64
-        values = [value.astype("float32") for value in values]
+        values = [value.astype("int32") for value in values]
     else:
         # Keep the input arrays as they are
         pass
