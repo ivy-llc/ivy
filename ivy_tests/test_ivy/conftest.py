@@ -352,6 +352,7 @@ def pytest_addoption(parser):
     parser.addoption("--skip-instance-method-testing", action="store_true")
     parser.addoption("--skip-gradient-testing", action="store_true")
     parser.addoption("--skip-trace-testing", action="store_true")
+    parser.addoption("--skip-trace-testing-each", action="store_true")
 
     parser.addoption("--with-variable-testing", action="store_true")
     parser.addoption("--with-native-array-testing", action="store_true")
@@ -360,6 +361,7 @@ def pytest_addoption(parser):
     parser.addoption("--with-instance-method-testing", action="store_true")
     parser.addoption("--with-gradient-testing", action="store_true")
     parser.addoption("--with-trace-testing", action="store_true")
+    parser.addoption("--with-trace-testing-each", action="store_true")
     parser.addoption("--with-transpile", action="store_true")
     parser.addoption("--no-extra-testing", action="store_true")
     parser.addoption(
