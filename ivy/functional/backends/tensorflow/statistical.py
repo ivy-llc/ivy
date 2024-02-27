@@ -4,7 +4,7 @@ from typing import Union, Optional, Sequence
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, handle_out_argument
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 from ivy.utils.einsum_parser import legalise_einsum_expr
 
@@ -67,7 +67,6 @@ def max(
 
 
 @with_unsupported_dtypes({"2.15.0 and below": ("bool",)}, backend_version)
-@handle_out_argument
 def mean(
     x: Union[tf.Tensor, tf.Variable],
     /,
