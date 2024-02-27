@@ -290,6 +290,10 @@ def process_cl_flags(config) -> Dict[str, bool]:
             getopt("--skip-trace-testing"),
             getopt("--with-trace-testing"),
         ),
+        "test_trace_each": (
+            getopt("--skip-trace-testing-each"),
+            getopt("--with-trace-testing-each"),
+        ),
         "transpile": (
             False,
             getopt("--with-transpile"),
