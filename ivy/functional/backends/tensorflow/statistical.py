@@ -82,6 +82,8 @@ def mean(
         dtype = ivy.as_native_dtype(dtype)
         x = tf.cast(x, dtype)
     ret = tf.math.reduce_mean(x, axis=axis, keepdims=keepdims)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
     return ret
 
 
