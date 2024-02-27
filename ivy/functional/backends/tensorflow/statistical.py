@@ -81,9 +81,7 @@ def mean(
     if dtype is not None:
         dtype = ivy.as_native_dtype(dtype)
         x = tf.cast(x, dtype)
-        ret = tf.math.reduce_mean(x, axis=axis, keepdims=keepdims, out=out)
-    else:
-        ret = tf.math.reduce_mean(x, axis=axis, keepdims=keepdims, out=out)
+    ret = tf.math.reduce_mean(x, axis=axis, keepdims=keepdims)
     return ret
 
 
