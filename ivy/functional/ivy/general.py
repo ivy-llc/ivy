@@ -2938,6 +2938,10 @@ def _parse_query(query, x_shape, scatter=False):
             *[v for i, v in enumerate(query) if i in array_inds]
         )
         array_queries = [
+            ivy.nonzero(q, as_tuple=False) if ivy.is_bool_dtype(q) else q
+            for q in array_queries
+        ]
+        array_queries = [
             (
                 ivy.where(arr < 0, arr + x_shape[i], arr).astype(ivy.int64)
                 if arr.size
