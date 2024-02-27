@@ -671,7 +671,7 @@ def test_matrix_norm(
     if dtypes[0] is not None:
         dtypes[0] = input_dtype[0][0:-2] + max([input_dtype[0][-2:], dtypes[0][-2:]])
 
-    test_flags.test_gradients = False
+    test_flags.test_gradients = True
 
     assume(matrix_is_stable(x[0], cond_limit=10))
     helpers.test_function(
