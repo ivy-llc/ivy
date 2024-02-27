@@ -324,6 +324,8 @@ def matrix_norm(
     if keepdims and ord in [-2, "nuc"]:
         for dim in axis:
             ret = tf.expand_dims(ret, dim % tf.rank(x))
+    if ivy.exists(out):
+        ivy.inplace_update(out, ret)
     return ret
 
 
