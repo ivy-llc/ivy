@@ -48,7 +48,7 @@ def test_sklearn_accuracy_score(
 @handle_frontend_test(
     fn_tree="sklearn.metrics.precision_score",
     arrays_and_dtypes=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_value=0,
         max_value=1,  # Precision score is for binary classification
@@ -113,7 +113,7 @@ def test_sklearn_precision_score(
 @handle_frontend_test(
     fn_tree="sklearn.metrics.recall_score",
     arrays_and_dtypes=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_value=0,
         max_value=1,  # Recall score is for binary classification
