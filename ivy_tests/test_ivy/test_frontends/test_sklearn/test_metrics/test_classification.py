@@ -20,6 +20,7 @@ with jax.experimental.enable_x64():
         ),
         normalize=st.booleans(),
     )
+    
     def test_sklearn_accuracy_score(
         arrays_and_dtypes,
         on_device,

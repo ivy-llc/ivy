@@ -83,3 +83,6 @@ def recall_score(y_true, y_pred, *, sample_weight=None):
 
     ret = ret.astype("float64")
     return ret
+
+import jax
+print("jax version:", jax.__version__)
