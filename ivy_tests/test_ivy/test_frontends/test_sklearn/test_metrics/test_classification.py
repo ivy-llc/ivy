@@ -5,7 +5,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 import numpy as np
 import jax.config
 
-jax.config.update("jax_enable_x64", True) 
 
 @handle_frontend_test(
     fn_tree="sklearn.metrics.accuracy_score",
@@ -175,3 +174,6 @@ def test_sklearn_recall_score(
         y_pred=values[1],
         sample_weight=sample_weight,
     )
+
+
+jax.config.update("jax_enable_x64", True)
