@@ -4,8 +4,6 @@ from sklearn.utils.multiclass import type_of_target
 import jax
 import jaxlib
 
-print("jaxlib version:",jaxlib.__version__)
-print("jax version:", jax.__version__)
 
 @to_ivy_arrays_and_back
 def accuracy_score(y_true, y_pred, *, normalize=True, sample_weight=None):
@@ -87,3 +85,7 @@ def recall_score(y_true, y_pred, *, sample_weight=None):
 
     ret = ret.astype("float64")
     return ret
+
+
+print("jaxlib version:", jaxlib.__version__)
+print("jax version:", jax.__version__)
