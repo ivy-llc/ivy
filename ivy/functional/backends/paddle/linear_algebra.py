@@ -325,6 +325,8 @@ def matrix_norm(
             # although expand_dims support tuple axes, we have to loop
             # over the axes because it faces problems when the input is a scalar
             ret = paddle_backend.expand_dims(ret, axis=dim % x.ndim)
+    if ivy.exists(out):
+        ivy.inplace_update(out, ret)
     return ret
 
 
