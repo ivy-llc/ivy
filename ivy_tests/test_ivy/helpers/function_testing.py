@@ -2068,7 +2068,7 @@ def test_frontend_method(
         optional, return value from the Ground Truth function
     """
     # ToDo add with_backend refactor in GC
-    _switch_backend_context(method_flags.test_trace, method_flags.test_trace_each)
+    _switch_backend_context(method_flags.test_trace or method_flags.test_trace_each)
 
     # Constructor arguments #
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
