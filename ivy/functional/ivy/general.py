@@ -2938,7 +2938,7 @@ def _parse_query(query, x_shape, scatter=False):
             *[v for i, v in enumerate(query) if i in array_inds]
         )
         array_queries = [
-            ivy.nonzero(q, as_tuple=False) if ivy.is_bool_dtype(q) else q
+            ivy.nonzero(q, as_tuple=False)[0] if ivy.is_bool_dtype(q) else q
             for q in array_queries
         ]
         array_queries = [
