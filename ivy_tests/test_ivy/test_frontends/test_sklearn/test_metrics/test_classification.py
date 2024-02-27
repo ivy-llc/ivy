@@ -46,12 +46,12 @@ def test_sklearn_accuracy_score(
 
 
 @handle_frontend_test(
-    fn_tree="sklearn.metrics.recall_score",
+    fn_tree="sklearn.metrics.precision_score",
     arrays_and_dtypes=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         min_value=0,
-        max_value=1,  # Recall score is for binary classification
+        max_value=1,  # Precision score is for binary classification
         shared_dtype=True,
         shape=(helpers.ints(min_value=2, max_value=5)),
     ),
@@ -59,7 +59,7 @@ def test_sklearn_accuracy_score(
         st.floats(min_value=0.1, max_value=1), min_size=2, max_size=5
     ),
 )
-def test_sklearn_recall_score(
+def test_sklearn_precision_score(
     arrays_and_dtypes,
     on_device,
     fn_tree,
@@ -111,12 +111,12 @@ def test_sklearn_recall_score(
 
 
 @handle_frontend_test(
-    fn_tree="sklearn.metrics.precision_score",
+    fn_tree="sklearn.metrics.recall_score",
     arrays_and_dtypes=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         min_value=0,
-        max_value=1,  # Precision score is for binary classification
+        max_value=1,  # Recall score is for binary classification
         shared_dtype=True,
         shape=(helpers.ints(min_value=2, max_value=5)),
     ),
@@ -124,7 +124,7 @@ def test_sklearn_recall_score(
         st.floats(min_value=0.1, max_value=1), min_size=2, max_size=5
     ),
 )
-def test_sklearn_precision_score(
+def test_sklearn_recall_score(
     arrays_and_dtypes,
     on_device,
     fn_tree,
@@ -143,22 +143,22 @@ def test_sklearn_precision_score(
     if len(sample_weight) != len(values[0]):
         # If sample_weight is shorter, extend it with ones
         sample_weight = np.pad(
-            sample_weight, 
-            (0, max(0, len(values[0]) - len(sample_weight))), 
+            sample_weight,
+            (0, max(0, len(values[0]) - len(sample_weight))),
             "constant",
             constant_values=1.0,
         )
         # If sample_weight is longer, truncate it
-        sample_weight = sample_weight[:len(values[0])]
+        sample_weight = sample_weight[: len(values[0])]
 
     # Detach tensors if they require grad before converting to NumPy arrays
-    if backend_fw == 'torch':
+    if backend_fw == "torch":
         values = [
             (
-                value.detach().numpy() 
-                if isinstance(value, torch.Tensor) and value.requires_grad 
+                value.detach().numpy()
+                if isinstance(value, torch.Tensor) and value.requires_grad
                 else value
-            )        
+            )
             for value in values
         ]
 
