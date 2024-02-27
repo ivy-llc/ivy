@@ -3,7 +3,9 @@ import torch
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import numpy as np
+import jax.config
 
+jax.config.update("jax_enable_x64", True) 
 
 @handle_frontend_test(
     fn_tree="sklearn.metrics.accuracy_score",
