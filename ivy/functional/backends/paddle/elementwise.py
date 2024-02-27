@@ -381,14 +381,12 @@ def cos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
     return paddle.cos(x)
 
 
-@with_unsupported_dtypes({"2.6.0 and below": ("uint8", "float16")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.6.0 and below": ("uint8", "float16", "bfloat16")}, backend_version
+)
 def logical_not(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    if paddle.is_complex(x):
-        return paddle.logical_and(
-            paddle.logical_not(x.real()), paddle.logical_not(x.imag())
-        )
     return paddle.logical_not(x)
 
 
