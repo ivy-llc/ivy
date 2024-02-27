@@ -1,3 +1,5 @@
+import os
+os.environ["JAX_DEFAULT_DTYPE"] = "float64"
 from hypothesis import strategies as st
 import torch
 import ivy_tests.test_ivy.helpers as helpers
@@ -86,13 +88,6 @@ def test_sklearn_precision_score(
         # If sample_weight is longer, truncate it
         sample_weight = sample_weight[: len(values[0])]
 
-    if backend_fw == "jax":
-        # Convert the input arrays to float32 or float64
-        values = [value.astype("int32") for value in values]
-    else:
-        # Keep the input arrays as they are
-        pass
-
     # Detach tensors if they require grad before converting to NumPy arrays
     if backend_fw == "torch":
         values = [
@@ -158,12 +153,6 @@ def test_sklearn_recall_score(
         # If sample_weight is longer, truncate it
         sample_weight = sample_weight[: len(values[0])]
 
-    if backend_fw == "jax":
-        # Convert the input arrays to float32 or float64
-        values = [value.astype("int32") for value in values]
-    else:
-        # Keep the input arrays as they are
-        pass
     # Detach tensors if they require grad before converting to NumPy arrays
     if backend_fw == "torch":
         values = [
