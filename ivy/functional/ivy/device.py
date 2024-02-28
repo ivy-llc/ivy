@@ -743,7 +743,7 @@ def tpu_is_available() -> bool:
     --------
     >>> ivy.set_backend("torch")
     >>> print(ivy.tpu_is_available())
-    True
+    False
     """
     return ivy.current_backend().tpu_is_available()
 
@@ -826,30 +826,47 @@ def default_device(
 
 @handle_exceptions
 def set_default_device(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
-    """Set the default device to given device instance.
+    """Sets the default device to the argument provided in the function.
 
     Parameters
     ----------
     device
-        The device to set as the default device
+        The device to be set as the default device.
+
+    Returns
+    -------
+    ret
+        The new default device.
 
     Examples
     --------
-    >>> ivy.set_default_device("cpu")
     >>> ivy.default_device()
     'cpu'
 
-    >>> ivy.set_backend("torch")
-    >>> ivy.set_default_device("gpu:0")
-    >>> ivy.default_device(as_native=True)
-    device(type='cuda', index=0)
+    >>> ivy.set_backend('jax')
+    >>> ivy.set_default_device('gpu:0')
+    >>> ivy.default_device()
+    'gpu:0'
 
-    >>> import torch
-    >>> ivy.set_backend("torch")
-    >>> device = torch.device("cuda")
-    >>> ivy.set_default_device(device)
-    >>> ivy.default_device(as_native=True)
-    device(type='cuda')
+    >>> ivy.set_backend('torch')
+    >>> ivy.set_default_device('gpu:1')
+    >>> ivy.default_device()
+    'gpu:1
+
+    >>> ivy.set_backend('tensorflow')
+    >>> ivy.set_default_device('tpu:0)
+    >>> ivy.default_device()
+    'tpu:0
+
+    >>> ivy.set_backend('paddle')
+    >>> ivy.set_default_device('cpu)
+    >>> ivy.default_device()
+    'cpu'
+
+    >>> ivy.set_backend('mxnet')
+    >>> ivy.set_default_device('cpu')
+    >>> ivy.default_device()
+    'cpu'
     """
     global default_device_stack
     default_device_stack.append(device)
@@ -1169,7 +1186,7 @@ def _get_devices(fn: Callable, complement: bool = True) -> Tuple:
 
     is_backend_fn = "backend" in fn.__module__
     is_frontend_fn = "frontend" in fn.__module__
-    is_einops_fn = "einops" in fn.__name__
+    is_einops_fn = hasattr(fn, "__name__") and "einops" in fn.__name__
     if not is_backend_fn and not is_frontend_fn and not is_einops_fn:
         if complement:
             supported = set(all_devices).difference(supported)
@@ -1221,7 +1238,13 @@ def function_supported_devices(
     Examples
     --------
     >>> import ivy
+    >>> ivy.set_backend('numpy')
     >>> print(ivy.function_supported_devices(ivy.ones))
+    ('cpu',)
+
+    >>> ivy.set_backend('torch')
+    >>> x = ivy.function_supported_devices(ivy.ones)
+    >>> x = sorted(x)
     ('cpu', 'gpu')
     """
     ivy.utils.assertions.check_true(

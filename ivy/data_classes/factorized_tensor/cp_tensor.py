@@ -68,10 +68,12 @@ class CPTensor(FactorizedTensor):
         return ivy.CPTensor.cp_to_unfolded(self, mode)
 
     def cp_copy(self):
-        return CPTensor((
-            ivy.copy_array(self.weights),
-            [ivy.copy_array(self.factors[i]) for i in range(len(self.factors))],
-        ))
+        return CPTensor(
+            (
+                ivy.copy_array(self.weights),
+                [ivy.copy_array(self.factors[i]) for i in range(len(self.factors))],
+            )
+        )
 
     def mode_dot(self, matrix_or_vector, mode, keep_dim=False, copy=True):
         """N-mode product of a CP tensor and a matrix or vector at the

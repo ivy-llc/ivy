@@ -310,7 +310,7 @@ def bincount(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.bincount(
-        x.numpy().tolist(),
+        x,
         weights=weights,
         minlength=minlength,
         dtype=x.dtype if weights is None else weights.dtype,
@@ -564,7 +564,7 @@ def __get_index(lst, indices=None, prefix=None):
 
 
 @with_unsupported_dtypes(
-    {"2.15.0 and below": ("bfloat16", "complex")},
+    {"2.15.0 and below": ("bfloat16", "bool", "complex")},
     backend_version,
 )
 def cummin(

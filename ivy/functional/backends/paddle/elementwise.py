@@ -1,15 +1,16 @@
 # global
-from typing import Union, Optional
-
 import math
+from typing import Optional, Union
+
 import paddle
-import ivy.functional.backends.paddle as paddle_backend
+
 import ivy
+import ivy.functional.backends.paddle as paddle_backend
 from ivy import promote_types_of_inputs
 from ivy.func_wrapper import (
-    with_unsupported_device_and_dtypes,
     with_supported_device_and_dtypes,
     with_supported_dtypes,
+    with_unsupported_device_and_dtypes,
     with_unsupported_dtypes,
 )
 
@@ -120,8 +121,8 @@ def isinf(
     return paddle.zeros(shape=x.shape, dtype=bool)
 
 
-@with_unsupported_dtypes(
-    {"2.6.0 and below": ("bfloat16",)},
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("bfloat16", "complex128", "float64", "float32")}},
     backend_version,
 )
 def equal(
@@ -139,8 +140,8 @@ def equal(
     return paddle.equal(x1, x2)
 
 
-@with_supported_dtypes(
-    {"2.6.0 and below": ("bool", "float32", "float64", "int32", "int64", "complex")},
+@with_unsupported_dtypes(
+    {"2.6.0 and below": ("bool",)},
     backend_version,
 )
 def less_equal(
@@ -153,9 +154,11 @@ def less_equal(
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if isinstance(x1, paddle.Tensor) and isinstance(x2, paddle.Tensor):
         if paddle.is_complex(x1) and paddle.is_complex(x2):
-            real = paddle.less_equal(x1.real(), x2.real())
-            imag = paddle.less_equal(x1.imag(), x2.imag())
-            return paddle_backend.logical_and(real, imag)
+            real_comparison = paddle.real(x1) < paddle.real(x2)
+            imag_comparison = paddle_backend.logical_and(
+                paddle.real(x1) == paddle.real(x2), paddle.imag(x1) < paddle.imag(x2)
+            )
+            return paddle_backend.logical_or(real_comparison, imag_comparison)
 
     return paddle.less_equal(x1, x2)
 
@@ -340,15 +343,8 @@ def less(
     return paddle.less_than(x1, x2)
 
 
-@with_unsupported_dtypes(
-    {
-        "2.6.0 and below": (
-            "int8",
-            "int16",
-            "uint8",
-            "float16",
-        )
-    },
+@with_supported_dtypes(
+    {"2.6.0 and below": ("bool", "int32", "int64", "float32", "float64", "complex")},
     backend_version,
 )
 def multiply(
@@ -359,6 +355,14 @@ def multiply(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if isinstance(x1, paddle.Tensor) and isinstance(x2, paddle.Tensor):
+        if paddle.is_complex(x1) or paddle.is_complex(x2):
+            a, b = x1.real(), x1.imag()
+            c, d = x2.real(), x2.imag()
+            real = a * c - b * d
+            imag = a * d + b * c
+            return paddle.complex(real, imag)
+
     return paddle.multiply(x1, x2).astype(ret_dtype)
 
 
@@ -406,8 +410,8 @@ def divide(
             return paddle.complex(
                 abs_value * paddle.cos(angle_value), abs_value * paddle.sin(angle_value)
             )
-    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    return (x1 / x2).astype(ret_dtype)
+    x1, x2, _ = _elementwise_helper(x1, x2)
+    return x1 / x2
 
 
 @with_supported_dtypes(
@@ -613,8 +617,8 @@ def negative(
     return paddle.neg(x)
 
 
-@with_supported_dtypes(
-    {"2.6.0 and below": ("float32", "float64", "int32", "int64")},
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("bfloat16", "complex128", "float64", "float32")}},
     backend_version,
 )
 def not_equal(
@@ -1096,7 +1100,13 @@ def minimum(
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if paddle.is_complex(x1):
-        use_where = True
+        real_comparison = paddle.real(x1) < paddle.real(x2)
+        imag_comparison = paddle_backend.logical_and(
+            paddle.real(x1) == paddle.real(x2), paddle.imag(x1) < paddle.imag(x2)
+        )
+        return paddle_backend.where(
+            paddle_backend.logical_or(real_comparison, imag_comparison), x1, x2
+        ).astype(ret_dtype)
 
     if use_where:
         return paddle_backend.where(paddle_backend.less_equal(x1, x2), x1, x2).astype(
@@ -1120,7 +1130,13 @@ def maximum(
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if paddle.is_complex(x1):
-        use_where = True
+        real_comparison = paddle.real(x1) > paddle.real(x2)
+        imag_comparison = paddle_backend.logical_and(
+            paddle.real(x1) == paddle.real(x2), paddle.imag(x1) > paddle.imag(x2)
+        )
+        return paddle_backend.where(
+            paddle_backend.logical_or(real_comparison, imag_comparison), x1, x2
+        ).astype(ret_dtype)
     if use_where:
         return paddle_backend.where(
             paddle_backend.greater_equal(x1, x2), x1, x2

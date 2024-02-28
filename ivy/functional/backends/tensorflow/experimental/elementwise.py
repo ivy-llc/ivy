@@ -566,3 +566,13 @@ def erfc(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.erfc(x)
+
+
+@with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
+def erfinv(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.erfinv(x)

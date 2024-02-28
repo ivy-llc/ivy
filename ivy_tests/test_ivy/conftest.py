@@ -198,12 +198,14 @@ def pytest_configure(config):
                 continue
             for trace_graph in trace_modes:
                 for implicit in implicit_modes:
-                    TEST_PARAMS_CONFIG.append((
-                        device,
-                        backend_str,
-                        trace_graph,
-                        implicit,
-                    ))
+                    TEST_PARAMS_CONFIG.append(
+                        (
+                            device,
+                            backend_str,
+                            trace_graph,
+                            implicit,
+                        )
+                    )
 
     process_cl_flags(config)
 
@@ -288,6 +290,10 @@ def process_cl_flags(config) -> Dict[str, bool]:
             getopt("--skip-trace-testing"),
             getopt("--with-trace-testing"),
         ),
+        "test_trace_each": (
+            getopt("--skip-trace-testing-each"),
+            getopt("--with-trace-testing-each"),
+        ),
         "transpile": (
             False,
             getopt("--with-transpile"),
@@ -346,6 +352,7 @@ def pytest_addoption(parser):
     parser.addoption("--skip-instance-method-testing", action="store_true")
     parser.addoption("--skip-gradient-testing", action="store_true")
     parser.addoption("--skip-trace-testing", action="store_true")
+    parser.addoption("--skip-trace-testing-each", action="store_true")
 
     parser.addoption("--with-variable-testing", action="store_true")
     parser.addoption("--with-native-array-testing", action="store_true")
@@ -354,6 +361,7 @@ def pytest_addoption(parser):
     parser.addoption("--with-instance-method-testing", action="store_true")
     parser.addoption("--with-gradient-testing", action="store_true")
     parser.addoption("--with-trace-testing", action="store_true")
+    parser.addoption("--with-trace-testing-each", action="store_true")
     parser.addoption("--with-transpile", action="store_true")
     parser.addoption("--no-extra-testing", action="store_true")
     parser.addoption(
