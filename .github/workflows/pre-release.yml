@@ -37,10 +37,12 @@ jobs:
         run: |
           pip3 install pymongo
           cd ivy
+          sudo pip3 install -e .
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python scripts/setup_tests/setup_priority_tests.py
+          cd ..
 
       - name: Run CPU Tests
         run: |
