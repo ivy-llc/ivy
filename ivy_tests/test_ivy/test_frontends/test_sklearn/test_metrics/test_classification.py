@@ -68,7 +68,8 @@ def test_sklearn_precision_score(
     test_flags,
     backend_fw,
     sample_weight,
-):
+):  
+    config.update("jax_enable_x64", True)
     dtypes, values = arrays_and_dtypes
     # Ensure the values are binary by rounding and converting to int
     for i in range(2):
@@ -134,6 +135,7 @@ def test_sklearn_recall_score(
     backend_fw,
     sample_weight,
 ):
+    config.update("jax_enable_x64", True)
     dtypes, values = arrays_and_dtypes
     # Ensure the values are binary by rounding and converting to int
     for i in range(2):
@@ -174,7 +176,6 @@ def test_sklearn_recall_score(
         y_pred=values[1],
         sample_weight=sample_weight,
     )
-
 
 config.update("jax_enable_x64", True)
 
