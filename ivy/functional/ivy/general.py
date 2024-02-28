@@ -3127,7 +3127,7 @@ def _parse_slice(idx, s):
                     stop = 0
                 elif stop < 0:
                     stop = stop + s
-    q_i = ivy.arange(start, stop, step).to_list()
+    q_i = ivy.arange(start, stop, step)
     q_i = [q for q in q_i if 0 <= q < s]
     q_i = (
         ivy.array(q_i)
