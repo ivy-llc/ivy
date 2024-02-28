@@ -177,6 +177,7 @@ def backend_proc(input_queue, output_queue):
                 on_device,
                 fn,
                 test_trace,
+                test_trace_each,
                 xs_grad_idxs,
                 ret_grad_idxs,
             ) = data
@@ -193,6 +194,7 @@ def backend_proc(input_queue, output_queue):
                 on_device,
                 fn,
                 test_trace,
+                test_trace_each,
                 xs_grad_idxs,
                 ret_grad_idxs,
             )
@@ -215,6 +217,7 @@ def backend_proc(input_queue, output_queue):
                 test_flags,
                 kwargs_idxs,
                 test_trace,
+                test_trace_each,
                 xs_grad_idxs,
                 ret_grad_idxs,
             ) = data
@@ -232,6 +235,7 @@ def backend_proc(input_queue, output_queue):
                 test_flags,
                 kwargs_idxs,
                 test_trace,
+                test_trace_each,
                 xs_grad_idxs,
                 ret_grad_idxs,
             )
@@ -252,6 +256,7 @@ def backend_proc(input_queue, output_queue):
                 method_name,
                 init_with_v,
                 test_trace,
+                test_trace_each,
                 method_with_v,
             ) = data
             (
@@ -280,6 +285,7 @@ def backend_proc(input_queue, output_queue):
                 method_name,
                 init_with_v,
                 test_trace,
+                test_trace_each,
                 method_with_v,
             )
             # ret is none here, because main process doesn't import framework
@@ -317,6 +323,7 @@ def backend_proc(input_queue, output_queue):
                 class_name,
                 method_name,
                 test_trace,
+                test_trace_each,
                 v_np,
             ) = data
             (
@@ -339,6 +346,7 @@ def backend_proc(input_queue, output_queue):
                 class_name,
                 method_name,
                 test_trace,
+                test_trace_each,
                 v_np,
             )
             # ret from gt None here, because main process doesn't import framework
