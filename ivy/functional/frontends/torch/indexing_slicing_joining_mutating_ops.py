@@ -397,6 +397,7 @@ def squeeze(input, dim=None):
     return ivy.squeeze(input, axis=dim)
 
 
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def stack(tensors, dim=0, *, out=None):
     return ivy.stack(tensors, axis=dim, out=out)

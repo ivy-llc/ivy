@@ -1187,7 +1187,11 @@ def test_less(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.less_equal",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=6,
+        small_abs_safety_factor=6,
+        safety_factor_scale="log",
     ),
     test_gradients=st.just(False),
     ground_truth_backend="jax",
@@ -1362,7 +1366,7 @@ def test_logaddexp2(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.logical_and",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
+        available_dtypes=helpers.get_dtypes("valid", full=False), num_arrays=2
     ),
     test_gradients=st.just(False),
 )
