@@ -83,10 +83,12 @@ class TuckerTensor(FactorizedTensor):
         return TuckerTensor.tucker_to_unfolded(self, mode)
 
     def tucker_copy(self):
-        return TuckerTensor((
-            deepcopy(self.core),
-            [deepcopy(self.factors[i]) for i in range(len(self.factors))],
-        ))
+        return TuckerTensor(
+            (
+                deepcopy(self.core),
+                [deepcopy(self.factors[i]) for i in range(len(self.factors))],
+            )
+        )
 
     def to_vec(self):
         return TuckerTensor.tucker_to_vec(self)

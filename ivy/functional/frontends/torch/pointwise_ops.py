@@ -10,6 +10,9 @@ from ivy.functional.frontends.torch.func_wrapper import (
 )
 
 
+erfc = torch_frontend.special.erfc
+
+
 @to_ivy_arrays_and_back
 def abs(input, *, out=None):
     return ivy.abs(input, out=out)
@@ -187,12 +190,6 @@ def div(input, other, *, rounding_mode=None, out=None):
 @to_ivy_arrays_and_back
 def erf(input, *, out=None):
     return ivy.erf(input, out=out)
-
-
-@with_unsupported_dtypes({"2.2 and below": ("float16", "complex")}, "torch")
-@to_ivy_arrays_and_back
-def erfc(input, *, out=None):
-    return 1.0 - ivy.erf(input, out=out)
 
 
 @with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")

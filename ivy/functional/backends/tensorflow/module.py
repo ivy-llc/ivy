@@ -84,10 +84,12 @@ class TreeSpec:
             indent += len(repr_prefix)
             children_specs_str += self.children_specs[0].__repr__(indent)
             children_specs_str += "," if len(self.children_specs) > 1 else ""
-            children_specs_str += ",".join([
-                "\n" + " " * indent + child.__repr__(indent)
-                for child in self.children_specs[1:]
-            ])
+            children_specs_str += ",".join(
+                [
+                    "\n" + " " * indent + child.__repr__(indent)
+                    for child in self.children_specs[1:]
+                ]
+            )
         repr_suffix: str = f"{children_specs_str}])"
         return repr_prefix + repr_suffix
 
@@ -173,16 +175,17 @@ class ModelHelpers:
 
     @staticmethod
     @tf.autograph.experimental.do_not_convert
-    def _get_input_shapes(*args, **kwargs):
-        flattened_args = tf.nest.flatten((args, kwargs))
-        arr_candidates = tf.nest.map_structure(
-            lambda x: x if isinstance(x, (tf.Tensor, tf.Variable)) else False,
-            flattened_args,
-        )
+    def _get_input_shapes(*args):
         input_shapes = []
-        for arr_candidate in arr_candidates:
-            if arr_candidate is not False:
-                input_shapes.append(arr_candidate.shape)
+        for x in args:
+            if isinstance(x, (tf.Tensor, tf.Variable)):
+                input_shapes.append(x.shape)
+            else:
+                try:
+                    x = tf.convert_to_tensor(x)
+                    input_shapes.append(x.shape)
+                except Exception:
+                    input_shapes.append(None)
         return input_shapes
 
     @staticmethod
@@ -426,10 +429,12 @@ class Model(tf.keras.Model, ModelHelpers):
             if (
                 v is not None
                 and k[0:2] != "__"
-                and not k.startswith((
-                    "_module_dict",
-                    "_self_",
-                ))
+                and not k.startswith(
+                    (
+                        "_module_dict",
+                        "_self_",
+                    )
+                )
             ):
                 ret = self._find_variables(
                     obj=v,
@@ -631,7 +636,7 @@ class Model(tf.keras.Model, ModelHelpers):
                 if os.environ.get("USE_KERAS_BUILD", "False").lower() == "false":
                     self.inputs = tf.nest.flatten(args)
 
-                input_shapes = self._get_input_shapes(*args, **kwargs)
+                input_shapes = self._get_input_shapes(*args)
                 if len(input_shapes) == 0:
                     input_shapes = tf.TensorShape(None)
                 elif len(input_shapes) == 1:

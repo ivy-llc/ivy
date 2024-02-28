@@ -649,7 +649,6 @@ def test_torch_log_softmax(
     backend_fw,
 ):
     input_dtype, x, axis = dtype_x_and_axis
-    ivy.set_backend(backend_fw)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -660,9 +659,8 @@ def test_torch_log_softmax(
         input=x[0],
         dim=axis,
         _stacklevel=3,
-        dtype=ivy.as_ivy_dtype(dtypes[0]),
+        dtype=dtypes[0],
     )
-    ivy.previous_backend()
 
 
 # logsigmoid
