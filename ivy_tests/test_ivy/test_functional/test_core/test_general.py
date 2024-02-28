@@ -1074,6 +1074,15 @@ def test_get_all_arrays_in_memory():
     container_flags=st.just([False]),
     test_with_copy=st.just(True),
 )
+@handle_example(
+    test_example=True,
+    test_flags={
+        "num_positional_args": 2,
+    },
+    dtypes_x_query=(["float32", "bool"], np.ones((1, 3, 3)), (np.array([True]), 2, 2)),
+    copy=None,
+    fn_name="get_item",
+)
 def test_get_item(
     dtypes_x_query,
     copy,
