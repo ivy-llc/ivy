@@ -178,6 +178,3 @@ def test_sklearn_recall_score(
     )
 
 config.update("jax_enable_x64", True)
-
-
-config.update("jax_enable_x64", True)
