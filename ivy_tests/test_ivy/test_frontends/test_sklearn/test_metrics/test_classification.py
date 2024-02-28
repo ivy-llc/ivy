@@ -3,8 +3,7 @@ import torch
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import numpy as np
-from ivy.functional.frontends.jax import config
-
+from ivy.functional.frontends.jax.config import update
 
 @handle_frontend_test(
     fn_tree="sklearn.metrics.accuracy_score",
@@ -68,8 +67,8 @@ def test_sklearn_precision_score(
     test_flags,
     backend_fw,
     sample_weight,
-):
-    config.update("jax_enable_x64", True)
+):  
+    update("jax_enable_x64", True)
     dtypes, values = arrays_and_dtypes
     # Ensure the values are binary by rounding and converting to int
     for i in range(2):
@@ -135,7 +134,7 @@ def test_sklearn_recall_score(
     backend_fw,
     sample_weight,
 ):
-    config.update("jax_enable_x64", True)
+    update("jax_enable_x64", True)
     dtypes, values = arrays_and_dtypes
     # Ensure the values are binary by rounding and converting to int
     for i in range(2):
@@ -176,6 +175,4 @@ def test_sklearn_recall_score(
         y_pred=values[1],
         sample_weight=sample_weight,
     )
-
-
-config.update("jax_enable_x64", True)
+update("jax_enable_x64", True)
