@@ -96,6 +96,9 @@ Contributors
    * - Aryan Pandey
      - `Aryan8912 <https://github.com/Aryan8912>`_
      - Merging Master
+   * - Dhruv Sharma
+     - `druvdub <https://github.com/druvdub>`_
+     - Merging Master
    * - Kacper Kożdoń
      - `Kacper-W-Kozdon <https://github.com/Kacper-W-Kozdon>`_
      - Merging Master
@@ -104,4 +107,7 @@ Contributors
      - Merging Master
    * - Sheroz Khan
      - `ksheroz <https://github.com/ksheroz>`_
+     - Merging Master
+   * - Syed Muzakkir Hussain
+     - `muzakkirhussain011 <https://github.com/muzakkirhussain011>`_
      - Merging Master

@@ -11338,6 +11338,12 @@ def test_torch_repeat(
     backend_fw,
 ):
     input_dtype, x, repeats = dtype_x_repeats
+
+    if backend_fw == "paddle":
+        # paddle only supports size of the shape of repeats
+        # to be less than or equal to 6
+        assume(len(repeats) <= 6)
+
     repeat = {
         "repeats": repeats,
     }
@@ -11673,9 +11679,7 @@ def test_torch_scatter_(
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtypes[0]],
         backend_to_test=backend_fw,
-        init_all_as_kwargs_np={
-            "data": x,
-        },
+        init_all_as_kwargs_np={"data": x},
         method_input_dtypes=["int64", input_dtypes[0]],
         method_all_as_kwargs_np={
             "dim": axis,

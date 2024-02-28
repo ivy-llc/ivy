@@ -621,6 +621,7 @@ def logical_xor(x, y, name="LogicalXor"):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, "tensorflow")
 def maximum(x, y, name=None):
     return ivy.maximum(x, y)
 
@@ -1044,8 +1045,8 @@ def xlogy(x, y, name=None):
 def zero_fraction(value, name="zero_fraction"):
     zero = ivy.zeros(tuple(value.shape), dtype=ivy.float32)
     x = ivy.array(value, dtype=ivy.float32)
-    count_zero = ivy.sum(ivy.equal(x, zero))
-    count_nonzero = ivy.sum(ivy.not_equal(x, zero))
+    count_zero = ivy.sum(ivy.equal(x, zero), dtype=ivy.float32)
+    count_nonzero = ivy.sum(ivy.not_equal(x, zero), dtype=ivy.float32)
     return ivy.divide(count_zero, ivy.add(count_zero, count_nonzero))
 
 
