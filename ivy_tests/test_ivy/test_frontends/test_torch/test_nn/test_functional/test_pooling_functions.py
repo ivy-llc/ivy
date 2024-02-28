@@ -523,10 +523,12 @@ def test_torch_max_pool2d(
     ),
     test_with_out=st.just(False),
     ceil_mode=st.booleans(),
+    without_batch=st.booleans(),
 )
 def test_torch_max_pool3d(
     x_k_s_p,
     ceil_mode,
+    without_batch,
     *,
     test_flags,
     frontend,
@@ -537,6 +539,8 @@ def test_torch_max_pool3d(
     dtype, x, kernel, stride, padding, dilation = x_k_s_p
     if not isinstance(padding, int):
         padding = [pad[0] for pad in padding]
+    if without_batch:
+        x = x[0]
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
