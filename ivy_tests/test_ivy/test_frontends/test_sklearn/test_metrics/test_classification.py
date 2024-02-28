@@ -86,13 +86,7 @@ def test_sklearn_precision_score(
         )
         # If sample_weight is longer, truncate it
         sample_weight = sample_weight[: len(values[0])]
-    # Check the backend
-    if backend_fw == "jax":
-        # Check the dtype and cast it to the canonical dtype if needed
-        dtypes = [jax.dtypes.canonicalize_dtype(dtypes[0])] * 2
-        values = [ivy.astype(value, dtypes[0]) for value in values]
-    else:
-        pass
+    
     # Detach tensors if they require grad before converting to NumPy arrays
     if backend_fw == "torch":
         values = [
@@ -157,15 +151,7 @@ def test_sklearn_recall_score(
         )
         # If sample_weight is longer, truncate it
         sample_weight = sample_weight[: len(values[0])]
-    # Check the backend
-    if backend_fw == "jax":
-        # Check the dtype and cast it to the canonical dtype if needed
-        dtypes = [jax.dtypes.canonicalize_dtype(dtypes[0])] * 2
-        values = [ivy.astype(value, dtypes[0]) for value in values]
-
-    else:
-        pass
-
+    
     # Detach tensors if they require grad before converting to NumPy arrays
     if backend_fw == "torch":
         values = [
