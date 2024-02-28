@@ -4,6 +4,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import numpy as np
 
+
 @handle_frontend_test(
     fn_tree="sklearn.metrics.accuracy_score",
     arrays_and_dtypes=helpers.dtype_and_values(
@@ -84,7 +85,6 @@ def test_sklearn_precision_score(
         )
         # If sample_weight is longer, truncate it
         sample_weight = sample_weight[: len(values[0])]
-
 
     # Detach tensors if they require grad before converting to NumPy arrays
     if backend_fw == "torch":
