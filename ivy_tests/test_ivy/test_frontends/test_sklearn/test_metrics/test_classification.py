@@ -4,7 +4,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import numpy as np
 from ivy.functional.frontends.jax import config
-
+config.update("jax_enable_x64", True)
 
 @handle_frontend_test(
     fn_tree="sklearn.metrics.accuracy_score",
