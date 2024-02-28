@@ -3,7 +3,7 @@ import torch
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import numpy as np
-from ivy.frontends.jax.config import jax_enable_x64
+
 
 @handle_frontend_test(
     fn_tree="sklearn.metrics.accuracy_score",
@@ -87,9 +87,9 @@ def test_sklearn_precision_score(
         sample_weight = sample_weight[: len(values[0])]
     # Check the backend
     if backend_fw == "jax":
-        jax_enable_x64 = True
+        pass
     else:
-        jax_enable_x64 = False
+        pass
     # Detach tensors if they require grad before converting to NumPy arrays
     if backend_fw == "torch":
         values = [
@@ -156,9 +156,9 @@ def test_sklearn_recall_score(
         sample_weight = sample_weight[: len(values[0])]
     # Check the backend
     if backend_fw == "jax":
-        jax_enable_x64 = True
+        pass
     else:
-        jax_enable_x64 = False
+        pass
     # Detach tensors if they require grad before converting to NumPy arrays
     if backend_fw == "torch":
         values = [
