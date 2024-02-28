@@ -1,4 +1,4 @@
-jax_enable_x64 = True
+jax_enable_x64 = False
 
 
 def update(value, toggle):
