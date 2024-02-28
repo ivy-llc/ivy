@@ -1,6 +1,16 @@
 name: Pre-release Testing Workflow
 on:
   workflow_dispatch:
+    inputs:
+      tracer:
+        description: 'Tracer Testing :'
+        default: false
+        required: false
+
+      tracer_each:
+        description: 'Tracer Testing Each :'
+        default: false
+        required: false
 
 permissions:
   actions: read
@@ -35,9 +45,4 @@ jobs:
       - name: Run CPU Tests
         run: |
           cd ivy
-          python scripts/run_tests/run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} 'true' 'false' ${{ steps.jobs.outputs.html_url }}
-
-      - name: Run GPU Tests
-        run: |
-          cd ivy
-          python scripts/run_tests/run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'true' ${{ github.run_id }} 'true' 'false' ${{ steps.jobs.outputs.html_url }}
+          python scripts/run_tests/run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} 'true' ${{ github.event.inputs.tracer }} ${{ github.event.inputs.tracer_each }} ${{ steps.jobs.outputs.html_url }}
