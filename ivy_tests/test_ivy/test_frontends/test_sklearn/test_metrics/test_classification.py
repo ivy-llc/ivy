@@ -86,7 +86,7 @@ def test_sklearn_precision_score(
         )
         # If sample_weight is longer, truncate it
         sample_weight = sample_weight[: len(values[0])]
-    
+
     # Detach tensors if they require grad before converting to NumPy arrays
     if backend_fw == "torch":
         values = [
@@ -151,7 +151,7 @@ def test_sklearn_recall_score(
         )
         # If sample_weight is longer, truncate it
         sample_weight = sample_weight[: len(values[0])]
-    
+
     # Detach tensors if they require grad before converting to NumPy arrays
     if backend_fw == "torch":
         values = [
