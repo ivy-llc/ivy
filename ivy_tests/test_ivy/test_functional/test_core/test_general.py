@@ -1865,6 +1865,13 @@ def test_supports_inplace_updates(
     )
 
 
+def test_tensorflow_get_item_condition():
+    from ivy.functional.backends.tensorflow.general import _get_item_condition
+
+    query = tf.constant([0])
+    assert _get_item_condition(None, query)
+
+
 # to_list
 @handle_test(
     fn_tree="functional.ivy.to_list",
