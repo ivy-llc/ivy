@@ -356,6 +356,40 @@ def test_mindspore_conv3d(
     )
 
 
+#dropout
+@pytest.mark.skip("Testing pipeline not yet implemented")
+@handle_frontend_test(
+    fn_tree="mindspore.ops.function.nn_func.dropout",
+    d_type_and_x=helpers.dtype_and_values(),
+    p=helpers.floats(min_value=0.0, max_value=1.0),
+    training=st.booleans(),
+    seed=helpers.ints(min_value=0, max_value=100)
+)
+def test_mindspore_dropout(
+    *,
+    d_type_and_x,
+    p,
+    training,
+    seed,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = d_type_and_x
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        p=p,
+        training=training,
+        seed=seed,
+    )
+
+
 # dropout2d
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
