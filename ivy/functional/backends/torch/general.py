@@ -197,11 +197,13 @@ def gather(
         abs(params.dim() - (indices_ex.dim() - batch_dims))
         stack_dims1 = params.shape[:axis]
         stack_dims2 = params.shape[axis + 1 :]
-        indices_ex = indices_ex.reshape((
-            torch.Size([1 for dim in stack_dims1])
-            + torch.Size([-1])
-            + torch.Size([1 for dim in stack_dims2])
-        ))
+        indices_ex = indices_ex.reshape(
+            (
+                torch.Size([1 for dim in stack_dims1])
+                + torch.Size([-1])
+                + torch.Size([1 for dim in stack_dims2])
+            )
+        )
         indices_ex = indices_ex.expand(
             (stack_dims1 + torch.Size([-1]) + stack_dims2)
         ).reshape((stack_dims1 + torch.Size([-1]) + stack_dims2))
