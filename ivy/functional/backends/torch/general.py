@@ -183,7 +183,7 @@ def gather(
     batch_dims: int = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    axis = abs(len(params.shape) + axis) if axis < 0 else axis
+    axis %= len(params.shape)
     batch_dims %= len(params.shape)
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     result = []
