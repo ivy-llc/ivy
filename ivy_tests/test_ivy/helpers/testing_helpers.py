@@ -7,7 +7,7 @@ import inspect
 import functools
 from typing import List, Optional
 
-from hypothesis import given, strategies as st
+from hypothesis import given, strategies as st, example
 
 # local
 import ivy.functional.frontends.numpy as np_frontend
@@ -27,6 +27,7 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltWithCopyStrategy,
     BuiltInplaceStrategy,
     BuiltTraceStrategy,
+    BuiltTraceEachStrategy,
     BuiltFrontendArrayStrategy,
     BuiltTranspileStrategy,
     BuiltPrecisionModeStrategy,
@@ -45,6 +46,7 @@ cmd_line_args = (
     "instance_method",
     "test_gradients",
     "test_trace",
+    "test_trace_each",
     "precision_mode",
 )
 cmd_line_args_lists = (
@@ -231,13 +233,15 @@ def _get_method_supported_devices_dtypes(
         if mod_backend[backend_str]:
             # we gotta do this using multiprocessing
             proc, input_queue, output_queue = mod_backend[backend_str]
-            input_queue.put((
-                "method supported dtypes",
-                method_name,
-                class_module.__name__,
-                class_name,
-                backend_str,
-            ))
+            input_queue.put(
+                (
+                    "method supported dtypes",
+                    method_name,
+                    class_module.__name__,
+                    class_name,
+                    backend_str,
+                )
+            )
             supported_device_dtypes[backend_str] = output_queue.get()
         else:
             supported_device_dtypes[backend_str] = (
@@ -333,6 +337,7 @@ def handle_test(
     test_with_copy=BuiltWithCopyStrategy,
     test_gradients=BuiltGradientStrategy,
     test_trace=BuiltTraceStrategy,
+    test_trace_each=BuiltTraceEachStrategy,
     transpile=BuiltTranspileStrategy,
     precision_mode=BuiltPrecisionModeStrategy,
     as_variable_flags=BuiltAsVariableStrategy,
@@ -376,6 +381,10 @@ def handle_test(
         A search strategy that generates a boolean to trace and test the
         function
 
+    test_trace_each
+        A search strategy that generates a boolean to trace and test the
+        function (trace each example separately)
+
     precision_mode
         A search strategy that generates a boolean to switch between two different
         precision modes supported by numpy and (torch, jax) and test the function
@@ -411,6 +420,7 @@ def handle_test(
             with_copy=_get_runtime_flag_value(test_with_copy),
             test_gradients=_get_runtime_flag_value(test_gradients),
             test_trace=_get_runtime_flag_value(test_trace),
+            test_trace_each=_get_runtime_flag_value(test_trace_each),
             transpile=_get_runtime_flag_value(transpile),
             as_variable=_get_runtime_flag_value(as_variable_flags),
             native_arrays=_get_runtime_flag_value(native_array_flags),
@@ -479,6 +489,7 @@ def handle_frontend_test(
     as_variable_flags=BuiltAsVariableStrategy,
     native_array_flags=BuiltNativeArrayStrategy,
     test_trace=BuiltTraceStrategy,
+    test_trace_each=BuiltTraceEachStrategy,
     generate_frontend_arrays=BuiltFrontendArrayStrategy,
     transpile=BuiltTranspileStrategy,
     precision_mode=BuiltPrecisionModeStrategy,
@@ -527,6 +538,10 @@ def handle_frontend_test(
         A search strategy that generates a boolean to trace and test the
         function
 
+    test_trace_each
+        A search strategy that generates a boolean to trace and test the
+        function (trace each example separately)
+
     generate_frontend_arrays
         A search strategy that generates a list of boolean flags for array inputs to
         be frontend array
@@ -550,6 +565,7 @@ def handle_frontend_test(
             as_variable=_get_runtime_flag_value(as_variable_flags),
             native_arrays=_get_runtime_flag_value(native_array_flags),
             test_trace=_get_runtime_flag_value(test_trace),
+            test_trace_each=_get_runtime_flag_value(test_trace_each),
             generate_frontend_arrays=_get_runtime_flag_value(generate_frontend_arrays),
             transpile=_get_runtime_flag_value(transpile),
             precision_mode=_get_runtime_flag_value(precision_mode),
@@ -624,6 +640,7 @@ def handle_method(
     ground_truth_backend: str = "tensorflow",
     test_gradients=BuiltGradientStrategy,
     test_trace=BuiltTraceStrategy,
+    test_trace_each=BuiltTraceEachStrategy,
     precision_mode=BuiltPrecisionModeStrategy,
     init_num_positional_args=None,
     init_native_arrays=BuiltNativeArrayStrategy,
@@ -655,6 +672,7 @@ def handle_method(
         "ground_truth_backend": st.just(ground_truth_backend),
         "test_gradients": _get_runtime_flag_value(test_gradients),
         "test_trace": _get_runtime_flag_value(test_trace),
+        "test_trace_each": _get_runtime_flag_value(test_trace_each),
         "precision_mode": _get_runtime_flag_value(precision_mode),
     }
 
@@ -744,6 +762,7 @@ def handle_frontend_method(
     init_native_arrays=BuiltNativeArrayStrategy,
     init_as_variable_flags=BuiltAsVariableStrategy,
     test_trace=BuiltTraceStrategy,
+    test_trace_each=BuiltTraceEachStrategy,
     precision_mode=BuiltPrecisionModeStrategy,
     method_num_positional_args=None,
     method_native_arrays=BuiltNativeArrayStrategy,
@@ -848,6 +867,7 @@ def handle_frontend_method(
                 as_variable=_get_runtime_flag_value(method_as_variable_flags),
                 native_arrays=_get_runtime_flag_value(method_native_arrays),
                 test_trace=_get_runtime_flag_value(test_trace),
+                test_trace_each=_get_runtime_flag_value(test_trace_each),
                 precision_mode=_get_runtime_flag_value(precision_mode),
                 generate_frontend_arrays=_get_runtime_flag_value(
                     generate_frontend_arrays
@@ -937,3 +957,117 @@ def _create_transpile_report(
     json_object = json.dumps(data, indent=6)
     with open(file_name, "w") as outfile:
         outfile.write(json_object)
+
+
+def handle_example(
+    *,
+    test_example: bool = False,
+    test_frontend_example: bool = False,
+    test_method_example: bool = False,
+    test_frontend_method_example: bool = False,
+    **given_kwargs,
+):
+    if test_example:
+        test_flags = given_kwargs.get("test_flags", {})
+        flags = pf.FunctionTestFlags(
+            ground_truth_backend=test_flags.get("ground_truth_backend", "numpy"),
+            num_positional_args=test_flags.get("num_positional_args", 0),
+            instance_method=test_flags.get("instance_method", False),
+            with_out=test_flags.get("with_out", False),
+            with_copy=test_flags.get("with_copy", False),
+            test_gradients=test_flags.get("test_gradients", False),
+            test_trace=test_flags.get("test_trace", False),
+            test_trace_each=test_flags.get("test_trace_each", False),
+            transpile=test_flags.get("transpile", False),
+            as_variable=test_flags.get("as_variable", [False]),
+            native_arrays=test_flags.get("native_arrays", [False]),
+            container=test_flags.get("container", [False]),
+            precision_mode=test_flags.get("precision_mode", False),
+            test_cython_wrapper=test_flags.get("test_cython_wrapper", False),
+        )
+
+        given_kwargs["test_flags"] = flags
+
+    elif test_frontend_example:
+        test_flags = given_kwargs.get("test_flags", {})
+        flags = pf.FrontendFunctionTestFlags(
+            num_positional_args=test_flags.get("num_positional_args", 0),
+            with_out=test_flags.get("with_out", False),
+            with_copy=test_flags.get("with_copy", False),
+            inplace=test_flags.get("inplace", False),
+            as_variable=test_flags.get("as_variable", [False]),
+            native_arrays=test_flags.get("native_arrays", [False]),
+            test_trace=test_flags.get("test_trace", False),
+            test_trace_each=test_flags.get("test_trace_each", False),
+            generate_frontend_arrays=test_flags.get("generate_frontend_arrays", False),
+            transpile=test_flags.get("transpile", False),
+            precision_mode=test_flags.get("precision_mode", False),
+        )
+
+        given_kwargs["test_flags"] = flags
+
+    elif test_method_example:
+        method_flags = given_kwargs.get("method_flags", {})
+        init_flags = given_kwargs.get("init_flags", {})
+        flags_1 = pf.MethodTestFlags(
+            num_positional_args=method_flags.get("num_positional_args", 0),
+            as_variable=method_flags.get("as_variable", [False]),
+            native_arrays=method_flags.get("native_arrays", [False]),
+            container_flags=method_flags.get("container", [False]),
+            precision_mode=method_flags.get("precision_mode", False),
+        )
+
+        flags_2 = pf.InitMethodTestFlags(
+            num_positional_args=init_flags.get("num_positional_args", 0),
+            as_variable=init_flags.get("as_variable", [False]),
+            native_arrays=init_flags.get("native_arrays", [False]),
+            precision_mode=init_flags.get("precision_mode", False),
+        )
+
+        given_kwargs["method_flags"] = flags_1
+        given_kwargs["init_flags"] = flags_2
+
+    elif test_frontend_method_example:
+        method_flags = given_kwargs.get("method_flags", {})
+        init_flags = given_kwargs.get("init_flags", {})
+        flags_1 = pf.FrontendMethodTestFlags(
+            num_positional_args=method_flags.get("num_positional_args", 0),
+            as_variable=method_flags.get("as_variable", [False]),
+            native_arrays=method_flags.get("native_arrays", [False]),
+            precision_mode=method_flags.get("precision_mode", False),
+            inplace=method_flags.get("inplace", False),
+            test_trace=method_flags.get("test_trace", False),
+            test_trace_each=method_flags.get("test_trace_each", False),
+            generate_frontend_arrays=method_flags.get(
+                "generate_frontend_arrays", False
+            ),
+        )
+
+        flags_2 = pf.FrontendInitTestFlags(
+            num_positional_args=init_flags.get("num_positional_args", 0),
+            as_variable=init_flags.get("as_variable", [False]),
+            native_arrays=init_flags.get("native_arrays", [False]),
+        )
+
+        given_kwargs["method_flags"] = flags_1
+        given_kwargs["init_flags"] = flags_2
+
+    def test_wrapper(test_fn):
+
+        hypothesis_test_fn = example(**given_kwargs)(test_fn)
+
+        @functools.wraps(hypothesis_test_fn)
+        def wrapped_test(*args, **kwargs):
+            try:
+                hypothesis_test_fn(*args, **kwargs)
+            except Exception as e:
+                # A string matching is used instead of actual exception due to
+                # exception object in with_backend is different from global Ivy
+                if e.__class__.__qualname__ == "IvyNotImplementedException":
+                    pytest.skip("Function not implemented in backend.")
+                else:
+                    raise e
+
+        return wrapped_test
+
+    return test_wrapper

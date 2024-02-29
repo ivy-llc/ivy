@@ -8,6 +8,7 @@ import hypothesis.extra.numpy as nph
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import sizes_
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_value1_value2_axis_for_tensordot,
@@ -188,17 +189,6 @@ def complex_strategy(
     shape = list(shape)
     shape.append(2)
     return tuple(shape)
-
-
-@st.composite
-def dims_and_offset(draw, shape):
-    shape_actual = draw(shape)
-    dim1 = draw(helpers.get_axis(shape=shape, force_int=True))
-    dim2 = draw(helpers.get_axis(shape=shape, force_int=True))
-    offset = draw(
-        st.integers(min_value=-shape_actual[dim1], max_value=shape_actual[dim1])
-    )
-    return dim1, dim2, offset
 
 
 # cross
@@ -899,7 +889,7 @@ def test_torch_diagflat(
         available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ),
-    dims_and_offset=dims_and_offset(
+    dims_and_offset=helpers.dims_and_offset(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape")
     ),
 )
@@ -1014,6 +1004,38 @@ def test_torch_einsum(
         on_device=on_device,
         equation=eq,
         **kw,
+    )
+
+
+# erfinv
+@handle_frontend_test(
+    fn_tree="torch.special.erfinv",
+    aliases=["torch.erfinv"],
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1,
+        max_value=1,
+        abs_smallest_val=1e-05,
+    ),
+)
+def test_torch_erfinv(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
     )
 
 
@@ -1546,10 +1568,10 @@ def test_torch_rot90(
         max_num_dims=1,
         num_arrays=2,
     ),
-    side=st.sampled_from(["left", "right"]),
+    side=st.sampled_from(["left", "right", None]),
     out_int32=st.booleans(),
-    right=st.just(False),
-    test_with_out=st.just(False),
+    right=st.sampled_from([True, False, None]),
+    test_with_out=st.booleans(),
 )
 def test_torch_searchsorted(
     dtype_x_v,
@@ -1562,6 +1584,13 @@ def test_torch_searchsorted(
     backend_fw,
     on_device,
 ):
+    potential_kwargs = {}
+    if side == "left" and right:
+        right = None  # this combo will cause an exception
+    if side is not None:
+        potential_kwargs["side"] = side
+    if right is not None:
+        potential_kwargs["right"] = right
     input_dtypes, xs = dtype_x_v
     use_sorter = st.booleans()
     if use_sorter:
@@ -1579,10 +1608,9 @@ def test_torch_searchsorted(
         on_device=on_device,
         sorted_sequence=xs[0],
         values=xs[1],
-        side=side,
         out_int32=out_int32,
-        right=right,
         sorter=sorter,
+        **potential_kwargs,
     )
 
 
@@ -1774,6 +1802,47 @@ def test_torch_triu_indices(
         row=row,
         col=col,
         offset=offset,
+    )
+
+
+# unflatten
+@handle_frontend_test(
+    fn_tree="torch.unflatten",
+    shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        shape_key="shape",
+    ),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        force_int=True,
+    ),
+)
+def test_torch_unflatten(
+    *,
+    dtype_and_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+    shape,
+    axis,
+):
+    dtype, x = dtype_and_values
+    sizes = sizes_(shape, axis)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        input=x[0],
+        dim=axis,
+        sizes=sizes,
     )
 
 

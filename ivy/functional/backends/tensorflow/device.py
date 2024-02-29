@@ -34,6 +34,7 @@ def dev(
     dv = x.device
     if as_native:
         return dv
+    dv = dv if dv else ivy.default_device(as_native=False)
     return as_ivy_dev(dv)
 
 

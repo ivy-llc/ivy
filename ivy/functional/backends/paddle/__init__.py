@@ -297,8 +297,14 @@ from . import experimental
 from .experimental import *
 from . import control_flow_ops
 from .control_flow_ops import *
+from . import module
+from .module import *
+
 
 # sub-backends
 
 from . import sub_backends
 from .sub_backends import *
+
+
+NativeModule = paddle.nn.Layer

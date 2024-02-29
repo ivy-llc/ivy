@@ -423,7 +423,7 @@ def less(
     return tf.math.less(x1, x2)
 
 
-@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("complex", "bool")}, backend_version)
 def less_equal(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
@@ -872,6 +872,7 @@ def deg2rad(
     return radians
 
 
+@with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
 def rad2deg(
     x: Union[tf.Tensor, tf.Variable],
     /,

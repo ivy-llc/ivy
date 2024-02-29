@@ -1214,9 +1214,17 @@ def split(
     >>> x = ivy.Container(a=ivy.array([10, 45, 2]))
     >>> y = ivy.split(x)
     >>> print(y)
-    {
-        a:(list[3],<classivy.array.Array>shape=[1])
-    }
+    [
+        {
+            a: ivy.array([10])
+        },
+        {
+            a: ivy.array([45])
+        },
+        {
+            a: ivy.array([2])
+        }
+    ]
     """
     return current_backend(x).split(
         x,

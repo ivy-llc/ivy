@@ -16,36 +16,6 @@ else:
 
 use = ivy.utils.backend.ContextManager(_module_in_memory)
 
-# wrap __array_ufunc__ method of ivy.Array to prioritize Ivy array methods when using numpu backend
-
-
-def wrap__array_ufunc__(func):
-    def rep_method(self, ufunc, method, *inputs, **kwargs):
-        methods = {
-            "not_equal": "not_equal",
-            "greater": "greater",
-            "less": "less",
-            "greater_equal": "greater_equal",
-            "less_equal": "less_equal",
-            "multiply": "multiply",
-            "divide": "divide",
-            "remainder": "remainder",
-            "equal": "equal",
-            "bitwise_and": "bitwise_and",
-            "matmul": "matmul",
-            "power": "pow",
-            "subtract": "subtract",
-            "add": "add",
-        }
-        if ufunc.__name__ in methods:
-            return eval("ivy." + methods[ufunc.__name__] + "(*inputs, **kwargs)")
-        return func(self, ufunc, method, *inputs, **kwargs)
-
-    return rep_method
-
-
-ivy.Array.__array_ufunc__ = wrap__array_ufunc__(ivy.Array.__array_ufunc__)
-
 NativeArray = np.ndarray
 NativeDevice = str
 NativeDtype = np.dtype
@@ -213,9 +183,14 @@ from . import experimental
 from .experimental import *
 from . import control_flow_ops
 from .control_flow_ops import *
+from . import module
+from .module import *
 
 
 # sub-backends
 
 from . import sub_backends
 from .sub_backends import *
+
+
+NativeModule = None

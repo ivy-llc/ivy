@@ -160,6 +160,49 @@ def test_torch_adaptive_max_pool2d(
     )
 
 
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.adaptive_max_pool3d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=4,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_value=100,
+        min_value=-100,
+    ),
+    output_size=st.one_of(
+        st.tuples(
+            helpers.ints(min_value=1, max_value=5),
+            helpers.ints(min_value=1, max_value=5),
+            helpers.ints(min_value=1, max_value=5),
+        ),
+        helpers.ints(min_value=1, max_value=5),
+    ),
+    test_with_out=st.just(False),
+)
+def test_torch_adaptive_max_pool3d(
+    *,
+    dtype_and_x,
+    output_size,
+    on_device,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        output_size=output_size,
+    )
+
+
 # avg_pool1d
 @handle_frontend_test(
     fn_tree="torch.nn.functional.avg_pool1d",
@@ -480,10 +523,12 @@ def test_torch_max_pool2d(
     ),
     test_with_out=st.just(False),
     ceil_mode=st.booleans(),
+    without_batch=st.booleans(),
 )
 def test_torch_max_pool3d(
     x_k_s_p,
     ceil_mode,
+    without_batch,
     *,
     test_flags,
     frontend,
@@ -494,6 +539,8 @@ def test_torch_max_pool3d(
     dtype, x, kernel, stride, padding, dilation = x_k_s_p
     if not isinstance(padding, int):
         padding = [pad[0] for pad in padding]
+    if without_batch:
+        x = x[0]
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,

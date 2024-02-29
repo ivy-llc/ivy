@@ -6,14 +6,13 @@ We award a range of badges, each designed to formally recognize the specific ach
 Badges
 ~~~~~~~
 
-**Debugging Dynamos** - These badges are awarded to contributors who demonstrate exceptional skill in identifying and reporting issues.
-It recognizes the crucial role of pinpointing problems which is fundamental in maintaining the integrity and performance of our codebase.
+**Debugging Dynamos** - These badges are earned by creating useful issues. If you find a problem that isn't listed as an open task, report it by creating a new issue. Make sure to describe the problem thoroughly. If your issue is confirmed as useful and marked as a "Useful Issue" by our team, you'll receive the badge as recognition for your valuable contribution to improving our codebase.
 
-**Merging Master** - These badges are formal recognitions for contributors whose pull requests consistently meet our high standards of quality and are successfully merged into the main codebase.
+**Merging Master** - These badges are formal recognitions for contributors whose pull requests consistently meet our standards of quality and are successfully merged into the main codebase.
 
-**Merging Wizard** - These exclusive badges are awarded to contributors who successfully get *priority* pull requests merged. This recognition is for handling complex, high-priority tasks that have a substantial impact on the project's progress and success.
+**Merging Wizard** - These exclusive badges are awarded to contributors who successfully get *priority* pull requests merged. This recognition is for handling complex, high-priority tasks that have a substantial impact on the project's progress and success. Priority pull requests are those that close `"Priority Open" issues <https://github.com/unifyai/ivy/labels/Failing%20Test>`_ found within each framework.
 
-**Ivy Inspectors** - These badges are given in acknowledgment of the essential role played by those who review our pull requests. It honours the commitment to quality and diligence in ensuring that each code merge aligns with our high standards.
+**Ivy Inspectors** - These badges are given in acknowledgment of the essential role played by those who review our pull requests. It honours the commitment to quality and diligence in ensuring that each code merge aligns with our standards.
 
 Each badge comes in four distinct tiers – Initial, Bronze, Silver, and Gold, mirroring your growing expertise and commitment in these areas.
 

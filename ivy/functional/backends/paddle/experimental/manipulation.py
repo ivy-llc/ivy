@@ -20,6 +20,7 @@ from ivy.func_wrapper import (
     with_unsupported_device_and_dtypes,
     with_supported_dtypes,
     with_unsupported_dtypes,
+    handle_out_argument,
 )
 import paddle
 import ivy
@@ -310,6 +311,10 @@ def fliplr(
     return paddle.flip(m, axis=1)
 
 
+@with_unsupported_dtypes(
+    {"2.6.0 and below": ("bfloat16", "float16")},
+    backend_version,
+)
 def i0(
     x: paddle.Tensor,
     /,
@@ -905,3 +910,30 @@ put_along_axis.partial_mixed_handler = lambda *args, mode="assign", **kwargs: mo
     "sum",
     "mul",
 ]
+
+
+@with_supported_dtypes(
+    {
+        "2.6.0 and below": (
+            "int32",
+            "int64",
+            "float64",
+            "complex128",
+            "float32",
+            "complex64",
+            "bool",
+        )
+    },
+    backend_version,
+)
+@handle_out_argument
+def unflatten(
+    x: paddle.Tensor,
+    /,
+    shape: Tuple[int] = None,
+    dim: int = 0,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    res = paddle.unflatten(x, dim, shape)
+    return res

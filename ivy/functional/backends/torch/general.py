@@ -5,7 +5,7 @@ signature."""
 from functools import reduce as _reduce
 from numbers import Number
 from operator import mul
-from typing import Optional, Union, Sequence, Callable, List, Tuple
+from typing import Callable, List, Optional, Sequence, Tuple, Union
 
 try:
     import functorch
@@ -16,9 +16,10 @@ import torch
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, _update_torch_views
-from . import backend_version, is_variable
+from ivy.func_wrapper import _update_torch_views, with_unsupported_dtypes
+
 from ...ivy.general import _broadcast_to
+from . import backend_version, is_variable
 
 torch_scatter = None
 
@@ -54,7 +55,7 @@ def is_native_array(x, /, *, exclusive=False):
     return False
 
 
-@with_unsupported_dtypes({"2.1.2 and below": ("complex", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("complex", "bfloat16")}, backend_version)
 def array_equal(x0: torch.Tensor, x1: torch.Tensor, /) -> bool:
     x0, x1 = ivy.promote_types_of_inputs(x0, x1)
     return torch.equal(x0, x1)
@@ -94,6 +95,8 @@ def get_item(
     *,
     copy: Optional[bool] = None,
 ) -> torch.Tensor:
+    if copy:
+        x = x.clone()
     return x.__getitem__(query)
 
 
@@ -402,7 +405,7 @@ def multiprocessing(context: Optional[str] = None):
 
 @with_unsupported_dtypes(
     {
-        "2.1.2 and below": ("bfloat16",),
+        "2.2 and below": ("bfloat16",),
     },
     backend_version,
 )
@@ -454,7 +457,7 @@ scatter_flat.support_native_out = True
 
 @with_unsupported_dtypes(
     {
-        "2.1.2 and below": (
+        "2.2 and below": (
             "float16",
             "bfloat16",
         )
@@ -561,7 +564,7 @@ def shape(
         return ivy.Shape(x.shape)
 
 
-@with_unsupported_dtypes({"2.1.2 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, backend_version)
 def vmap_v_1p13p1_and_below(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
@@ -579,7 +582,7 @@ def vmap_v_1p13p1_and_below(
     return _vmap
 
 
-@with_unsupported_dtypes({"2.1.2 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, backend_version)
 def vmap_v_2p0p0_and_above(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
@@ -598,7 +601,7 @@ def vmap_v_2p0p0_and_above(
 
 
 @with_unsupported_dtypes(
-    {"2.1.2 and below": ("bfloat16", "float16", "complex", "bool")}, backend_version
+    {"2.2 and below": ("bfloat16", "float16", "complex", "bool")}, backend_version
 )
 def isin(
     elements: torch.tensor,

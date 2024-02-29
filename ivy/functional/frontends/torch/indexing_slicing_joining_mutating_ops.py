@@ -74,7 +74,7 @@ def conj(input):
 # diagonal_scatter
 @with_unsupported_dtypes(
     {
-        "2.1.2 and below": (
+        "2.2 and below": (
             "bfloat16",
             "float16",
         )
@@ -215,7 +215,7 @@ def index_copy(input, dim, index, source, *, out=None):
 
 @with_unsupported_dtypes(
     {
-        "2.1.2 and below": (
+        "2.2 and below": (
             "uint16",
             "uint32",
             "uint64",
@@ -397,6 +397,7 @@ def squeeze(input, dim=None):
     return ivy.squeeze(input, axis=dim)
 
 
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def stack(tensors, dim=0, *, out=None):
     return ivy.stack(tensors, axis=dim, out=out)
