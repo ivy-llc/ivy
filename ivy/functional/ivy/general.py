@@ -4047,6 +4047,51 @@ def get_num_dims(
     return current_backend(x).get_num_dims(x, as_array=as_array)
 
 
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device
+def size(x: Union[ivy.Array, ivy.NativeArray]) -> int:
+    """Return the number of elements of the array x.
+
+    Parameters
+    ----------
+    x
+        Input array to infer the number of elements for.
+
+    Returns
+    -------
+    ret
+        Number of elements of the array
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> a = ivy.array([[[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+    ...                    [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+    ...                    [[0, 0, 0], [0, 0, 0], [0, 0, 0]]])
+    >>> b = ivy.size(a)
+    >>> print(b)
+    27
+
+    With :class:`ivy.Container` input:
+
+    >>> a = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
+    >>> print(ivy.size(a))
+    {
+        b: 9
+    }
+    """
+    return current_backend(x).size(x)
+
+
 @handle_exceptions
 def arg_info(fn: Callable, *, name: Optional[str] = None, idx: Optional[int] = None):
     """Return the index and `inspect.Parameter` representation of the specified
