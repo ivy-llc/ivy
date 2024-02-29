@@ -356,14 +356,14 @@ def test_mindspore_conv3d(
     )
 
 
-#dropout
+# dropout
 @pytest.mark.skip("Testing pipeline not yet implemented")
 @handle_frontend_test(
     fn_tree="mindspore.ops.function.nn_func.dropout",
     d_type_and_x=helpers.dtype_and_values(),
     p=helpers.floats(min_value=0.0, max_value=1.0),
     training=st.booleans(),
-    seed=helpers.ints(min_value=0, max_value=100)
+    seed=helpers.ints(min_value=0, max_value=100),
 )
 def test_mindspore_dropout(
     *,
