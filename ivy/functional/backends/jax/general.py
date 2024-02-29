@@ -1,24 +1,26 @@
-"""Collection of Jax general functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Jax general functions, wrapped to fit Ivy syntax and
+signature."""
+
+import importlib
+import multiprocessing as _multiprocessing
+from functools import reduce as _reduce
+from numbers import Number
+from operator import mul
+from typing import Callable, Optional, Sequence, Tuple, Union
 
 # global
 import jax
-import numpy as np
 import jax.numpy as jnp
-from numbers import Number
-from operator import mul
-from functools import reduce as _reduce
-from typing import Optional, Union, Sequence, Callable, Tuple
-import multiprocessing as _multiprocessing
-import importlib
-
+import numpy as np
 
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.backends.jax import JaxArray, NativeArray
 from ivy.functional.backends.jax.device import _to_array, _to_device
 from ivy.functional.ivy.general import _broadcast_to
-from ivy.functional.backends.jax import JaxArray, NativeArray
 from ivy.utils.exceptions import _check_inplace_update_support
+
 from . import backend_version
 
 
@@ -57,8 +59,7 @@ def _mask_to_index(query, x):
             raise ivy.exceptions.IvyException("too many indices")
         elif not len(query.shape):
             query = jnp.tile(query, x.shape[0])
-    expected_shape = x[query].shape
-    return jnp.where(query), expected_shape
+    return jnp.where(query)
 
 
 def get_item(
@@ -66,15 +67,17 @@ def get_item(
     /,
     query: Union[JaxArray, Tuple],
     *,
-    copy: bool = None,
+    copy: Optional[bool] = None,
 ) -> JaxArray:
+    if copy:
+        x = x.copy()
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         if not len(query.shape):
             if not query:
                 return jnp.array([], dtype=x.dtype)
             else:
                 return jnp.expand_dims(x, 0)
-        query, _ = _mask_to_index(query, x)
+        query = _mask_to_index(query, x)
     elif isinstance(query, list):
         query = (query,)
     return x.__getitem__(query)
@@ -89,7 +92,9 @@ def set_item(
     copy: Optional[bool] = False,
 ) -> JaxArray:
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
-        query, expected_shape = _mask_to_index(query, x)
+        query = _mask_to_index(query, x)
+    expected_shape = x[query].shape
+    if ivy.is_array(val):
         val = _broadcast_to(val, expected_shape)._data
     ret = x.at[query].set(val)
     if copy:
@@ -101,7 +106,7 @@ def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
 
-@with_unsupported_dtypes({"0.4.16 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.24 and below": ("bfloat16",)}, backend_version)
 def to_numpy(x: JaxArray, /, *, copy: bool = True) -> np.ndarray:
     if copy:
         return np.array(_to_array(x))
@@ -420,7 +425,7 @@ def vmap(
     )
 
 
-@with_unsupported_dtypes({"0.4.16 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"0.4.24 and below": ("float16", "bfloat16")}, backend_version)
 def isin(
     elements: JaxArray,
     test_elements: JaxArray,

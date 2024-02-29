@@ -166,7 +166,7 @@ def test_mish(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.relu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
@@ -208,8 +208,8 @@ def test_sigmoid(
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
-        rtol_=1e-2,
-        atol_=1e-2,
+        atol_=1e-02,
+        rtol_=1e-02,
         x=x[0],
         complex_mode=complex_mode,
     )

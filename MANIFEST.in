@@ -2,3 +2,6 @@ include requirements/requirements.txt
 include ivy/compiler/utils/*.so
 include ivy/compiler/*.so
 include ivy/compiler/*.py
+include binaries.json
+include available_configs.json
+include wrappers.json

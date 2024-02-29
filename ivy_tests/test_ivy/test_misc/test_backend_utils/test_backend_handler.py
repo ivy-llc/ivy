@@ -88,32 +88,33 @@ def test_current_backend(backend, array_type):
 
 
 @pytest.mark.parametrize(
-    "middle_backend,end_backend", [(a, b) for a in backends for b in backends if a != b]
+    ("middle_backend", "end_backend"),
+    [(a, b) for a in backends for b in backends if (a != b and "mxnet" not in [a, b])],
 )
 def test_dynamic_backend_all_combos(middle_backend, end_backend):
     # create an ivy array, container and native container
     a = ivy.array([1, 2, 3])
     b = ivy.array([4, 5, 6])
     ivy_cont = ivy.Container({"w": a, "b": b})
-    nativ_cont = ivy.Container(
-        {"w": tf.Variable([1, 2, 3]), "b": tf.Variable([4, 5, 6])}
-    )
 
     # clear the backend stack after initialization of inputs
     ivy.unset_backend()
 
     # set dynamic_backend to false for all objects
     ivy_cont.dynamic_backend = False
-    nativ_cont.dynamic_backend = False
     a.dynamic_backend = False
     b.dynamic_backend = False
 
     # set the middle backend
     ivy.set_backend(middle_backend, dynamic=True)
-
+    var_cont = ivy.Container(
+        {
+            "w": ivy.gradients._variable(ivy.array([10, 20, 30])),
+            "b": ivy.gradients._variable(ivy.array([40, 50, 60])),
+        }
+    )
     # set dynamic_backend to true for all objects
     ivy_cont.dynamic_backend = True
-    nativ_cont.dynamic_backend = True
     a.dynamic_backend = True
     b.dynamic_backend = True
 
@@ -123,20 +124,14 @@ def test_dynamic_backend_all_combos(middle_backend, end_backend):
     # add the necessary asserts to check if the data
     # of the objects are in the correct format
 
-    assert isinstance(a.data, ivy.current_backend().NativeArray)
-    assert isinstance(ivy_cont["b"].data, ivy.current_backend().NativeArray)
+    assert isinstance(a.data, ivy.NativeArray)
+    assert isinstance(ivy_cont["b"].data, ivy.NativeArray)
 
-    if end_backend == "numpy":
-        assert isinstance(nativ_cont["b"].data, np.ndarray)
-    elif end_backend == "jax":
-        assert isinstance(nativ_cont["b"].data, jax.Array)
-
-    if middle_backend not in ("jax", "numpy") and end_backend not in ("jax", "numpy"):
+    if {"numpy", "jax"}.intersection([middle_backend, end_backend]):
         # these frameworks don't support native variables
-        assert ivy.current_backend().gradients.is_variable(nativ_cont["b"].data)
-
+        assert isinstance(var_cont["b"].data, ivy.NativeArray)
     else:
-        assert isinstance(nativ_cont["b"].data, ivy.current_backend().NativeArray)
+        assert ivy.gradients._is_variable(var_cont["b"])
 
 
 def test_dynamic_backend_context_manager():

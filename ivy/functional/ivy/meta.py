@@ -26,8 +26,7 @@ def _compute_cost_and_update_grads(
     batched,
     num_tasks,
 ):
-    """
-    Compute cost and update gradients.
+    """Compute cost and update gradients.
 
     This function computes the cost and updates gradients for optimization.
 
@@ -263,6 +262,59 @@ def _train_tasks_batched(
     num_tasks,
     stop_gradients,
 ):
+    """Train tasks in a batched manner.
+
+    This function trains tasks in a batched manner with optional inner and outer batch functions.
+
+    Parameters
+    ----------
+    batch : object
+        The batch data.
+    inner_batch_fn : function or None
+        The inner batch function.
+    outer_batch_fn : function or None
+        The outer batch function.
+    inner_cost_fn : function
+        The inner cost function.
+    outer_cost_fn : function
+        The outer cost function.
+    variables : ivy.Container
+        The variables for optimization.
+    inner_grad_steps : int
+        Number of inner gradient steps.
+    inner_learning_rate : float
+        Inner learning rate.
+    inner_optimization_step : function
+        The inner optimization step function.
+    order : int
+        The order of computation.
+    average_across_steps : bool
+        Whether to average across steps.
+    inner_v : object
+        Inner variable.
+    keep_inner_v : bool
+        Whether to keep inner variable.
+    outer_v : object
+        Outer variable.
+    keep_outer_v : bool
+        Whether to keep outer variable.
+    return_inner_v : str or bool
+        Whether and which inner variables to return.
+    num_tasks : int
+        Number of tasks.
+    stop_gradients : bool
+        Whether to stop gradients during optimization.
+
+    Returns
+    -------
+    object or tuple
+        The computed cost and, optionally, gradients and updated inner variables.
+
+    Examples
+    --------
+    >>> # Example usage here
+    >>> pass
+    """
     inner_batch = batch
     outer_batch = batch
     if inner_batch_fn is not None:
@@ -478,8 +530,7 @@ def fomaml_step(
     num_tasks: Optional[int] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """
-    Perform step of first order MAML.
+    """Perform step of first order MAML.
 
     Parameters
     ----------
@@ -594,8 +645,7 @@ def reptile_step(
     num_tasks: Optional[int] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """
-    Perform a step of Reptile.
+    """Perform a step of Reptile.
 
     Parameters
     ----------
@@ -744,8 +794,7 @@ def maml_step(
     num_tasks: Optional[int] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """
-    Perform step of vanilla second order MAML.
+    """Perform step of vanilla second order MAML.
 
     Parameters
     ----------
@@ -755,7 +804,7 @@ def maml_step(
         callable for the inner loop cost function, receiving sub-batch, inner vars and
         outer vars
     outer_cost_fn
-        callable for the outer loop cost function, receving task-specific sub-batch,
+        callable for the outer loop cost function, receiving task-specific sub-batch,
         inner vars and outer vars. If None, the cost from the inner loop will also be
         optimized in the outer loop.
     variables
@@ -805,6 +854,32 @@ def maml_step(
     -------
     ret
         The cost and the gradients with respect to the outer loop variables.
+
+    Examples
+    --------
+    With :class:`ivy.Container` input:
+
+    >>> import ivy
+    >>> from ivy.functional.ivy.gradients import _variable
+
+    >>> ivy.set_backend("torch")
+
+    >>> def inner_cost_fn(sub_batch, v):
+    ...     return sub_batch.mean().x / v.mean().latent
+    >>> def outer_cost_fn(sub_batch,v):
+    ...     return sub_batch.mean().x / v.mean().latent
+
+    >>> num_tasks = 2
+    >>> batch = ivy.Container({"x": ivy.arange(1, num_tasks + 1, dtype="float32")})
+    >>> variables = ivy.Container({
+    ...     "latent": _variable(ivy.repeat(ivy.array([[1.0]]), num_tasks, axis=0))
+    ... })
+
+    >>> cost = ivy.maml_step(batch, inner_cost_fn, outer_cost_fn, variables, 5, 0.01)
+    >>> print(cost)
+    (ivy.array(1.40069818), {
+    latent: ivy.array([-1.13723135])
+    }, ())
     """
     if num_tasks is None:
         num_tasks = batch.cont_shape[0]

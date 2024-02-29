@@ -1,5 +1,4 @@
 import jax.numpy as jnp
-from typing import Optional
 from ivy.functional.backends.jax import JaxArray
 
 # local
@@ -30,8 +29,8 @@ def smooth_l1_loss(
     target: JaxArray,
     /,
     *,
-    beta: Optional[float] = 1.0,
-    reduction: Optional[str] = "mean",
+    beta: float = 1.0,
+    reduction: str = "mean",
 ) -> JaxArray:
     if beta < 1e-5:
         loss = jnp.abs(input - target)
@@ -52,7 +51,7 @@ def soft_margin_loss(
     target: JaxArray,
     /,
     *,
-    reduction: Optional[str] = "mean",
+    reduction: str = "mean",
 ) -> JaxArray:
     loss = jnp.sum(jnp.log1p(jnp.exp(-input * target))) / jnp.size(input)
 
@@ -83,30 +82,30 @@ def _validate_poisson_nll_params(
     # Validate dtypes
     for parameter, name in zip([input, label], ["input", "label"]):
         if parameter.dtype not in allowed_dtypes:
-            raise ValueError(
-                "The dtype of '%s' in poisson_nll_loss should be one of %s, but"
-                " received %s." % (name, allowed_dtypes, parameter.dtype)
+            raise TypeError(
+                f"The dtype of '{name}' in poisson_nll_loss should be one of"
+                f" {allowed_dtypes}, but received {parameter.dtype}."
             )
 
     # Validate epsilon
     if epsilon <= 0:
         raise ValueError(
             "The value of `epsilon` in poisson_nll_loss should be positive, but"
-            " received %f, which is not allowed" % epsilon
+            f" received {epsilon}, which is not allowed."
         )
 
     # Validate reduction
     if reduction not in ["sum", "mean", "none"]:
         raise ValueError(
             "The value of 'reduction' in poisson_nll_loss should be 'sum', 'mean' or"
-            " 'none', but received %s, which is not allowed." % reduction
+            f" 'none', but received {reduction}, which is not allowed."
         )
 
     # Validate shape
     if input.shape != label.shape:
         raise ValueError(
-            "The shape of 'input' (%s) must be the same as the shape of 'label' (%s)."
-            % (input.shape, label.shape)
+            f"The shape of 'input' ({input.shape}) must be the same as the shape of"
+            f" 'label' ({label.shape})."
         )
 
     return True
@@ -114,7 +113,7 @@ def _validate_poisson_nll_params(
 
 @with_supported_device_and_dtypes(
     {
-        "0.4.14 and below": {
+        "0.4.18 and below": {
             "cpu": ("float16", "float32", "float64"),
         }
     },
@@ -152,4 +151,29 @@ def poisson_nll_loss(
         ones = jnp.ones_like(target_arr, dtype=target_arr.dtype)
         cond = jnp.logical_and(target_arr >= zeroes, target_arr <= ones)
         loss = loss + jnp.where(cond, zeroes, striling_approx_term)
+    return _apply_loss_reduction(loss, reduction)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "0.4.18 and below": {
+            "cpu": ("float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def hinge_embedding_loss(
+    input: JaxArray,
+    target: JaxArray,
+    *,
+    margin: float = 1.0,
+    reduction: str = "mean",
+) -> JaxArray:
+    zero_ = jnp.zeros([1], dtype=input.dtype)
+
+    relu_part = jnp.maximum(margin - input, 0)
+
+    loss = jnp.where(target == 1.0, input, zero_) + jnp.where(
+        target == -1.0, relu_part, zero_
+    )
     return _apply_loss_reduction(loss, reduction)

@@ -16,6 +16,15 @@ jobs:
           persist-credentials: false
           submodules: "recursive"
 
+      - name: Install ivy and fetch binaries
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          cd ..
+
       - name: Get Job URL
         uses: Tiryoh/gha-jobid-action@v0
         id: jobs
@@ -28,8 +37,8 @@ jobs:
         run: |
           cd ivy
           pip3 install pymongo
-          python run_tests_CLI/cron_tests_multi_version.py ${{ github.run_number }}
-          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'true' 'false' ${{ github.run_id }} 'false' ${{ steps.jobs.outputs.html_url }}
+          python scripts/setup_tests/cron_tests_multi_version.py ${{ github.run_number }}
+          python scripts/run_tests/run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'true' 'false' ${{ github.run_id }} 'false' 'false' 'false' ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
       - name: Check on failures

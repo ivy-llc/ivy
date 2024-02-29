@@ -1,16 +1,22 @@
 name: Pre-release Testing Workflow
 on:
   workflow_dispatch:
+    inputs:
+      tracer:
+        description: 'Tracer Testing :'
+        default: false
+        required: false
+
+      tracer_each:
+        description: 'Tracer Testing Each :'
+        default: false
+        required: false
 
 permissions:
   actions: read
 jobs:
   run_tests:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        file: [ivy.txt, torch.txt]
     steps:
       - name: Checkout Ivy 🛎
         uses: actions/checkout@v3
@@ -27,12 +33,18 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           job_name: ${{ github.job }}
 
-      - name: Run Tests
+      - name: Setup Tests
         run: |
           pip3 install pymongo
           cd ivy
+          sudo pip3 install -e .
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          python run_tests_CLI/setup_priority_tests.py priority_tests/${{ matrix.file }}
-          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} 'true' ${{ steps.jobs.outputs.html_url }}
+          python scripts/setup_tests/setup_priority_tests.py
+          cd ..
+
+      - name: Run CPU Tests
+        run: |
+          cd ivy
+          python scripts/run_tests/run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} 'true' ${{ github.event.inputs.tracer }} ${{ github.event.inputs.tracer_each }} ${{ steps.jobs.outputs.html_url }}

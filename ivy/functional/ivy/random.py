@@ -106,11 +106,10 @@ def random_uniform(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Draws samples from a uniform distribution. Samples are uniformly distributed over
-    the half-open interval ``[low, high)`` (includes ``low``, but excludes ``high``). In
-    other words, any value within the given interval is equally likely to be drawn by
-    uniform.
+    """Draws samples from a uniform distribution. Samples are uniformly
+    distributed over the half-open interval ``[low, high)`` (includes ``low``,
+    but excludes ``high``). In other words, any value within the given interval
+    is equally likely to be drawn by uniform.
 
     Parameters
     ----------
@@ -222,8 +221,7 @@ def random_normal(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Draws samples from a normal distribution.
+    """Draws samples from a normal distribution.
 
     Parameters
     ----------
@@ -334,10 +332,10 @@ def multinomial(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Draws samples from a multinomial distribution. Specifically, returns a tensor where
-    each row contains num_samples indices sampled from the multinomial probability
-    distribution located in the corresponding row of tensor input.
+    """Draws samples from a multinomial distribution. Specifically, returns a
+    tensor where each row contains num_samples indices sampled from the
+    multinomial probability distribution located in the corresponding row of
+    tensor input.
 
     Parameters
     ----------
@@ -444,9 +442,8 @@ def randint(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return an array filled with random integers generated uniformly between low
-    (inclusive) and high (exclusive).
+    """Return an array filled with random integers generated uniformly between
+    low (inclusive) and high (exclusive).
 
     Parameters
     ----------
@@ -508,8 +505,7 @@ def randint(
 @handle_exceptions
 @handle_nestable
 def seed(*, seed_value: int = 0) -> None:
-    """
-    Set the seed for random number generation.
+    """Set the seed for random number generation.
 
     Parameters
     ----------
@@ -539,8 +535,7 @@ def shuffle(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Shuffles the given array along a given axis.
+    """Shuffles the given array along a given axis.
 
     Parameters
     ----------

@@ -1,4 +1,4 @@
-from typing import Optional, Union, Tuple, List
+from typing import Optional, Union, Tuple, List, Sequence
 import numpy as np
 import numpy.typing as npt
 
@@ -9,8 +9,40 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
+def amax(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    ret = np.amax(a=x, axis=axis, out=out, keepdims=keepdims)
+    return np.asarray(ret) if np.isscalar(ret) else ret
+
+
+amax.support_native_out = True
+
+
+def amin(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    ret = np.amin(a=x, axis=axis, out=out, keepdims=keepdims)
+    return np.asarray(ret) if np.isscalar(ret) else ret
+
+
+amin.support_native_out = True
+
+
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.26.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": ("bfloat16",)}, backend_version)
 def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.sinc(x).astype(x.dtype)
 
@@ -406,7 +438,8 @@ lanczos_den_coeffs = np.array(
 def sinpi(x):
     y = np.abs(x) % 2.0
     n = np.round(2.0 * y)
-    assert 0 <= n and n <= 4
+    assert n >= 0
+    assert n <= 4
 
     if n == 0:
         r = np.sin(np.pi * y)
@@ -543,7 +576,7 @@ def _EvaluatePolynomial(x, coefficients):
     return poly
 
 
-# TODO: Remove this once native function is avilable.
+# TODO: Remove this once native function is available.
 # Compute an approximation of the error function complement (1 - erf(x)).
 def erfc(
     x: np.ndarray,
@@ -552,7 +585,7 @@ def erfc(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if x.dtype not in [np.float16, np.float32, np.float64]:
-        raise ValueError("Input must be of type float16, float32, or float64.")
+        raise TypeError("Input must be of type float16, float32, or float64.")
 
     input_dtype = x.dtype
 
@@ -583,3 +616,15 @@ def erfc(
     return np.where(underflow, result_underflow, result_no_underflow).astype(
         input_dtype
     )
+
+
+# TODO: Remove this once native function is available.
+# Compute an approximation of the error function complement (1 - erf(x)).
+def erfinv(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    with ivy.ArrayMode(False):
+        return np.sqrt(2) * erfc(x)

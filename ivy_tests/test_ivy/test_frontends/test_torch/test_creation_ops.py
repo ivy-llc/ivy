@@ -7,6 +7,7 @@ import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.helpers.globals as test_globals
 from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
+from ivy_tests.test_ivy.helpers.testing_helpers import handle_example
 
 
 # --- Helpers --- #
@@ -80,7 +81,7 @@ def _as_tensor_helper(draw):
 @st.composite
 def _fill_value(draw):
     with_array = draw(st.sampled_from([True, False]))
-    dtype = draw(st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"))[0]
+    dtype = draw(st.shared(helpers.get_dtypes("valid", full=False), key="dtype"))[0]
     with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
         if ivy_backend.is_uint_dtype(dtype):
             ret = draw(helpers.ints(min_value=0, max_value=5))
@@ -148,61 +149,6 @@ def _start_stop_step(draw):
 
 # --- Main --- #
 # ------------ #
-
-
-# complex
-@handle_frontend_test(
-    fn_tree="torch.complex",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-)
-def test_complex(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, input = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        real=input[0],
-        imag=input[0],
-    )
-
-
-# polar
-@handle_frontend_test(
-    fn_tree="torch.polar",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    test_with_out=st.just(False),
-)
-def test_polar(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, input = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        abs=input[0],
-        angle=input[0],
-    )
 
 
 # arange
@@ -318,6 +264,7 @@ def test_torch_as_tensor(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
+    test_with_copy=st.just(True),
 )
 def test_torch_asarray(
     *,
@@ -340,6 +287,33 @@ def test_torch_asarray(
         obj=x[0],
         dtype=dtype[0],
         device=on_device,
+    )
+
+
+# complex
+@handle_frontend_test(
+    fn_tree="torch.complex",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+)
+def test_torch_complex(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, input = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        real=input[0],
+        imag=input[0],
     )
 
 
@@ -538,7 +512,7 @@ def test_torch_frombuffer(
         max_dim_size=10,
     ),
     fill_value=_fill_value(),
-    dtype=st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"),
+    dtype=st.shared(helpers.get_dtypes("valid", full=False), key="dtype"),
 )
 def test_torch_full(
     *,
@@ -638,6 +612,14 @@ def test_torch_heaviside(
     num=st.integers(min_value=1, max_value=10),
     dtype=helpers.get_dtypes("float", full=False),
 )
+@handle_example(
+    test_frontend_example=True,
+    start=np.array(0),
+    stop=1,
+    num=2,
+    dtype=[None],
+    fn_tree="ivy.functional.frontends.torch.linspace",
+)
 def test_torch_linspace(
     *,
     start,
@@ -651,7 +633,7 @@ def test_torch_linspace(
     backend_fw,
 ):
     helpers.test_frontend_function(
-        input_dtypes=[],
+        input_dtypes=[] if isinstance(start, float) else ["int64"],
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
@@ -774,6 +756,34 @@ def test_torch_ones_like(
         input=input[0],
         dtype=dtype[0],
         device=on_device,
+    )
+
+
+# polar
+@handle_frontend_test(
+    fn_tree="torch.polar",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_torch_polar(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, input = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        abs=input[0],
+        angle=input[0],
     )
 
 

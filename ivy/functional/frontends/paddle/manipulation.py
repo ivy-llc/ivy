@@ -10,14 +10,14 @@ from ivy.func_wrapper import (
 )
 
 
-@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.6.0 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def abs(x, name=None):
     return ivy.abs(x)
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("bool", "float32", "float64", "int32", "int64")},
+    {"2.6.0 and below": ("bool", "float32", "float64", "int32", "int64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -27,7 +27,7 @@ def broadcast_to(x, shape, name=None):
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.6.0 and below": (
             "bool",
             "float16",
             "float32",
@@ -44,14 +44,14 @@ def cast(x, dtype):
     return ivy.astype(x, dtype)
 
 
-@with_unsupported_dtypes({"2.5.1 and below": ("int8", "int16")}, "paddle")
+@with_unsupported_dtypes({"2.6.0 and below": ("int8", "int16")}, "paddle")
 @to_ivy_arrays_and_back
 def concat(x, axis, name=None):
     return ivy.concat(x, axis=axis)
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("bool", "float32", "float64", "int32", "int64")},
+    {"2.6.0 and below": ("bool", "float32", "float64", "int32", "int64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -60,7 +60,7 @@ def expand(x, shape, name=None):
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("int8", "uint8", "int16", "float16")},
+    {"2.6.0 and below": ("int8", "uint8", "int16", "float16")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -69,7 +69,7 @@ def flip(x, axis, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("bool", "float32", "float64", "int32", "int64")},
+    {"2.6.0 and below": ("bool", "float32", "float64", "int32", "int64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -78,7 +78,7 @@ def gather(params, indices, axis=-1, batch_dims=0, name=None):
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("int8", "uint8", "int16", "uint16", "float16", "bfloat16")},
+    {"2.6.0 and below": ("int8", "uint8", "int16", "uint16", "float16", "bfloat16")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -95,6 +95,38 @@ def one_hot(x, num_classes, name=None):
     one_hot_tensor = ivy.one_hot(x, num_classes)
     return one_hot_tensor.astype(ivy.float32)
 
+  
+  
+@with_supported_dtypes(
+    {"2.6.0 and below": ("bool", "int32", "int64", "float16", "float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def index_add(x, index, axis, value, *, name=None):
+    x = ivy.swapaxes(x, axis, 0)
+    value = ivy.swapaxes(value, axis, 0)
+    _to_adds = []
+    index = sorted(zip(ivy.to_list(index), range(len(index))), key=(lambda i: i[0]))
+    while index:
+        _curr_idx = index[0][0]
+        while len(_to_adds) < _curr_idx:
+            _to_adds.append(ivy.zeros_like(value[0]))
+        _to_add_cum = ivy.get_item(value, index[0][1])
+        while (len(index)) > 1 and (index[0][0] == index[1][0]):
+            _to_add_cum = _to_add_cum + ivy.get_item(value, index.pop(1)[1])
+        index.pop(0)
+        _to_adds.append(_to_add_cum)
+    while len(_to_adds) < x.shape[0]:
+        _to_adds.append(ivy.zeros_like(value[0]))
+    _to_adds = ivy.stack(_to_adds)
+    if len(x.shape) < 2:
+        # Added this line due to the paddle backend treating scalars as 1-d arrays
+        _to_adds = ivy.flatten(_to_adds)
+
+    ret = ivy.add(x, _to_adds)
+    ret = ivy.swapaxes(ret, axis, 0)
+    return ret
+
 
 @to_ivy_arrays_and_back
 def put_along_axis(arr, indices, values, axis, reduce="assign"):
@@ -103,7 +135,7 @@ def put_along_axis(arr, indices, values, axis, reduce="assign"):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("int32", "int64", "float32", "float64")},
+    {"2.6.0 and below": ("int32", "int64", "float32", "float64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -136,7 +168,7 @@ def roll(x, shifts, axis=None, name=None):
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and above": {
+        "2.6.0 and above": {
             "cpu": (
                 "bool",
                 "int32",
@@ -155,7 +187,7 @@ def rot90(x, k=1, axes=(0, 1), name=None):
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("int16", "complex64", "complex128")},
+    {"2.6.0 and below": ("int16", "complex64", "complex128")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -164,7 +196,7 @@ def split(x, num_or_sections, axis=0, name=None):
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("float16", "bfloat16", "int8", "int16")},
+    {"2.6.0 and below": ("float16", "bfloat16", "int8", "int16")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -177,12 +209,17 @@ def stack(x, axis=0, name=None):
     return ivy.stack(x, axis=axis)
 
 
+@with_supported_dtypes(
+    {"2.6.0 and below": ("float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
 def take_along_axis(arr, indices, axis):
     return ivy.take_along_axis(arr, indices, axis)
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("int8", "uint8", "int16", "float16")},
+    {"2.6.0 and below": ("int8", "uint8", "int16", "float16")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -190,8 +227,13 @@ def tile(x, repeat_times, name=None):
     return ivy.tile(x, repeats=repeat_times)
 
 
+@to_ivy_arrays_and_back
+def tolist(x):
+    return ivy.to_list(x)
+
+
 @with_supported_dtypes(
-    {"2.5.1 and below": ("bool", "int32", "int64", "float16", "float32", "float64")},
+    {"2.6.0 and below": ("bool", "int32", "int64", "float16", "float32", "float64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -199,12 +241,21 @@ def unbind(input, axis=0):
     shape = list(input.shape)
     num_splits = shape[axis]
     shape.pop(axis)
-    return tuple([x.reshape(tuple(shape)) for x in split(input, num_splits, axis=axis)])
+    return tuple(x.reshape(tuple(shape)) for x in split(input, num_splits, axis=axis))
+
+
+@with_supported_dtypes(
+    {"2.6.0 and below": ("bool", "int32", "int64", "float16", "float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def unique_consecutive(x, axis=0):
+    return ivy.unique_consecutive(x, axis=axis)
 
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.6.0 and below": (
             "float32",
             "float64",
             "int32",
