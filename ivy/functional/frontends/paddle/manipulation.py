@@ -86,17 +86,6 @@ def gather_nd(x, index, name=None):
     return ivy.gather_nd(x, index)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("int32", "int64")}, "paddle")
-@to_ivy_arrays_and_back
-def one_hot(x, num_classes, name=None):
-    if not isinstance(num_classes, int) or num_classes <= 0:
-        raise ValueError("num_classes must be a positive integer.")
-
-    one_hot_tensor = ivy.one_hot(x, num_classes)
-    return one_hot_tensor.astype(ivy.float32)
-
-  
-  
 @with_supported_dtypes(
     {"2.6.0 and below": ("bool", "int32", "int64", "float16", "float32", "float64")},
     "paddle",
@@ -126,6 +115,16 @@ def index_add(x, index, axis, value, *, name=None):
     ret = ivy.add(x, _to_adds)
     ret = ivy.swapaxes(ret, axis, 0)
     return ret
+
+
+@with_supported_dtypes({"2.5.1 and below": ("int32", "int64")}, "paddle")
+@to_ivy_arrays_and_back
+def one_hot(x, num_classes, name=None):
+    if not isinstance(num_classes, int) or num_classes <= 0:
+        raise ValueError("num_classes must be a positive integer.")
+
+    one_hot_tensor = ivy.one_hot(x, num_classes)
+    return one_hot_tensor.astype(ivy.float32)
 
 
 @to_ivy_arrays_and_back
