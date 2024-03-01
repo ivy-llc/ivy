@@ -30,6 +30,19 @@ from paddle.device import core
 # -------------------#
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.6.0 and below": {
+            "cpu": (
+                "int32",
+                "int64",
+                "float64",
+                "float32",
+            )
+        }
+    },
+    backend_version,
+)
 def arange(
     start: float,
     /,

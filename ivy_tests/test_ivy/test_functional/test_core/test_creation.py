@@ -149,7 +149,7 @@ def is_capsule(o):
     step=helpers.ints(min_value=-50, max_value=50).filter(
         lambda x: True if x != 0 else False
     ),
-    dtype=helpers.get_dtypes("numeric", full=False),
+    dtype=helpers.get_dtypes("valid", full=False),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )

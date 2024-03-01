@@ -47,7 +47,15 @@ def _differentiable_linspace(start, stop, num, *, device, dtype=None):
     return res
 
 
-@with_unsupported_dtypes({"2.2 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "2.2 and below": (
+            "complex",
+            "bool",
+        )
+    },
+    backend_version,
+)
 def arange(
     start: float,
     /,

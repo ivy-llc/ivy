@@ -30,6 +30,7 @@ from . import backend_version
             "float16",
             "bfloat16",
             "complex",
+            "bool",
         )
     },
     backend_version,
