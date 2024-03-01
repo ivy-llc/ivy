@@ -193,21 +193,20 @@ def gather(
 
     def expand_p_i(params, indices, axis=axis, batch_dims=batch_dims):
         axis %= len(params.shape)
-        indices_ex = torch.clone(indices).detach()
-        abs(params.dim() - (indices_ex.dim() - batch_dims))
+        abs(params.dim() - (indices.dim() - batch_dims))
         stack_dims1 = params.shape[:axis]
         stack_dims2 = params.shape[axis + 1 :]
-        indices_ex = indices_ex.reshape(
+        indices = indices.reshape(
             (
                 torch.Size([1 for dim in stack_dims1])
                 + torch.Size([-1])
                 + torch.Size([1 for dim in stack_dims2])
             )
         )
-        indices_ex = indices_ex.expand(
+        indices = indices.expand(
             (stack_dims1 + torch.Size([-1]) + stack_dims2)
         ).reshape((stack_dims1 + torch.Size([-1]) + stack_dims2))
-        return indices_ex, axis
+        return indices, axis
 
     final_shape = (
         params.shape[:axis] + indices.shape[batch_dims:] + params.shape[axis + 1 :]
