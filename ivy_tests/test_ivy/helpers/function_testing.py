@@ -823,6 +823,8 @@ def test_frontend_function(
         if True, test for the correctness of the resulting values.
     all_as_kwargs_np
         input arguments to the function as keyword arguments.
+        If an input argument has the same name as any other parameter
+        of this function, add "arg_" before the argument name.
 
     Returns
     -------
@@ -843,6 +845,10 @@ def test_frontend_function(
     if test_flags.with_copy is True:
         test_flags.with_out = False
         test_flags.inplace = False
+
+    all_as_kwargs_np = {
+        k[4:] if k.startswith("arg_") else k: v for k, v in all_as_kwargs_np.items()
+    }
 
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(

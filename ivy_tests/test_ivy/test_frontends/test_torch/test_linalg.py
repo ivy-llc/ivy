@@ -1002,9 +1002,11 @@ def test_torch_matrix_rank(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=0,
+        atol=0,
         input=x,
-        rtol=rtol,
-        atol=atol,
+        arg_rtol=rtol,
+        arg_atol=atol,
         hermitian=hermitian,
     )
 
