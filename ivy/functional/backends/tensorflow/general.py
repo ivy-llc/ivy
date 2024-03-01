@@ -65,7 +65,7 @@ def get_item(
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         if not len(query.shape):
             return tf.expand_dims(x, 0)
-    if ivy.is_array(query):
+    if ivy.is_array(query) and not ivy.is_bool_dtype(query):
         return tf.gather(x, query)
     return x.__getitem__(query)
 
