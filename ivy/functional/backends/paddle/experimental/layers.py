@@ -466,10 +466,19 @@ def interpolate(
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     recompute_scale_factor: Optional[bool] = None,
     align_corners: bool = False,
-    antialias: Optional[bool] = False,
+    data_format: str = "NCHW",
     out: Optional[paddle.Tensor] = None,
 ):
-    raise IvyNotImplementedException()
+    if recompute_scale_factor is True:
+        align_mode = 1
+    elif recompute_scale_factor is False:
+        align_mode = 0
+    else:
+        align_mode = None
+    return paddle.nn.functional.interpolate(
+        x, size, scale_factor, mode, align_corners, align_mode, data_format
+    )
+
 
 
 def adaptive_max_pool2d(
