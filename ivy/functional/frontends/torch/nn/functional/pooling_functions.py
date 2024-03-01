@@ -59,8 +59,11 @@ def adaptive_max_pool2d(
 @with_unsupported_dtypes(
     {
         "2.2 and below": (
-            "bfloat16",
             "float16",
+            "int8",
+            "int16",
+            "bool",
+            "uint8",
         )
     },
     "torch",
