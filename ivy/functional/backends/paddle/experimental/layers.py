@@ -480,7 +480,6 @@ def interpolate(
     )
 
 
-
 def adaptive_max_pool2d(
     input: paddle.Tensor, output_size: Union[Sequence[int], int]
 ) -> paddle.Tensor:
