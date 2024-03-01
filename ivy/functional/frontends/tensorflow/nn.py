@@ -100,7 +100,9 @@ def avg_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
 # avg_pool2d
 @to_ivy_arrays_and_back
 def avg_pool2d(input, ksize, strides, padding, data_format="NHWC", name=None):
-    return ivy.avg_pool2d(input, ksize, strides, padding, data_format=data_format)
+    return ivy.avg_pool2d(
+        input, ksize, strides, padding, data_format=data_format
+    ).astype(input.dtype)
 
 
 # avg_pool3d

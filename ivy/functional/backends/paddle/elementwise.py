@@ -121,10 +121,6 @@ def isinf(
     return paddle.zeros(shape=x.shape, dtype=bool)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.6.0 and below": {"cpu": ("bfloat16", "complex128", "float64", "float32")}},
-    backend_version,
-)
 def equal(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -617,10 +613,6 @@ def negative(
     return paddle.neg(x)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.6.0 and below": {"cpu": ("bfloat16", "complex128", "float64", "float32")}},
-    backend_version,
-)
 def not_equal(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],

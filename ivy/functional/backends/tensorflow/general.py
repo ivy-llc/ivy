@@ -5,6 +5,8 @@ and signature.
 """
 
 # global
+import functools
+from operator import mul
 from typing import Optional, Union, Sequence, Callable, Tuple
 import numpy as np
 import multiprocessing as _multiprocessing
@@ -193,6 +195,10 @@ def get_num_dims(x, /, *, as_array=False):
         if as_array
         else int(tf.shape(tf.shape(x)))
     )
+
+
+def size(x: tf.Tensor, /) -> int:
+    return functools.reduce(mul, x.shape) if len(x.shape) > 0 else 1
 
 
 def inplace_arrays_supported():

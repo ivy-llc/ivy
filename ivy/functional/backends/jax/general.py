@@ -222,6 +222,10 @@ def get_num_dims(x: JaxArray, /, *, as_array: bool = False) -> Union[JaxArray, i
     return jnp.asarray(len(jnp.shape(x))) if as_array else len(x.shape)
 
 
+def size(x: JaxArray, /) -> int:
+    return x.size
+
+
 def inplace_arrays_supported():
     return False
 
