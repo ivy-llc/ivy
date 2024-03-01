@@ -256,7 +256,7 @@ def max_pool2d(
     ceil_mode=False,
     return_indices=False,
 ):
-    if stride is None:
+    if not stride:
         stride = kernel_size
     if not isinstance(padding, int):
         padding = [(pad, pad) for pad in padding]
