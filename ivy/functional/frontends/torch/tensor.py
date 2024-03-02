@@ -956,6 +956,11 @@ class Tensor:
     def negative(self):
         return torch_frontend.negative(self)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bool", "bfloat16")}, "torch")
+    def negative_(self):
+        self.ivy_array = torch_frontend.negative(self).ivy_array
+        return self
+
     def int(self, memory_format=None):
         self.ivy_array = ivy.astype(self.ivy_array, ivy.int32, copy=False)
         return self

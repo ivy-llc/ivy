@@ -59,8 +59,11 @@ def adaptive_max_pool2d(
 @with_unsupported_dtypes(
     {
         "2.2 and below": (
-            "bfloat16",
             "float16",
+            "int8",
+            "int16",
+            "bool",
+            "uint8",
         )
     },
     "torch",
@@ -256,7 +259,7 @@ def max_pool2d(
     ceil_mode=False,
     return_indices=False,
 ):
-    if stride is None:
+    if not stride:
         stride = kernel_size
     if not isinstance(padding, int):
         padding = [(pad, pad) for pad in padding]
@@ -286,7 +289,13 @@ def max_pool3d(
         stride = kernel_size
     if not isinstance(padding, int):
         padding = [(pad, pad) for pad in padding]
-    return ivy.max_pool3d(
+    if input.ndim == 4:
+        without_batch_dim = True
+        input = ivy.expand_dims(input, axis=0)
+    else:
+        without_batch_dim = False
+
+    ret = ivy.max_pool3d(
         input,
         kernel_size,
         stride,
@@ -295,3 +304,7 @@ def max_pool3d(
         dilation=dilation,
         ceil_mode=ceil_mode,
     )
+    if without_batch_dim:
+        ret = ret[0]
+
+    return ret
