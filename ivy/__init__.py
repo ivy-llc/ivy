@@ -314,9 +314,6 @@ class Shape(Sequence):
     def __floordiv__(self, other):
         return self._shape // other
 
-    def __rmod__(self, other):
-        return other % self._shape
-
     def __reduce__(self):
         return (self.__class__, (self._shape,))
 
