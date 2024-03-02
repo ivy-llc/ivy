@@ -44,16 +44,12 @@ def test_shape__add__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Shape.__bool__",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
-        max_num_dims=0,
-        min_value=0,
-        max_value=1,
-    ),
+    shape=helpers.get_shape(min_num_dims=0),
 )
 def test_shape__bool__(
-    dtype_and_x,
+    shape,
     method_name,
     class_name,
     ground_truth_backend,
@@ -62,15 +58,14 @@ def test_shape__bool__(
     method_flags,
     on_device,
 ):
-    dtype, x = dtype_and_x
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
-        init_all_as_kwargs_np={"data": x[0]},
-        init_input_dtypes=dtype,
+        init_all_as_kwargs_np={"shape_tup": shape},
+        init_input_dtypes=DUMMY_DTYPE,
         method_input_dtypes=[],
         method_all_as_kwargs_np={},
         class_name=class_name,

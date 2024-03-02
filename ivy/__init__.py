@@ -304,6 +304,8 @@ class Shape(Sequence):
         return self
 
     def __bool__(self):
+        if ivy.current_backend_str() == "tensorflow":
+            return builtins.bool(builtins.tuple(self._shape))
         return builtins.bool(self._shape)
 
     def __div__(self, other):
