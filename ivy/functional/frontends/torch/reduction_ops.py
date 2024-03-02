@@ -118,7 +118,7 @@ def max(*input, dim=None, keepdim=False, out=None):
     else:
         input = input[0]
         dim = input[1]
-        keepdim = input[1]
+        keepdim = input[2]
     if dim is None:
         return ivy.max(input, axis=dim, keepdims=keepdim, out=out)
     elif out is not None:
@@ -197,7 +197,7 @@ def min(*input, dim=None, keepdim=False, out=None):
     else:
         input = input[0]
         dim = input[1]
-        keepdim = input[1]
+        keepdim = input[2]
     if dim is None:
         return ivy.min(input, axis=dim, keepdims=keepdim, out=out)
     elif out is not None:
