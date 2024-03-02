@@ -470,9 +470,9 @@ def interpolate(
     out: Optional[paddle.Tensor] = None,
 ):
     if recompute_scale_factor is True:
-        align_mode =1
+        align_mode = 1
     elif recompute_scale_factor is False:
-        align_mode =0
+        align_mode = 0
     else:
         align_mode = None
     return paddle.nn.functional.interpolate(
