@@ -314,12 +314,6 @@ class Shape(Sequence):
     def __floordiv__(self, other):
         return self._shape // other
 
-    def __mod__(self, other):
-        return self._shape % other
-
-    def __rdiv__(self, other):
-        return other // self._shape
-
     def __rmod__(self, other):
         return other % self._shape
 
@@ -332,32 +326,9 @@ class Shape(Sequence):
         else:
             return self._shape
 
-    def __sub__(self, other):
-        try:
-            self._shape = self._shape - other
-        except TypeError:
-            self._shape = self._shape - list(other)
-        return self
-
-    def __rsub__(self, other):
-        try:
-            self._shape = other - self._shape
-        except TypeError:
-            self._shape = list(other) - self._shape
-        return self
-
     def __eq__(self, other):
         self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape == other
-
-    def __int__(self):
-        if hasattr(self._shape, "__int__"):
-            res = self._shape.__int__()
-        else:
-            res = int(self._shape)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
 
     def __ge__(self, other):
         self._shape = Shape._shape_casting_helper(self._shape, other)
