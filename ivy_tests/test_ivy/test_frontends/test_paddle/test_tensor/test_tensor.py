@@ -5755,6 +5755,47 @@ def test_paddle_tensor_add(
     )
 
 
+# _solve
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="cholesky_solve",
+    dtype_and_x=_get_second_matrix(),
+    dtype_and_y=_get_cholesky_matrix(),
+)
+def test_paddle_tensor_cholesky_solve(
+    dtype_and_x,
+    dtype_and_y,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype1, x = dtype_and_x
+    input_dtype2, y = dtype_and_y
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtype1, input_dtype2],
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=[input_dtype1, input_dtype2],
+        method_all_as_kwargs_np={
+            "y": y,
+            "upper": np.array_equal(y, np.triu(y)),
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+        rtol_=1e-3,
+        atol_=1e-3,
+    )
+
+
 # chunk
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -6097,47 +6138,6 @@ def test_paddle_tensor_squeeze(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
-    )
-
-
-# _solve
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="paddle.to_tensor",
-    method_name="cholesky_solve",
-    dtype_and_x=_get_second_matrix(),
-    dtype_and_y=_get_cholesky_matrix(),
-)
-def test_paddle_tensor_cholesky_solve(
-    dtype_and_x,
-    dtype_and_y,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    on_device,
-    backend_fw,
-):
-    input_dtype1, x = dtype_and_x
-    input_dtype2, y = dtype_and_y
-    helpers.test_frontend_method(
-        init_input_dtypes=[input_dtype1, input_dtype2],
-        backend_to_test=backend_fw,
-        init_all_as_kwargs_np={
-            "data": x,
-        },
-        method_input_dtypes=[input_dtype1, input_dtype2],
-        method_all_as_kwargs_np={
-            "y": y,
-            "upper": np.array_equal(y, np.triu(y)),
-        },
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
-        rtol_=1e-3,
-        atol_=1e-3,
     )
 
 

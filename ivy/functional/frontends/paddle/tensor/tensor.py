@@ -1244,7 +1244,6 @@ class Tensor:
     def tile(self, repeat_times):
         return paddle_frontend.Tensor(ivy.tile(self._ivy_array, repeats=repeat_times))
 
-
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def cholesky_solve(self, y, upper=False, name=None):
         return paddle_frontend.cholesky_solve(self._ivy_array, y, upper=upper)
@@ -1266,4 +1265,3 @@ class Tensor:
     )
     def chunk(self, chunks, axis=0, name=None):
         return paddle_frontend.split(self._ivy_array, num_or_sections=chunks, axis=axis)
-
