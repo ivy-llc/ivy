@@ -49,7 +49,7 @@ def backend_proc(input_queue, output_queue):
 
             _, fn_module, fn_name, b = data
             output_queue.put(
-                (_get_supported_devices_dtypes_helper(b, fn_module, fn_name))
+                _get_supported_devices_dtypes_helper(b, fn_module, fn_name)
             )
         elif data[0] == "method supported dtypes":
             # again stage 1, calculating and returning supported dtypes
@@ -69,17 +69,17 @@ def backend_proc(input_queue, output_queue):
         elif data[0] == "_get_type_dict_helper":
             _, framework, kind, is_frontend_test = data
             dtype_ret = _get_type_dict_helper(framework, kind, is_frontend_test)
-            output_queue.put((dtype_ret))
+            output_queue.put(dtype_ret)
 
         elif data[0] == "num_positional_args_helper":
             _, fn_name, framework = data
             dtype_ret = num_positional_args_helper(fn_name, framework)
-            output_queue.put((dtype_ret))
+            output_queue.put(dtype_ret)
 
         elif data[0] == "cast_filter_helper":
             _, d, dtype, x, current_backend = data
             dtype_ret = cast_filter_helper(d, dtype, x, current_backend)
-            output_queue.put((dtype_ret))
+            output_queue.put(dtype_ret)
 
         elif data[0] == "function_backend_computation":
             # it's the backend return computation
@@ -177,6 +177,7 @@ def backend_proc(input_queue, output_queue):
                 on_device,
                 fn,
                 test_trace,
+                test_trace_each,
                 xs_grad_idxs,
                 ret_grad_idxs,
             ) = data
@@ -193,10 +194,11 @@ def backend_proc(input_queue, output_queue):
                 on_device,
                 fn,
                 test_trace,
+                test_trace_each,
                 xs_grad_idxs,
                 ret_grad_idxs,
             )
-            output_queue.put((grads_np_flat))
+            output_queue.put(grads_np_flat)
 
         elif data[0] == "gradient_ground_truth_computation":
             # gradient testing, part where it uses ground truth
@@ -215,6 +217,7 @@ def backend_proc(input_queue, output_queue):
                 test_flags,
                 kwargs_idxs,
                 test_trace,
+                test_trace_each,
                 xs_grad_idxs,
                 ret_grad_idxs,
             ) = data
@@ -232,6 +235,7 @@ def backend_proc(input_queue, output_queue):
                 test_flags,
                 kwargs_idxs,
                 test_trace,
+                test_trace_each,
                 xs_grad_idxs,
                 ret_grad_idxs,
             )
@@ -252,6 +256,7 @@ def backend_proc(input_queue, output_queue):
                 method_name,
                 init_with_v,
                 test_trace,
+                test_trace_each,
                 method_with_v,
             ) = data
             (
@@ -280,6 +285,7 @@ def backend_proc(input_queue, output_queue):
                 method_name,
                 init_with_v,
                 test_trace,
+                test_trace_each,
                 method_with_v,
             )
             # ret is none here, because main process doesn't import framework
@@ -317,6 +323,7 @@ def backend_proc(input_queue, output_queue):
                 class_name,
                 method_name,
                 test_trace,
+                test_trace_each,
                 v_np,
             ) = data
             (
@@ -339,6 +346,7 @@ def backend_proc(input_queue, output_queue):
                 class_name,
                 method_name,
                 test_trace,
+                test_trace_each,
                 v_np,
             )
             # ret from gt None here, because main process doesn't import framework

@@ -1,5 +1,6 @@
 # global
 from typing import (
+    Iterable,
     Optional,
     Union,
     Sequence,
@@ -16,7 +17,11 @@ import torch
 
 
 # local
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+    handle_out_argument,
+)
 from .. import backend_version
 import ivy
 from ivy.functional.ivy.experimental.manipulation import (
@@ -59,26 +64,34 @@ heaviside.support_native_out = True
 
 
 @with_supported_dtypes(
-    {"2.1.0 and below": ("float32", "float64", "complex64", "complex128")},
+    {"2.2 and below": ("float32", "float64", "complex64", "complex128")},
     backend_version,
 )
 def pad(
     input: torch.Tensor,
-    pad_width: Union[Sequence[Sequence[int]], torch.Tensor, int],
+    pad_width: Union[Iterable[Tuple[int]], int],
     /,
     *,
     mode: Union[
         Literal[
             "constant",
+            "dilated",
             "edge",
+            "linear_ramp",
+            "maximum",
+            "mean",
+            "median",
+            "minimum",
             "reflect",
+            "symmetric",
             "wrap",
+            "empty",
         ],
         Callable,
     ] = "constant",
-    stat_length: Union[Sequence[torch.Tensor], int] = 1,
-    constant_values: Number = 0,
-    end_values: Number = 0,
+    stat_length: Union[Iterable[Tuple[int]], int] = 1,
+    constant_values: Union[Iterable[Tuple[Number]], Number] = 0,
+    end_values: Union[Iterable[Tuple[Number]], Number] = 0,
     reflect_type: Literal["even", "odd"] = "even",
     **kwargs: Optional[Any],
 ) -> torch.Tensor:
@@ -122,16 +135,18 @@ pad.partial_mixed_handler = (
 
 
 def _check_torch_pad(mode, reflect_type, pad_width, input_shape, constant_values):
-    pad_width = _to_tf_padding(pad_width, len(input_shape))
-    if mode != "constant" and (
-        len(input_shape) > 4
-        or (len(input_shape) == 4 and len(pad_width) > 3)
-        or (len(input_shape) == 3 and len(pad_width) > 2)
-        or (len(input_shape) == 2 and len(pad_width) > 1)
-    ):
+    ndim = len(input_shape)
+    pad_width = _to_tf_padding(pad_width, ndim)
+    if mode != "constant" and (ndim > 4 or (ndim > 1 and len(pad_width) > ndim - 1)):
         return False
     return _check_paddle_pad(
-        mode, reflect_type, pad_width, input_shape, constant_values, 4
+        mode,
+        reflect_type,
+        pad_width,
+        input_shape,
+        constant_values,
+        4,
+        extend=False,
     ) and (
         mode != "wrap"
         or all(
@@ -227,7 +242,7 @@ def fliplr(
 fliplr.support_native_out = False
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
 def i0(
     x: torch.Tensor,
     /,
@@ -320,7 +335,7 @@ def atleast_3d(
     return transformed
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def take_along_axis(
     arr: torch.Tensor,
     indices: torch.Tensor,
@@ -346,7 +361,7 @@ def take_along_axis(
     if mode == "clip":
         max_index = arr.shape[axis] - 1
         indices = torch.clamp(indices, 0, max_index)
-    elif mode == "fill" or mode == "drop":
+    elif mode in {"fill", "drop"}:
         if "float" in str(arr.dtype) or "complex" in str(arr.dtype):
             fill_value = float("nan")
         elif "uint" in str(arr.dtype):
@@ -398,7 +413,7 @@ def expand(
 expand.support_native_out = False
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("complex", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("complex", "float16")}, backend_version)
 def unique_consecutive(
     x: torch.Tensor,
     /,
@@ -428,7 +443,7 @@ def column_stack(
     return torch.column_stack(arrays)
 
 
-@with_supported_dtypes({"2.1.0 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"2.2 and below": ("float32", "float64")}, backend_version)
 def put_along_axis(
     arr: torch.Tensor,
     indices: torch.Tensor,
@@ -539,13 +554,13 @@ def take(
         if ivy.exists(axis):
             try:
                 x_shape = x.shape[axis]
-            except Exception:
+            except Exception as e:
                 rank = len(x.shape)
                 raise IndexError(
                     "IndexError: Dimension out of range"
                     f"(expected to be in range of[-{rank}, {rank-1}]"
                     f", but got {axis})"
-                )
+                ) from e
         else:
             x_shape = torch.prod(torch.tensor(x.shape))
 
@@ -628,3 +643,16 @@ def trim_zeros(a: torch.Tensor, /, *, trim: Optional[str] = "bf") -> torch.Tenso
             else:
                 last = last - 1
     return a[first:last]
+
+
+@handle_out_argument
+def unflatten(
+    x: torch.Tensor,
+    /,
+    shape: Tuple[int] = None,
+    dim: Optional[int] = 0,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    res = torch.unflatten(x, dim, shape)
+    return res

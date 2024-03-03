@@ -54,8 +54,7 @@ def concat(
     axis: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Join a sequence of arrays along an existing axis.
+    """Join a sequence of arrays along an existing axis.
 
     Parameters
     ----------
@@ -114,9 +113,8 @@ def expand_dims(
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Expand the shape of an array by inserting a new axis (dimension) of size one at the
-    position specified by axis.
+    """Expand the shape of an array by inserting a new axis (dimension) of size
+    one at the position specified by axis.
 
     Parameters
     ----------
@@ -252,9 +250,8 @@ def flip(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Reverses the order of elements in an array along the given axis. The shape of the
-    array must be preserved.
+    """Reverses the order of elements in an array along the given axis. The
+    shape of the array must be preserved.
 
     Parameters
     ----------
@@ -347,8 +344,7 @@ def permute_dims(
     copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Permutes the axes (dimensions) of an array x.
+    """Permutes the axes (dimensions) of an array x.
 
     Parameters
     ----------
@@ -450,8 +446,7 @@ def reshape(
     allowzero: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Give a new shape to an array without changing its data.
+    """Give a new shape to an array without changing its data.
 
     Parameters
     ----------
@@ -574,10 +569,10 @@ def roll(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.Container]:
-    """
-    Roll array elements along a specified axis. Array elements that roll beyond the last
-    position are re-introduced at the first position. Array elements that roll beyond
-    the first position are re-introduced at the last position.
+    """Roll array elements along a specified axis. Array elements that roll
+    beyond the last position are re-introduced at the first position. Array
+    elements that roll beyond the first position are re-introduced at the last
+    position.
 
     Parameters
     ----------
@@ -688,8 +683,7 @@ def squeeze(
     copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Remove singleton dimensions (axes) from x.
+    """Remove singleton dimensions (axes) from x.
 
     Parameters
     ----------
@@ -781,8 +775,7 @@ def stack(
     axis: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Join a sequence of arrays along a new axis.
+    """Join a sequence of arrays along a new axis.
 
     Parameters
     ----------
@@ -869,8 +862,7 @@ def clip(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Clips (limits) the values in an array.
+    """Clips (limits) the values in an array.
 
     Given an interval, values outside the interval are clipped to the interval edges
     (element-wise). For example, if an interval of [0, 1] is specified, values smaller
@@ -997,8 +989,7 @@ def constant_pad(
     value: Number = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Pad an array with a constant value.
+    """Pad an array with a constant value.
 
     Parameters
     ----------
@@ -1091,11 +1082,10 @@ def repeat(
     /,
     repeats: Union[int, Iterable[int]],
     *,
-    axis: int = None,
+    axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Repeat values along a given dimension.
+    """Repeat values along a given dimension.
 
     Parameters
     ----------
@@ -1170,8 +1160,7 @@ def split(
     axis: int = 0,
     with_remainder: bool = False,
 ) -> List[ivy.Array]:
-    """
-    Split an array into multiple sub-arrays.
+    """Split an array into multiple sub-arrays.
 
     Parameters
     ----------
@@ -1225,9 +1214,17 @@ def split(
     >>> x = ivy.Container(a=ivy.array([10, 45, 2]))
     >>> y = ivy.split(x)
     >>> print(y)
-    {
-        a:(list[3],<classivy.array.Array>shape=[1])
-    }
+    [
+        {
+            a: ivy.array([10])
+        },
+        {
+            a: ivy.array([45])
+        },
+        {
+            a: ivy.array([2])
+        }
+    ]
     """
     return current_backend(x).split(
         x,
@@ -1256,8 +1253,7 @@ def swapaxes(
     copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Interchange two axes of an array.
+    """Interchange two axes of an array.
 
     Parameters
     ----------
@@ -1364,8 +1360,7 @@ def tile(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Construct an array by repeating x the number of times given by reps.
+    """Construct an array by repeating x the number of times given by reps.
 
     Parameters
     ----------
@@ -1447,8 +1442,7 @@ def unstack(
     axis: int = 0,
     keepdims: bool = False,
 ) -> List[ivy.Array]:
-    """
-    Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
+    """Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
 
     Parameters
     ----------
@@ -1542,8 +1536,7 @@ def zero_pad(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Pad an array with zeros.
+    """Pad an array with zeros.
 
     Parameters
     ----------

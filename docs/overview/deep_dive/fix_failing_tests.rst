@@ -5,17 +5,17 @@ Fix Failing Tests:
 .. _`issues`: https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3A%22Failing+Test%22
 .. _`issue`: https://github.com/unifyai/ivy/issues/25849
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`docker channel`: https://discord.com/channels/799879767196958751/942114744691740772
+.. _`docker thread`: https://discord.com/channels/799879767196958751/1186629067966009424
 .. _`miniconda`: https://docs.conda.io/en/latest/miniconda.html
 .. _`venv`: https://docs.python.org/3/library/venv.html
 .. _`ivy/scripts/shell`: https://github.com/unifyai/ivy/tree/f71a414417646e1dfecb5de27fb555f80333932c/scripts/shell
 .. _`platform compatibility tags`: https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/
 .. _`logging level`: https://docs.python.org/3/library/logging.html#logging.Logger.setLevel
-.. _`pycharm channel`: https://discord.com/channels/799879767196958751/942114831039856730
-.. _`pre-commit channel`: https://discord.com/channels/799879767196958751/982725464110034944
-.. _`pip packages channel`: https://discord.com/channels/799879767196958751/942114789642080317
-.. _`ivy tests channel`: https://discord.com/channels/799879767196958751/982738436383445073
-.. _`ivy frontend tests channel`: https://discord.com/channels/799879767196958751/1028267758028337193
+.. _`pycharm thread`: https://discord.com/channels/799879767196958751/1186628916522262629
+.. _`pre-commit thread`: https://discord.com/channels/799879767196958751/1186629635694399539
+.. _`pip packages thread`: https://discord.com/channels/799879767196958751/1186629837515935765
+.. _`ivy tests thread`: https://discord.com/channels/799879767196958751/1189907526226034698
+.. _`ivy frontend tests thread`: https://discord.com/channels/799879767196958751/1190246804940402738
 
 We're really happy you'd like to learn how to contribute towards Ivy 🙂
 
@@ -307,4 +307,4 @@ This section aims to assist you in navigating through some common errors you mig
 Where to ask for Help
 *********************
 
-The best place to ask for help is our `discord`_ server in the relevant channels. For instance, lets say you're facing an issue with :code:`test_jax_transpose` function, in this case you should post your query in the `ivy frontend tests channel`_.
+The best place to ask for help is our `discord`_ server in the relevant channels. For instance, lets say you're facing an issue with :code:`test_jax_transpose` function, in this case you should post your query in the `ivy frontend tests thread`_.

@@ -1,5 +1,6 @@
 # local
 from typing import (
+    Iterable,
     Optional,
     Union,
     Sequence,
@@ -14,6 +15,7 @@ import jax.numpy as jnp
 import jax.lax as jlax
 from numbers import Number
 from collections import namedtuple
+from ivy.func_wrapper import handle_out_argument
 
 # local
 import ivy
@@ -146,7 +148,7 @@ def _to_nested_tuple(nested_list):
 
 def pad(
     input: JaxArray,
-    pad_width: Union[Sequence[Sequence[int]], JaxArray, int],
+    pad_width: Union[Iterable[Tuple[int]], int],
     /,
     *,
     mode: Union[
@@ -166,9 +168,9 @@ def pad(
         ],
         Callable,
     ] = "constant",
-    stat_length: Union[Sequence[Sequence[int]], int] = 1,
-    constant_values: Union[Sequence[Sequence[Number]], Number] = 0,
-    end_values: Union[Sequence[Sequence[Number]], Number] = 0,
+    stat_length: Union[Iterable[Tuple[int]], int] = 1,
+    constant_values: Union[Iterable[Tuple[Number]], Number] = 0,
+    end_values: Union[Iterable[Tuple[Number]], Number] = 0,
     reflect_type: Literal["even", "odd"] = "even",
     **kwargs: Optional[Any],
 ) -> JaxArray:
@@ -441,11 +443,11 @@ def take(
         if ivy.exists(axis):
             try:
                 x_shape = x.shape[axis]
-            except Exception:
+            except Exception as e:
                 raise ValueError(
                     f"axis {axis} is out of bounds for array of dimension"
                     f" {len(x.shape)}"
-                )
+                ) from e
         else:
             x_shape = jnp.prod(x.shape)
 
@@ -461,9 +463,25 @@ def take(
     # clip, wrap, fill
     ret = jnp.take(x, indices, axis=axis, mode=mode, fill_value=fill_value)
     if ivy.exists(out):
-        ivy.inplace_update(out)
+        ivy.inplace_update(out, ret)
     return ret
 
 
 def trim_zeros(a: JaxArray, /, *, trim: Optional[str] = "bf") -> JaxArray:
     return jnp.trim_zeros(a, trim=trim)
+
+
+@handle_out_argument
+def unflatten(
+    x: JaxArray,
+    /,
+    shape: Tuple[int] = None,
+    dim: int = 0,
+    *,
+    out: Optional[JaxArray] = None,
+    order: Optional[str] = None,
+) -> JaxArray:
+    dim = abs(len(x.shape) + dim) if dim < 0 else dim
+    res_shape = x.shape[:dim] + shape + x.shape[dim + 1 :]
+    res = jnp.reshape(x, res_shape)
+    return res
