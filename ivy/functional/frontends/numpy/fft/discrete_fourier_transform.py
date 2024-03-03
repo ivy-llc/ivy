@@ -1,6 +1,6 @@
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 
 
 _SWAP_DIRECTION_MAP = {
@@ -33,7 +33,7 @@ def fft(a, n=None, axis=-1, norm=None):
     return ivy.fft(ivy.astype(a, ivy.complex128), axis, norm=norm, n=n)
 
 
-@with_unsupported_dtypes({"1.26.2 and below": ("int",)}, "numpy")
+@with_unsupported_dtypes({"1.26.3 and below": ("int",)}, "numpy")
 @to_ivy_arrays_and_back
 def fftfreq(n, d=1.0):
     if not isinstance(
@@ -53,8 +53,40 @@ def fftfreq(n, d=1.0):
     return results * val
 
 
+@with_supported_dtypes(
+    {"1.26.0 and below": ("float32", "float64", "complex64", "complex128")},
+    "numpy",
+)
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.26.2 and below": ("float16",)}, "numpy")
+def fftn(a, s=None, axes=None, norm=None):
+    invreal = 0
+    if norm is None:
+        norm = "backward"
+    if s is None:
+        shapeless = 1
+        if axes is None:
+            s = list(a.shape)
+        else:
+            axes = [ax % len(a.shape) for ax in axes]
+            s = ivy.gather(a.shape, ivy.array(axes, dtype="int64"))
+    else:
+        shapeless = 0
+    s = list(s)
+    if axes is None:
+        axes = list(range(-len(s), 0))
+    if len(s) != len(axes):
+        raise ValueError("Shape and axes have different lengths.")
+    if invreal and shapeless:
+        s[-1] = (a.shape[axes[-1]] - 1) * 2
+    itl = list(range(len(axes)))
+    itl.reverse()
+    for ii in itl:
+        a = ivy.fft(a, axes[ii], norm=norm, n=int(s[ii]))
+    return ivy.astype(a, ivy.complex128)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.26.3 and below": ("float16",)}, "numpy")
 def fftshift(x, axes=None):
     x = ivy.asarray(x)
 
@@ -99,7 +131,7 @@ def ifftn(a, s=None, axes=None, norm=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.26.2 and below": ("float16",)}, "numpy")
+@with_unsupported_dtypes({"1.26.3 and below": ("float16",)}, "numpy")
 def ifftshift(x, axes=None):
     x = ivy.asarray(x)
 
@@ -119,7 +151,7 @@ def ifftshift(x, axes=None):
     return roll
 
 
-@with_unsupported_dtypes({"1.26.2 and below": ("float16",)}, "numpy")
+@with_unsupported_dtypes({"1.26.3 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 def ihfft(a, n=None, axis=-1, norm=None):
     if n is None:
@@ -129,7 +161,7 @@ def ihfft(a, n=None, axis=-1, norm=None):
     return output
 
 
-@with_unsupported_dtypes({"1.26.2 and below": ("float16",)}, "numpy")
+@with_unsupported_dtypes({"1.26.3 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 def rfft(a, n=None, axis=-1, norm=None):
     if norm is None:

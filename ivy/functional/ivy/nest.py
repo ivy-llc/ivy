@@ -239,7 +239,7 @@ def insert_into_nest_at_index(nest: Iterable, index: Tuple, value) -> None:
     >>> nest = [[1, 2], [3, 4]]
     >>> index = (1, 1)
     >>> value = 99
-    >>> insert_into_nest_at_index(nest, index, value)
+    >>> ivy.insert_into_nest_at_index(nest, index, value)
     >>> print(nest)
     [[1, 2], [3, 99, 4]]
     """
@@ -369,7 +369,10 @@ def map_nest_at_index(
     try:
         _result = nest_type(_result)
     except TypeError:
-        _result = nest_type(*_result)
+        try:
+            _result = nest_type(*_result)
+        except TypeError:
+            pass
     return _result
 
 
@@ -1090,18 +1093,12 @@ def nested_map(
     ... )
     >>> function = lambda a : a  + 1
     >>> ivy.nested_map(function, x)
-    {
-        a: ivy.array([[2, 3, 4],
-                      [10, 9, 8]]),
-        b: ivy.array([[5, 6, 7],
-                      [13, 14, 15]])
-    }
     >>> print(x)
     {
-        a: ivy.array([[2, 3, 4],
-                      [10, 9, 8]]),
-        b: ivy.array([[5, 6, 7],
-                      [13, 14, 15]])
+        a: ivy.array([[1, 2, 3],
+                      [9, 8, 7]]),
+        b: ivy.array([[4, 5, 6],
+                      [12, 13, 14]])
     }
 
     >>> nest = ([1, 2], [3, 4], [5, 6], {"a": 1, "b": 2, "c": 3})
@@ -1344,14 +1341,16 @@ def copy_nest(
             return class_instance(**dict(zip(nest._fields, ret_list)))
         return class_instance(tuple(ret_list))
     elif check_fn(nest, list):
-        return class_instance([
-            copy_nest(
-                i,
-                include_derived=include_derived,
-                to_mutable=to_mutable,
-            )
-            for i in nest
-        ])
+        return class_instance(
+            [
+                copy_nest(
+                    i,
+                    include_derived=include_derived,
+                    to_mutable=to_mutable,
+                )
+                for i in nest
+            ]
+        )
     elif check_fn(nest, dict):
         class_instance = type(nest)
         dict_ = {
@@ -1510,7 +1509,7 @@ def nested_multi_map(
                     )
                 )
         ret = func(values, this_index_chain)
-        if to_ivy:
+        if to_ivy and ret is not None:
             if isinstance(nest, (ivy.Array, ivy.NativeArray)):
                 return ret
             else:

@@ -467,6 +467,59 @@ def adjoint(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_device
+def lu_factor(
+    A: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    pivot: bool = True,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
+    """
+    Parameters
+    ----------
+    A
+        tensor of shape (*, m, n) where * is zero or more batch dimensions.
+
+    pivot
+        Whether to compute the LU decomposition with partial pivoting, or the regular LU
+        decomposition. pivot = False not supported on CPU. Default: True.
+
+    out
+        tuple of two tensors to write the output to. Ignored if None. Default: None.
+
+    Returns
+    -------
+    ret
+        A named tuple (LU, pivots).
+    """
+    return current_backend(A).lu_factor(A, pivot=pivot, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device
+def lu_solve(
+    lu: Union[ivy.Array, ivy.NativeArray],
+    p: Union[ivy.Array, ivy.NativeArray],
+    b: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    return current_backend(lu, p, b).lu_solve(lu, p, b, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device
 def solve_triangular(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1051,12 +1104,14 @@ def svd_flip(
         )
         V = V * signs[:, None]
         if ivy.shape(U)[1] > ivy.shape(V)[0]:
-            signs = ivy.concat((
-                signs,
-                ivy.ones(
-                    ivy.shape(U)[1] - ivy.shape(V)[0],
-                ),
-            ))
+            signs = ivy.concat(
+                (
+                    signs,
+                    ivy.ones(
+                        ivy.shape(U)[1] - ivy.shape(V)[0],
+                    ),
+                )
+            )
         U = U * signs[: ivy.shape(U)[1]]
 
     return U, V
@@ -1385,11 +1440,11 @@ def initialize_tucker(
     """
     try:
         assert len(x.shape) >= 2
-    except ValueError:
+    except ValueError as e:
         raise ValueError(
             "expected x to have at least 2 dimensions but it has only"
             f" {len(x.shape)} dimension(s)"
-        )
+        ) from e
 
     # Initialisation
     if init == "svd":
@@ -1667,11 +1722,11 @@ def tucker(
     if fixed_factors:
         try:
             (core, factors) = init
-        except ValueError:
+        except ValueError as e:
             raise ValueError(
                 f"Got fixed_factor={fixed_factors} but no appropriate Tucker tensor was"
                 ' passed for "init".'
-            )
+            ) from e
         if len(fixed_factors) == len(factors):
             return ivy.TuckerTensor((core, factors))
 
@@ -1903,7 +1958,7 @@ def general_inner_product(
 
     >>> a = ivy.array([1, 2, 3])
     >>> b = ivy.array([4, 5, 6])
-    >>> result = ivy.general_inner_product(a, b, n_modes=1)
+    >>> result = ivy.general_inner_product(a, b, 1)
     >>> print(result)
     ivy.array(32)
 
@@ -1915,7 +1970,7 @@ def general_inner_product(
 
     >>> a = ivy.array([[1, 1], [1, 1]])
     >>> b = ivy.array([[1, 2, 3, 4],[1, 1, 1, 1]])
-    >>> result = ivy.general_inner_product(a, b, n_modes=1)
+    >>> result = ivy.general_inner_product(a, b, 1)
     >>> print(result)
     ivy.array([[2, 3, 4, 5],
        [2, 3, 4, 5]])

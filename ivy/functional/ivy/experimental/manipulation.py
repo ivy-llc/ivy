@@ -98,9 +98,9 @@ def flatten(
     /,
     *,
     copy: Optional[bool] = None,
-    start_dim: Optional[int] = 0,
-    end_dim: Optional[int] = -1,
-    order: Optional[str] = "C",
+    start_dim: int = 0,
+    end_dim: int = -1,
+    order: str = "C",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Flattens input by reshaping it into a one-dimensional tensor. If
@@ -1797,10 +1797,10 @@ def put_along_axis(
     >>> axis = 1
     >>> indices = ivy.argmax(arr, axis=axis, keepdims=True)
     >>> value = 100
-    >>> ivy.put_along_axis(arr, indices, value, axis, mode='add')
+    >>> ivy.put_along_axis(arr, indices, value, axis, mode='sum')
     >>> print(arr)
-    ivy.array([[ 10, 130, 20],
-               [ 160, 40, 50]])
+    ivy.array([[10, 30, 20],
+              [60, 40, 50]])
     """
     arr_shape = arr.shape
 
@@ -2231,7 +2231,7 @@ fill_diagonal.mixed_backend_wrappers = {
 def unfold(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    mode: Optional[int] = 0,
+    mode: int = 0,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -2303,10 +2303,10 @@ def fold(
 def partial_unfold(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    mode: Optional[int] = 0,
-    skip_begin: Optional[int] = 1,
-    skip_end: Optional[int] = 0,
-    ravel_tensors: Optional[bool] = False,
+    mode: int = 0,
+    skip_begin: int = 1,
+    skip_end: int = 0,
+    ravel_tensors: bool = False,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -2363,7 +2363,7 @@ def partial_fold(
     /,
     mode: int,
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
-    skip_begin: Optional[int] = 1,
+    skip_begin: int = 1,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -2404,8 +2404,8 @@ def partial_fold(
 def partial_tensor_to_vec(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    skip_begin: Optional[int] = 1,
-    skip_end: Optional[int] = 0,
+    skip_begin: int = 1,
+    skip_end: int = 0,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -2449,7 +2449,7 @@ def partial_vec_to_tensor(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
-    skip_begin: Optional[int] = 1,
+    skip_begin: int = 1,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -2627,17 +2627,17 @@ def choose(
     Examples
     --------
     >>> choices = ivy.array([[0, 1, 2, 3], [10, 11, 12, 13],
-                        [20, 21, 22, 23], [30, 31, 32, 33]])
-    >>> print(choose(ivy.array([2, 3, 1, 0]), choices))
+    ...                     [20, 21, 22, 23],[30, 31, 32, 33]])
+    >>> print(ivy.choose(choices, ivy.array([2, 3, 1, 0]))
     ivy.array([20, 31, 12, 3])
     >>> arr = ivy.array([2, 4, 1, 0])
-    >>> print(choose(arr, choices, mode='clip')) # 4 goes to 3 (4-1)
+    >>> print(ivy.choose(choices, arr, mode='clip')) # 4 goes to 3 (4-1)
     ivy.array([20, 31, 12, 3])
     >>> arr = ivy.array([2, 4, 1, 0])
-    >>> print(choose(arr, choices, mode='wrap')) # 4 goes to (4 mod 4)
+    >>> print(ivy.choose(choices, arr, mode='wrap')) # 4 goes to (4 mod 4)
     ivy.array([20, 1, 12, 3])
     """
-    return ivy.current_backend(arr).choose(arr, choices, out=out, mode=mode)
+    return ivy.current_backend().choose(arr, choices, out=out, mode=mode)
 
 
 @handle_array_function
@@ -2828,7 +2828,7 @@ def trim_zeros(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    trim: Optional[str] = "fb",
+    trim: str = "fb",
 ) -> ivy.Array:
     """ivy.Container instance method variant of ivy.trim_zeros. This method
     simply wraps the function, and so the docstring for ivy.trim_zeros also
@@ -2870,3 +2870,64 @@ trim_zeros.mixed_backend_wrappers = {
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device
+def unflatten(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    dim: int,
+    shape: Tuple[int],
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Expand a dimension of the input tensor over multiple dimensions.
+
+    Parameters
+    ----------
+    x
+        input tensor.
+    dim
+        dimension to be unflattened, specified as an index into input.shape.
+    shape
+        new shape of the unflattened dimension. One of its elements can be -1 in
+        which case the corresponding output dimension is inferred. Otherwise,
+        the product of sizes must equal input.shape[dim].
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        view of input with the specified dimension unflattened.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.permute_dims.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    >>> ivy.unflatten(torch.randn(3, 4, 1), dim=1, shape=(2, 2)).shape
+    torch.Size([3, 2, 2, 1])
+    >>> ivy.unflatten(torch.randn(3, 4, 1), dim=1, shape=(-1, 2)).shape
+    torch.Size([3, 2, 2, 1])
+    >>> ivy.unflatten(torch.randn(5, 12, 3), dim=-2, shape=(2, 2, 3, 1, 1)).shape
+    torch.Size([5, 2, 2, 3, 1, 1, 3])
+    """
+    return ivy.current_backend(x).unflatten(x, dim=dim, shape=shape, out=out)

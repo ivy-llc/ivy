@@ -19,11 +19,11 @@ class dtype:
     def __ge__(self, other):
         try:
             other = dtype(other)
-        except TypeError:
+        except TypeError as e:
             raise ivy.utils.exceptions.IvyException(
                 "Attempted to compare a dtype with something which"
                 "couldn't be interpreted as a dtype"
-            )
+            ) from e
 
         return self == np_frontend.promote_numpy_dtypes(
             self._ivy_dtype, other._ivy_dtype
@@ -32,22 +32,22 @@ class dtype:
     def __gt__(self, other):
         try:
             other = dtype(other)
-        except TypeError:
+        except TypeError as e:
             raise ivy.utils.exceptions.IvyException(
                 "Attempted to compare a dtype with something which"
                 "couldn't be interpreted as a dtype"
-            )
+            ) from e
 
         return self >= other and self != other
 
     def __lt__(self, other):
         try:
             other = dtype(other)
-        except TypeError:
+        except TypeError as e:
             raise ivy.utils.exceptions.IvyException(
                 "Attempted to compare a dtype with something which"
                 "couldn't be interpreted as a dtype"
-            )
+            ) from e
 
         return self != np_frontend.promote_numpy_dtypes(
             self._ivy_dtype, other._ivy_dtype
@@ -56,11 +56,11 @@ class dtype:
     def __le__(self, other):
         try:
             other = dtype(other)
-        except TypeError:
+        except TypeError as e:
             raise ivy.utils.exceptions.IvyException(
                 "Attempted to compare a dtype with something which"
                 "couldn't be interpreted as a dtype"
-            )
+            ) from e
 
         return self < other or self == other
 

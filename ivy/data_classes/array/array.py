@@ -1,9 +1,7 @@
 # flake8: noqa
 # global
 import copy
-import functools
 import numpy as np
-from operator import mul
 from typing import Optional
 
 # local
@@ -144,6 +142,8 @@ class Array(
             self._data = data
         elif isinstance(data, np.ndarray):
             self._data = ivy.asarray(data)._data
+        elif isinstance(data, (list, tuple)):
+            self._data = ivy.asarray(data)._data
         elif ivy.is_ivy_sparse_array(data):
             self._data = data._data
         elif ivy.is_native_sparse_array(data):
@@ -260,16 +260,7 @@ class Array(
     @property
     def size(self) -> Optional[int]:
         """Number of elements in the array."""
-        if self._size is None:
-            if ivy.current_backend_str() in ["numpy", "jax"]:
-                self._size = self._data.size
-                return self._size
-            self._size = (
-                functools.reduce(mul, self._data.shape)
-                if len(self._data.shape) > 0
-                else 1
-            )
-        return self._size
+        return ivy.size(self)
 
     @property
     def itemsize(self) -> Optional[int]:
@@ -347,7 +338,7 @@ class Array(
     @classmethod
     def __torch_function__(cls, func, types, args=(), kwargs={}):
         args, kwargs = args_to_native(*args, **kwargs)
-        return func(*args, **kwargs)
+        return to_ivy(func(*args, **kwargs))
 
     def __ivy_array_function__(self, func, types, args, kwargs):
         # Cannot handle items that have __ivy_array_function__ other than those of
@@ -380,7 +371,7 @@ class Array(
 
     def __array_ufunc__(self, *args, **kwargs):
         args, kwargs = args_to_native(*args, **kwargs)
-        return self._data.__array_ufunc__(*args, **kwargs)
+        return to_ivy(self._data.__array_ufunc__(*args, **kwargs))
 
     def __array_wrap__(self, *args, **kwargs):
         args, kwargs = args_to_native(*args, **kwargs)
@@ -399,7 +390,13 @@ class Array(
                 self._post_repr = ")"
         sig_fig = ivy.array_significant_figures
         dec_vals = ivy.array_decimal_values
-        backend = ivy.with_backend(self.backend)
+        if self.backend == "" or ivy.is_local():
+            # If the array was constructed using implicit backend
+            backend = ivy.current_backend()
+        else:
+            # Requirerd in the case that backend is different
+            # from the currently set backend
+            backend = ivy.with_backend(self.backend)
         arr_np = backend.to_numpy(self._data)
         rep = (
             np.array(ivy.vec_sig_fig(arr_np, sig_fig))

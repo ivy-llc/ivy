@@ -3,7 +3,7 @@ from typing import Optional, Union, Tuple, Sequence
 import torch
 
 # local
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
 import ivy
 from ..statistical import _infer_dtype
@@ -12,7 +12,7 @@ from copy import deepcopy
 
 @with_unsupported_dtypes(
     {
-        "2.1.2 and below": (
+        "2.2 and below": (
             "uint8",
             "int8",
             "int16",
@@ -139,7 +139,7 @@ def histogram(
 histogram.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.1.2 and below": ("float16", "bool")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bool")}, backend_version)
 def median(
     input: torch.Tensor,
     /,
@@ -170,6 +170,7 @@ def median(
 median.support_native_out = False
 
 
+@with_supported_dtypes({"2.2 and below": ("float",)}, backend_version)
 def nanmean(
     a: torch.Tensor,
     /,
@@ -291,10 +292,12 @@ def _handle_axis(a, q, fn, keepdims=False, axis=None):
 
             for i, s in enumerate(sorted(keep)):
                 a = torch.moveaxis(a, s, i)
-            a = a.view([
-                *a.shape[:nkeep],
-                -1,
-            ])
+            a = a.view(
+                [
+                    *a.shape[:nkeep],
+                    -1,
+                ]
+            )
             axis_arg = -1
 
     ret = fn(a, q, axis=axis_arg)
@@ -364,7 +367,7 @@ def _compute_quantile_wrapper(
         )
 
 
-@with_unsupported_dtypes({"2.1.2 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16", "float16")}, backend_version)
 def quantile(
     a: torch.Tensor,
     q: Union[torch.Tensor, float],
@@ -445,7 +448,7 @@ def _nanmedian(input, axis, keepdims):
     return ret
 
 
-@with_unsupported_dtypes({"2.1.2 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16", "float16")}, backend_version)
 def nanmedian(
     input: torch.Tensor,
     /,
@@ -533,7 +536,7 @@ def igamma(
 igamma.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.1.2 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def cov(
     x1: torch.Tensor,
     x2: torch.Tensor = None,
@@ -590,7 +593,7 @@ cov.support_native_out = False
 
 
 @with_unsupported_dtypes(
-    {"2.1.2 and below": ("float16", "complex")},
+    {"2.2 and below": ("float16", "complex")},
     backend_version,
 )
 def cummax(
@@ -627,7 +630,7 @@ def cummax(
 
 @with_unsupported_dtypes(
     {
-        "2.1.2 and below": ("uint8", "float16", "bfloat16"),
+        "2.2 and below": ("bool", "float16"),
         "1.12.1 and above": ("uint8", "float16"),
     },
     backend_version,

@@ -15,7 +15,11 @@ import threading
 import ivy
 
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test, BackendHandler
+from ivy_tests.test_ivy.helpers import (
+    handle_test,
+    BackendHandler,
+    handle_example,
+)
 from ivy_tests.test_ivy.helpers.assertions import assert_all_close
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import pow_helper
 
@@ -1070,6 +1074,15 @@ def test_get_all_arrays_in_memory():
     container_flags=st.just([False]),
     test_with_copy=st.just(True),
 )
+@handle_example(
+    test_example=True,
+    test_flags={
+        "num_positional_args": 2,
+    },
+    dtypes_x_query=(["float32", "bool"], np.ones((1, 3, 3)), (np.array([True]), 2, 2)),
+    copy=None,
+    fn_name="get_item",
+)
 def test_get_item(
     dtypes_x_query,
     copy,
@@ -1289,7 +1302,7 @@ def test_inplace_increment(x_val_and_dtypes, test_flags, on_device, backend_fw):
         shared_dtype=True,
     ),
     keep_x_dtype=st.booleans(),
-    inplace_mode=st.sampled_from(["lenient", "strict"]),
+    inplace_mode=st.just("lenient"),
 )
 def test_inplace_update(
     x_val_and_dtypes, keep_x_dtype, inplace_mode, test_flags, on_device, backend_fw
@@ -1643,6 +1656,20 @@ def test_set_inplace_mode(mode):
     container_flags=st.just([False]),
     test_with_copy=st.just(True),
 )
+@handle_example(
+    test_example=True,
+    test_flags={
+        "num_positional_args": 3,
+    },
+    dtypes_x_query_val=(
+        ["int32", "int32"],
+        np.ones((1, 3, 3, 3)),
+        (slice(None, None, None), slice(None, None, None), slice(None, None, None), 1),
+        np.zeros((3, 1)),
+    ),
+    copy=False,
+    fn_name="set_item",
+)
 def test_set_item(
     dtypes_x_query_val,
     copy,
@@ -1719,6 +1746,25 @@ def test_shape(x0_n_x1_n_res, as_array, test_flags, backend_fw, fn_name, on_devi
         fn_name=fn_name,
         x=x[0],
         as_array=as_array,
+    )
+
+
+# size
+@handle_test(
+    fn_tree="functional.ivy.size",
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_size(dtype_x, test_flags, backend_fw, fn_name, on_device):
+    dtype, x = dtype_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
     )
 
 

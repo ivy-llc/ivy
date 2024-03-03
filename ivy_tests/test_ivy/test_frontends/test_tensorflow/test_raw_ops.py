@@ -2132,6 +2132,44 @@ def test_tensorflow_Gather(  # NOQA
     )
 
 
+# GatherNd
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.GatherNd",
+    params_indices_axis_batch_dims=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("valid"),
+        indices_dtypes=["int32", "int64"],
+        min_num_dims=3,
+        max_num_dims=3,
+        min_dim_size=3,
+        max_dim_size=3,
+        axis_zero=True,
+        disable_random_axis=True,
+        indices_same_dims=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_GatherNd(
+    *,
+    params_indices_axis_batch_dims,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtypes, params, indices = params_indices_axis_batch_dims
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        params=params,
+        indices=indices,
+    )
+
+
 # Greater
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Greater",
@@ -4279,6 +4317,7 @@ def test_tensorflow_Svd(
         rtol=1e-2,
         atol=1e-2,
         ground_truth_backend=frontend,
+        backend=backend_fw,
     )
 
 

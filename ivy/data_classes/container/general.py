@@ -3875,6 +3875,140 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
+    def _static_size(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.size. This method
+        simply wraps the function, and so the docstring for ivy.size also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            ivy.Container to infer the number of elements for
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+
+        Returns
+        -------
+        ret
+            Number of elements of the array
+
+        Examples
+        --------
+        >>> x = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
+        >>> ivy.Container.static_size(x)
+        {
+            b: 9
+        }
+        >>> x = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]]
+        ...                                    [[0,0,0],[0,0,0],[0,0,0]],
+        ...                                    [[0,0,0],[0,0,0],[0,0,0]]]))
+        >>> ivy.Container.static_size(x)
+        {
+            b: 27
+        }
+        >>> x = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],
+        ...                                    [[0,0,0],[0,0,0],[0,0,0]]]),
+        ...                                    c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))
+        >>> ivy.Container.static_size(x)
+        {
+            b: 18,
+            c: 6,
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "size",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def size(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.size. This method
+        simply wraps the function, and so the docstring for ivy.size also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            ivy.Container to infer the number of elements for
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+
+        Returns
+        -------
+        ret
+            Number of elements of the array
+
+        Examples
+        --------
+        >>> a = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
+        >>> a.size()
+        {
+            b: 9
+        }
+        >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],
+        ...                                    [[0,0,0],[0,0,0],[0,0,0]],
+        ...                                    [[0,0,0],[0,0,0],[0,0,0]]]))
+        >>> a.size()
+        {
+            b: 27
+        }
+        >>> a = ivy.Container(b = ivy.array([[[0,0,0],[0,0,0],[0,0,0]],
+        ...                                    [[0,0,0],[0,0,0],[0,0,0]]]),
+        ...                                    c = ivy.asarray([[0.,1.,1.],[8.,2.,3.]]))
+        >>> a.size()
+        {
+            b: 18,
+            c: 6,
+        }
+        """
+        return _ContainerWithGeneral._static_size(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
     def _static_array_equal(
         x0: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],

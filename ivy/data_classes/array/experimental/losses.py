@@ -98,7 +98,7 @@ class _ArrayWithLossesExperimental(abc.ABC):
         ivy.array([1.28402555, 1.28402555, 1.03402555, 1.28402555])
 
         >>> z = ivy.array([0.1, 0.1, 0.7, 0.1])
-        >>> loss = x.x.log_poisson_loss(z, reduction='mean')
+        >>> loss = x.log_poisson_loss(z, reduction='mean')
         >>> print(loss)
         ivy.array(1.1573164)
         """
@@ -353,9 +353,9 @@ class _ArrayWithLossesExperimental(abc.ABC):
         --------
         >>> input_tensor = ivy.array([1, 2, 3, 4], dtype=ivy.float64)
         >>> target_tensor = ivy.array([2, 2, 2, 2], dtype=ivy.float64)
-        >>> loss = poisson_nll_loss(input_tensor, target_tensor, log_input=True)
+        >>> loss = input_tensor.poisson_nll_loss(target_tensor, log_input=True)
         >>> print(loss)
-        ivy.array(16.1978)
+        ivy.array(16.1977562)
         """
         return ivy.poisson_nll_loss(
             self._data,
@@ -363,5 +363,86 @@ class _ArrayWithLossesExperimental(abc.ABC):
             log_input=log_input,
             full=full,
             eps=eps,
+            reduction=reduction,
+        )
+
+    def hinge_embedding_loss(
+        self: Union[ivy.Array, ivy.NativeArray],
+        target: Union[ivy.Array, ivy.NativeArray],
+        *,
+        margin: float = 1.0,
+        reduction: str = "mean",
+    ) -> ivy.Array:
+        r"""Measures loss from input `x` and label `y` with values 1 or -1. It
+        evaluates if two inputs are similar or not, often used for embedding or
+        semi-supervised learning.
+
+        Loss for the `n`-th sample:
+            .. math::
+                l_n = \begin{cases}
+                    x_n, & \text{if}\; y_n = 1,\\
+                    \max \{0, margin - x_n\}, & \text{if}\; y_n = -1,
+                \end{cases}
+
+        Total loss:
+            .. math::
+                \ell(x, y) = \begin{cases}
+                    \operatorname{mean}(L), & \text{if reduction} = \text{`mean';}\\
+                    \operatorname{sum}(L),  & \text{if reduction} = \text{`sum'.}
+                \end{cases}
+
+        where :math:`L = \{l_1,\dots,l_N\}^\top`
+
+        Parameters
+        ----------
+        input
+            Input tensor with dtype float.
+            The shape is [N, \*], where N is batch size and `\*` represents
+            any number of additional dimensions.
+        label
+            Label tensor containing 1 or -1 with dtype float32 or float64.
+            Its shape matches that of the input.
+        margin
+            Sets the hyperparameter margin. Determines the necessary input size
+            for hinge_embedding_loss calculations when label is -1. Inputs smaller
+            than the margin are minimized with hinge_embedding_loss.
+            Default is 1.0.
+        reduction
+            Specifies how to aggregate the loss across the batch. Options are:
+            - ``'none'``: Returns the unreduced loss.
+            - ``'mean'``: Returns the mean loss.
+            - ``'sum'``: Returns the summed loss.
+            Default is ``'mean'``.
+
+        Shape
+        -----
+            - Input: :math:`(*)` where :math:`*` means, any number of dimensions. \
+            The sum operation operates over all the elements.
+            - Target: :math:`(*)`, same shape as the input
+            - Output: scalar. If :attr:`reduction` is ``'none'``,
+            then same shape as the input
+
+        Returns
+        -------
+        ret
+            Hinge embedding loss calculated from the input and label,
+            shaped based on the reduction method.
+
+        Examples
+        --------
+        >>> input_tensor = ivy.array([1, 2, 3, 4], dtype=ivy.float64)
+        >>> target_tensor = ivy.array([1, 1, 1, 1], dtype=ivy.float64)
+        >>> input_tensor.hinge_embedding_loss(target_tensor,reduction="sum")
+        ivy.array(10.)
+
+        >>> input_tensor = ivy.array([1, 2, 3], dtype=ivy.float64)
+        >>> target_tensor = ivy.array([1, -1, -1], dtype=ivy.float64)
+        >>> input_tensor.hinge_embedding_loss(target_tensor, margin=2.0)
+        ivy.array(0.33333333)
+        """
+        return ivy.hinge_embedding_loss(
+            self._data,
+            target,
+            margin=margin,
             reduction=reduction,
         )

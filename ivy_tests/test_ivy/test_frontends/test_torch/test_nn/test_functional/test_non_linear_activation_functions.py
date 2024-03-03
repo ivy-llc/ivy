@@ -515,8 +515,18 @@ def test_torch_hardtanh_(
     fn_tree="torch.nn.functional.leaky_relu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        large_abs_safety_factor=25,
+        small_abs_safety_factor=25,
+        safety_factor_scale="log",
     ),
-    alpha=st.floats(min_value=0.0, max_value=1.0, exclude_min=True),
+    alpha=helpers.floats(
+        min_value=0,
+        max_value=1,
+        large_abs_safety_factor=25,
+        small_abs_safety_factor=25,
+        safety_factor_scale="log",
+    ),
     test_inplace=st.booleans(),
     test_with_out=st.just(False),
 )
@@ -649,7 +659,6 @@ def test_torch_log_softmax(
     backend_fw,
 ):
     input_dtype, x, axis = dtype_x_and_axis
-    ivy.set_backend(backend_fw)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -660,9 +669,8 @@ def test_torch_log_softmax(
         input=x[0],
         dim=axis,
         _stacklevel=3,
-        dtype=ivy.as_ivy_dtype(dtypes[0]),
+        dtype=dtypes[0],
     )
-    ivy.previous_backend()
 
 
 # logsigmoid

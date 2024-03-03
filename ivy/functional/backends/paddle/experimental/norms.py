@@ -12,7 +12,7 @@ from . import backend_version
 # use numpy implementation with ivy functions
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -55,11 +55,11 @@ def batch_norm(
             if data_format[-1] == "C"
             else data_formats[0:4][x.ndim - 2]
         )
-    except IndexError:
+    except IndexError as e:
         raise IndexError(
             "data_format must be one of 'NC', 'NCL', 'NCHW', 'NCDHW', 'NLC', 'NHWC',"
             f" 'NDHWC' but receive {data_format}"
-        )
+        ) from e
 
     with ivy.ArrayMode(False):
         if training:
@@ -105,7 +105,7 @@ batch_norm.partial_mixed_handler = lambda x, *args, scale, offset, **kwargs: (
 )
 
 
-@with_supported_dtypes({"2.5.2 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, backend_version)
 def l1_normalize(
     x: paddle.Tensor, /, *, axis: Optional[int] = None, out: paddle.Tensor = None
 ) -> paddle.Tensor:
