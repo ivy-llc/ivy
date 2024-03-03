@@ -34,7 +34,7 @@ def _interp_args(draw, mode=None, mode_list=None):
         "trilinear",
         "nearest-exact",
         "tf_area",
-        "bicubic_tensorflow",
+        "tf_bicubic",
         "lanczos3",
         "lanczos5",
         "mitchellcubic",
@@ -46,7 +46,7 @@ def _interp_args(draw, mode=None, mode_list=None):
         "bilinear",
         "trilinear",
         "nearest-exact",
-        "bicubic_tensorflow",
+        "tf_bicubic",
         "lanczos3",
         "lanczos5",
     ]
@@ -69,7 +69,7 @@ def _interp_args(draw, mode=None, mode_list=None):
                         "nearest-exact",
                         "area",
                         "tf_area",
-                        "bicubic_tensorflow",
+                        "tf_bicubic",
                         "lanczos3",
                         "lanczos5",
                         "mitchellcubic",
@@ -80,13 +80,13 @@ def _interp_args(draw, mode=None, mode_list=None):
     elif mode_list:
         mode = draw(st.sampled_from(mode_list))
     align_corners = draw(st.booleans())
-    if (curr_backend == "tensorflow" or curr_backend == "jax") and not mixed_fn_compos:
+    if curr_backend in ["tensorflow", "jax"] and not mixed_fn_compos:
         align_corners = False
     if mode == "linear":
         num_dims = 3
     elif mode in [
         "bilinear",
-        "bicubic_tensorflow",
+        "tf_bicubic",
         "bicubic",
         "mitchellcubic",
         "gaussian",
@@ -157,7 +157,7 @@ def _interp_args(draw, mode=None, mode_list=None):
         )
         recompute_scale_factor = False
         scale_factor = None
-    if (curr_backend == "tensorflow" or curr_backend == "jax") and not mixed_fn_compos:
+    if curr_backend in ["tensorflow", "jax"] and not mixed_fn_compos:
         if not recompute_scale_factor:
             recompute_scale_factor = True
 

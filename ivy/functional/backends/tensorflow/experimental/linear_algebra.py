@@ -1,18 +1,17 @@
 from typing import Union, Optional, Tuple, List, Sequence
 import tensorflow as tf
 from functools import reduce as _reduce
-
+from collections import namedtuple
 import ivy
 
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
-from ivy.utils.exceptions import IvyNotImplementedException
 from .. import backend_version
 
 
 @with_unsupported_dtypes(
-    {"2.14.0 and below": ("int", "float16", "bfloat16")}, backend_version
+    {"2.15.0 and below": ("int", "float16", "bfloat16")}, backend_version
 )
 def eigh_tridiagonal(
     alpha: Union[tf.Tensor, tf.Variable],
@@ -96,7 +95,7 @@ def matrix_exp(
 
 @with_supported_dtypes(
     {
-        "2.14.0 and below": (
+        "2.15.0 and below": (
             "complex",
             "float32",
             "float64",
@@ -115,7 +114,7 @@ def eig(
 
 @with_supported_dtypes(
     {
-        "2.14.0 and below": (
+        "2.15.0 and below": (
             "complex",
             "float32",
             "float64",
@@ -162,7 +161,7 @@ def solve_triangular(
 
 @with_supported_dtypes(
     {
-        "2.14.0 and below": (
+        "2.15.0 and below": (
             "bfloat16",
             "float16",
             "float32",
@@ -187,7 +186,7 @@ def multi_dot(
     return dot_out
 
 
-@with_unsupported_dtypes({"1.25.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, backend_version)
 def cond(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -229,19 +228,35 @@ def cond(
     return k
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("integer", "float16", "bfloat16")}, backend_version
+)
 def lu_factor(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     pivot: Optional[bool] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Tuple[tf.Tensor]:
-    raise IvyNotImplementedException()
+) -> Tuple[tf.Tensor, tf.Tensor]:
+    ret = tf.linalg.lu(x)
+    ret_tuple = namedtuple("lu_factor", ["LU", "p"])
+    return ret_tuple(ret.lu, ret.p)
+
+
+def lu_solve(
+    lu: Union[tf.Tensor, tf.Variable],
+    p: Union[tf.Tensor, tf.Variable],
+    b: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.linalg.lu_solve(lu, p, b)
 
 
 @with_supported_dtypes(
     {
-        "2.14.0 and below": (
+        "2.15.0 and below": (
             "bfloat16",
             "float16",
             "float32",

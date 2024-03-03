@@ -11,11 +11,8 @@ import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.helpers.globals as test_globals
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
-from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # noqa
-    _get_splits,
-)
-from ivy_tests.array_api_testing.test_array_api.array_api_tests import (
-    hypothesis_helpers as hh,
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
+    two_broadcastable_shapes,
 )
 
 
@@ -340,7 +337,7 @@ def _dtypes_input_mask(draw):
 
 @st.composite
 def _where_helper(draw):
-    shape_1, shape_2 = draw(hh.two_broadcastable_shapes())
+    shape_1, shape_2 = draw(two_broadcastable_shapes())
     dtype_x1, x1 = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("valid"),
@@ -1359,11 +1356,13 @@ def test_torch_squeeze(
     dim=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ).filter(lambda axis: isinstance(axis, int)),
+    use_axis_arg=st.booleans(),
 )
 def test_torch_stack(
     *,
     dtype_value_shape,
     dim,
+    use_axis_arg,
     on_device,
     fn_tree,
     frontend,
@@ -1371,6 +1370,7 @@ def test_torch_stack(
     backend_fw,
 ):
     input_dtype, value = dtype_value_shape
+    dim_arg = {"axis" if use_axis_arg else "dim": dim}
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -1379,7 +1379,7 @@ def test_torch_stack(
         fn_tree=fn_tree,
         on_device=on_device,
         tensors=value,
-        dim=dim,
+        **dim_arg,
     )
 
 

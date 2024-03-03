@@ -16,8 +16,23 @@ ACTIVATION_FUNCTIONS = [
 ]
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+# note: defined to avoid AST call extraction of
+# 'tf_frontend.keras.activations.__dict__.items()
+# or 'tf_frontend.keras.activations.__dict__.values()'
+def _get_tf_keras_activations():
+    return tf_frontend.keras.activations.__dict__.items()
+
+
+# --- Main --- #
+# ------------ #
+
+
 @with_supported_dtypes(
-    {"2.14.0 and below": ("float16", "float32", "float64")},
+    {"2.15.0 and below": ("float16", "float32", "float64")},
     "tensorflow",
 )
 def deserialize(name, custom_objects=None):
@@ -47,7 +62,7 @@ def deserialize(name, custom_objects=None):
 
 
 @with_supported_dtypes(
-    {"2.14.0 and below": ("bfloat16", "float16", "float32", "float64")},
+    {"2.15.0 and below": ("bfloat16", "float16", "float32", "float64")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
@@ -103,7 +118,7 @@ def relu(x, alpha=0.0, max_value=None, threshold=0.0):
 
 
 @with_supported_dtypes(
-    {"2.14.0 and below": ("float16", "float32", "float64")},
+    {"2.15.0 and below": ("float16", "float32", "float64")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
@@ -112,7 +127,7 @@ def selu(x):
 
 
 @with_supported_dtypes(
-    {"2.14.0 and below": ("float16", "float32", "float64")},
+    {"2.15.0 and below": ("float16", "float32", "float64")},
     "tensorflow",
 )
 def serialize(activation, use_legacy_format=False, custom_objects=None):
@@ -132,13 +147,15 @@ def serialize(activation, use_legacy_format=False, custom_objects=None):
                 if custom_func == activation:
                     return name
 
+        tf_keras_frontend_activations = _get_tf_keras_activations()
+
         # Check if the function is in the ACTIVATION_FUNCTIONS list
         if activation.__name__ in ACTIVATION_FUNCTIONS:
             return activation.__name__
 
         # Check if the function is in the TensorFlow frontend activations
-        elif activation in tf_frontend.keras.activations.__dict__.values():
-            for name, tf_func in tf_frontend.keras.activations.__dict__.items():
+        elif activation in [fn for name, fn in tf_keras_frontend_activations]:
+            for name, tf_func in tf_keras_frontend_activations:
                 if tf_func == activation:
                     return name
 

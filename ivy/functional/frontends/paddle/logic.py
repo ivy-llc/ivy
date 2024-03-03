@@ -13,7 +13,7 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.6.0 and below": (
             "float32",
             "float64",
             "bool",
@@ -35,7 +35,7 @@ def allclose(x, y, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.6.0 and below": (
             "bool",
             "uint8",
             "int8",
@@ -54,7 +54,7 @@ def bitwise_and(x, y, /, *, name=None, out=None):
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.6.0 and below": (
             "bool",
             "uint8",
             "int8",
@@ -73,7 +73,7 @@ def bitwise_not(x, out=None, name=None):
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.6.0 and below": (
             "bool",
             "uint8",
             "int8",
@@ -92,7 +92,7 @@ def bitwise_or(x, y, name=None, out=None):
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.6.0 and below": (
             "bool",
             "uint8",
             "int8",
@@ -110,7 +110,8 @@ def bitwise_xor(x, y, /, *, name=None, out=None):
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("uint8", "int8", "int16", "complex64", "complex128")}, "paddle"
+    {"2.6.0 and below": ("uint8", "int8", "int16", "complex64", "complex128")},
+    "paddle",
 )
 @to_ivy_arrays_and_back
 def equal(x, y, /, *, name=None):
@@ -119,7 +120,7 @@ def equal(x, y, /, *, name=None):
 
 @with_unsupported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.6.0 and below": (
             "uint8",
             "int8",
             "int16",
@@ -136,7 +137,7 @@ def equal_all(x, y, /, *, name=None):
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("bool", "uint8", "int8", "int16", "complex64", "complex128")},
+    {"2.6.0 and below": ("bool", "uint8", "int8", "int16", "complex64", "complex128")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -145,7 +146,7 @@ def greater_equal(x, y, /, *, name=None):
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("bool", "uint8", "int8", "int16", "complex64", "complex128")},
+    {"2.6.0 and below": ("bool", "uint8", "int8", "int16", "complex64", "complex128")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -154,7 +155,8 @@ def greater_than(x, y, /, *, name=None):
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("uint8", "int8", "int16", "complex64", "complex128")}, "paddle"
+    {"2.6.0 and below": ("uint8", "int8", "int16", "complex64", "complex128")},
+    "paddle",
 )
 @to_ivy_arrays_and_back
 def is_empty(x, name=None):
@@ -168,7 +170,7 @@ def is_tensor(x):
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.6.0 and below": (
             "float32",
             "float64",
         )
@@ -181,7 +183,7 @@ def isclose(x, y, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("bool", "uint8", "int8", "int16", "complex64", "complex128")},
+    {"2.6.0 and below": ("bool", "uint8", "int8", "int16", "complex64", "complex128")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -190,7 +192,7 @@ def less_equal(x, y, /, *, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("bool", "float16", "float32", "float64", "int32", "int64")},
+    {"2.6.0 and below": ("bool", "float16", "float32", "float64", "int32", "int64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -200,7 +202,7 @@ def less_than(x, y, /, *, name=None):
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.6.0 and below": (
             "bool",
             "int8",
             "int16",
@@ -220,7 +222,7 @@ def logical_and(x, y, /, *, name=None, out=None):
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.6.0 and below": (
             "bool",
             "int8",
             "int16",
@@ -240,7 +242,7 @@ def logical_not(x, /, *, name=None, out=None):
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.6.0 and below": (
             "bool",
             "int8",
             "int16",
@@ -260,7 +262,7 @@ def logical_or(x, y, /, *, name=None, out=None):
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.6.0 and below": (
             "bool",
             "int8",
             "int16",
@@ -279,7 +281,8 @@ def logical_xor(x, y, /, *, name=None, out=None):
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("uint8", "int8", "int16", "complex64", "complex128")}, "paddle"
+    {"2.6.0 and below": ("uint8", "int8", "int16", "complex64", "complex128")},
+    "paddle",
 )
 @to_ivy_arrays_and_back
 def not_equal(x, y, /, *, name=None):

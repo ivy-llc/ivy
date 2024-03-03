@@ -23,9 +23,22 @@ def box_area(boxes):
     return ivy.prod(boxes[..., 2:] - boxes[..., :2], axis=-1)
 
 
+@to_ivy_arrays_and_back
+def box_iou(boxes1, boxes2):
+    area1 = box_area(boxes1)
+    area2 = box_area(boxes2)
+    lt = ivy.maximum(boxes1[:, None, :2], boxes2[:, :2])
+    rb = ivy.minimum(boxes1[:, None, 2:], boxes2[:, 2:])
+    wh = (rb - lt).clip(x_min=0)
+    inter = wh[:, :, 0] * wh[:, :, 1]
+    union = area1[:, None] + area2 - inter
+    iou = inter / union
+    return iou
+
+
 @with_unsupported_device_and_dtypes(
     {
-        "2.1.0 and below": {
+        "2.2 and below": {
             "cpu": ("float16",),
         }
     },
@@ -51,7 +64,7 @@ def remove_small_boxes(boxes, min_size):
     return ivy.nonzero((w >= min_size) & (h >= min_size))[0]
 
 
-@with_supported_dtypes({"2.1.0 and below": ("float32", "float64")}, "torch")
+@with_supported_dtypes({"2.2 and below": ("float32", "float64")}, "torch")
 @to_ivy_arrays_and_back
 def roi_align(
     input, boxes, output_size, spatial_scale=1.0, sampling_ratio=1, aligned=False

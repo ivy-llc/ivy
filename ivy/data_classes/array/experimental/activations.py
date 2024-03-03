@@ -15,10 +15,9 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.logit. This method simply wraps the
-        function, and so the docstring for ivy.logit also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.logit. This method simply
+        wraps the function, and so the docstring for ivy.logit also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -60,10 +59,9 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         threshold: Union[int, float] = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.thresholded_relu. This method simply
-        wraps the function, and so the docstring for ivy.thresholded_relu also applies
-        to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.thresholded_relu. This
+        method simply wraps the function, and so the docstring for
+        ivy.thresholded_relu also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -97,8 +95,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        Prelu takes input data (Array) and slope array as input,
+        """Prelu takes input data (Array) and slope array as input,
 
         and produces one output data (array) where the function
         f(x) = slope * x for x < 0, f(x) = x for x >= 0., is applied
@@ -130,8 +127,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        Apply the rectified linear unit 6 function element-wise.
+        """Apply the rectified linear unit 6 function element-wise.
 
         Parameters
         ----------
@@ -171,10 +167,9 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         self: ivy.Array,
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.logsigmoid. This method simply wraps
-        the function, and so the docstring for ivy.logsigmoid also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.logsigmoid. This method
+        simply wraps the function, and so the docstring for ivy.logsigmoid also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -203,8 +198,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         return ivy.logsigmoid(self._data, complex_mode=complex_mode)
 
     def selu(self, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
-        """
-        Apply the scaled exponential linear unit function element-wise.
+        """Apply the scaled exponential linear unit function element-wise.
 
         Parameters
         ----------
@@ -240,10 +234,9 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         return ivy.selu(self._data, out=out)
 
     def silu(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.silu. This method simply wraps the
-        function, and so the docstring for ivy.silu also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.silu. This method simply
+        wraps the function, and so the docstring for ivy.silu also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -269,10 +262,9 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         alpha: float = 1.0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        Ivy.Array instance method variant of ivy.elu. This method simply wraps the
-        function, and so the docstring for ivy.elu also applies to this method with
-        minimal.
+        """Ivy.Array instance method variant of ivy.elu. This method simply
+        wraps the function, and so the docstring for ivy.elu also applies to
+        this method with minimal.
 
         Parameters
         ----------
@@ -306,10 +298,9 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         min_val: float = -1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.hardtanh. This method simply wraps the
-        function, and so the docstring for ivy.hardtanh also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.hardtanh. This method
+        simply wraps the function, and so the docstring for ivy.hardtanh also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -334,15 +325,14 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> x = ivy.array([-1., .2, 1.])
         >>> y = x.hardtanh()
         >>> print(y)
-        ivy.array([-1., 1., 1.])
+        ivy.array([-1. ,  0.2,  1. ])
         """
         return ivy.hardtanh(self._data, min_val=min_val, max_val=max_val, out=out)
 
     def tanhshrink(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.tanhshrink. This method simply wraps
-        the function, and so the docstring for ivy.tanhshrink also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.tanhshrink. This method
+        simply wraps the function, and so the docstring for ivy.tanhshrink also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -369,10 +359,9 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         value: Union[int, float],
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.threshold. This method simply wraps the
-        function, and so the docstring for ivy.threshold also applies to this method
-        with minimal changes.
+        """ivy.Array instance method variant of ivy.threshold. This method
+        simply wraps the function, and so the docstring for ivy.threshold also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -407,10 +396,9 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         lambd: float = 0.5,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.softshrink. This method simply wraps
-        the function, and so the docstring for ivy.softshrink also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.softshrink. This method
+        simply wraps the function, and so the docstring for ivy.softshrink also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -448,10 +436,9 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.celu. This method simply wraps the
-        function, and so the docstring for ivy.celu also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.celu. This method simply
+        wraps the function, and so the docstring for ivy.celu also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -488,10 +475,9 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         beta: float = 0.67,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.scaled_tanh. This method simply wraps
-        the function, and so the docstring for ivy.scaled_tanh also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.scaled_tanh. This method
+        simply wraps the function, and so the docstring for ivy.scaled_tanh
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -537,10 +523,9 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         lambd: float = 0.5,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.hardshrink. This method simply wraps
-        the function, and so the docstring for ivy.hardshrink also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.hardshrink. This method
+        simply wraps the function, and so the docstring for ivy.hardshrink also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -569,3 +554,28 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([0., 0., 0.])
         """
         return ivy.hardshrink(self._data, lambd=lambd, out=out)
+
+    def hardsilu(self, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """ivy.Array instance method which acts as a wrapper for ivy.hardsilu.
+
+        Parameters
+        ----------
+        self
+            input array
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+            an array containing the output of the hardsilu/hardswish function applied
+            to each element in ``x``.
+
+        Examples
+        --------
+        >>> x = ivy.array([1., 2., 3.])
+        >>> y = x.hardsilu()
+        >>> print(y)
+        ivy.array([0.66666667, 1.66666667, 3.])
+        """
+        return ivy.hardsilu(self._data, out=out)

@@ -1,6 +1,8 @@
 # global
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 import hypothesis.extra.numpy as nph
+import numpy as np
+import sys
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -1135,7 +1137,7 @@ def test_paddle_floor_mod(
 @handle_frontend_test(
     fn_tree="paddle.fmax",
     dtypes_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
     ),
 )
 def test_paddle_fmax(
@@ -1163,7 +1165,7 @@ def test_paddle_fmax(
 @handle_frontend_test(
     fn_tree="paddle.fmin",
     dtypes_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
     ),
 )
 def test_paddle_fmin(
@@ -1319,6 +1321,45 @@ def test_paddle_inner(
         on_device=on_device,
         x=x[0],
         y=x[1],
+    )
+
+
+# inverse
+@handle_frontend_test(
+    fn_tree="paddle.inverse",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-100.0,
+        max_value=100.0,
+        shape=helpers.ints(min_value=2, max_value=10).map(lambda x: (x, x)),
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.det(np.asarray(x[1][0])) != 0
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+    ),
+    test_with_out=st.just(False),
+)
+def test_paddle_inverse(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        rtol=1e-01,
+        atol=1e-01,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
     )
 
 
@@ -1679,6 +1720,39 @@ def test_paddle_logit(
     )
 
 
+# logsumexp
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.logsumexp",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        max_num_dims=4,
+        num_arrays=2,
+        allow_inf=False,
+        shared_dtype=True,
+    ),
+)
+def test_paddle_logsumexp(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    input_dtypes, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs[0],
+        axis=None,
+    )
+
+
 # max
 @handle_frontend_test(
     fn_tree="paddle.max",
@@ -1832,6 +1906,43 @@ def test_paddle_mm(
         on_device=on_device,
         input=x,
         mat2=y,
+    )
+
+
+# mod
+@handle_frontend_test(
+    fn_tree="paddle.mod",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        allow_inf=False,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+        shared_dtype=True,
+    ),
+)
+def test_paddle_mod(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[0], 0)))
+    assume(not np.any(np.isclose(x[1], 0)))
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
     )
 
 

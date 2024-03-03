@@ -55,4 +55,4 @@ Round Up
 
 ``ivy-lint`` stands as a testament to Ivy's commitment to code clarity and uniformity. As the landscape of our needs shifts, we foresee further refining and expanding our suite of formatters.
 
-For all discussions or inquiries, you're always welcome on `discord <https://discord.gg/Y3prZYHS>`_ in the `formatting channel <https://discord.com/channels/799879767196958751/1028266706436624456>`_.
+For all discussions or inquiries, you're always welcome on `discord <https://discord.gg/Y3prZYHS>`_ in the `formatting thread <https://discord.com/channels/799879767196958751/1190247322626572408>`_.
