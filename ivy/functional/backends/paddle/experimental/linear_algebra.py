@@ -13,7 +13,7 @@ from .. import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8", "float16", "bfloat16")}},
+    {"2.6.0 and below": {"cpu": ("int8", "int16", "uint8", "float16", "bfloat16")}},
     backend_version,
 )
 def diagflat(
@@ -47,7 +47,7 @@ def diagflat(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int8", "uint8", "int16")}}, backend_version
+    {"2.6.0 and below": {"cpu": ("int8", "uint8", "int16")}}, backend_version
 )
 def kron(
     a: paddle.Tensor,
@@ -91,7 +91,8 @@ def adjoint(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int8", "uint8", "int16", "float16")}}, backend_version
+    {"2.6.0 and below": {"cpu": ("int8", "uint8", "int16", "float16")}},
+    backend_version,
 )
 def solve_triangular(
     x1: paddle.Tensor,
@@ -130,9 +131,20 @@ def lu_factor(
     raise IvyNotImplementedException()
 
 
+def lu_solve(
+    lu: paddle.Tensor,
+    p: paddle.Tensor,
+    b: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException()
+
+
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "float32",
                 "float64",
@@ -167,7 +179,7 @@ def dot(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "float32",
                 "float64",

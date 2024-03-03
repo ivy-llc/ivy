@@ -5,7 +5,7 @@ Function Arguments
 .. _`spec/API_specification/signatures`: https://github.com/data-apis/array-api/tree/main/spec/2022.12/API_specification
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`function arguments channel`: https://discord.com/channels/799879767196958751/982738240354254898
+.. _`function arguments thread`: https://discord.com/channels/799879767196958751/1190247823275470978
 .. _`Array API Standard convention`: https://data-apis.org/array-api/2021.12/API_specification/array_object.html#api-specification-array-object--page-root
 
 Here, we explain how the function arguments differ between the placeholder implementation at :mod:`ivy/functional/ivy/category_name.py`, and the backend-specific implementation at :mod:`ivy/functional/backends/backend_name/category_name.py`.
@@ -210,7 +210,7 @@ Therefore, we simply omit these :class:`ivy.Container` type hints from *nestable
 
 These examples should hopefully give you a good understanding of what is required when adding function arguments.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `function arguments channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `function arguments thread`_!
 
 
 **Video**

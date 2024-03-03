@@ -7,6 +7,100 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+@st.composite
+def _hinge_embedding_loss_input(
+    draw, min_num_dims=1, max_num_dims=5, min_dim_size=1, max_dim_size=10
+):
+    # determine the shape for both arrays (input and target)
+    shape = draw(
+        st.shared(
+            helpers.get_shape(
+                min_num_dims=min_num_dims,
+                max_num_dims=max_num_dims,
+                min_dim_size=min_dim_size,
+                max_dim_size=max_dim_size,
+            ),
+            key="shared_shape",
+        )
+    )
+
+    # Generate an array of -1 and 1 with the given shape (target_array)
+    def _arrays_of_neg1_and_1(shape):
+        value_strategy = st.sampled_from([-1, 1])
+        prod_shape = int(np.prod(shape))  # Convert np.int64 to int
+        array_data = draw(
+            st.lists(value_strategy, min_size=prod_shape, max_size=prod_shape)
+        )
+        return np.asarray(array_data).reshape(shape)
+
+    # input_array
+    dtype, xx = draw(
+        helpers.dtype_and_values(
+            shape=shape,
+            available_dtypes=helpers.get_dtypes("valid"),
+            safety_factor_scale="linear",
+            large_abs_safety_factor=2,
+            small_abs_safety_factor=2,
+            min_value=1,
+            max_value=10,
+            min_dim_size=1,
+            min_num_dims=1,
+            max_num_dims=5,
+            max_dim_size=5,
+        )
+    )
+
+    # generate the target array 'yy' containing either 1 or -1
+    yy = _arrays_of_neg1_and_1(shape=shape)
+
+    return dtype, xx, yy
+
+
+# --- Main --- #
+# ------------ #
+
+
+# hinge_embedding_loss
+@handle_test(
+    fn_tree="functional.ivy.experimental.hinge_embedding_loss",
+    dtype_and_inputs=_hinge_embedding_loss_input(),
+    margin=st.floats(min_value=1, max_value=5),
+    reduction=st.sampled_from(["none", "sum", "mean"]),
+    test_gradients=st.just(
+        False
+    ),  # Gradients are failing for "jax" and "paddle" backend.
+    test_with_out=st.just(False),
+    ground_truth_backend="torch",
+)
+def test_hinge_embedding_loss(
+    dtype_and_inputs,
+    margin,
+    reduction,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, xx, yy = dtype_and_inputs
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        input=xx[0],
+        target=yy,
+        margin=margin,
+        reduction=reduction,
+        rtol_=1e-05,
+        atol_=1e-05,
+    )
+
+
 # huber_loss
 @handle_test(
     fn_tree="functional.ivy.experimental.huber_loss",

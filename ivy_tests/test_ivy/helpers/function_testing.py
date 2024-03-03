@@ -1,7 +1,7 @@
 # global
 import copy
 import time
-from typing import Union, List
+from typing import Union, List, Optional
 import numpy as np
 import types
 import importlib
@@ -35,10 +35,49 @@ from .assertions import (
 
 
 # Temporary (.so) configuration
-def traced_if_required(backend: str, fn, test_trace=False, args=None, kwargs=None):
+def traced_if_required(
+    backend: str, fn, test_trace=False, test_trace_each=False, args=None, kwargs=None
+):
     with BackendHandler.update_backend(backend) as ivy_backend:
-        if test_trace:
-            fn = ivy_backend.trace_graph(fn, args=args, kwargs=kwargs)
+        try:
+            if test_trace:
+                if (
+                    t_globals.CURRENT_RUNNING_TEST.fn_name
+                    in t_globals.CURRENT_TRACED_DATA
+                    and backend
+                    not in t_globals.CURRENT_TRACED_DATA[
+                        t_globals.CURRENT_RUNNING_TEST.fn_name
+                    ]
+                ):
+                    t_globals.CURRENT_TRACED_DATA[
+                        t_globals.CURRENT_RUNNING_TEST.fn_name
+                    ][backend] = ivy_backend.trace_graph(
+                        fn, args=args, kwargs=kwargs, backend_compile=True
+                    )
+                elif (
+                    t_globals.CURRENT_RUNNING_TEST.fn_name
+                    not in t_globals.CURRENT_TRACED_DATA
+                ):
+                    t_globals.CURRENT_TRACED_DATA[
+                        t_globals.CURRENT_RUNNING_TEST.fn_name
+                    ] = {}
+                    t_globals.CURRENT_TRACED_DATA[
+                        t_globals.CURRENT_RUNNING_TEST.fn_name
+                    ][backend] = ivy_backend.trace_graph(
+                        fn, args=args, kwargs=kwargs, backend_compile=True
+                    )
+                fn = t_globals.CURRENT_TRACED_DATA[
+                    t_globals.CURRENT_RUNNING_TEST.fn_name
+                ][backend]
+            if test_trace_each:
+                fn = ivy_backend.trace_graph(
+                    fn, args=args, kwargs=kwargs, backend_compile=True
+                )
+        except Exception:
+            import logging
+
+            logging.warning("API key is invalid, test_trace is skipped.")
+
     return fn
 
 
@@ -48,9 +87,8 @@ def traced_if_required(backend: str, fn, test_trace=False, args=None, kwargs=Non
 
 
 def _find_instance_in_args(backend: str, args, array_indices, mask):
-    """
-    Find the first element in the arguments that is considered to be an instance of
-    Array or Container class.
+    """Find the first element in the arguments that is considered to be an
+    instance of Array or Container class.
 
     Parameters
     ----------
@@ -127,6 +165,11 @@ def test_function_backend_computation(
             test_flags.container[0] for _ in range(total_num_arrays)
         ]
 
+    if test_flags.test_cython_wrapper:
+        ivy.set_cython_wrappers_mode(True)
+    else:
+        ivy.set_cython_wrappers_mode(False)
+
     with BackendHandler.update_backend(fw) as ivy_backend:
         # Update variable flags to be compatible with float dtype and with_out args
         test_flags.as_variable = [
@@ -159,7 +202,7 @@ def test_function_backend_computation(
     if ("out" in kwargs or test_flags.with_out) and "out" not in inspect.signature(
         getattr(ivy, fn_name)
     ).parameters:
-        raise Exception(f"Function {fn_name} does not have an out parameter")
+        raise RuntimeError(f"Function {fn_name} does not have an out parameter")
 
     # Run either as an instance method or from the API directly
     with BackendHandler.update_backend(fw) as ivy_backend:
@@ -190,7 +233,7 @@ def test_function_backend_computation(
                     fw, kwargs, arrays_kwargs_indices, kwargs_instance_mask
                 )
 
-            if test_flags.test_trace:
+            if test_flags.test_trace or test_flags.test_trace_each:
 
                 def target_fn(instance, *args, **kwargs):
                     return instance.__getattribute__(fn_name)(*args, **kwargs)
@@ -210,6 +253,8 @@ def test_function_backend_computation(
             target_fn,
             *copy_args,
             test_trace=test_flags.test_trace,
+            test_trace_each=test_flags.test_trace_each,
+            precision_mode=test_flags.precision_mode,
             **copy_kwargs,
         )
 
@@ -219,7 +264,9 @@ def test_function_backend_computation(
         ), f"Ivy function returned non-ivy arrays: {ret_from_target}"
 
         # Assert indices of return if the indices of the out array provided
-        if test_flags.with_out and not test_flags.test_trace:
+        if test_flags.with_out and not (
+            test_flags.test_trace or test_flags.test_trace_each
+        ):
             test_ret = (
                 ret_from_target[getattr(ivy_backend.__dict__[fn_name], "out_index")]
                 if hasattr(ivy_backend.__dict__[fn_name], "out_index")
@@ -233,14 +280,24 @@ def test_function_backend_computation(
                     ret_from_target,
                     ret_np_flat_from_target,
                 ) = get_ret_and_flattened_np_array(
-                    fw, instance.__getattribute__(fn_name), *args, **kwargs, out=out
+                    fw,
+                    instance.__getattribute__(fn_name),
+                    *args,
+                    **kwargs,
+                    out=out,
+                    precision_mode=test_flags.precision_mode,
                 )
             else:
                 (
                     ret_from_target,
                     ret_np_flat_from_target,
                 ) = get_ret_and_flattened_np_array(
-                    fw, ivy_backend.__dict__[fn_name], *args, **kwargs, out=out
+                    fw,
+                    ivy_backend.__dict__[fn_name],
+                    *args,
+                    **kwargs,
+                    out=out,
+                    precision_mode=test_flags.precision_mode,
                 )
             test_ret = (
                 ret_from_target[getattr(ivy_backend.__dict__[fn_name], "out_index")]
@@ -279,9 +336,12 @@ def test_function_backend_computation(
                 target_fn,
                 *args,
                 test_trace=test_flags.test_trace,
+                test_trace_each=test_flags.test_trace_each,
                 precision_mode=test_flags.precision_mode,
                 **kwargs,
             )
+            first_array = ivy_backend.stop_gradient(first_array).to_numpy()
+            ret_ = ivy_backend.stop_gradient(ret_).to_numpy()
             assert not np.may_share_memory(first_array, ret_)
 
     ret_device = None
@@ -334,6 +394,7 @@ def test_function_ground_truth_computation(
             gt_backend.__dict__[fn_name],
             *args,
             test_trace=test_flags.test_trace,
+            test_trace_each=test_flags.test_trace_each,
             precision_mode=test_flags.precision_mode,
             **kwargs,
         )
@@ -341,7 +402,9 @@ def test_function_ground_truth_computation(
             lambda x: gt_backend.is_ivy_array(x) if gt_backend.is_array(x) else True,
             ret_from_gt,
         ), f"Ground-truth function returned non-ivy arrays: {ret_from_gt}"
-        if test_flags.with_out and not test_flags.test_trace:
+        if test_flags.with_out and not (
+            test_flags.test_trace or test_flags.test_trace_each
+        ):
             test_ret_from_gt = (
                 ret_from_gt[getattr(gt_backend.__dict__[fn_name], "out_index")]
                 if hasattr(gt_backend.__dict__[fn_name], "out_index")
@@ -358,6 +421,7 @@ def test_function_ground_truth_computation(
                 gt_backend.__dict__[fn_name],
                 *args,
                 test_trace=test_flags.test_trace,
+                test_trace_each=test_flags.test_trace_each,
                 precision_mode=test_flags.precision_mode,
                 **kwargs,
                 out=out_from_gt,
@@ -376,9 +440,9 @@ def test_function(
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     test_flags: FunctionTestFlags,
     fn_name: str,
-    rtol_: float = None,
+    rtol_: Optional[float] = None,
     atol_: float = 1e-06,
-    tolerance_dict: dict = None,
+    tolerance_dict: Optional[dict] = None,
     test_values: bool = True,
     xs_grad_idxs=None,
     ret_grad_idxs=None,
@@ -387,9 +451,8 @@ def test_function(
     return_flat_np_arrays: bool = False,
     **all_as_kwargs_np,
 ):
-    """
-    Test a function that consumes (or returns) arrays for the current backend by
-    comparing the result with numpy.
+    """Test a function that consumes (or returns) arrays for the current
+    backend by comparing the result with numpy.
 
     Parameters
     ----------
@@ -469,7 +532,9 @@ def test_function(
     >>> x2 = np.array([-3, 15, 24])
     >>> test_function(input_dtypes, test_flags, fw, fn_name, x1=x1, x2=x2)
     """
-    _switch_backend_context(test_flags.test_trace or test_flags.transpile)
+    _switch_backend_context(
+        test_flags.test_trace or test_flags.test_trace_each or test_flags.transpile
+    )
     ground_truth_backend = test_flags.ground_truth_backend
 
     if test_flags.container[0]:
@@ -645,9 +710,13 @@ def test_function(
         backend=backend_to_test,
         ground_truth_backend=test_flags.ground_truth_backend,
     )
-    assert_same_type(
-        ret_from_target, ret_from_gt, backend_to_test, test_flags.ground_truth_backend
-    )
+    if not (test_flags.test_trace or test_flags.test_trace_each):
+        assert_same_type(
+            ret_from_target,
+            ret_from_gt,
+            backend_to_test,
+            test_flags.ground_truth_backend,
+        )
 
     assert ret_device == ret_from_gt_device, (
         f"ground truth backend ({test_flags.ground_truth_backend}) returned array on"
@@ -688,7 +757,7 @@ def _transpile_if_required_backend(backend: str, fn_name: str, args=None, kwargs
         args, kwargs = ivy_backend.args_to_ivy(*args, **kwargs)
         backend_fn = ivy.__dict__[fn_name]
     backend_traced_fn = traced_if_required(
-        backend, backend_fn, test_trace=True, args=args, kwargs=kwargs
+        backend, backend_fn, test_trace_each=True, args=args, kwargs=kwargs
     )
 
     func_timings = []
@@ -720,16 +789,15 @@ def test_frontend_function(
     on_device="cpu",
     frontend: str,
     fn_tree: str,
-    gt_fn_tree: str = None,
-    rtol: float = None,
+    gt_fn_tree: Optional[str] = None,
+    rtol: Optional[float] = None,
     atol: float = 1e-06,
-    tolerance_dict: dict = None,
+    tolerance_dict: Optional[dict] = None,
     test_values: bool = True,
     **all_as_kwargs_np,
 ):
-    """
-    Test a frontend function for the current backend by comparing the result with the
-    function in the associated framework.
+    """Test a frontend function for the current backend by comparing the result
+    with the function in the associated framework.
 
     Parameters
     ----------
@@ -755,6 +823,8 @@ def test_frontend_function(
         if True, test for the correctness of the resulting values.
     all_as_kwargs_np
         input arguments to the function as keyword arguments.
+        If an input argument has the same name as any other parameter
+        of this function, add "arg_" before the argument name.
 
     Returns
     -------
@@ -764,7 +834,9 @@ def test_frontend_function(
         optional, return value from the Numpy function
     """
     # ToDo add with_backend refactor in GC
-    _switch_backend_context(test_flags.test_trace or test_flags.transpile)
+    _switch_backend_context(
+        test_flags.test_trace or test_flags.test_trace_each or test_flags.transpile
+    )
 
     assert (
         not test_flags.with_out or not test_flags.inplace
@@ -773,6 +845,10 @@ def test_frontend_function(
     if test_flags.with_copy is True:
         test_flags.with_out = False
         test_flags.inplace = False
+
+    all_as_kwargs_np = {
+        k[4:] if k.startswith("arg_") else k: v for k, v in all_as_kwargs_np.items()
+    }
 
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
@@ -864,8 +940,11 @@ def test_frontend_function(
             frontend_fn,
             *args_for_test,
             test_trace=test_flags.test_trace,
+            test_trace_each=test_flags.test_trace_each,
             frontend_array_function=(
-                create_frontend_array if test_flags.test_trace else None
+                create_frontend_array
+                if test_flags.test_trace or test_flags.test_trace_each
+                else None
             ),
             precision_mode=test_flags.precision_mode,
             **kwargs_for_test,
@@ -924,8 +1003,11 @@ def test_frontend_function(
                 frontend_fn,
                 *copy_args,
                 test_trace=test_flags.test_trace,
+                test_trace_each=test_flags.test_trace_each,
                 frontend_array_function=(
-                    create_frontend_array if test_flags.test_trace else None
+                    create_frontend_array
+                    if test_flags.test_trace or test_flags.test_trace_each
+                    else None
                 ),
                 precision_mode=test_flags.precision_mode,
                 **copy_kwargs,
@@ -941,7 +1023,12 @@ def test_frontend_function(
                 first_array = first_array.data
             ret_ = ret_.data
             if hasattr(first_array, "requires_grad"):
-                first_array.requires_grad = False
+                first_array = first_array.detach()
+            if hasattr(ret_, "requires_grad"):
+                ret_ = ret_.detach()
+            if backend_to_test == "tensorflow":
+                first_array = first_array.numpy()
+                ret_ = ret_.numpy()
             assert not np.may_share_memory(first_array, ret_)
         elif test_flags.inplace:
             assert _is_frontend_array(ret)
@@ -965,8 +1052,11 @@ def test_frontend_function(
                 frontend_fn,
                 *copy_args,
                 test_trace=test_flags.test_trace,
+                test_trace_each=test_flags.test_trace_each,
                 frontend_array_function=(
-                    create_frontend_array if test_flags.test_trace else None
+                    create_frontend_array
+                    if test_flags.test_trace or test_flags.test_trace_each
+                    else None
                 ),
                 precision_mode=test_flags.precision_mode,
                 **copy_kwargs,
@@ -1092,6 +1182,7 @@ def test_gradient_backend_computation(
     on_device,
     fn,
     test_trace,
+    test_trace_each,
     xs_grad_idxs,
     ret_grad_idxs,
 ):
@@ -1117,6 +1208,7 @@ def test_gradient_backend_computation(
                 backend_to_test,
                 call_fn,
                 test_trace=test_trace,
+                test_trace_each=test_trace_each,
                 args=args,
                 kwargs=kwargs,
             )(*args, **kwargs)
@@ -1147,6 +1239,7 @@ def test_gradient_ground_truth_computation(
     test_flags,
     kwargs_idxs,
     test_trace,
+    test_trace_each,
     xs_grad_idxs,
     ret_grad_idxs,
 ):
@@ -1180,6 +1273,7 @@ def test_gradient_ground_truth_computation(
                 ground_truth_backend,
                 call_fn,
                 test_trace=test_trace,
+                test_trace_each=test_trace_each,
                 args=args,
                 kwargs=kwargs,
             )(*args, **kwargs)
@@ -1208,7 +1302,8 @@ def gradient_test(
     input_dtypes,
     test_flags,
     test_trace: bool = False,
-    rtol_: float = None,
+    test_trace_each: bool = False,
+    rtol_: Optional[float] = None,
     atol_: float = 1e-06,
     tolerance_dict=None,
     xs_grad_idxs=None,
@@ -1239,6 +1334,7 @@ def gradient_test(
                 on_device,
                 fn,
                 test_trace,
+                test_trace_each,
                 xs_grad_idxs,
                 ret_grad_idxs,
             )
@@ -1259,6 +1355,7 @@ def gradient_test(
             on_device,
             fn,
             test_trace,
+            test_trace_each,
             xs_grad_idxs,
             ret_grad_idxs,
         )
@@ -1282,6 +1379,7 @@ def gradient_test(
                 test_flags,
                 kwargs_idxs,
                 test_trace,
+                test_trace_each,
                 xs_grad_idxs,
                 ret_grad_idxs,
             )
@@ -1302,6 +1400,7 @@ def gradient_test(
             test_flags,
             kwargs_idxs,
             test_trace,
+            test_trace_each,
             xs_grad_idxs,
             ret_grad_idxs,
         )
@@ -1335,6 +1434,7 @@ def test_method_backend_computation(
     method_name,
     init_with_v,
     test_trace,
+    test_trace_each,
     method_with_v,
 ):
     init_input_dtypes = ivy.default(init_input_dtypes, [])
@@ -1484,6 +1584,7 @@ def test_method_backend_computation(
             ins.__getattribute__(method_name),
             *args_method,
             test_trace=test_trace,
+            test_trace_each=test_trace_each,
             precision_mode=method_flags.precision_mode,
             **kwargs_method,
         )
@@ -1524,6 +1625,7 @@ def test_method_ground_truth_computation(
     class_name,
     method_name,
     test_trace,
+    test_trace_each,
     v_np,
 ):
     with BackendHandler.update_backend(ground_truth_backend) as gt_backend:
@@ -1565,6 +1667,7 @@ def test_method_ground_truth_computation(
             ins_gt.__getattribute__(method_name),
             *args_gt_method,
             test_trace=test_trace,
+            test_trace_each=test_trace_each,
             precision_mode=method_flags.precision_mode,
             **kwargs_gt_method,
         )
@@ -1589,17 +1692,17 @@ def test_method_ground_truth_computation(
 
 def test_method(
     *,
-    init_input_dtypes: List[ivy.Dtype] = None,
-    method_input_dtypes: List[ivy.Dtype] = None,
-    init_all_as_kwargs_np: dict = None,
-    method_all_as_kwargs_np: dict = None,
+    init_input_dtypes: Optional[List[ivy.Dtype]] = None,
+    method_input_dtypes: Optional[List[ivy.Dtype]] = None,
+    init_all_as_kwargs_np: Optional[dict] = None,
+    method_all_as_kwargs_np: Optional[dict] = None,
     init_flags: pf.MethodTestFlags,
     method_flags: pf.MethodTestFlags,
     class_name: str,
     method_name: str = "__call__",
     init_with_v: bool = False,
     method_with_v: bool = False,
-    rtol_: float = None,
+    rtol_: Optional[float] = None,
     atol_: float = 1e-06,
     tolerance_dict=None,
     test_values: Union[bool, str] = True,
@@ -1607,14 +1710,14 @@ def test_method(
     xs_grad_idxs=None,
     ret_grad_idxs=None,
     test_trace: bool = False,
+    test_trace_each: bool = False,
     backend_to_test: str,
     ground_truth_backend: str,
     on_device: str,
     return_flat_np_arrays: bool = False,
 ):
-    """
-    Test a class-method that consumes (or returns) arrays for the current backend by
-    comparing the result with numpy.
+    """Test a class-method that consumes (or returns) arrays for the current
+    backend by comparing the result with numpy.
 
     Parameters
     ----------
@@ -1674,6 +1777,8 @@ def test_method(
         gradients are returned for all returned arrays. (Default value = None)
     test_trace
         If True, test for the correctness of tracing.
+    test_trace_each
+        If True, test for the correctness of tracing (tracing each example separately)
     ground_truth_backend
         Ground Truth Backend to compare the result-values.
     device_
@@ -1709,6 +1814,7 @@ def test_method(
                 method_name,
                 init_with_v,
                 test_trace,
+                test_trace_each,
                 method_with_v,
             )
         )
@@ -1753,6 +1859,7 @@ def test_method(
             method_name,
             init_with_v,
             test_trace,
+            test_trace_each,
             method_with_v,
         )
 
@@ -1777,6 +1884,7 @@ def test_method(
                 class_name,
                 method_name,
                 test_trace,
+                test_trace_each,
                 v_np,
             )
         )
@@ -1807,6 +1915,7 @@ def test_method(
             class_name,
             method_name,
             test_trace,
+            test_trace_each,
             v_np,
         )
 
@@ -1842,6 +1951,7 @@ def test_method(
     #                 input_dtypes=method_input_dtypes,
     #                 test_flags=method_flags,
     #                 test_trace=test_trace,
+    #                 test_trace_each=test_trace_each,
     #                 rtol_=rtol_,
     #                 atol_=atol_,
     #                 xs_grad_idxs=xs_grad_idxs,
@@ -1862,6 +1972,7 @@ def test_method(
     #             input_dtypes=method_input_dtypes,
     #             test_flags=method_flags,
     #             test_trace=test_trace,
+    #             test_trace_each=test_trace_each,
     #             rtol_=rtol_,
     #             atol_=atol_,
     #             xs_grad_idxs=xs_grad_idxs,
@@ -1910,20 +2021,19 @@ def test_frontend_method(
     method_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     init_flags,
     method_flags,
-    init_all_as_kwargs_np: dict = None,
+    init_all_as_kwargs_np: Optional[dict] = None,
     method_all_as_kwargs_np: dict,
     frontend: str,
     frontend_method_data: FrontendMethodData,
     backend_to_test: str,
     on_device,
-    rtol_: float = None,
+    rtol_: Optional[float] = None,
     atol_: float = 1e-06,
-    tolerance_dict: dict = None,
+    tolerance_dict: Optional[dict] = None,
     test_values: Union[bool, str] = True,
 ):
-    """
-    Test a class-method that consumes (or returns) arrays for the current backend by
-    comparing the result with numpy.
+    """Test a class-method that consumes (or returns) arrays for the current
+    backend by comparing the result with numpy.
 
     Parameters
     ----------
@@ -1964,7 +2074,7 @@ def test_frontend_method(
         optional, return value from the Ground Truth function
     """
     # ToDo add with_backend refactor in GC
-    _switch_backend_context(method_flags.test_trace)
+    _switch_backend_context(method_flags.test_trace or method_flags.test_trace_each)
 
     # Constructor arguments #
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
@@ -2139,9 +2249,12 @@ def test_frontend_method(
             ins.__getattribute__(frontend_method_data.method_name),
             *args_method_ivy,
             frontend_array_function=(
-                create_frontend_array if method_flags.test_trace else None
+                create_frontend_array
+                if method_flags.test_trace or method_flags.test_trace_each
+                else None
             ),
             test_trace=method_flags.test_trace,
+            test_trace_each=method_flags.test_trace_each,
             precision_mode=method_flags.precision_mode,
             **kwargs_method_ivy,
         )
@@ -2259,8 +2372,7 @@ def _get_framework_atol(atols: dict, current_fw: str):
 
 
 def _get_nested_np_arrays(nest):
-    """
-    Search for a NumPy arrays in a nest.
+    """Search for a NumPy arrays in a nest.
 
     Parameters
     ----------
@@ -2290,8 +2402,7 @@ def create_args_kwargs(
     test_flags: Union[pf.FunctionTestFlags, pf.MethodTestFlags],
     on_device,
 ):
-    """
-    Create arguments and keyword-arguments for the function to test.
+    """Create arguments and keyword-arguments for the function to test.
 
     Parameters
     ----------
@@ -2362,8 +2473,7 @@ def wrap_frontend_function_args(argument):
 
 
 def kwargs_to_args_n_kwargs(*, num_positional_args, kwargs):
-    """
-    Split the kwargs into args and kwargs.
+    """Split the kwargs into args and kwargs.
 
     The first num_positional_args ported to args.
     """
@@ -2447,15 +2557,25 @@ def flatten_frontend_to_np(*, backend: str, ret):
 
 
 def get_ret_and_flattened_np_array(
-    backend_to_test: str, fn, *args, test_trace=False, precision_mode=False, **kwargs
+    backend_to_test: str,
+    fn,
+    *args,
+    test_trace=False,
+    test_trace_each=False,
+    precision_mode=False,
+    **kwargs,
 ):
-    """
-    Run func with args and kwargs.
+    """Run func with args and kwargs.
 
     Return the result along with its flattened version.
     """
     fn = traced_if_required(
-        backend_to_test, fn, test_trace=test_trace, args=args, kwargs=kwargs
+        backend_to_test,
+        fn,
+        test_trace=test_trace,
+        test_trace_each=test_trace_each,
+        args=args,
+        kwargs=kwargs,
     )
     with BackendHandler.update_backend(backend_to_test) as ivy_backend:
         with ivy_backend.PreciseMode(precision_mode):
@@ -2479,19 +2599,25 @@ def get_frontend_ret(
     frontend_array_function=None,
     precision_mode=False,
     test_trace: bool = False,
+    test_trace_each: bool = False,
     **kwargs,
 ):
     frontend_fn = traced_if_required(
-        backend, frontend_fn, test_trace=test_trace, args=args, kwargs=kwargs
+        backend,
+        frontend_fn,
+        test_trace=test_trace,
+        test_trace_each=test_trace_each,
+        args=args,
+        kwargs=kwargs,
     )
     with BackendHandler.update_backend(backend) as ivy_backend:
-        if test_trace:
+        if test_trace or test_trace_each:
             args, kwargs = ivy_backend.nested_map(
                 _frontend_array_to_ivy, (args, kwargs), include_derived={"tuple": True}
             )
         with ivy_backend.PreciseMode(precision_mode):
             ret = frontend_fn(*args, **kwargs)
-        if test_trace:
+        if test_trace or test_trace_each:
             assert frontend_array_function is not None
             ret = ivy_backend.nested_map(
                 arrays_to_frontend(backend, frontend_array_function),
@@ -2529,7 +2655,7 @@ def _get_transpiled_data_if_required(
     traced_fn = traced_if_required(
         backend,
         frontend_fn,
-        test_trace=True,
+        test_trace_each=True,
         args=args_for_test,
         kwargs=kwargs_for_test,
     )

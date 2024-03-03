@@ -18,7 +18,7 @@ from .elementwise import _cast_for_unary_op
 
 
 @with_unsupported_dtypes(
-    {"2.1.0 and below": ("bfloat16", "float16", "complex")},
+    {"2.2 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 def cholesky(
@@ -42,7 +42,7 @@ def cholesky(
 cholesky.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "complex")}, backend_version)
 def cross(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -70,7 +70,7 @@ def cross(
 cross.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def det(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.linalg.det(x, out=out)
 
@@ -90,7 +90,7 @@ def diagonal(
     return torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def eigh(
     x: torch.Tensor, /, *, UPLO: str = "L", out: Optional[torch.Tensor] = None
 ) -> Tuple[torch.Tensor]:
@@ -104,7 +104,7 @@ def eigh(
 eigh.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def eigvalsh(
     x: torch.Tensor, /, *, UPLO: str = "L", out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -114,7 +114,7 @@ def eigvalsh(
 eigvalsh.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
 def inner(
     x1: torch.Tensor, x2: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -134,7 +134,7 @@ def inner(
 inner.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def inv(
     x: torch.Tensor,
     /,
@@ -160,7 +160,7 @@ inv.support_native_out = True
 
 
 @with_unsupported_dtypes(
-    {"2.1.0 and below": ("float16", "bfloat16", "bool")}, backend_version
+    {"2.2 and below": ("float16", "bfloat16", "bool")}, backend_version
 )
 def matmul(
     x1: torch.Tensor,
@@ -193,7 +193,7 @@ def matmul(
 matmul.support_native_out = True
 
 
-@with_supported_dtypes({"2.1.0 and below": ("float", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "complex")}, backend_version)
 def matrix_norm(
     x: torch.Tensor,
     /,
@@ -201,15 +201,19 @@ def matrix_norm(
     ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
     axis: Tuple[int, int] = (-2, -1),
     keepdims: bool = False,
+    dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.linalg.matrix_norm(x, ord=ord, dim=axis, keepdim=keepdims, out=out)
+    ret = torch.linalg.matrix_norm(
+        x, ord=ord, dim=axis, keepdim=keepdims, dtype=dtype, out=out
+    )
+    return ret
 
 
 matrix_norm.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def eig(
     x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> Tuple[torch.Tensor]:
@@ -223,7 +227,7 @@ def eig(
 eig.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def matrix_power(
     x: torch.Tensor, n: int, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -233,7 +237,7 @@ def matrix_power(
 matrix_power.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def matrix_rank(
     x: torch.Tensor,
     /,
@@ -281,7 +285,7 @@ def matrix_transpose(
     return torch.swapaxes(x, -1, -2)
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def outer(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -296,7 +300,7 @@ def outer(
 outer.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def pinv(
     x: torch.Tensor,
     /,
@@ -312,7 +316,7 @@ def pinv(
 pinv.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def tensorsolve(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -324,7 +328,7 @@ def tensorsolve(
     return torch.linalg.tensorsolve(x1, x2, dims=axes)
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def qr(
     x: torch.Tensor,
     /,
@@ -346,7 +350,7 @@ def qr(
     return ret
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def slogdet(
     x: torch.Tensor,
     /,
@@ -361,7 +365,7 @@ def slogdet(
 slogdet.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def solve(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -397,7 +401,7 @@ def solve(
     return ret
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def svd(
     x: torch.Tensor, /, *, full_matrices: bool = True, compute_uv: bool = True
 ) -> Union[torch.Tensor, Tuple[torch.Tensor, ...]]:
@@ -414,7 +418,7 @@ def svd(
         return results(D)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def svdvals(
     x: torch.Tensor,
     /,
@@ -430,7 +434,7 @@ svdvals.support_native_out = True
 
 # ToDo: re-add int32 support once
 # (https://github.com/pytorch/pytorch/issues/84530) is fixed
-@with_supported_dtypes({"2.1.0 and below": ("float32",)}, backend_version)
+@with_supported_dtypes({"2.2 and below": ("float32",)}, backend_version)
 def tensordot(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -449,7 +453,7 @@ def tensordot(
     return ret
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def trace(
     x: torch.Tensor,
     /,
@@ -489,7 +493,15 @@ def vecdot(
 vecdot.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("integer",)}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "2.2 and below": (
+            "integer",
+            "complex64",
+        )
+    },
+    backend_version,
+)
 def vector_norm(
     x: torch.Tensor,
     /,
@@ -515,7 +527,7 @@ vector_norm.support_native_out = True
 # ----- #
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def diag(
     x: torch.Tensor,
     /,
@@ -526,7 +538,7 @@ def diag(
     return torch.diag(x, diagonal=k)
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def vander(
     x: torch.tensor,
     /,
@@ -552,7 +564,7 @@ def vander(
 
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": (
+        "2.2 and below": (
             "complex",
             "unsigned",
         )

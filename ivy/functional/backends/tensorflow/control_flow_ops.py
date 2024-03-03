@@ -24,7 +24,7 @@ def while_loop(test_fn, body_fn, vars):
 
     if not vars:
         vars = (0,)
-    else:
+    elif isinstance(vars, dict):
         vars = list(vars.values())
     return tf.while_loop(test_fn_wrapper, body_fn_wrapper, loop_vars=vars)
 
@@ -65,4 +65,4 @@ def _tuple_to_dict(t):
 
 
 def _dict_to_tuple(d):
-    return tuple([d[k] for k in d])
+    return tuple(d[k] for k in d)

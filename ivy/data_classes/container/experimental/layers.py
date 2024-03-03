@@ -24,10 +24,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.max_pool1d. This method simply wraps
-        the function, and so the docstring for ivy.max_pool1d also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.max_pool1d. This method
+        simply wraps the function, and so the docstring for ivy.max_pool1d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -101,10 +100,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of `ivy.max_pool1d`. This method simply
-        wraps the function, and so the docstring for `ivy.max_pool1d` also applies to
-        this method with minimal changes.
+        """ivy.Container instance method variant of `ivy.max_pool1d`. This
+        method simply wraps the function, and so the docstring for
+        `ivy.max_pool1d` also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -178,10 +176,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.max_pool2dd. This method simply wraps
-        the function, and so the docstring for ivy.max_pool2d also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.max_pool2dd. This method
+        simply wraps the function, and so the docstring for ivy.max_pool2d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -253,10 +250,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of `ivy.max_pool2d`. This method simply
-        wraps the function, and so the docstring for `ivy.max_pool2d` also applies to
-        this method with minimal changes.
+        """ivy.Container instance method variant of `ivy.max_pool2d`. This
+        method simply wraps the function, and so the docstring for
+        `ivy.max_pool2d` also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -332,10 +328,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.max_pool3d. This method simply wraps
-        the function, and so the docstring for ivy.max_pool3d also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.max_pool3d. This method
+        simply wraps the function, and so the docstring for ivy.max_pool3d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -410,10 +405,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.max_pool3d. This method simply wraps
-        the function, and so the docstring for ivy.max_pool3d also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.max_pool3d. This method
+        simply wraps the function, and so the docstring for ivy.max_pool3d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -485,10 +479,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.avg_pool1d. This method simply wraps
-        the function, and so the docstring for ivy.avg_pool1d also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.avg_pool1d. This method
+        simply wraps the function, and so the docstring for ivy.avg_pool1d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -561,10 +554,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of `ivy.avg_pool1d`. This method simply
-        wraps the function, and so the docstring for `ivy.avg_pool1d` also applies to
-        this method with minimal changes.
+        """ivy.Container instance method variant of `ivy.avg_pool1d`. This
+        method simply wraps the function, and so the docstring for
+        `ivy.avg_pool1d` also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -638,10 +630,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.avg_pool2d. This method simply wraps
-        the function, and so the docstring for ivy.avg_pool2d also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.avg_pool2d. This method
+        simply wraps the function, and so the docstring for ivy.avg_pool2d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -718,10 +709,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of `ivy.avg_pool2d`. This method simply
-        wraps the function, and so the docstring for `ivy.avg_pool2d` also applies to
-        this method with minimal changes.
+        """ivy.Container instance method variant of `ivy.avg_pool2d`. This
+        method simply wraps the function, and so the docstring for
+        `ivy.avg_pool2d` also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -798,10 +788,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.avg_pool3d. This method simply wraps
-        the function, and so the docstring for ivy.avg_pool3d also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.avg_pool3d. This method
+        simply wraps the function, and so the docstring for ivy.avg_pool3d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -879,10 +868,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.avg_pool3d. This method simply wraps
-        the function, and so the docstring for ivy.avg_pool3d also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.avg_pool3d. This method
+        simply wraps the function, and so the docstring for ivy.avg_pool3d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -959,10 +947,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.dct. This method simply wraps the
-        function, and so the docstring for ivy.dct also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.dct. This method simply
+        wraps the function, and so the docstring for ivy.dct also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1035,10 +1022,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         norm: Optional[Union[Literal["ortho"], ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.dct. This method simply wraps the
-        function, and so the docstring for ivy.dct also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.dct. This method simply
+        wraps the function, and so the docstring for ivy.dct also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1095,10 +1081,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.idct. This method simply wraps the
-        function, and so the docstring for ivy.idct also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.idct. This method simply
+        wraps the function, and so the docstring for ivy.idct also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1173,10 +1158,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         norm: Optional[Union[Literal["ortho"], ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.idct. This method simply wraps the
-        function, and so the docstring for ivy.idct also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.idct. This method
+        simply wraps the function, and so the docstring for ivy.idct also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1232,10 +1216,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.fft. This method simply wraps the
-        function, and so the docstring for ivy.fft also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.fft. This method simply
+        wraps the function, and so the docstring for ivy.fft also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1304,10 +1287,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.fft. This method simply wraps the
-        function, and so the docstring for ivy.fft also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.fft. This method simply
+        wraps the function, and so the docstring for ivy.fft also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1375,10 +1357,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ):
-        """
-        ivy.Container static method variant of ivy.ifft. This method simply wraps the
-        function, and so the docstring for ivy.ifft also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.ifft. This method simply
+        wraps the function, and so the docstring for ivy.ifft also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -1442,10 +1423,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         n: Optional[Union[int, Tuple[int], ivy.Container]] = None,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ):
-        """
-        ivy.Container instance method variant of ivy.ifft. This method simply wraps the
-        function, and so the docstring for ivy.ifft also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.ifft. This method
+        simply wraps the function, and so the docstring for ivy.ifft also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1666,8 +1646,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        Down/up samples the input to the given size. The algorithm used for
+        """Down/up samples the input to the given size. The algorithm used for
         interpolation is determined by mode.
 
         Parameters
@@ -1755,8 +1734,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        Down/up samples the input to the given size. The algorithm used for
+        """Down/up samples the input to the given size. The algorithm used for
         interpolation is determined by mode.
 
         Parameters
@@ -1825,10 +1803,10 @@ class _ContainerWithLayersExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.adaptive_avg_pool1d. This method
-        simply wraps the function, and so the docstring for ivy.adaptive_avg_pool1d also
-        applies to this method with minimal changes.
+        """ivy.Container static method variant of ivy.adaptive_avg_pool1d. This
+        method simply wraps the function, and so the docstring for
+        ivy.adaptive_avg_pool1d also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -1863,9 +1841,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        Apply a 1D adaptive average pooling over an input signal composed of several
-        input planes.
+        """Apply a 1D adaptive average pooling over an input signal composed of
+        several input planes.
 
         Parameters
         ----------
@@ -1891,25 +1868,27 @@ class _ContainerWithLayersExperimental(ContainerBase):
     def static_adaptive_avg_pool2d(
         input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         output_size: Union[Sequence[int], int, ivy.Container],
+        /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
+        data_format: str = "NHWC",
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.adaptive_avg_pool2d. This method
-        simply wraps the function, and so the docstring for ivy.adaptive_avg_pool2d also
-        applies to this method with minimal changes.
+        """ivy.Container static method variant of ivy.adaptive_avg_pool2d. This
+        method simply wraps the function, and so the docstring for
+        ivy.adaptive_avg_pool2d also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
         input
-            Input array. Must have shape (N, C, H_in, W_in) or (C, H_in, W_in) where N
-            is the batch dimension, C is the feature dimension, and H_in and W_in are
-            the 2 spatial dimensions.
+            A 3D or 4D input array. Should have a floating-point data type.
         output_size
             Spatial output size.
+        data_format
+            "NHWC" or "NCHW". Defaults to "NHWC".
 
         Returns
         -------
@@ -1924,20 +1903,22 @@ class _ContainerWithLayersExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            data_format=data_format,
         )
 
     def adaptive_avg_pool2d(
         self: ivy.Container,
         output_size: Union[int, ivy.Container],
+        /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
+        data_format: str = "NHWC",
     ) -> ivy.Container:
-        """
-        Apply a 2D adaptive average pooling over an input signal composed of several
-        input planes.
+        """Apply a 2D adaptive average pooling over an input signal composed of
+        several input planes.
 
         Parameters
         ----------
@@ -1945,6 +1926,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             Input container.
         output_size
             Spatial output size.
+        data_format
+            "NHWC" or "NCHW". Defaults to "NHWC".
 
         Returns
         -------
@@ -1957,6 +1940,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            data_format=data_format,
         )
 
     @staticmethod
@@ -1969,10 +1953,10 @@ class _ContainerWithLayersExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.adaptive_max_pool2d. This method
-        simply wraps the function, and so the docstring for ivy.adaptive_max_pool2d also
-        applies to this method with minimal changes.
+        """ivy.Container static method variant of ivy.adaptive_max_pool2d. This
+        method simply wraps the function, and so the docstring for
+        ivy.adaptive_max_pool2d also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -2007,9 +1991,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        Apply a 2D adaptive maximum pooling over an input signal composed of several
-        input planes.
+        """Apply a 2D adaptive maximum pooling over an input signal composed of
+        several input planes.
 
         Parameters
         ----------
@@ -2032,6 +2015,44 @@ class _ContainerWithLayersExperimental(ContainerBase):
         )
 
     @staticmethod
+    def static_adaptive_max_pool3d(
+        input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        output_size: Union[Sequence[int], int, ivy.Container],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        return ContainerBase.cont_multi_map_in_function(
+            "adaptive_max_pool3d",
+            input,
+            output_size,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def adaptive_max_pool3d(
+        self: ivy.Container,
+        output_size: Union[int, ivy.Container],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        return self.static_adaptive_max_pool3d(
+            self,
+            output_size,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
     def static_ifftn(
         x: ivy.Container,
         s: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
@@ -2044,8 +2065,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ):
-        """
-        ivy.Container static method variant of ivy.ifftn.
+        """ivy.Container static method variant of ivy.ifftn.
 
         This method simply wraps the function, and so the docstring for
         ivy.ifftn  also applies to this method with minimal changes.
@@ -2103,8 +2123,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         norm: Union[str, ivy.Container] = "backward",
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ):
-        """
-        ivy.Container static method variant of ivy.ifftn.
+        """ivy.Container static method variant of ivy.ifftn.
 
         This method simply wraps the function, and so the docstring for
         ivy.ifftn also applies to this method with minimal changes.
@@ -2188,8 +2207,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.rfft.
+        """ivy.Container static method variant of ivy.rfft.
 
         This method simply wraps the function, and so the docstring for
         ivy.rfft also applies to this method with minimal changes.
@@ -2278,10 +2296,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ):
-        """
-        ivy.Container instance method variant of ivy.rfft. This method simply wraps the
-        function, and so the docstring for ivy.rfft also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.rfft. This method
+        simply wraps the function, and so the docstring for ivy.rfft also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2364,8 +2381,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.rfftn.
+        """ivy.Container static method variant of ivy.rfftn.
 
         This method simply wraps the function, and so the docstring for
         ivy.rfftn also applies to this method with minimal changes.
@@ -2429,8 +2445,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         norm: Union[str, ivy.Container] = "backward",
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
-        """
-        Compute the n-dimensional discrete Fourier Transform for real input.
+        """Compute the n-dimensional discrete Fourier Transform for real input.
 
         Parameters
         ----------
@@ -2477,8 +2492,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.stft.
+        """ivy.Container static method variant of ivy.stft.
 
         This method simply wraps the function, and so the docstring for
         ivy.stft also applies to this method with minimal changes.
@@ -2542,8 +2556,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         name: Optional[Union[str, ivy.Container]] = None,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
-        """
-        Compute the Short-time Fourier Transform of signals.
+        """Compute the Short-time Fourier Transform of signals.
 
         Parameters
         ----------
@@ -2600,10 +2613,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.sliding_window. This method simply
-        wraps the function, and so the docstring for ivy.sliding_window also applies to
-        this method with minimal changes.
+        """ivy.Container static method variant of ivy.sliding_window. This
+        method simply wraps the function, and so the docstring for
+        ivy.sliding_window also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2682,10 +2694,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.sliding_window. This method simply
-        wraps the function, and so the docstring for ivy.sliding_window also applies to
-        this method with minimal changes.
+        """ivy.Container instance method variant of ivy.sliding_window. This
+        method simply wraps the function, and so the docstring for
+        ivy.sliding_window also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -2753,7 +2764,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         kernel_size: Union[Tuple[int], int],
         /,
         *,
-        strides: Union[int, Tuple[int]] = None,
+        strides: Optional[Union[int, Tuple[int]]] = None,
         padding: Union[int, Tuple[int]] = 0,
         data_format: Union[str, ivy.Container] = "NCW",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -2761,8 +2772,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.max_unpool1d.
+        """ivy.Container static method variant of ivy.max_unpool1d.
 
         Parameters
         ----------
@@ -2817,12 +2827,12 @@ class _ContainerWithLayersExperimental(ContainerBase):
         kernel_size: Union[Tuple[int], int],
         /,
         *,
-        strides: Union[int, Tuple[int]] = None,
+        strides: Optional[Union[int, Tuple[int]]] = None,
         padding: Union[int, Tuple[int]] = 0,
         data_format: Optional[str] = "NCW",
     ) -> ivy.Container:
-        """
-        Compute a 1-D max unpooling given the 1-D pooled input x and its indices.
+        """Compute a 1-D max unpooling given the 1-D pooled input x and its
+        indices.
 
         Parameters
         ----------
@@ -2853,4 +2863,79 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides=strides,
             padding=padding,
             data_format=data_format,
+        )
+
+    @staticmethod
+    def static_rnn(
+        step_function: Callable,
+        inputs: ivy.Array,
+        initial_states: List[ivy.Array],
+        /,
+        *,
+        go_backwards: bool = False,
+        mask: Optional[ivy.Array] = None,
+        constants: Optional[ivy.Array] = None,
+        unroll: bool = False,
+        input_length: Optional[int] = None,
+        time_major: bool = False,
+        zero_output_for_mask: bool = False,
+        return_all_outputs: bool = True,
+    ) -> ivy.Container:
+        """ivy.Container static method variant of ivy.rnn.
+
+        Parameters
+        ----------
+        step_function
+            RNN step function.
+        inputs
+            Array of temporal data of shape (samples, time, ...).
+        initial_states
+            Array with shape (samples, state_size).
+        go_backwards
+            If True, do the iteration over the time dimension in reverse order and
+            return the reversed sequence.
+        mask
+            Binary array with shape (samples, time, 1), with a zero for every element
+            that is masked.
+        constants
+            List of constant values passed at each step.
+        unroll
+            Whether to use a pythonic while loop or ivy.while_loop
+        input_length
+            An integer or 1-D array, depending on whether the time dimension is
+            fixed-length. In case of variable length input, it is used for masking in
+            case there is no mask specified.
+        time_major
+            If True, the inputs and outputs will be in shape (timesteps, batch, ...)
+            whereas in the False case, it will be (batch, timesteps, ...).
+        zero_output_for_mask
+            If True, the otput for masked timestep will be zeros, whereas in the False
+            case, output from previous timestep is returned
+        return_all_outputs
+            If True, return the recurrent outputs for all timesteps in the sequence. If
+            False, only return the output for the last timestep.
+
+        Returns
+        -------
+        ret
+            A tuple of
+            -   the latest output of the rnn of shape (samples, ...)
+            -   the output of the rnn of shape (samples, time, ...) if
+                return_all_outputs=True else (samples, 1, ...)
+            -   list of tensors, latest states returned by the step funciton, of shape
+                (samples, ...)
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "rnn",
+            step_function,
+            inputs,
+            initial_states,
+            go_backwards=go_backwards,
+            mask=mask,
+            constants=constants,
+            unroll=unroll,
+            input_length=input_length,
+            time_major=time_major,
+            zero_output_for_mask=zero_output_for_mask,
+            return_all_outputs=return_all_outputs,
         )

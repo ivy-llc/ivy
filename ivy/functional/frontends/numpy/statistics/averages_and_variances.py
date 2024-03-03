@@ -13,7 +13,6 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 @from_zero_dim_arrays_to_scalar
 def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
     axis = tuple(axis) if isinstance(axis, list) else axis
-    global avg
     avg = 0
 
     if keepdims is None:
@@ -200,7 +199,9 @@ def var(x, /, *, axis=None, ddof=0.0, keepdims=False, out=None, dtype=None, wher
     dtype = (
         dtype
         if dtype is not None
-        else ivy.float64 if ivy.is_int_dtype(x.dtype) else x.dtype
+        else ivy.float64
+        if ivy.is_int_dtype(x.dtype)
+        else x.dtype
     )
     ret = ivy.var(x, axis=axis, correction=ddof, keepdims=keepdims, out=out)
     ret = (

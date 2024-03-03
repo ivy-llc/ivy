@@ -11,11 +11,8 @@ import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.helpers.globals as test_globals
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
-from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
-    _broadcastable_trio,
-)
-from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # noqa
-    _get_splits,
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
+    two_broadcastable_shapes,
 )
 
 
@@ -336,6 +333,31 @@ def _dtypes_input_mask(draw):
     )
 
     return _dtype, _x, _mask
+
+
+@st.composite
+def _where_helper(draw):
+    shape_1, shape_2 = draw(two_broadcastable_shapes())
+    dtype_x1, x1 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=shape_1,
+        )
+    )
+    dtype_x2, x2 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=shape_1,
+            shared_dtype=True,
+        )
+    )
+    _, cond = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["bool"],
+            shape=shape_2,
+        )
+    )
+    return ["bool", *dtype_x1, *dtype_x2], [cond[0], x1[0], x2[0]]
 
 
 # reshape
@@ -1334,11 +1356,13 @@ def test_torch_squeeze(
     dim=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ).filter(lambda axis: isinstance(axis, int)),
+    use_axis_arg=st.booleans(),
 )
 def test_torch_stack(
     *,
     dtype_value_shape,
     dim,
+    use_axis_arg,
     on_device,
     fn_tree,
     frontend,
@@ -1346,6 +1370,7 @@ def test_torch_stack(
     backend_fw,
 ):
     input_dtype, value = dtype_value_shape
+    dim_arg = {"axis" if use_axis_arg else "dim": dim}
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -1354,7 +1379,7 @@ def test_torch_stack(
         fn_tree=fn_tree,
         on_device=on_device,
         tensors=value,
-        dim=dim,
+        **dim_arg,
     )
 
 
@@ -1791,7 +1816,7 @@ def test_torch_vstack(
 
 @handle_frontend_test(
     fn_tree="torch.where",
-    broadcastables=_broadcastable_trio(),
+    broadcastables=_where_helper(),
     only_cond=st.booleans(),
 )
 def test_torch_where(
@@ -1804,7 +1829,7 @@ def test_torch_where(
     backend_fw,
     on_device,
 ):
-    cond, xs, dtypes = broadcastables
+    dtypes, arrays = broadcastables
 
     if only_cond:
         helpers.test_frontend_function(
@@ -1814,18 +1839,18 @@ def test_torch_where(
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
-            condition=xs[0],
+            condition=arrays[0],
         )
 
     else:
         helpers.test_frontend_function(
-            input_dtypes=["bool"] + dtypes,
+            input_dtypes=dtypes,
+            backend_to_test=backend_fw,
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
-            condition=cond,
-            input=xs[0],
-            other=xs[1],
-            backend_to_test=backend_fw,
+            condition=arrays[0],
+            input=arrays[1],
+            other=arrays[2],
         )

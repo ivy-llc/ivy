@@ -355,7 +355,7 @@ def wald(mean, scale, size=None):
     Y = mean * ivy.square(Y)
     X = mean + mu_2l * (Y - ivy.sqrt(((4 * scale) * Y) + ivy.square(Y)))
 
-    condition = U <= mean / (mean + X)
+    condition = mean / (mean + X) >= U
     value1 = X
     value2 = mean * mean / X
 
