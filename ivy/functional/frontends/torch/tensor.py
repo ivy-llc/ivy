@@ -47,6 +47,12 @@ class Tensor:
     def __hash__(self):
         return id(self)
 
+    def __setattr__(self, name, value):
+        if name == "data":
+            self = value
+        else:
+            super().__setattr__(name, value)
+
     # Properties #
     # ---------- #
 
