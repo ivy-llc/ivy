@@ -4,7 +4,6 @@
 import ivy
 from ivy import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
-from ivy.utils.exceptions import IvyNotImplementedException
 
 
 # --- Helpers --- #
@@ -18,11 +17,10 @@ def _handle_padding_shape(padding, n, mode):
             for i in range(int(len(padding) / 2) - 1, -1, -1)
         ]
     )
-    while len(padding) < n:
-        if mode == "circular":
-            padding = padding + ((0, 0),)
-        else:
-            padding = ((0, 0),) + padding
+    if mode == "circular":
+        padding = padding + ((0, 0),) * (n - len(padding))
+    else:
+        padding = ((0, 0),) * (n - len(padding)) + padding
     if mode == "circular":
         padding = tuple(list(padding)[::-1])
     return padding
@@ -32,7 +30,7 @@ def _handle_padding_shape(padding, n, mode):
 # ------------ #
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def affine_grid(theta, size, align_corners=False):
     if len(size) == 4:
@@ -95,7 +93,7 @@ def cubic_conv2(A, x):
     return ((A * x - 5 * A) * x + 8 * A) * x - 4 * A
 
 
-@with_supported_dtypes({"2.1.0 and below": ("float32", "float64")}, "torch")
+@with_supported_dtypes({"2.2 and below": ("float32", "float64")}, "torch")
 @to_ivy_arrays_and_back
 def grid_sample(
     input, grid, mode="bilinear", padding_mode="zeros", align_corners=False
@@ -350,7 +348,7 @@ def grid_sample_padding(grid, padding_mode, align_corners, borders=None):
 
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": (
+        "2.2 and below": (
             "bfloat16",
             "float16",
         )
@@ -367,101 +365,14 @@ def interpolate(
     recompute_scale_factor=None,
     antialias=False,
 ):
-    if mode in ["nearest", "area", "nearest-exact"]:
-        ivy.utils.assertions.check_exists(
-            align_corners,
-            inverse=True,
-            message=(
-                "align_corners option can only be set with the interpolating modes:"
-                " linear | bilinear | bicubic | trilinear"
-            ),
-        )
-
-    dim = ivy.get_num_dims(input) - 2  # Number of spatial dimensions.
-
-    if ivy.exists(size) and ivy.exists(scale_factor):
-        raise ivy.utils.exceptions.IvyException(
-            "only one of size or scale_factor should be defined"
-        )
-
-    elif ivy.exists(size) and not ivy.exists(scale_factor):
-        if isinstance(size, (list, tuple)):
-            ivy.utils.assertions.check_equal(
-                len(size),
-                dim,
-                inverse=False,
-                message=(
-                    "Input and output must have the "
-                    "same number of spatial dimensions,"
-                    f" but got input with spatial dimensions of {list(input.shape[2:])}"
-                    f" and output size of {size}. "
-                    "Please provide input tensor in (N, C, d1, d2, ...,dK) format"
-                    " and output size in (o1, o2, ...,oK) format."
-                ),
-                as_array=False,
-            )
-    elif ivy.exists(scale_factor) and not ivy.exists(size):
-        if isinstance(scale_factor, (list, tuple)):
-            ivy.utils.assertions.check_equal(
-                len(scale_factor),
-                dim,
-                inverse=False,
-                message=(
-                    "Input and scale_factor must have the "
-                    "same number of spatial dimensions,"
-                    f" but got input with spatial dimensions of {list(input.shape[2:])}"
-                    f" and scale_factor of shape {scale_factor}. "
-                    "Please provide input tensor in (N, C, d1, d2, ...,dK) format"
-                    " and scale_factor in (s1, s2, ...,sK) format."
-                ),
-                as_array=False,
-            )
-    else:
-        ivy.utils.assertions.check_any(
-            [ivy.exists(size), ivy.exists(scale_factor)],
-            message="either size or scale_factor should be defined",
-            as_array=False,
-        )
-
     if (
-        ivy.exists(size)
-        and ivy.exists(recompute_scale_factor)
-        and bool(recompute_scale_factor)
+        mode not in ["linear", "bilinear", "bicubic", "trilinear"]
+        and align_corners is not None
     ):
         raise ivy.utils.exceptions.IvyException(
-            "recompute_scale_factor is not meaningful with an explicit size."
+            "align_corners option can only be set with the interpolating"
+            f"modes: linear | bilinear | bicubic | trilinear (got {mode})"
         )
-
-    if (
-        bool(antialias)
-        and (mode not in ["bilinear", "bicubic"])
-        and ivy.get_num_dims(input) == 4
-    ):
-        raise ivy.utils.exceptions.IvyException(
-            "recompute_scale_factor is not meaningful with an explicit size."
-        )
-
-    if ivy.get_num_dims(input) == 3 and mode == "bilinear":
-        raise IvyNotImplementedException(
-            "Got 3D input, but bilinear mode needs 4D input"
-        )
-    if ivy.get_num_dims(input) == 3 and mode == "trilinear":
-        raise IvyNotImplementedException(
-            "Got 3D input, but trilinear mode needs 5D input"
-        )
-    if ivy.get_num_dims(input) == 4 and mode == "linear":
-        raise IvyNotImplementedException("Got 4D input, but linear mode needs 3D input")
-    if ivy.get_num_dims(input) == 4 and mode == "trilinear":
-        raise IvyNotImplementedException(
-            "Got 4D input, but trilinear mode needs 5D input"
-        )
-    if ivy.get_num_dims(input) == 5 and mode == "linear":
-        raise IvyNotImplementedException("Got 5D input, but linear mode needs 3D input")
-    if ivy.get_num_dims(input) == 5 and mode == "bilinear":
-        raise IvyNotImplementedException(
-            "Got 5D input, but bilinear mode needs 4D input"
-        )
-
     ivy.utils.assertions.check_elem_in_list(
         ivy.get_num_dims(input),
         range(3, 6),
@@ -471,20 +382,20 @@ def interpolate(
             f" bicubic | trilinear | area | nearest-exact (got {mode})"
         ),
     )
-
     return ivy.interpolate(
         input,
         size,
         mode=mode,
         scale_factor=scale_factor,
         recompute_scale_factor=recompute_scale_factor,
-        align_corners=align_corners,
+        align_corners=bool(align_corners),
         antialias=antialias,
     )
 
 
 @to_ivy_arrays_and_back
 def pad(input, pad, mode="constant", value=0):
+    value = 0 if value is None else value
     mode_dict = {
         "constant": "constant",
         "reflect": "reflect",
@@ -504,8 +415,10 @@ def pixel_shuffle(input, upscale_factor):
     ivy.utils.assertions.check_equal(
         ivy.get_num_dims(input),
         4,
-        message="pixel_shuffle expects 4D input, but got input with sizes "
-        + str(input_shape),
+        message=(
+            "pixel_shuffle expects 4D input, but got input with sizes"
+            f" {str(input_shape)}"
+        ),
         as_array=False,
     )
     b = input_shape[0]
@@ -548,7 +461,7 @@ def pixel_unshuffle(input, downscale_factor):
             f"pixel_unshuffle expects 4D input, but got input with sizes {input_shape}"
         ),
         as_array=False,
-    ),
+    )
 
     b = input_shape[0]
     c = input_shape[1]
@@ -593,7 +506,7 @@ def reflect(x, low2, high2):
     return x
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def upsample(
     input,
@@ -611,7 +524,7 @@ def upsample(
     )
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def upsample_bilinear(input, size=None, scale_factor=None):
     return interpolate(
@@ -619,7 +532,7 @@ def upsample_bilinear(input, size=None, scale_factor=None):
     )
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def upsample_nearest(input, size=None, scale_factor=None):
     return interpolate(input, size=size, scale_factor=scale_factor, mode="nearest")

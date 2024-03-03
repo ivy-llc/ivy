@@ -896,8 +896,7 @@ def test_jax_diff(
     axis,
 ):
     input_dtype, x = dtype_and_x
-    if axis > (x[0].ndim - 1):
-        axis = x[0].ndim - 1
+    axis = min(axis, x[0].ndim - 1)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -1090,7 +1089,7 @@ def test_jax_einsum_path(
     kw = {}
     for i, x_ in enumerate(operands):
         dtype = dtypes[i][0]
-        kw["x{}".format(i)] = np.array(x_).astype(dtype)
+        kw[f"x{i}"] = np.array(x_).astype(dtype)
     test_flags.num_positional_args = len(operands) + 1
     ret, ret_gt = helpers.test_frontend_function(
         input_dtypes=dtypes,
@@ -1104,9 +1103,9 @@ def test_jax_einsum_path(
         **kw,
         optimize=optimize,
     )
-    len(ret[0]) == len(ret_gt[0])
-    all(x == y for x, y in zip(ret[0], ret_gt[0]))
-    ret[1] == str(ret_gt[1])
+    assert len(ret[0]) == len(ret_gt[0])
+    assert all(x == y for x, y in zip(ret[0], ret_gt[0]))
+    assert ret[1] == str(ret_gt[1])
 
 
 # exp
@@ -1508,7 +1507,7 @@ def test_jax_frexp(
         min_dim_size=1,
         max_dim_size=3,
         num_arrays=2,
-    ).filter(lambda x: all([dtype != "uint64" for dtype in x[0]])),
+    ).filter(lambda x: all(dtype != "uint64" for dtype in x[0])),
     test_with_out=st.just(False),
 )
 def test_jax_gcd(

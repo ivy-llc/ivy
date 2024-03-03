@@ -26,8 +26,7 @@ def _compute_cost_and_update_grads(
     batched,
     num_tasks,
 ):
-    """
-    Compute cost and update gradients.
+    """Compute cost and update gradients.
 
     This function computes the cost and updates gradients for optimization.
 
@@ -263,6 +262,59 @@ def _train_tasks_batched(
     num_tasks,
     stop_gradients,
 ):
+    """Train tasks in a batched manner.
+
+    This function trains tasks in a batched manner with optional inner and outer batch functions.
+
+    Parameters
+    ----------
+    batch : object
+        The batch data.
+    inner_batch_fn : function or None
+        The inner batch function.
+    outer_batch_fn : function or None
+        The outer batch function.
+    inner_cost_fn : function
+        The inner cost function.
+    outer_cost_fn : function
+        The outer cost function.
+    variables : ivy.Container
+        The variables for optimization.
+    inner_grad_steps : int
+        Number of inner gradient steps.
+    inner_learning_rate : float
+        Inner learning rate.
+    inner_optimization_step : function
+        The inner optimization step function.
+    order : int
+        The order of computation.
+    average_across_steps : bool
+        Whether to average across steps.
+    inner_v : object
+        Inner variable.
+    keep_inner_v : bool
+        Whether to keep inner variable.
+    outer_v : object
+        Outer variable.
+    keep_outer_v : bool
+        Whether to keep outer variable.
+    return_inner_v : str or bool
+        Whether and which inner variables to return.
+    num_tasks : int
+        Number of tasks.
+    stop_gradients : bool
+        Whether to stop gradients during optimization.
+
+    Returns
+    -------
+    object or tuple
+        The computed cost and, optionally, gradients and updated inner variables.
+
+    Examples
+    --------
+    >>> # Example usage here
+    >>> pass
+    """  # noqa: E501 (Line too long)
     inner_batch = batch
     outer_batch = batch
     if inner_batch_fn is not None:
@@ -478,8 +530,7 @@ def fomaml_step(
     num_tasks: Optional[int] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """
-    Perform step of first order MAML.
+    """Perform step of first order MAML.
 
     Parameters
     ----------
@@ -594,8 +645,7 @@ def reptile_step(
     num_tasks: Optional[int] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """
-    Perform a step of Reptile.
+    """Perform a step of Reptile.
 
     Parameters
     ----------
@@ -744,8 +794,7 @@ def maml_step(
     num_tasks: Optional[int] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """
-    Perform step of vanilla second order MAML.
+    """Perform step of vanilla second order MAML.
 
     Parameters
     ----------

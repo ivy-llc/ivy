@@ -1,4 +1,5 @@
-"""Collection of Paddle general functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Paddle general functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 import os
@@ -34,7 +35,11 @@ def to_device(
     device = as_native_dev(device)
     if device.is_cpu_place() and not x.place.is_cpu_place():
         return x.cpu()
-    elif device.is_gpu_place() and not x.place.is_gpu_place():
+    elif (device.is_gpu_place() and not x.place.is_gpu_place()) or (
+        x.place.is_gpu_place()
+        and device.is_gpu_place()
+        and x.place.gpu_device_id() != device.gpu_device_id()
+    ):
         return x.cuda(device.gpu_device_id())
     else:
         return x

@@ -26,6 +26,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 def test_mindspore_array(
     dtype_and_a,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -36,6 +37,7 @@ def test_mindspore_array(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,

@@ -106,10 +106,9 @@ class TTTensor(FactorizedTensor):
 
     @staticmethod
     def tt_to_tensor(factors):
-        """
-        Return the full tensor whose TT decomposition is given by 'factors'.
+        """Return the full tensor whose TT decomposition is given by 'factors'.
 
-        Re-assembles 'factors', which represent a tensor in TT/Matrix-Product-State format # noqa: E501
+        Re-assembles 'factors', which represent a tensor in TT/Matrix-Product-State format
         into the corresponding full tensor
 
         Parameters
@@ -121,7 +120,7 @@ class TTTensor(FactorizedTensor):
         -------
         output_tensor
             tensor whose TT/MPS decomposition was given by 'factors'
-        """
+        """  # noqa: E501
         if isinstance(factors, (float, int)):
             return factors
 
@@ -138,8 +137,8 @@ class TTTensor(FactorizedTensor):
 
     @staticmethod
     def tt_to_unfolded(factors, mode):
-        """
-        Return the unfolding matrix of a tensor given in TT (or Tensor- Train) format.
+        """Return the unfolding matrix of a tensor given in TT (or Tensor-
+        Train) format.
 
         Reassembles a full tensor from 'factors' and returns its unfolding matrix
         with mode given by 'mode'
@@ -160,9 +159,8 @@ class TTTensor(FactorizedTensor):
 
     @staticmethod
     def tt_to_vec(factors):
-        """
-        Return the tensor defined by its TT format ('factors') into its vectorized
-        format.
+        """Return the tensor defined by its TT format ('factors') into its
+        vectorized format.
 
         Parameters
         ----------
@@ -178,9 +176,8 @@ class TTTensor(FactorizedTensor):
 
     @staticmethod
     def _tt_n_param(tensor_shape, rank):
-        """
-        Return the number of parameters of a MPS decomposition for a given `rank` and
-        full `tensor_shape`.
+        """Return the number of parameters of a MPS decomposition for a given
+        `rank` and full `tensor_shape`.
 
         Parameters
         ----------
@@ -208,8 +205,7 @@ class TTTensor(FactorizedTensor):
         rounding="round",
         allow_overparametrization=True,
     ):
-        """
-        Return the rank of a TT Decomposition.
+        """Return the rank of a TT Decomposition.
 
         Parameters
         ----------
@@ -217,8 +213,8 @@ class TTTensor(FactorizedTensor):
             shape of the tensor to decompose
         rank
             way to determine the rank, by default 'same'
-            if 'same': rank is computed to keep the number of parameters (at most) the same # noqa: E501
-            if float, computes a rank so as to keep rank percent of the original number of parameters # noqa: E501
+            if 'same': rank is computed to keep the number of parameters (at most) the same
+            if float, computes a rank so as to keep rank percent of the original number of parameters
             if int or tuple, just returns rank
         constant_rank
             if True, the *same* rank will be chosen for each modes
@@ -237,7 +233,7 @@ class TTTensor(FactorizedTensor):
         -------
         rank
             rank of the decomposition
-        """
+        """  # noqa: E501
         if rounding == "ceil":
             rounding_fn = ivy.ceil
         elif rounding == "floor":
@@ -333,9 +329,8 @@ class TTTensor(FactorizedTensor):
 
     @staticmethod
     def pad_tt_rank(factor_list, n_padding=1, pad_boundaries=False):
-        """
-        Pad the factors of a Tensor-Train so as to increase its rank without changing
-        its reconstruction.
+        """Pad the factors of a Tensor-Train so as to increase its rank without
+        changing its reconstruction.
 
         The tensor-train (ring) will be padded with 0s to increase its rank only but
         not the underlying tensor it represents.

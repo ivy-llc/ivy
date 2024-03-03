@@ -1,7 +1,10 @@
-"""Collection of Paddle general functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Paddle general functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
+import functools
 from numbers import Number
+from operator import mul
 from typing import Optional, Union, Sequence, Callable, List, Tuple
 import paddle
 import numpy as np
@@ -38,7 +41,7 @@ def current_backend_str() -> str:
 
 def _check_query(query):
     if isinstance(query, Sequence):
-        return not any([isinstance(item, (Sequence, paddle.Tensor)) for item in query])
+        return not any(isinstance(item, (Sequence, paddle.Tensor)) for item in query)
     else:
         return True
 
@@ -86,7 +89,7 @@ def _squeeze_helper(query, x_ndim):
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.6.0 and below": {
             "cpu": ("int8", "int16", "float16", "complex64", "complex128")
         }
     },
@@ -97,7 +100,7 @@ def get_item(
     /,
     query: Union[paddle.Tensor, Tuple],
     *,
-    copy: bool = None,
+    copy: Optional[bool] = None,
 ) -> paddle.Tensor:
     if copy:
         x = paddle.clone(x)
@@ -228,6 +231,10 @@ def gather(
     return _gather(params)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("bfloat16", "float16")}},
+    backend_version,
+)
 def gather_nd(
     params: paddle.Tensor,
     indices: paddle.Tensor,
@@ -270,6 +277,8 @@ def gather_nd(
     indices_shape = indices.shape
     batch_shape = params_shape[:batch_dims]
     batch_size = paddle.prod(batch_shape, [0]).numpy().tolist()
+    if isinstance(batch_size, int):
+        batch_size = [batch_size]
     index_internal_ndims = indices.ndim - batch_dims - 1
     indices_internal_shape = indices_shape[batch_dims:-1]
 
@@ -355,6 +364,10 @@ def get_num_dims(
     x: paddle.Tensor, /, *, as_array: bool = False
 ) -> Union[paddle.Tensor, int]:
     return paddle.to_tensor(x.ndim).squeeze() if as_array else x.ndim
+
+
+def size(x: paddle.Tensor, /) -> int:
+    return functools.reduce(mul, x.shape) if len(x.shape) > 0 else 1
 
 
 def inplace_arrays_supported():
@@ -648,7 +661,11 @@ def vmap(
 
         # vectorisation - applying map_fn if only one arg provided as reduce requires
         # two elements to begin with.
-        arr_results = [func(*arrays) for arrays in zip(*args)]
+        arr_results = []
+        for arrays in zip(*args):
+            arrays = [a if a.shape != [] else a.unsqueeze(0) for a in arrays]
+            arr_results.append(func(*arrays))
+
         res = paddle_backend.concat(arr_results)
 
         if out_axes:
