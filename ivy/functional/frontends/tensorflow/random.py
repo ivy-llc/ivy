@@ -46,7 +46,7 @@ def shuffle(value, seed=None, name=None):
 )
 @to_ivy_arrays_and_back
 def stateless_gamma(shape, seed, alpha, beta=None, dtype=ivy.float32, name=None):
-    return ivy.ivy.gamma(alpha, beta, shape=shape, dtype=dtype, seed=seed[0] + seed[1])
+    return ivy.gamma(alpha, beta, shape=shape, dtype=dtype, seed=seed[0] + seed[1])
 
 
 @with_unsupported_dtypes(
