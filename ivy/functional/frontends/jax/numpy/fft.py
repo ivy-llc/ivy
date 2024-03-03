@@ -84,7 +84,6 @@ def ifft2(a, s=None, axes=(-2, -1), norm=None):
 )
 def ifftshift(x, axes=None, name=None):
     shape = x.shape
-
     if axes is None:
         axes = tuple(range(x.ndim))
         shifts = [-(dim // 2) for dim in shape]
@@ -92,9 +91,7 @@ def ifftshift(x, axes=None, name=None):
         shifts = -(shape[axes] // 2)
     else:
         shifts = ivy.concat([-shape[ax] // 2 for ax in axes])
-
     roll = ivy.roll(x, shifts, axis=axes)
-
     return roll
 
 
