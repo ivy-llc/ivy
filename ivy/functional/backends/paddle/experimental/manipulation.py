@@ -598,6 +598,14 @@ def expand(
     copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    shape = list(shape)
+    n_extra_dims = len(shape) - x.ndim
+    if n_extra_dims > 0:
+        with ivy.ArrayMode(False):
+            x = paddle_backend.expand_dims(x, tuple(range(n_extra_dims)))
+    for i, dim in enumerate(shape):
+        if dim < 0:
+            shape[i] = x.shape[i]
     return paddle_backend.broadcast_to(x, shape)
 
 

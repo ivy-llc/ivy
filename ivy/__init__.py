@@ -307,28 +307,28 @@ class Shape(Sequence):
         return builtins.bool(self._shape)
 
     def __div__(self, other):
-        return self._shape // other
+        return to_ivy(self._shape // other)
 
     def __floordiv__(self, other):
-        return self._shape // other
+        return to_ivy(self._shape // other)
 
     def __mod__(self, other):
-        return self._shape % other
+        return to_ivy(self._shape % other)
 
     def __rdiv__(self, other):
-        return other // self._shape
+        return to_ivy(other // self._shape)
 
     def __rmod__(self, other):
-        return other % self._shape
+        return to_ivy(other % self._shape)
 
     def __reduce__(self):
         return (self.__class__, (self._shape,))
 
     def as_dimension(self, other):
         if isinstance(other, self._shape):
-            return other
+            return to_ivy(other)
         else:
-            return self._shape
+            return to_ivy(self._shape)
 
     def __sub__(self, other):
         try:
@@ -378,7 +378,7 @@ class Shape(Sequence):
 
     def __getitem__(self, key):
         try:
-            return self._shape[key]
+            return to_ivy(self._shape[key])
         except (TypeError, IndexError):
             return None
 
@@ -416,11 +416,11 @@ class Shape(Sequence):
         if self._shape.rank is None:
             return Shape(None)
         else:
-            return self._shape[index]
+            return to_ivy(self._shape[index])
 
     def as_dimension(self):
         if isinstance(self._shape, Shape):
-            return self._shape
+            return to_ivy(self._shape)
         else:
             return Shape(self._shape)
 
