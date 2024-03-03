@@ -212,7 +212,6 @@ def histogramdd(sample, bins=10, range=None, weights=None, density=None):
     bin_idx_by_dim = []
     dedges = []
     nbins = []
-
     # Get the edges
     for i in builtins.range(D):
         # Each bin 1 int --> need to use linspace
