@@ -49,7 +49,7 @@ class Tensor:
 
     def __setattr__(self, name, value):
         if name == "data":
-            self = value
+            pass
         else:
             super().__setattr__(name, value)
 
