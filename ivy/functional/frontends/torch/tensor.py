@@ -49,7 +49,7 @@ class Tensor:
 
     def __setattr__(self, name, value):
         if name == "data":
-            self.ivy_array = value.ivy_array  # noqa
+            self.ivy_array = value.ivy_array
         else:
             super().__setattr__(name, value)
 
