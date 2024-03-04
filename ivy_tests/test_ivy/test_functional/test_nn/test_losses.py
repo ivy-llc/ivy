@@ -203,3 +203,46 @@ def test_sparse_cross_entropy(
         epsilon=epsilon,
         reduction=reduction,
     )
+
+@handle_test(
+    fn_tree="functional.ivy.ssim_loss",
+    dtype_and_p_pred=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1,
+        max_value=1,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        shape=(5,),
+    ),
+    dtype_and_p_real=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1,
+        max_value=1,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        shape=(5,),
+    ),
+)
+
+def test_ssim_loss(dtype_and_p_pred,dtype_and_p_real,test_flags,backend_fw,fn_name,on_device):
+    
+    dtype_p_pred,p_pred = dtype_and_p_pred 
+    dtype_p_real,p_real = dtype_and_p_real 
+    
+    helpers.test_function(
+        input_dtypes = [dtype_p_pred,dtype_p_real],
+        test_flags = test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device = on_device,
+        args=(p_pred,p_real),
+        kwargs={},
+        rtol=1e-02,
+        atol=1e-02,
+    )
+
+
