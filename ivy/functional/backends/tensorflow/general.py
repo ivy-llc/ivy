@@ -65,15 +65,21 @@ def get_item(
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         if not len(query.shape):
             return tf.expand_dims(x, 0)
+    if ivy.is_array(query) and not ivy.is_bool_dtype(query):
+        return tf.gather(x, query)
     return x.__getitem__(query)
 
 
-get_item.partial_mixed_handler = lambda x, query, **kwargs: (
-    all(_check_query(i) for i in query)
-    and len({i.shape for i in query if ivy.is_array(i)}) <= 1
-    if isinstance(query, tuple)
-    else _check_query(query)
-)
+def _get_item_condition(x, query, **kwargs):
+    return (
+        all(_check_query(i) for i in query)
+        and len({i.shape for i in query if ivy.is_array(i)}) <= 1
+        if isinstance(query, tuple)
+        else _check_query(query) or ivy.is_array(query)
+    )
+
+
+get_item.partial_mixed_handler = _get_item_condition
 
 
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
