@@ -382,7 +382,7 @@ def scatter_nd(
         if ivy.exists(out)
         else list(indices.shape[:-1]) + list(shape[indices.shape[-1] :])
     )
-    updates = _broadcast_to(updates, expected_shape)._data
+    updates = _broadcast_to(updates, expected_shape)
     if len(updates.shape) == 0:
         indices = tf.expand_dims(indices, 0)
         updates = tf.expand_dims(updates, 0)

@@ -484,7 +484,7 @@ def scatter_nd(
         if ivy.exists(out)
         else list(indices.shape[:-1]) + list(shape[indices.shape[-1] :])
     )
-    updates = _broadcast_to(updates, expected_shape).data
+    updates = _broadcast_to(updates, expected_shape)
 
     # remove duplicate indices
     # necessary because we will be using scatter_nd_add
@@ -535,7 +535,7 @@ def scatter_nd(
     if indices.ndim <= 1:
         indices = ivy.expand_dims(indices, axis=0).data
         updates = ivy.expand_dims(updates, axis=0).data
-    updates_ = _broadcast_to(ivy.gather_nd(target, indices), expected_shape).data
+    updates_ = _broadcast_to(ivy.gather_nd(target, indices), expected_shape)
     target_dtype = target.dtype
     if target_dtype in [
         paddle.complex64,

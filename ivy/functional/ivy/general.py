@@ -2884,13 +2884,12 @@ def set_item(
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         if not len(query.shape):
             query = ivy.tile(query, (x.shape[0],))
-        target_shape = ivy.get_item(x, query).shape
         indices = ivy.nonzero(query, as_tuple=False)
     else:
-        indices, target_shape, _ = _parse_query(query, x.shape, scatter=True)
+        indices, _, _ = _parse_query(query, x.shape, scatter=True)
         if indices is None:
             return x
-    val = _broadcast_to(val, target_shape).astype(x.dtype)
+    val = val.astype(x.dtype)
     ret = ivy.scatter_nd(indices, val, reduction="replace", out=x)
     return ret
 
@@ -3155,10 +3154,11 @@ def _numel(shape):
 
 def _broadcast_to(input, target_shape):
     if _numel(tuple(input.shape)) == _numel(tuple(target_shape)):
-        return ivy.reshape(input, target_shape)
+        ret = ivy.reshape(input, target_shape) if input.shape != target_shape else input
     else:
         input = input if len(input.shape) else ivy.expand_dims(input, axis=0)
-        return ivy.broadcast_to(input, target_shape)
+        ret = ivy.broadcast_to(input, target_shape)
+    return ivy.to_native(ret)
 
 
 @handle_exceptions

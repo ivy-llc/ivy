@@ -444,7 +444,7 @@ def scatter_nd(
         if ivy.exists(out)
         else list(indices.shape[:-1]) + list(shape[indices.shape[-1] :])
     )
-    updates = _broadcast_to(updates, expected_shape)._data
+    updates = _broadcast_to(updates, expected_shape)
 
     # implementation
     target_given = ivy.exists(out)
