@@ -18,7 +18,6 @@ __version__ = None
 import setuptools
 from setuptools import setup
 from pathlib import Path
-from pip._vendor.packaging import tags
 from urllib import request
 import os
 import json
@@ -28,8 +27,9 @@ import re
 def _get_paths_from_binaries(binaries, root_dir=""):
     """Get all the paths from the binaries.json into a list."""
     paths = []
+    ext = "pyd" if os.name == "nt" else "so"
     if isinstance(binaries, str):
-        return [os.path.join(root_dir, binaries)]
+        return [os.path.join(root_dir, binaries + "." + ext)]
     elif isinstance(binaries, dict):
         for k, v in binaries.items():
             paths += _get_paths_from_binaries(v, os.path.join(root_dir, k))
@@ -44,13 +44,22 @@ def _strip(line):
 
 
 # Download all relevant binaries in binaries.json
-all_tags = list(tags.sys_tags())
 binaries_dict = json.load(open("binaries.json"))
 available_configs = json.load(open("available_configs.json"))
 binaries_paths = _get_paths_from_binaries(binaries_dict)
-version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
+version = os.environ.get("VERSION", "main")
+fixed_tag = os.environ.get("TAG", None)
+clean = os.environ.get("CLEAN", None)
 terminate = False
+all_tags, python_tag, plat_name, options = None, None, None, None
+if fixed_tag:
+    python_tag, _, plat_name = str(fixed_tag).split("-")
+    options = {"bdist_wheel": {"python_tag": python_tag, "plat_name": plat_name}}
+    all_tags = [fixed_tag]
+else:
+    from pip._vendor.packaging import tags
 
+    all_tags = list(tags.sys_tags())
 
 # download binaries for the tag with highest precedence
 for tag in all_tags:
@@ -58,11 +67,14 @@ for tag in all_tags:
         break
     for path in binaries_paths:
         module = path.split(os.sep)[1]
-        if os.path.exists(path) or str(tag) not in available_configs[module]:
+        if (os.path.exists(path) and not clean) or str(tag) not in available_configs[
+            module
+        ]:
             continue
         folders = path.split(os.sep)
         folder_path, file_path = os.sep.join(folders[:-1]), folders[-1]
-        file_name = f"{file_path[:-3]}_{tag}.so"
+        ext = "pyd" if os.name == "nt" else "so"
+        file_name = f"{file_path[:-(len(ext)+1)]}_{tag}.{ext}"
         search_path = f"{module}/{file_name}"
         try:
             response = request.urlopen(
@@ -122,10 +134,9 @@ setup(
         _strip(line)
         for line in open("requirements/requirements.txt", "r", encoding="utf-8")
     ],
-    python_requires="==3.10.*",
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
-        "Programming Language :: Python :: 3.10",
     ],
     license="Apache 2.0",
+    options=options,
 )

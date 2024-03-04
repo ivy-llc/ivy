@@ -208,6 +208,9 @@ def _copy_tree(backend_reference_path: str, backend_generation_path: str):
 
 
 def _create_type_mapping(config: dict, reference_backend_init_path: str):
+    # print pwd for debugging
+    print(os.getcwd())
+    print
     with open(reference_backend_init_path, "r") as file:
         file_src = file.read()
 
@@ -238,7 +241,7 @@ def generate(config_file):
     global _target_backend
     _target_backend = _config["name"]
 
-    backends_root = "../../ivy/functional/backends/"
+    backends_root = "ivy/functional/backends/"
     backend_reference_path = backends_root + _backend_reference
     backend_generation_path = backends_root + _target_backend
 
@@ -269,11 +272,11 @@ def generate(config_file):
             "valid_uint_dtypes",
         ]
         for key in valids:
-            params[key + "_dict"] = {
-                "None": tuple(["ivy." + x for x in _config[key]])
+            params[f"{key}_dict"] = {
+                "None": tuple(f"ivy.{x}" for x in _config[key])
             }.__str__()
-            params["in" + key + "_dict"] = {
-                "None": tuple(["ivy." + x for x in _config["in" + key]])
+            params[f"in{key}_dict"] = {
+                "None": tuple(f"ivy.{x}" for x in _config[f"in{key}"])
             }.__str__()
         InitFileTransformer(params).visit(tree_to_write)
     except Exception as e:

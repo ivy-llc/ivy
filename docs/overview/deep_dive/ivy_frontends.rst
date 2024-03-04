@@ -16,7 +16,7 @@ Ivy Frontends
 .. _`torch.tan`: https://pytorch.org/docs/stable/generated/torch.tan.html#torch.tan
 .. _`YouTube tutorial series`: https://www.youtube.com/watch?v=72kBVJTpzIw&list=PLwNuX3xB_tv-wTpVDMSJr7XW6IP_qZH0t
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
+.. _`ivy frontends thread`: https://discord.com/channels/799879767196958751/1189908295041941514
 .. _`Array manipulation routines`: https://numpy.org/doc/stable/reference/routines.array-manipulation.html#
 .. _`Array creation routines`: https://numpy.org/doc/stable/reference/routines.array-creation.html
 
@@ -92,12 +92,12 @@ The former set of functions map very closely to the API for the Accelerated Line
 The latter set of functions map very closely to NumPy's well known API.
 In general, all functions in the :mod:`jax.numpy` namespace are themselves implemented as a composition of the lower-level functions in the :mod:`jax.lax` namespace.
 
-When transpiling between frameworks, the first step is to compile the computation graph into low level python functions for the source framework using Ivy's graph compiler, before then replacing these nodes with the associated functions in Ivy's frontend API.
+When transpiling between frameworks, the first step is to trace a computation graph of low level python functions for the source framework using Ivy's tracer, before then replacing these nodes with the associated functions in Ivy's frontend API.
 Given that all jax code can be decomposed into :mod:`jax.lax` function calls, when transpiling JAX code it should always be possible to express the computation graph as a composition of only :mod:`jax.lax` functions.
 Therefore, arguably these are the *only* functions we should need to implement in the JAX frontend.
-However, in general we wish to be able to compile a graph in the backend framework with varying levels of dynamicism.
+However, in general we wish to be able to trace a graph in the backend framework with varying levels of dynamicism.
 A graph of only :mod:`jax.lax` functions chained together in general is more *static* and less *dynamic* than a graph which chains :mod:`jax.numpy` functions together.
-We wish to enable varying extents of dynamicism when compiling a graph with our graph compiler, and therefore we also implement the functions in the :mod:`jax.numpy` namespace in our frontend API for JAX.
+We wish to enable varying extents of dynamicism when creating a graph with our tracer, and therefore we also implement the functions in the :mod:`jax.numpy` namespace in our frontend API for JAX.
 
 Thus, both :mod:`lax` and :mod:`numpy` modules are created in the JAX frontend API.
 We start with the function :func:`lax.add` as an example.
@@ -676,7 +676,7 @@ Unit tests should be written for all aliases. This is arguably a duplication, bu
 This should hopefully have given you a better grasp on what the Ivy Frontend APIs are for, how they should be implemented, and the things to watch out for!
 We also have a short `YouTube tutorial series`_ on this as well if you prefer a video explanation!
 
-If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends thread`_!
 
 
 **Video**

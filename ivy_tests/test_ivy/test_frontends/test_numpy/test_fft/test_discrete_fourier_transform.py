@@ -63,6 +63,53 @@ def test_numpy_fftfreq(
 
 
 @handle_frontend_test(
+    fn_tree="numpy.fft.fftn",
+    dtype_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-1e5,
+        max_value=1e5,
+        min_num_dims=2,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=3,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
+    ),
+    axes=st.sampled_from([(0, 1), (-1, -2), (1, 0), None]),
+    s=st.tuples(
+        st.integers(min_value=2, max_value=256), st.integers(min_value=2, max_value=256)
+    )
+    | st.none(),
+    norm=st.sampled_from(["backward", "ortho", "forward", None]),
+)
+def test_numpy_fftn(
+    dtype_values,
+    s,
+    axes,
+    norm,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, values = dtype_values
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=values[0],
+        s=s,
+        axes=axes,
+        norm=norm,
+    )
+
+
+@handle_frontend_test(
     fn_tree="numpy.fft.fftshift",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"), shape=(4,), array_api_dtypes=True
@@ -105,6 +152,27 @@ def test_numpy_ifft(dtype_and_x, backend_fw, frontend, test_flags, fn_tree, on_d
         a=x,
         n=n,
         axis=dim,
+        norm=norm,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.fft.ifft2",
+    dtype_and_x=_x_and_ifft(),
+)
+def test_numpy_ifft2(dtype_and_x, backend_fw, frontend, test_flags, fn_tree, on_device):
+    input_dtype, x, dim, norm, n = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        a=x,
+        s=None,
+        axes=None,
         norm=norm,
     )
 

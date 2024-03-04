@@ -1,18 +1,17 @@
 # global
 import math
-
+from collections import namedtuple
 import torch
 from typing import Optional, Tuple, Sequence, Union
 
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.utils.exceptions import IvyNotImplementedException
 from .. import backend_version
 
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
 def diagflat(
     x: torch.Tensor,
     /,
@@ -155,7 +154,28 @@ def adjoint(
     return torch.adjoint(x).resolve_conj()
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+def solve_triangular(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    upper: bool = True,
+    adjoint: bool = False,
+    unit_diagonal: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if adjoint:
+        x1 = torch.adjoint(x1)
+        upper = not upper
+    return torch.linalg.solve_triangular(
+        x1, x2, upper=upper, unitriangular=unit_diagonal, out=out
+    )
+
+
+solve_triangular.support_native_out = True
+
+
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
 def multi_dot(
     x: Sequence[torch.Tensor],
     /,
@@ -182,16 +202,31 @@ def cond(
 cond.support_native_out = False
 
 
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
 def lu_factor(
     x: torch.Tensor,
     /,
     *,
     pivot: Optional[bool] = True,
     out: Optional[torch.Tensor] = None,
-) -> Tuple[torch.Tensor]:
-    raise IvyNotImplementedException()
+) -> Tuple[torch.Tensor, torch.Tensor]:
+    ret = torch.linalg.lu_factor(x, pivot=pivot, out=out)
+    ret_tuple = namedtuple("lu_factor", ["LU", "p"])
+    return ret_tuple(ret.LU, ret.pivots)
 
 
+def lu_solve(
+    lu: Tuple[torch.Tensor, torch.Tensor],
+    p: torch.Tensor,
+    b: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.linalg.lu_solve(lu, p, b, out=out)
+
+
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
 def dot(
     a: torch.Tensor,
     b: torch.Tensor,

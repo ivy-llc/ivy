@@ -685,11 +685,13 @@ def test_torch_multilabel_margin_loss(
     reduce,
     test_flags,
     fn_tree,
+    backend_fw,
     frontend,
     on_device,
 ):
     input_dtype, x = dtype_and_inputs
     helpers.test_frontend_function(
+        backend_to_test=backend_fw,
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,

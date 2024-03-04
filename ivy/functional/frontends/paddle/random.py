@@ -8,7 +8,17 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64")},
+    {"2.6.0 and below": ("float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def multinomial(x, num_samples=1, replacement=False, name=None):
+    n = num_samples + 1
+    return ivy.multinomial(n, num_samples, probs=x, replace=replacement)
+
+
+@with_supported_dtypes(
+    {"2.6.0 and below": ("float32", "float64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -17,7 +27,7 @@ def normal(mean=0.0, std=1.0, shape=None, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64")},
+    {"2.6.0 and below": ("float32", "float64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -27,7 +37,7 @@ def poisson(x, name=None):
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.1 and above": {
+        "2.6.0 and above": {
             "cpu": (
                 "bfloat16",
                 "float32",
@@ -65,7 +75,7 @@ def randint(low=0, high=None, shape=[1], dtype=None, name=None):
 
 
 @with_unsupported_dtypes(
-    {"2.5.1 and below": ("int16", "float16", "bfloat16", "uint8")},
+    {"2.6.0 and below": ("int16", "float16", "bfloat16", "uint8")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -89,7 +99,7 @@ def randn(shape, dtype=None, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64")},
+    {"2.6.0 and below": ("float32", "float64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -98,7 +108,7 @@ def standard_normal(shape, dtype=None, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64")},
+    {"2.6.0 and below": ("float32", "float64")},
     "paddle",
 )
 @to_ivy_arrays_and_back

@@ -1,20 +1,23 @@
-"""Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Numpy general functions, wrapped to fit Ivy syntax and
+signature."""
+
+import multiprocessing as _multiprocessing
+from functools import reduce as _reduce
+from numbers import Number
+from operator import mul
 
 # global
-from typing import Optional, Union, Sequence, Callable, Tuple
+from typing import Callable, Optional, Sequence, Tuple, Union
+
 import numpy as np
-from operator import mul
-from functools import reduce as _reduce
-import multiprocessing as _multiprocessing
-from numbers import Number
 
 # local
 import ivy
-from ivy.functional.backends.numpy.device import _to_device
-from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from ivy.func_wrapper import with_unsupported_dtypes
-from . import backend_version
+from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+
 from ...ivy.general import _broadcast_to
+from . import backend_version
 
 
 def array_equal(x0: np.ndarray, x1: np.ndarray, /) -> bool:
@@ -35,8 +38,10 @@ def get_item(
     /,
     query: Union[np.ndarray, Tuple],
     *,
-    copy: bool = None,
+    copy: Optional[bool] = None,
 ) -> np.ndarray:
+    if copy:
+        x = x.copy()
     return x.__getitem__(query)
 
 
@@ -47,7 +52,7 @@ def set_item(
     val: np.ndarray,
     /,
     *,
-    copy: Optional[bool] = False,
+    copy: bool = False,
 ) -> np.ndarray:
     if copy:
         x = np.copy(x)
@@ -101,7 +106,7 @@ def gather(
             result.append(r)
         result = np.array(result)
         result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
-    return _to_device(result)
+    return result
 
 
 def gather_nd_helper(params, indices):
@@ -162,11 +167,15 @@ def gather_nd(
             result.append(r)
         result = np.array(result)
         result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
-    return _to_device(result)
+    return result
 
 
 def get_num_dims(x, /, *, as_array=False):
     return np.asarray(len(np.shape(x))) if as_array else len(x.shape)
+
+
+def size(x, /) -> int:
+    return x.size
 
 
 def inplace_arrays_supported():
@@ -330,8 +339,8 @@ def scatter_nd(
             ' "mul" or "replace"'
         )
     if ivy.exists(out):
-        return ivy.inplace_update(out, _to_device(target))
-    return _to_device(target)
+        return ivy.inplace_update(out, target)
+    return target
 
 
 scatter_nd.support_native_out = True
@@ -435,7 +444,7 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_dtypes({"1.26.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": ("bfloat16",)}, backend_version)
 def isin(
     elements: np.ndarray,
     test_elements: np.ndarray,

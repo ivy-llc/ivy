@@ -1,25 +1,66 @@
 name: test-ivy-cron-gpu
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '25 * * * *'
+  # schedule:
+  #   - cron: '25 * * * *'
 permissions:
   actions: read
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
 jobs:
+  start-vm:
+    runs-on: ubuntu-latest
+    if: always() # Run this job always, regardless of the status of run-test-basics
+    steps:
+      - name: Checkout Demos🛎
+        uses: actions/checkout@v4
+        with:
+          repository: unifyai/demos
+          path: demos
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 1
+
+      - name: Install clients for GCP/Mongo
+        run: |
+           pip3 install pymongo google-api-python-client paramiko
+
+      - name: Start GPU VM
+        run: |
+           cd demos/tests/auth
+           mkdir -p ~/.ssh
+           touch ~/.ssh/id_rsa
+           echo -n "${{ secrets.GPU_SSH_KEY }}" > ~/.ssh/id_rsa
+           chmod +x ~/.ssh/id_rsa
+           python3 db_auth.py ${{ secrets.GPU_DB_ENDPOINT }} ${{ secrets.GPU_DB_OBJ_ID }}
+           python3 vm_auth.py ${{ secrets.GPU_SSH_USERNAME }} ${{ secrets.GPU_SSH_PASSPHRASE }} "false" "ivy-repo-gpu-testing"
+
   run-gpu-tests:
+    needs: start-vm
     runs-on: self-hosted
     steps:
       - name: Clean Repository
         run:
           sudo rm -fr $GITHUB_WORKSPACE && mkdir $GITHUB_WORKSPACE
 
-      - name: Checkout Ivy 🛎
+      - name: Checkout 🛎️Ivy
         uses: actions/checkout@v2
         with:
           path: ivy
           persist-credentials: false
           submodules: "recursive"
-          set-safe-directory: false
+          fetch-depth: 2
+
+      - name: Install ivy and fetch binaries
+        run: |
+          cd ivy
+          export TAG="cp310-cp310-manylinux_2_17_x86_64"
+          sudo pip3 install -e .
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          cd ..
 
       - name: Get Job URL
         uses: Tiryoh/gha-jobid-action@v0
@@ -33,13 +74,29 @@ jobs:
         run: |
           pip3 install pymongo
           cd ivy
-          mkdir .ivy
-          touch .ivy/key.pem
-          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          python3 run_tests_CLI/cron_tests.py ${{ github.run_number }}
-          python3 run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'true' ${{ github.run_id }} 'false' ${{ steps.jobs.outputs.html_url }}
-        continue-on-error: true
+          python3 scripts/setup_tests/cron_tests.py ${{ github.run_number }} true false
+          python3 scripts/run_tests/run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'true' ${{ github.run_id }} 'false' 'false' 'false' ${{ steps.jobs.outputs.html_url }}
 
-      - name: Check on failures
-        if: steps.tests.outcome != 'success'
-        run: exit 1
+  stop-vm:
+    needs: run-gpu-tests
+    runs-on: ubuntu-latest
+    if: always() # Run this job always, regardless of the status of run-test
+    steps:
+        - name: Checkout Demos🛎
+          uses: actions/checkout@v4
+          with:
+            repository: unifyai/demos
+            path: demos
+            persist-credentials: false
+            submodules: "recursive"
+            fetch-depth: 1
+
+        - name: Install clients for GCP/Mongo
+          run: |
+            pip3 install pymongo google-api-python-client paramiko
+
+        - name: Stop GPU VM
+          run: |
+            cd demos/tests/auth
+            python3 db_auth.py ${{ secrets.GPU_DB_ENDPOINT }} ${{ secrets.GPU_DB_OBJ_ID }}
+            python3 vm_auth.py ${{ secrets.GPU_SSH_USERNAME }} ${{ secrets.GPU_SSH_PASSPHRASE }} "true" "ivy-repo-gpu-testing"

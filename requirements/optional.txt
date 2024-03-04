@@ -1,7 +1,7 @@
 h5py # unpinned
 pytest # unpinned
 networkx # unpinned
-hypothesis # unpinned
+hypothesis==6.98.10 # fixed version till this get solved: https://github.com/HypothesisWorks/hypothesis/issues/3896
 pymongo # unpinned
 redis # unpinned
 matplotlib # unpinned
@@ -12,12 +12,10 @@ paddlepaddle # unpinned , mod_name=paddle
 tensorflow-cpu  # unpinned, we test for latest version now, mod_name=tensorflow
 torch # unpinned, we test for latest version now
 # torch-scatter # unpinned, mod_name=torch_scatter
-functorch # unpinned, we test for latest version now
 scipy # unpinned
 dm-haiku # unpinned mod_name=haiku
 flax
 pydriller
-tqdm
 coverage
 scikit-learn # mod_name=sklearn
 pandas

@@ -322,7 +322,7 @@ def test_paddle_bmm(
         available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
     upper=st.booleans(),
 )
@@ -558,7 +558,7 @@ def test_paddle_eig(
     ret = [ivy.to_numpy(x).astype("float64") for x in ret]
     frontend_ret = [np.asarray(x, dtype=np.float64) for x in frontend_ret]
 
-    l, v = ret
+    l, v = ret  # noqa: E741
     front_l, front_v = frontend_ret
 
     assert_all_close(
@@ -608,7 +608,7 @@ def test_paddle_eigh(
     ret = [ivy.to_numpy(x).astype("float64") for x in ret]
     frontend_ret = [np.asarray(x, dtype=np.float64) for x in frontend_ret]
 
-    l, v = ret
+    l, v = ret  # noqa: E741
     front_l, front_v = frontend_ret
 
     assert_all_close(
@@ -688,6 +688,86 @@ def test_paddle_eigvalsh(
     )
 
 
+# diagonal
+@handle_frontend_test(
+    fn_tree="paddle.diagonal",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+    ),
+    axis_and_offset=helpers.dims_and_offset(
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape")
+    ),
+)
+def test_paddle_linalg_diagonal(
+    dtype_and_values,
+    axis_and_offset,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, value = dtype_and_values
+    axis1, axis2, offset = axis_and_offset
+    input = value[0]
+    num_dims = len(np.shape(input))
+    assume(axis1 != axis2)
+    if axis1 < 0:
+        assume(axis1 + num_dims != axis2)
+    if axis2 < 0:
+        assume(axis1 != axis2 + num_dims)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        on_device=on_device,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=input,
+        offset=offset,
+        axis1=axis1,
+        axis2=axis2,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.lu_unpack",
+    dtype_x=_get_dtype_and_square_matrix(real_and_complex_only=True),
+    p=st.lists(st.floats(1, 5), max_size=5),
+    unpack_datas=st.booleans(),
+    unpack_pivots=st.booleans(),
+)
+def test_paddle_lu_unpack(
+    *,
+    dtype_x,
+    p,
+    unpack_datas,
+    unpack_pivots,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, x = dtype_x
+    x = np.array(x[0], dtype=dtype[0])
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        lu_data=x,
+        lu_pivots=p,
+        unpack_datas=unpack_datas,
+        unpack_pivots=unpack_pivots,
+        rtol=1e-03,
+        atol=1e-03,
+    )
+
+
 # matmul
 @handle_frontend_test(
     fn_tree="paddle.matmul",
@@ -736,7 +816,7 @@ def test_paddle_matmul(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=50,
-        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: (x, x)),
     ),
     n=helpers.ints(min_value=1, max_value=8),
     test_with_out=st.just(False),

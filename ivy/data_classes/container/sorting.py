@@ -24,10 +24,9 @@ class _ContainerWithSorting(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.argsort. This method simply wraps the
-        function, and so the docstring for ivy.argsort also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.argsort. This method
+        simply wraps the function, and so the docstring for ivy.argsort also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -138,10 +137,9 @@ class _ContainerWithSorting(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.argsort. This method simply wraps
-        the function, and so the docstring for ivy.argsort also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.argsort. This method
+        simply wraps the function, and so the docstring for ivy.argsort also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -222,10 +220,9 @@ class _ContainerWithSorting(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.sort. This method simply wraps the
-        function, and so the docstring for ivy.sort also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.sort. This method simply
+        wraps the function, and so the docstring for ivy.sort also applies to
+        this method with minimal changes.
 
         Examples
         --------
@@ -275,10 +272,9 @@ class _ContainerWithSorting(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.sort. This method simply wraps the
-        function, and so the docstring for ivy.sort also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.sort. This method
+        simply wraps the function, and so the docstring for ivy.sort also
+        applies to this method with minimal changes.
 
         Examples
         --------
@@ -341,10 +337,9 @@ class _ContainerWithSorting(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.msort. This method simply wraps the
-        function, and so the docstring for ivy.msort also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.msort. This method simply
+        wraps the function, and so the docstring for ivy.msort also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -396,10 +391,9 @@ class _ContainerWithSorting(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.msort. This method simply wraps the
-        function, and so the docstring for ivy.msort also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.msort. This method
+        simply wraps the function, and so the docstring for ivy.msort also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -455,8 +449,7 @@ class _ContainerWithSorting(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.searchsorted.
+        """ivy.Container static method variant of ivy.searchsorted.
 
         This method simply wraps the function, and so the docstring for
         ivy.searchsorted also applies to this method with minimal
@@ -492,8 +485,7 @@ class _ContainerWithSorting(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.searchsorted.
+        """ivy.Container instance method variant of ivy.searchsorted.
 
         This method simply wraps the function, and so the docstring for
         ivy.searchsorted also applies to this method with minimal

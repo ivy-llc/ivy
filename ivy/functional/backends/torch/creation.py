@@ -47,7 +47,7 @@ def _differentiable_linspace(start, stop, num, *, device, dtype=None):
     return res
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("complex",)}, backend_version)
 def arange(
     start: float,
     /,
@@ -95,7 +95,7 @@ def _stack_tensors(x, dtype):
     return x
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, backend_version)
 @_asarray_to_native_arrays_and_back
 @_asarray_infer_device
 @_asarray_handle_nestable
@@ -166,7 +166,7 @@ def empty_like(
     return torch.empty_like(x, dtype=dtype, device=device)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, backend_version)
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -236,6 +236,7 @@ def from_dlpack(x, /, *, out: Optional[torch.Tensor] = None):
     return torch.from_dlpack(x)
 
 
+@with_unsupported_dtypes({"2.2.0 and below": ("bfloat16",)}, backend_version)
 def full(
     shape: Union[ivy.NativeShape, Sequence[int]],
     fill_value: Union[int, float, bool],
@@ -247,9 +248,13 @@ def full(
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
     if isinstance(shape, int):
         shape = (shape,)
+
+    shape = tuple(int(dim) for dim in shape)
+    fill_value = torch.tensor(fill_value, dtype=dtype)
+
     return torch.full(
-        shape,
-        fill_value,
+        size=shape,
+        fill_value=fill_value,
         dtype=dtype,
         device=device,
         out=out,
@@ -276,7 +281,7 @@ def _slice_at_axis(sl, axis):
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.0.1 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.2 and below": {"cpu": ("float16",)}}, backend_version
 )
 def linspace(
     start: Union[torch.Tensor, float],
@@ -477,7 +482,7 @@ def ones_like_v_0p1p12_to_0p2p0(
             x[i] = 1
         return x
     for i in range(x.shape[0]):
-        x[i, :] = ones_like_v_0p1p12_to_0p2p0(x[i, :])
+        x[i, :] = ones_like_v_0p1p12_to_0p2p0(x[i, :], dtype=dtype)
     return x
 
 
