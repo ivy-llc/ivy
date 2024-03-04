@@ -107,15 +107,6 @@ class Module(ivy.Module):
             f'Module [{type(self).__name__}] is missing the required "forward" function'
         )
 
-    def call(self, inputs, *args, training=None, mask=None, **kwargs):
-        if isinstance(inputs, (list, tuple)):
-            try:
-                return self.forward(*inputs, *args, **kwargs)
-            except Exception:
-                return self.forward(inputs, *args, **kwargs)
-        else:
-            return self.forward(inputs, *args, **kwargs)
-
     def _forward(self, *a, **kw):
         ret = self._call_impl(*a, **kw)
         return ret
@@ -142,7 +133,9 @@ class Module(ivy.Module):
         fn(self)
         return self
 
-    def register_buffer(self, name: str, value: Optional["Tensor"]) -> None:
+    def register_buffer(
+        self, name: str, value: Optional["Tensor"], persistent: bool = False
+    ) -> None:
         super().register_buffer(name, value)
 
     def register_parameter(self, name: str, value: Optional["Parameter"]) -> None:
@@ -209,6 +202,21 @@ class Module(ivy.Module):
             )
         gen = self._named_members(
             lambda module: module.v.items(),
+            prefix=prefix,
+            recurse=recurse,
+            remove_duplicate=remove_duplicate,
+        )
+        yield from gen
+
+    def named_buffers(
+        self, prefix: str = "", recurse: bool = True, remove_duplicate: bool = True
+    ) -> Iterator[Tuple[str, Tensor]]:
+        if not getattr(self, "_built", False):
+            self.build(
+                *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
+            )
+        gen = self._named_members(
+            lambda module: module.buffers.items(),
             prefix=prefix,
             recurse=recurse,
             remove_duplicate=remove_duplicate,

@@ -9,7 +9,9 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     from_zero_dim_arrays_to_scalar,
     handle_numpy_out,
 )
-from ivy.func_wrapper import with_supported_dtypes
+
+
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 
 
 # --- Helpers --- #
@@ -329,6 +331,13 @@ def convolve(a, v, mode="full"):
         data_format="channel_first",
     )
     return result[0, 0, out_order]
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "numpy")
+@to_ivy_arrays_and_back
+def gradient(f, *varargs, axis=None, edge_order=None):
+    edge_order = edge_order if edge_order is not None else 1
+    return ivy.gradient(f, spacing=varargs, axis=axis, edge_order=edge_order)
 
 
 @to_ivy_arrays_and_back
