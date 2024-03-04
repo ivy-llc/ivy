@@ -308,12 +308,6 @@ class Shape(Sequence):
             return builtins.bool(builtins.tuple(self._shape))
         return builtins.bool(self._shape)
 
-    def __div__(self, other):
-        return self._shape // other
-
-    def __floordiv__(self, other):
-        return self._shape // other
-
     def __reduce__(self):
         return (self.__class__, (self._shape,))
 
