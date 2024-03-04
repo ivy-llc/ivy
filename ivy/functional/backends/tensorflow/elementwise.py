@@ -712,6 +712,8 @@ def sqrt(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if ivy.is_int_dtype(x.dtype):
+        x = tf.cast(x, tf.float32)
     return tf.math.sqrt(x)
 
 
