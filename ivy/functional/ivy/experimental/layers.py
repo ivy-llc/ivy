@@ -2207,16 +2207,16 @@ def adaptive_max_pool3d(
     Parameters
     ----------
     input
-        Input array. Must have shape (N, C, D_in, H_in, W_in) or (C, D_in, H_in, W_in) where N is
-        the batch dimension, C is the feature dimension, and D_in, H_in, and W_in are the 3
-        spatial dimensions.
+        Input array. Must have shape (N, C, D_in, H_in, W_in) or (C, D_in, H_in, W_in)
+        where N is the batch dimension, C is the feature dimension, and D_in, H_in,
+        and W_in are the 3 spatial dimensions.
     output_size
         Spatial output size.
 
     Returns
     -------
-        The result of the pooling operation. Will have shape (N, C, D_out, H_out, W_out) or
-        (C, D_out, H_out, W_out), where D_out, H_out, W_out = `output_size`
+        The result of the pooling operation. Will have shape (N, C, D_out, H_out, W_out)
+        or (C, D_out, H_out, W_out), where D_out, H_out, W_out = `output_size`
     """
     squeeze = False
     if input.ndim == 4:

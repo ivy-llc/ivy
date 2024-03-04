@@ -2938,6 +2938,10 @@ def _parse_query(query, x_shape, scatter=False):
             *[v for i, v in enumerate(query) if i in array_inds]
         )
         array_queries = [
+            ivy.nonzero(q, as_tuple=False)[0] if ivy.is_bool_dtype(q) else q
+            for q in array_queries
+        ]
+        array_queries = [
             (
                 ivy.where(arr < 0, arr + x_shape[i], arr).astype(ivy.int64)
                 if arr.size
@@ -3123,7 +3127,7 @@ def _parse_slice(idx, s):
                     stop = 0
                 elif stop < 0:
                     stop = stop + s
-    q_i = ivy.arange(start, stop, step).to_list()
+    q_i = ivy.arange(start, stop, step)
     q_i = [q for q in q_i if 0 <= q < s]
     q_i = (
         ivy.array(q_i)
@@ -4041,6 +4045,51 @@ def get_num_dims(
     }
     """
     return current_backend(x).get_num_dims(x, as_array=as_array)
+
+
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device
+def size(x: Union[ivy.Array, ivy.NativeArray]) -> int:
+    """Return the number of elements of the array x.
+
+    Parameters
+    ----------
+    x
+        Input array to infer the number of elements for.
+
+    Returns
+    -------
+    ret
+        Number of elements of the array
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> a = ivy.array([[[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+    ...                    [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+    ...                    [[0, 0, 0], [0, 0, 0], [0, 0, 0]]])
+    >>> b = ivy.size(a)
+    >>> print(b)
+    27
+
+    With :class:`ivy.Container` input:
+
+    >>> a = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
+    >>> print(ivy.size(a))
+    {
+        b: 9
+    }
+    """
+    return current_backend(x).size(x)
 
 
 @handle_exceptions

@@ -1,9 +1,7 @@
 # flake8: noqa
 # global
 import copy
-import functools
 import numpy as np
-from operator import mul
 from typing import Optional
 
 # local
@@ -262,16 +260,7 @@ class Array(
     @property
     def size(self) -> Optional[int]:
         """Number of elements in the array."""
-        if self._size is None:
-            if ivy.current_backend_str() in ["numpy", "jax"]:
-                self._size = self._data.size
-                return self._size
-            self._size = (
-                functools.reduce(mul, self._data.shape)
-                if len(self._data.shape) > 0
-                else 1
-            )
-        return self._size
+        return ivy.size(self)
 
     @property
     def itemsize(self) -> Optional[int]:
@@ -349,7 +338,7 @@ class Array(
     @classmethod
     def __torch_function__(cls, func, types, args=(), kwargs={}):
         args, kwargs = args_to_native(*args, **kwargs)
-        return func(*args, **kwargs)
+        return to_ivy(func(*args, **kwargs))
 
     def __ivy_array_function__(self, func, types, args, kwargs):
         # Cannot handle items that have __ivy_array_function__ other than those of
@@ -382,7 +371,7 @@ class Array(
 
     def __array_ufunc__(self, *args, **kwargs):
         args, kwargs = args_to_native(*args, **kwargs)
-        return self._data.__array_ufunc__(*args, **kwargs)
+        return to_ivy(self._data.__array_ufunc__(*args, **kwargs))
 
     def __array_wrap__(self, *args, **kwargs):
         args, kwargs = args_to_native(*args, **kwargs)

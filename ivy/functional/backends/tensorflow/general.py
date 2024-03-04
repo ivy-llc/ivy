@@ -5,6 +5,8 @@ and signature.
 """
 
 # global
+import functools
+from operator import mul
 from typing import Optional, Union, Sequence, Callable, Tuple
 import numpy as np
 import multiprocessing as _multiprocessing
@@ -63,15 +65,21 @@ def get_item(
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         if not len(query.shape):
             return tf.expand_dims(x, 0)
+    if ivy.is_array(query) and not ivy.is_bool_dtype(query):
+        return tf.gather(x, query)
     return x.__getitem__(query)
 
 
-get_item.partial_mixed_handler = lambda x, query, **kwargs: (
-    all(_check_query(i) for i in query)
-    and len({i.shape for i in query if ivy.is_array(i)}) <= 1
-    if isinstance(query, tuple)
-    else _check_query(query)
-)
+def _get_item_condition(x, query, **kwargs):
+    return (
+        all(_check_query(i) for i in query)
+        and len({i.shape for i in query if ivy.is_array(i)}) <= 1
+        if isinstance(query, tuple)
+        else _check_query(query) or ivy.is_array(query)
+    )
+
+
+get_item.partial_mixed_handler = _get_item_condition
 
 
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
@@ -193,6 +201,10 @@ def get_num_dims(x, /, *, as_array=False):
         if as_array
         else int(tf.shape(tf.shape(x)))
     )
+
+
+def size(x: tf.Tensor, /) -> int:
+    return functools.reduce(mul, x.shape) if len(x.shape) > 0 else 1
 
 
 def inplace_arrays_supported():

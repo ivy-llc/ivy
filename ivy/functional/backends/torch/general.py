@@ -3,9 +3,10 @@ signature."""
 
 # global
 from functools import reduce as _reduce
+import functools
 from numbers import Number
 from operator import mul
-from typing import Optional, Union, Sequence, Callable, List, Tuple
+from typing import Callable, List, Optional, Sequence, Tuple, Union
 
 try:
     import functorch
@@ -16,9 +17,10 @@ import torch
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, _update_torch_views
-from . import backend_version, is_variable
+from ivy.func_wrapper import _update_torch_views, with_unsupported_dtypes
+
 from ...ivy.general import _broadcast_to
+from . import backend_version, is_variable
 
 torch_scatter = None
 
@@ -94,6 +96,8 @@ def get_item(
     *,
     copy: Optional[bool] = None,
 ) -> torch.Tensor:
+    if copy:
+        x = x.clone()
     return x.__getitem__(query)
 
 
@@ -276,6 +280,10 @@ def get_num_dims(
     x: torch.Tensor, /, *, as_array: bool = False
 ) -> Union[torch.Tensor, int]:
     return torch.tensor(len(x.shape)) if as_array else len(x.shape)
+
+
+def size(x: torch.Tensor, /) -> int:
+    return functools.reduce(mul, x.shape) if len(x.shape) > 0 else 1
 
 
 def inplace_arrays_supported():

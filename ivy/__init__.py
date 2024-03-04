@@ -287,11 +287,20 @@ class Shape(Sequence):
         return self
 
     def __mul__(self, other):
-        self._shape = self._shape * other
+        if ivy.current_backend_str() == "tensorflow":
+            shape_tup = builtins.tuple(self._shape) * other
+            self._shape = ivy.to_native_shape(shape_tup)
+        else:
+            self._shape = self._shape * other
         return self
 
     def __rmul__(self, other):
-        self._shape = other * self._shape
+        # handle tensorflow case as tf.TensorShape doesn't support multiplications
+        if ivy.current_backend_str() == "tensorflow":
+            shape_tup = other * builtins.tuple(self._shape)
+            self._shape = ivy.to_native_shape(shape_tup)
+        else:
+            self._shape = other * self._shape
         return self
 
     def __bool__(self):

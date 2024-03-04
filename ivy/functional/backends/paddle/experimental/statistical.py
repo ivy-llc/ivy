@@ -680,8 +680,17 @@ def __get_index(lst, indices=None, prefix=None):
     return indices
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.6.0 and below": {"cpu": ("uint8", "int8", "int16")}},
+@with_supported_dtypes(
+    {
+        "2.6.0 and below": (
+            "complex",
+            "int32",
+            "int64",
+            "bfloat16",
+            "float32",
+            "float64",
+        )
+    },
     backend_version,
 )
 def cummin(

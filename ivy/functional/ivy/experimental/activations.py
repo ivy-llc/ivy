@@ -994,12 +994,12 @@ def hardsilu(
     >>> x = ivy.array([1., 2., 3.])
     >>> y = ivy.hardsilu(x)
     >>> print(y)
-    ivy.array([0.66666667, 1.66666667, 3.])
+    ivy.array([0.66666669, 1.66666663, 3.        ])
     >>> x = ivy.array([-2.1241, 1.4897, 4.4090])
     >>> y = ivy.zeros(3)
     >>> ivy.hardsilu(x, out=y)
     >>> print(y)
-    ivy.array([-0.3101, 1.1147, 4.4090])
+    ivy.array([-0.31008321,  1.1147176 ,  4.40899992])
 
     With :class:`ivy.Container` input:
 
@@ -1007,8 +1007,8 @@ def hardsilu(
     >>> y = ivy.hardsilu(x)
     >>> print(y)
     {
-        a: ivy.array([-0.20833333, 0.33333333, 0.]),
-        b: ivy.array([0.29166667, 0.66666667, 1.66666667])
+        a: ivy.array([-0.20833333, -0.33333334, 0.]),
+        b: ivy.array([0.29166666, 0.66666669, 1.66666663])
     }
     """
     return current_backend(x).hardsilu(x, out=out)

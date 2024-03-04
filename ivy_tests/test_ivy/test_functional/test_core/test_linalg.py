@@ -279,6 +279,9 @@ def _matrix_rank_helper(draw):
     )
     atol = draw(tol_strategy)
     rtol = draw(tol_strategy)
+    if not (atol is None or rtol is None):
+        assume(type(atol) is type(rtol))
+
     return dtype, x[0], hermitian, atol, rtol
 
 
