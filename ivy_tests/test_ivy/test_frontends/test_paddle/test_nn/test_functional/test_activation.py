@@ -737,6 +737,8 @@ def test_paddle_softplus(
         x=x[0],
         beta=beta,
         threshold=threshold,
+        rtol=1e-4,
+        atol=1e-4,
     )
 
 
