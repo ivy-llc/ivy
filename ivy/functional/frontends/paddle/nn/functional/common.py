@@ -9,7 +9,7 @@ from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 def bilinear(x1, x2, weight, bias=None, name=None):
     x2_transposed = ivy.swapaxes(x2, -1, -2)
     result = ivy.linear(ivy.multiply(x1, x2_transposed), weight, bias=bias)
-    return result
+    return x1, x2_transposed, weight, bias, result
 
 
 @to_ivy_arrays_and_back
