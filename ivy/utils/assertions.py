@@ -344,7 +344,11 @@ def check_dev_correct_formatting(device):
 
 
 def _check_jax_x64_flag(dtype):
-    if ivy.backend == "jax" and not ivy.functional.backends.jax.jax.config.x64_enabled:
+    if (
+        ivy.backend == "jax"
+        and not ivy.functional.backends.jax.jax.config.jax_enable_x64
+    ):
+
         ivy.utils.assertions.check_elem_in_list(
             dtype,
             ["float64", "int64", "uint64", "complex128"],
