@@ -87,6 +87,9 @@ Contributors
    * - Rohit Kumar Salla
      - `rohitsalla <https://github.com/rohitsalla>`_
      - Merging Master, Ivy Inspector
+   * - Shreya Kumar
+     - `alt-shreya <https://github.com/alt-shreya>`_
+     - Merging Master, Ivy Inspector
    * - Srikar Vedantam
      - `shruzki <https://github.com/shruzki>`_
      - Merging Master, Merging Wizard

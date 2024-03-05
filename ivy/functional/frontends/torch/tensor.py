@@ -47,6 +47,12 @@ class Tensor:
     def __hash__(self):
         return id(self)
 
+    def __setattr__(self, name, value):
+        if name == "data":
+            self.ivy_array = value.ivy_array
+        else:
+            super().__setattr__(name, value)
+
     # Properties #
     # ---------- #
 
