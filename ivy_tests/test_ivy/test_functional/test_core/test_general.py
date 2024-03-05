@@ -1875,6 +1875,21 @@ def test_tensorflow_get_item_condition():
     assert _get_item_condition(None, query)
 
 
+def test_tf_function_set_item():
+    def _fn_to_compile(x):
+        q = ivy.array([[True], [False]])
+        v = ivy.array([2.727])
+        x = ivy.set_item(x, q, v)
+        return x
+
+    ivy.trace_graph(
+        _fn_to_compile,
+        to="tensorflow",
+        args=(ivy.array([[1.0], [2.0]]),),
+        backend_compile=True,
+    )
+
+
 # to_list
 @handle_test(
     fn_tree="functional.ivy.to_list",
