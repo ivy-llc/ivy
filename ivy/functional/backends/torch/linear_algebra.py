@@ -206,7 +206,7 @@ def matrix_norm(
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if dtype is not None:
+    if dtype is not None or dtype is str:
         dtype = ivy.as_native_dtype(dtype)
     ret = torch.linalg.matrix_norm(
         x, ord=ord, dim=axis, keepdim=keepdims, dtype=dtype, out=out
