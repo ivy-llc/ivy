@@ -280,13 +280,13 @@ def matrix_norm(
         )
     elif ord == 1:
         ret = paddle_backend.max(
-            paddle_backend.sum(paddle_backend.abs(x), axis=axis[0], keepdims=True),
+            paddle_backend.sum(paddle.abs(x), axis=axis[0], keepdims=True),
             axis=axis,
             keepdims=keepdims,
         )
     elif ord == -1:
         ret = paddle_backend.min(
-            paddle_backend.sum(paddle_backend.abs(x), axis=axis[0], keepdims=True),
+            paddle_backend.sum(paddle.abs(x), axis=axis[0], keepdims=True),
             axis=axis,
             keepdims=keepdims,
         )
@@ -304,13 +304,13 @@ def matrix_norm(
         )
     elif ord == float("inf"):
         ret = paddle_backend.max(
-            paddle_backend.sum(paddle_backend.abs(x), axis=axis[1], keepdims=True),
+            paddle_backend.sum(paddle.abs(x), axis=axis[1], keepdims=True),
             axis=axis,
             keepdims=keepdims,
         )
     elif ord == float("-inf"):
         ret = paddle_backend.min(
-            paddle_backend.sum(paddle_backend.abs(x), axis=axis[1], keepdims=True),
+            paddle_backend.sum(paddle.abs(x), axis=axis[1], keepdims=True),
             axis=axis,
             keepdims=keepdims,
         )
