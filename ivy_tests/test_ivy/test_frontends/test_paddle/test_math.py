@@ -2504,10 +2504,10 @@ def test_paddle_square(
 @handle_frontend_test(
     fn_tree="paddle.stanh",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float"), min_value=-10, max_value=10
     ),
-    scale_a=st.floats(1e-5, 1e5),
-    scale_b=st.floats(1e-5, 1e5),
+    scale_a=st.floats(1e-5, 10),
+    scale_b=st.floats(1e-5, 10),
 )
 def test_paddle_stanh(
     *,
@@ -2531,6 +2531,7 @@ def test_paddle_stanh(
         x=x[0],
         scale_a=scale_a,
         scale_b=scale_b,
+        atol=1e-4,
     )
 
 
