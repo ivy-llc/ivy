@@ -479,7 +479,7 @@ def interpolate(
     return paddle.nn.functional.interpolate(
         x, size, scale_factor, mode, align_corners, align_mode, data_format
     )
-  
+
     if mode not in ["linear", "bilinear", "bicubic", "trilinear"]:
         align_corners = None
     return paddle.nn.functional.interpolate(
@@ -509,7 +509,6 @@ interpolate.partial_mixed_handler = (
     and not kwargs.get("antialias", False)
     and not kwargs.get("recompute_scale_factor", False)
 )
-
 
 
 def adaptive_max_pool2d(
