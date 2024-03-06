@@ -308,21 +308,6 @@ class Shape(Sequence):
             return builtins.bool(builtins.tuple(self._shape))
         return builtins.bool(self._shape)
 
-    def __div__(self, other):
-        return to_ivy(self._shape // other)
-
-    def __floordiv__(self, other):
-        return to_ivy(self._shape // other)
-
-    def __mod__(self, other):
-        return to_ivy(self._shape % other)
-
-    def __rdiv__(self, other):
-        return to_ivy(other // self._shape)
-
-    def __rmod__(self, other):
-        return to_ivy(other % self._shape)
-
     def __reduce__(self):
         return (self.__class__, (self._shape,))
 
