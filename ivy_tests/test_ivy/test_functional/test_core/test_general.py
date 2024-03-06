@@ -6,7 +6,7 @@ import math
 from types import SimpleNamespace
 
 import pytest
-from hypothesis import given, assume, example, strategies as st
+from hypothesis import given, assume, strategies as st
 import numpy as np
 from collections.abc import Sequence
 
@@ -18,7 +18,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import (
     handle_test,
     BackendHandler,
-    test_parameter_flags as pf,
+    handle_example,
 )
 from ivy_tests.test_ivy.helpers.assertions import assert_all_close
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import pow_helper
@@ -1074,6 +1074,15 @@ def test_get_all_arrays_in_memory():
     container_flags=st.just([False]),
     test_with_copy=st.just(True),
 )
+@handle_example(
+    test_example=True,
+    test_flags={
+        "num_positional_args": 2,
+    },
+    dtypes_x_query=(["float32", "bool"], np.ones((1, 3, 3)), (np.array([True]), 2, 2)),
+    copy=None,
+    fn_name="get_item",
+)
 def test_get_item(
     dtypes_x_query,
     copy,
@@ -1647,7 +1656,11 @@ def test_set_inplace_mode(mode):
     container_flags=st.just([False]),
     test_with_copy=st.just(True),
 )
-@example(
+@handle_example(
+    test_example=True,
+    test_flags={
+        "num_positional_args": 3,
+    },
     dtypes_x_query_val=(
         ["int32", "int32"],
         np.ones((1, 3, 3, 3)),
@@ -1656,21 +1669,6 @@ def test_set_inplace_mode(mode):
     ),
     copy=False,
     fn_name="set_item",
-    test_flags=pf.FunctionTestFlags(
-        ground_truth_backend="numpy",
-        num_positional_args=3,
-        instance_method=False,
-        with_out=False,
-        with_copy=False,
-        test_gradients=False,
-        test_trace=False,
-        transpile=False,
-        as_variable=[False],
-        native_arrays=[False],
-        container=[False],
-        precision_mode=False,
-        test_cython_wrapper=False,
-    ),
 )
 def test_set_item(
     dtypes_x_query_val,
@@ -1748,6 +1746,25 @@ def test_shape(x0_n_x1_n_res, as_array, test_flags, backend_fw, fn_name, on_devi
         fn_name=fn_name,
         x=x[0],
         as_array=as_array,
+    )
+
+
+# size
+@handle_test(
+    fn_tree="functional.ivy.size",
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_size(dtype_x, test_flags, backend_fw, fn_name, on_device):
+    dtype, x = dtype_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
     )
 
 
@@ -1846,6 +1863,16 @@ def test_supports_inplace_updates(
         test_values=False,
         x=x[0],
     )
+
+
+def test_tensorflow_get_item_condition():
+    from ivy.functional.backends.tensorflow.general import _get_item_condition
+
+    query = tf.constant([0])
+    assert _get_item_condition(None, query)
+
+    query = tf.constant([[0, 1], [2, 2]])
+    assert _get_item_condition(None, query)
 
 
 # to_list

@@ -9,8 +9,9 @@ from tqdm import tqdm
 def _get_paths_from_binaries(binaries, root_dir=""):
     """Get all the paths from the binaries.json into a list."""
     paths = []
+    ext = "pyd" if os.name == "nt" else "so"
     if isinstance(binaries, str):
-        return [os.path.join(root_dir, binaries)]
+        return [os.path.join(root_dir, binaries + "." + ext)]
     elif isinstance(binaries, dict):
         for k, v in binaries.items():
             paths += _get_paths_from_binaries(v, os.path.join(root_dir, k))
@@ -33,10 +34,12 @@ def check_for_binaries():
         for path in binaries_paths:
             if not os.path.exists(path):
                 if initial:
-                    config_str = "\n".join([
-                        f"{module} : {', '.join(configs)}"
-                        for module, configs in available_configs.items()
-                    ])
+                    config_str = "\n".join(
+                        [
+                            f"{module} : {', '.join(configs)}"
+                            for module, configs in available_configs.items()
+                        ]
+                    )
                     logging.warning(
                         "\tSome binaries seem to be missing in your system. This could "
                         "be either because we don't have compatible binaries for your "
@@ -94,7 +97,8 @@ def cleanup_and_fetch_binaries(clean=True):
                         continue
                     folders = path.split(os.sep)
                     _, file_path = os.sep.join(folders[:-1]), folders[-1]
-                    file_name = f"{file_path[:-3]}_{tag}.so"
+                    ext = "pyd" if os.name == "nt" else "so"
+                    file_name = f"{file_path[:-(len(ext)+1)]}_{tag}.{ext}"
                     search_path = f"{module}/{file_name}"
                     try:
                         response = request.urlopen(

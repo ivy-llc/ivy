@@ -22,6 +22,105 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 import ivy.functional.frontends.tensorflow as tf_frontend
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+@st.composite
+def _x_and_filters(
+    draw,
+    dtypes,
+    data_format,
+    padding=None,
+    stride_min=1,
+    stride_max=4,
+    dilation_min=1,
+    dilation_max=4,
+    type: str = "depthwise",
+):
+    data_format = draw(data_format)
+    dtype = draw(dtypes)
+    dim = 2 if type in ["depthwise", "separable"] else 4
+    if padding is None:
+        padding = (st.sampled_from(["same", "valid"]),)
+    padding = draw(padding)
+    dilations = draw(
+        st.one_of(
+            st.integers(dilation_min, dilation_max),
+            st.lists(
+                st.integers(dilation_min, dilation_max), min_size=dim, max_size=dim
+            ),
+        )
+    )
+    fdilations = [dilations] * dim if isinstance(dilations, int) else dilations
+    if type in ["depthwise", "separable"]:
+        # if any value in dilations is greater than 1, tensorflow implements
+        # depthwise_covn2d as an atrous depthwise convolution, in which case all values
+        # in strides must be equal to 1.
+        if any(x > 1 for x in fdilations):
+            stride = 1
+        else:
+            stride = draw(st.integers(stride_min, stride_max))
+    else:
+        stride = draw(
+            st.one_of(
+                st.integers(stride_min, stride_max),
+                st.lists(
+                    st.integers(stride_min, stride_max), min_size=dim, max_size=dim
+                ),
+            )
+        )
+    if dim == 2:
+        min_x_height = 1
+        min_x_width = 1
+        filter_shape = draw(
+            st.tuples(
+                helpers.ints(min_value=3, max_value=5),
+                helpers.ints(min_value=3, max_value=5),
+                helpers.ints(min_value=1, max_value=3),
+                helpers.ints(min_value=1, max_value=3),
+            )
+        )
+        min_x_height = filter_shape[0] + (filter_shape[0] - 1) * (fdilations[0] - 1)
+        min_x_width = filter_shape[1] + (filter_shape[1] - 1) * (fdilations[1] - 1)
+        d_in = filter_shape[2]
+        if data_format == "channels_last":
+            x_shape = draw(
+                st.tuples(
+                    helpers.ints(min_value=1, max_value=5),
+                    helpers.ints(min_value=min_x_height, max_value=100),
+                    helpers.ints(min_value=min_x_width, max_value=100),
+                    helpers.ints(min_value=d_in, max_value=d_in),
+                )
+            )
+        else:
+            x_shape = draw(
+                st.tuples(
+                    helpers.ints(min_value=1, max_value=5),
+                    helpers.ints(min_value=d_in, max_value=d_in),
+                    helpers.ints(min_value=min_x_height, max_value=100),
+                    helpers.ints(min_value=min_x_width, max_value=100),
+                )
+            )
+    x = draw(
+        helpers.array_values(dtype=dtype[0], shape=x_shape, min_value=0, max_value=1)
+    )
+    filters = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=filter_shape, min_value=0, max_value=1
+        )
+    )
+    if type in ["depthwise", "separable"]:
+        stride = (stride, stride)
+        if isinstance(dilations, int):
+            dilations = (dilations,) * dim
+    return dtype, x, filters, dilations, data_format, stride, padding
+
+
+# --- Main --- #
+# ------------ #
+
+
 @handle_frontend_test(
     fn_tree="tensorflow.keras.backend.dot",
     data=_generate_dot_dtype_and_arrays(min_num_dims=2),
@@ -67,6 +166,83 @@ def test_tensorflow_keras_backend_bias_add(
         x=x[0],
         bias=bias,
         data_format=data_format,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.keras.backend.depthwise_conv2d",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["channels_last"]),
+        padding=st.sampled_from(["valid", "same"]),
+        type="depthwise",
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_keras_backend_depthwise_conv2d(
+    *,
+    x_f_d_df,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x,
+        depthwise_kernel=filters,
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilation_rate=dilation,
+    )
+
+
+# mean
+@handle_frontend_test(
+    fn_tree="tensorflow.keras.backend.mean",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        force_int_axis=True,
+        valid_axis=True,
+        min_num_dims=1,
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
+    ),
+    keepdims=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_keras_backend_mean(
+    *,
+    dtype_x_axis,
+    keepdims,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        atol=1e-1,
+        rtol=1e-1,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        keepdims=keepdims,
     )
 
 

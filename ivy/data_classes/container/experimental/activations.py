@@ -1837,3 +1837,117 @@ class _ContainerWithActivationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def _static_hardsilu(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container static method which acts as a wrapper for
+        ivy.hardsilu.
+
+        Parameters
+        ----------
+        x
+            input container
+        key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        a container containing the output of the hardsilu/hardswish function applied
+        to each element in ``x``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-0.5, -1, 0]), b=ivy.array([0.5, 1., 2]))
+        >>> y = ivy.Container._static_hardsilu(x)
+        >>> print(y)
+        {
+            a: ivy.array([-0.20833333, -0.33333334, 0.]),
+            b: ivy.array([0.29166666, 0.66666669, 1.66666663])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "hardsilu",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def hardsilu(
+        self,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method which acts as a wrapper for
+        ivy.hardsilu.
+
+        Parameters
+        ----------
+        self
+            input container
+        key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        a container containing the output of the hardsilu/hardswish function applied
+        to each element in the input container.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-0.5, -1, 0]), b=ivy.array([0.5, 1., 2]))
+        >>> y = x.hardsilu()
+        >>> print(y)
+        {
+            a: ivy.array([-0.20833333, -0.33333334, 0.]),
+            b: ivy.array([0.29166666, 0.66666669, 1.66666663])
+        }
+        """
+        return self._static_hardsilu(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

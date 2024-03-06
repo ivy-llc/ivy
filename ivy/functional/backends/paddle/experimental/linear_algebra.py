@@ -131,6 +131,17 @@ def lu_factor(
     raise IvyNotImplementedException()
 
 
+def lu_solve(
+    lu: paddle.Tensor,
+    p: paddle.Tensor,
+    b: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException()
+
+
 @with_supported_device_and_dtypes(
     {
         "2.6.0 and below": {

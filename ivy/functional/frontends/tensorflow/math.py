@@ -193,15 +193,23 @@ def angle(input, name=None):
     return ivy.angle(input)
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("complex",)},
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def argmax(input, axis, output_type=None, name=None):
     output_type = to_ivy_dtype(output_type)
-    if output_type in ["uint16", "int16", "int32", "int64"]:
+    if output_type in ["int32", "int64"]:
         return ivy.astype(ivy.argmax(input, axis=axis), output_type)
     else:
         return ivy.astype(ivy.argmax(input, axis=axis), "int64")
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("complex",)},
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def argmin(input, axis=None, output_type="int64", name=None):
     output_type = to_ivy_dtype(output_type)
@@ -536,9 +544,11 @@ def is_non_decreasing(x, name="is_non_decreasing"):
 def is_strictly_increasing(x, name="is_strictly_increasing"):
     if ivy.array(x).size < 2:
         return ivy.array(True)
-    if ivy.array(x).size == 2:
-        return ivy.array(x[0] < x[1])
-    return ivy.all(ivy.less(x, ivy.roll(x, -1)))
+    x = ivy.flatten(x)
+    res = ivy.less(x, ivy.roll(x, -1))
+    if res.size >= 2:
+        res[res.size - 1] = True  # The last comparison must be set to true.
+    return ivy.all(res)
 
 
 @to_ivy_arrays_and_back
@@ -611,11 +621,13 @@ def logical_xor(x, y, name="LogicalXor"):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, "tensorflow")
 def maximum(x, y, name=None):
     return ivy.maximum(x, y)
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, "tensorflow")
 def minimum(x, y, name=None):
     return ivy.minimum(x, y)
 
@@ -1033,8 +1045,8 @@ def xlogy(x, y, name=None):
 def zero_fraction(value, name="zero_fraction"):
     zero = ivy.zeros(tuple(value.shape), dtype=ivy.float32)
     x = ivy.array(value, dtype=ivy.float32)
-    count_zero = ivy.sum(ivy.equal(x, zero))
-    count_nonzero = ivy.sum(ivy.not_equal(x, zero))
+    count_zero = ivy.sum(ivy.equal(x, zero), dtype=ivy.float32)
+    count_nonzero = ivy.sum(ivy.not_equal(x, zero), dtype=ivy.float32)
     return ivy.divide(count_zero, ivy.add(count_zero, count_nonzero))
 
 

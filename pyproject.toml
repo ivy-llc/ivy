@@ -27,6 +27,7 @@ exclude = ["__init__.py"]
 line-length = 88
 target-version = "py38"
 
+[tool.ruff.lint]
 select = [
     # pyflakes
     "F",
@@ -36,7 +37,7 @@ select = [
     "D",
     "I002",     # Missing required import.
     "UP008",    # Checks for super calls that pass redundant arguments.
-    "PGH002",   # deprecated-log-warn.
+    "G010",     # deprecated-log-warn.
     "PLR1722",  # Use sys.exit() instead of exit() and quit().
     "TRY004",   # Prefer TypeError exception for invalid type.
     "PT014",    # pytest-duplicate-parametrize-test-cases.
@@ -64,13 +65,14 @@ ignore = [
     "D213", # Multi-line docstring summary should start at the second line.
     "D209", # Multi-line docstring closing quotes should be on a separate line.
     "D400", # First line should end with a period.
+    "D413", # Missing blank line after last section of docstrings.
     "D401", # First line of docstring should be in imperative mood.
     "D415", # First line should end with a period, question mark, or exclamation point.
     "D416", # Section name should end with a colon ("Attributes").
     "D417", # Missing argument description in the docstring for argument "X".
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 'ivy/functional/(frontends|backends)/(?!.*/func_wrapper\.py$).*(?!__init__\.py$)' = ["D"]
 "**/__init__.py" = ["F401","F403","F405","F811","F821", "E501"]
 "ivy/functional/frontends/paddle/**" = ["F401", "F403", "F405"]

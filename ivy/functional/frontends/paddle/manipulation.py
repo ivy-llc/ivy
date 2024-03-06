@@ -198,6 +198,11 @@ def stack(x, axis=0, name=None):
     return ivy.stack(x, axis=axis)
 
 
+@with_supported_dtypes(
+    {"2.6.0 and below": ("float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
 def take_along_axis(arr, indices, axis):
     return ivy.take_along_axis(arr, indices, axis)
 

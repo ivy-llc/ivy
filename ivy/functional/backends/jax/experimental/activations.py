@@ -160,3 +160,11 @@ def hardshrink(
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ret
+
+
+@with_unsupported_dtypes({"0.4.16 and below": ("float16", "bfloat16")}, backend_version)
+def hardsilu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    ret = jax.nn.hard_silu(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret

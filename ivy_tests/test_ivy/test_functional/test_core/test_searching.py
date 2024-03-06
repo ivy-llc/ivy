@@ -66,6 +66,7 @@ def _dtype_x_limited_axis(draw, *, allow_none=False):
     keepdims=st.booleans(),
     dtype=helpers.get_dtypes("numeric", full=False, none=True),
     select_last_index=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_argmax(
     *,

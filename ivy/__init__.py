@@ -287,66 +287,39 @@ class Shape(Sequence):
         return self
 
     def __mul__(self, other):
-        self._shape = self._shape * other
+        if ivy.current_backend_str() == "tensorflow":
+            shape_tup = builtins.tuple(self._shape) * other
+            self._shape = ivy.to_native_shape(shape_tup)
+        else:
+            self._shape = self._shape * other
         return self
 
     def __rmul__(self, other):
-        self._shape = other * self._shape
+        # handle tensorflow case as tf.TensorShape doesn't support multiplications
+        if ivy.current_backend_str() == "tensorflow":
+            shape_tup = other * builtins.tuple(self._shape)
+            self._shape = ivy.to_native_shape(shape_tup)
+        else:
+            self._shape = other * self._shape
         return self
 
     def __bool__(self):
+        if ivy.current_backend_str() == "tensorflow":
+            return builtins.bool(builtins.tuple(self._shape))
         return builtins.bool(self._shape)
-
-    def __div__(self, other):
-        return self._shape // other
-
-    def __floordiv__(self, other):
-        return self._shape // other
-
-    def __mod__(self, other):
-        return self._shape % other
-
-    def __rdiv__(self, other):
-        return other // self._shape
-
-    def __rmod__(self, other):
-        return other % self._shape
 
     def __reduce__(self):
         return (self.__class__, (self._shape,))
 
     def as_dimension(self, other):
         if isinstance(other, self._shape):
-            return other
+            return to_ivy(other)
         else:
             return self._shape
-
-    def __sub__(self, other):
-        try:
-            self._shape = self._shape - other
-        except TypeError:
-            self._shape = self._shape - list(other)
-        return self
-
-    def __rsub__(self, other):
-        try:
-            self._shape = other - self._shape
-        except TypeError:
-            self._shape = list(other) - self._shape
-        return self
 
     def __eq__(self, other):
         self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape == other
-
-    def __int__(self):
-        if hasattr(self._shape, "__int__"):
-            res = self._shape.__int__()
-        else:
-            res = int(self._shape)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
 
     def __ge__(self, other):
         self._shape = Shape._shape_casting_helper(self._shape, other)
@@ -369,7 +342,7 @@ class Shape(Sequence):
 
     def __getitem__(self, key):
         try:
-            return self._shape[key]
+            return to_ivy(self._shape[key])
         except (TypeError, IndexError):
             return None
 
@@ -407,11 +380,11 @@ class Shape(Sequence):
         if self._shape.rank is None:
             return Shape(None)
         else:
-            return self._shape[index]
+            return to_ivy(self._shape[index])
 
     def as_dimension(self):
         if isinstance(self._shape, Shape):
-            return self._shape
+            return to_ivy(self._shape)
         else:
             return Shape(self._shape)
 
@@ -930,45 +903,47 @@ class GlobalsDict(dict):
 
 
 # defines ivy.globals attribute
-globals_vars = GlobalsDict({
-    "backend_stack": backend_stack,
-    "default_device_stack": device.default_device_stack,
-    "valid_dtypes": valid_dtypes,
-    "valid_numeric_dtypes": valid_numeric_dtypes,
-    "valid_int_dtypes": valid_int_dtypes,
-    "valid_uint_dtypes": valid_uint_dtypes,
-    "valid_complex_dtypes": valid_complex_dtypes,
-    "valid_devices": valid_devices,
-    "invalid_dtypes": invalid_dtypes,
-    "invalid_numeric_dtypes": invalid_numeric_dtypes,
-    "invalid_int_dtypes": invalid_int_dtypes,
-    "invalid_float_dtypes": invalid_float_dtypes,
-    "invalid_uint_dtypes": invalid_uint_dtypes,
-    "invalid_complex_dtypes": invalid_complex_dtypes,
-    "invalid_devices": invalid_devices,
-    "array_significant_figures_stack": array_significant_figures_stack,
-    "array_decimal_values_stack": array_decimal_values_stack,
-    "warning_level_stack": warning_level_stack,
-    "queue_timeout_stack": general.queue_timeout_stack,
-    "array_mode_stack": general.array_mode_stack,
-    "inplace_mode_stack": general.inplace_mode_stack,
-    "soft_device_mode_stack": device.soft_device_mode_stack,
-    "shape_array_mode_stack": general.shape_array_mode_stack,
-    "show_func_wrapper_trace_mode_stack": general.show_func_wrapper_trace_mode_stack,
-    "min_denominator_stack": general.min_denominator_stack,
-    "min_base_stack": general.min_base_stack,
-    "tmp_dir_stack": general.tmp_dir_stack,
-    "precise_mode_stack": general.precise_mode_stack,
-    "nestable_mode_stack": general.nestable_mode_stack,
-    "exception_trace_mode_stack": general.exception_trace_mode_stack,
-    "default_dtype_stack": data_type.default_dtype_stack,
-    "default_float_dtype_stack": data_type.default_float_dtype_stack,
-    "default_int_dtype_stack": data_type.default_int_dtype_stack,
-    "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
-    "nan_policy_stack": nan_policy_stack,
-    "dynamic_backend_stack": dynamic_backend_stack,
-    "cython_wrappers_stack": cython_wrappers_stack,
-})
+globals_vars = GlobalsDict(
+    {
+        "backend_stack": backend_stack,
+        "default_device_stack": device.default_device_stack,
+        "valid_dtypes": valid_dtypes,
+        "valid_numeric_dtypes": valid_numeric_dtypes,
+        "valid_int_dtypes": valid_int_dtypes,
+        "valid_uint_dtypes": valid_uint_dtypes,
+        "valid_complex_dtypes": valid_complex_dtypes,
+        "valid_devices": valid_devices,
+        "invalid_dtypes": invalid_dtypes,
+        "invalid_numeric_dtypes": invalid_numeric_dtypes,
+        "invalid_int_dtypes": invalid_int_dtypes,
+        "invalid_float_dtypes": invalid_float_dtypes,
+        "invalid_uint_dtypes": invalid_uint_dtypes,
+        "invalid_complex_dtypes": invalid_complex_dtypes,
+        "invalid_devices": invalid_devices,
+        "array_significant_figures_stack": array_significant_figures_stack,
+        "array_decimal_values_stack": array_decimal_values_stack,
+        "warning_level_stack": warning_level_stack,
+        "queue_timeout_stack": general.queue_timeout_stack,
+        "array_mode_stack": general.array_mode_stack,
+        "inplace_mode_stack": general.inplace_mode_stack,
+        "soft_device_mode_stack": device.soft_device_mode_stack,
+        "shape_array_mode_stack": general.shape_array_mode_stack,
+        "show_func_wrapper_trace_mode_stack": general.show_func_wrapper_trace_mode_stack,
+        "min_denominator_stack": general.min_denominator_stack,
+        "min_base_stack": general.min_base_stack,
+        "tmp_dir_stack": general.tmp_dir_stack,
+        "precise_mode_stack": general.precise_mode_stack,
+        "nestable_mode_stack": general.nestable_mode_stack,
+        "exception_trace_mode_stack": general.exception_trace_mode_stack,
+        "default_dtype_stack": data_type.default_dtype_stack,
+        "default_float_dtype_stack": data_type.default_float_dtype_stack,
+        "default_int_dtype_stack": data_type.default_int_dtype_stack,
+        "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
+        "nan_policy_stack": nan_policy_stack,
+        "dynamic_backend_stack": dynamic_backend_stack,
+        "cython_wrappers_stack": cython_wrappers_stack,
+    }
+)
 
 _default_globals = copy.deepcopy(globals_vars)
 

@@ -20,7 +20,7 @@ def argsort(
 ) -> JaxArray:
     kind = "stable" if stable else "quicksort"
     return (
-        jnp.argsort(-x, axis=axis, kind=kind)
+        jnp.argsort(x, axis=axis, kind=kind, descending=descending)
         if descending
         else jnp.argsort(x, axis=axis, kind=kind)
     )
@@ -78,7 +78,7 @@ def searchsorted(
 
 
 # msort
-@with_unsupported_dtypes({"0.4.23 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"0.4.24 and below": ("complex",)}, backend_version)
 def msort(
     a: Union[JaxArray, list, tuple],
     /,

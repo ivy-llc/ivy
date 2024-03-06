@@ -826,30 +826,47 @@ def default_device(
 
 @handle_exceptions
 def set_default_device(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
-    """Set the default device to given device instance.
+    """Sets the default device to the argument provided in the function.
 
     Parameters
     ----------
     device
-        The device to set as the default device
+        The device to be set as the default device.
+
+    Returns
+    -------
+    ret
+        The new default device.
 
     Examples
     --------
-    >>> ivy.set_default_device("cpu")
     >>> ivy.default_device()
     'cpu'
 
-    >>> ivy.set_backend("torch")
-    >>> ivy.set_default_device("gpu:0")
-    >>> ivy.default_device(as_native=True)
-    device(type='cuda', index=0)
+    >>> ivy.set_backend('jax')
+    >>> ivy.set_default_device('gpu:0')
+    >>> ivy.default_device()
+    'gpu:0'
 
-    >>> import torch
-    >>> ivy.set_backend("torch")
-    >>> device = torch.device("cuda")
-    >>> ivy.set_default_device(device)
-    >>> ivy.default_device(as_native=True)
-    device(type='cuda')
+    >>> ivy.set_backend('torch')
+    >>> ivy.set_default_device('gpu:1')
+    >>> ivy.default_device()
+    'gpu:1
+
+    >>> ivy.set_backend('tensorflow')
+    >>> ivy.set_default_device('tpu:0)
+    >>> ivy.default_device()
+    'tpu:0
+
+    >>> ivy.set_backend('paddle')
+    >>> ivy.set_default_device('cpu)
+    >>> ivy.default_device()
+    'cpu'
+
+    >>> ivy.set_backend('mxnet')
+    >>> ivy.set_default_device('cpu')
+    >>> ivy.default_device()
+    'cpu'
     """
     global default_device_stack
     default_device_stack.append(device)

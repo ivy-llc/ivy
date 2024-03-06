@@ -1208,11 +1208,13 @@ def shape_initialization(shape, axes, x):
 
 def rank_initialization(axes):
     rank = tf.size(axes)
-    with tf.control_dependencies([
-        tf.debugging.assert_less_equal(
-            rank, 3, message="N-D FFT supported only up to 3-D."
-        )
-    ]):
+    with tf.control_dependencies(
+        [
+            tf.debugging.assert_less_equal(
+                rank, 3, message="N-D FFT supported only up to 3-D."
+            )
+        ]
+    ):
         rank = tf.identity(rank)
 
     return rank
