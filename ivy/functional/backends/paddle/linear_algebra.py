@@ -280,14 +280,14 @@ def matrix_norm(
         )
     elif ord == 1:
         x = paddle.moveaxis(x, axis_, [-2, -1])
-        ret = paddle_backend.max(
+        ret = paddle_backend.amax(
             paddle_backend.sum(paddle_backend.abs(x), axis=-2, keepdims=True),
             axis=-1,
             keepdims=keepdims,
         )
     elif ord == -1:
         x = paddle.moveaxis(x, axis_, [-2, -1])
-        ret = paddle_backend.min(
+        ret = paddle_backend.amin(
             paddle_backend.sum(paddle_backend.abs(x), axis=-2, keepdims=True),
             axis=-1,
             keepdims=keepdims,
@@ -306,14 +306,14 @@ def matrix_norm(
         )
     elif ord == float("inf"):
         x = paddle.moveaxis(x, axis_, [-2, -1])
-        ret = paddle_backend.max(
+        ret = paddle_backend.amax(
             paddle_backend.sum(paddle_backend.abs(x), axis=-1, keepdims=True),
             axis=-2,
             keepdims=keepdims,
         )
     elif ord == float("-inf"):
         x = paddle.moveaxis(x, axis_, [-2, -1])
-        ret = paddle_backend.min(
+        ret = paddle_backend.amin(
             paddle_backend.sum(paddle_backend.abs(x), axis=-1, keepdims=True),
             axis=-2,
             keepdims=keepdims,
@@ -328,6 +328,8 @@ def matrix_norm(
             # although expand_dims support tuple axes, we have to loop
             # over the axes because it faces problems when the input is a scalar
             ret = paddle_backend.expand_dims(ret, axis=dim % x.ndim)
+    elif ord in [-1, 1, -float("inf"), float("inf")]:
+        ret = ret.reshape(ret.shape + [1])
     if ivy.exists(out):
         ivy.inplace_update(out, ret)
     return ret
