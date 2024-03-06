@@ -578,6 +578,14 @@ def unflatten(
     name: Optional[str] = None,
 ) -> tf.Tensor:
     dim = abs(len(x.shape) + dim) if dim < 0 else dim
+
+    # infer the size of any dimensions that are -1
+    tf_shape = tf.constant(shape)
+    inferred_size = tf.reduce_prod(x.shape[dim]) // tf.reduce_prod(
+        tf.where(tf_shape != -1, x=shape, y=tf.constant(1))
+    )
+    shape = tf.where(tf_shape != -1, x=shape, y=inferred_size)
+
     res_shape = x.shape[:dim] + tf.TensorShape(shape) + x.shape[dim + 1 :]
     res = tf.reshape(x, res_shape, name)
     return res
