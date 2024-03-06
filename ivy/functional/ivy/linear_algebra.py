@@ -13,6 +13,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_device,
     handle_backend_invalid,
+    infer_dtype,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -1129,14 +1130,15 @@ def matmul(
     )
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
 @handle_device
+@infer_dtype
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_backend_invalid
+@handle_exceptions
 def matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

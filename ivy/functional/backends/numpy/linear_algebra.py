@@ -152,8 +152,7 @@ def matrix_norm(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is not None:
-        dtype = ivy.as_native_dtype(dtype)
-        x = x.astype(dtype)
+        x = ivy.astype(x, dtype).to_native()
     if not isinstance(axis, tuple):
         axis = tuple(axis)
     ret = np.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
