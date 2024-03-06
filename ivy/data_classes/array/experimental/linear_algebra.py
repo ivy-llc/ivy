@@ -117,11 +117,11 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.lu. This method simply
-               wraps the function, and so the docstring for ivy.lu also applies to
-               this method with minimal changes.
+        wraps the function, and so the docstring for ivy.lu also applies to
+        this method with minimal changes.
 
-               Examples
-               --------
+        Examples
+        --------
                >>> x = ivy.array([[1.0,2.0],[3.0,4.0]])
                >>> ivy.lu(x)
                ivy.array([[0., 1.],
