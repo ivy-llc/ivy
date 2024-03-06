@@ -304,22 +304,9 @@ class Shape(Sequence):
         return self
 
     def __bool__(self):
+        if ivy.current_backend_str() == "tensorflow":
+            return builtins.bool(builtins.tuple(self._shape))
         return builtins.bool(self._shape)
-
-    def __div__(self, other):
-        return to_ivy(self._shape // other)
-
-    def __floordiv__(self, other):
-        return to_ivy(self._shape // other)
-
-    def __mod__(self, other):
-        return to_ivy(self._shape % other)
-
-    def __rdiv__(self, other):
-        return to_ivy(other // self._shape)
-
-    def __rmod__(self, other):
-        return to_ivy(other % self._shape)
 
     def __reduce__(self):
         return (self.__class__, (self._shape,))
@@ -328,34 +315,11 @@ class Shape(Sequence):
         if isinstance(other, self._shape):
             return to_ivy(other)
         else:
-            return to_ivy(self._shape)
-
-    def __sub__(self, other):
-        try:
-            self._shape = self._shape - other
-        except TypeError:
-            self._shape = self._shape - list(other)
-        return self
-
-    def __rsub__(self, other):
-        try:
-            self._shape = other - self._shape
-        except TypeError:
-            self._shape = list(other) - self._shape
-        return self
+            return self._shape
 
     def __eq__(self, other):
         self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape == other
-
-    def __int__(self):
-        if hasattr(self._shape, "__int__"):
-            res = self._shape.__int__()
-        else:
-            res = int(self._shape)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
 
     def __ge__(self, other):
         self._shape = Shape._shape_casting_helper(self._shape, other)
