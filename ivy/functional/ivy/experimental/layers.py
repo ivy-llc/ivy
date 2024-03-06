@@ -1476,10 +1476,6 @@ def nearest_interpolate(x, dims, size, scale, exact):
         n = size[d]
         offsets = (ivy.arange(n, dtype="float32") + off) * scale[d]
         offsets = ivy.astype(ivy.floor(ivy.astype(offsets, "float32")), "int64")
-        num_dims_to_add = x.ndim - offsets.ndim
-        if num_dims_to_add > 0:
-            for _ in range(num_dims_to_add):
-                offsets = ivy.expand_dims(offsets, axis=0)
         x = ivy.gather(x, offsets, axis=d + 2)
     return x
 
@@ -2207,16 +2203,16 @@ def adaptive_max_pool3d(
     Parameters
     ----------
     input
-        Input array. Must have shape (N, C, D_in, H_in, W_in) or (C, D_in, H_in, W_in) where N is
-        the batch dimension, C is the feature dimension, and D_in, H_in, and W_in are the 3
-        spatial dimensions.
+        Input array. Must have shape (N, C, D_in, H_in, W_in) or (C, D_in, H_in, W_in)
+        where N is the batch dimension, C is the feature dimension, and D_in, H_in,
+        and W_in are the 3 spatial dimensions.
     output_size
         Spatial output size.
 
     Returns
     -------
-        The result of the pooling operation. Will have shape (N, C, D_out, H_out, W_out) or
-        (C, D_out, H_out, W_out), where D_out, H_out, W_out = `output_size`
+        The result of the pooling operation. Will have shape (N, C, D_out, H_out, W_out)
+        or (C, D_out, H_out, W_out), where D_out, H_out, W_out = `output_size`
     """
     squeeze = False
     if input.ndim == 4:

@@ -1157,6 +1157,7 @@ def matrix_norm(
     ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
     axis: Tuple[int, int] = (-2, -1),
     keepdims: bool = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Compute the matrix p-norm.
@@ -1211,6 +1212,9 @@ def matrix_norm(
         If this is set to True, the axes which are normed over are left in the result as
         dimensions with size one. With this option the result will broadcast correctly
         against the original x. Default is ``False``.
+    dtype
+        If specified, the input tensor is cast to dtype before performing the operation,
+        and the returned tensor's type will be dtype. Default: None
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1299,7 +1303,7 @@ def matrix_norm(
     }
     """
     return current_backend(x).matrix_norm(
-        x, ord=ord, axis=axis, keepdims=keepdims, out=out
+        x, ord=ord, axis=axis, keepdims=keepdims, dtype=dtype, out=out
     )
 
 

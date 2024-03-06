@@ -173,10 +173,8 @@ def matrix_exp(A):
     {"2.2 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
 )
 def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, out=None):
-    if "complex" in ivy.as_ivy_dtype(input.dtype):
-        input = ivy.abs(input)
-    if dtype:
-        input = ivy.astype(input, ivy.as_ivy_dtype(dtype))
+    if dtype is not None:
+        input = ivy.astype(input, dtype)
     return ivy.matrix_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
 
 
@@ -192,8 +190,8 @@ def matrix_power(A, n, *, out=None):
 @with_supported_dtypes(
     {"2.2 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
 )
-def matrix_rank(A, *, atol=None, rtol=None, hermitian=False, out=None):
-    return ivy.matrix_rank(A, atol=atol, rtol=rtol, hermitian=hermitian, out=out)
+def matrix_rank(input, *, atol=None, rtol=None, hermitian=False, out=None):
+    return ivy.matrix_rank(input, atol=atol, rtol=rtol, hermitian=hermitian, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -217,10 +215,14 @@ def norm(input, ord=None, dim=None, keepdim=False, *, dtype=None, out=None):
     elif dim is None and ord is None:
         input = ivy.flatten(input)
         ret = ivy.vector_norm(input, axis=0, keepdims=keepdim, ord=2)
-    if isinstance(dim, int):
+    elif isinstance(dim, int):
         ret = ivy.vector_norm(input, axis=dim, keepdims=keepdim, ord=ord)
-    elif isinstance(dim, tuple):
+    elif isinstance(dim, tuple) and len(dim) <= 2:
         ret = ivy.matrix_norm(input, axis=dim, keepdims=keepdim, ord=ord)
+    elif isinstance(dim, tuple) and len(dim) > 2:
+        raise RuntimeError(
+            f"linalg.norm: If dim is specified, it must be of length 1 or 2. Got {dim}"
+        )
     return ret
 
 

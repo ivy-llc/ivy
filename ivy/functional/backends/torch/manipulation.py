@@ -78,6 +78,7 @@ def flip(
     return torch.flip(x, new_axis)
 
 
+@with_unsupported_dtypes({"2.1.2 and below": ("bfloat16", "float16")}, backend_version)
 def permute_dims(
     x: torch.Tensor,
     /,
@@ -86,6 +87,9 @@ def permute_dims(
     copy: Optional[bool] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if copy:
+        newarr = torch.clone(x).detach()
+        return torch.permute(newarr, axes)
     return torch.permute(x, axes)
 
 
@@ -153,12 +157,10 @@ def squeeze(
                 f"Expected size of axis to be 1 but was {x.shape[axis]}"
             )
         return torch.squeeze(x, axis)
+    if copy:
+        x = x.clone()
     if axis is None:
-        if copy:
-            newarr = torch.clone(x)
-            return torch.squeeze(newarr)
         return torch.squeeze(x)
-    newarr = torch.clone(x)
     if isinstance(axis, tuple):
         axis = list(axis)
     normalise_axis = [
@@ -175,12 +177,7 @@ def squeeze(
                 f" {shape}"
             )
         else:
-            if copy:
-                newarr = torch.squeeze(newarr, i)
-            else:
-                x = torch.squeeze(x, i)
-    if copy:
-        return newarr
+            x = torch.squeeze(x, i)
     return x
 
 

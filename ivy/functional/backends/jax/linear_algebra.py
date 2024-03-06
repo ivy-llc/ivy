@@ -191,8 +191,11 @@ def matrix_norm(
     ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
     axis: Tuple[int, int] = (-2, -1),
     keepdims: bool = False,
+    dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if dtype is not None:
+        x = ivy.astype(x, dtype)
     if hasattr(axis, "__iter__"):
         if not isinstance(axis, tuple):
             axis = tuple(axis)

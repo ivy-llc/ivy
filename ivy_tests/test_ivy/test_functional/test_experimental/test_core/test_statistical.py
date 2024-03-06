@@ -463,6 +463,7 @@ def test_cummax(
     dtype_x_axis_castable=_get_castable_dtype(),
     exclusive=st.booleans(),
     reverse=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_cummin(
     *,

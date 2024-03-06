@@ -21,9 +21,10 @@ if __name__ == "__main__":
     workflow_id = sys.argv[6]
     priority_flag = sys.argv[7]
     tracer_flag = sys.argv[8]
+    tracer_flag_each = sys.argv[9]
 
-    if len(sys.argv) > 9 and sys.argv[9] != "null":
-        run_id = sys.argv[9]
+    if len(sys.argv) > 10 and sys.argv[10] != "null":
+        run_id = sys.argv[10]
     else:
         run_id = f"https://github.com/unifyai/ivy/actions/runs/{workflow_id}"
 
@@ -37,6 +38,13 @@ if __name__ == "__main__":
         tracer_str = " --with-trace-testing"
     else:
         tracer_flag = ""
+
+    tracer_str_each = ""
+    if not tracer_flag and tracer_flag_each == "true":
+        tracer_flag_each = "tracer_each_"
+        tracer_str_each = " --with-trace-testing-each"
+    else:
+        tracer_flag_each = ""
 
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
@@ -120,7 +128,8 @@ if __name__ == "__main__":
                 )
                 command = (
                     "docker exec test-container python3 -m pytest --tb=short"
-                    f" {test_path}{device_str} --backend {backend}{tracer_str}"
+                    f" {test_path}{device_str} --backend {backend}"
+                    f"{tracer_str}{tracer_str_each}"
                 )
                 os.system(command)
 
@@ -216,16 +225,14 @@ if __name__ == "__main__":
                 "_id": function_name,
                 "test_path": test_path,
                 "submodule": submodule,
-                f"{prefix_str}{backend}.{version}.{tracer_flag}status.{device}": (
-                    not failed
-                ),
-                f"{prefix_str}{backend}.{version}.{tracer_flag}workflow.{device}": (
-                    run_id
-                ),
+                f"{prefix_str}{backend}.{version}.{tracer_flag}{tracer_flag_each}"
+                f"status.{device}": (not failed),
+                f"{prefix_str}{backend}.{version}.{tracer_flag}{tracer_flag_each}"
+                f"workflow.{device}": (run_id),
             }
 
             # add transpilation metrics if report generated
-            if not failed and report_content and not tracer_flag:
+            if not failed and report_content and not (tracer_flag or tracer_flag_each):
                 if is_frontend_test:
                     test_info = {
                         **test_info,
