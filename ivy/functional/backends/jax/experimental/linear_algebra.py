@@ -21,6 +21,7 @@ def lu(
 ) -> JaxArray:
     return jla.lu(x)
 
+
 def diagflat(
     x: JaxArray,
     /,

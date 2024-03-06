@@ -1381,6 +1381,33 @@ def test_kronecker(*, data, test_flags, backend_fw, fn_name, on_device):
 
 
 @handle_test(
+    fn_tree="functional.ivy.experimental.lu",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=2,
+        min_value=-100,
+        max_value=100,
+        allow_nan=False,
+        shared_dtype=True,
+    ),
+    test_gradients=st.just(False),
+)
+def test_lu(dtype_x, test_flags, backend_fw, fn_name, on_device):
+    dtype, x = dtype_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+    )
+
+
+@handle_test(
     fn_tree="functional.ivy.experimental.make_svd_non_negative",
     data=_make_svd_nn_data(),
     test_with_out=st.just(False),
@@ -1426,32 +1453,6 @@ def test_make_svd_non_negative(*, data, test_flags, backend_fw, fn_name, on_devi
         backend=backend_fw,
         ground_truth_backend=test_flags.ground_truth_backend,
     )
-@handle_test(
-    fn_tree="functional.ivy.experimental.lu",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=2,
-        max_dim_size=2,
-        min_value=-100,
-        max_value=100,
-        allow_nan=False,
-        shared_dtype=True,
-    ),
-    test_gradients=st.just(False),
-)
-def test_lu(dtype_x, test_flags, backend_fw, fn_name, on_device):
-    dtype, x = dtype_x
-    helpers.test_function(
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        on_device=on_device,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        x=x[0],
-    )
-
 
 
 # matrix_exp
