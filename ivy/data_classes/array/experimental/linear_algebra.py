@@ -110,7 +110,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
             out=out,
         )
 
-    def kron(
+    def lu(
             self: ivy.Array,
             /,
             *,
@@ -124,7 +124,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         --------
         >>> a = ivy.array([1,2])
         >>> b = ivy.array([3,4])
-        >>> a.diagflat(b)
+        >>> a.lu(b)
         ivy.array([3, 4, 6, 8])
         """
         return ivy.lu(self._data, out=out)

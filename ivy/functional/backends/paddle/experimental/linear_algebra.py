@@ -59,7 +59,7 @@ def kron(
     return paddle.kron(a, b)
 
 
-def matrix_exp(
+def lu(
         x: paddle.Tensor,
         /,
         *,
