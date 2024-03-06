@@ -279,19 +279,15 @@ def matrix_norm(
             axis=-1,
         )
     elif ord == 1:
-        if not keepdims and axis[0] < axis[1]:
-            axis1 = axis[1] - 1
         ret = paddle_backend.max(
             paddle_backend.sum(paddle_backend.abs(x), axis=axis[0], keepdims=True),
-            axis=axis1,
+            axis=axis[1],
             keepdims=keepdims,
         )
     elif ord == -1:
-        if not keepdims and axis[0] < axis[1]:
-            axis1 = axis[1] - 1
         ret = paddle_backend.min(
             paddle_backend.sum(paddle_backend.abs(x), axis=axis[0], keepdims=True),
-            axis=axis1,
+            axis=axis[1],
             keepdims=keepdims,
         )
     elif ord == 2:
@@ -307,19 +303,15 @@ def matrix_norm(
             axis=-1,
         )
     elif ord == float("inf"):
-        if not keepdims and axis[1] < axis[0]:
-            axis0 = axis[0] - 1
         ret = paddle_backend.max(
             paddle_backend.sum(paddle_backend.abs(x), axis=axis[1], keepdims=True),
-            axis=axis0,
+            axis=axis[0],
             keepdims=keepdims,
         )
     elif ord == float("-inf"):
-        if not keepdims and axis[1] < axis[0]:
-            axis0 = axis[0] - 1
         ret = paddle_backend.min(
             paddle_backend.sum(paddle_backend.abs(x), axis=axis[1], keepdims=True),
-            axis=axis0,
+            axis=axis[0],
             keepdims=keepdims,
         )
     else:
