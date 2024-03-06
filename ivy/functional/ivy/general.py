@@ -2802,7 +2802,9 @@ def get_item(
         query = ivy.nonzero(query, as_tuple=False)
         ret = ivy.gather_nd(x, query)
     else:
-        query, target_shape, vector_inds = _parse_query(query, x.shape)
+        query, target_shape, vector_inds = _parse_query(
+            query, ivy.shape(x, as_array=True)
+        )
         if vector_inds is not None:
             x = ivy.permute_dims(
                 x,
@@ -2888,7 +2890,9 @@ def set_item(
         target_shape = ivy.get_item(x, query).shape
         indices = ivy.nonzero(query, as_tuple=False)
     else:
-        indices, target_shape, _ = _parse_query(query, x.shape, scatter=True)
+        indices, target_shape, _ = _parse_query(
+            query, ivy.shape(x, as_array=True), scatter=True
+        )
         if indices is None:
             return x
     val = _broadcast_to(val, target_shape).astype(x.dtype)
