@@ -695,11 +695,11 @@ def trace(x, offset=0, axis1=0, axis2=1, name=None):
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
-def trunc(x, name=None):
-    return ivy.trunc(x)
+def trunc(input, name=None):
+    return ivy.trunc(input)
 
 
 mod = remainder
