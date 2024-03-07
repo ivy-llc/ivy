@@ -66,7 +66,7 @@ def test_elu(
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    method_num_positional_args=helpers.num_positional_args(fn_name="GEGLU._forward"),
+    method_num_positional_args=helpers.num_positional_args(method="GEGLU._forward"),
     test_gradients=st.just(True),
 )
 def test_geglu(
@@ -112,7 +112,7 @@ def test_geglu(
         safety_factor_scale="linear",
     ),
     approximate=st.booleans(),
-    method_num_positional_args=helpers.num_positional_args(fn_name="GELU._forward"),
+    method_num_positional_args=helpers.num_positional_args(method="GELU._forward"),
     test_gradients=st.just(True),
 )
 def test_gelu(
@@ -157,9 +157,7 @@ def test_gelu(
         safety_factor_scale="log",
         min_num_dims=2,
     ),
-    method_num_positional_args=helpers.num_positional_args(
-        fn_name="Hardswish._forward"
-    ),
+    method_num_positional_args=helpers.num_positional_args(method="Hardswish._forward"),
     test_gradients=st.just(True),
 )
 def test_hardswish(
@@ -204,9 +202,7 @@ def test_hardswish(
         safety_factor_scale="log",
     ),
     alpha=st.floats(min_value=-1e-4, max_value=1e-4),
-    method_num_positional_args=helpers.num_positional_args(
-        fn_name="LeakyReLU._forward"
-    ),
+    method_num_positional_args=helpers.num_positional_args(method="LeakyReLU._forward"),
     test_gradients=st.just(True),
 )
 def test_leaky_relu(
@@ -253,7 +249,7 @@ def test_leaky_relu(
     ),
     axis=helpers.ints(min_value=-1, max_value=0),
     method_num_positional_args=helpers.num_positional_args(
-        fn_name="LogSoftmax._forward"
+        method="LogSoftmax._forward"
     ),
     test_gradients=st.just(True),
 )
@@ -299,7 +295,7 @@ def test_log_softmax(
         safety_factor_scale="log",
         min_num_dims=2,
     ),
-    method_num_positional_args=helpers.num_positional_args(fn_name="Logit._forward"),
+    method_num_positional_args=helpers.num_positional_args(method="Logit._forward"),
     eps=helpers.floats(min_value=1e-4, max_value=1e-2),
     test_gradients=st.just(True),
 )
@@ -346,7 +342,7 @@ def test_logit(
         min_num_dims=2,
     ),
     method_num_positional_args=helpers.num_positional_args(
-        fn_name="LogSigmoid._forward"
+        method="LogSigmoid._forward"
     ),
     test_gradients=st.just(True),
 )
@@ -389,7 +385,7 @@ def test_logsigmoid(
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    method_num_positional_args=helpers.num_positional_args(fn_name="Mish._forward"),
+    method_num_positional_args=helpers.num_positional_args(method="Mish._forward"),
     test_gradients=st.just(True),
 )
 def test_mish(
@@ -435,7 +431,7 @@ def test_mish(
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    method_num_positional_args=helpers.num_positional_args(fn_name="PReLU._forward"),
+    method_num_positional_args=helpers.num_positional_args(method="PReLU._forward"),
     test_gradients=st.just(True),
 )
 def test_prelu(
@@ -477,7 +473,7 @@ def test_prelu(
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    method_num_positional_args=helpers.num_positional_args(fn_name="ReLU._forward"),
+    method_num_positional_args=helpers.num_positional_args(method="ReLU._forward"),
     test_gradients=st.just(True),
 )
 def test_relu(
@@ -521,7 +517,7 @@ def test_relu(
         safety_factor_scale="log",
         min_num_dims=2,
     ),
-    method_num_positional_args=helpers.num_positional_args(fn_name="ReLU6._forward"),
+    method_num_positional_args=helpers.num_positional_args(method="ReLU6._forward"),
     test_gradients=st.just(True),
 )
 def test_relu6(
@@ -565,7 +561,7 @@ def test_relu6(
         safety_factor_scale="log",
         min_num_dims=2,
     ),
-    method_num_positional_args=helpers.num_positional_args(fn_name="SeLU._forward"),
+    method_num_positional_args=helpers.num_positional_args(method="SeLU._forward"),
     test_gradients=st.just(True),
 )
 def test_selu(
@@ -609,7 +605,7 @@ def test_selu(
         safety_factor_scale="log",
         min_num_dims=2,
     ),
-    method_num_positional_args=helpers.num_positional_args(fn_name="Sigmoid._forward"),
+    method_num_positional_args=helpers.num_positional_args(method="Sigmoid._forward"),
     test_gradients=st.just(True),
 )
 def test_sigmoid(
@@ -651,7 +647,7 @@ def test_sigmoid(
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    method_num_positional_args=helpers.num_positional_args(fn_name="SiLU._forward"),
+    method_num_positional_args=helpers.num_positional_args(method="SiLU._forward"),
     test_gradients=st.just(True),
 )
 def test_silu(
@@ -695,7 +691,7 @@ def test_silu(
         safety_factor_scale="log",
     ),
     axis=helpers.ints(min_value=-1, max_value=0),
-    method_num_positional_args=helpers.num_positional_args(fn_name="Softmax._forward"),
+    method_num_positional_args=helpers.num_positional_args(method="Softmax._forward"),
     test_gradients=st.just(True),
 )
 def test_softmax(
@@ -741,7 +737,7 @@ def test_softmax(
     ),
     beta=st.one_of(helpers.number(min_value=0.1, max_value=10), st.none()),
     threshold=st.one_of(helpers.number(min_value=0.1, max_value=30), st.none()),
-    method_num_positional_args=helpers.num_positional_args(fn_name="Softplus._forward"),
+    method_num_positional_args=helpers.num_positional_args(method="Softplus._forward"),
     test_gradients=st.just(True),
 )
 def test_softplus(
@@ -787,7 +783,7 @@ def test_softplus(
         safety_factor_scale="log",
         min_num_dims=2,
     ),
-    method_num_positional_args=helpers.num_positional_args(fn_name="Tanh._forward"),
+    method_num_positional_args=helpers.num_positional_args(method="Tanh._forward"),
     test_gradients=st.just(True),
 )
 def test_tanh(
