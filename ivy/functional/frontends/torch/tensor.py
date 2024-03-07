@@ -569,36 +569,27 @@ class Tensor:
         )
 
     def to(self, *args, **kwargs):
-        if len(args) > 0:
-            if hasattr(args[0], "ivy_array") or ivy.is_array(args[0]):
-                if self.dtype == ivy.dtype(args[0]) and self.device == ivy.dev(args[0]):
-                    return self
-                else:
-                    cast_tensor = self.clone()
-                    cast_tensor.ivy_array = ivy.asarray(
-                        self.ivy_array,
-                        dtype=ivy.dtype(args[0]),
-                        device=ivy.dev(args[0]),
-                    )
-                    return cast_tensor
-            if (
-                isinstance(args[0], ivy.NativeDtype)
-                or isinstance(args[0], ivy.Dtype)
-                and hasattr(args[0], "as_native_dtype")
-                or args[0] in ivy._all_ivy_dtypes_str
+        device = None
+        dtype = None
+
+        # look for device and dtype in the args
+        for arg in args:
+            if hasattr(arg, "ivy_array") or ivy.is_array(arg):
+                device = ivy.dev(arg)
+                dtype = ivy.dtype(arg)
+            elif (
+                isinstance(arg, ivy.NativeDtype)
+                or isinstance(arg, ivy.Dtype)
+                and hasattr(arg, "as_native_dtype")
+                or arg in ivy._all_ivy_dtypes_str
             ):
-                if self.dtype == ivy.as_ivy_dtype(args[0]):
-                    return self
-                else:
-                    cast_tensor = self.clone()
-                    cast_tensor.ivy_array = ivy.asarray(self.ivy_array, dtype=args[0])
-                    return cast_tensor
-            if isinstance(args[0], (ivy.Device, ivy.NativeDevice, str)):
-                if isinstance(args[0], str) and not isinstance(
-                    args[0], (ivy.Device, ivy.NativeDevice)
+                dtype = arg
+            elif isinstance(arg, (ivy.Device, ivy.NativeDevice, str)):
+                if isinstance(arg, str) and not isinstance(
+                    arg, (ivy.Device, ivy.NativeDevice)
                 ):
                     ivy.utils.assertions.check_elem_in_list(
-                        args[0],
+                        arg,
                         [
                             "cpu",
                             "cuda",
@@ -619,28 +610,26 @@ class Tensor:
                             "hpu",
                         ],
                     )
-                if self.device == ivy.as_ivy_dev(args[0]):
-                    return self
-                else:
-                    cast_tensor = self.clone()
-                    cast_tensor.ivy_array = ivy.asarray(self.ivy_array, device=args[0])
-                    return cast_tensor
+                device = arg
+
+        # look for device and dtype in the kwargs
+        if "device" in kwargs:
+            device = kwargs["device"]
+        if "dtype" in kwargs:
+            dtype = kwargs["dtype"]
+
+        if (dtype is None or self.dtype == dtype) and (
+            device is None or self.device == ivy.as_ivy_dev(device)
+        ):
+            return self
         else:
-            if (
-                "dtype" in kwargs
-                and "device" in kwargs
-                and self.dtype == kwargs["dtype"]
-                and self.device == kwargs["device"]
-            ):
-                return self
-            else:
-                cast_tensor = self.clone()
-                cast_tensor.ivy_array = ivy.asarray(
-                    self.ivy_array,
-                    device=kwargs["device"] if "device" in kwargs else self.device,
-                    dtype=kwargs["dtype"] if "dtype" in kwargs else self.dtype,
-                )
-                return cast_tensor
+            cast_tensor = self.clone()
+            cast_tensor.ivy_array = ivy.asarray(
+                self.ivy_array,
+                dtype=dtype,
+                device=device,
+            )
+            return cast_tensor
 
     @with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
     def acos(self):
