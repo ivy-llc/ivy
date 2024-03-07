@@ -119,9 +119,7 @@ def nonzero(
     return res.T
 
 
-@with_supported_dtypes(
-    {"2.6.0 and below": ("int32", "int64", "float32", "float64")}, backend_version
-)
+@with_unsupported_dtypes({"2.6.0 and below": ("bfloat16", "float16")}, backend_version)
 def where(
     condition: paddle.Tensor,
     x1: Union[float, int, paddle.Tensor],
