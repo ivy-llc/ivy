@@ -661,9 +661,7 @@ def test_matmul(*, x, y, test_flags, backend_fw, fn_name, on_device):
         small_abs_safety_factor=1.5,
     ),
     kd=st.booleans(),
-    # ord=st.sampled_from((-2, -1, 1, 2, -float("inf"), float("inf"), "fro", "nuc")),
-    ord=st.sampled_from((-1, 1)),
-    # ord=st.sampled_from((-2, 2, "fro", "nuc")),
+    ord=st.sampled_from((-2, -1, 1, 2, -float("inf"), float("inf"), "fro", "nuc")),
     dtypes=helpers.get_dtypes("float", none=True, full=False),
 )
 def test_matrix_norm(
