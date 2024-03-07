@@ -2581,7 +2581,7 @@ def get_ret_and_flattened_np_array(
         with ivy_backend.PreciseMode(precision_mode):
             ret = fn(*args, **kwargs)
             if test_trace or test_trace_each:
-                ret = ivy.to_ivy(ret, True)
+                ret = ivy_backend.to_ivy(ret, True)
 
         def map_fn(x):
             if _is_frontend_array(x):
