@@ -5,7 +5,7 @@ from get_all_tests import BACKENDS
 
 def main(cron=False):
     # connect to the database
-    run_id = sys.argv[1] - 1
+    run_id = int(sys.argv[1]) - 1
     cluster = MongoClient(
         "mongodb+srv://readonly-user:hvpwV5yVeZdgyTTm@cluster0.qdvf8q3.mongodb.net"
     )
