@@ -36,8 +36,8 @@ def min(
 ) -> paddle.Tensor:
     ret_dtype = x.dtype
     if paddle.is_complex(x):
-        real = paddle.min(x.real(), axis=axis, keepdim=keepdims)
-        imag = paddle.min(x.imag(), axis=axis, keepdim=keepdims)
+        real = paddle.amin(x.real(), axis=axis, keepdim=keepdims)
+        imag = paddle.amin(x.imag(), axis=axis, keepdim=keepdims)
         ret = paddle.complex(real, imag)
     else:
         if where is not None:
@@ -52,7 +52,7 @@ def min(
             val = paddle.ones_like(x) * max_val
             val = val.astype(ret_dtype)
             x = paddle.where(where, x, val)
-        ret = paddle.min(x, axis=axis, keepdim=keepdims)
+        ret = paddle.amin(x, axis=axis, keepdim=keepdims)
     # The following code is to simulate other frameworks
     # output shapes behaviour since min output dim is 1 in paddle
     if isinstance(axis, Sequence):
@@ -81,18 +81,18 @@ def max(
     ret_dtype = x.dtype
     if paddle.is_complex(x):
         const = paddle.to_tensor(1j, dtype=x.dtype)
-        real_max = paddle.max(x.real(), axis=axis, keepdim=keepdims)
+        real_max = paddle.amax(x.real(), axis=axis, keepdim=keepdims)
         imag = paddle.where(
             x.real() == real_max, x.imag(), paddle.full_like(x.imag(), -1e10)
         )
         # we consider the number with the biggest real and imag part
-        img_max = paddle.max(imag, axis=axis, keepdim=keepdims)
+        img_max = paddle.amax(imag, axis=axis, keepdim=keepdims)
         img_max = paddle.cast(img_max, x.dtype)
         return paddle.add(
             paddle.cast(real_max, x.dtype), paddle.multiply(img_max, const)
         )
     else:
-        ret = paddle.max(x, axis=axis, keepdim=keepdims)
+        ret = paddle.amax(x, axis=axis, keepdim=keepdims)
 
     # The following code is to simulate other frameworks
     # output shapes behaviour since min output dim is 1 in paddle
