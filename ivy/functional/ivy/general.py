@@ -1004,31 +1004,32 @@ def clip_vector_norm(
     >>> x = ivy.array([0., 1., 2.])
     >>> y = ivy.clip_vector_norm(x, 2.0)
     >>> print(y)
-    ivy.array([0.   , 0.894, 1.79 ])
+    ivy.array([0.        , 0.89442718, 1.78885436])
 
     >>> x = ivy.array([0.5, -0.7, 2.4])
     >>> y = ivy.clip_vector_norm(x, 3.0, p=1.0)
     >>> print(y)
-    ivy.array([ 0.417, -0.583,  2.   ])
+    ivy.array([ 0.41666666, -0.58333331,  2.        ])
 
     >>> x = ivy.array([[[0., 0.], [1., 3.], [2., 6.]],
     ...                [[3., 9.], [4., 12.], [5., 15.]]])
     >>> y = ivy.zeros(((2, 3, 2)))
     >>> ivy.clip_vector_norm(x, 4.0, p=1.0, out=y)
     >>> print(y)
-    ivy.array([[[0.    , 0.    ],
-                [0.0667, 0.2   ],
-                [0.133 , 0.4   ]],
-               [[0.2   , 0.6   ],
-                [0.267 , 0.8   ],
-                [0.333 , 1.    ]]])
+    ivy.array([[[0.        , 0.        ],
+        [0.06666667, 0.20000002],
+        [0.13333334, 0.40000004]],
+
+       [[0.20000002, 0.60000002],
+        [0.26666668, 0.80000007],
+        [0.33333334, 1.        ]]]))
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],
     ...                [-4.4, -5.5, -6.6]])
     >>> ivy.clip_vector_norm(x, 1.0, p=3.0, out=x)
     >>> print(x)
-    ivy.array([[ 0.131,  0.263,  0.394],
-               [-0.526, -0.657, -0.788]])
+    ivy.array([[ 0.13137734,  0.26275468,  0.39413199],
+       [-0.52550936, -0.6568867 , -0.78826398]])
 
     With :class:`ivy.Container` input:
 
@@ -1037,8 +1038,8 @@ def clip_vector_norm(
     >>> y = ivy.clip_vector_norm(x, 2.0)
     >>> print(y)
     {
-        a: ivy.array([0., 0.894, 1.79]),
-        b: ivy.array([0.849, 1.13, 1.41])
+        a: ivy.array([0., 0.89442718, 1.78885436]),
+        b: ivy.array([0.84852815, 1.1313709, 1.41421366])
     }
 
     With multiple :class:`ivy.Container` inputs:
@@ -1049,7 +1050,7 @@ def clip_vector_norm(
     >>> y = ivy.clip_vector_norm(x, max_norm)
     >>> print(y)
     {
-        a: ivy.array([0., 0.894, 1.79]),
+        a: ivy.array([0., 0.89442718, 1.78885436]),
         b: ivy.array([1.27279221, 1.69705628, 2.12132034])
     }
     """
@@ -2938,6 +2939,10 @@ def _parse_query(query, x_shape, scatter=False):
             *[v for i, v in enumerate(query) if i in array_inds]
         )
         array_queries = [
+            ivy.nonzero(q, as_tuple=False)[0] if ivy.is_bool_dtype(q) else q
+            for q in array_queries
+        ]
+        array_queries = [
             (
                 ivy.where(arr < 0, arr + x_shape[i], arr).astype(ivy.int64)
                 if arr.size
@@ -3123,7 +3128,7 @@ def _parse_slice(idx, s):
                     stop = 0
                 elif stop < 0:
                     stop = stop + s
-    q_i = ivy.arange(start, stop, step).to_list()
+    q_i = ivy.arange(start, stop, step)
     q_i = [q for q in q_i if 0 <= q < s]
     q_i = (
         ivy.array(q_i)
@@ -4041,6 +4046,51 @@ def get_num_dims(
     }
     """
     return current_backend(x).get_num_dims(x, as_array=as_array)
+
+
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device
+def size(x: Union[ivy.Array, ivy.NativeArray]) -> int:
+    """Return the number of elements of the array x.
+
+    Parameters
+    ----------
+    x
+        Input array to infer the number of elements for.
+
+    Returns
+    -------
+    ret
+        Number of elements of the array
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> a = ivy.array([[[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+    ...                    [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+    ...                    [[0, 0, 0], [0, 0, 0], [0, 0, 0]]])
+    >>> b = ivy.size(a)
+    >>> print(b)
+    27
+
+    With :class:`ivy.Container` input:
+
+    >>> a = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
+    >>> print(ivy.size(a))
+    {
+        b: 9
+    }
+    """
+    return current_backend(x).size(x)
 
 
 @handle_exceptions

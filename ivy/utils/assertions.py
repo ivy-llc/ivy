@@ -348,6 +348,7 @@ def _check_jax_x64_flag(dtype):
         ivy.backend == "jax"
         and not ivy.functional.backends.jax.jax.config.jax_enable_x64
     ):
+
         ivy.utils.assertions.check_elem_in_list(
             dtype,
             ["float64", "int64", "uint64", "complex128"],

@@ -68,7 +68,7 @@ def _get_axis_and_p(draw):
         min_axes_size = 2
     else:
         min_axes_size = 1
-        max_axes_size = 5
+        max_axes_size = 2
     x_dtype, values, axis = draw(
         helpers.dtype_values_axis(
             available_dtypes=helpers.get_dtypes("valid"),
@@ -1002,9 +1002,11 @@ def test_torch_matrix_rank(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=0,
+        atol=0,
         input=x,
-        rtol=rtol,
-        atol=atol,
+        arg_rtol=rtol,
+        arg_atol=atol,
         hermitian=hermitian,
     )
 

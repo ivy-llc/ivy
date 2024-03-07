@@ -635,14 +635,14 @@ class Model(tf.keras.Model, ModelHelpers):
                 # Don't use `keras` build method
                 if os.environ.get("USE_KERAS_BUILD", "False").lower() == "false":
                     self.inputs = tf.nest.flatten(args)
+                else:
+                    input_shapes = self._get_input_shapes(*args)
+                    if len(input_shapes) == 0:
+                        input_shapes = tf.TensorShape(None)
+                    elif len(input_shapes) == 1:
+                        input_shapes = input_shapes[0]
 
-                input_shapes = self._get_input_shapes(*args)
-                if len(input_shapes) == 0:
-                    input_shapes = tf.TensorShape(None)
-                elif len(input_shapes) == 1:
-                    input_shapes = input_shapes[0]
-
-                super(Model, self).build(input_shapes)  # noqa: UP008
+                super(Model, self).build(tf.TensorShape(None))  # noqa: UP008
 
         # If `v` was provided, replace with the module's v
         replace_v = False
