@@ -2971,7 +2971,7 @@ def _parse_query(query, x_shape, scatter=False):
     elif len(array_inds):
         target_shape = (
             [list(query[i].shape) for i in range(0, array_inds[0])]
-            + [list(array_queries[0].shape)]
+            + [list(ivy.shape(array_queries[0], as_array=True))]
             + [[] for _ in range(len(array_inds) - 1)]
             + [list(query[i].shape) for i in range(array_inds[-1] + 1, len(query))]
         )
@@ -3154,11 +3154,10 @@ def _numel(shape):
 
 def _broadcast_to(input, target_shape):
     if _numel(tuple(input.shape)) == _numel(tuple(target_shape)):
-        ret = ivy.reshape(input, target_shape) if input.shape != target_shape else input
+        return ivy.reshape(input, target_shape)
     else:
         input = input if len(input.shape) else ivy.expand_dims(input, axis=0)
-        ret = ivy.broadcast_to(input, target_shape)
-    return ivy.to_native(ret)
+        return ivy.broadcast_to(input, target_shape)
 
 
 @handle_exceptions

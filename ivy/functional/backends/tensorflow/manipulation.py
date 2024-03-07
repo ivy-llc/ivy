@@ -62,7 +62,7 @@ def expand_dims(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     try:
-        out_shape = _calculate_out_shape(axis, x.shape)
+        out_shape = _calculate_out_shape(axis, tf.shape(x))
         ret = tf.reshape(x, shape=out_shape)
         return ret
     except (tf.errors.InvalidArgumentError, np.AxisError) as error:

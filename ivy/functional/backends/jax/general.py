@@ -95,7 +95,7 @@ def set_item(
         query = _mask_to_index(query, x)
     expected_shape = x[query].shape
     if ivy.is_array(val):
-        val = _broadcast_to(val, expected_shape)
+        val = _broadcast_to(val, expected_shape)._data
     ret = x.at[query].set(val)
     if copy:
         return ret
@@ -382,7 +382,7 @@ def scatter_nd(
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     if not target_given:
         target = jnp.zeros(shape, dtype=updates.dtype)
-    updates = _broadcast_to(updates, target[indices_tuple].shape)
+    updates = _broadcast_to(updates, target[indices_tuple].shape)._data
     if reduction == "sum":
         target = target.at[indices_tuple].add(updates)
     elif reduction == "replace":
