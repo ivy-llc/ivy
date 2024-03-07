@@ -304,58 +304,22 @@ class Shape(Sequence):
         return self
 
     def __bool__(self):
+        if ivy.current_backend_str() == "tensorflow":
+            return builtins.bool(builtins.tuple(self._shape))
         return builtins.bool(self._shape)
-
-    def __div__(self, other):
-        return self._shape // other
-
-    def __floordiv__(self, other):
-        return self._shape // other
-
-    def __mod__(self, other):
-        return self._shape % other
-
-    def __rdiv__(self, other):
-        return other // self._shape
-
-    def __rmod__(self, other):
-        return other % self._shape
 
     def __reduce__(self):
         return (self.__class__, (self._shape,))
 
     def as_dimension(self, other):
         if isinstance(other, self._shape):
-            return other
+            return to_ivy(other)
         else:
             return self._shape
-
-    def __sub__(self, other):
-        try:
-            self._shape = self._shape - other
-        except TypeError:
-            self._shape = self._shape - list(other)
-        return self
-
-    def __rsub__(self, other):
-        try:
-            self._shape = other - self._shape
-        except TypeError:
-            self._shape = list(other) - self._shape
-        return self
 
     def __eq__(self, other):
         self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape == other
-
-    def __int__(self):
-        if hasattr(self._shape, "__int__"):
-            res = self._shape.__int__()
-        else:
-            res = int(self._shape)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
 
     def __ge__(self, other):
         self._shape = Shape._shape_casting_helper(self._shape, other)
@@ -378,7 +342,7 @@ class Shape(Sequence):
 
     def __getitem__(self, key):
         try:
-            return self._shape[key]
+            return to_ivy(self._shape[key])
         except (TypeError, IndexError):
             return None
 
@@ -416,11 +380,11 @@ class Shape(Sequence):
         if self._shape.rank is None:
             return Shape(None)
         else:
-            return self._shape[index]
+            return to_ivy(self._shape[index])
 
     def as_dimension(self):
         if isinstance(self._shape, Shape):
-            return self._shape
+            return to_ivy(self._shape)
         else:
             return Shape(self._shape)
 
