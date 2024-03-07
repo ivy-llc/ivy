@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from get_all_tests import BACKENDS
 
 
-def main():
+def main(cron=False):
     # connect to the database
     run_id = sys.argv[1] - 1
     cluster = MongoClient(
@@ -47,19 +47,25 @@ def main():
     for i, test_path in enumerate(test_paths):
         for backend in BACKENDS:
             test_names.append(f"{test_path},{backend}")
-    tests_per_run = 10
-    num_tests = len(test_names)
-    start = run_id * tests_per_run
-    end = (run_id + 1) * tests_per_run
 
-    # add those paths to the tests_to_run based on the runner
-    print("Running Tests:")
-    with open("tests_to_run", "w") as write_file:
-        for i in range(start, end):
-            i = i % num_tests
-            test = test_names[i].strip()
-            print(test)
-            write_file.write(test + "\n")
+    if cron:
+        with open("tests_to_run", "w") as write_file:
+            for test_name in test_names:
+                test_name = test_name.strip()
+                write_file.write(test_name + "\n")
+    else:
+        # add those paths to the tests_to_run based on the runner
+        tests_per_run = 10
+        num_tests = len(test_names)
+        start = run_id * tests_per_run
+        end = (run_id + 1) * tests_per_run
+        print("Running Tests:")
+        with open("tests_to_run", "w") as write_file:
+            for i in range(start, end):
+                i = i % num_tests
+                test = test_names[i].strip()
+                print(test)
+                write_file.write(test + "\n")
 
 
 if __name__ == "__main__":
