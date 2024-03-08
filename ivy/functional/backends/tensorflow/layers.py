@@ -410,7 +410,9 @@ def conv3d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("bfloat16", "complex", "integer")}, backend_version
+)
 def conv_general_dilated(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],

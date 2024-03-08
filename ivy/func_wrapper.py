@@ -137,11 +137,12 @@ def cross_caster(intersect):
     dtype = ""
     valid_float = sorted(ivy.valid_float_dtypes)
     valid_int = sorted(ivy.valid_int_dtypes)
+    valid_bool = [ivy.bool]
     intersect = sorted(intersect)
     if set(valid_int).issubset(intersect):
         # make dtype equal to default float
         dtype = ivy.default_float_dtype()
-    elif set(valid_float).issubset(intersect):
+    elif set(valid_float).issubset(intersect) or set(valid_bool).issubset(intersect):
         # make dtype equal to default int
         dtype = ivy.default_int_dtype()
 

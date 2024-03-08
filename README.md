@@ -1150,8 +1150,7 @@ class IvyNet(ivy.Module):
         self.output_channels = output_channels
         self.num_classes = num_classes
         self.data_format = data_format
-        self.device = device
-        super().__init__()
+        super().__init__(device=device)
 
     def _build(self, *args, **kwargs):
         self.extractor = ivy.Sequential(
