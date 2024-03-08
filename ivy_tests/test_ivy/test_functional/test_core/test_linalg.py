@@ -668,9 +668,9 @@ def test_matrix_norm(
     if dtypes is not None:
         # torch backend does not allow down-casting.
         if input_dtype[0] == "complex128":
-            dtypes[0] = input_dtype[0]
+            dtypes = input_dtype[0]
         else:
-            dtypes[0] = input_dtype[0][0:-2] + max([input_dtype[0][-2:], dtypes[0]])
+            dtypes = input_dtype[0][0:-2] + max([input_dtype[0][-2:], dtypes])
 
     assume(matrix_is_stable(x[0], cond_limit=10))
     helpers.test_function(
@@ -684,7 +684,7 @@ def test_matrix_norm(
         x=x[0],
         axis=axis,
         keepdims=kd,
-        dtype=dtypes[0],
+        dtype=dtypes,
         ord=ord,
     )
 
