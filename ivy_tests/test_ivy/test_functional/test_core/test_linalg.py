@@ -659,7 +659,7 @@ def test_matmul(*, x, y, test_flags, backend_fw, fn_name, on_device):
     ),
     kd=st.booleans(),
     ord=st.sampled_from((-2, -1, 1, 2, -float("inf"), float("inf"), "fro", "nuc")),
-    dtypes=st.sample_from((None, "16", "32", "64")),
+    dtypes=st.sampled_from((None, "16", "32", "64")),
 )
 def test_matrix_norm(
     *, dtype_value_axis, kd, ord, dtypes, test_flags, backend_fw, fn_name, on_device
