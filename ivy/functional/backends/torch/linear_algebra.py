@@ -209,8 +209,7 @@ def matrix_norm(
     # ivy forces out to be the same type as the input
     # but it has to be the same type as ret.
     if (
-        "complex" in ivy.as_native_dtype(dtype)
-        or "complex" in ivy.as_native_dtype(x.dtype)
+        "complex" in ivy.as_ivy_dtype(dtype) or "complex" in ivy.as_ivy_dtype(x.dtype)
     ) and ivy.exists(out):
         out = ivy.astype(out, "float64").to_native()
     ret = torch.linalg.matrix_norm(
