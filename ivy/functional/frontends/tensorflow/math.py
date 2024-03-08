@@ -621,6 +621,7 @@ def logical_xor(x, y, name="LogicalXor"):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, "tensorflow")
 def maximum(x, y, name=None):
     return ivy.maximum(x, y)
 

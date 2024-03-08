@@ -294,9 +294,10 @@ def pad(
     **kwargs: Optional[Any],
 ) -> Union[tf.Tensor, tf.Variable]:
     pad_width = _to_tf_padding(pad_width, len(input.shape))
-    if isinstance(constant_values, (tf.Variable, tf.Tensor)):
-        if constant_values.dtype != input.dtype:
-            constant_values = tf.cast(constant_values, input.dtype)
+    if not isinstance(constant_values, (tf.Variable, tf.Tensor)):
+        constant_values = tf.constant(constant_values)
+    if constant_values.dtype != input.dtype:
+        constant_values = tf.cast(constant_values, input.dtype)
     return tf.pad(
         input,
         pad_width,
@@ -578,6 +579,14 @@ def unflatten(
     name: Optional[str] = None,
 ) -> tf.Tensor:
     dim = abs(len(x.shape) + dim) if dim < 0 else dim
+
+    # infer the size of any dimensions that are -1
+    tf_shape = tf.constant(shape)
+    inferred_size = tf.reduce_prod(tf.shape(x)[dim]) // tf.reduce_prod(
+        tf.where(tf_shape != -1, x=shape, y=tf.constant(1))
+    )
+    shape = tf.where(tf_shape != -1, x=shape, y=inferred_size)
+
     res_shape = x.shape[:dim] + tf.TensorShape(shape) + x.shape[dim + 1 :]
     res = tf.reshape(x, res_shape, name)
     return res

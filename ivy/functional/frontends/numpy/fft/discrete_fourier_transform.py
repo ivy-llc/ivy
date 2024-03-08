@@ -1,6 +1,6 @@
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 
 
 _SWAP_DIRECTION_MAP = {
@@ -51,6 +51,38 @@ def fftfreq(n, d=1.0):
     results[N:] = p2
 
     return results * val
+
+
+@with_supported_dtypes(
+    {"1.26.0 and below": ("float32", "float64", "complex64", "complex128")},
+    "numpy",
+)
+@to_ivy_arrays_and_back
+def fftn(a, s=None, axes=None, norm=None):
+    invreal = 0
+    if norm is None:
+        norm = "backward"
+    if s is None:
+        shapeless = 1
+        if axes is None:
+            s = list(a.shape)
+        else:
+            axes = [ax % len(a.shape) for ax in axes]
+            s = ivy.gather(a.shape, ivy.array(axes, dtype="int64"))
+    else:
+        shapeless = 0
+    s = list(s)
+    if axes is None:
+        axes = list(range(-len(s), 0))
+    if len(s) != len(axes):
+        raise ValueError("Shape and axes have different lengths.")
+    if invreal and shapeless:
+        s[-1] = (a.shape[axes[-1]] - 1) * 2
+    itl = list(range(len(axes)))
+    itl.reverse()
+    for ii in itl:
+        a = ivy.fft(a, axes[ii], norm=norm, n=int(s[ii]))
+    return ivy.astype(a, ivy.complex128)
 
 
 @to_ivy_arrays_and_back

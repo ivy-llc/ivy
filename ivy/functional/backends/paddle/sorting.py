@@ -74,7 +74,11 @@ def searchsorted(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.6.0 and below": {"cpu": ("int8", "uint8", "int16", "float16", "complex")}},
+    {
+        "2.6.0 and below": {
+            "cpu": ("int8", "uint8", "int16", "float16", "bfloat16", "complex")
+        }
+    },
     backend_version,
 )
 def msort(

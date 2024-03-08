@@ -174,6 +174,10 @@ def get_num_dims(x, /, *, as_array=False):
     return np.asarray(len(np.shape(x))) if as_array else len(x.shape)
 
 
+def size(x, /) -> int:
+    return x.size
+
+
 def inplace_arrays_supported():
     return True
 
