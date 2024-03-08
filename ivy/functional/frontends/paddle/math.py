@@ -140,7 +140,19 @@ def ceil(x, name=None):
     return ivy.ceil(x)
 
 
-@with_unsupported_dtypes({"2.4.2 and below": ("int16", "float16")}, "paddle")
+@with_supported_dtypes(
+    {
+        "2.6.0 and below": (
+            "complex64",
+            "complex128",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        )
+    },
+    "paddle",
+)
 @to_ivy_arrays_and_back
 def conj(x, name=None):
     return ivy.conj(x)
