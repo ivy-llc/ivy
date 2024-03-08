@@ -281,24 +281,24 @@ def matrix_norm(
     elif ord == 1:
         ret = paddle.amax(
             paddle_backend.sum(paddle.abs(x), axis=axis[0], keepdims=True),
-            axis=axis,
+            axis=[axis[1], axis[0]],
             keepdim=keepdims,
         )
     elif ord == -1:
         ret = paddle.amin(
             paddle_backend.sum(paddle.abs(x), axis=axis[0], keepdims=True),
-            axis=axis,
+            axis=[axis[1], axis[0]],
             keepdim=keepdims,
         )
     elif ord == 2:
         x = paddle.moveaxis(x, axis_, [-2, -1])
-        ret = paddle.max(
+        ret = paddle.amax(
             paddle_backend.svd(x)[1],
             axis=-1,
         )
     elif ord == -2:
         x = paddle.moveaxis(x, axis_, [-2, -1])
-        ret = paddle.min(
+        ret = paddle.amin(
             paddle_backend.svd(x)[1],
             axis=-1,
         )
