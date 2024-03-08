@@ -643,10 +643,10 @@ def test_matmul(*, x, y, test_flags, backend_fw, fn_name, on_device):
 
 # matrix_norm
 @handle_test(
-    ground_truth_backend="torch",
+    ground_truth_backend="tensorflow",
     fn_tree="functional.ivy.matrix_norm",
     dtype_value_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
         valid_axis=True,
         min_axes_size=2,
@@ -656,9 +656,6 @@ def test_matmul(*, x, y, test_flags, backend_fw, fn_name, on_device):
         abs_smallest_val=1e-4,
         force_tuple_axis=True,
         allow_neg_axes=False,
-        safety_factor_scale="log",
-        large_abs_safety_factor=1.5,
-        small_abs_safety_factor=1.5,
     ),
     kd=st.booleans(),
     ord=st.sampled_from((-2, -1, 1, 2, -float("inf"), float("inf"), "fro", "nuc")),
@@ -669,9 +666,13 @@ def test_matrix_norm(
 ):
     input_dtype, x, axis = dtype_value_axis
     if dtypes[0] is not None:
-        dtypes[0] = input_dtype[0][0:-2] + max([input_dtype[0][-2:], dtypes[0][-2:]])
-
-    test_flags.test_gradients = True
+        # torch backend does not allow down-casting.
+        if input_dtype[0] == "complex128":
+            dtypes[0] = "complex128"
+        else:
+            dtypes[0] = input_dtype[0][0:-2] + max(
+                [input_dtype[0][-2:], dtypes[0][-2:]]
+            )
 
     assume(matrix_is_stable(x[0], cond_limit=10))
     helpers.test_function(

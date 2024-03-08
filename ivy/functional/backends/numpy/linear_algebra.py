@@ -155,10 +155,7 @@ def matrix_norm(
         x = ivy.astype(x, dtype).to_native()
     if not isinstance(axis, tuple):
         axis = tuple(axis)
-    ret = np.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
-    if ivy.exists(out):
-        ivy.inplace_update(out, ret)
-    return ret
+    return np.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
 
 def matrix_power(

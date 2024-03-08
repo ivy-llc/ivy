@@ -202,10 +202,7 @@ def matrix_norm(
     else:
         if not isinstance(axis, tuple):
             axis = (axis,)
-    ret = jnp.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
-    if ivy.exists(out):
-        ivy.inplace_update(out, ret)
-    return ret
+    return jnp.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
 
 @with_unsupported_dtypes({"0.4.24 and below": ("complex",)}, backend_version)
