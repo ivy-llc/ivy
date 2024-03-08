@@ -646,7 +646,7 @@ def test_matmul(*, x, y, test_flags, backend_fw, fn_name, on_device):
     ground_truth_backend="torch",
     fn_tree="functional.ivy.matrix_norm",
     dtype_value_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
         valid_axis=True,
         min_axes_size=2,
@@ -667,12 +667,8 @@ def test_matrix_norm(
     input_dtype, x, axis = dtype_value_axis
     if dtypes[0] is not None:
         # torch backend does not allow down-casting.
-        if input_dtype[0] == "complex128":
-            dtypes[0] = "complex128"
-        else:
-            dtypes[0] = input_dtype[0][0:-2] + max(
-                [input_dtype[0][-2:], dtypes[0][-2:]]
-            )
+
+        dtypes[0] = input_dtype[0][0:-2] + max([input_dtype[0][-2:], dtypes[0][-2:]])
 
     assume(matrix_is_stable(x[0], cond_limit=10))
     helpers.test_function(
