@@ -314,7 +314,7 @@ def _train_tasks_batched(
     --------
     >>> # Example usage here
     >>> pass
-    """
+    """  # noqa: E501 (Line too long)
     inner_batch = batch
     outer_batch = batch
     if inner_batch_fn is not None:

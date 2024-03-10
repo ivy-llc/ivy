@@ -118,7 +118,7 @@ def test_torch_adaptive_avg_pool2d(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.adaptive_max_pool2d",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=3,
         max_num_dims=4,
         min_dim_size=5,

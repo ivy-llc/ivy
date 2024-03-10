@@ -2,7 +2,9 @@
 signature."""
 
 # global
+import functools
 from numbers import Number
+from operator import mul
 from typing import Optional, Union, Sequence, Callable, List, Tuple
 import paddle
 import numpy as np
@@ -362,6 +364,10 @@ def get_num_dims(
     x: paddle.Tensor, /, *, as_array: bool = False
 ) -> Union[paddle.Tensor, int]:
     return paddle.to_tensor(x.ndim).squeeze() if as_array else x.ndim
+
+
+def size(x: paddle.Tensor, /) -> int:
+    return functools.reduce(mul, x.shape) if len(x.shape) > 0 else 1
 
 
 def inplace_arrays_supported():

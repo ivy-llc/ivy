@@ -202,8 +202,8 @@ After installing Ivy, you can start using it straight away, for example:
        b = jax.numpy.mean(x)
        return x * a + b
 
-   jax_x = jax.numpy.array([1, 2, 3])
-   torch_x = torch.tensor([1, 2, 3])
+   jax_x = jax.numpy.array([1., 2., 3.])
+   torch_x = torch.tensor([1., 2., 3.])
    torch_fn = ivy.transpile(jax_fn, source="jax", to="torch", args=(jax_x,))
    ret = torch_fn(torch_x)
    ```
@@ -1150,8 +1150,7 @@ class IvyNet(ivy.Module):
         self.output_channels = output_channels
         self.num_classes = num_classes
         self.data_format = data_format
-        self.device = device
-        super().__init__()
+        super().__init__(device=device)
 
     def _build(self, *args, **kwargs):
         self.extractor = ivy.Sequential(
