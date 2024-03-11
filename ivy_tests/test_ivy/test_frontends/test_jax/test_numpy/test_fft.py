@@ -4,6 +4,9 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
+    _x_and_ifft,
+)
 
 
 # fft
@@ -239,6 +242,31 @@ def test_jax_numpy_ifft2(
         norm=norm,
         atol=1e-02,
         rtol=1e-02,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.fft.ifftn",
+    dtype_and_x=_x_and_ifft(),
+)
+def test_jax_numpy_ifftn(
+    dtype_and_x, backend_fw, frontend, test_flags, fn_tree, on_device
+):
+    input_dtype, x, dim, norm, n = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        atol=1e-02,
+        rtol=1e-02,
+        a=x,
+        s=None,
+        axes=None,
+        norm=norm,
     )
 
 
