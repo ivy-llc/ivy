@@ -479,10 +479,12 @@ def test_torch_max_pool1d(
     ),
     test_with_out=st.just(False),
     ceil_mode=st.booleans(),
+    return_indices=st.booleans(),
 )
 def test_torch_max_pool2d(
     x_k_s_p,
     ceil_mode,
+    return_indices,
     *,
     test_flags,
     frontend,
@@ -506,6 +508,7 @@ def test_torch_max_pool2d(
         padding=padding,
         dilation=dilation,
         ceil_mode=ceil_mode,
+        return_indices=return_indices,
     )
 
 
