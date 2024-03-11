@@ -293,13 +293,13 @@ def matrix_norm(
     elif ord == 2:
         x = paddle.moveaxis(x, axis_, [-2, -1])
         ret = paddle.amax(
-            paddle.svd(x)[1],
+            paddle.linalg.svd(x)[1],
             axis=-1,
         )
     elif ord == -2:
         x = paddle.moveaxis(x, axis_, [-2, -1])
         ret = paddle.amin(
-            paddle.svd(x)[1],
+            paddle.linalg.svd(x)[1],
             axis=-1,
         )
     elif ord == float("inf"):
