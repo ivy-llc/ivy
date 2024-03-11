@@ -841,7 +841,6 @@ def test_paddle_diagonal(
     dtype_n_x_n_axis=helpers.dtype_values_axis(
         available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
         min_num_dims=1,
-        max_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
     ),
@@ -870,10 +869,8 @@ def test_paddle_diff(
     on_device,
 ):
     input_dtype, x, axis = dtype_n_x_n_axis
-    _, prepend_values = dtype_prepend
-    _, append_values = dtype_append
-    prepend = np.asarray(prepend_values[0], dtype=input_dtype[0])
-    append = np.asarray(append_values[0], dtype=input_dtype[0])
+    _, prepend = dtype_prepend
+    _, append = dtype_append
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -884,8 +881,8 @@ def test_paddle_diff(
         x=x[0],
         n=n,
         axis=axis,
-        prepend=prepend,
-        append=append,
+        prepend=prepend[0],
+        append=append[0],
     )
 
 
