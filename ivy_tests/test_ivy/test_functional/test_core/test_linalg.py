@@ -665,6 +665,7 @@ def test_matrix_norm(
     *, dtype_value_axis, kd, ord, dtypes, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, x, axis = dtype_value_axis
+    test_flags.test_gradients = True
     if dtypes is not None:
         # torch backend does not allow down-casting.
         if input_dtype[0] == "complex128":
