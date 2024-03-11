@@ -291,14 +291,16 @@ def matrix_norm(
             keepdims=keepdims,
         )
     elif ord == 2:
+        x = paddle.moveaxis(x, axis_, [-2, -1])
         ret = paddle_backend.max(
             paddle_backend.svd(x)[1],
-            axis=axis,
+            axis=-1,
         )
     elif ord == -2:
+        x = paddle.moveaxis(x, axis_, [-2, -1])
         ret = paddle_backend.min(
             paddle_backend.svd(x)[1],
-            axis=axis,
+            axis=-1,
         )
     elif ord == float("inf"):
         ret = paddle_backend.max(
