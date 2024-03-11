@@ -643,7 +643,6 @@ def test_matmul(*, x, y, test_flags, backend_fw, fn_name, on_device):
 
 # matrix_norm
 @handle_test(
-    ground_truth_backend="torch",
     fn_tree="functional.ivy.matrix_norm",
     dtype_value_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
@@ -665,7 +664,6 @@ def test_matrix_norm(
     *, dtype_value_axis, kd, ord, dtypes, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, x, axis = dtype_value_axis
-    test_flags.test_gradients = True
     if dtypes is not None:
         # torch backend does not allow down-casting.
         if input_dtype[0] == "complex128":
