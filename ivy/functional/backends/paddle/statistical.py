@@ -35,6 +35,8 @@ def min(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ret_dtype = x.dtype
+    if axis is not Sequence:
+        axis = [axis]
     if paddle.is_complex(x):
         real = (
             paddle.amin(x.real(), axis=axis, keepdim=keepdims)
