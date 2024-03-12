@@ -227,7 +227,6 @@ def paddle_unfold_handler(draw, dtype):
         st.floats(),
         st.floats(),
     ),
-    dtype_x1_x2_weight_bias=get_supported_dtypes(),
 )
 def test_bilinear(
     *,
