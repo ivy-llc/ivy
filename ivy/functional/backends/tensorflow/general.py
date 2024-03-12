@@ -56,6 +56,8 @@ def get_item(
     *,
     copy: Optional[bool] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if ivy.is_array(query) and ivy.is_bool_dtype(query) and not len(query.shape):
+        return tf.expand_dims(x, 0)
     return x[query]
 
 
