@@ -57,6 +57,25 @@ RUN apt-get update && \
     pip3 install setuptools==58.5.3
 
 
+# install cuda 12.2
+RUN wget https://developer.download.nvidia.com/compute/cuda/12.2.0/local_installers/cuda-repo-debian10-12-2-local_12.2.0-535.54.03-1_amd64.deb && \
+    dpkg -i cuda-repo-debian10-12-2-local_12.2.0-535.54.03-1_amd64.deb && \
+    cp /var/cuda-repo-debian10-12-2-local/cuda-*-keyring.gpg /usr/share/keyrings/ && \
+    add-apt-repository contrib && \
+    apt-get update && \
+    apt-get -y install cuda && \
+    rm cuda-repo-debian10-12-2-local_12.2.0-535.54.03-1_amd64.deb
+ENV LD_LIBRARY_PATH=/usr/local/cuda-12.2
+
+
+# install cudnn
+RUN wget https://developer.download.nvidia.com/compute/cudnn/redist/cudnn/linux-x86_64/cudnn-linux-x86_64-9.0.0.312_cuda12-archive.tar.xz && \
+    tar -xf cudnn-linux-x86_64-9.0.0.312_cuda12-archive.tar.xz && \
+    cp cuda/include/cudnn.h /usr/local/cuda-12.2/include && \
+    cp cuda/lib64/libcudnn* /usr/local/cuda-12.2/lib64 && \
+    chmod a+r /usr/local/cuda-12.2/include/cudnn.h
+
+
 # install Ivy Upstream
 RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --depth 1 && \
     cd ivy && \
