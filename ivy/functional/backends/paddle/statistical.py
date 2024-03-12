@@ -36,8 +36,16 @@ def min(
 ) -> paddle.Tensor:
     ret_dtype = x.dtype
     if paddle.is_complex(x):
-        real = paddle.amin(x.real(), axis=axis, keepdim=keepdims)
-        imag = paddle.amin(x.imag(), axis=axis, keepdim=keepdims)
+        real = (
+            paddle.amin(x.real(), axis=axis, keepdim=keepdims)
+            if any([x.real().shape[dim] > 1 for dim in axis])
+            else paddle.min(x.real(), axis=axis, keepdim=keepdims)
+        )
+        imag = (
+            paddle.amin(x.imag(), axis=axis, keepdim=keepdims)
+            if any([x.imag().shape[dim] > 1 for dim in axis])
+            else paddle.min(x.imag(), axis=axis, keepdim=keepdims)
+        )
         ret = paddle.complex(real, imag)
     else:
         if where is not None:
@@ -54,7 +62,7 @@ def min(
             x = paddle.where(where, x, val)
         ret = (
             paddle.amin(x, axis=axis, keepdim=keepdims)
-            if x.shape[axis] > 1
+            if any([x.shape[dim] > 1 for dim in axis])
             else paddle.min(x, axis=axis, keepdim=keepdims)
         )
     # The following code is to simulate other frameworks
@@ -87,7 +95,7 @@ def max(
         const = paddle.to_tensor(1j, dtype=x.dtype)
         real_max = (
             paddle.amax(x.real(), axis=axis, keepdim=keepdims)
-            if x.real().shape[axis] > 1
+            if any([x.real().shape[dim] > 1 for dim in axis])
             else paddle.max(x.real(), axis=axis, keepdim=keepdims)
         )
         imag = paddle.where(
@@ -96,7 +104,7 @@ def max(
         # we consider the number with the biggest real and imag part
         img_max = (
             paddle.amax(imag, axis=axis, keepdim=keepdims)
-            if imag.shape[axis] > 1
+            if any([imag.shape[dim] > 1 for dim in axis])
             else paddle.max(x.real(), axis=axis, keepdim=keepdims)
         )
         img_max = paddle.cast(img_max, x.dtype)
@@ -106,7 +114,7 @@ def max(
     else:
         ret = (
             paddle.amax(x, axis=axis, keepdim=keepdims)
-            if x.shape[axis] > 1
+            if any([x.shape[dim] > 1 for dim in axis])
             else paddle.max(x, axis=axis, keepdim=keepdims)
         )
 
