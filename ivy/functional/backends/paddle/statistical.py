@@ -35,7 +35,7 @@ def min(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ret_dtype = x.dtype
-    if type(axis) is not Sequence:
+    if not isinstance(axis, Sequence):
         axis_ = [axis]
     else:
         axis_ = axis
@@ -95,7 +95,7 @@ def max(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ret_dtype = x.dtype
-    if type(axis) is not Sequence:
+    if not isinstance(axis, Sequence):
         axis_ = [axis]
     else:
         axis_ = axis
