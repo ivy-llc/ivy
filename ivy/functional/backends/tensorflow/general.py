@@ -49,12 +49,6 @@ def current_backend_str() -> str:
     return "tensorflow"
 
 
-def _check_query(query):
-    return not isinstance(query, list) and (
-        not (ivy.is_array(query) and bool(query.ndim > 0))
-    )
-
-
 def get_item(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -62,11 +56,6 @@ def get_item(
     *,
     copy: Optional[bool] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if ivy.is_array(query) and ivy.is_bool_dtype(query):
-        if not len(query.shape):
-            return tf.expand_dims(x, 0)
-    if ivy.is_array(query) and not ivy.is_bool_dtype(query):
-        return tf.gather(x, query)
     return x[query]
 
 
