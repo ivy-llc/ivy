@@ -20,12 +20,10 @@ def arange(start, end=None, step=1, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def assign(x, output=None):
     if len(ivy.shape(x)) == 0:
-        x = ivy.reshape(ivy.Array(x), (1,))
-        if ivy.exists(output):
-            output = ivy.reshape(ivy.Array(output), (1,))
+        ret = ivy.copy_array(x, to_ivy_array=False, out=output)
     else:
         x = ivy.reshape(x, ivy.shape(x))
-    ret = ivy.copy_array(x, to_ivy_array=False, out=output)
+        ret = ivy.copy_array(x, to_ivy_array=False, out=output)
     return ret
 
 
