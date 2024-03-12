@@ -235,8 +235,7 @@ def test_paddle_bilinear(
     test_flags,
 ):
     dtype, x1, x2, weight, bias = dtype_x1_x2_weight_bias
-    x2_transposed = ivy.swapaxes(x2, -1, -2)
-    result = ivy.linear(ivy.multiply(x1, x2_transposed), weight, bias=bias)
+    result = ivy.linear(ivy.multiply(x1, x2), weight, bias=bias)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
