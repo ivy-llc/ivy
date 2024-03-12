@@ -220,12 +220,16 @@ def paddle_unfold_handler(draw, dtype):
 # test function for bilinear
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.common.bilinear",
-    dtype_x1_x2_weight_bias=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=False),
-        num_arrays=5,
+    dtype_x1_x2_weight_bias=st.tuples(
+        st.sampled_from(("float32", "float64")),
+        st.floats(),
+        st.floats(),
+        st.floats(),
+        st.floats(),
     ),
+    dtype_x1_x2_weight_bias=get_supported_dtypes(),
 )
-def test_paddle_bilinear(
+def test_bilinear(
     *,
     dtype_x1_x2_weight_bias,
     on_device,
@@ -235,7 +239,13 @@ def test_paddle_bilinear(
     test_flags,
 ):
     dtype, x1, x2, weight, bias = dtype_x1_x2_weight_bias
-    result = ivy.linear(ivy.multiply(x1, x2), weight, bias=bias)
+    weight = ivy.swapaxes(weight, -1, -2)
+    bilinear_prod = ivy.expand_dims(x1, -1) * ivy.expand_dims(x2, -2)
+    bilinear_prod_flat = ivy.reshape(
+        bilinear_prod, (-1, ivy.shape(x1)[-1] * ivy.shape(x2)[-1])
+    )
+    expected_output = ivy.linear(bilinear_prod_flat, weight, bias=bias)
+    x = ivy.concat([x1, x2], axis=-1)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -243,11 +253,10 @@ def test_paddle_bilinear(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x1=x1,
-        x2=x2,
+        x=x,
         weight=weight,
         bias=bias,
-        result=result,
+        expected_output=expected_output,
     )
 
 
