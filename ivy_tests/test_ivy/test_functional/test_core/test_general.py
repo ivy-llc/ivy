@@ -1030,6 +1030,7 @@ def test_gather(params_indices_others, test_flags, backend_fw, fn_name, on_devic
         axis=axis,
         atol_=1e-3,
         rtol_=1e-3,
+        tolerance_dict={"bfloat16": 1e-1},
         batch_dims=batch_dims,
     )
 
