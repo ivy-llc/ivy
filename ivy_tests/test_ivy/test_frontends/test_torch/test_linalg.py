@@ -946,7 +946,7 @@ def test_torch_matrix_norm(
         ord=ord,
         dim=axis,
         keepdim=keepdim,
-        dtype=dtypes[0],
+        dtype=dtypes,
     )
 
 
