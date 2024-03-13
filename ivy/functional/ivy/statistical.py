@@ -277,7 +277,7 @@ def mean(
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     *,
-    dtype: Optional[type] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculate the arithmetic mean of the input array ``x``.
