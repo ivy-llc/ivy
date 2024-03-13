@@ -35,19 +35,31 @@ def min(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ret_dtype = x.dtype
-    if not isinstance(axis, Sequence):
-        axis_ = [axis]
-    else:
-        axis_ = axis
+
+    def axis_condition(axis):
+        if axis is None:
+            return False, False
+        else:
+            axis_ = axis
+            if not isinstance(axis, Sequence):
+                axis_ = [axis]
+            if paddle.is_complex(x):
+                condition_complex_imag = any([x.imag().shape[dim] > 1 for dim in axis_])
+                condition_complex_real = any([x.real().shape[dim] > 1 for dim in axis_])
+                return condition_complex_real, condition_complex_imag
+            else:
+                condition_real = any([x.shape[dim] > 1 for dim in axis_])
+                return condition_real
+
     if paddle.is_complex(x):
         real = (
             paddle.amin(x.real(), axis=axis, keepdim=keepdims)
-            if any([x.real().shape[dim] > 1 for dim in axis_])
+            if axis_condition(axis)[0]
             else paddle.min(x.real(), axis=axis, keepdim=keepdims)
         )
         imag = (
             paddle.amin(x.imag(), axis=axis, keepdim=keepdims)
-            if any([x.imag().shape[dim] > 1 for dim in axis_])
+            if axis_condition(axis)[1]
             else paddle.min(x.imag(), axis=axis, keepdim=keepdims)
         )
         ret = paddle.complex(real, imag)
@@ -66,7 +78,7 @@ def min(
             x = paddle.where(where, x, val)
         ret = (
             paddle.amin(x, axis=axis, keepdim=keepdims)
-            if any([x.shape[dim] > 1 for dim in axis_])
+            if axis_condition(axis)[0]
             else paddle.min(x, axis=axis, keepdim=keepdims)
         )
     # The following code is to simulate other frameworks
@@ -95,15 +107,27 @@ def max(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ret_dtype = x.dtype
-    if not isinstance(axis, Sequence):
-        axis_ = [axis]
-    else:
-        axis_ = axis
+
+    def axis_condition(axis):
+        if axis is None:
+            return False, False
+        else:
+            axis_ = axis
+            if not isinstance(axis, Sequence):
+                axis_ = [axis]
+            if paddle.is_complex(x):
+                condition_complex_imag = any([x.imag().shape[dim] > 1 for dim in axis_])
+                condition_complex_real = any([x.real().shape[dim] > 1 for dim in axis_])
+                return condition_complex_real, condition_complex_imag
+            else:
+                condition_real = any([x.shape[dim] > 1 for dim in axis_])
+                return condition_real
+
     if paddle.is_complex(x):
         const = paddle.to_tensor(1j, dtype=x.dtype)
         real_max = (
             paddle.amax(x.real(), axis=axis, keepdim=keepdims)
-            if any([x.real().shape[dim] > 1 for dim in axis_])
+            if axis_condition(axis)[0]
             else paddle.max(x.real(), axis=axis, keepdim=keepdims)
         )
         imag = paddle.where(
@@ -112,7 +136,7 @@ def max(
         # we consider the number with the biggest real and imag part
         img_max = (
             paddle.amax(imag, axis=axis, keepdim=keepdims)
-            if any([imag.shape[dim] > 1 for dim in axis_])
+            if axis_condition(axis)[1]
             else paddle.max(x.real(), axis=axis, keepdim=keepdims)
         )
         img_max = paddle.cast(img_max, x.dtype)
@@ -122,7 +146,7 @@ def max(
     else:
         ret = (
             paddle.amax(x, axis=axis, keepdim=keepdims)
-            if any([x.shape[dim] > 1 for dim in axis_])
+            if axis_condition(axis)[0]
             else paddle.max(x, axis=axis, keepdim=keepdims)
         )
 
