@@ -13,7 +13,7 @@ import multiprocessing as _multiprocessing
 # local
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_unsupported_dtypes
 from ivy.functional.ivy.general import _broadcast_to
 from ivy.utils.exceptions import _check_inplace_update_support
 from . import backend_version
@@ -458,6 +458,9 @@ def scatter_flat(
     )
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("uint8", "int8", "int16", "float16")}, backend_version
+)
 def scatter_nd(
     indices: paddle.Tensor,
     updates: paddle.Tensor,
@@ -532,9 +535,6 @@ def scatter_nd(
         updates = ivy.maximum(ivy.gather_nd(target, indices), updates).data
     elif reduction == "sum":
         updates = ivy.add(ivy.gather_nd(target, indices), updates).data
-    if indices.ndim <= 1:
-        indices = ivy.expand_dims(indices, axis=0).data
-        updates = ivy.expand_dims(updates, axis=0).data
     updates_ = _broadcast_to(ivy.gather_nd(target, indices), expected_shape).data
     target_dtype = target.dtype
     if target_dtype in [

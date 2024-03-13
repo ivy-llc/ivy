@@ -4,6 +4,36 @@ from hypothesis import strategies as st, settings
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers.testing_helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
+    _get_castable_dtype,
+)
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.astype",
+    dtype_and_x=_get_castable_dtype(),
+    test_with_out=st.just(False),
+)
+def test_jax_astype(
+    dtype_and_x,
+    fn_tree,
+    test_flags,
+    on_device,
+    frontend,
+    backend_fw,
+):
+    input_dtype, x, _, castable_dtype = dtype_and_x
+
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x,
+        dtype=castable_dtype,
+    )
 
 
 # can_cast

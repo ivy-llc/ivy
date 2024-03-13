@@ -120,3 +120,6 @@ Contributors
    * - Syed Muzakkir Hussain
      - `muzakkirhussain011 <https://github.com/muzakkirhussain011>`_
      - Merging Master
+   * - Zheng Jay Choy
+     - `ZJay07 <https://github.com/ZJay07>`_
+     - Merging Master

@@ -208,7 +208,7 @@ def take_along_axis(arr, indices, axis):
 
 
 @with_unsupported_dtypes(
-    {"2.6.0 and below": ("int8", "uint8", "int16", "float16")},
+    {"2.6.0 and below": ("int8", "uint8", "int16", "float16", "bfloat16")},
     "paddle",
 )
 @to_ivy_arrays_and_back
