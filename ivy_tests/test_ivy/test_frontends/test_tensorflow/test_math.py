@@ -1729,7 +1729,7 @@ def test_tensorflow_logical_not(
 @handle_frontend_test(
     fn_tree="tensorflow.math.logical_or",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool"),
+        available_dtypes=(ivy.bool,),
         num_arrays=2,
         shared_dtype=True,
     ),
