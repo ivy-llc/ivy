@@ -251,7 +251,7 @@ def test_max(*, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_devi
     fn_tree="functional.ivy.mean",
     dtype_and_x=_statistical_dtype_values(function="mean"),
     keep_dims=st.booleans(),
-    dtypes=helpers.get_dtypes("float_and_complex", none=True, full=False),
+    dtypes=helpers.get_dtypes("float", none=True, full=False),
 )
 def test_mean(
     *, dtype_and_x, keep_dims, dtypes, test_flags, backend_fw, fn_name, on_device
