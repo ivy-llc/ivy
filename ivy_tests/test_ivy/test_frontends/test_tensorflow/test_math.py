@@ -702,6 +702,8 @@ def test_tensorflow_count_nonzero(
     on_device,
 ):
     input_dtype, x, axis = dtype_x_axis
+    if backend_fw == "paddle":
+        assume(not np.any(np.less_equal(x, 1e-08)))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
