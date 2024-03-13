@@ -184,7 +184,7 @@ def tril_indices(row, col, offset=0, dtype="int64"):
     {
         "2.6.0 and below": (
             "float64",
-            "floar32",
+            "float32",
             "int32",
             "int64",
             "complex64",
