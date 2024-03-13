@@ -66,6 +66,12 @@ Contributors
    * - Jackson McClintock
      - `jacksondm33 <https://github.com/jacksondm33>`_
      - Merging Master, Merging Wizard, Ivy Inspector
+   * - Ayush Lokare
+     - `ayush111111 <https://github.com/ayush111111>`_
+     - Merging Master, Ivy Inspector
+   * - Chaitanya Lakhchaura
+     - `ZenithFlux <https://github.com/ZenithFlux>`_
+     - Debugging Dynamo, Merging Master
    * - David Adlai Nettey
      - `Adlai-1 <https://github.com/Adlai-1>`_
      - Merging Master, Ivy Inspector
@@ -86,6 +92,9 @@ Contributors
      - Merging Master, Ivy Inspector
    * - Rohit Kumar Salla
      - `rohitsalla <https://github.com/rohitsalla>`_
+     - Merging Master, Ivy Inspector
+   * - Shreya Kumar
+     - `alt-shreya <https://github.com/alt-shreya>`_
      - Merging Master, Ivy Inspector
    * - Srikar Vedantam
      - `shruzki <https://github.com/shruzki>`_
@@ -110,4 +119,7 @@ Contributors
      - Merging Master
    * - Syed Muzakkir Hussain
      - `muzakkirhussain011 <https://github.com/muzakkirhussain011>`_
+     - Merging Master
+   * - Zheng Jay Choy
+     - `ZJay07 <https://github.com/ZJay07>`_
      - Merging Master

@@ -6,7 +6,7 @@ run_iter, gpu, tracer = int(sys.argv[1]), sys.argv[2], sys.argv[3]
 if gpu == "true":
     from setup_priority_tests import main
 
-    main()
+    main(cron=True)
     with open("tests_to_run", "r") as f:
         test_names = [line.strip() for line in f.readlines()]
     tests_per_run = 8

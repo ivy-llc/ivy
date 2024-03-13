@@ -1749,6 +1749,25 @@ def test_shape(x0_n_x1_n_res, as_array, test_flags, backend_fw, fn_name, on_devi
     )
 
 
+# size
+@handle_test(
+    fn_tree="functional.ivy.size",
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_size(dtype_x, test_flags, backend_fw, fn_name, on_device):
+    dtype, x = dtype_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+    )
+
+
 # stable_divide
 @handle_test(
     fn_tree="functional.ivy.stable_divide",
@@ -1844,6 +1863,16 @@ def test_supports_inplace_updates(
         test_values=False,
         x=x[0],
     )
+
+
+def test_tensorflow_get_item_condition():
+    from ivy.functional.backends.tensorflow.general import _get_item_condition
+
+    query = tf.constant([0])
+    assert _get_item_condition(None, query)
+
+    query = tf.constant([[0, 1], [2, 2]])
+    assert _get_item_condition(None, query)
 
 
 # to_list

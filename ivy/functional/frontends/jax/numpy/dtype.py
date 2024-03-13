@@ -10,6 +10,13 @@ from ivy import with_supported_dtypes
 
 
 @to_ivy_arrays_and_back
+def astype(x, dtype, /, *, copy=True):
+    if not copy and dtype == x.dtype:
+        return x
+    return ivy.astype(x, dtype, copy=copy)
+
+
+@to_ivy_arrays_and_back
 def can_cast(from_, to, casting="safe"):
     ivy.utils.assertions.check_elem_in_list(
         casting,

@@ -3,6 +3,7 @@ signature."""
 
 # global
 from functools import reduce as _reduce
+import functools
 from numbers import Number
 from operator import mul
 from typing import Callable, List, Optional, Sequence, Tuple, Union
@@ -279,6 +280,10 @@ def get_num_dims(
     x: torch.Tensor, /, *, as_array: bool = False
 ) -> Union[torch.Tensor, int]:
     return torch.tensor(len(x.shape)) if as_array else len(x.shape)
+
+
+def size(x: torch.Tensor, /) -> int:
+    return functools.reduce(mul, x.shape) if len(x.shape) > 0 else 1
 
 
 def inplace_arrays_supported():
