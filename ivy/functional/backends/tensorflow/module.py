@@ -7,6 +7,24 @@ import functools
 import logging
 from tensorflow.python.util import nest
 from typing import NamedTuple, Callable, Any, Tuple, List, Dict, Type, Union
+import inspect
+
+
+def store_frame_info(fn):
+
+    @functools.wraps(fn)
+    def frame_info_wrapper(self, *args, **kwargs):
+        if self._previous_frame_info is None:
+            # store the info about the calling frame.
+            stack = inspect.stack()
+            self._previous_frame_info = stack[1]
+        res = fn(self, *args, **kwargs)
+        # reset the frame-info
+        self._previous_frame_info = None
+        return res
+
+    return frame_info_wrapper
+
 
 # A NodeDef holds two callables:
 # - flatten_fn should take the collection and return a flat list of values.
@@ -339,6 +357,7 @@ class Model(tf.keras.Model, ModelHelpers):
     _dynamic_backend = None
     _device = None
     _dtype = None
+    _previous_frame_info = None
 
     def __init__(
         self,
@@ -827,7 +846,7 @@ class Model(tf.keras.Model, ModelHelpers):
 
     # Dunder Methods #
     # ---------------#
-
+    @store_frame_info
     @tf.autograph.experimental.do_not_convert
     def __call__(
         self,

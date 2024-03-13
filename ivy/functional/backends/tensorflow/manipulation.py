@@ -62,7 +62,7 @@ def expand_dims(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     try:
-        out_shape = _calculate_out_shape(axis, x.shape)
+        out_shape = _calculate_out_shape(axis, tf.shape(x))
         ret = tf.reshape(x, shape=out_shape)
         return ret
     except (tf.errors.InvalidArgumentError, np.AxisError) as error:
@@ -150,7 +150,6 @@ def permute_dims(
     return tf.transpose(x, perm=axes)
 
 
-@with_unsupported_dtypes({"2.15.0 and below": ("bool",)}, backend_version)
 def reshape(
     x: Union[tf.Tensor, tf.Variable],
     /,

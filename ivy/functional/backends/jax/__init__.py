@@ -56,14 +56,10 @@ use = ivy.utils.backend.ContextManager(_module_in_memory)
 
 if version.parse(jax.__version__) >= version.parse("0.4.1"):
     JaxArray = jax.Array
-    NativeArray = (jax.Array,)
+    NativeArray = jax.Array
 else:
     JaxArray = jaxlib.xla_extension.DeviceArray
-    NativeArray = (jaxlib.xla_extension.DeviceArray,)
-
-if version.parse(jax.__version__) <= version.parse("0.4.8"):
-    JaxArray = Union[JaxArray, jax.interpreters.xla._DeviceArray]
-    NativeArray += (jax.interpreters.xla._DeviceArray,)
+    NativeArray = jaxlib.xla_extension.DeviceArray
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
 NativeDevice = jaxlib.xla_extension.Device

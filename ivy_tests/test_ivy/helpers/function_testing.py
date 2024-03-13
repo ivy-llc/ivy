@@ -2580,6 +2580,8 @@ def get_ret_and_flattened_np_array(
     with BackendHandler.update_backend(backend_to_test) as ivy_backend:
         with ivy_backend.PreciseMode(precision_mode):
             ret = fn(*args, **kwargs)
+            if test_trace or test_trace_each:
+                ret = ivy_backend.to_ivy(ret, True)
 
         def map_fn(x):
             if _is_frontend_array(x):

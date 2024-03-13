@@ -52,6 +52,15 @@ def arange(
             stop = float(start)
         else:
             stop = start
+
+    # convert builtin types to tf scalars, as is expected by tf.range
+    if isinstance(start, (float, int)):
+        start = tf.constant(start)
+    if isinstance(stop, (float, int)):
+        stop = tf.constant(stop)
+    if isinstance(step, (float, int)):
+        step = tf.constant(step)
+
     if dtype is None:
         if isinstance(start, int) and isinstance(stop, int) and isinstance(step, int):
             return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), tf.int32)
