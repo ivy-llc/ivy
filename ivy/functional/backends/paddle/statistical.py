@@ -49,7 +49,7 @@ def min(
                 return condition_complex_real, condition_complex_imag
             else:
                 condition_real = any([x.shape[dim] > 1 for dim in axis_])
-                return tuple(condition_real)
+                return condition_real, True
 
     if paddle.is_complex(x):
         real = (
@@ -121,7 +121,7 @@ def max(
                 return condition_complex_real, condition_complex_imag
             else:
                 condition_real = any([x.shape[dim] > 1 for dim in axis_])
-                return tuple(condition_real)
+                return condition_real, True
 
     if paddle.is_complex(x):
         const = paddle.to_tensor(1j, dtype=x.dtype)
