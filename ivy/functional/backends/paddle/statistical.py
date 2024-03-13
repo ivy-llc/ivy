@@ -117,9 +117,7 @@ def mean(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if dtype is not None:
-        dtype = ivy.as_native_dtype(dtype)
-        x = paddle.cast(x, dtype=dtype)
-    ret_dtype = x.dtype if dtype is None else dtype
+        x = ivy.astype(x, dtype).to_native()
     if paddle.is_complex(x):
         ret = paddle.complex(
             paddle.mean(x.real(), axis=axis, keepdim=keepdims),
@@ -135,7 +133,7 @@ def mean(
             axis = None
     if (x.ndim == 1 or axis is None) and not keepdims:
         ret = ret.squeeze()
-    return ret.astype(ret_dtype)
+    return ret
 
 
 @with_supported_dtypes(

@@ -12,6 +12,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_device,
     handle_backend_invalid,
+    infer_dtype,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -268,6 +269,7 @@ def max(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@infer_dtype
 @handle_device
 def mean(
     x: Union[ivy.Array, ivy.NativeArray],

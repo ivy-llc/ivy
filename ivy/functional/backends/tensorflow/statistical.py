@@ -78,12 +78,8 @@ def mean(
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
     if dtype is not None:
-        dtype = ivy.as_native_dtype(dtype)
-        x = tf.cast(x, dtype)
-    ret = tf.math.reduce_mean(x, axis=axis, keepdims=keepdims)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+        x = ivy.astype(x, dtype).to_native()
+    return tf.math.reduce_mean(x, axis=axis, keepdims=keepdims)
 
 
 def _infer_dtype(dtype: tf.DType):
