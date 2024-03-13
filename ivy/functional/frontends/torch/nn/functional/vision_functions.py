@@ -395,6 +395,27 @@ def interpolate(
 
 @to_ivy_arrays_and_back
 def pad(input, pad, mode="constant", value=0):
+    # deal with any negative pad values
+    if any([pad_value < 0 for pad_value in pad]):
+        pad = list(pad)
+        slices = []
+        for n in reversed(range(len(pad) // 2)):
+            i = n * 2
+            j = i + 1
+            start = None
+            stop = None
+            if pad[i] < 0:
+                start = -pad[i]
+                pad[i] = 0
+            if pad[j] < 0:
+                stop = pad[j]
+                pad[j] = 0
+            slices.append(slice(start, stop))
+        ndim = len(input.shape)
+        while len(slices) < ndim:
+            slices.insert(0, slice(None))
+        input = input[tuple(slices)]
+
     value = 0 if value is None else value
     mode_dict = {
         "constant": "constant",

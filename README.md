@@ -202,8 +202,8 @@ After installing Ivy, you can start using it straight away, for example:
        b = jax.numpy.mean(x)
        return x * a + b
 
-   jax_x = jax.numpy.array([1, 2, 3])
-   torch_x = torch.tensor([1, 2, 3])
+   jax_x = jax.numpy.array([1., 2., 3.])
+   torch_x = torch.tensor([1., 2., 3.])
    torch_fn = ivy.transpile(jax_fn, source="jax", to="torch", args=(jax_x,))
    ret = torch_fn(torch_x)
    ```
@@ -277,7 +277,7 @@ eff_encoder = tf.keras.applications.efficientnet_v2.EfficientNetV2B0(
 
 # Transpile it into a torch.nn.Module with the corresponding parameters
 noise = tf.random.normal(shape=(1, 224, 224, 3))
-torch_eff_encoder = ivy.transpile(eff_encoder, to="torch", args=(noise,))
+torch_eff_encoder = ivy.transpile(eff_encoder, source="tensorflow", to="torch", args=(noise,))
 
 # Build a classifier using the transpiled encoder
 class Classifier(torch.nn.Module):
@@ -305,14 +305,15 @@ import jax
 import torch
 
 # Get a pretrained haiku model
-# https://unify.ai/demos/scripts/deepmind_perceiver_io.py
+# https://github.com/unifyai/demos/blob/15c235f/scripts/deepmind_perceiver_io.py
 from deepmind_perceiver_io import key, perceiver_backbone
 
 # Transpile it into a torch.nn.Module with the corresponding parameters
 dummy_input = jax.random.uniform(key, shape=(1, 3, 224, 224))
 params = perceiver_backbone.init(rng=key, images=dummy_input)
+ivy.set_backend("jax")
 backbone = ivy.transpile(
-    perceiver_backbone, to="torch", params_v=params, kwargs={"images": dummy_input}
+    perceiver_backbone, source="jax", to="torch", params_v=params, kwargs={"images": dummy_input}
 )
 
 # Build a classifier using the transpiled backbone
@@ -738,7 +739,7 @@ mlp_encoder = timm.create_model("mixer_b16_224", pretrained=True, num_classes=0)
 
 # Transpile it into a hk.Module with the corresponding parameters
 noise = torch.randn(1, 3, 224, 224)
-mlp_encoder = ivy.transpile(mlp_encoder, to="jax", args=(noise,))
+mlp_encoder = ivy.transpile(mlp_encoder, source="torch", to="jax", args=(noise,))
 
 # Build a classifier using the transpiled encoder
 class Classifier(hk.Module):
@@ -774,6 +775,7 @@ import ivy
 import jax
 import haiku as hk
 import tensorflow as tf
+jax.config.update("jax_enable_x64", True)
 
 # Get a pretrained keras model
 eff_encoder = tf.keras.applications.efficientnet_v2.EfficientNetV2B0(
@@ -782,7 +784,7 @@ eff_encoder = tf.keras.applications.efficientnet_v2.EfficientNetV2B0(
 
 # Transpile it into a hk.Module with the corresponding parameters
 noise = tf.random.normal(shape=(1, 224, 224, 3))
-hk_eff_encoder = ivy.transpile(eff_encoder, to="jax", args=(noise,))
+hk_eff_encoder = ivy.transpile(eff_encoder, source="tensorflow", to="jax", args=(noise,))
 
 # Build a classifier using the transpiled encoder
 class Classifier(hk.Module):
@@ -825,6 +827,7 @@ import kornia
 import requests
 import jax.numpy as jnp
 from PIL import Image
+jax.config.update("jax_enable_x64", True)
 
 # transpile kornia from torch to jax
 jax_kornia = ivy.transpile(kornia, source="torch", to="jax")
@@ -1150,8 +1153,7 @@ class IvyNet(ivy.Module):
         self.output_channels = output_channels
         self.num_classes = num_classes
         self.data_format = data_format
-        self.device = device
-        super().__init__()
+        super().__init__(device=device)
 
     def _build(self, *args, **kwargs):
         self.extractor = ivy.Sequential(
@@ -1219,14 +1221,12 @@ Last but not least, we can also build the training pipeline in pure ivy
 ``` python
 # helper function for loading the dataset in batches
 def generate_batches(images, classes, dataset_size, batch_size=32):
-    targets = {k: v for v, k in enumerate(np.unique(classes))}
-    y_train = [targets[classes[i]] for i in range(len(classes))]
     if batch_size > dataset_size:
         raise ivy.utils.exceptions.IvyError("Use a smaller batch size")
     for idx in range(0, dataset_size, batch_size):
-        yield ivy.stack(images[idx : min(idx + batch_size, dataset_size)]), ivy.array(
-            y_train[idx : min(idx + batch_size, dataset_size)]
-        )
+        yield images[idx : min(idx + batch_size, dataset_size)], classes[
+            idx : min(idx + batch_size, dataset_size)
+        ]
 
 
 # helper function to get the number of current predictions
@@ -1237,7 +1237,7 @@ def num_correct(preds, labels):
 # define a loss function
 def loss_fn(params):
     v, model, x, y = params
-    y_pred, probs = model(x)
+    _, probs = model(x, v=v)
     return ivy.cross_entropy(y, probs), probs
 ```
 
@@ -1248,11 +1248,11 @@ def loss_fn(params):
 
 ``` python
 # train the model on gpu if it's available
-device = "cuda:0" if ivy.gpu_is_available() else "cpu"
+device = "gpu:0" if ivy.gpu_is_available() else "cpu"
 
 # training hyperparams
-optimizer= ivy.Adam(1e-4)
-batch_size = 64
+optimizer = ivy.Adam(1e-4)
+batch_size = 4
 num_epochs = 20
 num_classes = 10
 
@@ -1263,20 +1263,20 @@ model = IvyNet(
     num_classes=num_classes,
     device=device,
 )
-model_name = type(model).__name__.lower()
+
+images = ivy.random_uniform(shape=(16, 1, 28, 28))
+classes = ivy.randint(0, num_classes - 1, shape=(16,))
 
 
 # training loop
 def train(images, classes, epochs, model, device, num_classes=10, batch_size=32):
     # training metrics
     epoch_loss = 0.0
-    running_loss = 0.0
-    fields = ["epoch", "epoch_loss", "training_accuracy"]
     metrics = []
     dataset_size = len(images)
 
     for epoch in range(epochs):
-        train_loss, train_correct = 0, 0
+        train_correct = 0
         train_loop = tqdm(
             generate_batches(images, classes, len(images), batch_size=batch_size),
             total=dataset_size // batch_size,
@@ -1285,8 +1285,7 @@ def train(images, classes, epochs, model, device, num_classes=10, batch_size=32)
         )
 
         for xbatch, ybatch in train_loop:
-            if device != "cpu":
-                xbatch, ybatch = xbatch.to_device("gpu:0"), ybatch.to_device("gpu:0")
+            xbatch, ybatch = xbatch.to_device(device), ybatch.to_device(device)
 
             # Since the cross entropy function expects the target classes to be in one-hot encoded format
             ybatch_encoded = ivy.one_hot(ybatch, num_classes)
@@ -1319,15 +1318,17 @@ def train(images, classes, epochs, model, device, num_classes=10, batch_size=32)
             end="\n",
         )
 
-    # write metrics for plotting
-    with open(f"/{model_name}_train_summary.csv", "w") as f:
-        f = csv.writer(f)
-        f.writerow(fields)
-        f.writerows(metrics)
-
 
 # assuming the dataset(images and classes) are already prepared in a folder
-train(images, classes, num_epochs, model, device, num_classes = num_classes, batch_size = batch_size)
+train(
+    images,
+    classes,
+    num_epochs,
+    model,
+    device,
+    num_classes=num_classes,
+    batch_size=batch_size,
+)
 ```
 
 </details>

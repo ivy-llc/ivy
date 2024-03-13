@@ -121,10 +121,6 @@ def isinf(
     return paddle.zeros(shape=x.shape, dtype=bool)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.6.0 and below": {"cpu": ("bfloat16", "complex128", "float64", "float32")}},
-    backend_version,
-)
 def equal(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -381,14 +377,12 @@ def cos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
     return paddle.cos(x)
 
 
-@with_unsupported_dtypes({"2.6.0 and below": ("uint8", "float16")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.6.0 and below": ("uint8", "float16", "bfloat16")}, backend_version
+)
 def logical_not(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    if paddle.is_complex(x):
-        return paddle.logical_and(
-            paddle.logical_not(x.real()), paddle.logical_not(x.imag())
-        )
     return paddle.logical_not(x)
 
 
@@ -617,10 +611,6 @@ def negative(
     return paddle.neg(x)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.6.0 and below": {"cpu": ("bfloat16", "complex128", "float64", "float32")}},
-    backend_version,
-)
 def not_equal(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],

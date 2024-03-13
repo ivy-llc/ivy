@@ -186,6 +186,11 @@ torch_promotion_table = {
 
 
 @handle_exceptions
+def device(dev):
+    return ivy.default_device(dev)
+
+
+@handle_exceptions
 def promote_types_torch(
     type1: Union[ivy.Dtype, ivy.NativeDtype],
     type2: Union[ivy.Dtype, ivy.NativeDtype],
