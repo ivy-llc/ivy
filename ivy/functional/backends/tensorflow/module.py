@@ -7,6 +7,24 @@ import functools
 import logging
 from tensorflow.python.util import nest
 from typing import NamedTuple, Callable, Any, Tuple, List, Dict, Type, Union
+import inspect
+
+
+def store_frame_info(fn):
+
+    @functools.wraps(fn)
+    def frame_info_wrapper(self, *args, **kwargs):
+        if self._previous_frame_info is None:
+            # store the info about the calling frame.
+            stack = inspect.stack()
+            self._previous_frame_info = stack[1]
+        res = fn(self, *args, **kwargs)
+        # reset the frame-info
+        self._previous_frame_info = None
+        return res
+
+    return frame_info_wrapper
+
 
 # A NodeDef holds two callables:
 # - flatten_fn should take the collection and return a flat list of values.
@@ -339,6 +357,7 @@ class Model(tf.keras.Model, ModelHelpers):
     _dynamic_backend = None
     _device = None
     _dtype = None
+    _previous_frame_info = None
 
     def __init__(
         self,
@@ -468,13 +487,32 @@ class Model(tf.keras.Model, ModelHelpers):
         flattened_kc = v_spec.get_keychains()
         new_weights = [None] * len(flattened_v)
         for i, (kc, x) in enumerate(zip(flattened_kc, flattened_v)):
+            cast_dtype = False
+            if x is not None:
+                # Manual solution for cases where a `tf.int32` tensor
+                # is placed on the GPU. TensorFlow doesn't have dedicated
+                # kernels for placing `tf.int32` variables on the GPU and so
+                # we manually cast them to `tf.int64` here otherwise due to
+                # `tf.config.soft_device_placement(True)` by default,
+                # TensorFlow puts the `tf.int32` variables on CPU which causes
+                # unintended consequences downstream during tracing or
+                # `tf.function` compilation e.g.
+                # Ref: https://github.com/tensorflow/tensorflow/issues/9506
+                # Ref: https://stackoverflow.com/questions/44813939/could-not-satisfy-explicit-device-specification-devicegpu0-because-no-devic
+                dtype = (
+                    tf.int64
+                    if x.dtype == tf.int32 and "gpu:" in x.device.lower()
+                    else x.dtype
+                )
+                cast_dtype = dtype != x.dtype
             new_weights[i] = (
                 self.add_weight(name=kc, shape=x.shape, dtype=x.dtype, trainable=True)
                 if x is not None and id(x) not in existing_ids
                 else x
             )
             if isinstance(x, tf.Variable):
-                new_weights[i].assign(x.value())
+                val = x.value() if not cast_dtype else tf.cast(x.value(), dtype)
+                new_weights[i].assign(val)
             if new_weights[i] is not None:
                 model_weights[id(new_weights[i])] = new_weights[i].numpy()
         self.v = tree_unflatten(new_weights, v_spec)
@@ -484,13 +522,22 @@ class Model(tf.keras.Model, ModelHelpers):
         flattened_kc = buf_spec.get_keychains()
         new_buf = [None] * len(flattened_buf)
         for i, (kc, x) in enumerate(zip(flattened_kc, flattened_buf)):
+            cast_dtype = False
+            if x is not None:
+                dtype = (
+                    tf.int64
+                    if x.dtype == tf.int32 and "gpu:" in x.device.lower()
+                    else x.dtype
+                )
+                cast_dtype = dtype != x.dtype
             new_buf[i] = (
                 self.add_weight(name=kc, shape=x.shape, dtype=x.dtype, trainable=False)
                 if x is not None and id(x) not in existing_ids
                 else x
             )
             if isinstance(x, tf.Variable):
-                new_buf[i].assign(x.value())
+                val = x.value() if not cast_dtype else tf.cast(x.value(), dtype)
+                new_buf[i].assign(val)
             if new_buf[i] is not None:
                 model_weights[id(new_buf[i])] = new_buf[i].numpy()
         self.buffers = tree_unflatten(new_buf, buf_spec)
@@ -635,14 +682,14 @@ class Model(tf.keras.Model, ModelHelpers):
                 # Don't use `keras` build method
                 if os.environ.get("USE_KERAS_BUILD", "False").lower() == "false":
                     self.inputs = tf.nest.flatten(args)
+                else:
+                    input_shapes = self._get_input_shapes(*args)
+                    if len(input_shapes) == 0:
+                        input_shapes = tf.TensorShape(None)
+                    elif len(input_shapes) == 1:
+                        input_shapes = input_shapes[0]
 
-                input_shapes = self._get_input_shapes(*args)
-                if len(input_shapes) == 0:
-                    input_shapes = tf.TensorShape(None)
-                elif len(input_shapes) == 1:
-                    input_shapes = input_shapes[0]
-
-                super(Model, self).build(input_shapes)  # noqa: UP008
+                super(Model, self).build(tf.TensorShape(None))  # noqa: UP008
 
         # If `v` was provided, replace with the module's v
         replace_v = False
@@ -799,7 +846,7 @@ class Model(tf.keras.Model, ModelHelpers):
 
     # Dunder Methods #
     # ---------------#
-
+    @store_frame_info
     @tf.autograph.experimental.do_not_convert
     def __call__(
         self,
