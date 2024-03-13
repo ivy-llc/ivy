@@ -180,16 +180,15 @@ def tril_indices(row, col, offset=0, dtype="int64"):
     return arr
 
 
-@with_unsupported_dtypes(
+@with_supported_dtypes(
     {
         "2.6.0 and below": (
-            "uint8",
-            "int8",
-            "int16",
-            "float16",
+            "float64",
+            "floar32",
+            "int32",
+            "int64",
             "complex64",
             "complex128",
-            "bool",
         )
     },
     "paddle",
