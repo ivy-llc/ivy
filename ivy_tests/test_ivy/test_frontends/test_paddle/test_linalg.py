@@ -71,30 +71,6 @@ def _dtype_values_axis(draw):
 
     return dtype, x, axis, p
 
-# cov
-@handle_frontend_test(
-    fn_tree="paddle.tensor.linalg.cov",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=1
-    ),
-)
-def test_paddle_cov(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_tree=fn_tree,
-        x=x,
-    )
 
 # cond
 @st.composite
@@ -433,6 +409,32 @@ def test_paddle_cond(
         rtol=1e-5,
         atol=1e-5,
         p=p,
+    )
+
+
+# cov
+@handle_frontend_test(
+    fn_tree="paddle.tensor.linalg.cov",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=1
+    ),
+)
+def test_paddle_cov(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        x=x,
     )
 
 
