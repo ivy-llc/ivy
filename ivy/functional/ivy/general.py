@@ -2801,7 +2801,7 @@ def get_item(
         query = ivy.nonzero(query, as_tuple=False)
         ret = ivy.gather_nd(x, query)
     else:
-        indices, target_shape = _parse_query(query, ivy.shape(x, as_array=True))
+        indices, target_shape = _parse_query(query, ivy.shape(x))
         if indices is None:
             return ivy.empty(target_shape, dtype=x.dtype)
         ret = ivy.gather_nd(x, indices)
