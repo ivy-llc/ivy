@@ -1553,8 +1553,8 @@ We believe that everyone can contribute and make a difference. Whether
 it\'s writing code 💻, fixing bugs 🐛, or simply sharing feedback 💬,
 your contributions are definitely welcome and appreciated 🙌
 
-Check out all of our [Open Tasks](https://unify.ai/docs/ivy/overview/contributing/open_tasks.html), 
-and find out more info in our [Contributing guide](https://unify.ai/docs/ivy/overview/contributing.html) 
+Check out all of our [Open Tasks](https://unify.ai/docs/ivy/overview/contributing/open_tasks.html),
+and find out more info in our [Contributing guide](https://unify.ai/docs/ivy/overview/contributing.html)
 in the docs!
 
 Join our amazing community as a [contributor](https://unify.ai/docs/ivy/overview/contributing/volunteer_program.html), and help accelerate our journey to unify all ML frameworks!
