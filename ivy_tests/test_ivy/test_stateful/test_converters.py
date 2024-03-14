@@ -312,8 +312,8 @@ def test_from_jax_module(bs_ic_oc, from_class_and_args, module_type, backend_fw)
     with ivy.utils.backend.ContextManager(backend_fw) as ivy_backend:
         x = ivy_backend.astype(
             ivy_backend.linspace(
-                ivy.zeros(batch_shape),
-                ivy.ones(batch_shape),
+                ivy_backend.zeros(batch_shape),
+                ivy_backend.ones(batch_shape),
                 input_channels,
             ),
             "float32",
