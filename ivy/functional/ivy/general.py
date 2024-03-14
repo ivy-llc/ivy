@@ -2880,7 +2880,7 @@ def set_item(
             query = ivy.tile(query, (x.shape[0],))
         indices = ivy.nonzero(query, as_tuple=False)
     else:
-        indices, target_shape, _ = _parse_query(query, ivy.shape(x, as_array=True))
+        indices, target_shape, _ = _parse_query(query, ivy.shape(x))
         if indices is None:
             return x
     val = val.astype(x.dtype)
