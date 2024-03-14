@@ -309,19 +309,18 @@ def test_from_jax_module(bs_ic_oc, from_class_and_args, module_type, backend_fw)
         pytest.skip()
 
     batch_shape, input_channels, output_channels = bs_ic_oc
-    ivy.set_jax_backend()
-    x = ivy.astype(
-        ivy.linspace(
-            ivy.zeros(batch_shape),
-            ivy.ones(batch_shape),
-            input_channels,
-        ),
-        "float32",
-    )
+    with ivy.utils.backend.ContextManager(backend_fw) as ivy_backend:
+        x = ivy_backend.astype(
+            ivy_backend.linspace(
+                ivy.zeros(batch_shape),
+                ivy.ones(batch_shape),
+                input_channels,
+            ),
+            "float32",
+        )
     native_module_class = NATIVE_MODULES["jax"][module_type]
     module_converter = FROM_CONVERTERS["jax"][module_type]
     module_converter = get_converter(ivy, FROM_CONVERTERS["jax"][module_type])
-    ivy.previous_backend()
     if from_class_and_args:
         ivy_module = module_converter(
             native_module_class,
@@ -353,7 +352,7 @@ def test_from_jax_module(bs_ic_oc, from_class_and_args, module_type, backend_fw)
 
     def loss_fn(v_=None):
         out = ivy_module(x, v=v_)
-        return ivy.mean(out)
+        return ivy_backend.mean(out)
 
     # train
     loss_tm1 = 1e12
@@ -361,20 +360,22 @@ def test_from_jax_module(bs_ic_oc, from_class_and_args, module_type, backend_fw)
     grads = None
     loss_fn()  # for on-call mode
 
-    ivy.set_jax_backend()
-    for _ in range(10):
-        loss, grads = ivy.execute_with_gradients(loss_fn, ivy_module.v)
-        ivy_module.v = ivy.gradient_descent_update(ivy_module.v, grads, 1e-3)
-        assert loss < loss_tm1
-        loss_tm1 = loss
+    with ivy.utils.backend.ContextManager(backend_fw) as ivy_backend:
+        for _ in range(10):
+            loss, grads = ivy_backend.execute_with_gradients(loss_fn, ivy_module.v)
+            ivy_module.v = ivy_backend.gradient_descent_update(
+                ivy_module.v, grads, 1e-3
+            )
+            assert loss < loss_tm1
+            loss_tm1 = loss
 
-    # type test
-    assert ivy.is_array(loss)
-    assert isinstance(grads, ivy.Container)
-    # cardinality test
-    assert loss.shape == ()
-    # value test
-    assert (abs(grads).max() > 0).cont_all_true()
+        # type test
+        assert ivy_backend.is_array(loss)
+        assert isinstance(grads, ivy_backend.Container)
+        # cardinality test
+        assert loss.shape == ()
+        # value test
+        assert (abs(grads).max() > 0).cont_all_true()
 
 
 NATIVE_MODULES = {
