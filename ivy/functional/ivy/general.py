@@ -2801,7 +2801,7 @@ def get_item(
         query = ivy.nonzero(query, as_tuple=False)
         ret = ivy.gather_nd(x, query)
     else:
-        indices, target_shape = _parse_query(query, ivy.shape(x))
+        indices, target_shape = _parse_query(query, ivy.shape(x, as_array=True))
         if indices is None:
             return ivy.empty(target_shape, dtype=x.dtype)
         ret = ivy.gather_nd(x, indices)
@@ -2880,7 +2880,7 @@ def set_item(
             query = ivy.tile(query, (x.shape[0],))
         indices = ivy.nonzero(query, as_tuple=False)
     else:
-        indices, target_shape, _ = _parse_query(query, ivy.shape(x))
+        indices, target_shape = _parse_query(query, ivy.shape(x, as_array=True))
         if indices is None:
             return x
     val = val.astype(x.dtype)
@@ -2908,7 +2908,7 @@ def _parse_query(query, x_shape):
     x_idxs = x_[query]
     target_shape = x_idxs.shape
 
-    if 0 in x_idxs.shape or 0 in x_shape:
+    if 0 in x_idxs.shape or int(ivy.prod(x_shape)) == 0:
         return None, target_shape
 
     # convert the flat indices to multi-D indices
