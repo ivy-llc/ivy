@@ -464,6 +464,9 @@ def greater(x, y, name=None):
     return ivy.greater(x, y)
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("complex64", "complex128")}, "tensorflow"
+)
 @to_ivy_arrays_and_back
 def greater_equal(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
