@@ -153,16 +153,16 @@ def to_tensor(data, /, *, dtype=None, place=None, stop_gradient=True):
     return paddle_frontend.Tensor(array, dtype=dtype, place=place)
 
 
-@with_unsupported_dtypes(
+@with_supported_dtypes(
     {
         "2.6.0 and below": (
-            "uint8",
-            "int8",
-            "int16",
-            "float16",
+            "bool",
+            "float64",
+            "float32",
+            "int32",
+            "int64",
             "complex64",
             "complex128",
-            "bool",
         )
     },
     "paddle",
