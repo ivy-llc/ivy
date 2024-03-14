@@ -739,7 +739,7 @@ mlp_encoder = timm.create_model("mixer_b16_224", pretrained=True, num_classes=0)
 
 # Transpile it into a hk.Module with the corresponding parameters
 noise = torch.randn(1, 3, 224, 224)
-mlp_encoder = ivy.transpile(mlp_encoder, source="torch", to="jax", args=(noise,))
+mlp_encoder = ivy.transpile(mlp_encoder, source="torch", to="haiku", args=(noise,))
 
 # Build a classifier using the transpiled encoder
 class Classifier(hk.Module):
@@ -784,7 +784,7 @@ eff_encoder = tf.keras.applications.efficientnet_v2.EfficientNetV2B0(
 
 # Transpile it into a hk.Module with the corresponding parameters
 noise = tf.random.normal(shape=(1, 224, 224, 3))
-hk_eff_encoder = ivy.transpile(eff_encoder, source="tensorflow", to="jax", args=(noise,))
+hk_eff_encoder = ivy.transpile(eff_encoder, source="tensorflow", to="haiku", args=(noise,))
 
 # Build a classifier using the transpiled encoder
 class Classifier(hk.Module):
