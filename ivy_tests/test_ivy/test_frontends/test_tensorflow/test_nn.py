@@ -1256,6 +1256,41 @@ def test_tensorflow_embedding_lookup(
         max_norm=max_norm,
         atol=1e-4,
     )
+# embedding_lookup_sparse
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.embedding_lookup_sparse",
+    dtypes_indices_weights=helpers.embedding_helper_sparse(),
+    max_norm=st.floats(min_value=0.1, max_value=5, exclude_min=True),
+)
+def test_tensorflow_embedding_lookup_sparse(
+    *,
+    dtypes_indices_weights,
+    max_norm,
+    combiner,
+    allow_fast_lookup,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+):
+    dtypes, indices, weight, _ = dtypes_indices_weights
+    dtypes.reverse()
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        params=weight,
+        sp_ids=indices,
+        sp_weights=weight,  # Assuming weights and indices are passed the same way
+        combiner=combiner,
+        max_norm=max_norm,
+        allow_fast_lookup=allow_fast_lookup,
+        atol=1e-4,
+    )
 
 
 @handle_frontend_test(
