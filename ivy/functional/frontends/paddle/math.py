@@ -140,7 +140,19 @@ def ceil(x, name=None):
     return ivy.ceil(x)
 
 
-@with_unsupported_dtypes({"2.4.2 and below": ("int16", "float16")}, "paddle")
+@with_supported_dtypes(
+    {
+        "2.6.0 and below": (
+            "complex64",
+            "complex128",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        )
+    },
+    "paddle",
+)
 @to_ivy_arrays_and_back
 def conj(x, name=None):
     return ivy.conj(x)
@@ -315,7 +327,7 @@ def gcd(x, y, name=None):
 
 
 @with_supported_dtypes(
-    {"2.6.0 and below": ("float16", "float32", "float64", "int32", "int64")}, "paddle"
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def heaviside(x, y, name=None):
@@ -695,11 +707,11 @@ def trace(x, offset=0, axis1=0, axis2=1, name=None):
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
-def trunc(x, name=None):
-    return ivy.trunc(x)
+def trunc(input, name=None):
+    return ivy.trunc(input)
 
 
 mod = remainder

@@ -15,6 +15,9 @@ Top Contributors
    * - samunder singh
      - `samthakur587 <https://github.com/samthakur587>`_
      - Merging Master Gold, Merging Wizard, Ivy Inspector Silver
+   * - Eyob  Mishamo
+     - `NripeshN <https://github.com/NripeshN>`_
+     - Merging Master Bronze, Ivy Inspector Gold
    * - V\. Sai Suraj
      - `Sai-Suraj-27 <https://github.com/Sai-Suraj-27>`_
      - Merging Master Gold, Ivy Inspector Bronze
@@ -47,6 +50,9 @@ Core Contributors
      - Merging Master Bronze, Ivy Inspector Bronze
    * - R E Zera Marveen Lyngkhoi
      - `fleventy-5 <https://github.com/fleventy-5>`_
+     - Merging Master Bronze
+   * - Zheng Jay Choy
+     - `ZJay07 <https://github.com/ZJay07>`_
      - Merging Master Bronze
    * - nitesh kesharwani
      - `NiteshK84 <https://github.com/NiteshK84>`_
@@ -119,7 +125,4 @@ Contributors
      - Merging Master
    * - Syed Muzakkir Hussain
      - `muzakkirhussain011 <https://github.com/muzakkirhussain011>`_
-     - Merging Master
-   * - Zheng Jay Choy
-     - `ZJay07 <https://github.com/ZJay07>`_
      - Merging Master

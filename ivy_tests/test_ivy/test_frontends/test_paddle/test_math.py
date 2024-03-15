@@ -2733,7 +2733,7 @@ def test_paddle_trace(
 @handle_frontend_test(
     fn_tree="paddle.trunc",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", "int"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_paddle_trunc(
@@ -2753,5 +2753,5 @@ def test_paddle_trunc(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
+        input=x[0],
     )

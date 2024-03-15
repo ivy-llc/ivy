@@ -9,7 +9,7 @@ opencv-python # unpinned , mod_name=cv2
 jax[cpu] # unpinned, we test for latest version now, mod_name=jax
 jaxlib # unpinned, we test for latest version now
 paddlepaddle # unpinned , mod_name=paddle
-tensorflow-cpu  # unpinned, we test for latest version now, mod_name=tensorflow
+tensorflow-cpu==2.15.1  # pinned to 2.15.1 until keras support is added, mod_name=tensorflow
 torch # unpinned, we test for latest version now
 # torch-scatter # unpinned, mod_name=torch_scatter
 scipy # unpinned
