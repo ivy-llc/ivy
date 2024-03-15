@@ -1182,7 +1182,9 @@ class Tensor:
         self.ivy_array = self.trunc().ivy_array
         return self
 
-    @with_unsupported_dtypes({"2.2 and below": ("float16", "complex")}, "torch")
+    @with_supported_dtypes(
+        {"2.2 and below": ("int32", "int64", "float64", "float32")}, "torch"
+    )
     def fix(self):
         return torch_frontend.fix(self)
 
