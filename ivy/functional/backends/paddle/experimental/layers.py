@@ -467,6 +467,7 @@ def interpolate(
     recompute_scale_factor: Optional[bool] = None,
     align_corners: Optional[bool] = None,
     data_format: str = "NCHW",
+    antialias: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ):
 
