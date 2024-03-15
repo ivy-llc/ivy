@@ -88,10 +88,12 @@ def _compute_cost_and_update_grads(
             else variables.cont_prune_key_chains(outer_v, ignore_none=True)
         )
 
-        inner_grads = ivy.Container({
-            k: ivy.zeros_like(v) if k not in inner_grads else inner_grads[k]
-            for k, v in var.cont_to_iterator()
-        })
+        inner_grads = ivy.Container(
+            {
+                k: ivy.zeros_like(v) if k not in inner_grads else inner_grads[k]
+                for k, v in var.cont_to_iterator()
+            }
+        )
 
         if batched:
             inner_grads = ivy.multiply(inner_grads, num_tasks)
@@ -151,14 +153,16 @@ def _train_task(
             if keep_innver_v
             else variables.cont_prune_key_chains(inner_v, ignore_none=True)
         )
-        inner_update_grads = ivy.Container({
-            k: (
-                ivy.zeros_like(v)
-                if k not in inner_update_grads
-                else inner_update_grads[k]
-            )
-            for k, v in var.cont_to_iterator()
-        })
+        inner_update_grads = ivy.Container(
+            {
+                k: (
+                    ivy.zeros_like(v)
+                    if k not in inner_update_grads
+                    else inner_update_grads[k]
+                )
+                for k, v in var.cont_to_iterator()
+            }
+        )
         if batched:
             inner_update_grads = ivy.multiply(inner_update_grads, num_tasks)
 
@@ -258,6 +262,59 @@ def _train_tasks_batched(
     num_tasks,
     stop_gradients,
 ):
+    """Train tasks in a batched manner.
+
+    This function trains tasks in a batched manner with optional inner and outer batch functions.
+
+    Parameters
+    ----------
+    batch : object
+        The batch data.
+    inner_batch_fn : function or None
+        The inner batch function.
+    outer_batch_fn : function or None
+        The outer batch function.
+    inner_cost_fn : function
+        The inner cost function.
+    outer_cost_fn : function
+        The outer cost function.
+    variables : ivy.Container
+        The variables for optimization.
+    inner_grad_steps : int
+        Number of inner gradient steps.
+    inner_learning_rate : float
+        Inner learning rate.
+    inner_optimization_step : function
+        The inner optimization step function.
+    order : int
+        The order of computation.
+    average_across_steps : bool
+        Whether to average across steps.
+    inner_v : object
+        Inner variable.
+    keep_inner_v : bool
+        Whether to keep inner variable.
+    outer_v : object
+        Outer variable.
+    keep_outer_v : bool
+        Whether to keep outer variable.
+    return_inner_v : str or bool
+        Whether and which inner variables to return.
+    num_tasks : int
+        Number of tasks.
+    stop_gradients : bool
+        Whether to stop gradients during optimization.
+
+    Returns
+    -------
+    object or tuple
+        The computed cost and, optionally, gradients and updated inner variables.
+
+    Examples
+    --------
+    >>> # Example usage here
+    >>> pass
+    """  # noqa: E501 (Line too long)
     inner_batch = batch
     outer_batch = batch
     if inner_batch_fn is not None:

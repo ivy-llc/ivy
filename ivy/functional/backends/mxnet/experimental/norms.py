@@ -26,11 +26,13 @@ def batch_norm(
     eps: float = 1e-05,
     momentum: float = 0.1,
     out: Optional[None] = None,
-) -> Tuple[(
-    Union[(None, mx.ndarray.NDArray)],
-    Union[(None, mx.ndarray.NDArray)],
-    Union[(None, mx.ndarray.NDArray)],
-)]:
+) -> Tuple[
+    (
+        Union[(None, mx.ndarray.NDArray)],
+        Union[(None, mx.ndarray.NDArray)],
+        Union[(None, mx.ndarray.NDArray)],
+    )
+]:
     raise IvyNotImplementedException()
 
 
@@ -46,11 +48,13 @@ def instance_norm(
     eps: float = 1e-05,
     momentum: float = 0.1,
     out: Optional[None] = None,
-) -> Tuple[(
-    Union[(None, mx.ndarray.NDArray)],
-    Union[(None, mx.ndarray.NDArray)],
-    Union[(None, mx.ndarray.NDArray)],
-)]:
+) -> Tuple[
+    (
+        Union[(None, mx.ndarray.NDArray)],
+        Union[(None, mx.ndarray.NDArray)],
+        Union[(None, mx.ndarray.NDArray)],
+    )
+]:
     raise IvyNotImplementedException()
 
 

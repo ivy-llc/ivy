@@ -63,7 +63,7 @@ def random_normal(
 random_normal.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.1.2 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -78,10 +78,12 @@ def multinomial(
 ) -> torch.Tensor:
     if probs is None:
         probs = (
-            torch.ones((
-                batch_size,
-                population_size,
-            ))
+            torch.ones(
+                (
+                    batch_size,
+                    population_size,
+                )
+            )
             / population_size
         )
     if seed:

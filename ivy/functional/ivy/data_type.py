@@ -153,7 +153,7 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
             continue
         is_frontend_fn = "frontend" in fn.__module__
         is_backend_fn = "backend" in fn.__module__ and not is_frontend_fn
-        is_einops_fn = "einops" in fn.__name__
+        is_einops_fn = hasattr(fn, "__name__") and "einops" in fn.__name__
         if is_backend_fn:
             f_supported = get_fn(fn, False)
             if hasattr(fn, "partial_mixed_handler"):
@@ -183,6 +183,7 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
         if is_frontend_fn:
             frontends = {
                 "jax_frontend": "ivy.functional.frontends.jax",
+                "jnp_frontend": "ivy.functional.frontends.jax.numpy",
                 "np_frontend": "ivy.functional.frontends.numpy",
                 "tf_frontend": "ivy.functional.frontends.tensorflow",
                 "torch_frontend": "ivy.functional.frontends.torch",
@@ -197,6 +198,10 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
                     if "(" in key:
                         key = key.split("(")[0]
                     frontend_module = ".".join(key.split(".")[:-1])
+                    if (
+                        frontend_module == ""
+                    ):  # single edge case: fn='frontend_outputs_to_ivy_arrays'
+                        continue
                     frontend_fl = {key: frontend_fn}
                     res += list(
                         _get_functions_from_string(
@@ -680,7 +685,7 @@ def finfo(
 
     >>> x = ivy.array([1.3,2.1,3.4], dtype=ivy.float64)
     >>> print(ivy.finfo(x))
-    finfo(resolution=1e-15, min=-1.7976931348623157e+308, /
+    finfo(resolution=1e-15, min=-1.7976931348623157e+308, \
     max=1.7976931348623157e+308, dtype=float64)
 
     >>> x = ivy.array([0.7,8.4,3.14], dtype=ivy.float16)
@@ -694,7 +699,7 @@ def finfo(
     >>> print(ivy.finfo(c))
     {
         x: finfo(resolution=0.001, min=-6.55040e+04, max=6.55040e+04, dtype=float16),
-        y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, /
+        y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, \
             max=1.7976931348623157e+308, dtype=float64)
     }
     """

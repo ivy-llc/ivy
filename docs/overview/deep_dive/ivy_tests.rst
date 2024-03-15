@@ -63,6 +63,7 @@ Ivy Tests
 .. _`num_positional_args`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/testing_helpers.py#L78
 .. _`CI Pipeline`: continuous_integration.rst
 .. _`Hypothesis docs`: https://hypothesis.readthedocs.io/en/latest/data.html#core-strategies
+.. _`this`: https://github.com/unifyai/ivy/blob/8dcc33b895240395686db165c710ac31708aa691/ivy_tests/test_ivy/test_functional/test_core/test_general.py#L1650
 
 On top of the Array API `test suite`_, which is included as a submodule mapped to the folder :code:`test_array_api`, there is also a collection of Ivy tests, located in subfolder `test_ivy`_.
 
@@ -221,7 +222,7 @@ Ivy Test Decorators
 
 - Why do we need to handle test decorators?
 
-In order to run a test, a lot of pre-processing must be done, e.g. import the function, does it support complex data type? does it run on CPU? how many parameters does it take? are they positional or keyword only, or both? and a lot of information about the function that is being tested, this allows us later to run the test efficiently and in a **complete** way. all of this happens at collecting time.
+In order to run a test, a lot of pre-processing must be done, e.g. import the function, does it support complex data type? does it run on CPU? how many parameters does it take? are they positional or keyword only, or both? and a lot of information about the function that is being tested, this allows us later to run the test efficiently and in a **complete** way. All of this happens at collecting time.
 
 - What do the handle test decorators do?
 
@@ -241,14 +242,15 @@ This is not an exhaustive list of what the :code:`handle_test` decorators actual
 
 - Why do we have multiple handle test decorators?
 
-Having multiple test decorators is mainly for efficiency, `handle_test` could do what `handle_frontend_test` does, it just handles the parameters slightly different, and this can be inferred at run time, but we choose to separate the decorator for general different usages, currently we have 4 separate decorators
+Having multiple test decorators is mainly for efficiency, `handle_test` could do what `handle_frontend_test` does, it just handles the parameters slightly different, and this can be inferred at run time, but we choose to separate the decorator for general different usages, currently we have 5 separate decorators
 
 1.  :code:`handle_test`
 2.  :code:`handle_method`
 3.  :code:`handle_frontend_test`
 4.  :code:`handle_frontend_method`
+5.  :code:`handle_example`
 
-One of the few differences between the 4 decorators is that they generate different kinds of flags, some generate more or less, but they all share the same general structure.
+One of the few differences between the 5 decorators is that they generate different kinds of flags, some generate more or less, but they all share the same general structure.
 
 - Integration
 
@@ -358,6 +360,49 @@ Let's look at the data produced by this strategy -:
 
 These values are then unpacked, converted to :class:`ivy.Array` class, with corresponding dtypes.
 The test then runs on the newly created arrays with specified data types.
+
+Adding Explicit Examples to tests
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In certain cases where we'd like to test certain examples explicitly which are outliers and it isn't feasible to define them as a strategy,
+we can use the :code:`@handle_example` decorator. One such example is `this`_ where we need to test `ivy.set_item` with slice objects.
+
+Hypothesis allows us to test with an explicit example deterministically using the `@example`_ decorator. Our :code:`@handle_example` decorator is a wrapper around this.
+Which helps us to use the default values of the test_flags, method_flags allowing us to easily test explicit examples for the ivy functional tests, frontend_tests, methods, and frontend_methods.
+
+We have to pass one of the following 4 arguments as `True` to the :code:`@handle_example` decorator depending on what test we are dealing with.
+1. `test_example`
+2. `test_frontend_example`
+3. `test_method_example`
+4. `test_frontend_method_example`
+
+The following example shows, how we can use the :code:`@handle_example` decorator to test the one of the frontend functions by adding an explicit example.
+
+.. code-block:: python
+    @handle_frontend_test(
+    fn_tree="paddle.acos",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float"),),
+    )
+    @handle_example(
+        test_frontend_example=True,
+        dtype_and_x=(["float32"], [np.array(9.0, dtype=np.float32)]),
+        fn_tree="ivy.functional.frontends.paddle.acos",
+        test_flags={
+            "native_arrays": [True],
+            "with_copy": True,
+            "with_out": True,
+        },
+    )
+    def test_some_function(
+        *,
+        dtype_and_x,
+        fn_tree,
+        frontend,
+        test_flags,
+        backend_fw,
+    ):
+        pass
+
 
 Why do we need helper functions?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

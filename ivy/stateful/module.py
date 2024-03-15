@@ -679,8 +679,7 @@ class _HaikuIvyModule(Module):
         return self._hk_params
 
     def _build(self, params_hk, *args, **kwargs):
-        pass
-
+        ivy.set_jax_backend()
         args, kwargs = ivy.args_to_native(*args, **kwargs)
         # noinspection PyUnresolvedReferences
         params_dict = self._hk_flat_map_to_dict(params_hk)
@@ -691,6 +690,7 @@ class _HaikuIvyModule(Module):
             self._device = ivy.as_ivy_dev(param0.device())
         else:
             self._device = ivy.as_ivy_dev("cpu")
+        ivy.previous_backend()
 
     def _forward(self, *a, **kw):
         a, kw = ivy.args_to_native(*a, **kw)
@@ -803,10 +803,12 @@ class _PaddleIvyModule(Module):
     def _build(self, *args, **kwargs):
         self._native_params = ivy.Container(
             OrderedDict(
-                sorted([
-                    (k.replace(".", "/"), v)
-                    for k, v in dict(self._native_module.named_parameters()).items()
-                ])
+                sorted(
+                    [
+                        (k.replace(".", "/"), v)
+                        for k, v in dict(self._native_module.named_parameters()).items()
+                    ]
+                )
             ),
             dynamic_backend=False,
         )
@@ -834,10 +836,12 @@ class _TorchIvyModule(Module):
     def _build(self, *args, **kwargs):
         self._native_params = ivy.Container(
             OrderedDict(
-                sorted([
-                    (k.replace(".", "/"), v)
-                    for k, v in dict(self._native_module.named_parameters()).items()
-                ])
+                sorted(
+                    [
+                        (k.replace(".", "/"), v)
+                        for k, v in dict(self._native_module.named_parameters()).items()
+                    ]
+                )
             ),
             dynamic_backend=False,
         )

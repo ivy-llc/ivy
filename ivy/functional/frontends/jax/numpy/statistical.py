@@ -7,7 +7,6 @@ from ivy.functional.frontends.jax.func_wrapper import (
     handle_jax_dtype,
 )
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
-from ivy.functional.backends.jax.experimental.elementwise import _normalize_axis_tuple
 
 
 @to_ivy_arrays_and_back
@@ -103,7 +102,7 @@ def corrcoef(x, y=None, rowvar=True):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.4.23 and below": ("float16", "bfloat16")}, "jax")
+@with_unsupported_dtypes({"0.4.24 and below": ("float16", "bfloat16")}, "jax")
 def correlate(a, v, mode="valid", precision=None):
     if ivy.get_num_dims(a) != 1 or ivy.get_num_dims(v) != 1:
         raise ValueError("correlate() only support 1-dimensional inputs.")
@@ -444,7 +443,7 @@ def nanpercentile(
 
         nd = a.ndim
         if axis is not None:
-            axis = _normalize_axis_tuple(axis, nd)
+            axis = ivy._normalize_axis_tuple(axis, nd)
 
             if keepdims:
                 if out is not None:
@@ -574,7 +573,7 @@ def ptp(a, axis=None, out=None, keepdims=False):
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"0.4.23 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
+    {"0.4.24 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
     "jax",
 )
 def quantile(
@@ -599,7 +598,7 @@ def quantile(
 
 
 @handle_jax_dtype
-@with_unsupported_dtypes({"0.4.23 and below": ("bfloat16",)}, "jax")
+@with_unsupported_dtypes({"0.4.24 and below": ("bfloat16",)}, "jax")
 @to_ivy_arrays_and_back
 def std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
     axis = tuple(axis) if isinstance(axis, list) else axis

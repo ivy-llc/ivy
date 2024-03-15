@@ -877,6 +877,15 @@ class _ArrayWithLayersExperimental(abc.ABC):
             output_size,
         )
 
+    def adaptive_max_pool3d(
+        self: ivy.Array,
+        output_size: Union[Sequence[int], int],
+    ) -> ivy.Array:
+        return ivy.adaptive_max_pool3d(
+            self._data,
+            output_size,
+        )
+
     def reduce_window(
         self: ivy.Array,
         init_value: Union[int, float],

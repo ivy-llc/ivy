@@ -98,7 +98,7 @@ class _ArrayWithLossesExperimental(abc.ABC):
         ivy.array([1.28402555, 1.28402555, 1.03402555, 1.28402555])
 
         >>> z = ivy.array([0.1, 0.1, 0.7, 0.1])
-        >>> loss = x.x.log_poisson_loss(z, reduction='mean')
+        >>> loss = x.log_poisson_loss(z, reduction='mean')
         >>> print(loss)
         ivy.array(1.1573164)
         """
@@ -353,9 +353,9 @@ class _ArrayWithLossesExperimental(abc.ABC):
         --------
         >>> input_tensor = ivy.array([1, 2, 3, 4], dtype=ivy.float64)
         >>> target_tensor = ivy.array([2, 2, 2, 2], dtype=ivy.float64)
-        >>> loss = poisson_nll_loss(input_tensor, target_tensor, log_input=True)
+        >>> loss = input_tensor.poisson_nll_loss(target_tensor, log_input=True)
         >>> print(loss)
-        ivy.array(16.1978)
+        ivy.array(16.1977562)
         """
         return ivy.poisson_nll_loss(
             self._data,

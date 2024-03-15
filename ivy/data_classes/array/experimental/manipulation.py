@@ -1177,9 +1177,11 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         With 'ivy.Array' input:
 
         >>> x = ivy.array([[1.2, 2.3, 3.4, 4.5],
-                           [5.6, 6.7, 7.8, 8.9]])
+        ...               [5.6, 6.7, 7.8, 8.9]])
+        >>> dim = 1
         >>> shape = (2, 2)
-        >>> y = x.unflatten(shape=shape, dim=dim, out=y)
+        >>> y = ivy.zeros([2, 2, 2])
+        >>> x.unflatten(shape=shape, dim=dim, out=y)
         >>> print(y)
         ivy.array([[[1.2, 2.3], [3.4, 4.5]], [[5.6, 6.7], [7.8, 8.9]]])
         """

@@ -410,7 +410,9 @@ def conv3d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("bfloat16", "complex", "integer")}, backend_version
+)
 def conv_general_dilated(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -467,27 +469,17 @@ def conv_general_dilated(
                 dilations=dilations,
             )
         else:
-            res = tf.concat(
-                [
-                    tf.nn.conv2d(
-                        x[..., i : i + filters.shape[-2]],
-                        filters[..., j : j + filters.shape[-1] // feature_group_count],
-                        strides,
-                        padding,
-                        data_format,
-                        dilations,
-                    )
-                    for i, j in zip(
-                        range(0, x.shape[-1], filters.shape[-2]),
-                        range(
-                            0,
-                            filters.shape[-1],
-                            filters.shape[-1] // feature_group_count,
-                        ),
-                    )
-                ],
-                axis=-1,
-            )
+            with ivy.ArrayMode(False):
+                if not isinstance(padding, str):
+                    padding = padding[1:-1]
+                res = depthwise_conv2d(
+                    x,
+                    tf.transpose(filters, (0, 1, 3, 2)),
+                    strides,
+                    padding,
+                    data_format=data_format,
+                    dilations=dilations,
+                )
     else:
         x, padding = _pad_before_conv(x, padding, dims, data_format)
         if dims == 1:

@@ -7,6 +7,7 @@ import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.helpers.globals as test_globals
 from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
+from ivy_tests.test_ivy.helpers.testing_helpers import handle_example
 
 
 # --- Helpers --- #
@@ -80,7 +81,7 @@ def _as_tensor_helper(draw):
 @st.composite
 def _fill_value(draw):
     with_array = draw(st.sampled_from([True, False]))
-    dtype = draw(st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"))[0]
+    dtype = draw(st.shared(helpers.get_dtypes("valid", full=False), key="dtype"))[0]
     with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
         if ivy_backend.is_uint_dtype(dtype):
             ret = draw(helpers.ints(min_value=0, max_value=5))
@@ -511,7 +512,7 @@ def test_torch_frombuffer(
         max_dim_size=10,
     ),
     fill_value=_fill_value(),
-    dtype=st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"),
+    dtype=st.shared(helpers.get_dtypes("valid", full=False), key="dtype"),
 )
 def test_torch_full(
     *,
@@ -611,6 +612,14 @@ def test_torch_heaviside(
     num=st.integers(min_value=1, max_value=10),
     dtype=helpers.get_dtypes("float", full=False),
 )
+@handle_example(
+    test_frontend_example=True,
+    start=np.array(0),
+    stop=1,
+    num=2,
+    dtype=[None],
+    fn_tree="ivy.functional.frontends.torch.linspace",
+)
 def test_torch_linspace(
     *,
     start,
@@ -624,7 +633,7 @@ def test_torch_linspace(
     backend_fw,
 ):
     helpers.test_frontend_function(
-        input_dtypes=[],
+        input_dtypes=[] if isinstance(start, float) else ["int64"],
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,

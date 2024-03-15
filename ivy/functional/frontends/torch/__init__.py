@@ -186,6 +186,11 @@ torch_promotion_table = {
 
 
 @handle_exceptions
+def device(dev):
+    return ivy.default_device(dev)
+
+
+@handle_exceptions
 def promote_types_torch(
     type1: Union[ivy.Dtype, ivy.NativeDtype],
     type2: Union[ivy.Dtype, ivy.NativeDtype],
@@ -261,6 +266,7 @@ def promote_types_of_torch_inputs(
 
 from . import nn
 from .nn.functional import softmax, relu, lstm
+from . import special
 from . import tensor
 from .tensor import *
 from . import blas_and_lapack_ops

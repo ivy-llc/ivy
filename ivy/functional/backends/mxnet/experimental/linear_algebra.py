@@ -15,11 +15,13 @@ def eigh_tridiagonal(
         Union[(Tuple[(int, int)], List[int], None, mx.ndarray.NDArray)]
     ] = None,
     tol: Optional[float] = None,
-) -> Union[(
-    None,
-    mx.ndarray.NDArray,
-    Tuple[(Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)])],
-)]:
+) -> Union[
+    (
+        None,
+        mx.ndarray.NDArray,
+        Tuple[(Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)])],
+    )
+]:
     raise IvyNotImplementedException()
 
 

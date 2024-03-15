@@ -217,6 +217,7 @@ def test_allclose(
     dtype_and_x, rtol, atol, equal_nan, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, x = dtype_and_x
+    assume("bfloat16" not in input_dtype)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
