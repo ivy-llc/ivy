@@ -406,7 +406,7 @@ def shape(
     *,
     as_array: bool = False,
 ) -> Union[tf.Tensor, ivy.Shape, ivy.Array]:
-    if as_array:
+    if as_array or not tf.executing_eagerly():
         return ivy.array(tf.shape(x), dtype=ivy.default_int_dtype())
     else:
         return ivy.Shape(x.shape)
