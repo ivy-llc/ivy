@@ -475,8 +475,6 @@ def interpolate(
         align_mode = 1
     elif recompute_scale_factor is False:
         align_mode = 0
-    else:
-        align_mode = None
     return paddle.nn.functional.interpolate(
         x, size, scale_factor, mode, align_corners, align_mode, data_format
     )
