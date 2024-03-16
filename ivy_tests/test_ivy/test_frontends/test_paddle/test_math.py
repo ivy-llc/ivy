@@ -2144,7 +2144,7 @@ def test_paddle_pow(
 @handle_frontend_test(
     fn_tree="paddle.prod",
     dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_axis=-1,
         max_axis=0,
         min_num_dims=1,
