@@ -19,9 +19,7 @@ def arange(start, end=None, step=1, dtype=None, name=None):
 )
 @to_ivy_arrays_and_back
 def assign(x, output=None):
-    if len(ivy.shape(x)) == 0:
-        ret = ivy.copy_array(x, to_ivy_array=False, out=output)
-    else:
+    if len(ivy.shape(x)) != 0:
         x = ivy.reshape(x, ivy.shape(x))
         ret = ivy.copy_array(x, to_ivy_array=False, out=output)
     return ret
