@@ -361,6 +361,17 @@ class Shape(Sequence):
     def __dir__(self):
         return self._shape.__dir__()
 
+    def __getnewargs__(self):
+        if self._shape is None:
+            raise ivy.utils.exceptions.IvyException(
+                "Cannot calculate the number of elements in a partially known Shape"
+            )
+        return (
+            builtins.tuple(
+                self._shape,
+            ),
+        )
+
     @property
     def shape(self):
         return self._shape
