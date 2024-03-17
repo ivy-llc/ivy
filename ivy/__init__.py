@@ -477,6 +477,16 @@ class Shape(Sequence):
             )
         return list(self._shape)
 
+    def numel(self):
+        if self._shape is None:
+            raise ivy.utils.exceptions.IvyException(
+                "Cannot calculate the number of elements in a partially known Shape"
+            )
+        res = 1
+        for dim in self._shape:
+            res *= dim
+        return res
+
 
 class IntDtype(Dtype):
     def __new__(cls, dtype_str):
