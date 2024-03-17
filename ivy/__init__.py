@@ -498,6 +498,9 @@ class Shape(Sequence):
             res *= dim
         return res
 
+    def __concat__(self, other):
+        return self.concatenate(other)
+
 
 class IntDtype(Dtype):
     def __new__(cls, dtype_str):
