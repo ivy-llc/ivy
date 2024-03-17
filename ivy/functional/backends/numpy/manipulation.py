@@ -86,6 +86,9 @@ def permute_dims(
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        newarr = np.copy(x)
+        return np.transpose(newarr, axes)
     return np.transpose(x, axes)
 
 
@@ -105,6 +108,8 @@ def reshape(
             new_s if con else old_s
             for new_s, con, old_s in zip(shape, np.array(shape) != 0, x.shape)
         ]
+    if copy:
+        x = x.copy()
     return np.reshape(x, shape, order=order)
 
 
@@ -129,6 +134,8 @@ def squeeze(
 ) -> np.ndarray:
     if isinstance(axis, list):
         axis = tuple(axis)
+    if copy:
+        x = x.copy()
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
             return x

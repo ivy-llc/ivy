@@ -464,6 +464,9 @@ def greater(x, y, name=None):
     return ivy.greater(x, y)
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("complex64", "complex128")}, "tensorflow"
+)
 @to_ivy_arrays_and_back
 def greater_equal(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
@@ -560,6 +563,9 @@ def l2_normalize(x, axis=None, epsilon=1e-12, name=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("complex64", "complex128")}, "tensorflow"
+)
 def less(x, y, name="None"):
     x, y = check_tensorflow_casting(x, y)
     return ivy.less(x, y)
@@ -621,11 +627,13 @@ def logical_xor(x, y, name="LogicalXor"):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, "tensorflow")
 def maximum(x, y, name=None):
     return ivy.maximum(x, y)
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, "tensorflow")
 def minimum(x, y, name=None):
     return ivy.minimum(x, y)
 
@@ -1043,8 +1051,8 @@ def xlogy(x, y, name=None):
 def zero_fraction(value, name="zero_fraction"):
     zero = ivy.zeros(tuple(value.shape), dtype=ivy.float32)
     x = ivy.array(value, dtype=ivy.float32)
-    count_zero = ivy.sum(ivy.equal(x, zero))
-    count_nonzero = ivy.sum(ivy.not_equal(x, zero))
+    count_zero = ivy.sum(ivy.equal(x, zero), dtype=ivy.float32)
+    count_nonzero = ivy.sum(ivy.not_equal(x, zero), dtype=ivy.float32)
     return ivy.divide(count_zero, ivy.add(count_zero, count_nonzero))
 
 

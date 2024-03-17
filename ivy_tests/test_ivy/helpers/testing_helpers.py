@@ -27,6 +27,7 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltWithCopyStrategy,
     BuiltInplaceStrategy,
     BuiltTraceStrategy,
+    BuiltTraceEachStrategy,
     BuiltFrontendArrayStrategy,
     BuiltTranspileStrategy,
     BuiltPrecisionModeStrategy,
@@ -45,6 +46,7 @@ cmd_line_args = (
     "instance_method",
     "test_gradients",
     "test_trace",
+    "test_trace_each",
     "precision_mode",
 )
 cmd_line_args_lists = (
@@ -335,6 +337,7 @@ def handle_test(
     test_with_copy=BuiltWithCopyStrategy,
     test_gradients=BuiltGradientStrategy,
     test_trace=BuiltTraceStrategy,
+    test_trace_each=BuiltTraceEachStrategy,
     transpile=BuiltTranspileStrategy,
     precision_mode=BuiltPrecisionModeStrategy,
     as_variable_flags=BuiltAsVariableStrategy,
@@ -378,6 +381,10 @@ def handle_test(
         A search strategy that generates a boolean to trace and test the
         function
 
+    test_trace_each
+        A search strategy that generates a boolean to trace and test the
+        function (trace each example separately)
+
     precision_mode
         A search strategy that generates a boolean to switch between two different
         precision modes supported by numpy and (torch, jax) and test the function
@@ -413,6 +420,7 @@ def handle_test(
             with_copy=_get_runtime_flag_value(test_with_copy),
             test_gradients=_get_runtime_flag_value(test_gradients),
             test_trace=_get_runtime_flag_value(test_trace),
+            test_trace_each=_get_runtime_flag_value(test_trace_each),
             transpile=_get_runtime_flag_value(transpile),
             as_variable=_get_runtime_flag_value(as_variable_flags),
             native_arrays=_get_runtime_flag_value(native_array_flags),
@@ -481,6 +489,7 @@ def handle_frontend_test(
     as_variable_flags=BuiltAsVariableStrategy,
     native_array_flags=BuiltNativeArrayStrategy,
     test_trace=BuiltTraceStrategy,
+    test_trace_each=BuiltTraceEachStrategy,
     generate_frontend_arrays=BuiltFrontendArrayStrategy,
     transpile=BuiltTranspileStrategy,
     precision_mode=BuiltPrecisionModeStrategy,
@@ -529,6 +538,10 @@ def handle_frontend_test(
         A search strategy that generates a boolean to trace and test the
         function
 
+    test_trace_each
+        A search strategy that generates a boolean to trace and test the
+        function (trace each example separately)
+
     generate_frontend_arrays
         A search strategy that generates a list of boolean flags for array inputs to
         be frontend array
@@ -552,6 +565,7 @@ def handle_frontend_test(
             as_variable=_get_runtime_flag_value(as_variable_flags),
             native_arrays=_get_runtime_flag_value(native_array_flags),
             test_trace=_get_runtime_flag_value(test_trace),
+            test_trace_each=_get_runtime_flag_value(test_trace_each),
             generate_frontend_arrays=_get_runtime_flag_value(generate_frontend_arrays),
             transpile=_get_runtime_flag_value(transpile),
             precision_mode=_get_runtime_flag_value(precision_mode),
@@ -626,6 +640,7 @@ def handle_method(
     ground_truth_backend: str = "tensorflow",
     test_gradients=BuiltGradientStrategy,
     test_trace=BuiltTraceStrategy,
+    test_trace_each=BuiltTraceEachStrategy,
     precision_mode=BuiltPrecisionModeStrategy,
     init_num_positional_args=None,
     init_native_arrays=BuiltNativeArrayStrategy,
@@ -657,6 +672,7 @@ def handle_method(
         "ground_truth_backend": st.just(ground_truth_backend),
         "test_gradients": _get_runtime_flag_value(test_gradients),
         "test_trace": _get_runtime_flag_value(test_trace),
+        "test_trace_each": _get_runtime_flag_value(test_trace_each),
         "precision_mode": _get_runtime_flag_value(precision_mode),
     }
 
@@ -746,6 +762,7 @@ def handle_frontend_method(
     init_native_arrays=BuiltNativeArrayStrategy,
     init_as_variable_flags=BuiltAsVariableStrategy,
     test_trace=BuiltTraceStrategy,
+    test_trace_each=BuiltTraceEachStrategy,
     precision_mode=BuiltPrecisionModeStrategy,
     method_num_positional_args=None,
     method_native_arrays=BuiltNativeArrayStrategy,
@@ -850,6 +867,7 @@ def handle_frontend_method(
                 as_variable=_get_runtime_flag_value(method_as_variable_flags),
                 native_arrays=_get_runtime_flag_value(method_native_arrays),
                 test_trace=_get_runtime_flag_value(test_trace),
+                test_trace_each=_get_runtime_flag_value(test_trace_each),
                 precision_mode=_get_runtime_flag_value(precision_mode),
                 generate_frontend_arrays=_get_runtime_flag_value(
                     generate_frontend_arrays
@@ -959,6 +977,7 @@ def handle_example(
             with_copy=test_flags.get("with_copy", False),
             test_gradients=test_flags.get("test_gradients", False),
             test_trace=test_flags.get("test_trace", False),
+            test_trace_each=test_flags.get("test_trace_each", False),
             transpile=test_flags.get("transpile", False),
             as_variable=test_flags.get("as_variable", [False]),
             native_arrays=test_flags.get("native_arrays", [False]),
@@ -979,6 +998,7 @@ def handle_example(
             as_variable=test_flags.get("as_variable", [False]),
             native_arrays=test_flags.get("native_arrays", [False]),
             test_trace=test_flags.get("test_trace", False),
+            test_trace_each=test_flags.get("test_trace_each", False),
             generate_frontend_arrays=test_flags.get("generate_frontend_arrays", False),
             transpile=test_flags.get("transpile", False),
             precision_mode=test_flags.get("precision_mode", False),
@@ -1017,6 +1037,7 @@ def handle_example(
             precision_mode=method_flags.get("precision_mode", False),
             inplace=method_flags.get("inplace", False),
             test_trace=method_flags.get("test_trace", False),
+            test_trace_each=method_flags.get("test_trace_each", False),
             generate_frontend_arrays=method_flags.get(
                 "generate_frontend_arrays", False
             ),

@@ -887,7 +887,7 @@ def lstm(
     if weights_transposed:
         # transpose the weights if they are in the wrong format
         all_weights = [
-            torch.transpose(weight, 1, 0) if weight.dim() == 2 else weight
+            torch.transpose(weight, 1, 0).contiguous() if weight.dim() == 2 else weight
             for weight in all_weights
         ]
     else:
@@ -909,11 +909,6 @@ def lstm(
         initial_states[0] = ivy.expand_dims(initial_states[0])
     if initial_states[1].dim() == 2:
         initial_states[1] = ivy.expand_dims(initial_states[1])
-
-    # ensure all weights are contiguous, so they will work on gpu
-    for i, w in enumerate(all_weights):
-        if not w.is_contiguous():
-            all_weights[i] = w.contiguous()
 
     ret = torch.lstm(
         input,

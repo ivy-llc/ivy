@@ -211,6 +211,7 @@ def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
                 break
         if (
             "dtype" in all_as_kwargs_np
+            and all_as_kwargs_np["dtype"] is not None
             and all_as_kwargs_np["dtype"] in unsupported_dtypes_fn
         ):
             test_unsupported = True
@@ -221,6 +222,7 @@ def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
                 break
         if (
             "dtype" in all_as_kwargs_np
+            and all_as_kwargs_np["dtype"] is not None
             and all_as_kwargs_np["dtype"] not in supported_dtypes_fn
         ):
             test_unsupported = True

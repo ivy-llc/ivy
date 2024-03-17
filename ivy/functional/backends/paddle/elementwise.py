@@ -121,10 +121,6 @@ def isinf(
     return paddle.zeros(shape=x.shape, dtype=bool)
 
 
-@with_unsupported_dtypes(
-    {"2.6.0 and below": ("bfloat16",)},
-    backend_version,
-)
 def equal(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -140,8 +136,8 @@ def equal(
     return paddle.equal(x1, x2)
 
 
-@with_supported_dtypes(
-    {"2.6.0 and below": ("bool", "float32", "float64", "int32", "int64", "complex")},
+@with_unsupported_dtypes(
+    {"2.6.0 and below": ("bool",)},
     backend_version,
 )
 def less_equal(
@@ -154,9 +150,11 @@ def less_equal(
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if isinstance(x1, paddle.Tensor) and isinstance(x2, paddle.Tensor):
         if paddle.is_complex(x1) and paddle.is_complex(x2):
-            real = paddle.less_equal(x1.real(), x2.real())
-            imag = paddle.less_equal(x1.imag(), x2.imag())
-            return paddle_backend.logical_and(real, imag)
+            real_comparison = paddle.real(x1) < paddle.real(x2)
+            imag_comparison = paddle_backend.logical_and(
+                paddle.real(x1) == paddle.real(x2), paddle.imag(x1) < paddle.imag(x2)
+            )
+            return paddle_backend.logical_or(real_comparison, imag_comparison)
 
     return paddle.less_equal(x1, x2)
 
@@ -379,14 +377,12 @@ def cos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
     return paddle.cos(x)
 
 
-@with_unsupported_dtypes({"2.6.0 and below": ("uint8", "float16")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.6.0 and below": ("uint8", "float16", "bfloat16")}, backend_version
+)
 def logical_not(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    if paddle.is_complex(x):
-        return paddle.logical_and(
-            paddle.logical_not(x.real()), paddle.logical_not(x.imag())
-        )
     return paddle.logical_not(x)
 
 
@@ -615,10 +611,6 @@ def negative(
     return paddle.neg(x)
 
 
-@with_supported_dtypes(
-    {"2.6.0 and below": ("float32", "float64", "int32", "int64")},
-    backend_version,
-)
 def not_equal(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -894,22 +886,8 @@ def logaddexp2(
         return ivy.log2(ivy.exp2(x1) + ivy.exp2(x2))
 
 
-@with_unsupported_device_and_dtypes(
-    {
-        "2.6.0 and below": {
-            "cpu": (
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-                "uint8",
-                "float16",
-                "float32",
-                "float64",
-                "bool",
-            )
-        }
-    },
+@with_supported_dtypes(
+    {"2.6.0 and below": ("complex",)},
     backend_version,
 )
 def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -1098,7 +1076,13 @@ def minimum(
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if paddle.is_complex(x1):
-        use_where = True
+        real_comparison = paddle.real(x1) < paddle.real(x2)
+        imag_comparison = paddle_backend.logical_and(
+            paddle.real(x1) == paddle.real(x2), paddle.imag(x1) < paddle.imag(x2)
+        )
+        return paddle_backend.where(
+            paddle_backend.logical_or(real_comparison, imag_comparison), x1, x2
+        ).astype(ret_dtype)
 
     if use_where:
         return paddle_backend.where(paddle_backend.less_equal(x1, x2), x1, x2).astype(

@@ -215,6 +215,17 @@ def from_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
     return paddle.utils.dlpack.from_dlpack(capsule)
 
 
+@with_unsupported_device_and_dtypes(
+    {
+        "2.6.0 and below": {
+            "cpu": (
+                "complex",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
 def full(
     shape: Union[ivy.NativeShape, Sequence[int]],
     fill_value: Union[int, float, bool],

@@ -193,7 +193,9 @@ def matmul(
 matmul.support_native_out = True
 
 
-@with_supported_dtypes({"2.2 and below": ("float", "complex")}, backend_version)
+@with_supported_dtypes(
+    {"2.2 and below": ("float32", "float64", "complex32", "complex64")}, backend_version
+)
 def matrix_norm(
     x: torch.Tensor,
     /,
@@ -201,9 +203,19 @@ def matrix_norm(
     ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
     axis: Tuple[int, int] = (-2, -1),
     keepdims: bool = False,
+    dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.linalg.matrix_norm(x, ord=ord, dim=axis, keepdim=keepdims, out=out)
+    # ivy forces out to be the same type as the input
+    # but it has to be the same type as ret.
+    if (
+        "complex" in ivy.as_ivy_dtype(dtype) or "complex" in ivy.as_ivy_dtype(x.dtype)
+    ) and ivy.exists(out):
+        out = ivy.astype(out, "float32").to_native()
+    ret = torch.linalg.matrix_norm(
+        x, ord=ord, dim=axis, keepdim=keepdims, dtype=dtype, out=out
+    )
+    return ret
 
 
 matrix_norm.support_native_out = True
@@ -489,7 +501,15 @@ def vecdot(
 vecdot.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.2 and below": ("integer",)}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "2.2 and below": (
+            "integer",
+            "complex64",
+        )
+    },
+    backend_version,
+)
 def vector_norm(
     x: torch.Tensor,
     /,

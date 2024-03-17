@@ -1882,8 +1882,8 @@ class _ContainerWithActivationExperimental(ContainerBase):
         >>> y = ivy.Container._static_hardsilu(x)
         >>> print(y)
         {
-            a: ivy.array([-0.20833333, 0.33333333, 0.]),
-            b: ivy.array([0.29166667, 0.66666667, 1.66666667])
+            a: ivy.array([-0.20833333, -0.33333334, 0.]),
+            b: ivy.array([0.29166666, 0.66666669, 1.66666663])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1939,8 +1939,8 @@ class _ContainerWithActivationExperimental(ContainerBase):
         >>> y = x.hardsilu()
         >>> print(y)
         {
-            a: ivy.array([-0.20833333, 0.33333333, 0.]),
-            b: ivy.array([0.29166667, 0.66666667, 1.66666667])
+            a: ivy.array([-0.20833333, -0.33333334, 0.]),
+            b: ivy.array([0.29166666, 0.66666669, 1.66666663])
         }
         """
         return self._static_hardsilu(

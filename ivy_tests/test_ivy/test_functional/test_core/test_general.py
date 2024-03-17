@@ -1074,6 +1074,15 @@ def test_get_all_arrays_in_memory():
     container_flags=st.just([False]),
     test_with_copy=st.just(True),
 )
+@handle_example(
+    test_example=True,
+    test_flags={
+        "num_positional_args": 2,
+    },
+    dtypes_x_query=(["float32", "bool"], np.ones((1, 3, 3)), (np.array([True]), 2, 2)),
+    copy=None,
+    fn_name="get_item",
+)
 def test_get_item(
     dtypes_x_query,
     copy,
@@ -1737,6 +1746,25 @@ def test_shape(x0_n_x1_n_res, as_array, test_flags, backend_fw, fn_name, on_devi
         fn_name=fn_name,
         x=x[0],
         as_array=as_array,
+    )
+
+
+# size
+@handle_test(
+    fn_tree="functional.ivy.size",
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_size(dtype_x, test_flags, backend_fw, fn_name, on_device):
+    dtype, x = dtype_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
     )
 
 
