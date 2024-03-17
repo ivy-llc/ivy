@@ -871,6 +871,7 @@ def softmax(logits, axis=None, name=None):
 @with_supported_dtypes(
     {
         "2.15.0 and below": (
+            "float16",
             "float32",
             "float64",
         )

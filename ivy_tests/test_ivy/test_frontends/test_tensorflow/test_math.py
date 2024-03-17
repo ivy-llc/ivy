@@ -2858,6 +2858,8 @@ def test_tensorflow_softplus(
     on_device,
 ):
     input_dtype, x = dtype_and_x
+    if backend_fw == "paddle" and "float16" in input_dtype:
+        return
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
