@@ -22,44 +22,6 @@ from ivy.func_wrapper import (
 from . import backend_version
 
 
-@with_supported_dtypes(
-    {
-        "2.6.0 and below": (
-            "float32",
-            "float64",
-            "complex64",
-        )
-    },
-    backend_version,
-)
-def relu(
-    x: paddle.Tensor, /, *, complex_mode="jax", out: Optional[paddle.Tensor] = None
-) -> paddle.Tensor:
-    if paddle.is_complex(x):
-        return paddle.complex(F.relu(x.real()), F.relu(x.imag()))
-    return F.relu(x)
-
-
-@with_supported_device_and_dtypes(
-    {"2.6.0 and below": {"cpu": ("float32", "float64", "complex")}},
-    backend_version,
-)
-def leaky_relu(
-    x: paddle.Tensor,
-    /,
-    *,
-    alpha: float = 0.2,
-    complex_mode="jax",
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    if paddle.is_complex(x):
-        return paddle.complex(
-            F.leaky_relu(x.real(), negative_slope=alpha),
-            F.leaky_relu(x.imag(), negative_slope=alpha),
-        )
-    return F.leaky_relu(x, negative_slope=alpha)
-
-
 @with_supported_device_and_dtypes(
     {"2.6.0 and below": {"cpu": ("float32", "float64", "complex")}},
     backend_version,
@@ -82,6 +44,92 @@ def gelu(
             * (1 + paddle_backend.tanh(sqrt_2_over_pi * (x + 0.044715 * x * x * x)))
         )
     return F.gelu(x, approximate=approximate)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("float16",)}}, backend_version
+)
+def hardswish(
+    x: paddle.Tensor,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return F.hardswish(x)
+
+
+@with_supported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("float32", "float64", "complex")}},
+    backend_version,
+)
+def leaky_relu(
+    x: paddle.Tensor,
+    /,
+    *,
+    alpha: float = 0.2,
+    complex_mode="jax",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        return paddle.complex(
+            F.leaky_relu(x.real(), negative_slope=alpha),
+            F.leaky_relu(x.imag(), negative_slope=alpha),
+        )
+    return F.leaky_relu(x, negative_slope=alpha)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
+)
+def log_softmax(
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[int] = -1,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[paddle.Tensor] = None,
+):
+    x_max = paddle_backend.max(x, axis=axis, keepdims=True)
+    sub_tmp = paddle_backend.subtract(x, x_max)
+    ret = paddle_backend.sum(paddle_backend.exp(sub_tmp), axis=axis, keepdims=True)
+    ret = paddle_backend.log(ret)
+    ret = paddle_backend.subtract(sub_tmp, ret)
+    return ret
+
+
+@with_supported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("float32", "float64", "complex")}},
+    backend_version,
+)
+def mish(
+    x: paddle.Tensor,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        return x * paddle_backend.tanh(paddle_backend.log1p(paddle_backend.exp(x)))
+    return F.mish(x)
+
+
+@with_supported_dtypes(
+    {
+        "2.6.0 and below": (
+            "float32",
+            "float64",
+            "complex64",
+        )
+    },
+    backend_version,
+)
+def relu(
+    x: paddle.Tensor, /, *, complex_mode="jax", out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    if paddle.is_complex(x):
+        return paddle.complex(F.relu(x.real()), F.relu(x.imag()))
+    return F.relu(x)
 
 
 @with_supported_device_and_dtypes(
@@ -158,51 +206,3 @@ def softsign(
 
 
 softsign.support_native_out = True
-
-
-@with_unsupported_device_and_dtypes(
-    {"2.6.0 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
-)
-def log_softmax(
-    x: paddle.Tensor,
-    /,
-    *,
-    axis: Optional[int] = -1,
-    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
-    out: Optional[paddle.Tensor] = None,
-):
-    x_max = paddle_backend.max(x, axis=axis, keepdims=True)
-    sub_tmp = paddle_backend.subtract(x, x_max)
-    ret = paddle_backend.sum(paddle_backend.exp(sub_tmp), axis=axis, keepdims=True)
-    ret = paddle_backend.log(ret)
-    ret = paddle_backend.subtract(sub_tmp, ret)
-    return ret
-
-
-@with_supported_device_and_dtypes(
-    {"2.6.0 and below": {"cpu": ("float32", "float64", "complex")}},
-    backend_version,
-)
-def mish(
-    x: paddle.Tensor,
-    /,
-    *,
-    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    if paddle.is_complex(x):
-        return x * paddle_backend.tanh(paddle_backend.log1p(paddle_backend.exp(x)))
-    return F.mish(x)
-
-
-@with_unsupported_device_and_dtypes(
-    {"2.6.0 and below": {"cpu": ("float16",)}}, backend_version
-)
-def hardswish(
-    x: paddle.Tensor,
-    /,
-    *,
-    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    return F.hardswish(x)

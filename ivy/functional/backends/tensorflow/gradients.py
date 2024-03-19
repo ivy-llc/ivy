@@ -20,17 +20,8 @@ from ivy.functional.ivy.gradients import (
 )
 
 
-def variable(x, /):
-    with tf.device(ivy.dev(x, as_native=True)):
-        return tf.Variable(x, trainable=True)
-
-
-def is_variable(x, /, *, exclusive=False):
-    return isinstance(x, tf.Variable)
-
-
-def variable_data(x: tf.Variable, /) -> tf.Variable:
-    return x.value()
+# --- Helpers --- #
+# --------------- #
 
 
 def _grad_func(y, xs, xs_required, tape):
@@ -116,80 +107,6 @@ def execute_with_gradients(
     return _process_func_ret_and_grads(func_ret, grads, retain_grads)
 
 
-def value_and_grad(func):
-    def grad_fn(xs):
-        grads = ivy.nested_map(
-            lambda x: ivy.zeros_like(x), xs, include_derived=True, shallow=False
-        )
-        with tf.GradientTape(watch_accessed_variables=False) as tape:
-            xs = ivy.nested_map(lambda x: ivy.to_native(x), xs, include_derived=True)
-            tape.watch(xs)
-            y = func(xs)
-        y = y.to_native(y)
-        grads_ = tape.gradient(y, xs)
-        grads_ = ivy.nested_map(
-            lambda x: ivy.to_ivy(x),
-            grads_,
-            include_derived=True,
-        )
-        grads_ = ivy.to_ivy(grads_)
-        grad_idxs = ivy.nested_argwhere(grads_, lambda x: ivy.is_ivy_array(x))
-        grad_array_vals = list(ivy.multi_index_nest(grads_, grad_idxs))
-        xs = ivy.to_ivy(xs)
-        if isinstance(xs, ivy.Array):
-            grads = grads_
-        else:
-            ivy.set_nest_at_indices(grads, grad_idxs, grad_array_vals)
-        y = ivy.to_ivy(y)
-        return y, grads
-
-    return grad_fn
-
-
-def stop_gradient(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    preserve_type: bool = True,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    is_var = is_variable(x)
-    x = tf.stop_gradient(x)
-    if is_var and preserve_type:
-        return variable(x)
-    return x
-
-
-def jac(func: Callable):
-    def grad_fn(x_in):
-        return ivy.to_native(
-            func(ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
-        )
-
-    def callback_fn(x_in):
-        with tf.GradientTape(persistent=True) as tape:
-            ivy.nested_map(ivy.copy_array, x_in)
-            x_in = ivy.to_native(x_in, nested=True)
-            tape.watch(x_in)
-            y = grad_fn(x_in)
-
-            # Deal with multiple outputs
-            if not isinstance(y, ivy.NativeArray):
-                jacobian = ivy.nested_map(
-                    lambda yi: ivy.to_ivy(
-                        tape.jacobian(yi, x_in, unconnected_gradients="zero"),
-                        nested=True,
-                    ),
-                    y,
-                    include_derived=True,
-                )
-            else:
-                jacobian = ivy.to_ivy(tape.jacobian(y, x_in))
-        return jacobian
-
-    return callback_fn
-
-
 def grad(f, argnums=0):
     if grad.nth == 0:
         grad.f_original = f
@@ -236,6 +153,93 @@ def grad(f, argnums=0):
     grad.nth += 1
 
     return _nth_derivative(grad.nth)
+
+
+def is_variable(x, /, *, exclusive=False):
+    return isinstance(x, tf.Variable)
+
+
+def jac(func: Callable):
+    def grad_fn(x_in):
+        return ivy.to_native(
+            func(ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
+        )
+
+    def callback_fn(x_in):
+        with tf.GradientTape(persistent=True) as tape:
+            ivy.nested_map(ivy.copy_array, x_in)
+            x_in = ivy.to_native(x_in, nested=True)
+            tape.watch(x_in)
+            y = grad_fn(x_in)
+
+            # Deal with multiple outputs
+            if not isinstance(y, ivy.NativeArray):
+                jacobian = ivy.nested_map(
+                    lambda yi: ivy.to_ivy(
+                        tape.jacobian(yi, x_in, unconnected_gradients="zero"),
+                        nested=True,
+                    ),
+                    y,
+                    include_derived=True,
+                )
+            else:
+                jacobian = ivy.to_ivy(tape.jacobian(y, x_in))
+        return jacobian
+
+    return callback_fn
+
+
+def stop_gradient(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    preserve_type: bool = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    is_var = is_variable(x)
+    x = tf.stop_gradient(x)
+    if is_var and preserve_type:
+        return variable(x)
+    return x
+
+
+def value_and_grad(func):
+    def grad_fn(xs):
+        grads = ivy.nested_map(
+            lambda x: ivy.zeros_like(x), xs, include_derived=True, shallow=False
+        )
+        with tf.GradientTape(watch_accessed_variables=False) as tape:
+            xs = ivy.nested_map(lambda x: ivy.to_native(x), xs, include_derived=True)
+            tape.watch(xs)
+            y = func(xs)
+        y = y.to_native(y)
+        grads_ = tape.gradient(y, xs)
+        grads_ = ivy.nested_map(
+            lambda x: ivy.to_ivy(x),
+            grads_,
+            include_derived=True,
+        )
+        grads_ = ivy.to_ivy(grads_)
+        grad_idxs = ivy.nested_argwhere(grads_, lambda x: ivy.is_ivy_array(x))
+        grad_array_vals = list(ivy.multi_index_nest(grads_, grad_idxs))
+        xs = ivy.to_ivy(xs)
+        if isinstance(xs, ivy.Array):
+            grads = grads_
+        else:
+            ivy.set_nest_at_indices(grads, grad_idxs, grad_array_vals)
+        y = ivy.to_ivy(y)
+        return y, grads
+
+    return grad_fn
+
+
+def variable(x, /):
+    with tf.device(ivy.dev(x, as_native=True)):
+        return tf.Variable(x, trainable=True)
+
+
+def variable_data(x: tf.Variable, /) -> tf.Variable:
+    return x.value()
 
 
 grad.f_original = None

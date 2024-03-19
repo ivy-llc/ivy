@@ -18,6 +18,10 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 def _gelu_jax_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -29,6 +33,96 @@ def _gelu_jax_like(
     # We don't have the exact implementation
     # cuz the erf function doesn't work on complex numbers
     return fn_original(x, approximate=True, out=out)
+
+
+def _hardswish_jax_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    fn_original=None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    def hard_sigmoid(x):
+        return ivy.relu6(x + 3.0) / 6
+
+    return ivy.multiply(x, hard_sigmoid(x).astype(x.dtype))
+
+
+def _leaky_relu_jax_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    fn_original: Optional[Callable] = None,
+    alpha: float = 0.2,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    return ivy.where(
+        (
+            ivy.logical_or(
+                ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
+            )
+        ),
+        ivy.astype(x * alpha, x.dtype),
+        x,
+    )
+
+
+def _relu_jax_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    fn_original=None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    return ivy.where(
+        (
+            ivy.logical_or(
+                ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
+            )
+        ),
+        ivy.array(0.0, dtype=x.dtype),
+        x,
+    )
+
+
+def _softplus_jax_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    fn_original=None,
+    beta: Optional[Union[int, float]] = None,
+    threshold: Optional[Union[int, float]] = None,
+    out: Optional[ivy.Array] = None,
+):
+    if beta is not None:
+        x_beta = ivy.multiply(x, ivy.array(beta, dtype=x.dtype))
+    else:
+        x_beta = x
+    amax = ivy.relu(x_beta)
+    res = ivy.subtract(x_beta, ivy.multiply(amax, ivy.array(2, dtype=x.dtype)))
+    res = ivy.add(amax, ivy.log(ivy.add(1, ivy.exp(res))))
+    res = ivy.real(res) + _wrap_between(ivy.imag(res), ivy.pi).astype(
+        x.dtype
+    ) * ivy.astype(1j, x.dtype)
+    if beta is not None:
+        res = ivy.divide(res, ivy.array(beta, dtype=x.dtype))
+    if threshold is not None:
+        res = ivy.where(
+            ivy.real(x_beta) < threshold,
+            res,
+            x,
+        ).astype(x.dtype)
+    return res
+
+
+def _wrap_between(y, a):
+    """Wrap y between [-a, a]"""
+    a = ivy.array(a, dtype=y.dtype)
+    a2 = ivy.array(2 * a, dtype=y.dtype)
+    zero = ivy.array(0, dtype=y.dtype)
+    rem = ivy.remainder(ivy.add(y, a), a2)
+    rem = ivy.where(rem < zero, rem + a2, rem) - a
+    return rem
 
 
 @handle_exceptions
@@ -98,26 +192,59 @@ def gelu(
     return current_backend(x).gelu(x, approximate=approximate, out=out)
 
 
-gelu.jax_like = _gelu_jax_like
-
-
-def _leaky_relu_jax_like(
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_complex_input
+def hardswish(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    fn_original: Optional[Callable] = None,
-    alpha: float = 0.2,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    return ivy.where(
-        (
-            ivy.logical_or(
-                ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
-            )
-        ),
-        ivy.astype(x * alpha, x.dtype),
-        x,
-    )
+    """Apply the hardswish activation function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the hardswish activation of each element in ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([0., 0., 4.])
+    >>> y = ivy.hardswish(x)
+    >>> y
+    ivy.array([0., 0., 4.])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-3., 4., 5.]), b=ivy.array([0., 5.]))
+    >>> x = ivy.hardswish(x, out=x)
+    >>> x
+    {
+        a: ivy.array([-0.,  4.,  5.]),
+        b: ivy.array([0., 5.])
+    }
+    """
+    return current_backend(x).hardswish(x, out=out)
 
 
 @handle_exceptions
@@ -197,9 +324,6 @@ def leaky_relu(
     return current_backend(x).leaky_relu(x, alpha=alpha, out=out)
 
 
-leaky_relu.jax_like = _leaky_relu_jax_like
-
-
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -277,22 +401,67 @@ def log_softmax(
     return current_backend(x).log_softmax(x, axis=axis, out=out)
 
 
-def _relu_jax_like(
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device
+@handle_complex_input
+def mish(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    fn_original=None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    return ivy.where(
-        (
-            ivy.logical_or(
-                ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
-            )
-        ),
-        ivy.array(0.0, dtype=x.dtype),
-        x,
-    )
+    """Apply the mish activation function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        ``ivy.func_wrapper.handle_complex_input`` for more detail.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the mish activation of each element in
+        ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-1., 0., 1.])
+    >>> y = ivy.mish(x)
+    >>> print(y)
+    ivy.array([-0.30340147,  0.        ,  0.86509842])
+
+    >>> x = ivy.array([1.5, 0.7, -2.4])
+    >>> y = ivy.zeros(3)
+    >>> ivy.mish(x, out = y)
+    >>> print(y)
+    ivy.array([ 1.40337825,  0.56114835, -0.20788449])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
+    >>> x = ivy.mish(x)
+    >>> print(x)
+    {
+        a: ivy.array([0.86509842, -0.30883577]),
+        b: ivy.array([0.28903052, -0.10714479])
+    }
+    """
+    return current_backend(x).mish(x, out=out)
 
 
 @handle_exceptions
@@ -361,9 +530,6 @@ def relu(
     }
     """
     return current_backend(x).relu(x, out=out)
-
-
-relu.jax_like = _relu_jax_like
 
 
 @handle_exceptions
@@ -507,46 +673,6 @@ def softmax(
     return current_backend(x).softmax(x, axis=axis, out=out)
 
 
-def _wrap_between(y, a):
-    """Wrap y between [-a, a]"""
-    a = ivy.array(a, dtype=y.dtype)
-    a2 = ivy.array(2 * a, dtype=y.dtype)
-    zero = ivy.array(0, dtype=y.dtype)
-    rem = ivy.remainder(ivy.add(y, a), a2)
-    rem = ivy.where(rem < zero, rem + a2, rem) - a
-    return rem
-
-
-def _softplus_jax_like(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    fn_original=None,
-    beta: Optional[Union[int, float]] = None,
-    threshold: Optional[Union[int, float]] = None,
-    out: Optional[ivy.Array] = None,
-):
-    if beta is not None:
-        x_beta = ivy.multiply(x, ivy.array(beta, dtype=x.dtype))
-    else:
-        x_beta = x
-    amax = ivy.relu(x_beta)
-    res = ivy.subtract(x_beta, ivy.multiply(amax, ivy.array(2, dtype=x.dtype)))
-    res = ivy.add(amax, ivy.log(ivy.add(1, ivy.exp(res))))
-    res = ivy.real(res) + _wrap_between(ivy.imag(res), ivy.pi).astype(
-        x.dtype
-    ) * ivy.astype(1j, x.dtype)
-    if beta is not None:
-        res = ivy.divide(res, ivy.array(beta, dtype=x.dtype))
-    if threshold is not None:
-        res = ivy.where(
-            ivy.real(x_beta) < threshold,
-            res,
-            x,
-        ).astype(x.dtype)
-    return res
-
-
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -616,9 +742,6 @@ def softplus(
     return current_backend(x).softplus(x, beta=beta, threshold=threshold, out=out)
 
 
-softplus.jax_like = _softplus_jax_like
-
-
 # Softsign
 @handle_exceptions
 @handle_backend_invalid
@@ -659,135 +782,8 @@ def softsign(
     return current_backend(x).softsign(x, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device
-@handle_complex_input
-def mish(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Apply the mish activation function element-wise.
-
-    Parameters
-    ----------
-    x
-        input array
-    complex_mode
-        optional specifier for how to handle complex data types. See
-        ``ivy.func_wrapper.handle_complex_input`` for more detail.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        an array containing the mish activation of each element in
-        ``x``.
-
-    Examples
-    --------
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([-1., 0., 1.])
-    >>> y = ivy.mish(x)
-    >>> print(y)
-    ivy.array([-0.30340147,  0.        ,  0.86509842])
-
-    >>> x = ivy.array([1.5, 0.7, -2.4])
-    >>> y = ivy.zeros(3)
-    >>> ivy.mish(x, out = y)
-    >>> print(y)
-    ivy.array([ 1.40337825,  0.56114835, -0.20788449])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
-    >>> x = ivy.mish(x)
-    >>> print(x)
-    {
-        a: ivy.array([0.86509842, -0.30883577]),
-        b: ivy.array([0.28903052, -0.10714479])
-    }
-    """
-    return current_backend(x).mish(x, out=out)
-
-
-def _hardswish_jax_like(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    fn_original=None,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    def hard_sigmoid(x):
-        return ivy.relu6(x + 3.0) / 6
-
-    return ivy.multiply(x, hard_sigmoid(x).astype(x.dtype))
-
-
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_complex_input
-def hardswish(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Apply the hardswish activation function element-wise.
-
-    Parameters
-    ----------
-    x
-        input array
-    complex_mode
-        optional specifier for how to handle complex data types. See
-        ``ivy.func_wrapper.handle_complex_input`` for more detail.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        an array containing the hardswish activation of each element in ``x``.
-
-    Examples
-    --------
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([0., 0., 4.])
-    >>> y = ivy.hardswish(x)
-    >>> y
-    ivy.array([0., 0., 4.])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([-3., 4., 5.]), b=ivy.array([0., 5.]))
-    >>> x = ivy.hardswish(x, out=x)
-    >>> x
-    {
-        a: ivy.array([-0.,  4.,  5.]),
-        b: ivy.array([0., 5.])
-    }
-    """
-    return current_backend(x).hardswish(x, out=out)
-
-
+gelu.jax_like = _gelu_jax_like
+leaky_relu.jax_like = _leaky_relu_jax_like
+relu.jax_like = _relu_jax_like
+softplus.jax_like = _softplus_jax_like
 hardswish.jax_like = _hardswish_jax_like

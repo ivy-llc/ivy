@@ -10,6 +10,28 @@ from .. import backend_version
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 
 
+def adjoint(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    _check_valid_dimension_size(x)
+    axes = list(range(len(x.shape)))
+    axes[-1], axes[-2] = axes[-2], axes[-1]
+    return np.conjugate(np.transpose(x, axes=axes))
+
+
+def cond(
+    x: np.ndarray,
+    /,
+    *,
+    p: Optional[Union[None, int, str]] = None,
+    out: Optional[np.ndarray] = None,
+) -> Any:
+    return np.linalg.cond(x, p=p)
+
+
 def diagflat(
     x: np.ndarray,
     /,
@@ -76,6 +98,33 @@ def diagflat(
     return ret
 
 
+def dot(
+    a: np.ndarray,
+    b: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.dot(a, b, out=out)
+
+
+@with_unsupported_dtypes({"1.26.3 and below": ("float16",)}, backend_version)
+def eig(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> Tuple[np.ndarray, np.ndarray]:
+    e, v = np.linalg.eig(x)
+    return e.astype(complex), v.astype(complex)
+
+
+@with_unsupported_dtypes({"1.26.3 and below": ("float16",)}, backend_version)
+def eigvals(x: np.ndarray, /) -> np.ndarray:
+    e = np.linalg.eigvals(x)
+    return e.astype(complex)
+
+
 def kron(
     a: np.ndarray,
     b: np.ndarray,
@@ -86,7 +135,25 @@ def kron(
     return np.kron(a, b)
 
 
-kron.support_native_out = False
+def lu_factor(
+    x: np.ndarray,
+    /,
+    *,
+    pivot: Optional[bool] = True,
+    out: Optional[np.ndarray] = None,
+) -> Tuple[np.ndarray]:
+    raise IvyNotImplementedException()
+
+
+def lu_solve(
+    lu: Tuple[np.ndarray],
+    p: np.ndarray,
+    b: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    raise IvyNotImplementedException()
 
 
 @with_supported_dtypes(
@@ -106,42 +173,13 @@ def matrix_exp(
     return exp_mat.astype(x.dtype)
 
 
-@with_unsupported_dtypes({"1.26.3 and below": ("float16",)}, backend_version)
-def eig(
-    x: np.ndarray,
+def multi_dot(
+    x: Sequence[np.ndarray],
     /,
     *,
-    out: Optional[np.ndarray] = None,
-) -> Tuple[np.ndarray, np.ndarray]:
-    e, v = np.linalg.eig(x)
-    return e.astype(complex), v.astype(complex)
-
-
-eig.support_native_out = False
-
-
-@with_unsupported_dtypes({"1.26.3 and below": ("float16",)}, backend_version)
-def eigvals(x: np.ndarray, /) -> np.ndarray:
-    e = np.linalg.eigvals(x)
-    return e.astype(complex)
-
-
-eigvals.support_native_out = False
-
-
-def adjoint(
-    x: np.ndarray,
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
+    out: Optional[np.array] = None,
 ) -> np.ndarray:
-    _check_valid_dimension_size(x)
-    axes = list(range(len(x.shape)))
-    axes[-1], axes[-2] = axes[-2], axes[-1]
-    return np.conjugate(np.transpose(x, axes=axes))
-
-
-_adjoint = adjoint
+    return np.linalg.multi_dot(x, out=out)
 
 
 def solve_triangular(
@@ -182,60 +220,10 @@ def solve_triangular(
     return ret
 
 
-def multi_dot(
-    x: Sequence[np.ndarray],
-    /,
-    *,
-    out: Optional[np.array] = None,
-) -> np.ndarray:
-    return np.linalg.multi_dot(x, out=out)
-
-
+kron.support_native_out = False
+eig.support_native_out = False
+eigvals.support_native_out = False
 multi_dot.support_native_out = True
-
-
-def cond(
-    x: np.ndarray,
-    /,
-    *,
-    p: Optional[Union[None, int, str]] = None,
-    out: Optional[np.ndarray] = None,
-) -> Any:
-    return np.linalg.cond(x, p=p)
-
-
 cond.support_native_out = False
-
-
-def lu_factor(
-    x: np.ndarray,
-    /,
-    *,
-    pivot: Optional[bool] = True,
-    out: Optional[np.ndarray] = None,
-) -> Tuple[np.ndarray]:
-    raise IvyNotImplementedException()
-
-
-def lu_solve(
-    lu: Tuple[np.ndarray],
-    p: np.ndarray,
-    b: np.ndarray,
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    raise IvyNotImplementedException()
-
-
-def dot(
-    a: np.ndarray,
-    b: np.ndarray,
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.dot(a, b, out=out)
-
-
 dot.support_native_out = True
+_adjoint = adjoint

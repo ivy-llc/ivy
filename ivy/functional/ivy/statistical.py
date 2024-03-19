@@ -16,8 +16,8 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 
-# Helpers #
-# --------#
+# --- Helpers --- #
+# --------------- #
 
 
 def _get_promoted_type_of_operands(operands):
@@ -31,10 +31,7 @@ def _get_promoted_type_of_operands(operands):
     return ivy.as_native_dtype(dtype)
 
 
-# Array API Standard #
-# -------------------#
-
-
+@handle_exceptions
 @handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
@@ -42,112 +39,120 @@ def _get_promoted_type_of_operands(operands):
 @to_native_arrays_and_back
 @handle_array_function
 @handle_device
-def min(
+def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    initial: Optional[Union[int, float, complex]] = None,
-    where: Optional[ivy.Array] = None,
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate the minimum value of the input array ``x``.
-
-    .. note::
-       When the number of elements over which to compute the minimum value is zero, the
-       minimum value is implementation-defined. Specification-compliant libraries may
-       choose to raise an error, return a sentinel value (e.g., if ``x`` is a
-       floating-point input array, return ``NaN``), or return the maximum possible value
-       for the input array ``x`` data type (e.g., if ``x`` is a floating-point array,
-       return ``+infinity``).
-
-    **Special Cases**
-
-    For floating-point operands,
-
-    -   If ``x_i`` is ``NaN``, the minimum value is ``NaN``
-        (i.e., ``NaN`` values propagate).
+    """Return the cumulative product of the elements along a given axis.
 
     Parameters
     ----------
     x
-        Input array. Should have a real-valued data type.
+        Input array.
     axis
-        axis or axes along which minimum values must be computed. By default, the
-        minimum value must be computed over the entire array. If a tuple of integers,
-        minimum values must be computed over multiple axes. Default: ``None``.
-
-    keepdims
-        optional boolean, if ``True``, the reduced axes (dimensions) must be included
-        in the result as singleton dimensions, and, accordingly, the result must be
-        compatible with the input array (see :ref:`broadcasting`). Otherwise,
-        if ``False``, the reduced axes (dimensions) must not be included in the result.
-        Default: ``False``.
-    initial
-        The maximum value of an output element.
-        Must be present to allow computation on empty slice.
-    where
-        Elements to compare for minimum
+        int , axis along which the cumulative product is computed. By default 0.
+    exclusive
+        optional bool, Whether to perform the cumprod exclusively. Defaults is False.
+    reverse
+        Whether to perform the cumprod from last to first element in the selected
+        axis. Default is ``False`` (from first to last element)
     out
-        optional output array, for writing the result to.
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
     ret
-        if the minimum value was computed over the entire array, a zero-dimensional
-        array containing the minimum value; otherwise, a non-zero-dimensional array
-        containing the minimum values. The returned array must have the same data type
-        as ``x``.
-
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.min.html>`_
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
+        Input array with cumulatively multiplied elements along axis.
 
     Examples
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.array([1, 2, 3])
-    >>> z = ivy.min(x)
-    >>> print(z)
-    ivy.array(1)
-
-    >>> x = ivy.array([0, 1, 2])
-    >>> z = ivy.array([0, 0, 0])
-    >>> y = ivy.min(x, out=z)
-    >>> print(z)
-    ivy.array(0)
-
-    >>> x = ivy.array([[0, 1, 2], [4, 6, 10]])
-    >>> y = ivy.min(x, axis=0, keepdims=True)
+    >>> x = ivy.array([2, 3, 4])
+    >>> y = ivy.cumprod(x)
     >>> print(y)
-    ivy.array([[0, 1, 2]])
+    ivy.array([2, 6, 24])
 
-    >>> x = ivy.native_array([[0, 1, 2], [4, 6, 10]])
-    >>> y = ivy.min(x)
+    >>> x = ivy.array([2, 3, 4])
+    >>> y = ivy.cumprod(x, exclusive=True)
     >>> print(y)
-    ivy.array(0)
+    ivy.array([1, 2, 6])
+
+    >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
+    >>> y = ivy.zeros((3, 2))
+    >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
+    >>> print(y)
+    ivy.array([[ 1.,  2.],
+               [ 1.,  5.],
+               [ 1., 11.]])
+
+    >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
+    >>> ivy.cumprod(x, axis=0, exclusive=True, out=x)
+    >>> print(x)
+    ivy.array([[1,  1],
+               [2,  3],
+               [10, 21]])
+
+    >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
+    >>> y = ivy.zeros((3, 2))
+    >>> x.cumprod(axis=0, exclusive=True, out=y)
+    >>> print(y)
+    ivy.array([[1.,  1.],
+                [2.,  3.],
+                [10., 21.]])
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([2, 3, 4]))
-    >>> z = ivy.min(x)
-    >>> print(z)
+    >>> x = ivy.Container(a=ivy.array([2, 3, 4]), b=ivy.array([3, 4, 5]))
+    >>> y = ivy.cumprod(x)
+    >>> print(y)
     {
-        a: ivy.array(1),
-        b: ivy.array(2)
+        a: ivy.array([2, 6, 24]),
+        b: ivy.array([3, 12, 60])
     }
-    """
-    return current_backend(x).min(
-        x, axis=axis, keepdims=keepdims, initial=initial, where=where, out=out
+
+    >>> x = ivy.Container(a=ivy.array([2, 3, 4]), b=ivy.array([3, 4, 5]))
+    >>> y = ivy.cumprod(x, exclusive=True)
+    >>> print(y)
+    {
+        a: ivy.array([1, 2, 6]),
+        b: ivy.array([1, 3, 12])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[2, 3],[5, 7],[11, 13]]), b=ivy.array([[3, 4],[4, 5],[5, 6]]))
+    >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
+    >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
+    >>> print(y)
+    {
+        a: ivy.array([[1, 2],
+                      [1, 5],
+                      [1, 11]]),
+        b: ivy.array([[1, 3],
+                      [1, 4],
+                      [1, 5]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[2, 3],[5, 7],[11, 13]]), b=ivy.array([[3, 4],[4, 5],[5, 6]]))
+    >>> x.cumprod(axis=0, exclusive=True, out=x)
+    >>> print(x)
+    {
+        a: ivy.array([[1, 1],
+                      [2, 3],
+                      [10, 21]]),
+        b: ivy.array([[1, 1],
+                      [3, 4],
+                      [12, 20]])
+    }
+    """  # noqa: E501
+    return current_backend(x).cumprod(
+        x, axis=axis, exclusive=exclusive, reverse=reverse, dtype=dtype, out=out
     )
 
 
@@ -370,6 +375,126 @@ def mean(
     }
     """
     return current_backend(x).mean(x, axis=axis, keepdims=keepdims, out=out)
+
+
+# Array API Standard #
+# -------------------#
+
+
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device
+def min(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[ivy.Array] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Calculate the minimum value of the input array ``x``.
+
+    .. note::
+       When the number of elements over which to compute the minimum value is zero, the
+       minimum value is implementation-defined. Specification-compliant libraries may
+       choose to raise an error, return a sentinel value (e.g., if ``x`` is a
+       floating-point input array, return ``NaN``), or return the maximum possible value
+       for the input array ``x`` data type (e.g., if ``x`` is a floating-point array,
+       return ``+infinity``).
+
+    **Special Cases**
+
+    For floating-point operands,
+
+    -   If ``x_i`` is ``NaN``, the minimum value is ``NaN``
+        (i.e., ``NaN`` values propagate).
+
+    Parameters
+    ----------
+    x
+        Input array. Should have a real-valued data type.
+    axis
+        axis or axes along which minimum values must be computed. By default, the
+        minimum value must be computed over the entire array. If a tuple of integers,
+        minimum values must be computed over multiple axes. Default: ``None``.
+
+    keepdims
+        optional boolean, if ``True``, the reduced axes (dimensions) must be included
+        in the result as singleton dimensions, and, accordingly, the result must be
+        compatible with the input array (see :ref:`broadcasting`). Otherwise,
+        if ``False``, the reduced axes (dimensions) must not be included in the result.
+        Default: ``False``.
+    initial
+        The maximum value of an output element.
+        Must be present to allow computation on empty slice.
+    where
+        Elements to compare for minimum
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        if the minimum value was computed over the entire array, a zero-dimensional
+        array containing the minimum value; otherwise, a non-zero-dimensional array
+        containing the minimum values. The returned array must have the same data type
+        as ``x``.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.min.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> z = ivy.min(x)
+    >>> print(z)
+    ivy.array(1)
+
+    >>> x = ivy.array([0, 1, 2])
+    >>> z = ivy.array([0, 0, 0])
+    >>> y = ivy.min(x, out=z)
+    >>> print(z)
+    ivy.array(0)
+
+    >>> x = ivy.array([[0, 1, 2], [4, 6, 10]])
+    >>> y = ivy.min(x, axis=0, keepdims=True)
+    >>> print(y)
+    ivy.array([[0, 1, 2]])
+
+    >>> x = ivy.native_array([[0, 1, 2], [4, 6, 10]])
+    >>> y = ivy.min(x)
+    >>> print(y)
+    ivy.array(0)
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([2, 3, 4]))
+    >>> z = ivy.min(x)
+    >>> print(z)
+    {
+        a: ivy.array(1),
+        b: ivy.array(2)
+    }
+    """
+    return current_backend(x).min(
+        x, axis=axis, keepdims=keepdims, initial=initial, where=where, out=out
+    )
 
 
 @handle_exceptions
@@ -1043,131 +1168,6 @@ def cumsum(
     }
     """
     return current_backend(x).cumsum(x, axis, exclusive, reverse, dtype=dtype, out=out)
-
-
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device
-def cumprod(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axis: int = 0,
-    exclusive: bool = False,
-    reverse: bool = False,
-    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Return the cumulative product of the elements along a given axis.
-
-    Parameters
-    ----------
-    x
-        Input array.
-    axis
-        int , axis along which the cumulative product is computed. By default 0.
-    exclusive
-        optional bool, Whether to perform the cumprod exclusively. Defaults is False.
-    reverse
-        Whether to perform the cumprod from last to first element in the selected
-        axis. Default is ``False`` (from first to last element)
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        Input array with cumulatively multiplied elements along axis.
-
-    Examples
-    --------
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([2, 3, 4])
-    >>> y = ivy.cumprod(x)
-    >>> print(y)
-    ivy.array([2, 6, 24])
-
-    >>> x = ivy.array([2, 3, 4])
-    >>> y = ivy.cumprod(x, exclusive=True)
-    >>> print(y)
-    ivy.array([1, 2, 6])
-
-    >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
-    >>> y = ivy.zeros((3, 2))
-    >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
-    >>> print(y)
-    ivy.array([[ 1.,  2.],
-               [ 1.,  5.],
-               [ 1., 11.]])
-
-    >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
-    >>> ivy.cumprod(x, axis=0, exclusive=True, out=x)
-    >>> print(x)
-    ivy.array([[1,  1],
-               [2,  3],
-               [10, 21]])
-
-    >>> x = ivy.array([[2, 3],[5, 7],[11, 13]])
-    >>> y = ivy.zeros((3, 2))
-    >>> x.cumprod(axis=0, exclusive=True, out=y)
-    >>> print(y)
-    ivy.array([[1.,  1.],
-                [2.,  3.],
-                [10., 21.]])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([2, 3, 4]), b=ivy.array([3, 4, 5]))
-    >>> y = ivy.cumprod(x)
-    >>> print(y)
-    {
-        a: ivy.array([2, 6, 24]),
-        b: ivy.array([3, 12, 60])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([2, 3, 4]), b=ivy.array([3, 4, 5]))
-    >>> y = ivy.cumprod(x, exclusive=True)
-    >>> print(y)
-    {
-        a: ivy.array([1, 2, 6]),
-        b: ivy.array([1, 3, 12])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([[2, 3],[5, 7],[11, 13]]), b=ivy.array([[3, 4],[4, 5],[5, 6]]))
-    >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
-    >>> ivy.cumprod(x, axis=1, exclusive=True, out=y)
-    >>> print(y)
-    {
-        a: ivy.array([[1, 2],
-                      [1, 5],
-                      [1, 11]]),
-        b: ivy.array([[1, 3],
-                      [1, 4],
-                      [1, 5]])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([[2, 3],[5, 7],[11, 13]]), b=ivy.array([[3, 4],[4, 5],[5, 6]]))
-    >>> x.cumprod(axis=0, exclusive=True, out=x)
-    >>> print(x)
-    {
-        a: ivy.array([[1, 1],
-                      [2, 3],
-                      [10, 21]]),
-        b: ivy.array([[1, 1],
-                      [3, 4],
-                      [12, 20]])
-    }
-    """  # noqa: E501
-    return current_backend(x).cumprod(
-        x, axis=axis, exclusive=exclusive, reverse=reverse, dtype=dtype, out=out
-    )
 
 
 @handle_exceptions

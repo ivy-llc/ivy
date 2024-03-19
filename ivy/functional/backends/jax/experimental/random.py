@@ -15,6 +15,49 @@ from ivy.functional.ivy.random import (
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 
+
+def bernoulli(
+    probs: Union[float, JaxArray],
+    *,
+    logits: Optional[Union[float, JaxArray]] = None,
+    shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
+    device: Optional[jaxlib.xla_extension.Device] = None,
+    dtype: Optional[jnp.dtype] = None,
+    seed: Optional[int] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    dtype = dtype if dtype is not None else probs.dtype
+    if seed:
+        rng_input = jax.random.PRNGKey(seed)
+    else:
+        RNG_, rng_input = jax.random.split(_getRNG())
+        _setRNG(RNG_)
+    if logits is not None:
+        probs = jax.nn.softmax(logits, axis=-1)
+    if hasattr(probs, "shape") and not _check_shapes_broadcastable(shape, probs.shape):
+        shape = probs.shape
+    return jax.random.bernoulli(rng_input, probs, shape=shape).astype(dtype)
+
+
+def beta(
+    a: Union[float, JaxArray],
+    b: Union[float, JaxArray],
+    /,
+    *,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    device: Optional[jaxlib.xla_extension.Device] = None,
+    dtype: Optional[jnp.dtype] = None,
+    seed: Optional[int] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    shape = _check_bounds_and_get_shape(a, b, shape).shape
+    RNG_, rng_input = jax.random.split(_getRNG())
+    _setRNG(RNG_)
+    if seed is not None:
+        jax.random.PRNGKey(seed)
+    return jax.random.beta(rng_input, a, b, shape, dtype)
+
+
 # Extra #
 # ----- #
 
@@ -35,25 +78,6 @@ def dirichlet(
         RNG_, rng_input = jax.random.split(_getRNG())
         _setRNG(RNG_)
     return jax.random.dirichlet(rng_input, alpha, shape=size, dtype=dtype)
-
-
-def beta(
-    a: Union[float, JaxArray],
-    b: Union[float, JaxArray],
-    /,
-    *,
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: Optional[jaxlib.xla_extension.Device] = None,
-    dtype: Optional[jnp.dtype] = None,
-    seed: Optional[int] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    shape = _check_bounds_and_get_shape(a, b, shape).shape
-    RNG_, rng_input = jax.random.split(_getRNG())
-    _setRNG(RNG_)
-    if seed is not None:
-        jax.random.PRNGKey(seed)
-    return jax.random.beta(rng_input, a, b, shape, dtype)
 
 
 @with_unsupported_dtypes({"0.4.24 and below": ("bfloat16",)}, backend_version)
@@ -105,26 +129,3 @@ def poisson(
     else:
         ret = jax.random.poisson(rng_input, lam, shape=list_shape).astype(dtype)
     return ret
-
-
-def bernoulli(
-    probs: Union[float, JaxArray],
-    *,
-    logits: Optional[Union[float, JaxArray]] = None,
-    shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
-    device: Optional[jaxlib.xla_extension.Device] = None,
-    dtype: Optional[jnp.dtype] = None,
-    seed: Optional[int] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    dtype = dtype if dtype is not None else probs.dtype
-    if seed:
-        rng_input = jax.random.PRNGKey(seed)
-    else:
-        RNG_, rng_input = jax.random.split(_getRNG())
-        _setRNG(RNG_)
-    if logits is not None:
-        probs = jax.nn.softmax(logits, axis=-1)
-    if hasattr(probs, "shape") and not _check_shapes_broadcastable(shape, probs.shape):
-        shape = probs.shape
-    return jax.random.bernoulli(rng_input, probs, shape=shape).astype(dtype)

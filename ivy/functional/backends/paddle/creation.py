@@ -26,6 +26,113 @@ from ivy.functional.ivy.creation import (
 from . import backend_version
 from paddle.device import core
 
+
+# --- Helpers --- #
+# --------------- #
+
+
+def _differentiable_linspace(start, stop, num, *, dtype=None):
+    start = ivy.to_native(start)
+    num = paddle.to_tensor(num, stop_gradient=False)
+    if num == 1:
+        return paddle_backend.expand_dims(start, axis=0)
+    n_m_1 = paddle_backend.subtract(num, 1)
+    increment = paddle_backend.divide(paddle_backend.subtract(stop, start), n_m_1)
+    increment_tiled = paddle_backend.repeat(increment, n_m_1)
+    increments = paddle_backend.multiply(
+        increment_tiled,
+        paddle.linspace(1, n_m_1, n_m_1.cast(paddle.int32), dtype=dtype),
+    )
+    if isinstance(start, int) or start.ndim == 0:
+        start = paddle_backend.expand_dims(start, axis=0)
+    res = paddle_backend.concat((start, paddle_backend.add(start, increments)), axis=0)
+    return res.cast(dtype)
+
+
+def _linspace_helper(start, stop, num, axis=None, *, dtype=None):
+    num = num.detach().item() if isinstance(num, paddle.Tensor) else num
+    start_is_array = isinstance(start, paddle.Tensor)
+    stop_is_array = isinstance(stop, paddle.Tensor)
+    linspace_method = paddle.linspace
+    sos_shape = []
+    if start_is_array:
+        start_shape = start.shape
+        sos_shape = start_shape
+        if num == 1:
+            if axis is not None:
+                return paddle_backend.expand_dims(start, axis=axis)
+            else:
+                return paddle_backend.expand_dims(start, axis=-1)
+        start = start.reshape((-1,))
+        linspace_method = (
+            _differentiable_linspace if not start.stop_gradient else paddle.linspace
+        )
+    if stop_is_array:
+        stop_shape = stop.shape
+        sos_shape = stop_shape
+        if num == 1:
+            return (
+                paddle_backend.ones(
+                    stop_shape[:axis] + [1] + stop_shape[axis:], dtype=dtype
+                )
+                * start
+            )
+        stop = stop.reshape((-1,))
+        linspace_method = (
+            _differentiable_linspace if not stop.stop_gradient else paddle.linspace
+        )
+    if start_is_array and stop_is_array:
+        if num < start.shape[0]:
+            start = paddle_backend.expand_dims(start, axis=-1)
+            stop = paddle_backend.expand_dims(stop, axis=-1)
+            diff = paddle_backend.subtract(stop, start)
+            inc = diff / (num - 1)
+            res = [start]
+            res += [start + inc * i for i in range(1, num - 1)]
+            res.append(stop)
+        else:
+            res = [
+                linspace_method(strt, stp, num)
+                for strt, stp in zip(
+                    paddle_backend.unstack(start, keepdims=True),
+                    paddle_backend.unstack(stop, keepdims=True),
+                )
+            ]
+    elif start_is_array and not stop_is_array:
+        if num < start.shape[0]:
+            start = paddle_backend.expand_dims(start, axis=axis)
+            diff = stop - start
+            inc = diff / (num - 1)
+            res = [start]
+            res += [start + inc * i for i in range(1, num - 1)]
+            res.append(paddle.ones(start.shape).astype(start.dtype) * stop)
+        else:
+            res = [linspace_method(strt, stop, num) for strt in start]
+    elif not start_is_array and stop_is_array:
+        if num < stop.shape[0]:
+            stop = paddle_backend.expand_dims(stop, axis=-1)
+            diff = stop - start
+            inc = diff / (num - 1)
+            res = [paddle.ones(stop.shape).astype(stop.dtype) * start]
+            res += [start + inc * i for i in range(1, num - 1)]
+            res.append(stop)
+        else:
+            res = [linspace_method(start, stp, num) for stp in stop]
+    else:
+        return linspace_method(start, stop, num, dtype=dtype)
+    res = paddle_backend.concat(res, axis=-1).reshape(sos_shape + [num])
+    if axis is not None:
+        ndim = res.ndim
+        perm = list(range(ndim - 1))
+        perm.insert(axis % (ndim + 1), ndim - 1)
+        res = paddle_backend.permute_dims(res, perm)
+    return res
+
+
+def _slice_at_axis(sl, axis):
+    return (slice(None),) * axis + (sl,) + (...,)
+
+
 # Array API Standard #
 # -------------------#
 
@@ -118,6 +225,21 @@ def asarray(
     return paddle.to_tensor(obj, dtype=dtype, place=device)
 
 
+def copy_array(
+    x: paddle.Tensor,
+    *,
+    to_ivy_array: bool = True,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if 0 in x.shape:
+        new_arr = paddle.empty(x.shape, dtype=x.dtype)
+    else:
+        new_arr = x.clone()
+    if to_ivy_array:
+        return ivy.to_ivy(new_arr)
+    return new_arr
+
+
 def empty(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
@@ -203,16 +325,52 @@ def eye(
         return paddle.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
 
 
-def to_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
-    return paddle.utils.dlpack.to_dlpack(x)
-
-
 def from_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
     if hasattr(x, "__dlpack__"):
         capsule = x.__dlpack__()
     else:
         capsule = x
     return paddle.utils.dlpack.from_dlpack(capsule)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("complex64", "complex128")}},
+    backend_version,
+)
+def frombuffer(
+    buffer: bytes,
+    dtype: paddle.dtype = float,
+    count: int = -1,
+    offset: int = 0,
+) -> paddle.Tensor:
+    dtype_bytes = int(ivy.Dtype(dtype).dtype_bits / 8)
+    if str(dtype) == "bool":
+        dtype_bytes = 1
+    dtype_str = str(dtype)
+    struct_format = {
+        "bool": "?",
+        "int8": "b",
+        "int16": "h",
+        "int32": "i",
+        "int64": "q",
+        "uint8": "B",
+        "float16": "e",
+        "float32": "f",
+        "float64": "d",
+    }
+    ret = []
+    for i in range(0, len(buffer), dtype_bytes):
+        x = struct.unpack(struct_format[dtype_str], buffer[i : i + dtype_bytes])
+        ret = ret + list(x)
+    if offset > 0:
+        offset = int(offset / dtype_bytes)
+    if count > -1:
+        ret = ret[offset : offset + count]
+    else:
+        ret = ret[offset:]
+    ret = paddle.to_tensor(ret, dtype=dtype)
+
+    return ret
 
 
 @with_unsupported_device_and_dtypes(
@@ -263,108 +421,6 @@ def full_like(
     return paddle_backend.full(
         shape=x.shape, fill_value=fill_value, dtype=dtype, device=device
     )
-
-
-def _linspace_helper(start, stop, num, axis=None, *, dtype=None):
-    num = num.detach().item() if isinstance(num, paddle.Tensor) else num
-    start_is_array = isinstance(start, paddle.Tensor)
-    stop_is_array = isinstance(stop, paddle.Tensor)
-    linspace_method = paddle.linspace
-    sos_shape = []
-    if start_is_array:
-        start_shape = start.shape
-        sos_shape = start_shape
-        if num == 1:
-            if axis is not None:
-                return paddle_backend.expand_dims(start, axis=axis)
-            else:
-                return paddle_backend.expand_dims(start, axis=-1)
-        start = start.reshape((-1,))
-        linspace_method = (
-            _differentiable_linspace if not start.stop_gradient else paddle.linspace
-        )
-    if stop_is_array:
-        stop_shape = stop.shape
-        sos_shape = stop_shape
-        if num == 1:
-            return (
-                paddle_backend.ones(
-                    stop_shape[:axis] + [1] + stop_shape[axis:], dtype=dtype
-                )
-                * start
-            )
-        stop = stop.reshape((-1,))
-        linspace_method = (
-            _differentiable_linspace if not stop.stop_gradient else paddle.linspace
-        )
-    if start_is_array and stop_is_array:
-        if num < start.shape[0]:
-            start = paddle_backend.expand_dims(start, axis=-1)
-            stop = paddle_backend.expand_dims(stop, axis=-1)
-            diff = paddle_backend.subtract(stop, start)
-            inc = diff / (num - 1)
-            res = [start]
-            res += [start + inc * i for i in range(1, num - 1)]
-            res.append(stop)
-        else:
-            res = [
-                linspace_method(strt, stp, num)
-                for strt, stp in zip(
-                    paddle_backend.unstack(start, keepdims=True),
-                    paddle_backend.unstack(stop, keepdims=True),
-                )
-            ]
-    elif start_is_array and not stop_is_array:
-        if num < start.shape[0]:
-            start = paddle_backend.expand_dims(start, axis=axis)
-            diff = stop - start
-            inc = diff / (num - 1)
-            res = [start]
-            res += [start + inc * i for i in range(1, num - 1)]
-            res.append(paddle.ones(start.shape).astype(start.dtype) * stop)
-        else:
-            res = [linspace_method(strt, stop, num) for strt in start]
-    elif not start_is_array and stop_is_array:
-        if num < stop.shape[0]:
-            stop = paddle_backend.expand_dims(stop, axis=-1)
-            diff = stop - start
-            inc = diff / (num - 1)
-            res = [paddle.ones(stop.shape).astype(stop.dtype) * start]
-            res += [start + inc * i for i in range(1, num - 1)]
-            res.append(stop)
-        else:
-            res = [linspace_method(start, stp, num) for stp in stop]
-    else:
-        return linspace_method(start, stop, num, dtype=dtype)
-    res = paddle_backend.concat(res, axis=-1).reshape(sos_shape + [num])
-    if axis is not None:
-        ndim = res.ndim
-        perm = list(range(ndim - 1))
-        perm.insert(axis % (ndim + 1), ndim - 1)
-        res = paddle_backend.permute_dims(res, perm)
-    return res
-
-
-def _differentiable_linspace(start, stop, num, *, dtype=None):
-    start = ivy.to_native(start)
-    num = paddle.to_tensor(num, stop_gradient=False)
-    if num == 1:
-        return paddle_backend.expand_dims(start, axis=0)
-    n_m_1 = paddle_backend.subtract(num, 1)
-    increment = paddle_backend.divide(paddle_backend.subtract(stop, start), n_m_1)
-    increment_tiled = paddle_backend.repeat(increment, n_m_1)
-    increments = paddle_backend.multiply(
-        increment_tiled,
-        paddle.linspace(1, n_m_1, n_m_1.cast(paddle.int32), dtype=dtype),
-    )
-    if isinstance(start, int) or start.ndim == 0:
-        start = paddle_backend.expand_dims(start, axis=0)
-    res = paddle_backend.concat((start, paddle_backend.add(start, increments)), axis=0)
-    return res.cast(dtype)
-
-
-def _slice_at_axis(sl, axis):
-    return (slice(None),) * axis + (sl,) + (...,)
 
 
 @with_unsupported_device_and_dtypes(
@@ -473,128 +529,6 @@ def meshgrid(
     return res
 
 
-def ones(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
-    dtype: paddle.dtype,
-    device: core.Place = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    return paddle.ones(shape=shape).cast(dtype)
-
-
-@with_supported_device_and_dtypes(
-    {
-        "2.6.0 and below": {
-            "cpu": (
-                "int32",
-                "int64",
-                "float64",
-                "float32",
-                "complex128",
-                "complex64",
-                "bool",
-            )
-        }
-    },
-    backend_version,
-)
-def ones_like(
-    x: paddle.Tensor,
-    /,
-    *,
-    dtype: paddle.dtype,
-    device: core.Place = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    return paddle_backend.ones(shape=x.shape, dtype=dtype, device=device)
-
-
-@with_unsupported_device_and_dtypes(
-    {
-        "2.6.0 and below": {
-            "cpu": (
-                "int8",
-                "int16",
-                "uint8",
-                "complex",
-            )
-        }
-    },
-    backend_version,
-)
-def tril(
-    x: paddle.Tensor, /, *, k: int = 0, out: Optional[paddle.Tensor] = None
-) -> paddle.Tensor:
-    return paddle.tril(x=x, diagonal=k)
-
-
-@with_unsupported_device_and_dtypes(
-    {
-        "2.6.0 and below": {
-            "cpu": (
-                "int8",
-                "int16",
-                "uint8",
-                "complex",
-            )
-        }
-    },
-    backend_version,
-)
-def triu(
-    x: paddle.Tensor, /, *, k: int = 0, out: Optional[paddle.Tensor] = None
-) -> paddle.Tensor:
-    return paddle.triu(x=x, diagonal=k)
-
-
-def zeros(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
-    dtype: paddle.dtype,
-    device: core.Place = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    return paddle.zeros(shape=shape).cast(dtype)
-
-
-@with_unsupported_device_and_dtypes(
-    {"2.6.0 and below": {"cpu": ("uint8", "int8", "int16", "float16", "bfloat16")}},
-    backend_version,
-)
-def zeros_like(
-    x: paddle.Tensor,
-    /,
-    *,
-    dtype: paddle.dtype,
-    device: core.Place = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    return paddle_backend.zeros(shape=x.shape, dtype=dtype, device=device)
-
-
-# Extra #
-# ------#
-
-
-array = asarray
-
-
-def copy_array(
-    x: paddle.Tensor,
-    *,
-    to_ivy_array: bool = True,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    if 0 in x.shape:
-        new_arr = paddle.empty(x.shape, dtype=x.dtype)
-    else:
-        new_arr = x.clone()
-    if to_ivy_array:
-        return ivy.to_ivy(new_arr)
-    return new_arr
-
-
 def one_hot(
     indices: paddle.Tensor,
     depth: int,
@@ -647,44 +581,83 @@ def one_hot(
     return res.cast(dtype)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.6.0 and below": {"cpu": ("complex64", "complex128")}},
+def ones(
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    dtype: paddle.dtype,
+    device: core.Place = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.ones(shape=shape).cast(dtype)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.6.0 and below": {
+            "cpu": (
+                "int32",
+                "int64",
+                "float64",
+                "float32",
+                "complex128",
+                "complex64",
+                "bool",
+            )
+        }
+    },
     backend_version,
 )
-def frombuffer(
-    buffer: bytes,
-    dtype: paddle.dtype = float,
-    count: int = -1,
-    offset: int = 0,
+def ones_like(
+    x: paddle.Tensor,
+    /,
+    *,
+    dtype: paddle.dtype,
+    device: core.Place = None,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    dtype_bytes = int(ivy.Dtype(dtype).dtype_bits / 8)
-    if str(dtype) == "bool":
-        dtype_bytes = 1
-    dtype_str = str(dtype)
-    struct_format = {
-        "bool": "?",
-        "int8": "b",
-        "int16": "h",
-        "int32": "i",
-        "int64": "q",
-        "uint8": "B",
-        "float16": "e",
-        "float32": "f",
-        "float64": "d",
-    }
-    ret = []
-    for i in range(0, len(buffer), dtype_bytes):
-        x = struct.unpack(struct_format[dtype_str], buffer[i : i + dtype_bytes])
-        ret = ret + list(x)
-    if offset > 0:
-        offset = int(offset / dtype_bytes)
-    if count > -1:
-        ret = ret[offset : offset + count]
-    else:
-        ret = ret[offset:]
-    ret = paddle.to_tensor(ret, dtype=dtype)
+    return paddle_backend.ones(shape=x.shape, dtype=dtype, device=device)
 
-    return ret
+
+def to_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
+    return paddle.utils.dlpack.to_dlpack(x)
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.6.0 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "complex",
+            )
+        }
+    },
+    backend_version,
+)
+def tril(
+    x: paddle.Tensor, /, *, k: int = 0, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    return paddle.tril(x=x, diagonal=k)
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.6.0 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "complex",
+            )
+        }
+    },
+    backend_version,
+)
+def triu(
+    x: paddle.Tensor, /, *, k: int = 0, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    return paddle.triu(x=x, diagonal=k)
 
 
 def triu_indices(
@@ -701,3 +674,35 @@ def triu_indices(
             [], place=device, dtype="int64"
         )
     return tuple(paddle.triu_indices(n_rows, col=n_cols, offset=k, dtype="int64"))
+
+
+def zeros(
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    dtype: paddle.dtype,
+    device: core.Place = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.zeros(shape=shape).cast(dtype)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("uint8", "int8", "int16", "float16", "bfloat16")}},
+    backend_version,
+)
+def zeros_like(
+    x: paddle.Tensor,
+    /,
+    *,
+    dtype: paddle.dtype,
+    device: core.Place = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle_backend.zeros(shape=x.shape, dtype=dtype, device=device)
+
+
+# Extra #
+# ------#
+
+
+array = asarray

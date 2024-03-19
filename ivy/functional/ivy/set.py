@@ -155,6 +155,110 @@ def unique_all(
 @to_native_arrays_and_back
 @handle_array_function
 @handle_device
+def unique_counts(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
+    """Return the unique elements of an input array ``x`` and the corresponding
+    counts for each unique element in ``x``.
+
+    .. admonition:: Data-dependent output shape
+        :class: important
+
+        The shapes of two of the output arrays for this function depend on the data
+        values in the input array; hence, array libraries which build computation graphs
+        (e.g., JAX, Dask, etc.) may find this function difficult to implement without
+        knowing array values. Accordingly, such libraries may choose to omit this
+        function. See :ref:`data-dependent-output-shapes` section for more details.
+
+    .. note::
+       Uniqueness should be determined based on value equality (i.e., ``x_i == x_j``).
+       For input arrays having floating-point data types, value-based equality implies
+       the following behavior.
+
+       -   As ``nan`` values compare as ``False``, ``nan`` values should be considered
+           distinct.
+       -   As ``-0`` and ``+0`` compare as ``True``, signed zeros should not be
+           considered distinct, and the corresponding unique element will be
+           implementation-dependent (e.g., an implementation could choose to return
+           ``-0`` if ``-0`` occurs before ``+0``).
+
+    Parameters
+    ----------
+    x
+        input array. If ``x`` has more than one dimension, the function must flatten
+        ``x`` and return the unique elements of the flattened array.
+
+    Returns
+    -------
+    ret
+        a namedtuple ``(values, counts)`` whose
+
+        - first element must have the field name ``values`` and must be an
+          array containing the unique elements of ``x``.
+          The array must have the same data type as ``x``.
+        - second element must have the field name ``counts`` and must be an array
+          containing the number of times each unique element occurs in ``x``.
+          The returned array must have same shape as ``values`` and must
+          have the default array index data type.
+
+    .. note::
+           The order of unique elements is not specified and may vary between
+           implementations.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.unique_counts.htmll>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1,2,1,3,4,1,3])
+    >>> y = ivy.unique_counts(x)
+    >>> print(y)
+    Results(values=ivy.array([1, 2, 3, 4]), counts=ivy.array([3, 1, 2, 1]))
+
+    >>> x = ivy.asarray([[1,2,3,4],[2,3,4,5],[3,4,5,6]])
+    >>> y = ivy.unique_counts(x)
+    >>> print(y)
+    Results(values=ivy.array([1, 2, 3, 4, 5, 6]), counts=ivy.array([1, 2, 3, 3, 2, 1]))
+
+    >>> x = ivy.array([0.2,0.3,0.4,0.2,1.4,2.3,0.2])
+    >>> y = ivy.unique_counts(x)
+    >>> print(y)
+    Results(values=ivy.array([0.2       , 0.30000001, 0.40000001, 1.39999998,
+                              2.29999995]),
+            counts=ivy.array([3, 1, 1, 1, 1]))
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]),
+    ...                   b=ivy.array([1, 2, 1, 3, 4, 1, 3]))
+    >>> y = ivy.unique_counts(x)
+    >>> print(y)
+    {
+        a: (list[2],<classivy.array.array.Array>shape=[4]),
+        b: (list[2],<classivy.array.array.Array>shape=[4])
+    }
+    """
+    return ivy.current_backend(x).unique_counts(x)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device
 def unique_inverse(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -338,107 +442,3 @@ def unique_values(
     array([0., 1., 2., 3., 4., 5., nan, -0.])
     """
     return ivy.current_backend(x).unique_values(x, out=out)
-
-
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device
-def unique_counts(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
-    """Return the unique elements of an input array ``x`` and the corresponding
-    counts for each unique element in ``x``.
-
-    .. admonition:: Data-dependent output shape
-        :class: important
-
-        The shapes of two of the output arrays for this function depend on the data
-        values in the input array; hence, array libraries which build computation graphs
-        (e.g., JAX, Dask, etc.) may find this function difficult to implement without
-        knowing array values. Accordingly, such libraries may choose to omit this
-        function. See :ref:`data-dependent-output-shapes` section for more details.
-
-    .. note::
-       Uniqueness should be determined based on value equality (i.e., ``x_i == x_j``).
-       For input arrays having floating-point data types, value-based equality implies
-       the following behavior.
-
-       -   As ``nan`` values compare as ``False``, ``nan`` values should be considered
-           distinct.
-       -   As ``-0`` and ``+0`` compare as ``True``, signed zeros should not be
-           considered distinct, and the corresponding unique element will be
-           implementation-dependent (e.g., an implementation could choose to return
-           ``-0`` if ``-0`` occurs before ``+0``).
-
-    Parameters
-    ----------
-    x
-        input array. If ``x`` has more than one dimension, the function must flatten
-        ``x`` and return the unique elements of the flattened array.
-
-    Returns
-    -------
-    ret
-        a namedtuple ``(values, counts)`` whose
-
-        - first element must have the field name ``values`` and must be an
-          array containing the unique elements of ``x``.
-          The array must have the same data type as ``x``.
-        - second element must have the field name ``counts`` and must be an array
-          containing the number of times each unique element occurs in ``x``.
-          The returned array must have same shape as ``values`` and must
-          have the default array index data type.
-
-    .. note::
-           The order of unique elements is not specified and may vary between
-           implementations.
-
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.unique_counts.htmll>`_
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
-    Examples
-    --------
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([1,2,1,3,4,1,3])
-    >>> y = ivy.unique_counts(x)
-    >>> print(y)
-    Results(values=ivy.array([1, 2, 3, 4]), counts=ivy.array([3, 1, 2, 1]))
-
-    >>> x = ivy.asarray([[1,2,3,4],[2,3,4,5],[3,4,5,6]])
-    >>> y = ivy.unique_counts(x)
-    >>> print(y)
-    Results(values=ivy.array([1, 2, 3, 4, 5, 6]), counts=ivy.array([1, 2, 3, 3, 2, 1]))
-
-    >>> x = ivy.array([0.2,0.3,0.4,0.2,1.4,2.3,0.2])
-    >>> y = ivy.unique_counts(x)
-    >>> print(y)
-    Results(values=ivy.array([0.2       , 0.30000001, 0.40000001, 1.39999998,
-                              2.29999995]),
-            counts=ivy.array([3, 1, 1, 1, 1]))
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]),
-    ...                   b=ivy.array([1, 2, 1, 3, 4, 1, 3]))
-    >>> y = ivy.unique_counts(x)
-    >>> print(y)
-    {
-        a: (list[2],<classivy.array.array.Array>shape=[4]),
-        b: (list[2],<classivy.array.array.Array>shape=[4])
-    }
-    """
-    return ivy.current_backend(x).unique_counts(x)

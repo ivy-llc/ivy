@@ -20,20 +20,8 @@ from ivy.functional.ivy.gradients import (
 )
 
 
-def variable(x, /):
-    if ivy.is_int_dtype(x.dtype):
-        x = ivy.astype(x, ivy.default_float_dtype()).to_native()
-    if not x.is_leaf:
-        return x.detach().requires_grad_()
-    return x.clone().requires_grad_()
-
-
-def is_variable(x, /, *, exclusive: bool = False):
-    return isinstance(x, torch.Tensor) and x.requires_grad
-
-
-def variable_data(x: torch.Tensor, /) -> torch.Tensor:
-    return x.data
+# --- Helpers --- #
+# --------------- #
 
 
 def _grad_func(y, xs, retain_grads):
@@ -141,64 +129,6 @@ def execute_with_gradients(
     return _process_func_ret_and_grads(func_ret, grads, retain_grads)
 
 
-def value_and_grad(func):
-    def grad_fn(xs):
-        return ivy.to_native(func(xs))
-
-    def callback_fn(xs):
-        y = grad_fn(xs)
-
-        def autograd_fn(x):
-            x = ivy.to_native(x)
-            grad = torch.autograd.grad(y, x, allow_unused=True)[0]
-            grad = (
-                grad
-                if grad is not None
-                else ivy.to_native(ivy.zeros_like(ivy.to_ivy(x)))
-            )
-            grad = ivy.to_ivy(grad)
-            return grad
-
-        grads = ivy.nested_map(autograd_fn, xs, include_derived=True, shallow=False)
-        y = ivy.to_ivy(y)
-        return y, grads
-
-    return callback_fn
-
-
-def stop_gradient(
-    x: Optional[torch.Tensor],
-    /,
-    *,
-    preserve_type: bool = True,
-    out: Optional[torch.Tensor] = None,
-):
-    if is_variable(x) and preserve_type:
-        if x.grad_fn:
-            x = x.detach()
-            x.requires_grad = True
-        elif x.grad:
-            x.grad.data.zero_()
-        return x
-    return x.detach()
-
-
-def jac(func: Callable):
-    def grad_fn(x_in):
-        return ivy.to_native(
-            func(ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
-        )
-
-    def callback_fn(x_in):
-        return ivy.to_ivy(
-            torch.func.jacfwd(grad_fn)(ivy.to_native(x_in, nested=True)),
-            nested=True,
-            include_derived=True,
-        )
-
-    return callback_fn
-
-
 def grad(f, argnums=0):
     if grad.nth == 0:
         grad.f_original = f
@@ -259,6 +189,80 @@ def grad(f, argnums=0):
     grad.nth += 1
 
     return _nth_derivative(grad.nth)
+
+
+def is_variable(x, /, *, exclusive: bool = False):
+    return isinstance(x, torch.Tensor) and x.requires_grad
+
+
+def jac(func: Callable):
+    def grad_fn(x_in):
+        return ivy.to_native(
+            func(ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
+        )
+
+    def callback_fn(x_in):
+        return ivy.to_ivy(
+            torch.func.jacfwd(grad_fn)(ivy.to_native(x_in, nested=True)),
+            nested=True,
+            include_derived=True,
+        )
+
+    return callback_fn
+
+
+def stop_gradient(
+    x: Optional[torch.Tensor],
+    /,
+    *,
+    preserve_type: bool = True,
+    out: Optional[torch.Tensor] = None,
+):
+    if is_variable(x) and preserve_type:
+        if x.grad_fn:
+            x = x.detach()
+            x.requires_grad = True
+        elif x.grad:
+            x.grad.data.zero_()
+        return x
+    return x.detach()
+
+
+def value_and_grad(func):
+    def grad_fn(xs):
+        return ivy.to_native(func(xs))
+
+    def callback_fn(xs):
+        y = grad_fn(xs)
+
+        def autograd_fn(x):
+            x = ivy.to_native(x)
+            grad = torch.autograd.grad(y, x, allow_unused=True)[0]
+            grad = (
+                grad
+                if grad is not None
+                else ivy.to_native(ivy.zeros_like(ivy.to_ivy(x)))
+            )
+            grad = ivy.to_ivy(grad)
+            return grad
+
+        grads = ivy.nested_map(autograd_fn, xs, include_derived=True, shallow=False)
+        y = ivy.to_ivy(y)
+        return y, grads
+
+    return callback_fn
+
+
+def variable(x, /):
+    if ivy.is_int_dtype(x.dtype):
+        x = ivy.astype(x, ivy.default_float_dtype()).to_native()
+    if not x.is_leaf:
+        return x.detach().requires_grad_()
+    return x.clone().requires_grad_()
+
+
+def variable_data(x: torch.Tensor, /) -> torch.Tensor:
+    return x.data
 
 
 grad.f_original = None

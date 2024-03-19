@@ -20,9 +20,6 @@ def all(
         raise ivy.utils.exceptions.IvyIndexError(error) from error
 
 
-all.support_native_out = True
-
-
 def any(
     x: np.ndarray,
     /,
@@ -34,4 +31,5 @@ def any(
     return np.asarray(np.any(x, axis=axis, keepdims=keepdims, out=out))
 
 
+all.support_native_out = True
 any.support_native_out = True

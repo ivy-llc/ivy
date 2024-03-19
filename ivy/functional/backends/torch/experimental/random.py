@@ -12,24 +12,38 @@ from ivy.functional.ivy.random import (
 )
 
 
-# dirichlet
-@with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
-def dirichlet(
-    alpha: Union[torch.tensor, float, Sequence[float]],
-    /,
+# --- Helpers --- #
+# --------------- #
+
+
+def _poisson_with_neg_lam(lam, fill_value, device, dtype):
+    if torch.any(lam < 0):
+        pos_lam = torch.where(lam < 0, 0, lam)
+        ret = torch.poisson(pos_lam).type(dtype).to(device)
+        ret = torch.where(lam < 0, fill_value, ret)
+    else:
+        ret = torch.poisson(lam).type(dtype).to(device)
+    return ret
+
+
+def bernoulli(
+    probs: Union[float, torch.Tensor],
     *,
-    size: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    out: Optional[torch.Tensor] = None,
+    logits: Union[float, torch.Tensor] = None,
+    shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
+    device: torch.device = None,
+    dtype: torch.dtype,
     seed: Optional[int] = None,
-    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    size = size if size is not None else len(alpha)
-    if seed is not None:
+    dtype = dtype if dtype is not None else probs.dtype
+    if seed:
         torch.manual_seed(seed)
-    return torch.tensor(
-        torch.distributions.dirichlet.Dirichlet(alpha).rsample(sample_shape=size),
-        dtype=dtype,
-    )
+    if logits is not None:
+        probs = torch.nn.functional.softmax(logits, -1)
+    if not _check_shapes_broadcastable(shape, probs.shape):
+        shape = probs.shape
+    return torch.bernoulli(probs, out=out).to(device, dtype).broadcast_to(shape)
 
 
 @with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, backend_version)
@@ -53,6 +67,26 @@ def beta(
     return ret
 
 
+# dirichlet
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
+def dirichlet(
+    alpha: Union[torch.tensor, float, Sequence[float]],
+    /,
+    *,
+    size: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    out: Optional[torch.Tensor] = None,
+    seed: Optional[int] = None,
+    dtype: Optional[torch.dtype] = None,
+) -> torch.Tensor:
+    size = size if size is not None else len(alpha)
+    if seed is not None:
+        torch.manual_seed(seed)
+    return torch.tensor(
+        torch.distributions.dirichlet.Dirichlet(alpha).rsample(sample_shape=size),
+        dtype=dtype,
+    )
+
+
 @with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, backend_version)
 def gamma(
     alpha: Union[float, torch.Tensor],
@@ -71,16 +105,6 @@ def gamma(
     ret = torch.distributions.gamma.Gamma(alpha, beta).sample(shape)
     if device is not None:
         return ret.to(device)
-    return ret
-
-
-def _poisson_with_neg_lam(lam, fill_value, device, dtype):
-    if torch.any(lam < 0):
-        pos_lam = torch.where(lam < 0, 0, lam)
-        ret = torch.poisson(pos_lam).type(dtype).to(device)
-        ret = torch.where(lam < 0, fill_value, ret)
-    else:
-        ret = torch.poisson(lam).type(dtype).to(device)
     return ret
 
 
@@ -104,26 +128,6 @@ def poisson(
     _check_shapes_broadcastable(lam.shape, list_shape)
     lam = torch.broadcast_to(lam, list_shape)
     return _poisson_with_neg_lam(lam, fill_value, device, dtype)
-
-
-def bernoulli(
-    probs: Union[float, torch.Tensor],
-    *,
-    logits: Union[float, torch.Tensor] = None,
-    shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
-    device: torch.device = None,
-    dtype: torch.dtype,
-    seed: Optional[int] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    dtype = dtype if dtype is not None else probs.dtype
-    if seed:
-        torch.manual_seed(seed)
-    if logits is not None:
-        probs = torch.nn.functional.softmax(logits, -1)
-    if not _check_shapes_broadcastable(shape, probs.shape):
-        shape = probs.shape
-    return torch.bernoulli(probs, out=out).to(device, dtype).broadcast_to(shape)
 
 
 bernoulli.support_native_out = True

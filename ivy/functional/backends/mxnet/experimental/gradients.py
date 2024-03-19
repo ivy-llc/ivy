@@ -15,6 +15,10 @@ def bind_custom_gradient_function(func, custom_grad_fn):
     raise IvyNotImplementedException()
 
 
+def jvp(func: Callable, primals, tangents):
+    raise IvyNotImplementedException()
+
+
 def vjp(func: Callable, *primals):
     flattened_primals, ret_idxs = _flatten_containers(primals)
 
@@ -50,7 +54,3 @@ def vjp(func: Callable, *primals):
         )
 
     return (ivy.to_ivy(primals_out, nested=True, include_derived=True), vjpfun)
-
-
-def jvp(func: Callable, primals, tangents):
-    raise IvyNotImplementedException()

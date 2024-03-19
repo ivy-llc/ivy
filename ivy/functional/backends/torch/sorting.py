@@ -26,39 +26,12 @@ def argsort(
     return sorted_indices
 
 
-argsort.support_native_out = True
-
-
-@with_unsupported_dtypes({"2.2 and below": ("complex",)}, backend_version)
-def sort(
-    x: torch.Tensor,
-    /,
-    *,
-    axis: int = -1,
-    descending: bool = False,
-    stable: bool = True,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if out is not None:
-        out = (out, torch.zeros(out.shape, dtype=torch.long))
-    sorted_tensor, _ = torch.sort(
-        x, dim=axis, descending=descending, stable=stable, out=out
-    )
-    return sorted_tensor
-
-
-sort.support_native_out = True
-
-
 # msort
 @with_unsupported_dtypes({"2.2 and below": ("complex",)}, backend_version)
 def msort(
     a: Union[torch.Tensor, list, tuple], /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.msort(a, out=out)
-
-
-msort.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.2 and below": ("complex",)}, backend_version)
@@ -111,4 +84,25 @@ def searchsorted(
     return torch.searchsorted(x, v, sorter=sorter, side=side).to(ret_dtype)
 
 
+@with_unsupported_dtypes({"2.2 and below": ("complex",)}, backend_version)
+def sort(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: int = -1,
+    descending: bool = False,
+    stable: bool = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if out is not None:
+        out = (out, torch.zeros(out.shape, dtype=torch.long))
+    sorted_tensor, _ = torch.sort(
+        x, dim=axis, descending=descending, stable=stable, out=out
+    )
+    return sorted_tensor
+
+
+argsort.support_native_out = True
+sort.support_native_out = True
+msort.support_native_out = True
 searchsorted.support_native_out = True

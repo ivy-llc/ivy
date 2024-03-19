@@ -9,18 +9,6 @@ import mxnet as mx
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
-def variable(x, /):
-    return x
-
-
-def is_variable(x, /, *, exclusive=False):
-    return isinstance(x, mx.ndarray.NDArray)
-
-
-def variable_data(x, /):
-    raise IvyNotImplementedException()
-
-
 def execute_with_gradients(
     func,
     xs,
@@ -33,17 +21,29 @@ def execute_with_gradients(
     raise IvyNotImplementedException()
 
 
-def value_and_grad(func):
+def grad(func, argnums=0):
     raise IvyNotImplementedException()
+
+
+def is_variable(x, /, *, exclusive=False):
+    return isinstance(x, mx.ndarray.NDArray)
 
 
 def jac(func):
     raise IvyNotImplementedException()
 
 
-def grad(func, argnums=0):
+def stop_gradient(x, /, *, preserve_type=True, out=None):
     raise IvyNotImplementedException()
 
 
-def stop_gradient(x, /, *, preserve_type=True, out=None):
+def value_and_grad(func):
+    raise IvyNotImplementedException()
+
+
+def variable(x, /):
+    return x
+
+
+def variable_data(x, /):
     raise IvyNotImplementedException()

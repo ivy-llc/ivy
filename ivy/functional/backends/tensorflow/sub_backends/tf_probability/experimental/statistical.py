@@ -11,110 +11,43 @@ import tensorflow as tf
 from .... import backend_version
 
 
-def histogram(
-    a: tf.Tensor,
-    /,
-    *,
-    bins: Optional[Union[int, tf.Tensor]] = None,
-    axis: Optional[int] = None,
-    extend_lower_interval: Optional[bool] = False,
-    extend_upper_interval: Optional[bool] = False,
-    dtype: Optional[tf.DType] = None,
-    range: Optional[Tuple[float]] = None,
-    weights: Optional[tf.Tensor] = None,
-    density: Optional[bool] = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Tuple[tf.Tensor]:
-    min_a = tf.reduce_min(a)
-    max_a = tf.reduce_max(a)
-    if isinstance(bins, tf.Tensor) and range:
-        raise ivy.exceptions.IvyException(
-            "Must choose between specifying bins and range or bin edges directly"
-        )
-    if range:
-        if isinstance(bins, int):
-            bins = tf.cast(
-                tf.linspace(start=range[0], stop=range[1], num=bins + 1), dtype=a.dtype
+# --- Helpers --- #
+# --------------- #
+
+
+def _compute_quantile_wrapper(
+    x,
+    q,
+    axis=None,
+    keepdims=False,
+    interpolation="linear",
+):
+    if not _validate_quantile(q):
+        raise ValueError("Quantiles must be in the range [0, 1]")
+    if interpolation in [
+        "linear",
+        "lower",
+        "higher",
+        "midpoint",
+        "nearest",
+        "nearest_jax",
+    ]:
+        if interpolation == "nearest_jax":
+            return _handle_axis(x, q, _quantile, keepdims=keepdims, axis=axis)
+        else:
+            axis = tuple(axis) if isinstance(axis, list) else axis
+
+            return tfp.stats.percentile(
+                x,
+                tf.math.multiply(q, 100),
+                axis=axis,
+                interpolation=interpolation,
+                keepdims=keepdims,
             )
-    elif isinstance(bins, int):
-        range = (min_a, max_a)
-        bins = tf.cast(
-            tf.linspace(start=range[0], stop=range[1], num=bins + 1), dtype=a.dtype
-        )
-    if tf.shape(bins)[0] < 2:
-        raise ivy.exceptions.IvyException("bins must have at least 1 bin (size > 1)")
-    if min_a < bins[0] and not extend_lower_interval:
-        raise ivy.exceptions.IvyException(
-            "Values of x outside of the intervals cause errors in tensorflow backend. "
-            "Consider using extend_lower_interval to deal with this."
-        )
-    if max_a > bins[-1] and not extend_upper_interval:
-        raise ivy.exceptions.IvyException(
-            "Values of x outside of the intervals cause errors in tensorflow backend. "
-            "Consider using extend_upper_interval to deal with this."
-        )
-    ret = tfp.stats.histogram(
-        x=a,
-        edges=bins,
-        axis=axis,
-        weights=weights,
-        extend_lower_interval=extend_lower_interval,
-        extend_upper_interval=extend_upper_interval,
-        dtype=dtype,
-        name="histogram",
-    )
-    if density:
-        pass
-    # TODO: Tensorflow native dtype argument is not working
-    if dtype:
-        ret = tf.cast(ret, dtype)
-        bins = tf.cast(bins, dtype)
-    # TODO: weird error when returning bins: return ret, bins
-    return ret
-
-
-@with_supported_dtypes(
-    {
-        "2.15.0 and below": (
-            "float",
-            "complex",
-        )
-    },
-    backend_version,
-)
-def median(
-    input: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    axis: Optional[Union[Tuple[int], int]] = None,
-    keepdims: bool = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tfp.stats.percentile(
-        input,
-        50.0,
-        axis=axis,
-        interpolation="midpoint",
-        keepdims=keepdims,
-    )
-
-
-def nanmedian(
-    input: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    axis: Optional[Union[Tuple[int], int]] = None,
-    keepdims: bool = False,
-    overwrite_input: bool = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    if overwrite_input:
-        copied_input = tf.identity(input)
-        return _nanmedian_helper(copied_input, axis, keepdims)
-
     else:
-        result = _nanmedian_helper(input, axis, keepdims)
-        return result
+        raise ValueError(
+            "Interpolation must be 'linear', 'lower', 'higher', 'midpoint' or 'nearest'"
+        )
 
 
 def _nanmedian_helper(input, axis=None, keepdims=False):
@@ -275,39 +208,110 @@ def _nanmedian_helper(input, axis=None, keepdims=False):
     return result
 
 
-def _compute_quantile_wrapper(
-    x,
-    q,
-    axis=None,
-    keepdims=False,
-    interpolation="linear",
-):
-    if not _validate_quantile(q):
-        raise ValueError("Quantiles must be in the range [0, 1]")
-    if interpolation in [
-        "linear",
-        "lower",
-        "higher",
-        "midpoint",
-        "nearest",
-        "nearest_jax",
-    ]:
-        if interpolation == "nearest_jax":
-            return _handle_axis(x, q, _quantile, keepdims=keepdims, axis=axis)
-        else:
-            axis = tuple(axis) if isinstance(axis, list) else axis
-
-            return tfp.stats.percentile(
-                x,
-                tf.math.multiply(q, 100),
-                axis=axis,
-                interpolation=interpolation,
-                keepdims=keepdims,
-            )
-    else:
-        raise ValueError(
-            "Interpolation must be 'linear', 'lower', 'higher', 'midpoint' or 'nearest'"
+def histogram(
+    a: tf.Tensor,
+    /,
+    *,
+    bins: Optional[Union[int, tf.Tensor]] = None,
+    axis: Optional[int] = None,
+    extend_lower_interval: Optional[bool] = False,
+    extend_upper_interval: Optional[bool] = False,
+    dtype: Optional[tf.DType] = None,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[tf.Tensor] = None,
+    density: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Tuple[tf.Tensor]:
+    min_a = tf.reduce_min(a)
+    max_a = tf.reduce_max(a)
+    if isinstance(bins, tf.Tensor) and range:
+        raise ivy.exceptions.IvyException(
+            "Must choose between specifying bins and range or bin edges directly"
         )
+    if range:
+        if isinstance(bins, int):
+            bins = tf.cast(
+                tf.linspace(start=range[0], stop=range[1], num=bins + 1), dtype=a.dtype
+            )
+    elif isinstance(bins, int):
+        range = (min_a, max_a)
+        bins = tf.cast(
+            tf.linspace(start=range[0], stop=range[1], num=bins + 1), dtype=a.dtype
+        )
+    if tf.shape(bins)[0] < 2:
+        raise ivy.exceptions.IvyException("bins must have at least 1 bin (size > 1)")
+    if min_a < bins[0] and not extend_lower_interval:
+        raise ivy.exceptions.IvyException(
+            "Values of x outside of the intervals cause errors in tensorflow backend. "
+            "Consider using extend_lower_interval to deal with this."
+        )
+    if max_a > bins[-1] and not extend_upper_interval:
+        raise ivy.exceptions.IvyException(
+            "Values of x outside of the intervals cause errors in tensorflow backend. "
+            "Consider using extend_upper_interval to deal with this."
+        )
+    ret = tfp.stats.histogram(
+        x=a,
+        edges=bins,
+        axis=axis,
+        weights=weights,
+        extend_lower_interval=extend_lower_interval,
+        extend_upper_interval=extend_upper_interval,
+        dtype=dtype,
+        name="histogram",
+    )
+    if density:
+        pass
+    # TODO: Tensorflow native dtype argument is not working
+    if dtype:
+        ret = tf.cast(ret, dtype)
+        bins = tf.cast(bins, dtype)
+    # TODO: weird error when returning bins: return ret, bins
+    return ret
+
+
+@with_supported_dtypes(
+    {
+        "2.15.0 and below": (
+            "float",
+            "complex",
+        )
+    },
+    backend_version,
+)
+def median(
+    input: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tfp.stats.percentile(
+        input,
+        50.0,
+        axis=axis,
+        interpolation="midpoint",
+        keepdims=keepdims,
+    )
+
+
+def nanmedian(
+    input: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: bool = False,
+    overwrite_input: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if overwrite_input:
+        copied_input = tf.identity(input)
+        return _nanmedian_helper(copied_input, axis, keepdims)
+
+    else:
+        result = _nanmedian_helper(input, axis, keepdims)
+        return result
 
 
 def quantile(

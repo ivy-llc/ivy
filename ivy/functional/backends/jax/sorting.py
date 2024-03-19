@@ -26,20 +26,15 @@ def argsort(
     )
 
 
-def sort(
-    x: JaxArray,
+# msort
+@with_unsupported_dtypes({"0.4.24 and below": ("complex",)}, backend_version)
+def msort(
+    a: Union[JaxArray, list, tuple],
     /,
     *,
-    axis: int = -1,
-    descending: bool = False,
-    stable: bool = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    kind = "stable" if stable else "quicksort"
-    ret = jnp.asarray(jnp.sort(x, axis=axis, kind=kind))
-    if descending:
-        ret = jnp.asarray(jnp.flip(ret, axis=axis))
-    return ret
+    return jnp.sort(a, axis=0, kind="mergesort")
 
 
 def searchsorted(
@@ -77,12 +72,17 @@ def searchsorted(
     return ret.astype(ret_dtype)
 
 
-# msort
-@with_unsupported_dtypes({"0.4.24 and below": ("complex",)}, backend_version)
-def msort(
-    a: Union[JaxArray, list, tuple],
+def sort(
+    x: JaxArray,
     /,
     *,
+    axis: int = -1,
+    descending: bool = False,
+    stable: bool = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.sort(a, axis=0, kind="mergesort")
+    kind = "stable" if stable else "quicksort"
+    ret = jnp.asarray(jnp.sort(x, axis=axis, kind=kind))
+    if descending:
+        ret = jnp.asarray(jnp.flip(ret, axis=axis))
+    return ret

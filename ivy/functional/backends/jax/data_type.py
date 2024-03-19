@@ -9,6 +9,26 @@ import ivy
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 
+char_rep_dtype_dict = {
+    "?": "bool",
+    "i": int,
+    "i1": "int8",
+    "i2": "int16",
+    "i4": "int32",
+    "i8": "int64",
+    "f": float,
+    "f2": "float16",
+    "f4": "float32",
+    "f8": "float64",
+    "c": complex,
+    "c8": "complex64",
+    "c16": "complex128",
+    "u": "uint32",
+    "u1": "uint8",
+    "u2": "uint16",
+    "u4": "uint32",
+    "u8": "uint64",
+}
 ivy_dtype_dict = {
     jnp.dtype("int8"): "int8",
     jnp.dtype("int16"): "int16",
@@ -41,7 +61,6 @@ ivy_dtype_dict = {
     jnp.complex128: "complex128",
     jnp.bool_: "bool",
 }
-
 native_dtype_dict = {
     "int8": jnp.dtype("int8"),
     "int16": jnp.dtype("int16"),
@@ -58,27 +77,6 @@ native_dtype_dict = {
     "complex64": jnp.dtype("complex64"),
     "complex128": jnp.dtype("complex128"),
     "bool": jnp.dtype("bool"),
-}
-
-char_rep_dtype_dict = {
-    "?": "bool",
-    "i": int,
-    "i1": "int8",
-    "i2": "int16",
-    "i4": "int32",
-    "i8": "int64",
-    "f": float,
-    "f2": "float16",
-    "f4": "float32",
-    "f8": "float64",
-    "c": complex,
-    "c8": "complex64",
-    "c16": "complex128",
-    "u": "uint32",
-    "u1": "uint8",
-    "u2": "uint16",
-    "u4": "uint32",
-    "u8": "uint64",
 }
 
 

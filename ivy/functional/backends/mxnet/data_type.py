@@ -5,6 +5,18 @@ import ivy
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 from ivy.utils.exceptions import IvyNotImplementedException
 
+char_rep_dtype_dict = {
+    "?": "bool",
+    "i": int,
+    "i1": "int8",
+    "i4": "int32",
+    "i8": "int64",
+    "f": float,
+    "f2": "float16",
+    "f4": "float32",
+    "f8": "float64",
+    "u1": "uint8",
+}
 ivy_dtype_dict = {
     np.dtype("int8"): "int8",
     np.dtype("int32"): "int32",
@@ -32,19 +44,6 @@ native_dtype_dict = {
     "float32": np.float32,
     "float64": np.float64,
     "bool": np.bool_,
-}
-
-char_rep_dtype_dict = {
-    "?": "bool",
-    "i": int,
-    "i1": "int8",
-    "i4": "int32",
-    "i8": "int64",
-    "f": float,
-    "f2": "float16",
-    "f4": "float32",
-    "f8": "float64",
-    "u1": "uint8",
 }
 
 
@@ -82,55 +81,6 @@ class Bfloat16Finfo:
 
     def __repr__(self):
         return repr(self._mx_finfo)
-
-
-def astype(
-    x: Union[(None, mx.ndarray.NDArray)],
-    dtype: Union[(None, str)],
-    /,
-    *,
-    copy: bool = True,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    dtype = ivy.as_native_dtype(dtype)
-    if x.dtype == dtype:
-        return mx.nd.copy(x) if copy else x
-    return x.astype(dtype)
-
-
-def broadcast_arrays(
-    *arrays: Union[(None, mx.ndarray.NDArray)]
-) -> List[Union[(None, mx.ndarray.NDArray)]]:
-    raise IvyNotImplementedException()
-
-
-def broadcast_to(
-    x: Union[(None, mx.ndarray.NDArray)],
-    /,
-    shape: Union[(ivy.NativeShape, Sequence[int])],
-    *,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
-@_handle_nestable_dtype_info
-def finfo(type: Union[str, mx.ndarray.NDArray, np.dtype], /) -> Finfo:
-    if isinstance(type, mx.ndarray.NDArray):
-        type = type.dtype
-    return Finfo(mx.np.finfo(ivy.as_native_dtype(type)))
-
-
-@_handle_nestable_dtype_info
-def iinfo(type: Union[str, mx.ndarray.NDArray, np.dtype], /) -> np.iinfo:
-    # using np.iinfo as mx use np dtypes and mxnet iinfo not provided
-    if isinstance(type, mx.ndarray.NDArray):
-        type = type.asnumpy().dtype
-    return np.iinfo(ivy.as_native_dtype(type))
-
-
-def result_type(*arrays_and_dtypes: Union[(None, mx.ndarray.NDArray)]) -> ivy.Dtype:
-    raise IvyNotImplementedException()
 
 
 def as_ivy_dtype(
@@ -187,6 +137,36 @@ def as_native_dtype(dtype_in: Union[(None, str, bool, int, float, np.dtype)]) ->
         )
 
 
+def astype(
+    x: Union[(None, mx.ndarray.NDArray)],
+    dtype: Union[(None, str)],
+    /,
+    *,
+    copy: bool = True,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    dtype = ivy.as_native_dtype(dtype)
+    if x.dtype == dtype:
+        return mx.nd.copy(x) if copy else x
+    return x.astype(dtype)
+
+
+def broadcast_arrays(
+    *arrays: Union[(None, mx.ndarray.NDArray)]
+) -> List[Union[(None, mx.ndarray.NDArray)]]:
+    raise IvyNotImplementedException()
+
+
+def broadcast_to(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    shape: Union[(ivy.NativeShape, Sequence[int])],
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
 def dtype(
     x: Union[(None, mx.ndarray.NDArray, np.ndarray)], *, as_native: bool = False
 ) -> ivy.Dtype:
@@ -199,5 +179,24 @@ def dtype_bits(dtype_in: Union[(None, str, np.dtype)], /) -> int:
     raise IvyNotImplementedException()
 
 
+@_handle_nestable_dtype_info
+def finfo(type: Union[str, mx.ndarray.NDArray, np.dtype], /) -> Finfo:
+    if isinstance(type, mx.ndarray.NDArray):
+        type = type.dtype
+    return Finfo(mx.np.finfo(ivy.as_native_dtype(type)))
+
+
+@_handle_nestable_dtype_info
+def iinfo(type: Union[str, mx.ndarray.NDArray, np.dtype], /) -> np.iinfo:
+    # using np.iinfo as mx use np dtypes and mxnet iinfo not provided
+    if isinstance(type, mx.ndarray.NDArray):
+        type = type.asnumpy().dtype
+    return np.iinfo(ivy.as_native_dtype(type))
+
+
 def is_native_dtype(dtype_in: Union[(None, str)], /) -> bool:
+    raise IvyNotImplementedException()
+
+
+def result_type(*arrays_and_dtypes: Union[(None, mx.ndarray.NDArray)]) -> ivy.Dtype:
     raise IvyNotImplementedException()

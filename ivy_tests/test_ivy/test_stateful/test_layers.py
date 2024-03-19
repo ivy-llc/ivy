@@ -23,9 +23,6 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers im
 all_constant_initializers = (ivy.Zeros, ivy.Ones)
 all_gaussian_initializers = (ivy.KaimingNormal, ivy.Siren)
 all_uniform_initializers = (ivy.GlorotUniform, ivy.FirstLayerSiren, ivy.Siren)
-all_initializers = (
-    all_constant_initializers + all_uniform_initializers + all_gaussian_initializers
-)
 
 
 # --- Helpers --- #
@@ -1688,3 +1685,8 @@ def test_sequential_layer(
         assert np.allclose(
             ivy.to_numpy(seq(x)), np.array(target), rtol=tolerance_dict[dtype]
         )
+
+
+all_initializers = (
+    all_constant_initializers + all_uniform_initializers + all_gaussian_initializers
+)

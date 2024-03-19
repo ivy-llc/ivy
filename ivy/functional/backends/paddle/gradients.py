@@ -21,22 +21,45 @@ from ivy.functional.ivy.gradients import (
 )
 
 
-def variable(x, /):
-    if not x.is_leaf:
-        ret = x.detach()
-        ret.stop_gradient = False
+# --- Helpers --- #
+# --------------- #
+
+
+def _get_jac_one_arg_fn(grad_fn, xs, out_idx):
+    nested_indices = iter(ivy.all_nested_indices(xs))
+
+    def one_arg_fn(x):
+        idx = next(nested_indices)
+        new_xs = ivy.set_nest_at_index(xs, idx, x, shallow=False) if idx else x
+        ret = grad_fn(new_xs)
+        for i in out_idx:
+            ret = ret[i]
         return ret
-    ret = paddle_backend.copy_array(x).to_native()
-    ret.stop_gradient = False
-    return ret
+
+    return one_arg_fn
 
 
-def is_variable(x, /, *, exclusive: bool = False):
-    return isinstance(x, paddle.Tensor) and not x.stop_gradient
+def _get_one_out_fn(grad_fn, xs, fn_ret):
+    out_nested_indices = iter(ivy.all_nested_indices(fn_ret))
 
+    def one_out_fn(o):
+        out_idx = next(out_nested_indices)
+        out_shape = ivy.index_nest(grad_fn(xs), out_idx).shape
+        one_arg_fn = _get_jac_one_arg_fn(grad_fn, xs, out_idx)
+        jacobian = ivy.nested_map(
+            lambda x: jacobian_to_ivy(
+                paddle.incubate.autograd.Jacobian(
+                    one_arg_fn, ivy.to_native(x.expand_dims())
+                ),
+                x.shape,
+                out_shape,
+            ),
+            xs,
+            shallow=False,
+        )
+        return jacobian
 
-def variable_data(x: paddle.Tensor, /) -> paddle.Tensor:
-    return x.value()
+    return one_out_fn
 
 
 def _grad_func(y, xs, retain_grads):
@@ -158,100 +181,6 @@ def execute_with_gradients(
     return _process_func_ret_and_grads(func_ret, grads, retain_grads)
 
 
-def value_and_grad(func):
-    def grad_fn(xs):
-        return ivy.to_native(func(xs))
-
-    def callback_fn(xs):
-        y = grad_fn(xs)
-
-        def autograd_fn(x):
-            x = ivy.to_native(x)
-            grad = paddle.grad(y, x, allow_unused=True)[0]
-            grad = grad if grad is not None else paddle.zeros_like(x)
-            grad = ivy.to_ivy(grad)
-            return grad
-
-        grads = ivy.nested_map(autograd_fn, xs, include_derived=True, shallow=False)
-        y = ivy.to_ivy(y)
-        return y, grads
-
-    return callback_fn
-
-
-def stop_gradient(
-    x: Optional[paddle.Tensor],
-    /,
-    *,
-    preserve_type: bool = True,
-    out: Optional[paddle.Tensor] = None,
-):
-    is_var = is_variable(x)
-    x.stop_gradient = True
-    if is_var and preserve_type:
-        return variable(x)
-    return x
-
-
-def _get_jac_one_arg_fn(grad_fn, xs, out_idx):
-    nested_indices = iter(ivy.all_nested_indices(xs))
-
-    def one_arg_fn(x):
-        idx = next(nested_indices)
-        new_xs = ivy.set_nest_at_index(xs, idx, x, shallow=False) if idx else x
-        ret = grad_fn(new_xs)
-        for i in out_idx:
-            ret = ret[i]
-        return ret
-
-    return one_arg_fn
-
-
-def _get_one_out_fn(grad_fn, xs, fn_ret):
-    out_nested_indices = iter(ivy.all_nested_indices(fn_ret))
-
-    def one_out_fn(o):
-        out_idx = next(out_nested_indices)
-        out_shape = ivy.index_nest(grad_fn(xs), out_idx).shape
-        one_arg_fn = _get_jac_one_arg_fn(grad_fn, xs, out_idx)
-        jacobian = ivy.nested_map(
-            lambda x: jacobian_to_ivy(
-                paddle.incubate.autograd.Jacobian(
-                    one_arg_fn, ivy.to_native(x.expand_dims())
-                ),
-                x.shape,
-                out_shape,
-            ),
-            xs,
-            shallow=False,
-        )
-        return jacobian
-
-    return one_out_fn
-
-
-def jacobian_to_ivy(jacobian, in_shape, out_shape):
-    jac_ivy = ivy.to_ivy(jacobian[:])
-    jac_shape = out_shape + in_shape
-    jac_reshaped = jac_ivy.reshape(jac_shape)
-    return jac_reshaped
-
-
-def jac(func: Callable):
-    def grad_fn(x_in):
-        return ivy.to_native(
-            func(ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
-        )
-
-    def callback_fn(xs):
-        fn_ret = grad_fn(xs)
-        one_out_fn = _get_one_out_fn(grad_fn, xs, fn_ret)
-        jacobian = ivy.nested_map(one_out_fn, fn_ret)
-        return jacobian
-
-    return callback_fn
-
-
 def grad(f, argnums=0):
     if grad.nth == 0:
         grad.f_original = f
@@ -287,6 +216,81 @@ def grad(f, argnums=0):
     grad.nth += 1
 
     return _nth_derivative(grad.nth)
+
+
+def is_variable(x, /, *, exclusive: bool = False):
+    return isinstance(x, paddle.Tensor) and not x.stop_gradient
+
+
+def jac(func: Callable):
+    def grad_fn(x_in):
+        return ivy.to_native(
+            func(ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
+        )
+
+    def callback_fn(xs):
+        fn_ret = grad_fn(xs)
+        one_out_fn = _get_one_out_fn(grad_fn, xs, fn_ret)
+        jacobian = ivy.nested_map(one_out_fn, fn_ret)
+        return jacobian
+
+    return callback_fn
+
+
+def jacobian_to_ivy(jacobian, in_shape, out_shape):
+    jac_ivy = ivy.to_ivy(jacobian[:])
+    jac_shape = out_shape + in_shape
+    jac_reshaped = jac_ivy.reshape(jac_shape)
+    return jac_reshaped
+
+
+def stop_gradient(
+    x: Optional[paddle.Tensor],
+    /,
+    *,
+    preserve_type: bool = True,
+    out: Optional[paddle.Tensor] = None,
+):
+    is_var = is_variable(x)
+    x.stop_gradient = True
+    if is_var and preserve_type:
+        return variable(x)
+    return x
+
+
+def value_and_grad(func):
+    def grad_fn(xs):
+        return ivy.to_native(func(xs))
+
+    def callback_fn(xs):
+        y = grad_fn(xs)
+
+        def autograd_fn(x):
+            x = ivy.to_native(x)
+            grad = paddle.grad(y, x, allow_unused=True)[0]
+            grad = grad if grad is not None else paddle.zeros_like(x)
+            grad = ivy.to_ivy(grad)
+            return grad
+
+        grads = ivy.nested_map(autograd_fn, xs, include_derived=True, shallow=False)
+        y = ivy.to_ivy(y)
+        return y, grads
+
+    return callback_fn
+
+
+def variable(x, /):
+    if not x.is_leaf:
+        ret = x.detach()
+        ret.stop_gradient = False
+        return ret
+    ret = paddle_backend.copy_array(x).to_native()
+    ret.stop_gradient = False
+    return ret
+
+
+def variable_data(x: paddle.Tensor, /) -> paddle.Tensor:
+    return x.value()
 
 
 grad.f_original = None

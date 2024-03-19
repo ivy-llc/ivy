@@ -7,11 +7,6 @@ import functools
 from numbers import Number
 from operator import mul
 from typing import Callable, List, Optional, Sequence, Tuple, Union
-
-try:
-    import functorch
-except ImportError:
-    functorch = ()  # for torch 1.10.1
 import numpy as np
 import torch
 
@@ -22,7 +17,16 @@ from ivy.func_wrapper import _update_torch_views, with_unsupported_dtypes
 from ...ivy.general import _broadcast_to
 from . import backend_version, is_variable
 
+try:
+    import functorch
+except ImportError:
+    functorch = ()  # for torch 1.10.1
+
 torch_scatter = None
+
+
+# --- Helpers --- #
+# --------------- #
 
 
 def _parse_index(indices, ndims):
@@ -48,14 +52,6 @@ def _parse_index(indices, ndims):
     return ind
 
 
-def is_native_array(x, /, *, exclusive=False):
-    if isinstance(x, torch.Tensor):
-        if exclusive and x.requires_grad:
-            return False
-        return True
-    return False
-
-
 @with_unsupported_dtypes({"2.2 and below": ("complex", "bfloat16")}, backend_version)
 def array_equal(x0: torch.Tensor, x1: torch.Tensor, /) -> bool:
     x0, x1 = ivy.promote_types_of_inputs(x0, x1)
@@ -68,114 +64,6 @@ def container_types():
 
 def current_backend_str() -> str:
     return "torch"
-
-
-def neg_step(query):
-    return (
-        not isinstance(query, (int, bool))
-        and not ivy.is_array(query)
-        and query is not None
-        and query is not Ellipsis
-        and (
-            (isinstance(query, slice) and query.step is not None and query.step < 0)
-            or (
-                not isinstance(query, slice)
-                and any(
-                    isinstance(q, slice) and q.step is not None and q.step < 0
-                    for q in query
-                )
-            )
-        )
-    )
-
-
-def get_item(
-    x: torch.Tensor,
-    /,
-    query: Union[torch.Tensor, Tuple],
-    *,
-    copy: Optional[bool] = None,
-) -> torch.Tensor:
-    if copy:
-        x = x.clone()
-    return x.__getitem__(query)
-
-
-get_item.partial_mixed_handler = lambda x, query, **kwargs: not neg_step(query)
-
-
-def set_item(
-    x: torch.Tensor,
-    query: Union[torch.Tensor, Tuple],
-    val: torch.Tensor,
-    /,
-    *,
-    copy: Optional[bool] = False,
-) -> torch.Tensor:
-    if hasattr(x, "dtype") and hasattr(val, "dtype") and x.dtype != val.dtype:
-        val = val.to(x.dtype)
-    if copy:
-        x = x.clone()
-    x.__setitem__(query, val)
-    return x
-
-
-set_item.partial_mixed_handler = (
-    lambda x, query, val, **kwargs: not neg_step(query) and not x.requires_grad
-)
-
-
-def to_numpy(
-    x: Union[torch.Tensor, List[torch.Tensor]], /, *, copy: bool = True
-) -> Union[np.ndarray, List[np.ndarray]]:
-    if isinstance(x, (float, int, bool)):
-        return x
-    elif isinstance(x, np.ndarray):
-        if copy:
-            return x.copy()
-        else:
-            return x
-    elif torch.is_tensor(x):
-        x = x.resolve_neg().resolve_conj()
-        if copy:
-            # we don't use inbuilt numpy() because it blocks for
-            # bfloat16, which we are supporting here by importing
-            # ml_dtypes
-            # TODO: use torch's numpy() method once this feature is accepted
-            # https://github.com/pytorch/pytorch/issues/109873
-            if 0 in x.shape:
-                # this is necessary because tolist converts all empty shapes to (0,)
-                return np.empty(x.shape, dtype=ivy.as_ivy_dtype(x.dtype))
-            return np.array(x.tolist(), dtype=ivy.as_ivy_dtype(x.dtype))
-        else:
-            raise ivy.utils.exceptions.IvyException(
-                "Overwriting the same address is not supported for torch."
-            )
-    elif isinstance(x, list):
-        return [ivy.to_numpy(u) for u in x]
-    raise ivy.utils.exceptions.IvyException("Expected a pytorch tensor.")
-
-
-def to_scalar(x: torch.Tensor, /) -> Number:
-    if isinstance(x, (float, int)):
-        return x
-    return x.item()
-
-
-def to_list(x: torch.Tensor, /) -> list:
-    if isinstance(x, np.ndarray):
-        return x.tolist()
-    elif torch.is_tensor(x):
-        if x.dtype is torch.bfloat16:
-            default_dtype = ivy.default_float_dtype(as_native=True)
-            if default_dtype is torch.bfloat16:
-                x = x.to(torch.float32)
-            else:
-                x = x.to(default_dtype)
-            return x.detach().cpu().numpy().astype("bfloat16").tolist()
-        else:
-            return x.detach().cpu().numpy().tolist()
-    raise ivy.utils.exceptions.IvyException("Expected a pytorch tensor.")
 
 
 def gather(
@@ -216,36 +104,6 @@ def gather(
     return result
 
 
-def gather_nd_helper(params, indices):
-    indices_shape = indices.shape
-    params_shape = params.shape
-    if len(indices.shape) == 0:
-        num_index_dims = 1
-    else:
-        num_index_dims = indices_shape[-1]
-    result_dim_sizes_list = [
-        _reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
-    ] + [1]
-    result_dim_sizes = torch.tensor(result_dim_sizes_list)
-    implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
-    flat_params = torch.reshape(params, (-1,))
-    new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
-    indices_scales = torch.reshape(result_dim_sizes[0:num_index_dims], new_shape)
-    indices_for_flat_tiled = torch.reshape(
-        torch.sum(indices * indices_scales, -1, keepdim=True), (-1, 1)
-    ).repeat(*[1, implicit_indices_factor])
-    implicit_indices = torch.unsqueeze(torch.arange(implicit_indices_factor), 0).repeat(
-        *[indices_for_flat_tiled.shape[0], 1]
-    )
-    indices_for_flat = indices_for_flat_tiled + implicit_indices
-    flat_indices_for_flat = torch.reshape(indices_for_flat, (-1,)).type(torch.long)
-    flat_gather = torch.gather(flat_params, 0, flat_indices_for_flat)
-    res = torch.reshape(
-        flat_gather, list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
-    )
-    return res
-
-
 def gather_nd(
     params: torch.Tensor,
     indices: torch.Tensor,
@@ -276,14 +134,52 @@ def gather_nd(
     return result
 
 
+def gather_nd_helper(params, indices):
+    indices_shape = indices.shape
+    params_shape = params.shape
+    if len(indices.shape) == 0:
+        num_index_dims = 1
+    else:
+        num_index_dims = indices_shape[-1]
+    result_dim_sizes_list = [
+        _reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
+    ] + [1]
+    result_dim_sizes = torch.tensor(result_dim_sizes_list)
+    implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
+    flat_params = torch.reshape(params, (-1,))
+    new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
+    indices_scales = torch.reshape(result_dim_sizes[0:num_index_dims], new_shape)
+    indices_for_flat_tiled = torch.reshape(
+        torch.sum(indices * indices_scales, -1, keepdim=True), (-1, 1)
+    ).repeat(*[1, implicit_indices_factor])
+    implicit_indices = torch.unsqueeze(torch.arange(implicit_indices_factor), 0).repeat(
+        *[indices_for_flat_tiled.shape[0], 1]
+    )
+    indices_for_flat = indices_for_flat_tiled + implicit_indices
+    flat_indices_for_flat = torch.reshape(indices_for_flat, (-1,)).type(torch.long)
+    flat_gather = torch.gather(flat_params, 0, flat_indices_for_flat)
+    res = torch.reshape(
+        flat_gather, list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
+    )
+    return res
+
+
+def get_item(
+    x: torch.Tensor,
+    /,
+    query: Union[torch.Tensor, Tuple],
+    *,
+    copy: Optional[bool] = None,
+) -> torch.Tensor:
+    if copy:
+        x = x.clone()
+    return x.__getitem__(query)
+
+
 def get_num_dims(
     x: torch.Tensor, /, *, as_array: bool = False
 ) -> Union[torch.Tensor, int]:
     return torch.tensor(len(x.shape)) if as_array else len(x.shape)
-
-
-def size(x: torch.Tensor, /) -> int:
-    return functools.reduce(mul, x.shape) if len(x.shape) > 0 else 1
 
 
 def inplace_arrays_supported():
@@ -352,12 +248,62 @@ def inplace_variables_supported():
     return True
 
 
+def is_native_array(x, /, *, exclusive=False):
+    if isinstance(x, torch.Tensor):
+        if exclusive and x.requires_grad:
+            return False
+        return True
+    return False
+
+
+@with_unsupported_dtypes(
+    {"2.2 and below": ("bfloat16", "float16", "complex", "bool")}, backend_version
+)
+def isin(
+    elements: torch.tensor,
+    test_elements: torch.tensor,
+    /,
+    *,
+    assume_unique: bool = False,
+    invert: bool = False,
+) -> torch.tensor:
+    return torch.isin(
+        elements,
+        test_elements,
+        assume_unique=assume_unique,
+        invert=invert,
+    )
+
+
+def itemsize(x: torch.tensor) -> int:
+    return x.element_size()
+
+
 def multiprocessing(context: Optional[str] = None):
     import torch.multiprocessing
 
     if context is None:
         return torch.multiprocessing
     return torch.multiprocessing.get_context(context)
+
+
+def neg_step(query):
+    return (
+        not isinstance(query, (int, bool))
+        and not ivy.is_array(query)
+        and query is not None
+        and query is not Ellipsis
+        and (
+            (isinstance(query, slice) and query.step is not None and query.step < 0)
+            or (
+                not isinstance(query, slice)
+                and any(
+                    isinstance(q, slice) and q.step is not None and q.step < 0
+                    for q in query
+                )
+            )
+        )
+    )
 
 
 @with_unsupported_dtypes(
@@ -407,9 +353,6 @@ def scatter_flat(
             updates, indices.type(torch.int64), out=output, reduce=reduction
         )
     return res
-
-
-scatter_flat.support_native_out = True
 
 
 @with_unsupported_dtypes(
@@ -506,7 +449,20 @@ def scatter_nd(
     return res
 
 
-scatter_nd.support_native_out = True
+def set_item(
+    x: torch.Tensor,
+    query: Union[torch.Tensor, Tuple],
+    val: torch.Tensor,
+    /,
+    *,
+    copy: Optional[bool] = False,
+) -> torch.Tensor:
+    if hasattr(x, "dtype") and hasattr(val, "dtype") and x.dtype != val.dtype:
+        val = val.to(x.dtype)
+    if copy:
+        x = x.clone()
+    x.__setitem__(query, val)
+    return x
 
 
 def shape(
@@ -519,6 +475,63 @@ def shape(
         return ivy.array(x.shape, dtype=ivy.default_int_dtype())
     else:
         return ivy.Shape(x.shape)
+
+
+def size(x: torch.Tensor, /) -> int:
+    return functools.reduce(mul, x.shape) if len(x.shape) > 0 else 1
+
+
+def to_list(x: torch.Tensor, /) -> list:
+    if isinstance(x, np.ndarray):
+        return x.tolist()
+    elif torch.is_tensor(x):
+        if x.dtype is torch.bfloat16:
+            default_dtype = ivy.default_float_dtype(as_native=True)
+            if default_dtype is torch.bfloat16:
+                x = x.to(torch.float32)
+            else:
+                x = x.to(default_dtype)
+            return x.detach().cpu().numpy().astype("bfloat16").tolist()
+        else:
+            return x.detach().cpu().numpy().tolist()
+    raise ivy.utils.exceptions.IvyException("Expected a pytorch tensor.")
+
+
+def to_numpy(
+    x: Union[torch.Tensor, List[torch.Tensor]], /, *, copy: bool = True
+) -> Union[np.ndarray, List[np.ndarray]]:
+    if isinstance(x, (float, int, bool)):
+        return x
+    elif isinstance(x, np.ndarray):
+        if copy:
+            return x.copy()
+        else:
+            return x
+    elif torch.is_tensor(x):
+        x = x.resolve_neg().resolve_conj()
+        if copy:
+            # we don't use inbuilt numpy() because it blocks for
+            # bfloat16, which we are supporting here by importing
+            # ml_dtypes
+            # TODO: use torch's numpy() method once this feature is accepted
+            # https://github.com/pytorch/pytorch/issues/109873
+            if 0 in x.shape:
+                # this is necessary because tolist converts all empty shapes to (0,)
+                return np.empty(x.shape, dtype=ivy.as_ivy_dtype(x.dtype))
+            return np.array(x.tolist(), dtype=ivy.as_ivy_dtype(x.dtype))
+        else:
+            raise ivy.utils.exceptions.IvyException(
+                "Overwriting the same address is not supported for torch."
+            )
+    elif isinstance(x, list):
+        return [ivy.to_numpy(u) for u in x]
+    raise ivy.utils.exceptions.IvyException("Expected a pytorch tensor.")
+
+
+def to_scalar(x: torch.Tensor, /) -> Number:
+    if isinstance(x, (float, int)):
+        return x
+    return x.item()
 
 
 @with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, backend_version)
@@ -557,27 +570,10 @@ def vmap_v_2p0p0_and_above(
     return _vmap
 
 
-@with_unsupported_dtypes(
-    {"2.2 and below": ("bfloat16", "float16", "complex", "bool")}, backend_version
+get_item.partial_mixed_handler = lambda x, query, **kwargs: not neg_step(query)
+set_item.partial_mixed_handler = (
+    lambda x, query, val, **kwargs: not neg_step(query) and not x.requires_grad
 )
-def isin(
-    elements: torch.tensor,
-    test_elements: torch.tensor,
-    /,
-    *,
-    assume_unique: bool = False,
-    invert: bool = False,
-) -> torch.tensor:
-    return torch.isin(
-        elements,
-        test_elements,
-        assume_unique=assume_unique,
-        invert=invert,
-    )
-
-
+scatter_flat.support_native_out = True
+scatter_nd.support_native_out = True
 isin.support_native_out = True
-
-
-def itemsize(x: torch.tensor) -> int:
-    return x.element_size()

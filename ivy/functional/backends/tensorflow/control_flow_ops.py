@@ -1,32 +1,16 @@
 import tensorflow as tf
 
 
-def if_else(cond, body_fn, orelse_fn, vars):
-    # back-compatibility
-    if isinstance(cond, bool):
-        v = cond
-
-        def cond(*_):
-            return v
-
-    cond = bool(cond(**vars))
-    return tf.cond(cond, lambda: body_fn(**vars), lambda: orelse_fn(**vars))
-
-    # use pythonic placeholder until the tracer supports callable arguments
+# --- Helpers --- #
+# --------------- #
 
 
-def while_loop(test_fn, body_fn, vars):
-    def body_fn_wrapper(*loop_vars):
-        return body_fn(*loop_vars)
+def _dict_to_tuple(d):
+    return tuple(d[k] for k in d)
 
-    def test_fn_wrapper(*loop_vars):
-        return test_fn(*loop_vars)
 
-    if not vars:
-        vars = (0,)
-    elif isinstance(vars, dict):
-        vars = list(vars.values())
-    return tf.while_loop(test_fn_wrapper, body_fn_wrapper, loop_vars=vars)
+def _tuple_to_dict(t):
+    return {k: t[k] for k in range(len(t))}
 
 
 def for_loop(
@@ -60,9 +44,29 @@ def for_loop(
     return _dict_to_tuple(vars_dict)
 
 
-def _tuple_to_dict(t):
-    return {k: t[k] for k in range(len(t))}
+def if_else(cond, body_fn, orelse_fn, vars):
+    # back-compatibility
+    if isinstance(cond, bool):
+        v = cond
+
+        def cond(*_):
+            return v
+
+    cond = bool(cond(**vars))
+    return tf.cond(cond, lambda: body_fn(**vars), lambda: orelse_fn(**vars))
+
+    # use pythonic placeholder until the tracer supports callable arguments
 
 
-def _dict_to_tuple(d):
-    return tuple(d[k] for k in d)
+def while_loop(test_fn, body_fn, vars):
+    def body_fn_wrapper(*loop_vars):
+        return body_fn(*loop_vars)
+
+    def test_fn_wrapper(*loop_vars):
+        return test_fn(*loop_vars)
+
+    if not vars:
+        vars = (0,)
+    elif isinstance(vars, dict):
+        vars = list(vars.values())
+    return tf.while_loop(test_fn_wrapper, body_fn_wrapper, loop_vars=vars)

@@ -1,5 +1,3 @@
-# global
-torch_scatter = None
 from typing import Union, Optional, Sequence
 
 import torch
@@ -9,6 +7,69 @@ import ivy
 from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
+
+# global
+torch_scatter = None
+
+
+# --- Helpers --- #
+# --------------- #
+
+
+def _infer_dtype(dtype: torch.dtype) -> torch.dtype:
+    default_dtype = ivy.infer_default_dtype(dtype)
+    if default_dtype in ivy.valid_dtypes:
+        if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
+            return ivy.as_native_dtype(default_dtype)
+    return ivy.as_native_dtype(dtype)
+
+
+def max(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if torch.is_complex(x):
+        const = torch.tensor(1j, device=x.device, dtype=x.dtype)
+        real_max = torch.max(x.real, dim=axis, keepdim=keepdims).values
+        min_val = torch.finfo(x.real.dtype).min
+        imag = torch.where(x.real == real_max, x.imag, min_val)
+        # we consider the number with the biggest real and imag part
+        img_max = torch.max(imag, dim=axis, keepdim=keepdims).values
+        img_max = img_max.to(x.dtype)
+        return torch.add(real_max.to(x.dtype), torch.multiply(img_max, const))
+    if axis == ():
+        if ivy.exists(out):
+            return ivy.inplace_update(out, x)
+        else:
+            return x
+    if not keepdims and not axis and axis != 0:
+        return torch.amax(input=x, out=out)
+    return torch.amax(input=x, dim=axis, keepdim=keepdims, out=out)
+
+
+@with_supported_dtypes({"2.2 and below": ("float", "complex")}, backend_version)
+def mean(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = list(range(num_dims))
+    if axis in [(), []]:
+        if ivy.exists(out):
+            return ivy.inplace_update(out, x)
+        else:
+            return x
+    return torch.mean(x, dim=axis, keepdim=keepdims, out=out)
+
 
 # Array API Standard #
 # -------------------#
@@ -46,70 +107,6 @@ def min(
         initial = torch.tensor(initial, dtype=x.dtype)
         result = torch.minimum(result, initial)
     return result
-
-
-min.support_native_out = True
-
-
-def max(
-    x: torch.Tensor,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if torch.is_complex(x):
-        const = torch.tensor(1j, device=x.device, dtype=x.dtype)
-        real_max = torch.max(x.real, dim=axis, keepdim=keepdims).values
-        min_val = torch.finfo(x.real.dtype).min
-        imag = torch.where(x.real == real_max, x.imag, min_val)
-        # we consider the number with the biggest real and imag part
-        img_max = torch.max(imag, dim=axis, keepdim=keepdims).values
-        img_max = img_max.to(x.dtype)
-        return torch.add(real_max.to(x.dtype), torch.multiply(img_max, const))
-    if axis == ():
-        if ivy.exists(out):
-            return ivy.inplace_update(out, x)
-        else:
-            return x
-    if not keepdims and not axis and axis != 0:
-        return torch.amax(input=x, out=out)
-    return torch.amax(input=x, dim=axis, keepdim=keepdims, out=out)
-
-
-max.support_native_out = True
-
-
-@with_supported_dtypes({"2.2 and below": ("float", "complex")}, backend_version)
-def mean(
-    x: torch.Tensor,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if axis is None:
-        num_dims = len(x.shape)
-        axis = list(range(num_dims))
-    if axis in [(), []]:
-        if ivy.exists(out):
-            return ivy.inplace_update(out, x)
-        else:
-            return x
-    return torch.mean(x, dim=axis, keepdim=keepdims, out=out)
-
-
-mean.support_native_out = True
-
-
-def _infer_dtype(dtype: torch.dtype) -> torch.dtype:
-    default_dtype = ivy.infer_default_dtype(dtype)
-    if default_dtype in ivy.valid_dtypes:
-        if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
-            return ivy.as_native_dtype(default_dtype)
-    return ivy.as_native_dtype(dtype)
 
 
 # Function does support uint8, but allowing support for unsigned will cause
@@ -284,9 +281,6 @@ def cumprod(
     return ret
 
 
-cumprod.support_native_out = True
-
-
 # Function does support uint8, but allowing support for unsigned will cause
 # the function to break the upcasting rule defined in the Array API Standard
 # TODO: bfloat16 support is added in PyTorch 1.12.1
@@ -332,9 +326,6 @@ def cumsum(
     return torch.cumsum(x, axis, dtype=dtype, out=out)
 
 
-cumsum.support_native_out = True
-
-
 @with_unsupported_dtypes(
     {"2.2 and below": ("float16",)},
     backend_version,
@@ -346,3 +337,10 @@ def einsum(
 ) -> torch.Tensor:
     dtype = _get_promoted_type_of_operands(operands)
     return ivy.astype(torch.einsum(equation, *operands), dtype, copy=False)
+
+
+min.support_native_out = True
+max.support_native_out = True
+mean.support_native_out = True
+cumprod.support_native_out = True
+cumsum.support_native_out = True

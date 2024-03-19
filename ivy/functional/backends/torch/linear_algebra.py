@@ -39,9 +39,6 @@ def cholesky(
         return ret
 
 
-cholesky.support_native_out = True
-
-
 @with_unsupported_dtypes({"2.2 and below": ("float16", "complex")}, backend_version)
 def cross(
     x1: torch.Tensor,
@@ -67,15 +64,9 @@ def cross(
     )
 
 
-cross.support_native_out = True
-
-
 @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def det(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.linalg.det(x, out=out)
-
-
-det.support_native_out = True
 
 
 def diagonal(
@@ -91,6 +82,17 @@ def diagonal(
 
 
 @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
+def eig(
+    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+) -> Tuple[torch.Tensor]:
+    result_tuple = NamedTuple(
+        "eig", [("eigenvalues", torch.Tensor), ("eigenvectors", torch.Tensor)]
+    )
+    eigenvalues, eigenvectors = torch.linalg.eig(x, out=out)
+    return result_tuple(eigenvalues, eigenvectors)
+
+
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def eigh(
     x: torch.Tensor, /, *, UPLO: str = "L", out: Optional[torch.Tensor] = None
 ) -> Tuple[torch.Tensor]:
@@ -101,17 +103,11 @@ def eigh(
     return result_tuple(eigenvalues, eigenvectors)
 
 
-eigh.support_native_out = True
-
-
 @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def eigvalsh(
     x: torch.Tensor, /, *, UPLO: str = "L", out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.linalg.eigvalsh(x, UPLO=UPLO, out=out)
-
-
-eigvalsh.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
@@ -129,9 +125,6 @@ def inner(
             return ivy.inplace_update(out, ret)
         return ret
     return torch.inner(x1, x2, out=out)
-
-
-inner.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
@@ -154,9 +147,6 @@ def inv(
         return ivy.inplace_update(out, ret)
 
     return ret
-
-
-inv.support_native_out = True
 
 
 @with_unsupported_dtypes(
@@ -190,9 +180,6 @@ def matmul(
     return torch.matmul(x1, x2, out=out)
 
 
-matmul.support_native_out = True
-
-
 @with_supported_dtypes(
     {"2.2 and below": ("float32", "float64", "complex32", "complex64")}, backend_version
 )
@@ -218,31 +205,11 @@ def matrix_norm(
     return ret
 
 
-matrix_norm.support_native_out = True
-
-
-@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
-def eig(
-    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
-) -> Tuple[torch.Tensor]:
-    result_tuple = NamedTuple(
-        "eig", [("eigenvalues", torch.Tensor), ("eigenvectors", torch.Tensor)]
-    )
-    eigenvalues, eigenvectors = torch.linalg.eig(x, out=out)
-    return result_tuple(eigenvalues, eigenvectors)
-
-
-eig.support_native_out = True
-
-
 @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def matrix_power(
     x: torch.Tensor, n: int, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.linalg.matrix_power(x, n, out=out)
-
-
-matrix_power.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
@@ -282,9 +249,6 @@ def matrix_rank(
     return ret
 
 
-matrix_rank.support_native_out = True
-
-
 def matrix_transpose(
     x: torch.Tensor, /, *, conjugate: bool = False, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -305,9 +269,6 @@ def outer(
     return torch.outer(x1, x2, out=out)
 
 
-outer.support_native_out = True
-
-
 @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def pinv(
     x: torch.Tensor,
@@ -319,21 +280,6 @@ def pinv(
     if rtol is None:
         return torch.linalg.pinv(x, out=out)
     return torch.linalg.pinv(x, rtol, out=out)
-
-
-pinv.support_native_out = True
-
-
-@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
-def tensorsolve(
-    x1: torch.Tensor,
-    x2: torch.Tensor,
-    /,
-    *,
-    axes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.linalg.tensorsolve(x1, x2, dims=axes)
 
 
 @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
@@ -368,9 +314,6 @@ def slogdet(
     )
     sign, logabsdet = torch.linalg.slogdet(x)
     return results(sign, logabsdet)
-
-
-slogdet.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
@@ -437,9 +380,6 @@ def svdvals(
     return torch.linalg.svdvals(x, driver=driver, out=out)
 
 
-svdvals.support_native_out = True
-
-
 # ToDo: re-add int32 support once
 # (https://github.com/pytorch/pytorch/issues/84530) is fixed
 @with_supported_dtypes({"2.2 and below": ("float32",)}, backend_version)
@@ -459,6 +399,18 @@ def tensordot(
     else:
         ret = torch.tensordot(x1, x2, dims=axes).type(dtype)
     return ret
+
+
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
+def tensorsolve(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    axes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.linalg.tensorsolve(x1, x2, dims=axes)
 
 
 @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
@@ -498,9 +450,6 @@ def vecdot(
     return torch.tensordot(x1, x2, dims=([axis], [axis])).to(dtype)
 
 
-vecdot.support_native_out = True
-
-
 @with_unsupported_dtypes(
     {
         "2.2 and below": (
@@ -526,9 +475,6 @@ def vector_norm(
     if dtype and x.dtype != dtype:
         x = x.type(dtype)
     return torch.linalg.vector_norm(x, ord, axis, keepdims, out=out)
-
-
-vector_norm.support_native_out = True
 
 
 # Extra #
@@ -599,4 +545,22 @@ def vector_to_skew_symmetric_matrix(
     return torch.cat((row1, row2, row3), -2, out=out)
 
 
+cholesky.support_native_out = True
+cross.support_native_out = True
+det.support_native_out = True
+eigh.support_native_out = True
+eigvalsh.support_native_out = True
+inner.support_native_out = True
+inv.support_native_out = True
+matmul.support_native_out = True
+matrix_norm.support_native_out = True
+eig.support_native_out = True
+matrix_power.support_native_out = True
+matrix_rank.support_native_out = True
+outer.support_native_out = True
+pinv.support_native_out = True
+slogdet.support_native_out = True
+svdvals.support_native_out = True
+vecdot.support_native_out = True
+vector_norm.support_native_out = True
 vector_to_skew_symmetric_matrix.support_native_out = True

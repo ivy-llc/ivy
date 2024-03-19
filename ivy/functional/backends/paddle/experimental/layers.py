@@ -15,6 +15,11 @@ from ivy.func_wrapper import (
 from .. import backend_version
 import ivy
 
+
+# --- Helpers --- #
+# --------------- #
+
+
 # local
 
 
@@ -26,6 +31,288 @@ def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_
     if depth_pooling:
         x = paddle.transpose(x, (0, 2, 1, *range(3, dims + 2)))
     return x, kernel, strides, depth_pooling
+
+
+def adaptive_max_pool2d(
+    input: paddle.Tensor, output_size: Union[Sequence[int], int]
+) -> paddle.Tensor:
+    squeeze = input.ndim == 3
+    x = paddle.unsqueeze(input, axis=0) if squeeze else input
+    ret = paddle.nn.functional.adaptive_max_pool2d(x, output_size)
+    return paddle.squeeze(ret, axis=0) if squeeze else ret
+
+
+def avg_pool1d(
+    x: paddle.Tensor,
+    kernel: Union[int, Tuple[int]],
+    strides: Union[int, Tuple[int]],
+    padding: Union[str, int, List[Tuple[int, int]]],
+    /,
+    *,
+    data_format: str = "NWC",
+    count_include_pad: bool = False,
+    ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException()
+
+
+def avg_pool2d(
+    x: paddle.Tensor,
+    kernel: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: Union[str, int, List[Tuple[int, int]]],
+    /,
+    *,
+    data_format: str = "NHWC",
+    count_include_pad: bool = False,
+    ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException()
+
+
+def avg_pool3d(
+    x: paddle.Tensor,
+    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int, int]],
+    padding: Union[str, int, List[Tuple[int, int]]],
+    /,
+    *,
+    data_format: str = "NDHWC",
+    count_include_pad: bool = False,
+    ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException()
+
+
+def dct(
+    x: paddle.Tensor,
+    /,
+    *,
+    type: Optional[Literal[1, 2, 3, 4]] = 2,
+    n: Optional[int] = None,
+    axis: Optional[int] = -1,
+    norm: Optional[Literal["ortho"]] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException()
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.6.0 and below": {
+            "cpu": ("bfloat16", "float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def dropout1d(
+    x: paddle.Tensor,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NWC",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    axis = data_format.index("C") - 3 + x.ndim
+    return paddle.nn.functional.dropout(x, p=prob, axis=axis, training=training)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.6.0 and below": {
+            "cpu": ("bfloat16", "float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def dropout2d(
+    x: paddle.Tensor,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NHWC",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    axis = data_format.index("C") - 4 + x.ndim
+    return paddle.nn.functional.dropout(x, p=prob, axis=axis, training=training)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.6.0 and below": {
+            "cpu": ("bfloat16", "float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def dropout3d(
+    x: paddle.Tensor,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NDHWC",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    axis = data_format.index("C") - 5 + x.ndim
+    return paddle.nn.functional.dropout(x, p=prob, axis=axis, training=training)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.6.0 and below": {
+            "cpu": ("int8", "float32", "float64"),
+            "gpu": ("int8", "bfloat16", "float16", "float32", "float64"),
+        },
+        "2.4.2 and below": {
+            "cpu": ("int8", "float32", "float64"),
+            "gpu": ("int8", "float16", "float32", "float64"),
+        },
+    },
+    backend_version,
+)
+def embedding(
+    weights: paddle.Tensor,
+    indices: paddle.Tensor,
+    /,
+    *,
+    max_norm: Optional[int] = None,
+    out=None,
+) -> paddle.Tensor:
+    ivy.utils.assertions.check_equal(
+        weights.ndim, 2, message="weights must be 2-d", as_array=False
+    )
+
+    embeddings = paddle.nn.functional.embedding(x=indices, weight=weights)
+    if max_norm is not None:
+        norms = paddle.linalg.norm(embeddings, axis=-1, keepdim=True)
+        embeddings = paddle.where(
+            norms > max_norm, embeddings * max_norm / norms, embeddings
+        )
+        embeddings = paddle.where(
+            norms < -max_norm, embeddings * -max_norm / norms, embeddings
+        )
+    return embeddings
+
+
+@with_unsupported_dtypes(
+    {"2.6.0 and below": ("bfloat16", "bool", "float16")}, backend_version
+)
+def fft(
+    x: paddle.Tensor,
+    dim: int,
+    /,
+    *,
+    norm: Optional[str] = "backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if not isinstance(dim, int):
+        raise IvyValueError(f"Expecting <class 'int'> instead of {type(dim)}")
+
+    if n is None:
+        n = x.shape[dim]
+
+    if dim < -x.ndim or dim >= x.ndim:
+        raise IvyValueError(
+            f"Invalid dim {dim}, expecting a value ranging from {-x.ndim} to {x.ndim-1}"
+        )
+
+    if not isinstance(n, int):
+        raise TypeError(f"Expecting int type for 'n', instead of {type(n)}")
+
+    if n <= 1:
+        raise IvyValueError(f"Invalid number of data points {n}, expecting more than 1")
+
+    valid_norm_modes = ["backward", "ortho", "forward"]
+    if norm not in valid_norm_modes:
+        raise IvyValueError(
+            f"Unrecognized normalization mode {norm}, expecting one of"
+            f" {valid_norm_modes}"
+        )
+
+    ret = paddle.fft.fft(x, n, dim, norm=norm)
+    # to make it compatible with other backends
+    if x.dtype == paddle.int64:
+        ret = ret.astype("complex128")
+    return ret
+
+
+@with_supported_dtypes(
+    {
+        "2.6.0 and below": (
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
+def fft2(
+    x: paddle.Tensor,
+    *,
+    dim: Optional[Union[int, Tuple[int]]] = None,
+    norm: Optional[str] = "backward",
+    s: Optional[Union[int, Tuple[int]]] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    res = paddle.fft.fft2(x, s, dim, norm)
+    return res.astype("complex128")
+
+
+def ifft(
+    x: paddle.Tensor,
+    dim: int,
+    *,
+    norm: Optional[str] = "backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException()
+
+
+def ifftn(
+    x: paddle.Tensor,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: Optional[str] = "backward",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.fft.ifftn(x, s, axes, norm)
+
+
+def interpolate(
+    x: paddle.Tensor,
+    size: Union[Sequence[int], int],
+    /,
+    *,
+    mode: Optional[Literal["linear", "bilinear", "trilinear"]] = "linear",
+    scale_factor: Optional[Union[Sequence[int], int]] = None,
+    recompute_scale_factor: Optional[bool] = None,
+    align_corners: bool = False,
+    antialias: Optional[bool] = False,
+    out: Optional[paddle.Tensor] = None,
+):
+    if mode not in ["linear", "bilinear", "bicubic", "trilinear"]:
+        align_corners = None
+    return paddle.nn.functional.interpolate(
+        x,
+        size=size,
+        scale_factor=scale_factor,
+        mode=mode,
+        align_corners=align_corners,
+    )
 
 
 @with_supported_device_and_dtypes(
@@ -239,287 +526,6 @@ def max_pool3d(
     return res
 
 
-def avg_pool1d(
-    x: paddle.Tensor,
-    kernel: Union[int, Tuple[int]],
-    strides: Union[int, Tuple[int]],
-    padding: Union[str, int, List[Tuple[int, int]]],
-    /,
-    *,
-    data_format: str = "NWC",
-    count_include_pad: bool = False,
-    ceil_mode: bool = False,
-    divisor_override: Optional[int] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-
-
-def avg_pool2d(
-    x: paddle.Tensor,
-    kernel: Union[int, Tuple[int], Tuple[int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: Union[str, int, List[Tuple[int, int]]],
-    /,
-    *,
-    data_format: str = "NHWC",
-    count_include_pad: bool = False,
-    ceil_mode: bool = False,
-    divisor_override: Optional[int] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-
-
-def avg_pool3d(
-    x: paddle.Tensor,
-    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: Union[str, int, List[Tuple[int, int]]],
-    /,
-    *,
-    data_format: str = "NDHWC",
-    count_include_pad: bool = False,
-    ceil_mode: bool = False,
-    divisor_override: Optional[int] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-
-
-def dct(
-    x: paddle.Tensor,
-    /,
-    *,
-    type: Optional[Literal[1, 2, 3, 4]] = 2,
-    n: Optional[int] = None,
-    axis: Optional[int] = -1,
-    norm: Optional[Literal["ortho"]] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-
-
-@with_unsupported_dtypes(
-    {"2.6.0 and below": ("bfloat16", "bool", "float16")}, backend_version
-)
-def fft(
-    x: paddle.Tensor,
-    dim: int,
-    /,
-    *,
-    norm: Optional[str] = "backward",
-    n: Optional[Union[int, Tuple[int]]] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    if not isinstance(dim, int):
-        raise IvyValueError(f"Expecting <class 'int'> instead of {type(dim)}")
-
-    if n is None:
-        n = x.shape[dim]
-
-    if dim < -x.ndim or dim >= x.ndim:
-        raise IvyValueError(
-            f"Invalid dim {dim}, expecting a value ranging from {-x.ndim} to {x.ndim-1}"
-        )
-
-    if not isinstance(n, int):
-        raise TypeError(f"Expecting int type for 'n', instead of {type(n)}")
-
-    if n <= 1:
-        raise IvyValueError(f"Invalid number of data points {n}, expecting more than 1")
-
-    valid_norm_modes = ["backward", "ortho", "forward"]
-    if norm not in valid_norm_modes:
-        raise IvyValueError(
-            f"Unrecognized normalization mode {norm}, expecting one of"
-            f" {valid_norm_modes}"
-        )
-
-    ret = paddle.fft.fft(x, n, dim, norm=norm)
-    # to make it compatible with other backends
-    if x.dtype == paddle.int64:
-        ret = ret.astype("complex128")
-    return ret
-
-
-@with_supported_device_and_dtypes(
-    {
-        "2.6.0 and below": {
-            "cpu": ("bfloat16", "float32", "float64"),
-            "gpu": ("bfloat16", "float16", "float32", "float64"),
-        }
-    },
-    backend_version,
-)
-def dropout1d(
-    x: paddle.Tensor,
-    prob: float,
-    /,
-    *,
-    training: bool = True,
-    data_format: str = "NWC",
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    axis = data_format.index("C") - 3 + x.ndim
-    return paddle.nn.functional.dropout(x, p=prob, axis=axis, training=training)
-
-
-@with_supported_device_and_dtypes(
-    {
-        "2.6.0 and below": {
-            "cpu": ("bfloat16", "float32", "float64"),
-            "gpu": ("bfloat16", "float16", "float32", "float64"),
-        }
-    },
-    backend_version,
-)
-def dropout2d(
-    x: paddle.Tensor,
-    prob: float,
-    /,
-    *,
-    training: bool = True,
-    data_format: str = "NHWC",
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    axis = data_format.index("C") - 4 + x.ndim
-    return paddle.nn.functional.dropout(x, p=prob, axis=axis, training=training)
-
-
-@with_supported_device_and_dtypes(
-    {
-        "2.6.0 and below": {
-            "cpu": ("bfloat16", "float32", "float64"),
-            "gpu": ("bfloat16", "float16", "float32", "float64"),
-        }
-    },
-    backend_version,
-)
-def dropout3d(
-    x: paddle.Tensor,
-    prob: float,
-    /,
-    *,
-    training: bool = True,
-    data_format: str = "NDHWC",
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    axis = data_format.index("C") - 5 + x.ndim
-    return paddle.nn.functional.dropout(x, p=prob, axis=axis, training=training)
-
-
-def ifft(
-    x: paddle.Tensor,
-    dim: int,
-    *,
-    norm: Optional[str] = "backward",
-    n: Optional[Union[int, Tuple[int]]] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-
-
-@with_supported_device_and_dtypes(
-    {
-        "2.6.0 and below": {
-            "cpu": ("int8", "float32", "float64"),
-            "gpu": ("int8", "bfloat16", "float16", "float32", "float64"),
-        },
-        "2.4.2 and below": {
-            "cpu": ("int8", "float32", "float64"),
-            "gpu": ("int8", "float16", "float32", "float64"),
-        },
-    },
-    backend_version,
-)
-def embedding(
-    weights: paddle.Tensor,
-    indices: paddle.Tensor,
-    /,
-    *,
-    max_norm: Optional[int] = None,
-    out=None,
-) -> paddle.Tensor:
-    ivy.utils.assertions.check_equal(
-        weights.ndim, 2, message="weights must be 2-d", as_array=False
-    )
-
-    embeddings = paddle.nn.functional.embedding(x=indices, weight=weights)
-    if max_norm is not None:
-        norms = paddle.linalg.norm(embeddings, axis=-1, keepdim=True)
-        embeddings = paddle.where(
-            norms > max_norm, embeddings * max_norm / norms, embeddings
-        )
-        embeddings = paddle.where(
-            norms < -max_norm, embeddings * -max_norm / norms, embeddings
-        )
-    return embeddings
-
-
-def interpolate(
-    x: paddle.Tensor,
-    size: Union[Sequence[int], int],
-    /,
-    *,
-    mode: Optional[Literal["linear", "bilinear", "trilinear"]] = "linear",
-    scale_factor: Optional[Union[Sequence[int], int]] = None,
-    recompute_scale_factor: Optional[bool] = None,
-    align_corners: bool = False,
-    antialias: Optional[bool] = False,
-    out: Optional[paddle.Tensor] = None,
-):
-    if mode not in ["linear", "bilinear", "bicubic", "trilinear"]:
-        align_corners = None
-    return paddle.nn.functional.interpolate(
-        x,
-        size=size,
-        scale_factor=scale_factor,
-        mode=mode,
-        align_corners=align_corners,
-    )
-
-
-interpolate.partial_mixed_handler = (
-    lambda *args, **kwargs: kwargs.get("mode", "linear")
-    not in [
-        "tf_area",
-        "nd",
-        "tf_bicubic",
-        "mitchellcubic",
-        "lanczos3",
-        "lanczos5",
-        "gaussian",
-    ]
-    and (
-        kwargs.get("mode", "linear") in ["linear", "bilinear", "bicubic", "trilinear"]
-        or not kwargs.get("align_corners", False)
-    )
-    and not kwargs.get("antialias", False)
-    and not kwargs.get("recompute_scale_factor", False)
-)
-
-
-def adaptive_max_pool2d(
-    input: paddle.Tensor, output_size: Union[Sequence[int], int]
-) -> paddle.Tensor:
-    squeeze = input.ndim == 3
-    x = paddle.unsqueeze(input, axis=0) if squeeze else input
-    ret = paddle.nn.functional.adaptive_max_pool2d(x, output_size)
-    return paddle.squeeze(ret, axis=0) if squeeze else ret
-
-
-def ifftn(
-    x: paddle.Tensor,
-    s: Optional[Union[int, Tuple[int]]] = None,
-    axes: Optional[Union[int, Tuple[int]]] = None,
-    *,
-    norm: Optional[str] = "backward",
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    return paddle.fft.ifftn(x, s, axes, norm)
-
-
 def rfft(
     x: paddle.Tensor,
     /,
@@ -557,25 +563,53 @@ def rfftn(
     return result.astype("complex128")
 
 
-@with_supported_dtypes(
-    {
-        "2.6.0 and below": (
-            "complex64",
-            "complex128",
-        )
-    },
-    backend_version,
-)
-def fft2(
-    x: paddle.Tensor,
+def sliding_window(
+    input: paddle.Tensor,
+    kernel_size: Union[int, Tuple[int, int]],
+    /,
     *,
-    dim: Optional[Union[int, Tuple[int]]] = None,
-    norm: Optional[str] = "backward",
-    s: Optional[Union[int, Tuple[int]]] = None,
-    out: Optional[paddle.Tensor] = None,
+    stride: Union[int, Tuple[int, int]] = 1,
+    dilation: Union[int, Tuple[int, int]] = 1,
+    padding: Union[str, int, Tuple[int, int]] = 0,
 ) -> paddle.Tensor:
-    res = paddle.fft.fft2(x, s, dim, norm)
-    return res.astype("complex128")
+    if input.ndim != 4:
+        # convert input to 4D tensor as unfold only accepts 4D data
+        input_shape = input.shape
+        extend_dims = max(0, 4 - len(input_shape))
+        new_shape = (1,) * extend_dims + tuple(input_shape)
+        input = input.reshape(new_shape).astype("float32")
+
+    stride = [stride] * 2 if isinstance(stride, int) else list(stride)
+    dilation = [dilation] * 2 if isinstance(dilation, int) else list(dilation)
+
+    kernel_size = (
+        [kernel_size] * 2 if isinstance(kernel_size, int) else list(kernel_size)
+    )
+    if len(kernel_size) < 2:
+        kernel_size = list((kernel_size) * 2)
+
+    # check padding and convert to right format
+    if isinstance(padding, str):
+        # convert padding from str to seq
+        if padding.upper() == "SAME":
+            pad_vals = []
+            for dim in input.shape:
+                pad_val = _handle_padding(
+                    dim,
+                    stride[0] if isinstance(stride, tuple) else stride,
+                    kernel_size[0],
+                    padding,
+                )
+                pad_vals.append(pad_val)
+            padding = pad_vals[:2]
+        else:
+            padding = 0
+    else:
+        padding = (padding,) * 2 if isinstance(padding, int) else padding
+
+    return paddle.nn.functional.unfold(
+        input, kernel_size, strides=stride, paddings=padding, dilations=dilation
+    )
 
 
 # stft
@@ -693,50 +727,21 @@ def stft(
     return result.astype(dtype)
 
 
-def sliding_window(
-    input: paddle.Tensor,
-    kernel_size: Union[int, Tuple[int, int]],
-    /,
-    *,
-    stride: Union[int, Tuple[int, int]] = 1,
-    dilation: Union[int, Tuple[int, int]] = 1,
-    padding: Union[str, int, Tuple[int, int]] = 0,
-) -> paddle.Tensor:
-    if input.ndim != 4:
-        # convert input to 4D tensor as unfold only accepts 4D data
-        input_shape = input.shape
-        extend_dims = max(0, 4 - len(input_shape))
-        new_shape = (1,) * extend_dims + tuple(input_shape)
-        input = input.reshape(new_shape).astype("float32")
-
-    stride = [stride] * 2 if isinstance(stride, int) else list(stride)
-    dilation = [dilation] * 2 if isinstance(dilation, int) else list(dilation)
-
-    kernel_size = (
-        [kernel_size] * 2 if isinstance(kernel_size, int) else list(kernel_size)
+interpolate.partial_mixed_handler = (
+    lambda *args, **kwargs: kwargs.get("mode", "linear")
+    not in [
+        "tf_area",
+        "nd",
+        "tf_bicubic",
+        "mitchellcubic",
+        "lanczos3",
+        "lanczos5",
+        "gaussian",
+    ]
+    and (
+        kwargs.get("mode", "linear") in ["linear", "bilinear", "bicubic", "trilinear"]
+        or not kwargs.get("align_corners", False)
     )
-    if len(kernel_size) < 2:
-        kernel_size = list((kernel_size) * 2)
-
-    # check padding and convert to right format
-    if isinstance(padding, str):
-        # convert padding from str to seq
-        if padding.upper() == "SAME":
-            pad_vals = []
-            for dim in input.shape:
-                pad_val = _handle_padding(
-                    dim,
-                    stride[0] if isinstance(stride, tuple) else stride,
-                    kernel_size[0],
-                    padding,
-                )
-                pad_vals.append(pad_val)
-            padding = pad_vals[:2]
-        else:
-            padding = 0
-    else:
-        padding = (padding,) * 2 if isinstance(padding, int) else padding
-
-    return paddle.nn.functional.unfold(
-        input, kernel_size, strides=stride, paddings=padding, dilations=dilation
-    )
+    and not kwargs.get("antialias", False)
+    and not kwargs.get("recompute_scale_factor", False)
+)

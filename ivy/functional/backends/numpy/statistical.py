@@ -10,6 +10,42 @@ from . import backend_version
 from ivy.utils.einsum_parser import legalise_einsum_expr
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+def _infer_dtype(dtype: np.dtype):
+    default_dtype = ivy.infer_default_dtype(dtype)
+    if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
+        return default_dtype
+    return dtype
+
+
+def max(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return np.asarray(np.amax(a=x, axis=axis, keepdims=keepdims, out=out))
+
+
+@_scalar_output_to_0d_array
+def mean(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return np.mean(x, axis=axis, keepdims=keepdims, dtype=x.dtype, out=out)
+
+
 # Array API Standard #
 # -------------------#
 
@@ -35,47 +71,6 @@ def min(
     return np.asarray(ret)
 
 
-min.support_native_out = True
-
-
-def max(
-    x: np.ndarray,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.asarray(np.amax(a=x, axis=axis, keepdims=keepdims, out=out))
-
-
-max.support_native_out = True
-
-
-@_scalar_output_to_0d_array
-def mean(
-    x: np.ndarray,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.mean(x, axis=axis, keepdims=keepdims, dtype=x.dtype, out=out)
-
-
-mean.support_native_out = True
-
-
-def _infer_dtype(dtype: np.dtype):
-    default_dtype = ivy.infer_default_dtype(dtype)
-    if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
-        return default_dtype
-    return dtype
-
-
 def prod(
     x: np.ndarray,
     /,
@@ -92,9 +87,6 @@ def prod(
     return np.asarray(np.prod(a=x, axis=axis, dtype=dtype, keepdims=keepdims, out=out))
 
 
-prod.support_native_out = True
-
-
 def std(
     x: np.ndarray,
     /,
@@ -106,9 +98,6 @@ def std(
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
     return np.asarray(np.std(x, axis=axis, ddof=correction, keepdims=keepdims, out=out))
-
-
-std.support_native_out = True
 
 
 def sum(
@@ -132,9 +121,6 @@ def sum(
             out=out,
         )
     )
-
-
-sum.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -169,9 +155,6 @@ def var(
         x.dtype,
         copy=False,
     )
-
-
-var.support_native_out = True
 
 
 # Extra #
@@ -209,9 +192,6 @@ def cumprod(
         return np.flip(x, axis=axis)
 
 
-cumprod.support_native_out = True
-
-
 def cumsum(
     x: np.ndarray,
     axis: int = 0,
@@ -243,9 +223,6 @@ def cumsum(
     return np.cumsum(x, axis, dtype=dtype, out=out)
 
 
-cumsum.support_native_out = True
-
-
 @_scalar_output_to_0d_array
 def einsum(
     equation: str, *operands: np.ndarray, out: Optional[np.ndarray] = None
@@ -254,4 +231,13 @@ def einsum(
     return np.einsum(equation, *operands, out=out)
 
 
+min.support_native_out = True
+max.support_native_out = True
+mean.support_native_out = True
+prod.support_native_out = True
+std.support_native_out = True
+sum.support_native_out = True
+var.support_native_out = True
+cumprod.support_native_out = True
+cumsum.support_native_out = True
 einsum.support_native_out = True

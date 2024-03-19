@@ -12,8 +12,8 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 
-# Helpers #
-# ------- #
+# --- Helpers --- #
+# --------------- #
 
 
 def _reduce_loss(red, loss, axis, out):
@@ -23,65 +23,6 @@ def _reduce_loss(red, loss, axis, out):
         return ivy.negative(ivy.mean(loss, axis=axis), out=out)
     else:
         return ivy.negative(loss, out=out)
-
-
-# Extra #
-# ------#
-
-
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
-def cross_entropy(
-    true: Union[ivy.Array, ivy.NativeArray],
-    pred: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axis: Optional[int] = None,
-    epsilon: float = 1e-7,
-    reduction: str = "mean",
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Compute cross-entropy between predicted and true discrete distributions.
-
-    Parameters
-    ----------
-    true
-        input array containing true labels.
-    pred
-        input array containing the predicted labels.
-    axis
-        the axis along which to compute the cross-entropy. If axis is ``-1``,
-        the cross-entropy will be computed along the last dimension. Default: ``-1``.
-    epsilon
-        a float in [0.0, 1.0] specifying the amount of smoothing when calculating
-        the loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
-    out
-        optional output array, for writing the result to. It must have a shape
-        that the inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        The cross-entropy loss between the given distributions
-
-    Examples
-    --------
-    >>> x = ivy.array([0, 0, 1, 0])
-    >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
-    >>> print(ivy.cross_entropy(x, y))
-    ivy.array(0.34657359)
-
-    >>> z = ivy.array([0.1, 0.1, 0.7, 0.1])
-    >>> print(ivy.cross_entropy(x, z))
-    ivy.array(0.08916873)
-    """
-    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
-    pred = ivy.clip(pred, epsilon, 1 - epsilon)
-    log_pred = ivy.log(pred)
-    return _reduce_loss(reduction, log_pred * true, axis, out)
 
 
 @handle_exceptions
@@ -267,6 +208,65 @@ def binary_cross_entropy(
         )
 
     return _reduce_loss(reduction, loss, axis, out)
+
+
+# Extra #
+# ------#
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def cross_entropy(
+    true: Union[ivy.Array, ivy.NativeArray],
+    pred: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[int] = None,
+    epsilon: float = 1e-7,
+    reduction: str = "mean",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Compute cross-entropy between predicted and true discrete distributions.
+
+    Parameters
+    ----------
+    true
+        input array containing true labels.
+    pred
+        input array containing the predicted labels.
+    axis
+        the axis along which to compute the cross-entropy. If axis is ``-1``,
+        the cross-entropy will be computed along the last dimension. Default: ``-1``.
+    epsilon
+        a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+        the loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
+    out
+        optional output array, for writing the result to. It must have a shape
+        that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The cross-entropy loss between the given distributions
+
+    Examples
+    --------
+    >>> x = ivy.array([0, 0, 1, 0])
+    >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
+    >>> print(ivy.cross_entropy(x, y))
+    ivy.array(0.34657359)
+
+    >>> z = ivy.array([0.1, 0.1, 0.7, 0.1])
+    >>> print(ivy.cross_entropy(x, z))
+    ivy.array(0.08916873)
+    """
+    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
+    pred = ivy.clip(pred, epsilon, 1 - epsilon)
+    log_pred = ivy.log(pred)
+    return _reduce_loss(reduction, log_pred * true, axis, out)
 
 
 @handle_exceptions

@@ -10,21 +10,7 @@ import warnings
 import types
 from typing import Type, Optional, Tuple
 
-# noinspection PyUnresolvedReferences
-try:
-    import pynvml
-
-    try:
-        pynvml.nvmlInit()
-    except pynvml.NVMLError:
-        pass
-except ImportError:
-    warnings.warn(
-        "pynvml installation was not found in the environment, functionalities"
-        " of the Ivy's device module will be limited. Please install pynvml if"
-        " you wish to use GPUs with Ivy."
-    )
-    # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
+# nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
 
 from typing import Union, Callable, Iterable, Any
 
@@ -40,11 +26,25 @@ from ivy.func_wrapper import (
 )
 from ivy.utils.exceptions import handle_exceptions
 
+# noinspection PyUnresolvedReferences
+try:
+    import pynvml
+
+    try:
+        pynvml.nvmlInit()
+    except pynvml.NVMLError:
+        pass
+except ImportError:
+    warnings.warn(
+        "pynvml installation was not found in the environment, functionalities"
+        " of the Ivy's device module will be limited. Please install pynvml if"
+        " you wish to use GPUs with Ivy."
+    )
+
 default_device_stack = []
-soft_device_mode_stack = []
-dev_handles = {}
-split_factors = {}
 max_chunk_sizes = {}
+soft_device_mode_stack = []
+split_factors = {}
 
 
 # Extra #
@@ -134,8 +134,84 @@ class DefaultDevice:
         return self
 
 
-def handle_soft_device_variable(*args, fn, **kwargs):
-    return ivy.current_backend().handle_soft_device_variable(*args, fn=fn, **kwargs)
+# Profiler #
+
+
+class Profiler(abc.ABC):
+    """The profiler class is used to profile the execution of some code.
+
+    Parameters
+    ----------
+    save_dir
+        The directory to save the profile data to.
+    """
+
+    def __init__(self, save_dir: str):
+        self._save_dir = save_dir
+
+    @abc.abstractmethod
+    def start(self):
+        """Start the profiler.
+
+        This should be called before the code to be profiled.
+        """
+        raise ivy.utils.exceptions.IvyNotImplementedException
+
+    @abc.abstractmethod
+    def stop(self):
+        """Stop the profiler.
+
+        This should be called after the code to be profiled.
+        """
+        raise ivy.utils.exceptions.IvyNotImplementedException
+
+    @abc.abstractmethod
+    def __enter__(self):
+        raise ivy.utils.exceptions.IvyNotImplementedException
+
+    @abc.abstractmethod
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        raise ivy.utils.exceptions.IvyNotImplementedException
+
+
+# --- Helpers --- #
+# --------------- #
+
+
+def _get_devices(fn: Callable, complement: bool = True) -> Tuple:
+    valid_devices = ivy.valid_devices
+    invalid_devices = ivy.invalid_devices
+    all_devices = ivy.all_devices
+
+    supported = set(ivy.valid_devices)
+
+    is_backend_fn = "backend" in fn.__module__
+    is_frontend_fn = "frontend" in fn.__module__
+    is_einops_fn = hasattr(fn, "__name__") and "einops" in fn.__name__
+    if not is_backend_fn and not is_frontend_fn and not is_einops_fn:
+        if complement:
+            supported = set(all_devices).difference(supported)
+        return supported
+
+    # Their values are formatted like either
+    # 1. fn.supported_devices = ("cpu",)
+    # Could also have the "all" value for the framework
+    basic = [
+        ("supported_devices", set.intersection, valid_devices),
+        ("unsupported_devices", set.difference, invalid_devices),
+    ]
+    for key, merge_fn, base in basic:
+        if hasattr(fn, key):
+            v = getattr(fn, key)
+            if "einops" in fn.__name__ and isinstance(v, dict):
+                v = v.get(ivy.current_backend_str(), base)
+            ivy.utils.assertions.check_isinstance(v, tuple)
+            supported = merge_fn(supported, set(v))
+
+    if complement:
+        supported = set(all_devices).difference(supported)
+
+    return tuple(supported)
 
 
 # Helpers #
@@ -151,6 +227,23 @@ def _get_nvml_gpu_handle(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
     return handle
 
 
+def _is_valid_devices_attributes(fn: Callable) -> bool:
+    if hasattr(fn, "supported_devices") and hasattr(fn, "unsupported_devices"):
+        fn_supported_devices = fn.supported_devices
+        fn_unsupported_devices = fn.unsupported_devices
+        if isinstance(fn_supported_devices, dict):
+            if isinstance(fn_unsupported_devices, dict):
+                backend_str = ivy.current_backend_str()
+                if (
+                    backend_str in fn_supported_devices
+                    and backend_str in fn_unsupported_devices
+                ):
+                    return False
+        elif isinstance(fn_unsupported_devices, tuple):
+            return False
+    return True
+
+
 def _shift_native_arrays_on_default_device(*args, **kwargs):
     with ivy.ArrayMode(False):
         default_device = ivy.default_device(as_native=True)
@@ -163,6 +256,10 @@ def _shift_native_arrays_on_default_device(*args, **kwargs):
             [args, kwargs],
         )
     return args, kwargs, ivy.as_native_dev(default_device)
+
+
+def handle_soft_device_variable(*args, fn, **kwargs):
+    return ivy.current_backend().handle_soft_device_variable(*args, fn=fn, **kwargs)
 
 
 # Device Queries #
@@ -283,9 +380,6 @@ def print_all_ivy_arrays_on_dev(
         [print((arr.shape, arr.dtype)) for arr in arrs]
     else:
         [print(arr) for arr in arrs]
-
-
-ivy.soft_device_mode = soft_device_mode_stack[-1] if soft_device_mode_stack else False
 
 
 @handle_exceptions
@@ -467,6 +561,66 @@ def clear_cached_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> N
 
 
 @handle_exceptions
+def percent_used_mem_on_dev(
+    device: Union[ivy.Device, ivy.NativeDevice],
+    /,
+    *,
+    process_specific: bool = False,
+) -> float:
+    """Get the percentage used memory for a given device string. In case of
+    CPU, the used RAM is returned.
+
+    Parameters
+    ----------
+    device
+        The device string to convert to native device handle.
+    process_specific
+        Whether the check the memory used by this python process alone. Default is
+        False.
+
+    Returns
+    -------
+    ret
+        The percentage used memory on the device.
+
+    Examples
+    --------
+    >>> x = ivy.percent_used_mem_on_dev("cpu", process_specific = False)
+    >>> print(x)
+    94.036902561555
+
+    >>> x = ivy.percent_used_mem_on_dev("cpu", process_specific = True)
+    >>> print(x)
+    0.7024003467681645
+
+    >>> x = ivy.as_native_dev("gpu:0")
+    >>> y = ivy.percent_used_mem_on_dev(x, process_specific = False)
+    >>> print(y)
+    0.7095597456708771
+    """
+    ivy.clear_cached_mem_on_dev(device)
+    if "gpu" in device:
+        handle = _get_nvml_gpu_handle(device)
+        info = pynvml.nvmlDeviceGetMemoryInfo(handle)
+        if process_specific:
+            pid = os.getpid()
+            for process in pynvml.nvmlDeviceGetComputeRunningProcesses(handle):
+                if process.pid == pid:
+                    return (process.usedGpuMemory / info.total) * 100
+        return (info.used / info.total) * 100
+    elif device == "cpu":
+        vm = psutil.virtual_memory()
+        if process_specific:
+            return (psutil.Process(os.getpid()).memory_info().rss / vm.total) * 100
+        return (1 - (vm.available / vm.total)) * 100
+    else:
+        raise ivy.utils.exceptions.IvyException(
+            'Invalid device string input, must be on the form "gpu:idx" or "cpu", but'
+            f" found {device}"
+        )
+
+
+@handle_exceptions
 def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
     """Get the total amount of memory (in GB) for a given device string. In
     case of CPU, the total RAM is returned.
@@ -556,66 +710,6 @@ def used_mem_on_dev(
             return psutil.Process(os.getpid()).memory_info().rss / 1e9
         vm = psutil.virtual_memory()
         return (vm.total - vm.available) / 1e9
-    else:
-        raise ivy.utils.exceptions.IvyException(
-            'Invalid device string input, must be on the form "gpu:idx" or "cpu", but'
-            f" found {device}"
-        )
-
-
-@handle_exceptions
-def percent_used_mem_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice],
-    /,
-    *,
-    process_specific: bool = False,
-) -> float:
-    """Get the percentage used memory for a given device string. In case of
-    CPU, the used RAM is returned.
-
-    Parameters
-    ----------
-    device
-        The device string to convert to native device handle.
-    process_specific
-        Whether the check the memory used by this python process alone. Default is
-        False.
-
-    Returns
-    -------
-    ret
-        The percentage used memory on the device.
-
-    Examples
-    --------
-    >>> x = ivy.percent_used_mem_on_dev("cpu", process_specific = False)
-    >>> print(x)
-    94.036902561555
-
-    >>> x = ivy.percent_used_mem_on_dev("cpu", process_specific = True)
-    >>> print(x)
-    0.7024003467681645
-
-    >>> x = ivy.as_native_dev("gpu:0")
-    >>> y = ivy.percent_used_mem_on_dev(x, process_specific = False)
-    >>> print(y)
-    0.7095597456708771
-    """
-    ivy.clear_cached_mem_on_dev(device)
-    if "gpu" in device:
-        handle = _get_nvml_gpu_handle(device)
-        info = pynvml.nvmlDeviceGetMemoryInfo(handle)
-        if process_specific:
-            pid = os.getpid()
-            for process in pynvml.nvmlDeviceGetComputeRunningProcesses(handle):
-                if process.pid == pid:
-                    return (process.usedGpuMemory / info.total) * 100
-        return (info.used / info.total) * 100
-    elif device == "cpu":
-        vm = psutil.virtual_memory()
-        if process_specific:
-            return (psutil.Process(os.getpid()).memory_info().rss / vm.total) * 100
-        return (1 - (vm.available / vm.total)) * 100
     else:
         raise ivy.utils.exceptions.IvyException(
             'Invalid device string input, must be on the form "gpu:idx" or "cpu", but'
@@ -825,6 +919,114 @@ def default_device(
 
 
 @handle_exceptions
+@handle_nestable
+def function_supported_devices(
+    fn: Callable, recurse: bool = True
+) -> Union[Tuple, dict]:
+    """Return the supported devices of the current backend's function. The
+    function returns a dict containing the supported devices for the
+    compositional and primary implementations in case of partial mixed
+    functions.
+
+    Parameters
+    ----------
+    fn
+        The function to check for the supported device attribute
+    recurse
+        Whether to recurse into used ivy functions. Default is ``True``.
+
+    Returns
+    -------
+    ret
+        Tuple or dict containing the supported devices of the function
+
+    Examples
+    --------
+    >>> import ivy
+    >>> ivy.set_backend('numpy')
+    >>> print(ivy.function_supported_devices(ivy.ones))
+    ('cpu',)
+
+    >>> ivy.set_backend('torch')
+    >>> x = ivy.function_supported_devices(ivy.ones)
+    >>> x = sorted(x)
+    ('cpu', 'gpu')
+    """
+    ivy.utils.assertions.check_true(
+        _is_valid_devices_attributes(fn),
+        "supported_devices and unsupported_devices attributes cannot both "
+        "exist in a particular backend",
+    )
+    if hasattr(fn, "partial_mixed_handler"):
+        return {
+            "compositional": function_supported_devices(fn.compos, recurse=recurse),
+            "primary": _get_devices(fn, complement=False),
+        }
+    else:
+        supported_devices = set(_get_devices(fn, complement=False))
+        if recurse:
+            supported_devices = ivy.functional.data_type._nested_get(
+                fn, supported_devices, set.intersection, function_supported_devices
+            )
+
+    return (
+        supported_devices
+        if isinstance(supported_devices, dict)
+        else tuple(supported_devices)
+    )
+
+
+@handle_exceptions
+@handle_nestable
+def function_unsupported_devices(
+    fn: Callable, recurse: bool = True
+) -> Union[Tuple, dict]:
+    """Return the unsupported devices of the current backend's function. The
+    function returns a dict containing the unsupported devices for the
+    compositional and primary implementations in case of partial mixed
+    functions.
+
+    Parameters
+    ----------
+    fn
+        The function to check for the unsupported device attribute
+    recurse
+        Whether to recurse into used ivy functions. Default is ``True``.
+
+    Returns
+    -------
+    ret
+        Tuple or dict containing the unsupported devices of the function
+
+    Examples
+    --------
+    >>> print(ivy.function_unsupported_devices(ivy.ones))
+    ('tpu',)
+    """
+    ivy.utils.assertions.check_true(
+        _is_valid_devices_attributes(fn),
+        "supported_devices and unsupported_devices attributes cannot both "
+        "exist in a particular backend",
+    )
+    if hasattr(fn, "partial_mixed_handler"):
+        return {
+            "compositional": function_unsupported_devices(fn.compos, recurse=recurse),
+            "primary": _get_devices(fn, complement=True),
+        }
+    else:
+        unsupported_devices = set(_get_devices(fn, complement=True))
+        if recurse:
+            unsupported_devices = ivy.functional.data_type._nested_get(
+                fn, unsupported_devices, set.union, function_unsupported_devices
+            )
+    return (
+        unsupported_devices
+        if isinstance(unsupported_devices, dict)
+        else tuple(unsupported_devices)
+    )
+
+
+@handle_exceptions
 def set_default_device(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
     """Sets the default device to the argument provided in the function.
 
@@ -870,6 +1072,54 @@ def set_default_device(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
     """
     global default_device_stack
     default_device_stack.append(device)
+
+
+@handle_exceptions
+def set_split_factor(
+    factor: float, /, *, device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None
+) -> None:
+    """Set the global split factor for a given device, which can be used to
+    scale batch splitting chunk sizes for the device across the codebase.
+
+    Parameters
+    ----------
+    factor
+        The factor to set the device-specific split factor to.
+    device
+        The device to set the split factor for. Sets the default device by default.
+
+    Examples
+    --------
+    >>> print(ivy.default_device())
+    cpu
+
+    >>> ivy.set_split_factor(0.5)
+    >>> print(ivy.split_factors)
+    {'cpu': 0.5}
+
+    >>> import torch
+    >>> ivy.set_backend("torch")
+    >>> device = torch.device("cuda")
+    >>> ivy.set_split_factor(0.3, device=device)
+    >>> print(ivy.split_factors)
+    {device(type='cuda'): 0.3}
+
+    >>> ivy.set_split_factor(0.4, device="tpu")
+    >>> print(ivy.split_factors)
+    {'tpu': 0.4}
+
+    >>> import torch
+    >>> ivy.set_backend("torch")
+    >>> device = torch.device("cuda")
+    >>> ivy.set_split_factor(0.2)
+    >>> ivy.set_split_factor(0.3, device='gpu')
+    >>> print(ivy.split_factors)
+    {'cpu': 0.2, 'gpu': 0.3}
+    """
+    ivy.utils.assertions.check_less(0, factor, allow_equal=True, as_array=False)
+    global split_factors
+    device = ivy.default(device, default_device())
+    split_factors[device] = factor
 
 
 @handle_exceptions
@@ -979,54 +1229,6 @@ def split_factor(
     global split_factors
     device = ivy.default(device, default_device())
     return split_factors.setdefault(device, 0.0)
-
-
-@handle_exceptions
-def set_split_factor(
-    factor: float, /, *, device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None
-) -> None:
-    """Set the global split factor for a given device, which can be used to
-    scale batch splitting chunk sizes for the device across the codebase.
-
-    Parameters
-    ----------
-    factor
-        The factor to set the device-specific split factor to.
-    device
-        The device to set the split factor for. Sets the default device by default.
-
-    Examples
-    --------
-    >>> print(ivy.default_device())
-    cpu
-
-    >>> ivy.set_split_factor(0.5)
-    >>> print(ivy.split_factors)
-    {'cpu': 0.5}
-
-    >>> import torch
-    >>> ivy.set_backend("torch")
-    >>> device = torch.device("cuda")
-    >>> ivy.set_split_factor(0.3, device=device)
-    >>> print(ivy.split_factors)
-    {device(type='cuda'): 0.3}
-
-    >>> ivy.set_split_factor(0.4, device="tpu")
-    >>> print(ivy.split_factors)
-    {'tpu': 0.4}
-
-    >>> import torch
-    >>> ivy.set_backend("torch")
-    >>> device = torch.device("cuda")
-    >>> ivy.set_split_factor(0.2)
-    >>> ivy.set_split_factor(0.3, device='gpu')
-    >>> print(ivy.split_factors)
-    {'cpu': 0.2, 'gpu': 0.3}
-    """
-    ivy.utils.assertions.check_less(0, factor, allow_equal=True, as_array=False)
-    global split_factors
-    device = ivy.default(device, default_device())
-    split_factors[device] = factor
 
 
 @handle_exceptions
@@ -1160,202 +1362,5 @@ def split_func_call(
     return ret[0] if len(ret) == 1 else ret
 
 
-def _is_valid_devices_attributes(fn: Callable) -> bool:
-    if hasattr(fn, "supported_devices") and hasattr(fn, "unsupported_devices"):
-        fn_supported_devices = fn.supported_devices
-        fn_unsupported_devices = fn.unsupported_devices
-        if isinstance(fn_supported_devices, dict):
-            if isinstance(fn_unsupported_devices, dict):
-                backend_str = ivy.current_backend_str()
-                if (
-                    backend_str in fn_supported_devices
-                    and backend_str in fn_unsupported_devices
-                ):
-                    return False
-        elif isinstance(fn_unsupported_devices, tuple):
-            return False
-    return True
-
-
-def _get_devices(fn: Callable, complement: bool = True) -> Tuple:
-    valid_devices = ivy.valid_devices
-    invalid_devices = ivy.invalid_devices
-    all_devices = ivy.all_devices
-
-    supported = set(ivy.valid_devices)
-
-    is_backend_fn = "backend" in fn.__module__
-    is_frontend_fn = "frontend" in fn.__module__
-    is_einops_fn = hasattr(fn, "__name__") and "einops" in fn.__name__
-    if not is_backend_fn and not is_frontend_fn and not is_einops_fn:
-        if complement:
-            supported = set(all_devices).difference(supported)
-        return supported
-
-    # Their values are formatted like either
-    # 1. fn.supported_devices = ("cpu",)
-    # Could also have the "all" value for the framework
-    basic = [
-        ("supported_devices", set.intersection, valid_devices),
-        ("unsupported_devices", set.difference, invalid_devices),
-    ]
-    for key, merge_fn, base in basic:
-        if hasattr(fn, key):
-            v = getattr(fn, key)
-            if "einops" in fn.__name__ and isinstance(v, dict):
-                v = v.get(ivy.current_backend_str(), base)
-            ivy.utils.assertions.check_isinstance(v, tuple)
-            supported = merge_fn(supported, set(v))
-
-    if complement:
-        supported = set(all_devices).difference(supported)
-
-    return tuple(supported)
-
-
-@handle_exceptions
-@handle_nestable
-def function_supported_devices(
-    fn: Callable, recurse: bool = True
-) -> Union[Tuple, dict]:
-    """Return the supported devices of the current backend's function. The
-    function returns a dict containing the supported devices for the
-    compositional and primary implementations in case of partial mixed
-    functions.
-
-    Parameters
-    ----------
-    fn
-        The function to check for the supported device attribute
-    recurse
-        Whether to recurse into used ivy functions. Default is ``True``.
-
-    Returns
-    -------
-    ret
-        Tuple or dict containing the supported devices of the function
-
-    Examples
-    --------
-    >>> import ivy
-    >>> ivy.set_backend('numpy')
-    >>> print(ivy.function_supported_devices(ivy.ones))
-    ('cpu',)
-
-    >>> ivy.set_backend('torch')
-    >>> x = ivy.function_supported_devices(ivy.ones)
-    >>> x = sorted(x)
-    ('cpu', 'gpu')
-    """
-    ivy.utils.assertions.check_true(
-        _is_valid_devices_attributes(fn),
-        "supported_devices and unsupported_devices attributes cannot both "
-        "exist in a particular backend",
-    )
-    if hasattr(fn, "partial_mixed_handler"):
-        return {
-            "compositional": function_supported_devices(fn.compos, recurse=recurse),
-            "primary": _get_devices(fn, complement=False),
-        }
-    else:
-        supported_devices = set(_get_devices(fn, complement=False))
-        if recurse:
-            supported_devices = ivy.functional.data_type._nested_get(
-                fn, supported_devices, set.intersection, function_supported_devices
-            )
-
-    return (
-        supported_devices
-        if isinstance(supported_devices, dict)
-        else tuple(supported_devices)
-    )
-
-
-@handle_exceptions
-@handle_nestable
-def function_unsupported_devices(
-    fn: Callable, recurse: bool = True
-) -> Union[Tuple, dict]:
-    """Return the unsupported devices of the current backend's function. The
-    function returns a dict containing the unsupported devices for the
-    compositional and primary implementations in case of partial mixed
-    functions.
-
-    Parameters
-    ----------
-    fn
-        The function to check for the unsupported device attribute
-    recurse
-        Whether to recurse into used ivy functions. Default is ``True``.
-
-    Returns
-    -------
-    ret
-        Tuple or dict containing the unsupported devices of the function
-
-    Examples
-    --------
-    >>> print(ivy.function_unsupported_devices(ivy.ones))
-    ('tpu',)
-    """
-    ivy.utils.assertions.check_true(
-        _is_valid_devices_attributes(fn),
-        "supported_devices and unsupported_devices attributes cannot both "
-        "exist in a particular backend",
-    )
-    if hasattr(fn, "partial_mixed_handler"):
-        return {
-            "compositional": function_unsupported_devices(fn.compos, recurse=recurse),
-            "primary": _get_devices(fn, complement=True),
-        }
-    else:
-        unsupported_devices = set(_get_devices(fn, complement=True))
-        if recurse:
-            unsupported_devices = ivy.functional.data_type._nested_get(
-                fn, unsupported_devices, set.union, function_unsupported_devices
-            )
-    return (
-        unsupported_devices
-        if isinstance(unsupported_devices, dict)
-        else tuple(unsupported_devices)
-    )
-
-
-# Profiler #
-
-
-class Profiler(abc.ABC):
-    """The profiler class is used to profile the execution of some code.
-
-    Parameters
-    ----------
-    save_dir
-        The directory to save the profile data to.
-    """
-
-    def __init__(self, save_dir: str):
-        self._save_dir = save_dir
-
-    @abc.abstractmethod
-    def start(self):
-        """Start the profiler.
-
-        This should be called before the code to be profiled.
-        """
-        raise ivy.utils.exceptions.IvyNotImplementedException
-
-    @abc.abstractmethod
-    def stop(self):
-        """Stop the profiler.
-
-        This should be called after the code to be profiled.
-        """
-        raise ivy.utils.exceptions.IvyNotImplementedException
-
-    @abc.abstractmethod
-    def __enter__(self):
-        raise ivy.utils.exceptions.IvyNotImplementedException
-
-    @abc.abstractmethod
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        raise ivy.utils.exceptions.IvyNotImplementedException
+ivy.soft_device_mode = soft_device_mode_stack[-1] if soft_device_mode_stack else False
+dev_handles = {}

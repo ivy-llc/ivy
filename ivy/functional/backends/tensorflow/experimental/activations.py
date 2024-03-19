@@ -10,6 +10,73 @@ from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
 
 
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
+def celu(
+    x: Tensor,
+    /,
+    *,
+    alpha: float = 1.0,
+    complex_mode="jax",
+    out: Optional[Tensor] = None,
+) -> Tensor:
+    return tf.math.maximum(0, x) + alpha * tf.math.expm1(tf.math.minimum(0, x) / alpha)
+
+
+@with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
+def elu(x: Tensor, /, *, alpha: float = 1.0, out: Optional[Tensor] = None) -> Tensor:
+    ret = tf.keras.activations.elu(x, alpha)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+@with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
+def hardshrink(
+    x: Tensor,
+    /,
+    *,
+    lambd: float = 0.5,
+    out: Optional[Tensor] = None,
+) -> Tensor:
+    ret = tf.where(
+        tf.math.greater(x, lambd),
+        x,
+        tf.where(tf.math.less(x, -lambd), x, 0),
+    )
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
+def hardsilu(
+    x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None
+) -> Tensor:
+    ret = tf.multiply(x, tf.nn.relu6(tf.math.add(x, 3)) / 6)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
+@with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
+def hardtanh(
+    x: Tensor,
+    /,
+    *,
+    max_val: float = 1.0,
+    min_val: float = -1.0,
+    out: Optional[Tensor] = None,
+) -> Tensor:
+    ret = tf.where(
+        tf.math.greater(x, max_val),
+        max_val,
+        tf.where(tf.math.less(x, min_val), min_val, x),
+    )
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
+
+
 def logit(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -26,22 +93,6 @@ def logit(
     return tf.cast(tf.math.log(x / (1 - x)), x_dtype)
 
 
-@with_unsupported_dtypes({"2.15.0 and below": ("complex", "bool")}, backend_version)
-def thresholded_relu(
-    x: Tensor,
-    /,
-    *,
-    threshold: Union[int, float] = 0,
-    out: Optional[Tensor] = None,
-) -> Tensor:
-    threshold = tf.cast(threshold, x.dtype)
-    return tf.cast(tf.where(x > threshold, x, 0), x.dtype)
-
-
-def relu6(x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None) -> Tensor:
-    return tf.nn.relu6(x)
-
-
 @with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
 def logsigmoid(
     input: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None
@@ -49,6 +100,22 @@ def logsigmoid(
     if input.dtype in [tf.complex64, tf.complex128]:
         return tf.math.log(tf.nn.sigmoid(input))
     return tf.math.log_sigmoid(input)
+
+
+def relu6(x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None) -> Tensor:
+    return tf.nn.relu6(x)
+
+
+@with_unsupported_dtypes({"2.15.0 and below": ("uint16",)}, backend_version)
+def scaled_tanh(
+    x: Tensor,
+    /,
+    *,
+    alpha: float = 1.7159,
+    beta: float = 0.67,
+    out: Optional[Tensor] = None,
+) -> Tensor:
+    return alpha * tf.nn.tanh(beta * x)
 
 
 @with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
@@ -73,26 +140,17 @@ def silu(
 
 
 @with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
-def elu(x: Tensor, /, *, alpha: float = 1.0, out: Optional[Tensor] = None) -> Tensor:
-    ret = tf.keras.activations.elu(x, alpha)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret).astype(x.dtype)
-    return ivy.astype(ret, x.dtype)
-
-
-@with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
-def hardtanh(
+def softshrink(
     x: Tensor,
     /,
     *,
-    max_val: float = 1.0,
-    min_val: float = -1.0,
+    lambd: float = 0.5,
     out: Optional[Tensor] = None,
 ) -> Tensor:
     ret = tf.where(
-        tf.math.greater(x, max_val),
-        max_val,
-        tf.where(tf.math.less(x, min_val), min_val, x),
+        tf.math.greater(x, lambd),
+        x - lambd,
+        tf.where(tf.math.less(x, -lambd), x + lambd, 0),
     )
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
@@ -127,71 +185,13 @@ def threshold(
     return ivy.astype(ret, x.dtype)
 
 
-@with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
-def softshrink(
+@with_unsupported_dtypes({"2.15.0 and below": ("complex", "bool")}, backend_version)
+def thresholded_relu(
     x: Tensor,
     /,
     *,
-    lambd: float = 0.5,
+    threshold: Union[int, float] = 0,
     out: Optional[Tensor] = None,
 ) -> Tensor:
-    ret = tf.where(
-        tf.math.greater(x, lambd),
-        x - lambd,
-        tf.where(tf.math.less(x, -lambd), x + lambd, 0),
-    )
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret).astype(x.dtype)
-    return ivy.astype(ret, x.dtype)
-
-
-@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
-def celu(
-    x: Tensor,
-    /,
-    *,
-    alpha: float = 1.0,
-    complex_mode="jax",
-    out: Optional[Tensor] = None,
-) -> Tensor:
-    return tf.math.maximum(0, x) + alpha * tf.math.expm1(tf.math.minimum(0, x) / alpha)
-
-
-@with_unsupported_dtypes({"2.15.0 and below": ("uint16",)}, backend_version)
-def scaled_tanh(
-    x: Tensor,
-    /,
-    *,
-    alpha: float = 1.7159,
-    beta: float = 0.67,
-    out: Optional[Tensor] = None,
-) -> Tensor:
-    return alpha * tf.nn.tanh(beta * x)
-
-
-@with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
-def hardshrink(
-    x: Tensor,
-    /,
-    *,
-    lambd: float = 0.5,
-    out: Optional[Tensor] = None,
-) -> Tensor:
-    ret = tf.where(
-        tf.math.greater(x, lambd),
-        x,
-        tf.where(tf.math.less(x, -lambd), x, 0),
-    )
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret).astype(x.dtype)
-    return ivy.astype(ret, x.dtype)
-
-
-@with_unsupported_dtypes({"2.14.0 and below": ("complex",)}, backend_version)
-def hardsilu(
-    x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None
-) -> Tensor:
-    ret = tf.multiply(x, tf.nn.relu6(tf.math.add(x, 3)) / 6)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret).astype(x.dtype)
-    return ivy.astype(ret, x.dtype)
+    threshold = tf.cast(threshold, x.dtype)
+    return tf.cast(tf.where(x > threshold, x, 0), x.dtype)

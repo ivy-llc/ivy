@@ -23,19 +23,18 @@ def argsort(
     return paddle.argsort(x, axis=axis, descending=descending)
 
 
-@with_supported_dtypes(
-    {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, backend_version
+@with_unsupported_device_and_dtypes(
+    {
+        "2.6.0 and below": {
+            "cpu": ("int8", "uint8", "int16", "float16", "bfloat16", "complex")
+        }
+    },
+    backend_version,
 )
-def sort(
-    x: paddle.Tensor,
-    /,
-    *,
-    axis: int = -1,
-    descending: bool = False,
-    stable: bool = True,
-    out: Optional[paddle.Tensor] = None,
+def msort(
+    a: Union[paddle.Tensor, list, tuple], /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    return paddle.sort(x, axis=axis, descending=descending)
+    return paddle.sort(a, axis=0)
 
 
 @with_supported_dtypes(
@@ -73,15 +72,16 @@ def searchsorted(
     return paddle.searchsorted(x, v, right=right).cast(ret_dtype)
 
 
-@with_unsupported_device_and_dtypes(
-    {
-        "2.6.0 and below": {
-            "cpu": ("int8", "uint8", "int16", "float16", "bfloat16", "complex")
-        }
-    },
-    backend_version,
+@with_supported_dtypes(
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
-def msort(
-    a: Union[paddle.Tensor, list, tuple], /, *, out: Optional[paddle.Tensor] = None
+def sort(
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: int = -1,
+    descending: bool = False,
+    stable: bool = True,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.sort(a, axis=0)
+    return paddle.sort(x, axis=axis, descending=descending)

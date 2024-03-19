@@ -141,6 +141,16 @@ def diagonal(
     return paddle.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
+def eig(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> Tuple[paddle.Tensor]:
+    result_tuple = NamedTuple(
+        "eig", [("eigenvalues", paddle.Tensor), ("eigenvectors", paddle.Tensor)]
+    )
+    eigenvalues, eigenvectors = paddle.linalg.eig(x)
+    return result_tuple(eigenvalues, eigenvectors)
+
+
 def eigh(
     x: paddle.Tensor,
     /,
@@ -327,16 +337,6 @@ def matrix_norm(
     return ret
 
 
-def eig(
-    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
-) -> Tuple[paddle.Tensor]:
-    result_tuple = NamedTuple(
-        "eig", [("eigenvalues", paddle.Tensor), ("eigenvectors", paddle.Tensor)]
-    )
-    eigenvalues, eigenvectors = paddle.linalg.eig(x)
-    return result_tuple(eigenvalues, eigenvectors)
-
-
 @with_unsupported_device_and_dtypes(
     {"2.6.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
@@ -438,18 +438,6 @@ def pinv(
     if rtol is None:
         return paddle.linalg.pinv(x)
     return paddle.linalg.pinv(x, rcond=rtol)
-
-
-def tensorsolve(
-    x1: paddle.Tensor,
-    x2: paddle.Tensor,
-    /,
-    *,
-    axes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    # Implemented as a composite function in ivy.functional.ivy.linear_algebra
-    raise IvyNotImplementedException()
 
 
 @with_unsupported_device_and_dtypes(
@@ -556,6 +544,18 @@ def tensordot(
 ) -> paddle.Tensor:
     ret = paddle.tensordot(x1, x2, axes=axes)
     return ret.squeeze() if x1.ndim == axes else ret
+
+
+def tensorsolve(
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    axes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    # Implemented as a composite function in ivy.functional.ivy.linear_algebra
+    raise IvyNotImplementedException()
 
 
 @with_unsupported_device_and_dtypes(

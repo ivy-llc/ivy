@@ -4,6 +4,12 @@ import mxnet as mx
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
+def celu(
+    x: None, /, *, alpha: float = 0.2, complex_mode="jax", out: Optional[None] = None
+) -> None:
+    return mx.nd.maximum(0, x) + alpha * mx.nd.expm1(mx.nd.minimum(0, x) / alpha)
+
+
 def logit(
     x: Union[(None, mx.ndarray.NDArray)],
     /,
@@ -14,17 +20,11 @@ def logit(
     raise IvyNotImplementedException()
 
 
-def thresholded_relu(
-    x: None, /, *, threshold: Union[(int, float)] = 0, out: Optional[None] = None
-) -> None:
+def logsigmoid(input: None) -> None:
     raise IvyNotImplementedException()
 
 
 def relu6(x: None, /, *, out: Optional[None] = None) -> None:
-    raise IvyNotImplementedException()
-
-
-def logsigmoid(input: None) -> None:
     raise IvyNotImplementedException()
 
 
@@ -36,7 +36,7 @@ def silu(x: None, /, *, out: Optional[None] = None) -> None:
     raise IvyNotImplementedException()
 
 
-def celu(
-    x: None, /, *, alpha: float = 0.2, complex_mode="jax", out: Optional[None] = None
+def thresholded_relu(
+    x: None, /, *, threshold: Union[(int, float)] = 0, out: Optional[None] = None
 ) -> None:
-    return mx.nd.maximum(0, x) + alpha * mx.nd.expm1(mx.nd.minimum(0, x) / alpha)
+    raise IvyNotImplementedException()

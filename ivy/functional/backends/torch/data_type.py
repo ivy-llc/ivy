@@ -23,7 +23,6 @@ ivy_dtype_dict = {
     torch.complex128: "complex128",
     torch.bool: "bool",
 }
-
 native_dtype_dict = {
     "int8": torch.int8,
     "int16": torch.int16,

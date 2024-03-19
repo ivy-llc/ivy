@@ -64,6 +64,15 @@ def diagonal(
 
 
 @with_unsupported_dtypes({"1.26.3 and below": ("float16",)}, backend_version)
+def eig(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> Tuple[np.ndarray]:
+    result_tuple = NamedTuple(
+        "eig", [("eigenvalues", np.ndarray), ("eigenvectors", np.ndarray)]
+    )
+    eigenvalues, eigenvectors = np.linalg.eig(x)
+    return result_tuple(eigenvalues, eigenvectors)
+
+
+@with_unsupported_dtypes({"1.26.3 and below": ("float16",)}, backend_version)
 def eigh(
     x: np.ndarray, /, *, UPLO: str = "L", out: Optional[np.ndarray] = None
 ) -> Tuple[np.ndarray]:
@@ -134,9 +143,6 @@ def matmul(
     if len(x1.shape) == len(x2.shape) == 1:
         ret = np.array(ret)
     return ret
-
-
-matmul.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -214,9 +220,6 @@ def outer(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.outer(x1, x2, out=out)
-
-
-outer.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.26.3 and below": ("float16",)}, backend_version)
@@ -308,17 +311,6 @@ def svdvals(
     return np.linalg.svd(x, compute_uv=False)
 
 
-def tensorsolve(
-    x1: np.ndarray,
-    x2: np.ndarray,
-    /,
-    *,
-    axes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.linalg.tensorsolve(x1, x2, axes=axes)
-
-
 @with_unsupported_dtypes({"1.25.2 and below": ("float16", "bfloat16")}, backend_version)
 def tensordot(
     x1: np.ndarray,
@@ -330,6 +322,17 @@ def tensordot(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.tensordot(x1, x2, axes=axes)
+
+
+def tensorsolve(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    axes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.linalg.tensorsolve(x1, x2, axes=axes)
 
 
 @_scalar_output_to_0d_array
@@ -346,9 +349,6 @@ def trace(
     return np.trace(x, offset=offset, axis1=axis1, axis2=axis2, out=out)
 
 
-trace.support_native_out = True
-
-
 def vecdot(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -359,15 +359,6 @@ def vecdot(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.tensordot(x1, x2, axes=(axis, axis))
-
-
-@with_unsupported_dtypes({"1.26.3 and below": ("float16",)}, backend_version)
-def eig(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> Tuple[np.ndarray]:
-    result_tuple = NamedTuple(
-        "eig", [("eigenvalues", np.ndarray), ("eigenvectors", np.ndarray)]
-    )
-    eigenvalues, eigenvectors = np.linalg.eig(x)
-    return result_tuple(eigenvalues, eigenvectors)
 
 
 def vector_norm(
@@ -465,4 +456,7 @@ def vector_to_skew_symmetric_matrix(
     return np.concatenate((row1, row2, row3), -2, out=out)
 
 
+matmul.support_native_out = True
+outer.support_native_out = True
+trace.support_native_out = True
 vector_to_skew_symmetric_matrix.support_native_out = True

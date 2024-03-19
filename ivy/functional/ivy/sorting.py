@@ -142,6 +142,44 @@ def argsort(
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device
+def msort(
+    a: Union[ivy.Array, ivy.NativeArray, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Return a copy of an array sorted along the first axis.
+
+    Parameters
+    ----------
+    a
+        array-like input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        sorted array of the same type and shape as a
+
+    Examples
+    --------
+    >>> a = ivy.asarray([[8, 9, 6],[6, 2, 6]])
+    >>> ivy.msort(a)
+    ivy.array(
+        [[6, 2, 6],
+         [8, 9, 6]]
+        )
+    """
+    return ivy.current_backend(a).msort(a, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
@@ -243,44 +281,6 @@ def sort(
     return ivy.current_backend(x).sort(
         x, axis=axis, descending=descending, stable=stable, out=out
     )
-
-
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device
-def msort(
-    a: Union[ivy.Array, ivy.NativeArray, list, tuple],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Return a copy of an array sorted along the first axis.
-
-    Parameters
-    ----------
-    a
-        array-like input.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        sorted array of the same type and shape as a
-
-    Examples
-    --------
-    >>> a = ivy.asarray([[8, 9, 6],[6, 2, 6]])
-    >>> ivy.msort(a)
-    ivy.array(
-        [[6, 2, 6],
-         [8, 9, 6]]
-        )
-    """
-    return ivy.current_backend(a).msort(a, out=out)
 
 
 # Extra #

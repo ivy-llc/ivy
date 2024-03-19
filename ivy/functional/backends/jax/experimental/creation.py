@@ -9,28 +9,25 @@ import jaxlib.xla_extension
 from ivy.functional.backends.jax import JaxArray
 import ivy
 
-# Array API Standard #
-# ------------------ #
 
-
-def vorbis_window(
-    window_length: JaxArray,
+def blackman_window(
+    size: int,
+    /,
     *,
-    dtype: jnp.dtype = jnp.float32,
+    periodic: bool = True,
+    dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.array(
-        [
-            round(
-                math.sin(
-                    (ivy.pi / 2) * (math.sin(ivy.pi * (i) / (window_length * 2)) ** 2)
-                ),
-                8,
-            )
-            for i in range(1, window_length * 2)[0::2]
-        ],
-        dtype=dtype,
-    )
+    if size < 2:
+        return jnp.ones([size], dtype=dtype)
+    if periodic:
+        count = jnp.arange(size) / size
+    else:
+        count = jnp.linspace(start=0, stop=size, num=size)
+    return (
+        (0.42 - 0.5 * jnp.cos(2 * jnp.pi * count))
+        + (0.08 * jnp.cos(2 * jnp.pi * 2 * count))
+    ).astype(dtype)
 
 
 def hann_window(
@@ -66,72 +63,6 @@ def kaiser_window(
         return jnp.kaiser(M=window_length + 1, beta=beta)[:-1].astype(dtype)
 
 
-def tril_indices(
-    n_rows: int,
-    n_cols: Optional[int] = None,
-    k: int = 0,
-    /,
-    *,
-    device: jaxlib.xla_extension.Device = None,
-) -> Tuple[JaxArray, ...]:
-    return jnp.tril_indices(n=n_rows, k=k, m=n_cols)
-
-
-def unsorted_segment_min(
-    data: JaxArray,
-    segment_ids: JaxArray,
-    num_segments: int,
-) -> JaxArray:
-    # added this check to keep the same behaviour as tensorflow
-    ivy.utils.assertions.check_unsorted_segment_valid_params(
-        data, segment_ids, num_segments
-    )
-    return jax.ops.segment_min(data, segment_ids, num_segments)
-
-
-def unsorted_segment_sum(
-    data: JaxArray,
-    segment_ids: JaxArray,
-    num_segments: int,
-) -> JaxArray:
-    # Used the same check which is used for unsorted_segment_min as
-    # the check should be same
-    # Might require to change the assertion function name to
-    # check_unsorted_segment_valid_params
-    ivy.utils.assertions.check_unsorted_segment_valid_params(
-        data, segment_ids, num_segments
-    )
-    return jax.ops.segment_sum(data, segment_ids, num_segments)
-
-
-def blackman_window(
-    size: int,
-    /,
-    *,
-    periodic: bool = True,
-    dtype: Optional[jnp.dtype] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    if size < 2:
-        return jnp.ones([size], dtype=dtype)
-    if periodic:
-        count = jnp.arange(size) / size
-    else:
-        count = jnp.linspace(start=0, stop=size, num=size)
-    return (
-        (0.42 - 0.5 * jnp.cos(2 * jnp.pi * count))
-        + (0.08 * jnp.cos(2 * jnp.pi * 2 * count))
-    ).astype(dtype)
-
-
-def trilu(
-    x: JaxArray, /, *, k: int = 0, upper: bool = True, out: Optional[JaxArray] = None
-) -> JaxArray:
-    if upper:
-        return jnp.triu(x, k)
-    return jnp.tril(x, k)
-
-
 def mel_weight_matrix(
     num_mel_bins: int,
     dft_length: int,
@@ -165,6 +96,39 @@ def mel_weight_matrix(
     return jnp.pad(mel_weights, [[1, 0], [0, 0]])
 
 
+def polyval(
+    coeffs: JaxArray,
+    x: JaxArray,
+) -> JaxArray:
+    with ivy.PreciseMode(True):
+        promoted_type = ivy.promote_types(ivy.dtype(coeffs[0]), ivy.dtype(x[0]))
+    coeffs, x = ivy.promote_types_of_inputs(coeffs, x)
+    y = jnp.zeros_like(x)
+    for pv in coeffs:
+        y = y * x + pv
+    y = jnp.array(y, dtype=jnp.dtype(promoted_type))
+    return y
+
+
+def tril_indices(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: int = 0,
+    /,
+    *,
+    device: jaxlib.xla_extension.Device = None,
+) -> Tuple[JaxArray, ...]:
+    return jnp.tril_indices(n=n_rows, k=k, m=n_cols)
+
+
+def trilu(
+    x: JaxArray, /, *, k: int = 0, upper: bool = True, out: Optional[JaxArray] = None
+) -> JaxArray:
+    if upper:
+        return jnp.triu(x, k)
+    return jnp.tril(x, k)
+
+
 def unsorted_segment_mean(
     data: JaxArray,
     segment_ids: JaxArray,
@@ -182,15 +146,52 @@ def unsorted_segment_mean(
     return segment_mean
 
 
-def polyval(
-    coeffs: JaxArray,
-    x: JaxArray,
+def unsorted_segment_min(
+    data: JaxArray,
+    segment_ids: JaxArray,
+    num_segments: int,
 ) -> JaxArray:
-    with ivy.PreciseMode(True):
-        promoted_type = ivy.promote_types(ivy.dtype(coeffs[0]), ivy.dtype(x[0]))
-    coeffs, x = ivy.promote_types_of_inputs(coeffs, x)
-    y = jnp.zeros_like(x)
-    for pv in coeffs:
-        y = y * x + pv
-    y = jnp.array(y, dtype=jnp.dtype(promoted_type))
-    return y
+    # added this check to keep the same behaviour as tensorflow
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
+        data, segment_ids, num_segments
+    )
+    return jax.ops.segment_min(data, segment_ids, num_segments)
+
+
+def unsorted_segment_sum(
+    data: JaxArray,
+    segment_ids: JaxArray,
+    num_segments: int,
+) -> JaxArray:
+    # Used the same check which is used for unsorted_segment_min as
+    # the check should be same
+    # Might require to change the assertion function name to
+    # check_unsorted_segment_valid_params
+    ivy.utils.assertions.check_unsorted_segment_valid_params(
+        data, segment_ids, num_segments
+    )
+    return jax.ops.segment_sum(data, segment_ids, num_segments)
+
+
+# Array API Standard #
+# ------------------ #
+
+
+def vorbis_window(
+    window_length: JaxArray,
+    *,
+    dtype: jnp.dtype = jnp.float32,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.array(
+        [
+            round(
+                math.sin(
+                    (ivy.pi / 2) * (math.sin(ivy.pi * (i) / (window_length * 2)) ** 2)
+                ),
+                8,
+            )
+            for i in range(1, window_length * 2)[0::2]
+        ],
+        dtype=dtype,
+    )

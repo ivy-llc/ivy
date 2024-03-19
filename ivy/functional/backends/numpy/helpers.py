@@ -3,6 +3,10 @@ from typing import Callable
 import numpy as np
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 def _scalar_output_to_0d_array(function: Callable) -> Callable:
     """Convert scalar outputs to 0d arrays.
 

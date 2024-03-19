@@ -14,151 +14,79 @@ from .. import backend_version
 from copy import deepcopy
 
 
-def histogram(
-    a: tf.Tensor,
-    /,
-    *,
-    bins: Optional[Union[int, tf.Tensor]] = None,
-    axis: Optional[int] = None,
-    extend_lower_interval: Optional[bool] = False,
-    extend_upper_interval: Optional[bool] = False,
-    dtype: Optional[tf.DType] = None,
-    range: Optional[Tuple[float]] = None,
-    weights: Optional[tf.Tensor] = None,
-    density: Optional[bool] = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Tuple[tf.Tensor]:
-    # TODO: Implement in pure tensorflow
-    pass
+# --- Helpers --- #
+# --------------- #
 
 
-@with_supported_dtypes(
-    {
-        "2.15.0 and below": (
-            "float",
-            "complex",
-        )
-    },
-    backend_version,
-)
-def median(
-    input: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    axis: Optional[Union[Tuple[int], int]] = None,
-    keepdims: bool = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    pass
-    # TODO: Implement in pure tensorflow
-
-
-@with_supported_dtypes(
-    {
-        "2.15.0 and below": (
-            "float",
-            "complex",
-        )
-    },
-    backend_version,
-)
-def nanmean(
-    a: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: bool = False,
-    dtype: Optional[tf.DType] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    np_math_ops.enable_numpy_methods_on_tensor()
-    return tf.experimental.numpy.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype)
-
-
-def nanmin(
-    a: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: Optional[bool] = False,
-    initial: Optional[Union[int, float, complex]] = None,
-    where: Optional[Union[tf.Tensor, tf.Variable]] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    nan_mask = tf.math.is_nan(a)
-    if where is not None:
-        nan_mask = tf.math.logical_or(nan_mask, tf.math.logical_not(where))
-
-    masked_tensor = tf.where(nan_mask, tf.constant(float("inf"), dtype=a.dtype), a)
-
-    if axis is None:
-        result = tf.math.reduce_min(masked_tensor, keepdims=keepdims)
+def __find_cummax(x: tf.Tensor, axis: int = 0) -> Tuple[tf.Tensor, tf.Tensor]:
+    values, indices = [], []
+    if (
+        isinstance(x[0], tf.Tensor)
+        and isinstance(x[0].numpy().tolist(), list)
+        and len(x[0].numpy().tolist()) >= 1
+    ):
+        if axis >= 1:
+            for ret1 in x:
+                value, indice = __find_cummax(ret1, axis=axis - 1)
+                indices.append(indice)
+                values.append(value)
+        else:
+            x_list = x.numpy()
+            z_list = __get_index(x_list.tolist())
+            indices, values, n1 = x_list.copy(), x_list.copy(), {}
+            indices.fill(0)
+            values.fill(0)
+            z_list = sorted(z_list, key=lambda i: i[1])
+            for y, y_index in z_list:
+                multi_index = y_index
+                if tuple(multi_index[1:]) not in n1:
+                    n1[tuple(multi_index[1:])] = multi_index[0]
+                    indices[y_index] = multi_index[0]
+                    values[y_index] = y
+                elif (
+                    y
+                    >= x_list[
+                        tuple([n1[tuple(multi_index[1:])]] + list(multi_index[1:]))
+                    ]
+                ):
+                    n1[tuple(multi_index[1:])] = multi_index[0]
+                    indices[y_index] = multi_index[0]
+                    values[y_index] = y
+                else:
+                    indices[y_index] = n1[tuple(multi_index[1:])]
+                    values[y_index] = x_list[
+                        tuple([n1[tuple(multi_index[1:])]] + list(multi_index[1:]))
+                    ]
     else:
-        result = tf.math.reduce_min(masked_tensor, axis=axis, keepdims=keepdims)
-    if initial is not None:
-        result = tf.minimum(result, initial)
-    return result
+        x_indices = tf.convert_to_tensor(list(range(0, x.shape[0])), dtype=x.dtype)
+        values, indices = tf.scan(
+            lambda a, b: (
+                a
+                if a > b
+                or tf.experimental.numpy.where(x[0].numpy() == b[0].numpy()) == 0
+                else b
+            ),
+            (x, x_indices),
+        )
 
-
-def _infer_dtype(dtype: tf.DType):
-    default_dtype = ivy.infer_default_dtype(dtype)
-    if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
-        return default_dtype
-    return dtype
-
-
-def nanprod(
-    a: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    dtype: Optional[tf.DType] = None,
-    keepdims: Optional[bool] = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-    initial: Optional[Union[int, float, complex]] = None,
-    where: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    np_math_ops.enable_numpy_methods_on_tensor()
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        dtype = _infer_dtype(a.dtype)
-    if initial is None:
-        initial = 1
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return (
-        tf.experimental.numpy.nanprod(a, axis=axis, keepdims=keepdims, dtype=dtype)
-        * initial
+    return tf.convert_to_tensor(values, dtype=x.dtype), tf.cast(
+        tf.convert_to_tensor(indices), dtype=tf.int64
     )
 
 
-def _validate_quantile(q):
-    if tf.experimental.numpy.ndim(q) == 1 and tf.size(q) < 10:
-        for i in range(tf.size(q)):
-            if not (0.0 <= q[i] <= 1.0):
-                return False
+def __get_index(lst, indices=None, prefix=None):
+    if indices is None:
+        indices = []
+    if prefix is None:
+        prefix = []
+
+    if isinstance(lst, list):
+        for i, sub_lst in enumerate(lst):
+            sub_indices = prefix + [i]
+            __get_index(sub_lst, indices, sub_indices)
     else:
-        if not (tf.math.reduce_all(q >= 0) and tf.math.reduce_all(q <= 1)):
-            return False
-    return True
-
-
-def to_positive_axis(axis, ndim):
-    if not isinstance(axis, (list, tuple)):
-        axis = [axis]
-
-    if len(axis) == 0:
-        raise ValueError("Axis can't be empty!")
-
-    if len(set(axis)) != len(axis):
-        raise ValueError("Duplicated axis!")
-
-    for i in range(len(axis)):
-        if not (isinstance(axis[i], int) and (ndim > axis[i] >= -ndim)):
-            raise ValueError("Axis must be int in range [-rank(x), rank(x))")
-        if axis[i] < 0:
-            axis[i] += ndim
-    return axis
+        indices.append((lst, tuple(prefix)))
+    return indices
 
 
 def _handle_axis(a, q, fn, keepdims=False, axis=None):
@@ -196,6 +124,13 @@ def _handle_axis(a, q, fn, keepdims=False, axis=None):
     return ret
 
 
+def _infer_dtype(dtype: tf.DType):
+    default_dtype = ivy.infer_default_dtype(dtype)
+    if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
+        return default_dtype
+    return dtype
+
+
 def _quantile(a, q, axis=None):
     ret_dtype = a.dtype
     if tf.experimental.numpy.ndim(q) > 1:
@@ -229,56 +164,15 @@ def _quantile(a, q, axis=None):
     return tf.cast(out, ret_dtype)
 
 
-def quantile(
-    a: Union[tf.Tensor, tf.Variable],
-    q: Union[tf.Tensor, float],
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    interpolation: str = "linear",
-    keepdims: bool = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    pass
-    # TODO: Implement in pure tensorflow
-
-
-def corrcoef(
-    x: tf.Tensor,
-    /,
-    *,
-    y: tf.Tensor,
-    rowvar: bool = True,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> tf.Tensor:
-    if y is None:
-        xarr = x
+def _validate_quantile(q):
+    if tf.experimental.numpy.ndim(q) == 1 and tf.size(q) < 10:
+        for i in range(tf.size(q)):
+            if not (0.0 <= q[i] <= 1.0):
+                return False
     else:
-        axis = 0 if rowvar else 1
-        xarr = tf.concat([x, y], axis=axis)
-
-    if rowvar:
-        mean_t = tf.reduce_mean(xarr, axis=1, keepdims=True)
-        cov_t = ((xarr - mean_t) @ tf.transpose(xarr - mean_t)) / (x.shape[1] - 1)
-    else:
-        mean_t = tf.reduce_mean(xarr, axis=0, keepdims=True)
-        cov_t = (tf.transpose(xarr - mean_t) @ (xarr - mean_t)) / (x.shape[1] - 1)
-
-    cov2_t = tf.linalg.diag(1 / tf.sqrt(tf.linalg.diag_part(cov_t)))
-    cor = cov2_t @ cov_t @ cov2_t
-    return cor
-
-
-def nanmedian(
-    input: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    axis: Optional[Union[Tuple[int], int]] = None,
-    keepdims: bool = False,
-    overwrite_input: bool = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    pass
+        if not (tf.math.reduce_all(q >= 0) and tf.math.reduce_all(q <= 1)):
+            return False
+    return True
     # TODO: Implement in pure tensorflow
 
 
@@ -315,21 +209,33 @@ def bincount(
         minlength=minlength,
         dtype=x.dtype if weights is None else weights.dtype,
     )
+    # TODO: Implement in pure tensorflow
 
 
-@with_supported_device_and_dtypes(
-    {
-        "2.15.0 and below": {
-            "cpu": ("float32", "float64"),
-            "gpu": ("bfloat16", "float16", "float32", "float64"),
-        }
-    },
-    backend_version,
-)
-def igamma(
-    a: tf.Tensor, /, *, x: tf.Tensor, out: Optional[tf.Tensor] = None
+def corrcoef(
+    x: tf.Tensor,
+    /,
+    *,
+    y: tf.Tensor,
+    rowvar: bool = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> tf.Tensor:
-    return tf.math.igamma(a, x)
+    if y is None:
+        xarr = x
+    else:
+        axis = 0 if rowvar else 1
+        xarr = tf.concat([x, y], axis=axis)
+
+    if rowvar:
+        mean_t = tf.reduce_mean(xarr, axis=1, keepdims=True)
+        cov_t = ((xarr - mean_t) @ tf.transpose(xarr - mean_t)) / (x.shape[1] - 1)
+    else:
+        mean_t = tf.reduce_mean(xarr, axis=0, keepdims=True)
+        cov_t = (tf.transpose(xarr - mean_t) @ (xarr - mean_t)) / (x.shape[1] - 1)
+
+    cov2_t = tf.linalg.diag(1 / tf.sqrt(tf.linalg.diag_part(cov_t)))
+    cor = cov2_t @ cov_t @ cov2_t
+    return cor
 
 
 @with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, backend_version)
@@ -492,77 +398,6 @@ def cummax(
     return __find_cummax(x, axis=axis)
 
 
-def __find_cummax(x: tf.Tensor, axis: int = 0) -> Tuple[tf.Tensor, tf.Tensor]:
-    values, indices = [], []
-    if (
-        isinstance(x[0], tf.Tensor)
-        and isinstance(x[0].numpy().tolist(), list)
-        and len(x[0].numpy().tolist()) >= 1
-    ):
-        if axis >= 1:
-            for ret1 in x:
-                value, indice = __find_cummax(ret1, axis=axis - 1)
-                indices.append(indice)
-                values.append(value)
-        else:
-            x_list = x.numpy()
-            z_list = __get_index(x_list.tolist())
-            indices, values, n1 = x_list.copy(), x_list.copy(), {}
-            indices.fill(0)
-            values.fill(0)
-            z_list = sorted(z_list, key=lambda i: i[1])
-            for y, y_index in z_list:
-                multi_index = y_index
-                if tuple(multi_index[1:]) not in n1:
-                    n1[tuple(multi_index[1:])] = multi_index[0]
-                    indices[y_index] = multi_index[0]
-                    values[y_index] = y
-                elif (
-                    y
-                    >= x_list[
-                        tuple([n1[tuple(multi_index[1:])]] + list(multi_index[1:]))
-                    ]
-                ):
-                    n1[tuple(multi_index[1:])] = multi_index[0]
-                    indices[y_index] = multi_index[0]
-                    values[y_index] = y
-                else:
-                    indices[y_index] = n1[tuple(multi_index[1:])]
-                    values[y_index] = x_list[
-                        tuple([n1[tuple(multi_index[1:])]] + list(multi_index[1:]))
-                    ]
-    else:
-        x_indices = tf.convert_to_tensor(list(range(0, x.shape[0])), dtype=x.dtype)
-        values, indices = tf.scan(
-            lambda a, b: (
-                a
-                if a > b
-                or tf.experimental.numpy.where(x[0].numpy() == b[0].numpy()) == 0
-                else b
-            ),
-            (x, x_indices),
-        )
-
-    return tf.convert_to_tensor(values, dtype=x.dtype), tf.cast(
-        tf.convert_to_tensor(indices), dtype=tf.int64
-    )
-
-
-def __get_index(lst, indices=None, prefix=None):
-    if indices is None:
-        indices = []
-    if prefix is None:
-        prefix = []
-
-    if isinstance(lst, list):
-        for i, sub_lst in enumerate(lst):
-            sub_indices = prefix + [i]
-            __get_index(sub_lst, indices, sub_indices)
-    else:
-        indices.append((lst, tuple(prefix)))
-    return indices
-
-
 @with_unsupported_dtypes(
     {"2.15.0 and below": ("bfloat16", "bool", "complex")},
     backend_version,
@@ -593,3 +428,172 @@ def cummin(
         return cummin_x
     else:
         return tf.cast(cummin_x, dtype)
+
+
+def histogram(
+    a: tf.Tensor,
+    /,
+    *,
+    bins: Optional[Union[int, tf.Tensor]] = None,
+    axis: Optional[int] = None,
+    extend_lower_interval: Optional[bool] = False,
+    extend_upper_interval: Optional[bool] = False,
+    dtype: Optional[tf.DType] = None,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[tf.Tensor] = None,
+    density: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Tuple[tf.Tensor]:
+    # TODO: Implement in pure tensorflow
+    pass
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.15.0 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def igamma(
+    a: tf.Tensor, /, *, x: tf.Tensor, out: Optional[tf.Tensor] = None
+) -> tf.Tensor:
+    return tf.math.igamma(a, x)
+
+
+@with_supported_dtypes(
+    {
+        "2.15.0 and below": (
+            "float",
+            "complex",
+        )
+    },
+    backend_version,
+)
+def median(
+    input: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    pass
+    # TODO: Implement in pure tensorflow
+
+
+@with_supported_dtypes(
+    {
+        "2.15.0 and below": (
+            "float",
+            "complex",
+        )
+    },
+    backend_version,
+)
+def nanmean(
+    a: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    np_math_ops.enable_numpy_methods_on_tensor()
+    return tf.experimental.numpy.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype)
+
+
+def nanmedian(
+    input: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: bool = False,
+    overwrite_input: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    pass
+
+
+def nanmin(
+    a: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    nan_mask = tf.math.is_nan(a)
+    if where is not None:
+        nan_mask = tf.math.logical_or(nan_mask, tf.math.logical_not(where))
+
+    masked_tensor = tf.where(nan_mask, tf.constant(float("inf"), dtype=a.dtype), a)
+
+    if axis is None:
+        result = tf.math.reduce_min(masked_tensor, keepdims=keepdims)
+    else:
+        result = tf.math.reduce_min(masked_tensor, axis=axis, keepdims=keepdims)
+    if initial is not None:
+        result = tf.minimum(result, initial)
+    return result
+
+
+def nanprod(
+    a: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[tf.DType] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    np_math_ops.enable_numpy_methods_on_tensor()
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(a.dtype)
+    if initial is None:
+        initial = 1
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return (
+        tf.experimental.numpy.nanprod(a, axis=axis, keepdims=keepdims, dtype=dtype)
+        * initial
+    )
+
+
+def quantile(
+    a: Union[tf.Tensor, tf.Variable],
+    q: Union[tf.Tensor, float],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    interpolation: str = "linear",
+    keepdims: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    pass
+
+
+def to_positive_axis(axis, ndim):
+    if not isinstance(axis, (list, tuple)):
+        axis = [axis]
+
+    if len(axis) == 0:
+        raise ValueError("Axis can't be empty!")
+
+    if len(set(axis)) != len(axis):
+        raise ValueError("Duplicated axis!")
+
+    for i in range(len(axis)):
+        if not (isinstance(axis[i], int) and (ndim > axis[i] >= -ndim)):
+            raise ValueError("Axis must be int in range [-rank(x), rank(x))")
+        if axis[i] < 0:
+            axis[i] += ndim
+    return axis

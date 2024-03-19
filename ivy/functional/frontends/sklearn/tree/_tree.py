@@ -6,8 +6,6 @@ INFINITY = ivy.inf
 INTPTR_MAX = ivy.iinfo(ivy.int32).max
 TREE_LEAF = -1
 TREE_UNDEFINED = -2
-_TREE_LEAF = TREE_LEAF
-_TREE_UNDEFINED = TREE_UNDEFINED
 
 
 class Node:
@@ -315,3 +313,7 @@ class DepthFirstTreeBuilder(TreeBuilder):
             if depth > max_depth_seen:
                 max_depth_seen = depth
                 tree.max_depth = max_depth_seen
+
+
+_TREE_LEAF = TREE_LEAF
+_TREE_UNDEFINED = TREE_UNDEFINED

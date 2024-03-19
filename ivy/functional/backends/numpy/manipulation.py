@@ -12,8 +12,47 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 def _flat_array_to_1_dim_array(x):
     return x.reshape((1,)) if x.shape == () else x
+
+
+def as_strided(
+    x: np.ndarray,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    strides: Sequence[int],
+    /,
+) -> np.ndarray:
+    return np.lib.stride_tricks.as_strided(
+        x,
+        shape=shape,
+        strides=strides,
+    )
+
+
+def clip(
+    x: np.ndarray,
+    /,
+    x_min: Optional[Union[Number, np.ndarray]] = None,
+    x_max: Optional[Union[Number, np.ndarray]] = None,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    promoted_type = x.dtype
+    if x_min is not None:
+        if not hasattr(x_min, "dtype"):
+            x_min = ivy.array(x_min).data
+        promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
+    if x_max is not None:
+        if not hasattr(x_max, "dtype"):
+            x_max = ivy.array(x_max).data
+        promoted_type = ivy.as_native_dtype(
+            ivy.promote_types(promoted_type, x_max.dtype)
+        )
+    return np.clip(x.astype(promoted_type), x_min, x_max, out=out)
 
 
 # Array API Standard #
@@ -43,7 +82,15 @@ def concat(
     return ivy.astype(ret, highest_dtype, copy=False)
 
 
-concat.support_native_out = True
+def constant_pad(
+    x: np.ndarray,
+    /,
+    pad_width: List[List[int]],
+    *,
+    value: Number = 0.0,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
 
 
 def expand_dims(
@@ -90,6 +137,18 @@ def permute_dims(
         newarr = np.copy(x)
         return np.transpose(newarr, axes)
     return np.transpose(x, axes)
+
+
+@with_unsupported_dtypes({"1.26.3 and below": ("uint64",)}, backend_version)
+def repeat(
+    x: np.ndarray,
+    /,
+    repeats: Union[int, List[int]],
+    *,
+    axis: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.repeat(x, repeats, axis)
 
 
 def reshape(
@@ -155,9 +214,6 @@ def stack(
     return np.stack(arrays, axis, out=out)
 
 
-stack.support_native_out = True
-
-
 # Extra #
 # ------#
 
@@ -198,41 +254,6 @@ def split(
     return np.split(x, num_or_size_splits, axis)
 
 
-@with_unsupported_dtypes({"1.26.3 and below": ("uint64",)}, backend_version)
-def repeat(
-    x: np.ndarray,
-    /,
-    repeats: Union[int, List[int]],
-    *,
-    axis: Optional[int] = None,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.repeat(x, repeats, axis)
-
-
-def tile(
-    x: np.ndarray, /, repeats: Sequence[int], *, out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    return np.tile(x, repeats)
-
-
-def constant_pad(
-    x: np.ndarray,
-    /,
-    pad_width: List[List[int]],
-    *,
-    value: Number = 0.0,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
-
-
-def zero_pad(
-    x: np.ndarray, /, pad_width: List[List[int]], *, out: Optional[np.ndarray] = None
-):
-    return np.pad(_flat_array_to_1_dim_array(x), pad_width)
-
-
 def swapaxes(
     x: np.ndarray,
     axis0: int,
@@ -245,6 +266,12 @@ def swapaxes(
     if copy:
         x = x.copy()
     return np.swapaxes(x, axis0, axis1)
+
+
+def tile(
+    x: np.ndarray, /, repeats: Sequence[int], *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.tile(x, repeats)
 
 
 def unstack(
@@ -268,39 +295,12 @@ def unstack(
     return [np.squeeze(item, axis) for item in x_split]
 
 
-def clip(
-    x: np.ndarray,
-    /,
-    x_min: Optional[Union[Number, np.ndarray]] = None,
-    x_max: Optional[Union[Number, np.ndarray]] = None,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    promoted_type = x.dtype
-    if x_min is not None:
-        if not hasattr(x_min, "dtype"):
-            x_min = ivy.array(x_min).data
-        promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
-    if x_max is not None:
-        if not hasattr(x_max, "dtype"):
-            x_max = ivy.array(x_max).data
-        promoted_type = ivy.as_native_dtype(
-            ivy.promote_types(promoted_type, x_max.dtype)
-        )
-    return np.clip(x.astype(promoted_type), x_min, x_max, out=out)
+def zero_pad(
+    x: np.ndarray, /, pad_width: List[List[int]], *, out: Optional[np.ndarray] = None
+):
+    return np.pad(_flat_array_to_1_dim_array(x), pad_width)
 
 
+concat.support_native_out = True
+stack.support_native_out = True
 clip.support_native_out = True
-
-
-def as_strided(
-    x: np.ndarray,
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    strides: Sequence[int],
-    /,
-) -> np.ndarray:
-    return np.lib.stride_tricks.as_strided(
-        x,
-        shape=shape,
-        strides=strides,
-    )

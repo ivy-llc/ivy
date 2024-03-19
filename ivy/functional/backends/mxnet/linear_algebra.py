@@ -43,6 +43,16 @@ def det(
     return mx.nd.linalg.det(x)
 
 
+def diag(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    k: int = 0,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
 def diagonal(
     x: Union[(None, mx.ndarray.NDArray)],
     /,
@@ -258,6 +268,17 @@ def trace(
     raise IvyNotImplementedException()
 
 
+def vander(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    N: Optional[int] = None,
+    increasing: bool = False,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
 def vecdot(
     x1: Union[(None, mx.ndarray.NDArray)],
     x2: Union[(None, mx.ndarray.NDArray)],
@@ -277,27 +298,6 @@ def vector_norm(
     keepdims: bool = False,
     ord: Union[(int, float, Literal[(inf, (-inf))])] = 2,
     dtype: Optional[None] = None,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
-def diag(
-    x: Union[(None, mx.ndarray.NDArray)],
-    /,
-    *,
-    k: int = 0,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
-def vander(
-    x: Union[(None, mx.ndarray.NDArray)],
-    /,
-    *,
-    N: Optional[int] = None,
-    increasing: bool = False,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()

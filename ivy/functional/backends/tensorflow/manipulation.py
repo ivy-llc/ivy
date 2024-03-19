@@ -15,10 +15,52 @@ from ivy.functional.ivy.manipulation import _calculate_out_shape
 from . import backend_version
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 def _reshape_fortran_tf(x, shape):
     if len(x.shape) > 0:
         x = tf.transpose(x)
     return tf.transpose(tf.reshape(x, shape[::-1]))
+
+
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
+def clip(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    x_min: Optional[Union[Number, tf.Tensor, tf.Variable]] = None,
+    x_max: Optional[Union[Number, tf.Tensor, tf.Variable]] = None,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if x_min is None and x_max is None:
+        raise ValueError("At least one of the x_min or x_max must be provided")
+    promoted_type = x.dtype
+    if x_min is not None:
+        if not hasattr(x_min, "dtype"):
+            x_min = ivy.array(x_min).data
+        promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
+    if x_max is not None:
+        if not hasattr(x_max, "dtype"):
+            x_max = ivy.array(x_max).data
+        promoted_type = ivy.as_native_dtype(
+            ivy.promote_types(promoted_type, x_max.dtype)
+        )
+        x_max = tf.cast(x_max, promoted_type)
+    x = tf.cast(x, promoted_type)
+    if x_min is not None:
+        x_min = tf.cast(x_min, promoted_type)
+    cond = True
+    if x_min is not None and x_max is not None:
+        if tf.math.reduce_any(tf.experimental.numpy.greater(x_min, x_max)):
+            cond = False
+    if cond:
+        return tf.experimental.numpy.clip(x, x_min, x_max)
+    else:
+        return tf.experimental.numpy.minimum(
+            x_max, tf.experimental.numpy.maximum(x, x_min)
+        )
 
 
 # Array API Standard #
@@ -51,6 +93,14 @@ def concat(
             else:
                 raise
     return concat([tf.reshape(x, -1) for x in xs], axis=0)
+
+
+def constant_pad(
+    x, /, pad_width, *, value=0, out: Optional[Union[tf.Tensor, tf.Variable]] = None
+):
+    if x.shape == ():
+        x = tf.reshape(x, (-1,))
+    return tf.pad(x, pad_width, constant_values=value)
 
 
 def expand_dims(
@@ -148,6 +198,17 @@ def permute_dims(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.transpose(x, perm=axes)
+
+
+def repeat(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    repeats: Union[int, List[int]],
+    *,
+    axis: Optional[int] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.repeat(x, repeats, axis)
 
 
 def reshape(
@@ -282,15 +343,25 @@ def split(
     return tf.split(x, num_or_size_splits, axis)
 
 
-def repeat(
-    x: Union[tf.Tensor, tf.Variable],
+def swapaxes(
+    x,
+    axis0,
+    axis1,
     /,
-    repeats: Union[int, List[int]],
     *,
-    axis: Optional[int] = None,
+    copy: Optional[bool] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.repeat(x, repeats, axis)
+):
+    x_shape = x.shape
+    num_dims = len(x_shape)
+    axis0 %= num_dims
+    axis1 %= num_dims
+    config = list(range(num_dims))
+    config.pop(axis0)
+    config.insert(axis0, axis1)
+    config.pop(axis1)
+    config.insert(axis1, axis0)
+    return tf.transpose(x, config)
 
 
 @with_unsupported_dtypes(
@@ -331,79 +402,6 @@ def tile(
     return tf.tile(x, repeats)
 
 
-def constant_pad(
-    x, /, pad_width, *, value=0, out: Optional[Union[tf.Tensor, tf.Variable]] = None
-):
-    if x.shape == ():
-        x = tf.reshape(x, (-1,))
-    return tf.pad(x, pad_width, constant_values=value)
-
-
-def zero_pad(x, /, pad_width, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
-    if x.shape == ():
-        x = tf.reshape(x, (-1,))
-    return tf.pad(x, pad_width)
-
-
-def swapaxes(
-    x,
-    axis0,
-    axis1,
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-):
-    x_shape = x.shape
-    num_dims = len(x_shape)
-    axis0 %= num_dims
-    axis1 %= num_dims
-    config = list(range(num_dims))
-    config.pop(axis0)
-    config.insert(axis0, axis1)
-    config.pop(axis1)
-    config.insert(axis1, axis0)
-    return tf.transpose(x, config)
-
-
-@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
-def clip(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    x_min: Optional[Union[Number, tf.Tensor, tf.Variable]] = None,
-    x_max: Optional[Union[Number, tf.Tensor, tf.Variable]] = None,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    if x_min is None and x_max is None:
-        raise ValueError("At least one of the x_min or x_max must be provided")
-    promoted_type = x.dtype
-    if x_min is not None:
-        if not hasattr(x_min, "dtype"):
-            x_min = ivy.array(x_min).data
-        promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
-    if x_max is not None:
-        if not hasattr(x_max, "dtype"):
-            x_max = ivy.array(x_max).data
-        promoted_type = ivy.as_native_dtype(
-            ivy.promote_types(promoted_type, x_max.dtype)
-        )
-        x_max = tf.cast(x_max, promoted_type)
-    x = tf.cast(x, promoted_type)
-    if x_min is not None:
-        x_min = tf.cast(x_min, promoted_type)
-    cond = True
-    if x_min is not None and x_max is not None:
-        if tf.math.reduce_any(tf.experimental.numpy.greater(x_min, x_max)):
-            cond = False
-    if cond:
-        return tf.experimental.numpy.clip(x, x_min, x_max)
-    else:
-        return tf.experimental.numpy.minimum(
-            x_max, tf.experimental.numpy.maximum(x, x_min)
-        )
-
-
 def unstack(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -418,3 +416,9 @@ def unstack(
     if keepdims:
         return [tf.expand_dims(r, axis) for r in ret]
     return ret
+
+
+def zero_pad(x, /, pad_width, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None):
+    if x.shape == ():
+        x = tf.reshape(x, (-1,))
+    return tf.pad(x, pad_width)

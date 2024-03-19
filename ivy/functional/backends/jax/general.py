@@ -24,6 +24,31 @@ from ivy.utils.exceptions import _check_inplace_update_support
 from . import backend_version
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+def _mask_to_index(query, x):
+    if query.shape != x.shape:
+        if len(query.shape) > len(x.shape):
+            raise ivy.exceptions.IvyException("too many indices")
+        elif not len(query.shape):
+            query = jnp.tile(query, x.shape[0])
+    return jnp.where(query)
+
+
+def _update_view(view, base):
+    for fn, args, kwargs, index in view._manipulation_stack:
+        base = ivy.__dict__[fn](base, *args, **kwargs)
+        base = base[index] if ivy.exists(index) else base
+    view.data = base.data
+    return view
+
+
+def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
+    return bool(jnp.array_equal(x0, x1))
+
+
 def container_types():
     flat_mapping_spec = importlib.util.find_spec(
         "FlatMapping", "haiku._src.data_structures"
@@ -37,92 +62,6 @@ def container_types():
 
 def current_backend_str() -> str:
     return "jax"
-
-
-def is_native_array(x, /, *, exclusive=False):
-    if exclusive:
-        return isinstance(x, NativeArray)
-    return isinstance(
-        x,
-        (
-            NativeArray,
-            jax.interpreters.ad.JVPTracer,
-            jax.core.ShapedArray,
-            jax.interpreters.partial_eval.DynamicJaxprTracer,
-        ),
-    )
-
-
-def _mask_to_index(query, x):
-    if query.shape != x.shape:
-        if len(query.shape) > len(x.shape):
-            raise ivy.exceptions.IvyException("too many indices")
-        elif not len(query.shape):
-            query = jnp.tile(query, x.shape[0])
-    return jnp.where(query)
-
-
-def get_item(
-    x: JaxArray,
-    /,
-    query: Union[JaxArray, Tuple],
-    *,
-    copy: Optional[bool] = None,
-) -> JaxArray:
-    if copy:
-        x = x.copy()
-    if ivy.is_array(query) and ivy.is_bool_dtype(query):
-        if not len(query.shape):
-            if not query:
-                return jnp.array([], dtype=x.dtype)
-            else:
-                return jnp.expand_dims(x, 0)
-        query = _mask_to_index(query, x)
-    elif isinstance(query, list):
-        query = (query,)
-    return x.__getitem__(query)
-
-
-def set_item(
-    x: JaxArray,
-    query: Union[JaxArray, Tuple],
-    val: JaxArray,
-    /,
-    *,
-    copy: Optional[bool] = False,
-) -> JaxArray:
-    if ivy.is_array(query) and ivy.is_bool_dtype(query):
-        query = _mask_to_index(query, x)
-    expected_shape = x[query].shape
-    if ivy.is_array(val):
-        val = _broadcast_to(val, expected_shape)._data
-    ret = x.at[query].set(val)
-    if copy:
-        return ret
-    return ivy.inplace_update(x, _to_device(ret))
-
-
-def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
-    return bool(jnp.array_equal(x0, x1))
-
-
-@with_unsupported_dtypes({"0.4.24 and below": ("bfloat16",)}, backend_version)
-def to_numpy(x: JaxArray, /, *, copy: bool = True) -> np.ndarray:
-    if copy:
-        return np.array(_to_array(x))
-    else:
-        return np.asarray(_to_array(x))
-
-
-def to_scalar(x: JaxArray, /) -> Number:
-    if isinstance(x, Number):
-        return x
-    else:
-        return _to_array(x).item()
-
-
-def to_list(x: JaxArray, /) -> list:
-    return _to_array(x).tolist()
 
 
 def gather(
@@ -151,6 +90,36 @@ def gather(
         for z in zip_list:
             p, i = z
             r = jnp.take(p, i, axis - batch_dims)
+            result.append(r)
+        result = jnp.array(result)
+        result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
+    return result
+
+
+def gather_nd(
+    params: JaxArray,
+    indices: JaxArray,
+    /,
+    *,
+    batch_dims: int = 0,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
+    batch_dims = batch_dims % len(params.shape)
+    result = []
+    if batch_dims == 0:
+        result = gather_nd_helper(params, indices)
+    else:
+        for b in range(batch_dims):
+            if b == 0:
+                zip_list = [(p, i) for p, i in zip(params, indices)]
+            else:
+                zip_list = [
+                    (p, i) for z in [zip(p1, i1) for p1, i1 in zip_list] for p, i in z
+                ]
+        for z in zip_list:
+            p, i = z
+            r = gather_nd_helper(p, i)
             result.append(r)
         result = jnp.array(result)
         result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
@@ -188,42 +157,29 @@ def gather_nd_helper(params, indices):
     return ret
 
 
-def gather_nd(
-    params: JaxArray,
-    indices: JaxArray,
+def get_item(
+    x: JaxArray,
     /,
+    query: Union[JaxArray, Tuple],
     *,
-    batch_dims: int = 0,
-    out: Optional[JaxArray] = None,
+    copy: Optional[bool] = None,
 ) -> JaxArray:
-    ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
-    batch_dims = batch_dims % len(params.shape)
-    result = []
-    if batch_dims == 0:
-        result = gather_nd_helper(params, indices)
-    else:
-        for b in range(batch_dims):
-            if b == 0:
-                zip_list = [(p, i) for p, i in zip(params, indices)]
+    if copy:
+        x = x.copy()
+    if ivy.is_array(query) and ivy.is_bool_dtype(query):
+        if not len(query.shape):
+            if not query:
+                return jnp.array([], dtype=x.dtype)
             else:
-                zip_list = [
-                    (p, i) for z in [zip(p1, i1) for p1, i1 in zip_list] for p, i in z
-                ]
-        for z in zip_list:
-            p, i = z
-            r = gather_nd_helper(p, i)
-            result.append(r)
-        result = jnp.array(result)
-        result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
-    return result
+                return jnp.expand_dims(x, 0)
+        query = _mask_to_index(query, x)
+    elif isinstance(query, list):
+        query = (query,)
+    return x.__getitem__(query)
 
 
 def get_num_dims(x: JaxArray, /, *, as_array: bool = False) -> Union[JaxArray, int]:
     return jnp.asarray(len(jnp.shape(x))) if as_array else len(x.shape)
-
-
-def size(x: JaxArray, /) -> int:
-    return x.size
 
 
 def inplace_arrays_supported():
@@ -297,16 +253,38 @@ def inplace_update(
         return val
 
 
-def _update_view(view, base):
-    for fn, args, kwargs, index in view._manipulation_stack:
-        base = ivy.__dict__[fn](base, *args, **kwargs)
-        base = base[index] if ivy.exists(index) else base
-    view.data = base.data
-    return view
-
-
 def inplace_variables_supported():
     return False
+
+
+def is_native_array(x, /, *, exclusive=False):
+    if exclusive:
+        return isinstance(x, NativeArray)
+    return isinstance(
+        x,
+        (
+            NativeArray,
+            jax.interpreters.ad.JVPTracer,
+            jax.core.ShapedArray,
+            jax.interpreters.partial_eval.DynamicJaxprTracer,
+        ),
+    )
+
+
+@with_unsupported_dtypes({"0.4.24 and below": ("float16", "bfloat16")}, backend_version)
+def isin(
+    elements: JaxArray,
+    test_elements: JaxArray,
+    /,
+    *,
+    assume_unique: bool = False,
+    invert: bool = False,
+) -> JaxArray:
+    return jnp.isin(elements, test_elements, assume_unique=assume_unique, invert=invert)
+
+
+def itemsize(x: JaxArray) -> int:
+    return x.itemsize
 
 
 def multiprocessing(context: Optional[str] = None):
@@ -349,9 +327,6 @@ def scatter_flat(
     if target_given:
         return ivy.inplace_update(out, target)
     return target
-
-
-scatter_flat.support_native_out = True
 
 
 def scatter_nd(
@@ -403,7 +378,23 @@ def scatter_nd(
     return target
 
 
-scatter_nd.support_native_out = True
+def set_item(
+    x: JaxArray,
+    query: Union[JaxArray, Tuple],
+    val: JaxArray,
+    /,
+    *,
+    copy: Optional[bool] = False,
+) -> JaxArray:
+    if ivy.is_array(query) and ivy.is_bool_dtype(query):
+        query = _mask_to_index(query, x)
+    expected_shape = x[query].shape
+    if ivy.is_array(val):
+        val = _broadcast_to(val, expected_shape)._data
+    ret = x.at[query].set(val)
+    if copy:
+        return ret
+    return ivy.inplace_update(x, _to_device(ret))
 
 
 def shape(
@@ -418,6 +409,29 @@ def shape(
         return ivy.Shape(x.shape)
 
 
+def size(x: JaxArray, /) -> int:
+    return x.size
+
+
+def to_list(x: JaxArray, /) -> list:
+    return _to_array(x).tolist()
+
+
+@with_unsupported_dtypes({"0.4.24 and below": ("bfloat16",)}, backend_version)
+def to_numpy(x: JaxArray, /, *, copy: bool = True) -> np.ndarray:
+    if copy:
+        return np.array(_to_array(x))
+    else:
+        return np.asarray(_to_array(x))
+
+
+def to_scalar(x: JaxArray, /) -> Number:
+    if isinstance(x, Number):
+        return x
+    else:
+        return _to_array(x).item()
+
+
 def vmap(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
@@ -429,17 +443,5 @@ def vmap(
     )
 
 
-@with_unsupported_dtypes({"0.4.24 and below": ("float16", "bfloat16")}, backend_version)
-def isin(
-    elements: JaxArray,
-    test_elements: JaxArray,
-    /,
-    *,
-    assume_unique: bool = False,
-    invert: bool = False,
-) -> JaxArray:
-    return jnp.isin(elements, test_elements, assume_unique=assume_unique, invert=invert)
-
-
-def itemsize(x: JaxArray) -> int:
-    return x.itemsize
+scatter_flat.support_native_out = True
+scatter_nd.support_native_out = True

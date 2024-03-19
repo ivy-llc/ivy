@@ -4,6 +4,58 @@ import mxnet as mx
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
+def adjoint(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def cond(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    p: Optional[Union[(None, int, str)]] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def diagflat(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    offset: int = 0,
+    padding_value: float = 0,
+    align: str = "RIGHT_LEFT",
+    num_rows: Optional[int] = None,
+    num_cols: Optional[int] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+):
+    raise IvyNotImplementedException()
+
+
+def dot(
+    a: mx.ndarray.NDArray,
+    b: mx.ndarray.NDArray,
+    /,
+    *,
+    out: Optional[mx.ndarray.NDArray] = None,
+) -> mx.ndarray.NDArray:
+    return mx.symbol.dot(a, b, out=out)
+
+
+def eig(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Tuple[None]:
+    raise IvyNotImplementedException()
+
+
 def eigh_tridiagonal(
     alpha: Union[(None, mx.ndarray.NDArray)],
     beta: Union[(None, mx.ndarray.NDArray)],
@@ -25,17 +77,9 @@ def eigh_tridiagonal(
     raise IvyNotImplementedException()
 
 
-def diagflat(
-    x: Union[(None, mx.ndarray.NDArray)],
-    /,
-    *,
-    offset: int = 0,
-    padding_value: float = 0,
-    align: str = "RIGHT_LEFT",
-    num_rows: Optional[int] = None,
-    num_cols: Optional[int] = None,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-):
+def eigvals(
+    x: Union[(None, mx.ndarray.NDArray)], /
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
 
 
@@ -58,27 +102,12 @@ def matrix_exp(
     raise IvyNotImplementedException()
 
 
-def eig(
-    x: Union[(None, mx.ndarray.NDArray)],
+def multi_dot(
+    x: Sequence[Union[(None, mx.ndarray.NDArray)]],
     /,
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Tuple[None]:
-    raise IvyNotImplementedException()
-
-
-def eigvals(
-    x: Union[(None, mx.ndarray.NDArray)], /
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
-def adjoint(
-    x: Union[(None, mx.ndarray.NDArray)],
-    /,
-    *,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
+) -> None:
     raise IvyNotImplementedException()
 
 
@@ -99,35 +128,6 @@ def solve_triangular(
     # MXNet does not support complex tensors for this operation,
     # so adjoint always equals transpose.
     return mx.nd.linalg.trsm(x1, x2, lower=not upper, transpose=adjoint)
-
-
-def multi_dot(
-    x: Sequence[Union[(None, mx.ndarray.NDArray)]],
-    /,
-    *,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> None:
-    raise IvyNotImplementedException()
-
-
-def cond(
-    x: Union[(None, mx.ndarray.NDArray)],
-    /,
-    *,
-    p: Optional[Union[(None, int, str)]] = None,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
-def dot(
-    a: mx.ndarray.NDArray,
-    b: mx.ndarray.NDArray,
-    /,
-    *,
-    out: Optional[mx.ndarray.NDArray] = None,
-) -> mx.ndarray.NDArray:
-    return mx.symbol.dot(a, b, out=out)
 
 
 dot.support_native_out = True

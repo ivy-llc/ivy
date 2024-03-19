@@ -4,356 +4,6 @@ from ivy.func_wrapper import inputs_to_native_arrays
 from ivy.utils.exceptions import handle_exceptions
 
 
-# helpers
-def _verify_coo_components(indices=None, values=None, dense_shape=None):
-    ivy.utils.assertions.check_all_or_any_fn(
-        indices,
-        values,
-        dense_shape,
-        fn=ivy.exists,
-        type="all",
-        message="indices, values and dense_shape must all be specified",
-    )
-    # coordinates style (COO), must be shaped (x, y)
-    ivy.utils.assertions.check_equal(
-        len(ivy.shape(indices)), 2, message="indices must be 2D", as_array=False
-    )
-    ivy.utils.assertions.check_equal(
-        len(ivy.shape(values)), 1, message="values must be 1D", as_array=False
-    )
-    ivy.utils.assertions.check_equal(
-        len(ivy.to_ivy_shape(dense_shape)),
-        ivy.shape(indices)[0],
-        message="shape and indices shape do not match",
-        as_array=False,
-    )
-    # number of values must match number of coordinates
-    ivy.utils.assertions.check_equal(
-        ivy.shape(values)[0],
-        ivy.shape(indices)[1],
-        message="values and indices do not match",
-        as_array=False,
-    )
-    for i in range(ivy.shape(indices)[0]):
-        ivy.utils.assertions.check_less(
-            indices[i],
-            ivy.to_ivy_shape(dense_shape)[i],
-            message="indices is larger than shape",
-        )
-
-
-def _verify_common_row_format_components(
-    crow_indices=None, col_indices=None, values=None, dense_shape=None, format="csr"
-):
-    ivy.utils.assertions.check_all_or_any_fn(
-        crow_indices,
-        col_indices,
-        values,
-        dense_shape,
-        fn=ivy.exists,
-        type="all",
-        message=(
-            "crow_indices, col_indices, values and dense_shape must all be specified."
-        ),
-    )
-
-    ivy.utils.assertions.check_equal(
-        len(ivy.shape(crow_indices)),
-        1,
-        message="crow_indices must be 1D.",
-        as_array=False,
-    )
-    ivy.utils.assertions.check_equal(
-        len(ivy.shape(col_indices)),
-        1,
-        message="col_indices must be 1D.",
-        as_array=False,
-    )
-
-    ivy.utils.assertions.check_equal(
-        len(dense_shape),
-        2,
-        message=f"Only 2D arrays can be converted to {format.upper()} sparse arrays.",
-        as_array=False,
-    )
-
-    ivy.utils.assertions.check_equal(
-        ivy.shape(col_indices)[0],
-        crow_indices[-1],
-        message="size of col_indices does not match with last element of crow_indices",
-    )
-
-    # number of values must match number of coordinates
-    ivy.utils.assertions.check_equal(
-        ivy.shape(col_indices)[0],
-        ivy.shape(values)[0],
-        message="values and col_indices do not match",
-        as_array=False,
-    )
-
-    # index in crow_indices must not exceed length of col_indices
-    ivy.utils.assertions.check_less(
-        crow_indices,
-        ivy.shape(col_indices)[0],
-        allow_equal=True,
-        message="index in crow_indices does not match the number of col_indices",
-    )
-
-
-def _verify_csr_components(
-    crow_indices=None, col_indices=None, values=None, dense_shape=None
-):
-    _verify_common_row_format_components(
-        crow_indices=crow_indices,
-        col_indices=col_indices,
-        values=values,
-        dense_shape=dense_shape,
-        format="csr",
-    )
-
-    ivy.utils.assertions.check_equal(
-        len(ivy.shape(values)), 1, message="values must be 1D.", as_array=False
-    )
-    # number of intervals must be equal to x in shape (x, y)
-    ivy.utils.assertions.check_equal(
-        ivy.shape(crow_indices)[0] - 1, dense_shape[0], as_array=False
-    )
-
-    ivy.utils.assertions.check_less(
-        col_indices,
-        dense_shape[1],
-        message="index in col_indices does not match shape",
-    )
-
-
-def _verify_bsr_components(
-    crow_indices=None, col_indices=None, values=None, dense_shape=None
-):
-    _verify_common_row_format_components(
-        crow_indices=crow_indices,
-        col_indices=col_indices,
-        values=values,
-        dense_shape=dense_shape,
-        format="bsr",
-    )
-    ivy.utils.assertions.check_equal(
-        len(ivy.shape(values)), 3, message="values must be 3D.", as_array=False
-    )
-    nrowblocks, ncolblocks = ivy.shape(values)[-2:]
-    ivy.utils.assertions.check_equal(
-        dense_shape[0] % nrowblocks,
-        0,
-        message="The number of rows of array must be divisible by that of block.",
-        as_array=False,
-    )
-    ivy.utils.assertions.check_equal(
-        dense_shape[1] % ncolblocks,
-        0,
-        message="The number of cols of array must be divisible by that of block.",
-        as_array=False,
-    )
-    ivy.utils.assertions.check_equal(
-        ivy.shape(crow_indices)[0] - 1, dense_shape[0] // nrowblocks, as_array=False
-    )
-    ivy.utils.assertions.check_less(
-        col_indices,
-        dense_shape[1] // ncolblocks,
-        message="index in col_indices does not match shape",
-    )
-
-
-def _verify_common_column_format_components(
-    ccol_indices=None, row_indices=None, values=None, dense_shape=None, format="csc"
-):
-    ivy.utils.assertions.check_all_or_any_fn(
-        ccol_indices,
-        row_indices,
-        values,
-        dense_shape,
-        fn=ivy.exists,
-        type="all",
-        message=(
-            "ccol_indices, row_indices, values and dense_shape must all be specified"
-        ),
-    )
-    ivy.utils.assertions.check_equal(
-        len(ivy.shape(ccol_indices)),
-        1,
-        message="ccol_indices must be 1D",
-        as_array=False,
-    )
-    ivy.utils.assertions.check_equal(
-        len(ivy.shape(row_indices)), 1, message="row_indices must be 1D", as_array=False
-    )
-
-    ivy.utils.assertions.check_equal(
-        len(dense_shape),
-        2,
-        message=f"only 2D arrays can be converted to {format.upper()} sparse arrays",
-        as_array=False,
-    )
-    # number of values must match number of coordinates
-    ivy.utils.assertions.check_equal(
-        ivy.shape(row_indices)[0],
-        ivy.shape(values)[0],
-        message="values and row_indices do not match",
-        as_array=False,
-    )
-    # index in ccol_indices must not exceed length of row_indices
-    ivy.utils.assertions.check_less(
-        ccol_indices,
-        ivy.shape(row_indices)[0],
-        allow_equal=True,
-        message="index in ccol_indices does not match the number of row_indices",
-    )
-
-
-def _verify_csc_components(
-    ccol_indices=None, row_indices=None, values=None, dense_shape=None
-):
-    _verify_common_column_format_components(
-        ccol_indices=ccol_indices,
-        row_indices=row_indices,
-        values=values,
-        dense_shape=dense_shape,
-        format="csc",
-    )
-
-    ivy.utils.assertions.check_equal(
-        len(ivy.shape(values)), 1, message="values must be 1D", as_array=False
-    )
-    # number of intervals must be equal to y in shape (x, y)
-    ivy.utils.assertions.check_equal(
-        ivy.shape(ccol_indices)[0] - 1, dense_shape[1], as_array=False
-    )
-    ivy.utils.assertions.check_less(
-        row_indices,
-        dense_shape[0],
-        message="index in row_indices does not match shape",
-    )
-
-
-def _verify_bsc_components(
-    ccol_indices=None, row_indices=None, values=None, dense_shape=None
-):
-    _verify_common_column_format_components(
-        ccol_indices=ccol_indices,
-        row_indices=row_indices,
-        values=values,
-        dense_shape=dense_shape,
-        format="bsc",
-    )
-    ivy.utils.assertions.check_equal(
-        len(ivy.shape(values)), 3, message="values must be 3D", as_array=False
-    )
-    nrowblocks, ncolblocks = ivy.shape(values)[-2:]
-    ivy.utils.assertions.check_equal(
-        dense_shape[0] % nrowblocks,
-        0,
-        message="number of rows of array must be divisible by that of block.",
-        as_array=False,
-    )
-    ivy.utils.assertions.check_equal(
-        dense_shape[1] % ncolblocks,
-        0,
-        message="number of cols of array must be divisible by that of block.",
-        as_array=False,
-    )
-    # number of intervals must be equal to y in shape (x, y)
-    ivy.utils.assertions.check_equal(
-        ivy.shape(ccol_indices)[0] - 1, dense_shape[1] // ncolblocks, as_array=False
-    )
-    ivy.utils.assertions.check_less(
-        row_indices,
-        dense_shape[0] // nrowblocks,
-        message="index in row_indices does not match shape",
-    )
-
-
-def _is_data_not_indices_values_and_shape(
-    data=None,
-    coo_indices=None,
-    crow_indices=None,
-    col_indices=None,
-    ccol_indices=None,
-    row_indices=None,
-    values=None,
-    dense_shape=None,
-    format=None,
-):
-    if data is not None:
-        ivy.utils.assertions.check_all_or_any_fn(
-            coo_indices,
-            crow_indices,
-            col_indices,
-            ccol_indices,
-            row_indices,
-            values,
-            dense_shape,
-            format,
-            fn=ivy.exists,
-            type="any",
-            limit=[0],
-            message=(
-                "Only specify data, coo_indices for COO format, crow_indices and"
-                " col_indices for CSR and BSR, ccol_indices and row_indicesfor CSC and"
-                " BSC."
-            ),
-        )
-        return True
-    return False
-
-
-def _is_valid_format(
-    coo_indices=None,
-    crow_indices=None,
-    col_indices=None,
-    ccol_indices=None,
-    row_indices=None,
-    values=None,
-    dense_shape=None,
-    format="coo",
-):
-    valid_formats = ["coo", "csr", "csc", "csc", "bsc", "bsr"]
-
-    if not isinstance(format, str) or format.lower() not in valid_formats:
-        return False
-
-    if format.endswith("o"):
-        # format is coo
-        return (
-            ivy.exists(coo_indices)
-            and ivy.exists(values)
-            and ivy.exists(dense_shape)
-            and crow_indices is None
-            and col_indices is None
-            and ccol_indices is None
-            and row_indices is None
-        )
-
-    if format.endswith("r"):
-        # format is either csr or bsr
-        return (
-            ivy.exists(crow_indices)
-            and ivy.exists(col_indices)
-            and ivy.exists(values)
-            and ivy.exists(dense_shape)
-            and coo_indices is None
-            and ccol_indices is None
-            and row_indices is None
-        )
-    # format is either csc or bsc
-    return (
-        ivy.exists(ccol_indices)
-        and ivy.exists(row_indices)
-        and ivy.exists(values)
-        and ivy.exists(dense_shape)
-        and coo_indices is None
-        and crow_indices is None
-        and col_indices is None
-    )
-
-
 class SparseArray(ivy.Array):
     def __init__(
         self,
@@ -818,6 +468,360 @@ class SparseArray(ivy.Array):
 
 class NativeSparseArray:
     pass
+
+
+# --- Helpers --- #
+# --------------- #
+
+
+def _is_data_not_indices_values_and_shape(
+    data=None,
+    coo_indices=None,
+    crow_indices=None,
+    col_indices=None,
+    ccol_indices=None,
+    row_indices=None,
+    values=None,
+    dense_shape=None,
+    format=None,
+):
+    if data is not None:
+        ivy.utils.assertions.check_all_or_any_fn(
+            coo_indices,
+            crow_indices,
+            col_indices,
+            ccol_indices,
+            row_indices,
+            values,
+            dense_shape,
+            format,
+            fn=ivy.exists,
+            type="any",
+            limit=[0],
+            message=(
+                "Only specify data, coo_indices for COO format, crow_indices and"
+                " col_indices for CSR and BSR, ccol_indices and row_indicesfor CSC and"
+                " BSC."
+            ),
+        )
+        return True
+    return False
+
+
+def _is_valid_format(
+    coo_indices=None,
+    crow_indices=None,
+    col_indices=None,
+    ccol_indices=None,
+    row_indices=None,
+    values=None,
+    dense_shape=None,
+    format="coo",
+):
+    valid_formats = ["coo", "csr", "csc", "csc", "bsc", "bsr"]
+
+    if not isinstance(format, str) or format.lower() not in valid_formats:
+        return False
+
+    if format.endswith("o"):
+        # format is coo
+        return (
+            ivy.exists(coo_indices)
+            and ivy.exists(values)
+            and ivy.exists(dense_shape)
+            and crow_indices is None
+            and col_indices is None
+            and ccol_indices is None
+            and row_indices is None
+        )
+
+    if format.endswith("r"):
+        # format is either csr or bsr
+        return (
+            ivy.exists(crow_indices)
+            and ivy.exists(col_indices)
+            and ivy.exists(values)
+            and ivy.exists(dense_shape)
+            and coo_indices is None
+            and ccol_indices is None
+            and row_indices is None
+        )
+    # format is either csc or bsc
+    return (
+        ivy.exists(ccol_indices)
+        and ivy.exists(row_indices)
+        and ivy.exists(values)
+        and ivy.exists(dense_shape)
+        and coo_indices is None
+        and crow_indices is None
+        and col_indices is None
+    )
+
+
+def _verify_bsc_components(
+    ccol_indices=None, row_indices=None, values=None, dense_shape=None
+):
+    _verify_common_column_format_components(
+        ccol_indices=ccol_indices,
+        row_indices=row_indices,
+        values=values,
+        dense_shape=dense_shape,
+        format="bsc",
+    )
+    ivy.utils.assertions.check_equal(
+        len(ivy.shape(values)), 3, message="values must be 3D", as_array=False
+    )
+    nrowblocks, ncolblocks = ivy.shape(values)[-2:]
+    ivy.utils.assertions.check_equal(
+        dense_shape[0] % nrowblocks,
+        0,
+        message="number of rows of array must be divisible by that of block.",
+        as_array=False,
+    )
+    ivy.utils.assertions.check_equal(
+        dense_shape[1] % ncolblocks,
+        0,
+        message="number of cols of array must be divisible by that of block.",
+        as_array=False,
+    )
+    # number of intervals must be equal to y in shape (x, y)
+    ivy.utils.assertions.check_equal(
+        ivy.shape(ccol_indices)[0] - 1, dense_shape[1] // ncolblocks, as_array=False
+    )
+    ivy.utils.assertions.check_less(
+        row_indices,
+        dense_shape[0] // nrowblocks,
+        message="index in row_indices does not match shape",
+    )
+
+
+def _verify_bsr_components(
+    crow_indices=None, col_indices=None, values=None, dense_shape=None
+):
+    _verify_common_row_format_components(
+        crow_indices=crow_indices,
+        col_indices=col_indices,
+        values=values,
+        dense_shape=dense_shape,
+        format="bsr",
+    )
+    ivy.utils.assertions.check_equal(
+        len(ivy.shape(values)), 3, message="values must be 3D.", as_array=False
+    )
+    nrowblocks, ncolblocks = ivy.shape(values)[-2:]
+    ivy.utils.assertions.check_equal(
+        dense_shape[0] % nrowblocks,
+        0,
+        message="The number of rows of array must be divisible by that of block.",
+        as_array=False,
+    )
+    ivy.utils.assertions.check_equal(
+        dense_shape[1] % ncolblocks,
+        0,
+        message="The number of cols of array must be divisible by that of block.",
+        as_array=False,
+    )
+    ivy.utils.assertions.check_equal(
+        ivy.shape(crow_indices)[0] - 1, dense_shape[0] // nrowblocks, as_array=False
+    )
+    ivy.utils.assertions.check_less(
+        col_indices,
+        dense_shape[1] // ncolblocks,
+        message="index in col_indices does not match shape",
+    )
+
+
+def _verify_common_column_format_components(
+    ccol_indices=None, row_indices=None, values=None, dense_shape=None, format="csc"
+):
+    ivy.utils.assertions.check_all_or_any_fn(
+        ccol_indices,
+        row_indices,
+        values,
+        dense_shape,
+        fn=ivy.exists,
+        type="all",
+        message=(
+            "ccol_indices, row_indices, values and dense_shape must all be specified"
+        ),
+    )
+    ivy.utils.assertions.check_equal(
+        len(ivy.shape(ccol_indices)),
+        1,
+        message="ccol_indices must be 1D",
+        as_array=False,
+    )
+    ivy.utils.assertions.check_equal(
+        len(ivy.shape(row_indices)), 1, message="row_indices must be 1D", as_array=False
+    )
+
+    ivy.utils.assertions.check_equal(
+        len(dense_shape),
+        2,
+        message=f"only 2D arrays can be converted to {format.upper()} sparse arrays",
+        as_array=False,
+    )
+    # number of values must match number of coordinates
+    ivy.utils.assertions.check_equal(
+        ivy.shape(row_indices)[0],
+        ivy.shape(values)[0],
+        message="values and row_indices do not match",
+        as_array=False,
+    )
+    # index in ccol_indices must not exceed length of row_indices
+    ivy.utils.assertions.check_less(
+        ccol_indices,
+        ivy.shape(row_indices)[0],
+        allow_equal=True,
+        message="index in ccol_indices does not match the number of row_indices",
+    )
+
+
+def _verify_common_row_format_components(
+    crow_indices=None, col_indices=None, values=None, dense_shape=None, format="csr"
+):
+    ivy.utils.assertions.check_all_or_any_fn(
+        crow_indices,
+        col_indices,
+        values,
+        dense_shape,
+        fn=ivy.exists,
+        type="all",
+        message=(
+            "crow_indices, col_indices, values and dense_shape must all be specified."
+        ),
+    )
+
+    ivy.utils.assertions.check_equal(
+        len(ivy.shape(crow_indices)),
+        1,
+        message="crow_indices must be 1D.",
+        as_array=False,
+    )
+    ivy.utils.assertions.check_equal(
+        len(ivy.shape(col_indices)),
+        1,
+        message="col_indices must be 1D.",
+        as_array=False,
+    )
+
+    ivy.utils.assertions.check_equal(
+        len(dense_shape),
+        2,
+        message=f"Only 2D arrays can be converted to {format.upper()} sparse arrays.",
+        as_array=False,
+    )
+
+    ivy.utils.assertions.check_equal(
+        ivy.shape(col_indices)[0],
+        crow_indices[-1],
+        message="size of col_indices does not match with last element of crow_indices",
+    )
+
+    # number of values must match number of coordinates
+    ivy.utils.assertions.check_equal(
+        ivy.shape(col_indices)[0],
+        ivy.shape(values)[0],
+        message="values and col_indices do not match",
+        as_array=False,
+    )
+
+    # index in crow_indices must not exceed length of col_indices
+    ivy.utils.assertions.check_less(
+        crow_indices,
+        ivy.shape(col_indices)[0],
+        allow_equal=True,
+        message="index in crow_indices does not match the number of col_indices",
+    )
+
+
+# helpers
+def _verify_coo_components(indices=None, values=None, dense_shape=None):
+    ivy.utils.assertions.check_all_or_any_fn(
+        indices,
+        values,
+        dense_shape,
+        fn=ivy.exists,
+        type="all",
+        message="indices, values and dense_shape must all be specified",
+    )
+    # coordinates style (COO), must be shaped (x, y)
+    ivy.utils.assertions.check_equal(
+        len(ivy.shape(indices)), 2, message="indices must be 2D", as_array=False
+    )
+    ivy.utils.assertions.check_equal(
+        len(ivy.shape(values)), 1, message="values must be 1D", as_array=False
+    )
+    ivy.utils.assertions.check_equal(
+        len(ivy.to_ivy_shape(dense_shape)),
+        ivy.shape(indices)[0],
+        message="shape and indices shape do not match",
+        as_array=False,
+    )
+    # number of values must match number of coordinates
+    ivy.utils.assertions.check_equal(
+        ivy.shape(values)[0],
+        ivy.shape(indices)[1],
+        message="values and indices do not match",
+        as_array=False,
+    )
+    for i in range(ivy.shape(indices)[0]):
+        ivy.utils.assertions.check_less(
+            indices[i],
+            ivy.to_ivy_shape(dense_shape)[i],
+            message="indices is larger than shape",
+        )
+
+
+def _verify_csc_components(
+    ccol_indices=None, row_indices=None, values=None, dense_shape=None
+):
+    _verify_common_column_format_components(
+        ccol_indices=ccol_indices,
+        row_indices=row_indices,
+        values=values,
+        dense_shape=dense_shape,
+        format="csc",
+    )
+
+    ivy.utils.assertions.check_equal(
+        len(ivy.shape(values)), 1, message="values must be 1D", as_array=False
+    )
+    # number of intervals must be equal to y in shape (x, y)
+    ivy.utils.assertions.check_equal(
+        ivy.shape(ccol_indices)[0] - 1, dense_shape[1], as_array=False
+    )
+    ivy.utils.assertions.check_less(
+        row_indices,
+        dense_shape[0],
+        message="index in row_indices does not match shape",
+    )
+
+
+def _verify_csr_components(
+    crow_indices=None, col_indices=None, values=None, dense_shape=None
+):
+    _verify_common_row_format_components(
+        crow_indices=crow_indices,
+        col_indices=col_indices,
+        values=values,
+        dense_shape=dense_shape,
+        format="csr",
+    )
+
+    ivy.utils.assertions.check_equal(
+        len(ivy.shape(values)), 1, message="values must be 1D.", as_array=False
+    )
+    # number of intervals must be equal to x in shape (x, y)
+    ivy.utils.assertions.check_equal(
+        ivy.shape(crow_indices)[0] - 1, dense_shape[0], as_array=False
+    )
+
+    ivy.utils.assertions.check_less(
+        col_indices,
+        dense_shape[1],
+        message="index in col_indices does not match shape",
+    )
 
 
 def is_ivy_sparse_array(x):

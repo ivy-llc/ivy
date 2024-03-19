@@ -89,9 +89,11 @@ def test_sklearn_f1_score(
     # Detach tensors if they require grad before converting to NumPy arrays
     if backend_fw == "torch":
         values = [
-            value.detach().numpy()
-            if isinstance(value, torch.Tensor) and value.requires_grad
-            else value
+            (
+                value.detach().numpy()
+                if isinstance(value, torch.Tensor) and value.requires_grad
+                else value
+            )
             for value in values
         ]
 

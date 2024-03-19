@@ -7,54 +7,25 @@ from ivy.func_wrapper import (
 )
 from . import backend_version
 
-# Assuming ivy and backend_version are imported and defined properly
 
-
-@with_unsupported_dtypes(
-    {"2.2 and below": ("unit8", "int8", "int16", "int32", "int64", "bool")},
-    backend_version,
-)
-def l1_loss(
-    input: torch.Tensor,
-    target: torch.Tensor,
-    /,
-    *,
-    reduction: Optional[str] = "mean",
-) -> torch.Tensor:
-    return torch.nn.functional.l1_loss(
-        input,
-        target,
-        reduction=reduction,
-    )
-
-
-@with_unsupported_dtypes(
+@with_supported_device_and_dtypes(
     {
-        "2.2 and below": (
-            "complex",
-            "uint8",
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "bool",
-        )
+        "2.2 and below": {
+            "cpu": ("float16", "float32", "float64"),
+            "gpu": ("float16", "float32", "float64"),
+        }
     },
     backend_version,
 )
-def smooth_l1_loss(
+def hinge_embedding_loss(
     input: torch.Tensor,
     target: torch.Tensor,
-    /,
     *,
-    beta: Optional[float] = 1.0,
-    reduction: Optional[str] = "mean",
+    margin: float = 1.0,
+    reduction: str = "mean",
 ) -> torch.Tensor:
-    return torch.nn.functional.smooth_l1_loss(
-        input,
-        target,
-        beta=beta,
-        reduction=reduction,
+    return torch.nn.functional.hinge_embedding_loss(
+        input, target, margin=margin, reduction=reduction
     )
 
 
@@ -75,34 +46,6 @@ def huber_loss(
     )
 
 
-@with_unsupported_dtypes(
-    {
-        "2.2 and below": (
-            "float16",
-            "uint8",
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "bool",
-        )
-    },
-    backend_version,
-)
-def soft_margin_loss(
-    input: torch.Tensor,
-    target: torch.Tensor,
-    /,
-    *,
-    reduction: Optional[str] = "mean",
-) -> torch.Tensor:
-    return torch.nn.functional.soft_margin_loss(
-        input,
-        target,
-        reduction=reduction,
-    )
-
-
 @with_supported_dtypes(
     {"2.2 and below": ("float",)},
     backend_version,
@@ -120,6 +63,27 @@ def kl_div(
         input, target, reduction=reduction, log_target=log_target
     )
     return loss
+
+
+# Assuming ivy and backend_version are imported and defined properly
+
+
+@with_unsupported_dtypes(
+    {"2.2 and below": ("unit8", "int8", "int16", "int32", "int64", "bool")},
+    backend_version,
+)
+def l1_loss(
+    input: torch.Tensor,
+    target: torch.Tensor,
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+) -> torch.Tensor:
+    return torch.nn.functional.l1_loss(
+        input,
+        target,
+        reduction=reduction,
+    )
 
 
 @with_supported_device_and_dtypes(
@@ -154,22 +118,59 @@ def poisson_nll_loss(
     )
 
 
-@with_supported_device_and_dtypes(
+@with_unsupported_dtypes(
     {
-        "2.2 and below": {
-            "cpu": ("float16", "float32", "float64"),
-            "gpu": ("float16", "float32", "float64"),
-        }
+        "2.2 and below": (
+            "complex",
+            "uint8",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "bool",
+        )
     },
     backend_version,
 )
-def hinge_embedding_loss(
+def smooth_l1_loss(
     input: torch.Tensor,
     target: torch.Tensor,
+    /,
     *,
-    margin: float = 1.0,
-    reduction: str = "mean",
+    beta: Optional[float] = 1.0,
+    reduction: Optional[str] = "mean",
 ) -> torch.Tensor:
-    return torch.nn.functional.hinge_embedding_loss(
-        input, target, margin=margin, reduction=reduction
+    return torch.nn.functional.smooth_l1_loss(
+        input,
+        target,
+        beta=beta,
+        reduction=reduction,
+    )
+
+
+@with_unsupported_dtypes(
+    {
+        "2.2 and below": (
+            "float16",
+            "uint8",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "bool",
+        )
+    },
+    backend_version,
+)
+def soft_margin_loss(
+    input: torch.Tensor,
+    target: torch.Tensor,
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+) -> torch.Tensor:
+    return torch.nn.functional.soft_margin_loss(
+        input,
+        target,
+        reduction=reduction,
     )

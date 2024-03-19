@@ -1,7 +1,3 @@
-# global
-
-torch_scatter = None
-
 from typing import Union, Optional, Sequence
 
 import paddle
@@ -16,82 +12,32 @@ from ivy.utils.einsum_parser import legalise_einsum_expr
 # local
 from . import backend_version
 
-# Array API Standard #
-# -------------------#
+# global
+
+torch_scatter = None
 
 
-@with_supported_dtypes(
-    {"2.6.0 and below": ("complex", "float32", "float64", "int32", "int64")},
-    backend_version,
-)
-def min(
-    x: paddle.Tensor,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    initial: Optional[Union[int, float, complex]] = None,
-    where: Optional[paddle.Tensor] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    ret_dtype = x.dtype
+# --- Helpers --- #
+# --------------- #
 
-    def axis_condition(axis):
-        if axis is None:
-            return False, False
-        else:
-            axis_ = axis
-            if not isinstance(axis, Sequence):
-                axis_ = [axis]
-            if paddle.is_complex(x):
-                condition_complex_imag = any([x.imag().shape[dim] > 1 for dim in axis_])
-                condition_complex_real = any([x.real().shape[dim] > 1 for dim in axis_])
-                return condition_complex_real, condition_complex_imag
-            else:
-                condition_real = any([x.shape[dim] > 1 for dim in axis_])
-                return condition_real, True
 
-    if paddle.is_complex(x):
-        real = (
-            paddle.amin(x.real(), axis=axis, keepdim=keepdims)
-            if axis_condition(axis)[0]
-            else paddle.min(x.real(), axis=axis, keepdim=keepdims)
+def _std(x, axis, correction, keepdim):
+    u = paddle_backend.mean(x, axis=axis, keepdims=True)
+    out = paddle_backend.sum(
+        paddle_backend.pow(paddle_backend.subtract(x, u), 2),
+        axis=axis,
+        keepdims=keepdim,
+    )
+    num_elm_in = paddle.prod(paddle.to_tensor(x.shape)).item()
+    num_elm_out = paddle.prod(paddle.to_tensor(out.shape)).item()
+    n = num_elm_out / num_elm_in
+    out = paddle_backend.sqrt(paddle_backend.multiply(out, n))
+    if correction:
+        n = paddle_backend.sqrt(
+            paddle_backend.divide(num_elm_in, (num_elm_in - correction * num_elm_out))
         )
-        imag = (
-            paddle.amin(x.imag(), axis=axis, keepdim=keepdims)
-            if axis_condition(axis)[1]
-            else paddle.min(x.imag(), axis=axis, keepdim=keepdims)
-        )
-        ret = paddle.complex(real, imag)
-    else:
-        if where is not None:
-            max_val = (
-                ivy.iinfo(x.dtype).max
-                if ivy.is_int_dtype(x.dtype)
-                else ivy.finfo(x.dtype).max
-            )
-            max_val = max_val / 10
-            # max_val becomes negative after multiplying with paddle.ones_like(x)
-            # therefore reduced it
-            val = paddle.ones_like(x) * max_val
-            val = val.astype(ret_dtype)
-            x = paddle.where(where, x, val)
-        ret = (
-            paddle.amin(x, axis=axis, keepdim=keepdims)
-            if axis_condition(axis)[0]
-            else paddle.min(x, axis=axis, keepdim=keepdims)
-        )
-    # The following code is to simulate other frameworks
-    # output shapes behaviour since min output dim is 1 in paddle
-    if isinstance(axis, Sequence):
-        if len(axis) == x.ndim:
-            axis = None
-    if (x.ndim == 1 or axis is None) and not keepdims:
-        ret = ret.squeeze()
-    if initial is not None:
-        initial = paddle.to_tensor(initial, dtype=ret_dtype)
-        ret = paddle.minimum(ret, initial)
-    return ret.astype(ret_dtype)
+        out = paddle_backend.multiply(out, n)
+    return out
 
 
 @with_supported_dtypes(
@@ -190,6 +136,84 @@ def mean(
     return ret.astype(ret_dtype)
 
 
+# Array API Standard #
+# -------------------#
+
+
+@with_supported_dtypes(
+    {"2.6.0 and below": ("complex", "float32", "float64", "int32", "int64")},
+    backend_version,
+)
+def min(
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[paddle.Tensor] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    ret_dtype = x.dtype
+
+    def axis_condition(axis):
+        if axis is None:
+            return False, False
+        else:
+            axis_ = axis
+            if not isinstance(axis, Sequence):
+                axis_ = [axis]
+            if paddle.is_complex(x):
+                condition_complex_imag = any([x.imag().shape[dim] > 1 for dim in axis_])
+                condition_complex_real = any([x.real().shape[dim] > 1 for dim in axis_])
+                return condition_complex_real, condition_complex_imag
+            else:
+                condition_real = any([x.shape[dim] > 1 for dim in axis_])
+                return condition_real, True
+
+    if paddle.is_complex(x):
+        real = (
+            paddle.amin(x.real(), axis=axis, keepdim=keepdims)
+            if axis_condition(axis)[0]
+            else paddle.min(x.real(), axis=axis, keepdim=keepdims)
+        )
+        imag = (
+            paddle.amin(x.imag(), axis=axis, keepdim=keepdims)
+            if axis_condition(axis)[1]
+            else paddle.min(x.imag(), axis=axis, keepdim=keepdims)
+        )
+        ret = paddle.complex(real, imag)
+    else:
+        if where is not None:
+            max_val = (
+                ivy.iinfo(x.dtype).max
+                if ivy.is_int_dtype(x.dtype)
+                else ivy.finfo(x.dtype).max
+            )
+            max_val = max_val / 10
+            # max_val becomes negative after multiplying with paddle.ones_like(x)
+            # therefore reduced it
+            val = paddle.ones_like(x) * max_val
+            val = val.astype(ret_dtype)
+            x = paddle.where(where, x, val)
+        ret = (
+            paddle.amin(x, axis=axis, keepdim=keepdims)
+            if axis_condition(axis)[0]
+            else paddle.min(x, axis=axis, keepdim=keepdims)
+        )
+    # The following code is to simulate other frameworks
+    # output shapes behaviour since min output dim is 1 in paddle
+    if isinstance(axis, Sequence):
+        if len(axis) == x.ndim:
+            axis = None
+    if (x.ndim == 1 or axis is None) and not keepdims:
+        ret = ret.squeeze()
+    if initial is not None:
+        initial = paddle.to_tensor(initial, dtype=ret_dtype)
+        ret = paddle.minimum(ret, initial)
+    return ret.astype(ret_dtype)
+
+
 @with_supported_dtypes(
     {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, backend_version
 )
@@ -206,25 +230,6 @@ def prod(
     if ret.dtype != dtype:
         ret = ret.cast(dtype)
     return ret
-
-
-def _std(x, axis, correction, keepdim):
-    u = paddle_backend.mean(x, axis=axis, keepdims=True)
-    out = paddle_backend.sum(
-        paddle_backend.pow(paddle_backend.subtract(x, u), 2),
-        axis=axis,
-        keepdims=keepdim,
-    )
-    num_elm_in = paddle.prod(paddle.to_tensor(x.shape)).item()
-    num_elm_out = paddle.prod(paddle.to_tensor(out.shape)).item()
-    n = num_elm_out / num_elm_in
-    out = paddle_backend.sqrt(paddle_backend.multiply(out, n))
-    if correction:
-        n = paddle_backend.sqrt(
-            paddle_backend.divide(num_elm_in, (num_elm_in - correction * num_elm_out))
-        )
-        out = paddle_backend.multiply(out, n)
-    return out
 
 
 def std(

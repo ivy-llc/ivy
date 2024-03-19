@@ -6,70 +6,6 @@ import mxnet as mx
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
-def general_pool(
-    inputs,
-    init,
-    reduce_fn,
-    window_shape,
-    strides,
-    padding,
-    dim,
-    dilation=1,
-    ceil_mode=False,
-    count_include_pad=False,
-):
-    raise IvyNotImplementedException()
-
-
-def max_pool1d(
-    x: mx.nd.NDArray,
-    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: Union[str, int, Tuple[int]],
-    /,
-    *,
-    data_format: str = "NWC",
-    dilation: Union[int, Tuple[int]] = 1,
-    ceil_mode: bool = False,
-    out: Optional[mx.nd.NDArray] = None,
-) -> mx.nd.NDArray:
-    raise IvyNotImplementedException()
-
-
-def max_pool2d(
-    x: mx.nd.NDArray,
-    kernel: Union[int, Tuple[int], Tuple[int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: Union[str, int, Tuple[int], Tuple[int, int]],
-    /,
-    *,
-    data_format: str = "NHWC",
-    dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
-    ceil_mode: bool = False,
-    out: Optional[mx.nd.NDArray] = None,
-) -> mx.nd.NDArray:
-    raise IvyNotImplementedException()
-
-
-def max_pool3d(
-    x: mx.nd.NDArray,
-    kernel: Union[
-        int, Tuple[int], Tuple[int, int, int], Tuple[int, int, int, int, int]
-    ],
-    strides: Union[
-        int, Tuple[int], Tuple[int, int, int], Tuple[int, int, int, int, int]
-    ],
-    padding: Union[str, int, Tuple[int], Tuple[int, int, int]],
-    /,
-    *,
-    data_format: str = "NDHWC",
-    dilation: Union[int, Tuple[int], Tuple[int, int, int]] = 1,
-    ceil_mode: bool = False,
-    out: Optional[mx.nd.NDArray] = None,
-) -> mx.nd.NDArray:
-    raise IvyNotImplementedException()
-
-
 def avg_pool1d(
     x: mx.nd.NDArray,
     kernel: Union[int, Tuple[int]],
@@ -131,18 +67,6 @@ def dct(
     raise IvyNotImplementedException()
 
 
-def fft(
-    x: mx.nd.NDArray,
-    dim: int,
-    /,
-    *,
-    norm: str = "backward",
-    n: Optional[Union[int, Tuple[int]]] = None,
-    out: Optional[mx.nd.NDArray] = None,
-) -> mx.nd.NDArray:
-    raise IvyNotImplementedException()
-
-
 def dropout1d(
     x: mx.nd.NDArray,
     prob: float,
@@ -176,6 +100,33 @@ def dropout3d(
     data_format: str = "NDHWC",
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
+    raise IvyNotImplementedException()
+
+
+def fft(
+    x: mx.nd.NDArray,
+    dim: int,
+    /,
+    *,
+    norm: str = "backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
+    raise IvyNotImplementedException()
+
+
+def general_pool(
+    inputs,
+    init,
+    reduce_fn,
+    window_shape,
+    strides,
+    padding,
+    dim,
+    dilation=1,
+    ceil_mode=False,
+    count_include_pad=False,
+):
     raise IvyNotImplementedException()
 
 
@@ -217,6 +168,55 @@ def interpolate(
     antialias: bool = False,
     out: Optional[mx.nd.NDArray] = None,
 ):
+    raise IvyNotImplementedException()
+
+
+def max_pool1d(
+    x: mx.nd.NDArray,
+    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int, int]],
+    padding: Union[str, int, Tuple[int]],
+    /,
+    *,
+    data_format: str = "NWC",
+    dilation: Union[int, Tuple[int]] = 1,
+    ceil_mode: bool = False,
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
+    raise IvyNotImplementedException()
+
+
+def max_pool2d(
+    x: mx.nd.NDArray,
+    kernel: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: Union[str, int, Tuple[int], Tuple[int, int]],
+    /,
+    *,
+    data_format: str = "NHWC",
+    dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    ceil_mode: bool = False,
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
+    raise IvyNotImplementedException()
+
+
+def max_pool3d(
+    x: mx.nd.NDArray,
+    kernel: Union[
+        int, Tuple[int], Tuple[int, int, int], Tuple[int, int, int, int, int]
+    ],
+    strides: Union[
+        int, Tuple[int], Tuple[int, int, int], Tuple[int, int, int, int, int]
+    ],
+    padding: Union[str, int, Tuple[int], Tuple[int, int, int]],
+    /,
+    *,
+    data_format: str = "NDHWC",
+    dilation: Union[int, Tuple[int], Tuple[int, int, int]] = 1,
+    ceil_mode: bool = False,
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     raise IvyNotImplementedException()
 
 

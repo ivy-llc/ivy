@@ -25,6 +25,10 @@ from ivy.functional.ivy.creation import (
 from . import backend_version
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 # noinspection PyProtectedMember
 
 
@@ -45,6 +49,24 @@ def _differentiable_linspace(start, stop, num, *, device, dtype=None):
         (torch.unsqueeze(torch.tensor(start, dtype=dtype), 0), start + increments), 0
     )
     return res
+
+
+def _slice_at_axis(sl, axis):
+    return (slice(None),) * axis + (sl,) + (...,)
+
+
+def _stack_tensors(x, dtype):
+    if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
+        for i, item in enumerate(x):
+            x[i] = _stack_tensors(item, dtype)
+        x = torch.stack(x)
+    else:
+        if isinstance(x, (list, tuple)):
+            if isinstance(x[0], torch.Tensor):
+                x = torch.stack([torch.as_tensor(i, dtype=dtype) for i in x])
+            else:
+                x = torch.as_tensor(x, dtype=dtype)
+    return x
 
 
 @with_unsupported_dtypes({"2.2 and below": ("complex",)}, backend_version)
@@ -76,23 +98,6 @@ def arange(
     else:
         dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
         return torch.arange(start, stop, step, dtype=dtype, device=device)
-
-
-arange.support_native_out = True
-
-
-def _stack_tensors(x, dtype):
-    if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
-        for i, item in enumerate(x):
-            x[i] = _stack_tensors(item, dtype)
-        x = torch.stack(x)
-    else:
-        if isinstance(x, (list, tuple)):
-            if isinstance(x[0], torch.Tensor):
-                x = torch.stack([torch.as_tensor(i, dtype=dtype) for i in x])
-            else:
-                x = torch.as_tensor(x, dtype=dtype)
-    return x
 
 
 @with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, backend_version)
@@ -137,6 +142,17 @@ def asarray(
     return ret.clone().detach() if copy else ret
 
 
+def copy_array(
+    x: torch.Tensor,
+    *,
+    to_ivy_array: bool = True,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if to_ivy_array:
+        return ivy.to_ivy(x.clone())
+    return x.clone()
+
+
 def empty(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
@@ -150,9 +166,6 @@ def empty(
         device=device,
         out=out,
     )
-
-
-empty.support_native_out = True
 
 
 def empty_like(
@@ -225,15 +238,20 @@ def eye(
     return ret
 
 
-eye.support_native_out = True
-
-
-def to_dlpack(x, /, *, out: Optional[torch.Tensor] = None):
-    return torch.to_dlpack(x)
-
-
 def from_dlpack(x, /, *, out: Optional[torch.Tensor] = None):
     return torch.from_dlpack(x)
+
+
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[torch.dtype] = float,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
+) -> torch.Tensor:
+    buffer_copy = copy.deepcopy(buffer)
+    dtype = ivy.as_native_dtype(dtype)
+
+    return torch.frombuffer(buffer_copy, dtype=dtype, count=count, offset=offset)
 
 
 @with_unsupported_dtypes({"2.2.0 and below": ("bfloat16",)}, backend_version)
@@ -261,9 +279,6 @@ def full(
     )
 
 
-full.support_native_out = True
-
-
 def full_like(
     x: torch.Tensor,
     /,
@@ -274,10 +289,6 @@ def full_like(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.full_like(x, fill_value, dtype=dtype, device=device)
-
-
-def _slice_at_axis(sl, axis):
-    return (slice(None),) * axis + (sl,) + (...,)
 
 
 @with_unsupported_device_and_dtypes(
@@ -329,9 +340,6 @@ def linspace(
     if "int" in str(dtype) and torch.is_floating_point(ans):
         ans = torch.floor(ans)
     return ans.to(dtype)
-
-
-linspace.support_native_out = True
 
 
 def linspace_helper(start, stop, num, axis=None, *, dtype=None, device):
@@ -434,118 +442,6 @@ def meshgrid(
     return res
 
 
-def ones(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
-    dtype: torch.dtype,
-    device: torch.device = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.ones(shape, dtype=dtype, device=device, out=out)
-
-
-ones.support_native_out = True
-
-
-def ones_like_v_0p4p0_and_above(
-    x: torch.Tensor,
-    /,
-    *,
-    dtype: torch.dtype,
-    device: torch.device = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.ones_like(x, dtype=dtype, device=device)
-
-
-def ones_like_v_0p3p0_to_0p3p1(
-    x: torch.Tensor,
-    /,
-    *,
-    dtype: torch.dtype,
-    device: torch.device = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.ones_like(x, out=out)
-
-
-def ones_like_v_0p1p12_to_0p2p0(
-    x: torch.Tensor,
-    /,
-    *,
-    dtype: torch.dtype,
-    device: torch.device = None,
-    out: Optional[torch.Tensor] = None,
-):
-    if len(x.shape) == 1:
-        for i in range(x.shape[0]):
-            x[i] = 1
-        return x
-    for i in range(x.shape[0]):
-        x[i, :] = ones_like_v_0p1p12_to_0p2p0(x[i, :], dtype=dtype)
-    return x
-
-
-def tril(
-    x: torch.Tensor, /, *, k: int = 0, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    return torch.tril(x, diagonal=k, out=out)
-
-
-tril.support_native_out = True
-
-
-def triu(
-    x: torch.Tensor, /, *, k: int = 0, out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    return torch.triu(x, diagonal=k, out=out)
-
-
-triu.support_native_out = True
-
-
-def zeros(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
-    dtype: torch.dtype,
-    device: torch.device = None,
-    out: Optional[torch.Tensor] = None,
-) -> Tensor:
-    return torch.zeros(shape, dtype=dtype, device=device, out=out)
-
-
-zeros.support_native_out = True
-
-
-def zeros_like(
-    x: torch.Tensor,
-    /,
-    *,
-    dtype: torch.dtype,
-    device: torch.device = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.zeros_like(x, dtype=dtype, device=device)
-
-
-# Extra #
-# ------#
-
-
-array = asarray
-
-
-def copy_array(
-    x: torch.Tensor,
-    *,
-    to_ivy_array: bool = True,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if to_ivy_array:
-        return ivy.to_ivy(x.clone())
-    return x.clone()
-
-
 def one_hot(
     indices: torch.Tensor,
     depth: int,
@@ -586,16 +482,69 @@ def one_hot(
     return res.to(device, dtype)
 
 
-def frombuffer(
-    buffer: bytes,
-    dtype: Optional[torch.dtype] = float,
-    count: Optional[int] = -1,
-    offset: Optional[int] = 0,
+def ones(
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    dtype: torch.dtype,
+    device: torch.device = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    buffer_copy = copy.deepcopy(buffer)
-    dtype = ivy.as_native_dtype(dtype)
+    return torch.ones(shape, dtype=dtype, device=device, out=out)
 
-    return torch.frombuffer(buffer_copy, dtype=dtype, count=count, offset=offset)
+
+def ones_like_v_0p1p12_to_0p2p0(
+    x: torch.Tensor,
+    /,
+    *,
+    dtype: torch.dtype,
+    device: torch.device = None,
+    out: Optional[torch.Tensor] = None,
+):
+    if len(x.shape) == 1:
+        for i in range(x.shape[0]):
+            x[i] = 1
+        return x
+    for i in range(x.shape[0]):
+        x[i, :] = ones_like_v_0p1p12_to_0p2p0(x[i, :], dtype=dtype)
+    return x
+
+
+def ones_like_v_0p3p0_to_0p3p1(
+    x: torch.Tensor,
+    /,
+    *,
+    dtype: torch.dtype,
+    device: torch.device = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.ones_like(x, out=out)
+
+
+def ones_like_v_0p4p0_and_above(
+    x: torch.Tensor,
+    /,
+    *,
+    dtype: torch.dtype,
+    device: torch.device = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.ones_like(x, dtype=dtype, device=device)
+
+
+def to_dlpack(x, /, *, out: Optional[torch.Tensor] = None):
+    return torch.to_dlpack(x)
+
+
+def tril(
+    x: torch.Tensor, /, *, k: int = 0, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.tril(x, diagonal=k, out=out)
+
+
+def triu(
+    x: torch.Tensor, /, *, k: int = 0, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.triu(x, diagonal=k, out=out)
 
 
 def triu_indices(
@@ -612,3 +561,40 @@ def triu_indices(
             row=n_rows, col=n_cols, offset=k, dtype=torch.int64, device=device
         )
     )
+
+
+def zeros(
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
+    dtype: torch.dtype,
+    device: torch.device = None,
+    out: Optional[torch.Tensor] = None,
+) -> Tensor:
+    return torch.zeros(shape, dtype=dtype, device=device, out=out)
+
+
+def zeros_like(
+    x: torch.Tensor,
+    /,
+    *,
+    dtype: torch.dtype,
+    device: torch.device = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.zeros_like(x, dtype=dtype, device=device)
+
+
+# Extra #
+# ------#
+
+
+array = asarray
+arange.support_native_out = True
+empty.support_native_out = True
+eye.support_native_out = True
+full.support_native_out = True
+linspace.support_native_out = True
+ones.support_native_out = True
+tril.support_native_out = True
+triu.support_native_out = True
+zeros.support_native_out = True

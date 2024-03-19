@@ -9,24 +9,16 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
 from . import backend_version
 
-# Array API Standard #
-# -------------------#
+
+# --- Helpers --- #
+# --------------- #
 
 
-def min(
-    x: JaxArray,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    initial: Optional[Union[int, float, complex]] = None,
-    where: Optional[JaxArray] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    return jnp.min(
-        a=jnp.asarray(x), axis=axis, keepdims=keepdims, initial=initial, where=where
-    )
+def _infer_dtype(dtype: jnp.dtype):
+    default_dtype = ivy.infer_default_dtype(dtype)
+    if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
+        return default_dtype
+    return dtype
 
 
 def max(
@@ -57,11 +49,24 @@ def mean(
     return jnp.mean(x, axis=axis, keepdims=keepdims, dtype=x.dtype)
 
 
-def _infer_dtype(dtype: jnp.dtype):
-    default_dtype = ivy.infer_default_dtype(dtype)
-    if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
-        return default_dtype
-    return dtype
+# Array API Standard #
+# -------------------#
+
+
+def min(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[JaxArray] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return jnp.min(
+        a=jnp.asarray(x), axis=axis, keepdims=keepdims, initial=initial, where=where
+    )
 
 
 def prod(

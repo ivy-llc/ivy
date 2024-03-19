@@ -7,71 +7,8 @@ from ivy.func_wrapper import (
 from . import backend_version
 
 
-@with_unsupported_dtypes({"1.26.3 and below": ("bool",)}, backend_version)
-@_scalar_output_to_0d_array
-def huber_loss(
-    input: np.ndarray,
-    target: np.ndarray,
-    /,
-    *,
-    delta: float = 1.0,
-    reduction: str = "mean",
-) -> np.ndarray:
-    abs_diff = np.abs(input - target)
-    quadratic_loss = 0.5 * (abs_diff**2)
-    linear_loss = delta * (abs_diff - 0.5 * delta)
-    loss = np.where(abs_diff <= delta, quadratic_loss, linear_loss)
-
-    if reduction == "sum":
-        return np.sum(loss)
-    elif reduction == "mean":
-        return np.mean(loss)
-    else:
-        return loss
-
-
-# Implementation of smooth_l1_loss in the given format
-@with_unsupported_dtypes({"1.26.3 and below": ("bool",)}, backend_version)
-@_scalar_output_to_0d_array
-def smooth_l1_loss(
-    input: np.ndarray,
-    target: np.ndarray,
-    /,
-    *,
-    beta: float = 1.0,
-    reduction: str = "mean",
-) -> np.ndarray:
-    if beta < 1e-5:
-        loss = np.abs(input - target)
-    else:
-        diff = np.abs(input - target)
-        loss = np.where(diff < beta, 0.5 * diff**2 / beta, diff - 0.5 * beta)
-
-    if reduction == "mean":
-        return np.mean(loss)
-    elif reduction == "sum":
-        return np.sum(loss)
-    else:
-        return loss
-
-
-@with_unsupported_dtypes({"1.26.3 and below": ("bool",)}, backend_version)
-@_scalar_output_to_0d_array
-def soft_margin_loss(
-    input: np.ndarray,
-    target: np.ndarray,
-    /,
-    *,
-    reduction: str = "mean",
-) -> np.ndarray:
-    loss = np.sum(np.log1p(np.exp(-input * target))) / input.size
-
-    if reduction == "mean":
-        return np.mean(loss)
-    elif reduction == "sum":
-        return np.sum(loss)
-    else:
-        return loss
+# --- Helpers --- #
+# --------------- #
 
 
 def _apply_loss_reduction(loss: np.ndarray, reduction: str) -> np.ndarray:
@@ -125,6 +62,55 @@ def _validate_poisson_nll_params(
 @with_supported_device_and_dtypes(
     {
         "1.26.0 and below": {
+            "cpu": ("float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def hinge_embedding_loss(
+    input: np.ndarray,
+    target: np.ndarray,
+    *,
+    margin: float = 1.0,
+    reduction: str = "mean",
+) -> np.ndarray:
+    zero_ = np.zeros([1], dtype=input.dtype)
+
+    relu_part = np.maximum(margin - input, 0)
+
+    loss = np.where(target == 1.0, input, zero_) + np.where(
+        target == -1.0, relu_part, zero_
+    )
+
+    return _apply_loss_reduction(loss, reduction)
+
+
+@with_unsupported_dtypes({"1.26.3 and below": ("bool",)}, backend_version)
+@_scalar_output_to_0d_array
+def huber_loss(
+    input: np.ndarray,
+    target: np.ndarray,
+    /,
+    *,
+    delta: float = 1.0,
+    reduction: str = "mean",
+) -> np.ndarray:
+    abs_diff = np.abs(input - target)
+    quadratic_loss = 0.5 * (abs_diff**2)
+    linear_loss = delta * (abs_diff - 0.5 * delta)
+    loss = np.where(abs_diff <= delta, quadratic_loss, linear_loss)
+
+    if reduction == "sum":
+        return np.sum(loss)
+    elif reduction == "mean":
+        return np.mean(loss)
+    else:
+        return loss
+
+
+@with_supported_device_and_dtypes(
+    {
+        "1.26.0 and below": {
             "cpu": ("float16", "float32", "float64"),
         }
     },
@@ -165,27 +151,45 @@ def poisson_nll_loss(
     return _apply_loss_reduction(loss, reduction)
 
 
-@with_supported_device_and_dtypes(
-    {
-        "1.26.0 and below": {
-            "cpu": ("float32", "float64"),
-        }
-    },
-    backend_version,
-)
-def hinge_embedding_loss(
+# Implementation of smooth_l1_loss in the given format
+@with_unsupported_dtypes({"1.26.3 and below": ("bool",)}, backend_version)
+@_scalar_output_to_0d_array
+def smooth_l1_loss(
     input: np.ndarray,
     target: np.ndarray,
+    /,
     *,
-    margin: float = 1.0,
+    beta: float = 1.0,
     reduction: str = "mean",
 ) -> np.ndarray:
-    zero_ = np.zeros([1], dtype=input.dtype)
+    if beta < 1e-5:
+        loss = np.abs(input - target)
+    else:
+        diff = np.abs(input - target)
+        loss = np.where(diff < beta, 0.5 * diff**2 / beta, diff - 0.5 * beta)
 
-    relu_part = np.maximum(margin - input, 0)
+    if reduction == "mean":
+        return np.mean(loss)
+    elif reduction == "sum":
+        return np.sum(loss)
+    else:
+        return loss
 
-    loss = np.where(target == 1.0, input, zero_) + np.where(
-        target == -1.0, relu_part, zero_
-    )
 
-    return _apply_loss_reduction(loss, reduction)
+@with_unsupported_dtypes({"1.26.3 and below": ("bool",)}, backend_version)
+@_scalar_output_to_0d_array
+def soft_margin_loss(
+    input: np.ndarray,
+    target: np.ndarray,
+    /,
+    *,
+    reduction: str = "mean",
+) -> np.ndarray:
+    loss = np.sum(np.log1p(np.exp(-input * target))) / input.size
+
+    if reduction == "mean":
+        return np.mean(loss)
+    elif reduction == "sum":
+        return np.sum(loss)
+    else:
+        return loss

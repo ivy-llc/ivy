@@ -12,6 +12,26 @@ from ivy.utils.exceptions import IvyNotImplementedException
 from .. import backend_version
 
 
+def adjoint(
+    x: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    _check_valid_dimension_size(x)
+    return paddle.moveaxis(x, -2, -1).conj()
+
+
+def cond(
+    x: paddle.Tensor,
+    /,
+    *,
+    p: Optional[Union[None, int, str]] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> Any:
+    raise IvyNotImplementedException()
+
+
 @with_unsupported_device_and_dtypes(
     {"2.6.0 and below": {"cpu": ("int8", "int16", "uint8", "float16", "bfloat16")}},
     backend_version,
@@ -44,102 +64,6 @@ def diagflat(
             mode="constant",
             value=padding_value,
         )(diag)
-
-
-@with_unsupported_device_and_dtypes(
-    {"2.6.0 and below": {"cpu": ("int8", "uint8", "int16")}}, backend_version
-)
-def kron(
-    a: paddle.Tensor,
-    b: paddle.Tensor,
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    return paddle.kron(a, b)
-
-
-def matrix_exp(
-    x: paddle.Tensor,
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    # TODO: this is elementwise exp, should be changed to matrix exp ASAP
-    # return paddle.exp(x)
-    raise IvyNotImplementedException()
-
-
-def eig(
-    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
-) -> Tuple[paddle.Tensor]:
-    return paddle.linalg.eig(x)
-
-
-def eigvals(x: paddle.Tensor, /) -> paddle.Tensor:
-    return paddle.linalg.eig(x)[0]
-
-
-def adjoint(
-    x: paddle.Tensor,
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    _check_valid_dimension_size(x)
-    return paddle.moveaxis(x, -2, -1).conj()
-
-
-@with_unsupported_device_and_dtypes(
-    {"2.6.0 and below": {"cpu": ("int8", "uint8", "int16", "float16")}},
-    backend_version,
-)
-def solve_triangular(
-    x1: paddle.Tensor,
-    x2: paddle.Tensor,
-    /,
-    *,
-    upper: bool = True,
-    adjoint: bool = False,
-    unit_diagonal: bool = False,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    # Paddle does not support complex tensors for this operation (cpu and gpu),
-    # so adjoint always equals transpose.
-    return paddle.linalg.triangular_solve(
-        x1, x2, upper=upper, transpose=adjoint, unitriangular=unit_diagonal
-    )
-
-
-def cond(
-    x: paddle.Tensor,
-    /,
-    *,
-    p: Optional[Union[None, int, str]] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> Any:
-    raise IvyNotImplementedException()
-
-
-def lu_factor(
-    x: paddle.Tensor,
-    /,
-    *,
-    pivot: Optional[bool] = True,
-    out: Optional[paddle.Tensor] = None,
-) -> Any:
-    raise IvyNotImplementedException()
-
-
-def lu_solve(
-    lu: paddle.Tensor,
-    p: paddle.Tensor,
-    b: paddle.Tensor,
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    raise IvyNotImplementedException()
 
 
 @with_supported_device_and_dtypes(
@@ -177,6 +101,61 @@ def dot(
     return paddle.tensordot(a, b, axes=[[-1], [-2]])
 
 
+def eig(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> Tuple[paddle.Tensor]:
+    return paddle.linalg.eig(x)
+
+
+def eigvals(x: paddle.Tensor, /) -> paddle.Tensor:
+    return paddle.linalg.eig(x)[0]
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("int8", "uint8", "int16")}}, backend_version
+)
+def kron(
+    a: paddle.Tensor,
+    b: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.kron(a, b)
+
+
+def lu_factor(
+    x: paddle.Tensor,
+    /,
+    *,
+    pivot: Optional[bool] = True,
+    out: Optional[paddle.Tensor] = None,
+) -> Any:
+    raise IvyNotImplementedException()
+
+
+def lu_solve(
+    lu: paddle.Tensor,
+    p: paddle.Tensor,
+    b: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException()
+
+
+def matrix_exp(
+    x: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    # TODO: this is elementwise exp, should be changed to matrix exp ASAP
+    # return paddle.exp(x)
+    raise IvyNotImplementedException()
+
+
 @with_supported_device_and_dtypes(
     {
         "2.6.0 and below": {
@@ -200,3 +179,24 @@ def multi_dot(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.linalg.multi_dot(x)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("int8", "uint8", "int16", "float16")}},
+    backend_version,
+)
+def solve_triangular(
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    upper: bool = True,
+    adjoint: bool = False,
+    unit_diagonal: bool = False,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    # Paddle does not support complex tensors for this operation (cpu and gpu),
+    # so adjoint always equals transpose.
+    return paddle.linalg.triangular_solve(
+        x1, x2, upper=upper, transpose=adjoint, unitriangular=unit_diagonal
+    )

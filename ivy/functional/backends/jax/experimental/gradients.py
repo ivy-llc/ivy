@@ -20,6 +20,21 @@ def bind_custom_gradient_function(func, custom_grad_fn):
     return inputs_to_native_arrays(func)
 
 
+def jvp(func: Callable, primals, tangents):
+    def grad_fn(*x_in):
+        return ivy.to_native(
+            func(*ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
+        )
+
+    primals_out, tangents_out = ivy.outputs_to_ivy_arrays(jax.jvp)(
+        grad_fn,
+        ivy.to_native(primals, nested=True),
+        ivy.to_native(tangents, nested=True),
+    )
+
+    return (primals_out, tangents_out)
+
+
 def vjp(func: Callable, *primals):
     def grad_fn(*x_in):
         return ivy.to_native(
@@ -36,18 +51,3 @@ def vjp(func: Callable, *primals):
         )
 
     return (primals_out, vjpfun)
-
-
-def jvp(func: Callable, primals, tangents):
-    def grad_fn(*x_in):
-        return ivy.to_native(
-            func(*ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
-        )
-
-    primals_out, tangents_out = ivy.outputs_to_ivy_arrays(jax.jvp)(
-        grad_fn,
-        ivy.to_native(primals, nested=True),
-        ivy.to_native(tangents, nested=True),
-    )
-
-    return (primals_out, tangents_out)

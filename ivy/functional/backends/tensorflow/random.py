@@ -21,50 +21,6 @@ from ivy.functional.ivy.random import (
 from . import backend_version
 
 
-# Extra #
-# ------#
-
-
-@with_supported_dtypes(
-    {"2.15.0 and below": ("float", "int32", "int64")}, backend_version
-)
-def random_uniform(
-    *,
-    low: Union[float, tf.Tensor, tf.Variable] = 0.0,
-    high: Union[float, tf.Tensor, tf.Variable] = 1.0,
-    shape: Optional[Union[ivy.NativeShape, Sequence[int], tf.Tensor]] = None,
-    dtype: DType,
-    device: Optional[str] = None,
-    seed: Optional[int] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    shape = _check_bounds_and_get_shape(low, high, shape).shape
-    low = tf.cast(low, dtype)
-    high = tf.cast(high, dtype)
-    if seed:
-        tf.random.set_seed(seed)
-    return tf.random.uniform(shape, low, high, dtype=dtype, seed=seed)
-
-
-def random_normal(
-    *,
-    mean: Union[float, tf.Tensor, tf.Variable] = 0.0,
-    std: Union[float, tf.Tensor, tf.Variable] = 1.0,
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    dtype: DType,
-    seed: Optional[int] = None,
-    device: Optional[str] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    _check_valid_scale(std)
-    shape = _check_bounds_and_get_shape(mean, std, shape).shape
-    mean = tf.cast(mean, dtype)
-    std = tf.cast(std, dtype)
-    if seed:
-        tf.random.set_seed(seed)
-    return tf.random.normal(shape, mean, std, dtype=dtype, seed=seed)
-
-
 @with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
@@ -142,6 +98,50 @@ def randint(
     if seed:
         tf.random.set_seed(seed)
     return tf.cast(tf.random.uniform(shape, low, high, "float32", seed=seed), dtype)
+
+
+def random_normal(
+    *,
+    mean: Union[float, tf.Tensor, tf.Variable] = 0.0,
+    std: Union[float, tf.Tensor, tf.Variable] = 1.0,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    dtype: DType,
+    seed: Optional[int] = None,
+    device: Optional[str] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    _check_valid_scale(std)
+    shape = _check_bounds_and_get_shape(mean, std, shape).shape
+    mean = tf.cast(mean, dtype)
+    std = tf.cast(std, dtype)
+    if seed:
+        tf.random.set_seed(seed)
+    return tf.random.normal(shape, mean, std, dtype=dtype, seed=seed)
+
+
+# Extra #
+# ------#
+
+
+@with_supported_dtypes(
+    {"2.15.0 and below": ("float", "int32", "int64")}, backend_version
+)
+def random_uniform(
+    *,
+    low: Union[float, tf.Tensor, tf.Variable] = 0.0,
+    high: Union[float, tf.Tensor, tf.Variable] = 1.0,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int], tf.Tensor]] = None,
+    dtype: DType,
+    device: Optional[str] = None,
+    seed: Optional[int] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
+    low = tf.cast(low, dtype)
+    high = tf.cast(high, dtype)
+    if seed:
+        tf.random.set_seed(seed)
+    return tf.random.uniform(shape, low, high, dtype=dtype, seed=seed)
 
 
 def seed(*, seed_value: int = 0):

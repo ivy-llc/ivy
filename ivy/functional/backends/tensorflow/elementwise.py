@@ -58,6 +58,32 @@ def add(
     return tf.add(x1, x2)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.15.0 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "bfloat16",
+            "int32",
+        )
+    },
+    backend_version,
+)
+def angle(
+    input: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    deg: Optional[bool] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if deg:
+        return tf.math.angle(input, name=None) * (180 / tf.experimental.numpy.pi)
+    else:
+        return tf.math.angle(input, name=None)
+
+
 def asin(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -219,6 +245,17 @@ def cosh(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.cosh(x)
+
+
+@with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
+def deg2rad(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    radians = x * ivy.pi / 180.0
+    return radians
 
 
 def divide(
@@ -486,16 +523,6 @@ def logaddexp(
     return tf.experimental.numpy.logaddexp(x1, x2)
 
 
-@with_unsupported_dtypes({"2.15.0 and below": ("bool",)}, backend_version)
-def real(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.real(x)
-
-
 @with_unsupported_dtypes(
     {
         "2.15.0 and below": (
@@ -635,6 +662,16 @@ def pow(
             x1.dtype,
         )
     return tf.experimental.numpy.power(x1, x2)
+
+
+@with_unsupported_dtypes({"2.15.0 and below": ("bool",)}, backend_version)
+def real(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.real(x)
 
 
 @with_unsupported_dtypes({"2.15.0 and below": ("bfloat16", "complex")}, backend_version)
@@ -812,88 +849,6 @@ def erf(
     return tf.math.erf(x)
 
 
-@with_unsupported_dtypes({"2.15.0 and below": ("complex", "bool")}, backend_version)
-def maximum(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    use_where: bool = True,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.math.maximum(x1, x2)
-
-
-@with_unsupported_dtypes({"2.15.0 and below": ("complex", "bool")}, backend_version)
-def minimum(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    use_where: bool = True,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return tf.math.minimum(x1, x2)
-
-
-@with_unsupported_dtypes(
-    {
-        "2.15.0 and below": (
-            "uint8",
-            "uint16",
-            "uint32",
-            "uint64",
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-        )
-    },
-    backend_version,
-)
-def reciprocal(
-    x: Union[float, tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    if x.dtype.is_integer:
-        x = tf.cast(x, tf.float32)
-    return tf.math.reciprocal(x)
-
-
-@with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
-def deg2rad(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    radians = x * ivy.pi / 180.0
-    return radians
-
-
-@with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
-def rad2deg(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.rad2deg(x)
-
-
-def isreal(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.isreal(x)
-
-
 @with_unsupported_dtypes(
     {"2.15.0 and below": ("uint8", "uint16", "uint32", "uint64", "complex", "bool")},
     backend_version,
@@ -925,35 +880,6 @@ def gcd(
     return tf.experimental.numpy.gcd(x1, x2)
 
 
-gcd.support_native_out = False
-
-
-@with_unsupported_dtypes(
-    {
-        "2.15.0 and below": (
-            "uint8",
-            "uint16",
-            "uint32",
-            "uint64",
-            "bfloat16",
-            "int32",
-        )
-    },
-    backend_version,
-)
-def angle(
-    input: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    deg: Optional[bool] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    if deg:
-        return tf.math.angle(input, name=None) * (180 / tf.experimental.numpy.pi)
-    else:
-        return tf.math.angle(input, name=None)
-
-
 @with_unsupported_dtypes(
     {
         "2.15.0 and below": (
@@ -974,6 +900,41 @@ def imag(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.imag(val, name=None)
+
+
+def isreal(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.isreal(x)
+
+
+@with_unsupported_dtypes({"2.15.0 and below": ("complex", "bool")}, backend_version)
+def maximum(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    use_where: bool = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return tf.math.maximum(x1, x2)
+
+
+@with_unsupported_dtypes({"2.15.0 and below": ("complex", "bool")}, backend_version)
+def minimum(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    use_where: bool = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return tf.math.minimum(x1, x2)
 
 
 def nan_to_num(
@@ -999,3 +960,42 @@ def nan_to_num(
     else:
         x = ret
         return x
+
+
+@with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
+def rad2deg(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.rad2deg(x)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.15.0 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+        )
+    },
+    backend_version,
+)
+def reciprocal(
+    x: Union[float, tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if x.dtype.is_integer:
+        x = tf.cast(x, tf.float32)
+    return tf.math.reciprocal(x)
+
+
+gcd.support_native_out = False

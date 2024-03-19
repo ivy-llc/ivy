@@ -8,64 +8,8 @@ from ivy.func_wrapper import (
 from . import backend_version
 
 
-@with_unsupported_dtypes({"2.15.0 and below": "bool"}, backend_version)
-def huber_loss(
-    input: tf.Tensor,
-    target: tf.Tensor,
-    /,
-    *,
-    delta: Optional[float] = 1.0,
-    reduction: Optional[str] = "mean",
-) -> tf.Tensor:
-    abs_diff = tf.abs(input - target)
-    quadratic_loss = 0.5 * (abs_diff**2)
-    linear_loss = delta * (abs_diff - 0.5 * delta)
-    loss = tf.where(abs_diff <= delta, quadratic_loss, linear_loss)
-
-    if reduction == "sum":
-        return tf.sum(loss)
-    elif reduction == "mean":
-        return tf.mean(loss)
-    else:
-        return loss
-
-
-@with_unsupported_dtypes({"2.15.0 and below": "bool"}, backend_version)
-def smooth_l1_loss(
-    input: tf.Tensor,
-    target: tf.Tensor,
-    /,
-    *,
-    beta: Optional[float] = 1.0,
-    reduction: Optional[str] = "mean",
-) -> tf.Tensor:
-    diff = tf.abs(input - target)
-    loss = tf.where(diff < beta, 0.5 * diff**2 / beta, diff - 0.5 * beta)
-
-    if reduction == "mean":
-        return tf.reduce_mean(loss)
-    elif reduction == "sum":
-        return tf.reduce_sum(loss)
-    else:
-        return loss
-
-
-@with_unsupported_dtypes({"2.15.0 and below": "bool"}, backend_version)
-def soft_margin_loss(
-    input: tf.Tensor,
-    target: tf.Tensor,
-    /,
-    *,
-    reduction: Optional[str] = "mean",
-) -> tf.Tensor:
-    loss = tf.reduce_sum(tf.math.log1p(tf.exp(-input * target))) / tf.size(input)
-
-    if reduction == "sum":
-        return tf.reduce_sum(loss)
-    elif reduction == "mean":
-        return tf.reduce_mean(loss)
-    else:
-        return loss
+# --- Helpers --- #
+# --------------- #
 
 
 def _apply_loss_reduction(loss: tf.Tensor, reduction: str) -> tf.Tensor:
@@ -118,6 +62,55 @@ def _validate_poisson_nll_params(
 
 @with_supported_device_and_dtypes(
     {
+        "2.14.0 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def hinge_embedding_loss(
+    input: tf.Tensor,
+    target: tf.Tensor,
+    *,
+    margin: float = 1.0,
+    reduction: str = "mean",
+) -> tf.Tensor:
+    zero_ = tf.zeros([1], dtype=input.dtype)
+
+    relu_part = tf.math.maximum(margin - input, 0)
+
+    loss = tf.where(tf.equal(target, 1.0), input, zero_) + tf.where(
+        tf.equal(target, -1.0), relu_part, zero_
+    )
+
+    return _apply_loss_reduction(loss, reduction)
+
+
+@with_unsupported_dtypes({"2.15.0 and below": "bool"}, backend_version)
+def huber_loss(
+    input: tf.Tensor,
+    target: tf.Tensor,
+    /,
+    *,
+    delta: Optional[float] = 1.0,
+    reduction: Optional[str] = "mean",
+) -> tf.Tensor:
+    abs_diff = tf.abs(input - target)
+    quadratic_loss = 0.5 * (abs_diff**2)
+    linear_loss = delta * (abs_diff - 0.5 * delta)
+    loss = tf.where(abs_diff <= delta, quadratic_loss, linear_loss)
+
+    if reduction == "sum":
+        return tf.sum(loss)
+    elif reduction == "mean":
+        return tf.mean(loss)
+    else:
+        return loss
+
+
+@with_supported_device_and_dtypes(
+    {
         "2.15.0 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("float32", "float64"),
@@ -158,28 +151,39 @@ def poisson_nll_loss(
     return _apply_loss_reduction(loss, reduction)
 
 
-@with_supported_device_and_dtypes(
-    {
-        "2.14.0 and below": {
-            "cpu": ("float32", "float64"),
-            "gpu": ("float32", "float64"),
-        }
-    },
-    backend_version,
-)
-def hinge_embedding_loss(
+@with_unsupported_dtypes({"2.15.0 and below": "bool"}, backend_version)
+def smooth_l1_loss(
     input: tf.Tensor,
     target: tf.Tensor,
+    /,
     *,
-    margin: float = 1.0,
-    reduction: str = "mean",
+    beta: Optional[float] = 1.0,
+    reduction: Optional[str] = "mean",
 ) -> tf.Tensor:
-    zero_ = tf.zeros([1], dtype=input.dtype)
+    diff = tf.abs(input - target)
+    loss = tf.where(diff < beta, 0.5 * diff**2 / beta, diff - 0.5 * beta)
 
-    relu_part = tf.math.maximum(margin - input, 0)
+    if reduction == "mean":
+        return tf.reduce_mean(loss)
+    elif reduction == "sum":
+        return tf.reduce_sum(loss)
+    else:
+        return loss
 
-    loss = tf.where(tf.equal(target, 1.0), input, zero_) + tf.where(
-        tf.equal(target, -1.0), relu_part, zero_
-    )
 
-    return _apply_loss_reduction(loss, reduction)
+@with_unsupported_dtypes({"2.15.0 and below": "bool"}, backend_version)
+def soft_margin_loss(
+    input: tf.Tensor,
+    target: tf.Tensor,
+    /,
+    *,
+    reduction: Optional[str] = "mean",
+) -> tf.Tensor:
+    loss = tf.reduce_sum(tf.math.log1p(tf.exp(-input * target))) / tf.size(input)
+
+    if reduction == "sum":
+        return tf.reduce_sum(loss)
+    elif reduction == "mean":
+        return tf.reduce_mean(loss)
+    else:
+        return loss

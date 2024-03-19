@@ -2980,6 +2980,51 @@ def diag(
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device
+def tensorsolve(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    ndim1 = ivy.get_num_dims(x1)
+    ndim2 = ivy.get_num_dims(x2)
+
+    if axes is not None:
+        allaxes = list(range(0, ndim1))
+        for k in axes:
+            allaxes.remove(k)
+            allaxes.insert(ndim1, k)
+
+        x1 = ivy.matrix_transpose(x1)
+
+    old_shape = x1.shape[-(ndim1 - ndim2) :]
+
+    prod = 1
+    for k in old_shape:
+        prod *= k
+
+    if ivy.shape(ivy.flatten(x1))[0] != prod**2:
+        raise ivy.utils.exceptions.IvyException(
+            "Input arrays must satisfy the requirement "
+            "prod(x1.shape[x2.ndim:]) == prod(x1.shape[:x2.ndim])"
+        )
+
+    x1 = ivy.reshape(x1, (prod, prod))
+    x2 = ivy.flatten(x2)
+    res = ivy.solve(x1, x2)
+    res = ivy.reshape(res, old_shape)
+    return res
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
@@ -3085,49 +3130,3 @@ def vector_to_skew_symmetric_matrix(
     instances in place of any of the arguments.
     """
     return current_backend(vector).vector_to_skew_symmetric_matrix(vector, out=out)
-
-
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device
-def tensorsolve(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axes: Union[int, Tuple[List[int], List[int]]] = 2,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    ndim1 = ivy.get_num_dims(x1)
-    ndim2 = ivy.get_num_dims(x2)
-
-    if axes is not None:
-        allaxes = list(range(0, ndim1))
-        for k in axes:
-            allaxes.remove(k)
-            allaxes.insert(ndim1, k)
-
-        x1 = ivy.matrix_transpose(x1)
-
-    old_shape = x1.shape[-(ndim1 - ndim2) :]
-
-    prod = 1
-    for k in old_shape:
-        prod *= k
-
-    if ivy.shape(ivy.flatten(x1))[0] != prod**2:
-        raise ivy.utils.exceptions.IvyException(
-            "Input arrays must satisfy the requirement "
-            "prod(x1.shape[x2.ndim:]) == prod(x1.shape[:x2.ndim])"
-        )
-
-    x1 = ivy.reshape(x1, (prod, prod))
-    x2 = ivy.flatten(x2)
-    res = ivy.solve(x1, x2)
-    res = ivy.reshape(res, old_shape)
-    return res
-    # return current_backend(x1, x2).tensorsolve(x1, x2, axes=axes, out=out)

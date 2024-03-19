@@ -16,6 +16,14 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+def _abs_variant_sign(x):
+    return jnp.where(x != 0, x / jnp.abs(x), 0)
+
+
 def abs(
     x: Union[float, JaxArray],
     /,
@@ -50,6 +58,16 @@ def add(
         with ivy.ArrayMode(False):
             x2 = multiply(x2, alpha)
     return jnp.add(x1, x2)
+
+
+def angle(
+    z: JaxArray,
+    /,
+    *,
+    deg: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.angle(z, deg=deg)
 
 
 @with_unsupported_dtypes({"0.4.24 and below": ("complex",)}, backend_version)
@@ -160,6 +178,10 @@ def cosh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.cosh(x)
 
 
+def deg2rad(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.deg2rad(x)
+
+
 def divide(
     x1: Union[float, JaxArray],
     x2: Union[float, JaxArray],
@@ -189,6 +211,15 @@ def equal(
 
 def exp(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.exp(x)
+
+
+def exp2(
+    x: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.power(2, x)
 
 
 def expm1(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -245,6 +276,15 @@ def greater_equal(
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.greater_equal(x1, x2)
+
+
+def imag(
+    val: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.imag(val)
 
 
 def isfinite(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -463,10 +503,6 @@ def round(
     return ret
 
 
-def _abs_variant_sign(x):
-    return jnp.where(x != 0, x / jnp.abs(x), 0)
-
-
 def sign(
     x: JaxArray, /, *, np_variant: Optional[bool] = True, out: Optional[JaxArray] = None
 ) -> JaxArray:
@@ -507,18 +543,6 @@ def subtract(
     return jnp.subtract(x1, x2)
 
 
-def trapz(
-    y: JaxArray,
-    /,
-    *,
-    x: Optional[JaxArray] = None,
-    dx: float = 1.0,
-    axis: int = -1,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.trapz(y, x=x, dx=dx, axis=axis)
-
-
 @with_unsupported_dtypes(
     {"0.4.24 and below": ("complex", "float16", "bfloat16")}, backend_version
 )
@@ -532,40 +556,24 @@ def tanh(
     return jnp.tanh(x)
 
 
+def trapz(
+    y: JaxArray,
+    /,
+    *,
+    x: Optional[JaxArray] = None,
+    dx: float = 1.0,
+    axis: int = -1,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.trapz(y, x=x, dx=dx, axis=axis)
+
+
 @with_unsupported_dtypes({"0.4.24 and below": ("complex",)}, backend_version)
 def trunc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     if "int" in str(x.dtype):
         return x
     else:
         return jnp.trunc(x)
-
-
-def exp2(
-    x: Union[JaxArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.power(2, x)
-
-
-def imag(
-    val: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.imag(val)
-
-
-def angle(
-    z: JaxArray,
-    /,
-    *,
-    deg: bool = False,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.angle(z, deg=deg)
 
 
 # Extra #
@@ -575,6 +583,33 @@ def angle(
 @with_unsupported_dtypes({"0.4.24 and below": ("complex",)}, backend_version)
 def erf(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jax.scipy.special.erf(x)
+
+
+@with_unsupported_dtypes({"0.4.24 and below": ("complex",)}, backend_version)
+def fmod(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return jnp.fmod(x1, x2)
+
+
+def gcd(
+    x1: Union[JaxArray, float, list, tuple],
+    x2: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return jnp.gcd(x1, x2)
+
+
+def isreal(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.isreal(x)
 
 
 def maximum(
@@ -605,46 +640,15 @@ def minimum(
     return jnp.minimum(x1, x2)
 
 
-def reciprocal(
-    x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None
-) -> JaxArray:
-    return jnp.reciprocal(x)
-
-
-def deg2rad(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.deg2rad(x)
-
-
 def rad2deg(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.rad2deg(x)
 
 
-def isreal(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.isreal(x)
-
-
-@with_unsupported_dtypes({"0.4.24 and below": ("complex",)}, backend_version)
-def fmod(
-    x1: JaxArray,
-    x2: JaxArray,
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return jnp.fmod(x1, x2)
-
-
-def gcd(
-    x1: Union[JaxArray, float, list, tuple],
-    x2: Union[JaxArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return jnp.gcd(x1, x2)
-
-
 def real(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.real(x)
+
+
+def reciprocal(
+    x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.reciprocal(x)

@@ -24,7 +24,6 @@ ivy_dtype_dict = {
     paddle.complex128: "complex128",
     paddle.bool: "bool",
 }
-
 native_dtype_dict = {
     "int8": paddle.int8,
     "int16": paddle.int16,

@@ -11,6 +11,43 @@ from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from .. import backend_version
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+def _normalize_axis_index(ax: int, ndim: int) -> int:
+    if ax >= ndim or ax < -ndim:
+        raise ValueError("axis index is out of range")
+    return (ax + ndim) % ndim
+
+
+def _normalize_axis_tuple(axis: Union[int, list, tuple], ndim: int) -> Tuple[int, ...]:
+    if type(axis) not in (tuple, list):
+        try:
+            axis = [operator.index(axis)]
+        except TypeError:
+            pass
+    axis = tuple(_normalize_axis_index(ax, ndim) for ax in axis)
+    if len(set(axis)) != len(axis):
+        raise ValueError("repeated axis")
+    return axis
+
+
+def allclose(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> bool:
+    return tf.experimental.numpy.allclose(
+        x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan
+    )
+
+
 @with_unsupported_dtypes(
     {
         "2.13.0 and below": (
@@ -53,61 +90,13 @@ def amin(
     return tf.experimental.numpy.amin(x, axis=axis, keepdims=keepdims)
 
 
-@with_supported_dtypes(
-    {"2.15.0 and below": ("float16", "float32", "float64")},
-    backend_version,
-)
-def lgamma(
+def conj(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.lgamma(x)
-
-
-def sinc(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    x = ivy.pi * x
-    return tf.cast(tf.where(x == 0, 1, tf.math.sin(x) / x), x.dtype)
-
-
-@with_supported_dtypes(
-    {"2.15.0 and below": ("bfloat16", "float16", "float32", "float64")}, backend_version
-)
-def fmax(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    x1 = tf.where(tf.math.is_nan(x1), x2, x1)
-    x2 = tf.where(tf.math.is_nan(x2), x1, x2)
-    return tf.experimental.numpy.maximum(x1, x2)
-
-
-@with_unsupported_dtypes(
-    {"2.15.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
-)
-def float_power(
-    x1: Union[tf.Tensor, tf.Variable, float, list, tuple],
-    x2: Union[tf.Tensor, tf.Variable, float, list, tuple],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    if ivy.any(ivy.is_complex_dtype(x1)) or ivy.any(ivy.is_complex_dtype(x2)):
-        out_dtype = tf.complex128
-    else:
-        out_dtype = tf.float64
-    return tf.cast(tf.experimental.numpy.float_power(x1, x2), out_dtype)
+    return tf.math.conj(x)
 
 
 def copysign(
@@ -145,90 +134,6 @@ def count_nonzero(
     )
 
 
-@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
-def nansum(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    axis: Optional[Union[Tuple[int, ...], int]] = None,
-    dtype: Optional[tf.DType] = None,
-    keepdims: bool = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    np_math_ops.enable_numpy_methods_on_tensor()
-    return tf.experimental.numpy.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims)
-
-
-def isclose(
-    a: Union[tf.Tensor, tf.Variable],
-    b: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    rtol: float = 1e-05,
-    atol: float = 1e-08,
-    equal_nan: bool = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.isclose(
-        a, b, rtol=rtol, atol=atol, equal_nan=equal_nan
-    )
-
-
-def signbit(
-    x: Union[tf.Tensor, tf.Variable, float, int, list, tuple],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.signbit(x)
-
-
-def hypot(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.sqrt(tf.math.square(x1) + tf.math.square(x2))
-
-
-def allclose(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    rtol: float = 1e-05,
-    atol: float = 1e-08,
-    equal_nan: bool = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> bool:
-    return tf.experimental.numpy.allclose(
-        x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan
-    )
-
-
-@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, backend_version)
-def fix(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.cast(tf.where(x > 0, tf.math.floor(x), tf.math.ceil(x)), x.dtype)
-
-
-@with_unsupported_dtypes({"2.15.0 and below": ("bflaot16", "float16")}, backend_version)
-def nextafter(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.nextafter(x1, x2)
-
-
 @with_unsupported_dtypes(
     {"2.15.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
@@ -251,41 +156,94 @@ def diff(
     return tf.experimental.numpy.diff(x, n=n, axis=axis)
 
 
-@with_supported_dtypes(
-    {
-        "2.15.0 and below": (
-            "float32",
-            "float64",
-        )
-    },
-    backend_version,
-)
-def zeta(
+def digamma(
     x: Union[tf.Tensor, tf.Variable],
-    q: Union[tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.zeta(x, q)
+    return tf.math.digamma(x)
 
 
-def _normalize_axis_index(ax: int, ndim: int) -> int:
-    if ax >= ndim or ax < -ndim:
-        raise ValueError("axis index is out of range")
-    return (ax + ndim) % ndim
+def erfc(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.erfc(x)
 
 
-def _normalize_axis_tuple(axis: Union[int, list, tuple], ndim: int) -> Tuple[int, ...]:
-    if type(axis) not in (tuple, list):
-        try:
-            axis = [operator.index(axis)]
-        except TypeError:
-            pass
-    axis = tuple(_normalize_axis_index(ax, ndim) for ax in axis)
-    if len(set(axis)) != len(axis):
-        raise ValueError("repeated axis")
-    return axis
+@with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
+def erfinv(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.erfinv(x)
+
+
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, backend_version)
+def fix(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.cast(tf.where(x > 0, tf.math.floor(x), tf.math.ceil(x)), x.dtype)
+
+
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+)
+def float_power(
+    x1: Union[tf.Tensor, tf.Variable, float, list, tuple],
+    x2: Union[tf.Tensor, tf.Variable, float, list, tuple],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if ivy.any(ivy.is_complex_dtype(x1)) or ivy.any(ivy.is_complex_dtype(x2)):
+        out_dtype = tf.complex128
+    else:
+        out_dtype = tf.float64
+    return tf.cast(tf.experimental.numpy.float_power(x1, x2), out_dtype)
+
+
+@with_supported_dtypes(
+    {"2.15.0 and below": ("bfloat16", "float16", "float32", "float64")}, backend_version
+)
+def fmax(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    x1 = tf.where(tf.math.is_nan(x1), x2, x1)
+    x2 = tf.where(tf.math.is_nan(x2), x1, x2)
+    return tf.experimental.numpy.maximum(x1, x2)
+
+
+@with_unsupported_dtypes({"2.15.0 and below": ("unsigned",)}, backend_version)
+def frexp(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[
+        Union[Tuple[tf.Tensor, tf.Tensor], Tuple[tf.Variable, tf.Variable]]
+    ] = None,
+) -> Union[Tuple[tf.Tensor, tf.Tensor], Tuple[tf.Variable, tf.Variable]]:
+    e = tf.math.floor(tf.math.log(tf.math.abs(x)) / tf.cast(tf.math.log(2.0), x.dtype))
+    e = tf.cast(e, x.dtype)
+    while tf.reduce_any(tf.abs(x / tf.math.pow(2, e)) >= 1):
+        e += tf.cast(tf.abs(x / tf.math.pow(2, e)) >= 1, e.dtype)
+    m = x / tf.math.pow(2, e)
+    e = tf.cast(e, tf.int32)
+    return m, e
 
 
 def gradient(
@@ -467,36 +425,29 @@ def gradient(
         return outvals
 
 
-@with_supported_dtypes(
-    {
-        "2.15.0 and below": (
-            "float16",
-            "float32",
-            "float64",
-            "complex64",
-            "complex128",
-        )
-    },
-    backend_version,
-)
-def xlogy(
-    x: Union[tf.Tensor, tf.Variable],
-    y: Union[tf.Tensor, tf.Variable],
+def hypot(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x, y = promote_types_of_inputs(x, y)
-    return tf.math.xlogy(x, y)
+    return tf.math.sqrt(tf.math.square(x1) + tf.math.square(x2))
 
 
-def conj(
-    x: Union[tf.Tensor, tf.Variable],
+def isclose(
+    a: Union[tf.Tensor, tf.Variable],
+    b: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.conj(x)
+    return tf.experimental.numpy.isclose(
+        a, b, rtol=rtol, atol=atol, equal_nan=equal_nan
+    )
 
 
 @with_unsupported_dtypes({"2.15.0 and below": ("unsigned",)}, backend_version)
@@ -520,22 +471,17 @@ def ldexp(
     return tf.cast(ret, out_dtype)
 
 
-@with_unsupported_dtypes({"2.15.0 and below": ("unsigned",)}, backend_version)
-def frexp(
+@with_supported_dtypes(
+    {"2.15.0 and below": ("float16", "float32", "float64")},
+    backend_version,
+)
+def lgamma(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    out: Optional[
-        Union[Tuple[tf.Tensor, tf.Tensor], Tuple[tf.Variable, tf.Variable]]
-    ] = None,
-) -> Union[Tuple[tf.Tensor, tf.Tensor], Tuple[tf.Variable, tf.Variable]]:
-    e = tf.math.floor(tf.math.log(tf.math.abs(x)) / tf.cast(tf.math.log(2.0), x.dtype))
-    e = tf.cast(e, x.dtype)
-    while tf.reduce_any(tf.abs(x / tf.math.pow(2, e)) >= 1):
-        e += tf.cast(tf.abs(x / tf.math.pow(2, e)) >= 1, e.dtype)
-    m = x / tf.math.pow(2, e)
-    e = tf.cast(e, tf.int32)
-    return m, e
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.lgamma(x)
 
 
 @with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
@@ -550,29 +496,87 @@ def modf(
     return fractional_part, integer_part
 
 
-def digamma(
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
+def nansum(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[Tuple[int, ...], int]] = None,
+    dtype: Optional[tf.DType] = None,
+    keepdims: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    np_math_ops.enable_numpy_methods_on_tensor()
+    return tf.experimental.numpy.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims)
+
+
+@with_unsupported_dtypes({"2.15.0 and below": ("bflaot16", "float16")}, backend_version)
+def nextafter(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.nextafter(x1, x2)
+
+
+def signbit(
+    x: Union[tf.Tensor, tf.Variable, float, int, list, tuple],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.signbit(x)
+
+
+def sinc(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.digamma(x)
+    x = ivy.pi * x
+    return tf.cast(tf.where(x == 0, 1, tf.math.sin(x) / x), x.dtype)
 
 
-def erfc(
+@with_supported_dtypes(
+    {
+        "2.15.0 and below": (
+            "float16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
+def xlogy(
     x: Union[tf.Tensor, tf.Variable],
+    y: Union[tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.erfc(x)
+    x, y = promote_types_of_inputs(x, y)
+    return tf.math.xlogy(x, y)
 
 
-@with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
-def erfinv(
+@with_supported_dtypes(
+    {
+        "2.15.0 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    backend_version,
+)
+def zeta(
     x: Union[tf.Tensor, tf.Variable],
+    q: Union[tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.erfinv(x)
+    return tf.math.zeta(x, q)

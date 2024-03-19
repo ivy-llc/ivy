@@ -13,46 +13,6 @@ from .... import backend_version
 import ivy
 
 
-def beta(
-    alpha: Union[float, tf.Tensor, tf.Variable],
-    beta: Union[float, tf.Tensor, tf.Variable],
-    /,
-    *,
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: Optional[str] = None,
-    dtype: Optional[Union[ivy.Dtype]] = None,
-    seed: Optional[int] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    if not dtype:
-        dtype = ivy.default_float_dtype()
-    dtype = ivy.as_native_dtype(dtype)
-    shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
-    alpha = tf.cast(alpha, dtype)
-    beta = tf.cast(beta, dtype)
-    return tfp.distributions.Beta(alpha, beta).sample(shape, seed=seed)
-
-
-def gamma(
-    alpha: Union[float, tf.Tensor, tf.Variable],
-    beta: Union[float, tf.Tensor, tf.Variable],
-    /,
-    *,
-    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: Optional[str] = None,
-    dtype: Optional[Union[DType, ivy.Dtype]] = None,
-    seed: Optional[int] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    if not dtype:
-        dtype = ivy.default_float_dtype()
-    dtype = ivy.as_native_dtype(dtype)
-    shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
-    alpha = tf.cast(alpha, dtype)
-    beta = tf.cast(beta, dtype)
-    return tfp.distributions.Gamma(alpha, beta).sample(shape, seed=seed)
-
-
 def bernoulli(
     probs: Union[float, tf.Tensor, tf.Variable],
     *,
@@ -77,6 +37,26 @@ def bernoulli(
     return tfp.distributions.Bernoulli(
         logits=logits, probs=probs, dtype=dtype, allow_nan_stats=True
     ).sample(shape, seed)
+
+
+def beta(
+    alpha: Union[float, tf.Tensor, tf.Variable],
+    beta: Union[float, tf.Tensor, tf.Variable],
+    /,
+    *,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    device: Optional[str] = None,
+    dtype: Optional[Union[ivy.Dtype]] = None,
+    seed: Optional[int] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if not dtype:
+        dtype = ivy.default_float_dtype()
+    dtype = ivy.as_native_dtype(dtype)
+    shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
+    alpha = tf.cast(alpha, dtype)
+    beta = tf.cast(beta, dtype)
+    return tfp.distributions.Beta(alpha, beta).sample(shape, seed=seed)
 
 
 # dirichlet
@@ -116,3 +96,23 @@ def dirichlet(
         ).sample(size),
         dtype=dtype,
     )
+
+
+def gamma(
+    alpha: Union[float, tf.Tensor, tf.Variable],
+    beta: Union[float, tf.Tensor, tf.Variable],
+    /,
+    *,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    device: Optional[str] = None,
+    dtype: Optional[Union[DType, ivy.Dtype]] = None,
+    seed: Optional[int] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if not dtype:
+        dtype = ivy.default_float_dtype()
+    dtype = ivy.as_native_dtype(dtype)
+    shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
+    alpha = tf.cast(alpha, dtype)
+    beta = tf.cast(beta, dtype)
+    return tfp.distributions.Gamma(alpha, beta).sample(shape, seed=seed)

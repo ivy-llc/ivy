@@ -8,35 +8,16 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 from ivy.utils.einsum_parser import legalise_einsum_expr
 
-# Array API Standard #
-# -------------------#
+
+# --- Helpers --- #
+# --------------- #
 
 
-@with_unsupported_dtypes(
-    {"2.15.0 and below": ("complex", "bool", "uint64")}, backend_version
-)
-def min(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    initial: Optional[Union[int, float, complex]] = None,
-    where: Optional[Union[tf.Tensor, tf.Variable]] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    if where is not None:
-        max_val = (
-            ivy.iinfo(x.dtype).max
-            if ivy.is_int_dtype(x.dtype)
-            else ivy.finfo(x.dtype).max
-        )
-        x = tf.where(where, x, tf.ones_like(x) * max_val)
-    result = tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
-    if initial is not None:
-        result = tf.minimum(result, initial)
-    return result
+def _infer_dtype(dtype: tf.DType):
+    default_dtype = ivy.infer_default_dtype(dtype)
+    if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
+        return default_dtype
+    return dtype
 
 
 @with_unsupported_dtypes({"2.15.0 and below": ("bool",)}, backend_version)
@@ -79,11 +60,35 @@ def mean(
     return tf.math.reduce_mean(x, axis=axis, keepdims=keepdims)
 
 
-def _infer_dtype(dtype: tf.DType):
-    default_dtype = ivy.infer_default_dtype(dtype)
-    if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
-        return default_dtype
-    return dtype
+# Array API Standard #
+# -------------------#
+
+
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("complex", "bool", "uint64")}, backend_version
+)
+def min(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    if where is not None:
+        max_val = (
+            ivy.iinfo(x.dtype).max
+            if ivy.is_int_dtype(x.dtype)
+            else ivy.finfo(x.dtype).max
+        )
+        x = tf.where(where, x, tf.ones_like(x) * max_val)
+    result = tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
+    if initial is not None:
+        result = tf.minimum(result, initial)
+    return result
 
 
 def prod(

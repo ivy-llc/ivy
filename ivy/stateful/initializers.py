@@ -80,18 +80,6 @@ class Constant(Initializer):
         )
 
 
-class Zeros(Constant):
-    def __init__(self):
-        """Constant initializer that fills with the constant value `0.0`."""
-        super().__init__(0.0)
-
-
-class Ones(Constant):
-    def __init__(self):
-        """Constant initializer that fills with the constant value `1.0`."""
-        super().__init__(1.0)
-
-
 # Uniform #
 # --------#
 
@@ -208,40 +196,6 @@ class Uniform(Initializer):
                 low=-wlim, high=wlim, shape=var_shape, device=device, dtype=dtype
             ),
         )
-
-
-class GlorotUniform(Uniform):
-    def __init__(self):
-        """Initialize Glorot uniform, also known as the Xavier uniform
-        initializer.
-
-        It draws values from a uniform distribution `[-limit, limit]` where
-        `limit = sqrt(6 / (fan_in + fan_out))` where `fan_in` and `fan_out` are the
-        number of input and output features respectively.
-        """
-        super().__init__(numerator=6, fan_mode="fan_sum", power=0.5, gain=1)
-
-
-class FirstLayerSiren(Uniform):
-    def __init__(self):
-        """Initialize Siren uniform for the first layer.
-
-        It draws values from a uniform distribution `[-limit, limit]`
-        where `limit=fan_in` where `fan_in` is the number of input
-        features.
-        """
-        super().__init__(numerator=1, fan_mode="fan_in", power=1, gain=1)
-
-
-class Siren(Uniform):
-    def __init__(self, w0=30):
-        """Initialize Siren uniform initializer for the first layer.
-
-        It draws values from a uniform distribution `[-limit, limit]`
-        where `limit=sqrt(6 / fan_in) / w0` where `fan_in` is the number
-        of input features.
-        """
-        super().__init__(numerator=6, fan_mode="fan_in", power=0.5, gain=1 / w0)
 
 
 # Gaussian #
@@ -410,3 +364,49 @@ class RandomNormal(Initializer):
                 dtype=dtype,
             )
         )
+
+
+class Zeros(Constant):
+    def __init__(self):
+        """Constant initializer that fills with the constant value `0.0`."""
+        super().__init__(0.0)
+
+
+class Ones(Constant):
+    def __init__(self):
+        """Constant initializer that fills with the constant value `1.0`."""
+        super().__init__(1.0)
+
+
+class GlorotUniform(Uniform):
+    def __init__(self):
+        """Initialize Glorot uniform, also known as the Xavier uniform
+        initializer.
+
+        It draws values from a uniform distribution `[-limit, limit]` where
+        `limit = sqrt(6 / (fan_in + fan_out))` where `fan_in` and `fan_out` are the
+        number of input and output features respectively.
+        """
+        super().__init__(numerator=6, fan_mode="fan_sum", power=0.5, gain=1)
+
+
+class FirstLayerSiren(Uniform):
+    def __init__(self):
+        """Initialize Siren uniform for the first layer.
+
+        It draws values from a uniform distribution `[-limit, limit]`
+        where `limit=fan_in` where `fan_in` is the number of input
+        features.
+        """
+        super().__init__(numerator=1, fan_mode="fan_in", power=1, gain=1)
+
+
+class Siren(Uniform):
+    def __init__(self, w0=30):
+        """Initialize Siren uniform initializer for the first layer.
+
+        It draws values from a uniform distribution `[-limit, limit]`
+        where `limit=sqrt(6 / fan_in) / w0` where `fan_in` is the number
+        of input features.
+        """
+        super().__init__(numerator=6, fan_mode="fan_in", power=0.5, gain=1 / w0)

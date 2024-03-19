@@ -28,7 +28,6 @@ ivy_dtype_dict = {
     tf.complex128: "complex128",
     tf.bool: "bool",
 }
-
 native_dtype_dict = {
     "int8": tf.int8,
     "int16": tf.int16,
@@ -276,8 +275,3 @@ def is_native_dtype(dtype_in: Union[tf.DType, str], /) -> bool:
     if not ivy.is_hashable_dtype(dtype_in):
         return False
     return bool(dtype_in in ivy_dtype_dict and isinstance(dtype_in, tf.dtypes.DType))
-
-
-# ToDo:
-# 1. result_type: Add support for bfloat16 with int16
-# 2. can_cast : Add support for complex64, complex128

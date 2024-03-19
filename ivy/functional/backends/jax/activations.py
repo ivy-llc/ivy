@@ -23,6 +23,16 @@ def gelu(
     return jax.nn.gelu(x, approximate)
 
 
+def hardswish(
+    x: JaxArray,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jax.nn.hard_swish(x)
+
+
 def leaky_relu(
     x: JaxArray,
     /,
@@ -32,6 +42,27 @@ def leaky_relu(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.asarray(jnp.where(x > 0, x, jnp.multiply(x, alpha)), x.dtype)
+
+
+def log_softmax(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[int] = -1,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[JaxArray] = None,
+):
+    return jax.nn.log_softmax(x, axis)
+
+
+def mish(
+    x: JaxArray,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return x * jnp.tanh(jax.nn.softplus(x))
 
 
 def relu(
@@ -85,34 +116,3 @@ def softplus(
 # Softsign
 def softsign(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jax.nn.soft_sign(x)
-
-
-def log_softmax(
-    x: JaxArray,
-    /,
-    *,
-    axis: Optional[int] = -1,
-    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
-    out: Optional[JaxArray] = None,
-):
-    return jax.nn.log_softmax(x, axis)
-
-
-def mish(
-    x: JaxArray,
-    /,
-    *,
-    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return x * jnp.tanh(jax.nn.softplus(x))
-
-
-def hardswish(
-    x: JaxArray,
-    /,
-    *,
-    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jax.nn.hard_swish(x)

@@ -7,6 +7,11 @@ from ivy.utils.exceptions import handle_exceptions
 # local
 from typing import Optional, Union, Callable, Tuple, Any
 
+
+# --- Helpers --- #
+# --------------- #
+
+
 # Extra #
 # ------#
 
@@ -242,6 +247,70 @@ def _train_task(
     return final_cost, variables, all_grads
 
 
+def _train_tasks(
+    batch,
+    inner_batch_fn,
+    outer_batch_fn,
+    inner_cost_fn,
+    outer_cost_fn,
+    variables,
+    inner_grad_steps,
+    inner_learning_rate,
+    inner_optimization_step,
+    order,
+    average_across_steps,
+    batched,
+    inner_v,
+    keep_innver_v,
+    outer_v,
+    keep_outer_v,
+    return_inner_v,
+    num_tasks,
+    stop_gradients,
+):
+    if batched:
+        return _train_tasks_batched(
+            batch,
+            inner_batch_fn,
+            outer_batch_fn,
+            inner_cost_fn,
+            outer_cost_fn,
+            variables,
+            inner_grad_steps,
+            inner_learning_rate,
+            inner_optimization_step,
+            order,
+            average_across_steps,
+            inner_v,
+            keep_innver_v,
+            outer_v,
+            keep_outer_v,
+            return_inner_v,
+            num_tasks,
+            stop_gradients,
+        )
+    return _train_tasks_with_for_loop(
+        batch,
+        inner_batch_fn,
+        outer_batch_fn,
+        inner_cost_fn,
+        outer_cost_fn,
+        variables,
+        inner_grad_steps,
+        inner_learning_rate,
+        inner_optimization_step,
+        order,
+        average_across_steps,
+        inner_v,
+        keep_innver_v,
+        outer_v,
+        keep_outer_v,
+        return_inner_v,
+        num_tasks,
+        stop_gradients,
+    )
+
+
 def _train_tasks_batched(
     batch,
     inner_batch_fn,
@@ -437,70 +506,6 @@ def _train_tasks_with_for_loop(
     return total_cost / num_tasks
 
 
-def _train_tasks(
-    batch,
-    inner_batch_fn,
-    outer_batch_fn,
-    inner_cost_fn,
-    outer_cost_fn,
-    variables,
-    inner_grad_steps,
-    inner_learning_rate,
-    inner_optimization_step,
-    order,
-    average_across_steps,
-    batched,
-    inner_v,
-    keep_innver_v,
-    outer_v,
-    keep_outer_v,
-    return_inner_v,
-    num_tasks,
-    stop_gradients,
-):
-    if batched:
-        return _train_tasks_batched(
-            batch,
-            inner_batch_fn,
-            outer_batch_fn,
-            inner_cost_fn,
-            outer_cost_fn,
-            variables,
-            inner_grad_steps,
-            inner_learning_rate,
-            inner_optimization_step,
-            order,
-            average_across_steps,
-            inner_v,
-            keep_innver_v,
-            outer_v,
-            keep_outer_v,
-            return_inner_v,
-            num_tasks,
-            stop_gradients,
-        )
-    return _train_tasks_with_for_loop(
-        batch,
-        inner_batch_fn,
-        outer_batch_fn,
-        inner_cost_fn,
-        outer_cost_fn,
-        variables,
-        inner_grad_steps,
-        inner_learning_rate,
-        inner_optimization_step,
-        order,
-        average_across_steps,
-        inner_v,
-        keep_innver_v,
-        outer_v,
-        keep_outer_v,
-        return_inner_v,
-        num_tasks,
-        stop_gradients,
-    )
-
-
 # Public #
 
 # First Order
@@ -624,147 +629,6 @@ def fomaml_step(
     if return_inner_v:
         return cost, grads, rets[2]
     return cost, grads
-
-
-fomaml_step.computes_gradients = True
-
-
-@handle_exceptions
-@handle_array_function
-def reptile_step(
-    batch: ivy.Container,
-    cost_fn: Callable,
-    variables: ivy.Container,
-    inner_grad_steps: int,
-    inner_learning_rate: float,
-    /,
-    *,
-    inner_optimization_step: Callable = gradient_descent_update,
-    batched: bool = True,
-    return_inner_v: Union[str, bool] = False,
-    num_tasks: Optional[int] = None,
-    stop_gradients: bool = True,
-) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """Perform a step of Reptile.
-
-    Parameters
-    ----------
-    batch
-        The input batch.
-    cost_fn
-        The cost function that receives the task-specific sub-batch and variables, and
-        returns the cost.
-    variables
-        Variables to be optimized.
-    inner_grad_steps
-        Number of gradient steps to perform during the inner loop.
-    inner_learning_rate
-        The learning rate of the inner loop.
-    inner_optimization_step
-        The function used for the inner loop optimization. It takes the learnable
-        weights,the derivative of the cost with respect to the weights, and the learning
-        rate as arguments, and returns the updated variables.
-        Default is `gradient_descent_update`.
-    batched
-        Whether to batch along the time dimension and run the meta steps in batch.
-        Default is `True`.
-    return_inner_v
-        Either `'first'`, `'all'`, or `False`. If `'first'`, the variables for the first
-        task inner loop will also be returned. If `'all'`, variables for all tasks will
-        be returned. Default is `False`.
-    num_tasks
-        Number of unique tasks to inner-loop optimize for the meta step. Determined from
-        the batch by default.
-    stop_gradients
-        Whether to stop the gradients of the cost. Default is `True`.
-
-    Returns
-    -------
-    ret
-        The cost, the gradients with respect to the outer loop variables, and additional
-        information from the inner loop optimization.
-
-    Examples
-    --------
-    With :class:`ivy.Container` input:
-
-    >>> from ivy.functional.ivy.gradients import gradient_descent_update
-    >>> import ivy
-    >>> from ivy.functional.ivy.gradients import _variable
-
-    >>> ivy.set_backend("torch")
-
-    >>> def inner_cost_fn(batch_in, v):
-    ...     return batch_in.mean().x / v.mean().latent
-
-    >>> num_tasks = 2
-    >>> batch = ivy.Container({"x": ivy.arange(1, num_tasks + 1, dtype="float32")})
-    >>> variables = ivy.Container({
-    ...     "latent": _variable(ivy.repeat(ivy.array([[1.0]]), num_tasks, axis=0))
-    ... })
-
-    >>> cost, gradients = ivy.reptile_step(batch, inner_cost_fn, variables, 5, 0.01,
-    ...                                    num_tasks=num_tasks)
-    >>> print(cost)
-    ivy.array(1.4485182)
-    >>> print(gradients)
-    {
-        latent: ivy.array([-139.9569855])
-    }
-
-    >>> batch = ivy.Container({"x": ivy.arange(1, 4, dtype="float32")})
-    >>> variables = ivy.Container({
-    ...     "latent": _variable(ivy.array([1.0, 2.0]))
-    ... })
-
-    >>> cost, gradients, firsts = ivy.reptile_step(batch, inner_cost_fn, variables, 4,
-    ...                                            0.025, batched=False, num_tasks=2,
-    ...                                            return_inner_v='first')
-    >>> print(cost)
-    ivy.array(0.9880483)
-    >>> print(gradients)
-    {
-        latent: ivy.array([-13.01766968, -13.01766968])
-    }
-    >>> print(firsts)
-    {
-        latent: ivy.array([[1.02197957, 2.02197981]])
-    }
-    """
-    if num_tasks is None:
-        num_tasks = batch.cont_shape[0]
-
-    rets = _train_tasks(
-        batch,
-        None,
-        None,
-        cost_fn,
-        None,
-        variables,
-        inner_grad_steps,
-        inner_learning_rate,
-        inner_optimization_step,
-        1,
-        True,
-        batched,
-        None,
-        True,
-        None,
-        True,
-        return_inner_v,
-        num_tasks,
-        stop_gradients,
-    )
-    cost = rets[0]
-    if stop_gradients:
-        cost = ivy.stop_gradient(cost, preserve_type=False)
-    grads = rets[1] / inner_learning_rate
-    if return_inner_v:
-        return cost, grads, rets[2]
-    return cost, grads
-
-
-reptile_step.computes_gradients = True
 
 
 # Second Order
@@ -924,4 +788,141 @@ def maml_step(
     return cost, grads.sum(axis=0), rest
 
 
+@handle_exceptions
+@handle_array_function
+def reptile_step(
+    batch: ivy.Container,
+    cost_fn: Callable,
+    variables: ivy.Container,
+    inner_grad_steps: int,
+    inner_learning_rate: float,
+    /,
+    *,
+    inner_optimization_step: Callable = gradient_descent_update,
+    batched: bool = True,
+    return_inner_v: Union[str, bool] = False,
+    num_tasks: Optional[int] = None,
+    stop_gradients: bool = True,
+) -> Tuple[ivy.Array, ivy.Container, Any]:
+    """Perform a step of Reptile.
+
+    Parameters
+    ----------
+    batch
+        The input batch.
+    cost_fn
+        The cost function that receives the task-specific sub-batch and variables, and
+        returns the cost.
+    variables
+        Variables to be optimized.
+    inner_grad_steps
+        Number of gradient steps to perform during the inner loop.
+    inner_learning_rate
+        The learning rate of the inner loop.
+    inner_optimization_step
+        The function used for the inner loop optimization. It takes the learnable
+        weights,the derivative of the cost with respect to the weights, and the learning
+        rate as arguments, and returns the updated variables.
+        Default is `gradient_descent_update`.
+    batched
+        Whether to batch along the time dimension and run the meta steps in batch.
+        Default is `True`.
+    return_inner_v
+        Either `'first'`, `'all'`, or `False`. If `'first'`, the variables for the first
+        task inner loop will also be returned. If `'all'`, variables for all tasks will
+        be returned. Default is `False`.
+    num_tasks
+        Number of unique tasks to inner-loop optimize for the meta step. Determined from
+        the batch by default.
+    stop_gradients
+        Whether to stop the gradients of the cost. Default is `True`.
+
+    Returns
+    -------
+    ret
+        The cost, the gradients with respect to the outer loop variables, and additional
+        information from the inner loop optimization.
+
+    Examples
+    --------
+    With :class:`ivy.Container` input:
+
+    >>> from ivy.functional.ivy.gradients import gradient_descent_update
+    >>> import ivy
+    >>> from ivy.functional.ivy.gradients import _variable
+
+    >>> ivy.set_backend("torch")
+
+    >>> def inner_cost_fn(batch_in, v):
+    ...     return batch_in.mean().x / v.mean().latent
+
+    >>> num_tasks = 2
+    >>> batch = ivy.Container({"x": ivy.arange(1, num_tasks + 1, dtype="float32")})
+    >>> variables = ivy.Container({
+    ...     "latent": _variable(ivy.repeat(ivy.array([[1.0]]), num_tasks, axis=0))
+    ... })
+
+    >>> cost, gradients = ivy.reptile_step(batch, inner_cost_fn, variables, 5, 0.01,
+    ...                                    num_tasks=num_tasks)
+    >>> print(cost)
+    ivy.array(1.4485182)
+    >>> print(gradients)
+    {
+        latent: ivy.array([-139.9569855])
+    }
+
+    >>> batch = ivy.Container({"x": ivy.arange(1, 4, dtype="float32")})
+    >>> variables = ivy.Container({
+    ...     "latent": _variable(ivy.array([1.0, 2.0]))
+    ... })
+
+    >>> cost, gradients, firsts = ivy.reptile_step(batch, inner_cost_fn, variables, 4,
+    ...                                            0.025, batched=False, num_tasks=2,
+    ...                                            return_inner_v='first')
+    >>> print(cost)
+    ivy.array(0.9880483)
+    >>> print(gradients)
+    {
+        latent: ivy.array([-13.01766968, -13.01766968])
+    }
+    >>> print(firsts)
+    {
+        latent: ivy.array([[1.02197957, 2.02197981]])
+    }
+    """
+    if num_tasks is None:
+        num_tasks = batch.cont_shape[0]
+
+    rets = _train_tasks(
+        batch,
+        None,
+        None,
+        cost_fn,
+        None,
+        variables,
+        inner_grad_steps,
+        inner_learning_rate,
+        inner_optimization_step,
+        1,
+        True,
+        batched,
+        None,
+        True,
+        None,
+        True,
+        return_inner_v,
+        num_tasks,
+        stop_gradients,
+    )
+    cost = rets[0]
+    if stop_gradients:
+        cost = ivy.stop_gradient(cost, preserve_type=False)
+    grads = rets[1] / inner_learning_rate
+    if return_inner_v:
+        return cost, grads, rets[2]
+    return cost, grads
+
+
+fomaml_step.computes_gradients = True
+reptile_step.computes_gradients = True
 maml_step.computes_gradients = True

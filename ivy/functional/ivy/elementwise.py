@@ -18,6 +18,17 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+def _complex_to_inf(exponent):
+    if exponent < 0:
+        return float("inf") + ivy.nan * 1j
+    else:
+        return -0 * 1j
+
+
 # Array API Standard #
 # -------------------#
 
@@ -492,6 +503,50 @@ def add(
                 [-4.7]]])
     """
     return ivy.current_backend(x1, x2).add(x1, x2, alpha=alpha, out=out)
+
+
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device
+def angle(
+    z: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    deg: bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Calculate Element-wise the angle for an array of complex numbers(x+yj).
+
+    Parameters
+    ----------
+    z
+        Array-like input.
+    deg
+        optional bool.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Returns an array of angles for each complex number in the input.
+        If deg is False(default), angle is calculated in radian and if
+        deg is True, then angle is calculated in degrees.
+
+    Examples
+    --------
+    >>> z = ivy.array([-1 + 1j, -2 + 2j, 3 - 3j])
+    >>> z
+    ivy.array([-1.+1.j, -2.+2.j,  3.-3.j])
+    >>> ivy.angle(z)
+    ivy.array([ 2.35619449,  2.35619449, -0.78539816])
+    >>> ivy.angle(z,deg=True)
+    ivy.array([135., 135., -45.])
+    """
+    return ivy.current_backend(z).angle(z, deg=deg, out=out)
 
 
 @handle_exceptions
@@ -1881,6 +1936,84 @@ def cosh(
     return ivy.current_backend(x).cosh(x, out=out)
 
 
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device
+def deg2rad(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Convert the input from degrees to radians.
+
+    Parameters
+    ----------
+    x
+        input array whose elements are each expressed in degrees.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array with each element in ``x`` converted from degrees to radians.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x=ivy.array([0,90,180,270,360], dtype=ivy.float32)
+    >>> y=ivy.deg2rad(x)
+    >>> print(y)
+    ivy.array([0., 1.57079633, 3.14159265, 4.71238898, 6.28318531])
+
+    >>> x=ivy.array([0,-1.5,-50,ivy.nan])
+    >>> y=ivy.zeros(4)
+    >>> ivy.deg2rad(x,out=y)
+    >>> print(y)
+    ivy.array([ 0., -0.02617994, -0.87266463, nan])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3],[-4.4, -5.5, -6.6]])
+    >>> ivy.deg2rad(x, out=x)
+    >>> print(x)
+    ivy.array([[ 0.01919862,  0.03839725,  0.05759586],
+           [-0.07679449, -0.09599311, -0.11519173]])
+
+    >>> x=ivy.native_array([-0,20.1,ivy.nan])
+    >>> y=ivy.zeros(3)
+    >>> ivy.deg2rad(x,out=y)
+    >>> print(y)
+    ivy.array([0., 0.35081118, nan])
+
+    With :class:`ivy.Container` input:
+
+    >>> x=ivy.Container(a=ivy.array([-0,20.1,-50.5,-ivy.nan]),
+    ...                 b=ivy.array([0,90.,180,270,360], dtype=ivy.float32))
+    >>> y=ivy.deg2rad(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 0.35081118, -0.88139129, nan]),
+        b: ivy.array([0., 1.57079633, 3.14159265, 4.71238898, 6.28318531])
+    }
+
+    >>> x=ivy.Container(a=ivy.array([0,90,180,270,360], dtype=ivy.float32),
+    ...                 b=ivy.native_array([0,-1.5,-50,ivy.nan]))
+    >>> y=ivy.deg2rad(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 1.57079633, 3.14159265, 4.71238898, 6.28318531]),
+        b: ivy.array([0., -0.02617994, -0.87266463, nan])
+    }
+    """
+    return ivy.current_backend(x).deg2rad(x, out=out)
+
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -2327,143 +2460,6 @@ def exp(
     }
     """
     return ivy.current_backend(x).exp(x, out=out)
-
-
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device
-def imag(
-    val: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Return the imaginary part of a complex number for each element ``x_i``
-    of the input array ``val``.
-
-    Parameters
-    ----------
-    val
-        input array. Should have a complex floating-point data type.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        Returns an array with the imaginary part of complex numbers.
-        The returned arrau must have a floating-point data type determined by
-        the precision of ``val`` (e.g., if ``val`` is ``complex64``,
-        the returned array must be ``float32``).
-
-    This method conforms to the
-    `Array API Standard <https://data-apis.org/array-api/latest/>`_.
-    This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.imag.html>`_
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
-    Examples
-    --------
-    >>> b = ivy.array(np.array([1+2j, 3+4j, 5+6j]))
-    >>> b
-    ivy.array([1.+2.j, 3.+4.j, 5.+6.j])
-    >>> ivy.imag(b)
-    ivy.array([2., 4., 6.])
-    """
-    return ivy.current_backend(val).imag(val, out=out)
-
-
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device
-def angle(
-    z: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    deg: bool = False,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Calculate Element-wise the angle for an array of complex numbers(x+yj).
-
-    Parameters
-    ----------
-    z
-        Array-like input.
-    deg
-        optional bool.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        Returns an array of angles for each complex number in the input.
-        If deg is False(default), angle is calculated in radian and if
-        deg is True, then angle is calculated in degrees.
-
-    Examples
-    --------
-    >>> z = ivy.array([-1 + 1j, -2 + 2j, 3 - 3j])
-    >>> z
-    ivy.array([-1.+1.j, -2.+2.j,  3.-3.j])
-    >>> ivy.angle(z)
-    ivy.array([ 2.35619449,  2.35619449, -0.78539816])
-    >>> ivy.angle(z,deg=True)
-    ivy.array([135., 135., -45.])
-    """
-    return ivy.current_backend(z).angle(z, deg=deg, out=out)
-
-
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device
-def gcd(
-    x1: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
-    x2: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Return the greatest common divisor of |x1| and |x2|.
-
-    Parameters
-    ----------
-    x1
-        First array-like input.
-    x2
-        Second array-input.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        Element-wise gcd of |x1| and |x2|.
-
-    Examples
-    --------
-    >>> x1 = ivy.array([1, 2, 3])
-    >>> x2 = ivy.array([4, 5, 6])
-    >>> ivy.gcd(x1, x2)
-    ivy.array([1.,    1.,   3.])
-    >>> x1 = ivy.array([1, 2, 3])
-    >>> ivy.gcd(x1, 10)
-    ivy.array([1.,   2.,  1.])
-    """
-    return ivy.current_backend(x1, x2).gcd(x1, x2, out=out)
 
 
 @handle_backend_invalid
@@ -2966,6 +2962,47 @@ def fmin(
     return ivy.current_backend(x1, x2).fmin(x1, x2, out=out)
 
 
+@handle_backend_invalid
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device
+def gcd(
+    x1: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
+    x2: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Return the greatest common divisor of |x1| and |x2|.
+
+    Parameters
+    ----------
+    x1
+        First array-like input.
+    x2
+        Second array-input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Element-wise gcd of |x1| and |x2|.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> x2 = ivy.array([4, 5, 6])
+    >>> ivy.gcd(x1, x2)
+    ivy.array([1.,    1.,   3.])
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> ivy.gcd(x1, 10)
+    ivy.array([1.,   2.,  1.])
+    """
+    return ivy.current_backend(x1, x2).gcd(x1, x2, out=out)
+
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -3152,275 +3189,56 @@ def greater_equal(
     return ivy.current_backend(x1, x2).greater_equal(x1, x2, out=out)
 
 
-@handle_exceptions
 @handle_backend_invalid
 @handle_nestable
+@handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_array_function
 @handle_device
-def less_equal(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
+def imag(
+    val: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the truth value of x1_i <= x2_i for each element x1_i of the
-    input array x1 with the respective element x2_i of the input array x2.
+    """Return the imaginary part of a complex number for each element ``x_i``
+    of the input array ``val``.
 
     Parameters
     ----------
-    x1
-        first input array. May have any data type.
-    x2
-        second input array. Must be compatible with x1 (with Broadcasting). May have any
-        data type.
+    val
+        input array. Should have a complex floating-point data type.
     out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        optional output array, for writing the result to.
 
     Returns
     -------
-     ret
-        an array containing the element-wise results. The returned array must have a
-        data type of bool.
+    ret
+        Returns an array with the imaginary part of complex numbers.
+        The returned arrau must have a floating-point data type determined by
+        the precision of ``val`` (e.g., if ``val`` is ``complex64``,
+        the returned array must be ``float32``).
 
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    This method conforms to the
+    `Array API Standard <https://data-apis.org/array-api/latest/>`_.
+    This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.less_equal.html>`_
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments
-
-    Examples
-    --------
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.less_equal(ivy.array([1,2,3]),ivy.array([2,2,2]))
-    >>> print(x)
-    ivy.array([True, True,  False])
-
-    >>> x = ivy.array([[10.1, 2.3, -3.6]])
-    >>> y = ivy.array([[4.8], [5.2], [6.1]])
-    >>> shape = (3,3)
-    >>> fill_value = False
-    >>> z = ivy.full(shape, fill_value)
-    >>> ivy.less_equal(x, y, out=z)
-    >>> print(z)
-    ivy.array([[False,  True,  True],
-           [False,  True,  True],
-           [False,  True,  True]])
-
-    >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
-    >>> y = ivy.array([[8.4], [2.5], [1.6]])
-    >>> ivy.less_equal(x, y, out=x)
-    >>> print(x)
-    ivy.array([[[1.],
-            [0.],
-            [1.]]])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([4, 5, 6]),b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([1, 2, 3]),b=ivy.array([5, 6, 7]))
-    >>> z = ivy.less_equal(x, y)
-    >>> print(z)
-    {
-        a: ivy.array([False, False, False]),
-        b: ivy.array([True, True, True])
-    }
-    """
-    return ivy.current_backend(x1, x2).less_equal(x1, x2, out=out)
-
-
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device
-def multiply(
-    x1: Union[float, ivy.Array, ivy.NativeArray],
-    x2: Union[float, ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    r"""Calculate the product for each element x1_i of the input array x1 with
-    the respective element x2_i of the input array x2.
-
-    .. note::
-       Floating-point multiplication is not always associative due to finite precision.
-
-    **Special Cases**
-
-    For real-valued floating-point operands,
-
-    - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
-    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and
-      ``x2_i`` is either ``+0`` or ``-0``, the result is ``NaN``.
-    - If ``x1_i`` is either ``+0`` or ``-0`` and
-      ``x2_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
-    - If ``x1_i`` and ``x2_i`` have the same mathematical sign,
-      the result has a positive mathematical sign, unless the result is ``NaN``.
-      If the result is ``NaN``, the "sign" of ``NaN`` is implementation-defined.
-    - If ``x1_i`` and ``x2_i`` have different mathematical signs,
-      the result has a negative mathematical sign,
-      unless the result is ``NaN``. If the result is ``NaN``,
-      the "sign" of ``NaN`` is implementation-defined.
-    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and
-      ``x2_i`` is either ``+infinity`` or ``-infinity``,
-      the result is a signed infinity with the mathematical sign determined by
-      the rule already stated above.
-    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i``
-      is a nonzero finite number, the result is a signed infinity with
-      the mathematical sign determined by the rule already stated above.
-    - If ``x1_i`` is a nonzero finite number and ``x2_i``
-      is either ``+infinity`` or ``-infinity``, the result is a signed infinity with
-      the mathematical sign determined by the rule already stated above.
-    - In the remaining cases, where neither ``infinity`` nor ``NaN``
-      is involved, the product must be computed and rounded to the nearest
-      representable value according to IEEE 754-2019 and a supported
-      rounding mode. If the magnitude is too large to represent,
-      the result is an `infinity` of appropriate mathematical sign.
-      If the magnitude is too small to represent, the result is a zero of
-      appropriate mathematical sign.
-
-    For complex floating-point operands, multiplication is defined according to the
-    following table. For real components ``a`` and ``c`` and
-    imaginary components ``b`` and ``d``,
-
-    +------------+----------------+-----------------+--------------------------+
-    |            | c              | dj              | c + dj                   |
-    +============+================+=================+==========================+
-    | **a**      | a * c          | (a*d)j          | (a*c) + (a*d)j           |
-    +------------+----------------+-----------------+--------------------------+
-    | **bj**     | (b*c)j         | -(b*d)          | -(b*d) + (b*c)j          |
-    +------------+----------------+-----------------+--------------------------+
-    | **a + bj** | (a*c) + (b*c)j | -(b*d) + (a*d)j | special rules            |
-    +------------+----------------+-----------------+--------------------------+
-
-    In general, for complex floating-point operands, real-valued floating-point
-    special cases must independently apply to the real and imaginary component
-    operations involving real numbers as described in the above table.
-
-    When ``a``, ``b``, ``c``, or ``d`` are all finite numbers
-    (i.e., a value other than ``NaN``, ``+infinity``, or ``-infinity``),
-    multiplication of complex floating-point operands should be computed
-    as if calculated according to the textbook formula for complex number multiplication
-
-    .. math::
-       (a + bj) \cdot (c + dj) = (ac - bd) + (bc + ad)j
-
-    When at least one of ``a``, ``b``, ``c``, or ``d`` is ``NaN``,
-    ``+infinity``, or ``-infinity``,
-
-    - If ``a``, ``b``, ``c``, and ``d`` are all ``NaN``,
-      the result is ``NaN + NaN j``.
-    - In the remaining cases, the result is implementation dependent.
-
-    .. note::
-       For complex floating-point operands, the results of special cases may be
-       implementation dependent depending on how an implementation chooses
-       to model complex numbers and complex infinity
-       (e.g., complex plane versus Riemann sphere).
-       For those implementations following C99 and its one-infinity model,
-       when at least one component is infinite,
-       even if the other component is ``NaN``,
-       the complex value is infinite, and the usual arithmetic
-       rules do not apply to complex-complex multiplication.
-       In the interest of performance, other implementations
-       may want to avoid the complex branching logic necessary
-       to implement the one-infinity model and choose to implement
-       all complex-complex multiplication according to the textbook formula.
-       Accordingly, special case behavior is unlikely
-       to be consistent across implementations.
-
-    Parameters
-    ----------
-    x1
-        first input array. Should have a numeric data type.
-
-    x2
-        second input array. Must be compatible with ``x1``
-        (see :ref'`broadcasting`). Should have a numeric data type
-
-    out
-        optional output array, for writing the array result to.
-        It must have a shape that the inputs broadcast to.
-
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.multiply.html>`_
+    API_specification/generated/array_api.imag.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Returns
-    -------
-    ret
-        an array containing the element-wise products. The returned array must have a
-        data type determined by :ref:`Type Promotion Rules`.
-
     Examples
     --------
-    With :code:`ivy.Array` inputs:
-
-    >>> x1 = ivy.array([3., 5., 7.])
-    >>> x2 = ivy.array([4., 6., 8.])
-    >>> y = ivy.multiply(x1, x2)
-    >>> print(y)
-    ivy.array([12., 30., 56.])
-
-    With :code:`ivy.NativeArray` inputs:
-
-    >>> x1 = ivy.native_array([1., 3., 9.])
-    >>> x2 = ivy.native_array([4., 7.2, 1.])
-    >>> y = ivy.multiply(x1, x2)
-    >>> print(y)
-    ivy.array([ 4. , 21.6,  9. ])
-
-    With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
-
-    >>> x1 = ivy.array([8., 6., 7.])
-    >>> x2 = ivy.native_array([1., 2., 3.])
-    >>> y = ivy.multiply(x1, x2)
-    >>> print(y)
-    ivy.array([ 8., 12., 21.])
-
-    With :code:`ivy.Container` inputs:
-
-    >>> x1 = ivy.Container(a=ivy.array([12.,4.,6.]), b=ivy.array([3.,1.,5.]))
-    >>> x2 = ivy.Container(a=ivy.array([1.,3.,4.]), b=ivy.array([3.,3.,2.]))
-    >>> y = ivy.multiply(x1, x2)
-    >>> print(y)
-    {
-        a: ivy.array([12.,12.,24.]),
-        b: ivy.array([9.,3.,10.])
-    }
-
-    With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
-
-    >>> x1 = ivy.Container(a=ivy.array([3., 4., 5.]), b=ivy.array([2., 2., 1.]))
-    >>> x2 = ivy.array([1.,2.,3.])
-    >>> y = ivy.multiply(x1, x2)
-    >>> print(y)
-    {
-        a: ivy.array([3.,8.,15.]),
-        b: ivy.array([2.,4.,3.])
-    }
+    >>> b = ivy.array(np.array([1+2j, 3+4j, 5+6j]))
+    >>> b
+    ivy.array([1.+2.j, 3.+4.j, 5.+6.j])
+    >>> ivy.imag(b)
+    ivy.array([2., 4., 6.])
     """
-    return ivy.current_backend(x1, x2).multiply(x1, x2, out=out)
+    return ivy.current_backend(val).imag(val, out=out)
 
 
 @handle_exceptions
@@ -3841,6 +3659,92 @@ def less(
     }
     """
     return ivy.current_backend(x1).less(x1, x2, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device
+def less_equal(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Compute the truth value of x1_i <= x2_i for each element x1_i of the
+    input array x1 with the respective element x2_i of the input array x2.
+
+    Parameters
+    ----------
+    x1
+        first input array. May have any data type.
+    x2
+        second input array. Must be compatible with x1 (with Broadcasting). May have any
+        data type.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+     ret
+        an array containing the element-wise results. The returned array must have a
+        data type of bool.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.less_equal.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.less_equal(ivy.array([1,2,3]),ivy.array([2,2,2]))
+    >>> print(x)
+    ivy.array([True, True,  False])
+
+    >>> x = ivy.array([[10.1, 2.3, -3.6]])
+    >>> y = ivy.array([[4.8], [5.2], [6.1]])
+    >>> shape = (3,3)
+    >>> fill_value = False
+    >>> z = ivy.full(shape, fill_value)
+    >>> ivy.less_equal(x, y, out=z)
+    >>> print(z)
+    ivy.array([[False,  True,  True],
+           [False,  True,  True],
+           [False,  True,  True]])
+
+    >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
+    >>> y = ivy.array([[8.4], [2.5], [1.6]])
+    >>> ivy.less_equal(x, y, out=x)
+    >>> print(x)
+    ivy.array([[[1.],
+            [0.],
+            [1.]]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([4, 5, 6]),b=ivy.array([2, 3, 4]))
+    >>> y = ivy.Container(a=ivy.array([1, 2, 3]),b=ivy.array([5, 6, 7]))
+    >>> z = ivy.less_equal(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([False, False, False]),
+        b: ivy.array([True, True, True])
+    }
+    """
+    return ivy.current_backend(x1, x2).less_equal(x1, x2, out=out)
 
 
 @handle_exceptions
@@ -4784,6 +4688,191 @@ def logical_xor(
     return ivy.current_backend(x1, x2).logical_xor(x1, x2, out=out)
 
 
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device
+def multiply(
+    x1: Union[float, ivy.Array, ivy.NativeArray],
+    x2: Union[float, ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    r"""Calculate the product for each element x1_i of the input array x1 with
+    the respective element x2_i of the input array x2.
+
+    .. note::
+       Floating-point multiplication is not always associative due to finite precision.
+
+    **Special Cases**
+
+    For real-valued floating-point operands,
+
+    - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and
+      ``x2_i`` is either ``+0`` or ``-0``, the result is ``NaN``.
+    - If ``x1_i`` is either ``+0`` or ``-0`` and
+      ``x2_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
+    - If ``x1_i`` and ``x2_i`` have the same mathematical sign,
+      the result has a positive mathematical sign, unless the result is ``NaN``.
+      If the result is ``NaN``, the "sign" of ``NaN`` is implementation-defined.
+    - If ``x1_i`` and ``x2_i`` have different mathematical signs,
+      the result has a negative mathematical sign,
+      unless the result is ``NaN``. If the result is ``NaN``,
+      the "sign" of ``NaN`` is implementation-defined.
+    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and
+      ``x2_i`` is either ``+infinity`` or ``-infinity``,
+      the result is a signed infinity with the mathematical sign determined by
+      the rule already stated above.
+    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i``
+      is a nonzero finite number, the result is a signed infinity with
+      the mathematical sign determined by the rule already stated above.
+    - If ``x1_i`` is a nonzero finite number and ``x2_i``
+      is either ``+infinity`` or ``-infinity``, the result is a signed infinity with
+      the mathematical sign determined by the rule already stated above.
+    - In the remaining cases, where neither ``infinity`` nor ``NaN``
+      is involved, the product must be computed and rounded to the nearest
+      representable value according to IEEE 754-2019 and a supported
+      rounding mode. If the magnitude is too large to represent,
+      the result is an `infinity` of appropriate mathematical sign.
+      If the magnitude is too small to represent, the result is a zero of
+      appropriate mathematical sign.
+
+    For complex floating-point operands, multiplication is defined according to the
+    following table. For real components ``a`` and ``c`` and
+    imaginary components ``b`` and ``d``,
+
+    +------------+----------------+-----------------+--------------------------+
+    |            | c              | dj              | c + dj                   |
+    +============+================+=================+==========================+
+    | **a**      | a * c          | (a*d)j          | (a*c) + (a*d)j           |
+    +------------+----------------+-----------------+--------------------------+
+    | **bj**     | (b*c)j         | -(b*d)          | -(b*d) + (b*c)j          |
+    +------------+----------------+-----------------+--------------------------+
+    | **a + bj** | (a*c) + (b*c)j | -(b*d) + (a*d)j | special rules            |
+    +------------+----------------+-----------------+--------------------------+
+
+    In general, for complex floating-point operands, real-valued floating-point
+    special cases must independently apply to the real and imaginary component
+    operations involving real numbers as described in the above table.
+
+    When ``a``, ``b``, ``c``, or ``d`` are all finite numbers
+    (i.e., a value other than ``NaN``, ``+infinity``, or ``-infinity``),
+    multiplication of complex floating-point operands should be computed
+    as if calculated according to the textbook formula for complex number multiplication
+
+    .. math::
+       (a + bj) \cdot (c + dj) = (ac - bd) + (bc + ad)j
+
+    When at least one of ``a``, ``b``, ``c``, or ``d`` is ``NaN``,
+    ``+infinity``, or ``-infinity``,
+
+    - If ``a``, ``b``, ``c``, and ``d`` are all ``NaN``,
+      the result is ``NaN + NaN j``.
+    - In the remaining cases, the result is implementation dependent.
+
+    .. note::
+       For complex floating-point operands, the results of special cases may be
+       implementation dependent depending on how an implementation chooses
+       to model complex numbers and complex infinity
+       (e.g., complex plane versus Riemann sphere).
+       For those implementations following C99 and its one-infinity model,
+       when at least one component is infinite,
+       even if the other component is ``NaN``,
+       the complex value is infinite, and the usual arithmetic
+       rules do not apply to complex-complex multiplication.
+       In the interest of performance, other implementations
+       may want to avoid the complex branching logic necessary
+       to implement the one-infinity model and choose to implement
+       all complex-complex multiplication according to the textbook formula.
+       Accordingly, special case behavior is unlikely
+       to be consistent across implementations.
+
+    Parameters
+    ----------
+    x1
+        first input array. Should have a numeric data type.
+
+    x2
+        second input array. Must be compatible with ``x1``
+        (see :ref'`broadcasting`). Should have a numeric data type
+
+    out
+        optional output array, for writing the array result to.
+        It must have a shape that the inputs broadcast to.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.multiply.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Returns
+    -------
+    ret
+        an array containing the element-wise products. The returned array must have a
+        data type determined by :ref:`Type Promotion Rules`.
+
+    Examples
+    --------
+    With :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.array([3., 5., 7.])
+    >>> x2 = ivy.array([4., 6., 8.])
+    >>> y = ivy.multiply(x1, x2)
+    >>> print(y)
+    ivy.array([12., 30., 56.])
+
+    With :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.native_array([1., 3., 9.])
+    >>> x2 = ivy.native_array([4., 7.2, 1.])
+    >>> y = ivy.multiply(x1, x2)
+    >>> print(y)
+    ivy.array([ 4. , 21.6,  9. ])
+
+    With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
+
+    >>> x1 = ivy.array([8., 6., 7.])
+    >>> x2 = ivy.native_array([1., 2., 3.])
+    >>> y = ivy.multiply(x1, x2)
+    >>> print(y)
+    ivy.array([ 8., 12., 21.])
+
+    With :code:`ivy.Container` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.array([12.,4.,6.]), b=ivy.array([3.,1.,5.]))
+    >>> x2 = ivy.Container(a=ivy.array([1.,3.,4.]), b=ivy.array([3.,3.,2.]))
+    >>> y = ivy.multiply(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([12.,12.,24.]),
+        b: ivy.array([9.,3.,10.])
+    }
+
+    With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+
+    >>> x1 = ivy.Container(a=ivy.array([3., 4., 5.]), b=ivy.array([2., 2., 1.]))
+    >>> x2 = ivy.array([1.,2.,3.])
+    >>> y = ivy.multiply(x1, x2)
+    >>> print(y)
+    {
+        a: ivy.array([3.,8.,15.]),
+        b: ivy.array([2.,4.,3.])
+    }
+    """
+    return ivy.current_backend(x1, x2).multiply(x1, x2, out=out)
+
+
 @handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
@@ -5324,16 +5413,6 @@ def pow(
     }
     """
     return ivy.current_backend(x1, x2).pow(x1, x2, out=out)
-
-
-pow.unsupported_gradients = {"torch": ["float16"]}
-
-
-def _complex_to_inf(exponent):
-    if exponent < 0:
-        return float("inf") + ivy.nan * 1j
-    else:
-        return -0 * 1j
 
 
 @handle_exceptions
@@ -6710,6 +6789,156 @@ def erf(
     return ivy.current_backend(x).erf(x, out=out)
 
 
+@handle_backend_invalid
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device
+def fmod(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Compute the element-wise remainder of divisions of two arrays.
+
+    Parameters
+    ----------
+    x1
+        First input array.
+    x2
+        Second input array
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array with element-wise remainder of divisions.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([2, 3, 4])
+    >>> x2 = ivy.array([1, 5, 2])
+    >>> ivy.fmod(x1, x2)
+    ivy.array([ 0,  3,  0])
+
+    >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
+    >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
+    >>> ivy.fmod(x1, x2)
+    ivy.array([ nan,  nan,  nan])
+    """
+    return ivy.current_backend(x1, x2).fmod(x1, x2, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device
+def isreal(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Test each element ``x_i`` of the input array ``x`` to determine whether
+    the element is real number. Returns a bool array, where True if input
+    element is real. If element has complex type with zero complex part, the
+    return value for that element is True.
+
+    Parameters
+    ----------
+    x
+        input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing test results. An element ``out_i`` is ``True`` if ``x_i`` is
+        real number and ``False`` otherwise. The returned array should have a data type
+        of ``bool``.
+
+    The descriptions above assume an array input for simplicity, but
+    the method also accepts :class:`ivy.Container` instances in place of
+    :class:`ivy.Array` or :class:`ivy.NativeArray` instances, as shown in the type hints
+    and also the examples below.
+
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+
+    >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
+    >>> z = ivy.isreal(x)
+    >>> print(z)
+    ivy.array([[[True], [True], [True]]])
+
+    >>> x = ivy.array([1-0j, 3j, 7+5j])
+    >>> z = ivy.isreal(x)
+    >>> print(z)
+    ivy.array([ True, False, False])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-6.7-7j, -np.inf, 1.23]),\
+                          b=ivy.array([5j, 5-6j, 3]))
+    >>> z = ivy.isreal(x)
+    >>> print(z)
+    {
+        a: ivy.array([False, True, True]),
+        b: ivy.array([False, False, True])
+    }
+    """
+    return ivy.current_backend(x).isreal(x, out=out)
+
+
+@handle_backend_invalid
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device
+def lcm(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Compute the element-wise least common multiple (LCM) of x1 and x2.
+
+    Parameters
+    ----------
+    x1
+        first input array, must be integers
+    x2
+        second input array, must be integers
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        an array that includes the element-wise least common multiples of x1 and x2
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x1=ivy.array([2, 3, 4])
+    >>> x2=ivy.array([5, 7, 15])
+    >>> x1.lcm(x1, x2)
+    ivy.array([10, 21, 60])
+    """
+    return ivy.current_backend(x1, x2).lcm(x1, x2, out=out)
+
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -6892,123 +7121,6 @@ def minimum(
     return ivy.current_backend(x1).minimum(x1, x2, use_where=use_where, out=out)
 
 
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device
-def reciprocal(
-    x: Union[float, ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Return a new array with the reciprocal of each element in ``x``.
-
-    Parameters
-    ----------
-    x
-        Input array.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        A new array with the positive value of each element in ``x``.
-
-    Examples
-    --------
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = ivy.reciprocal(x)
-    >>> print(y)
-    ivy.array([1.        , 0.5       , 0.33333333])
-    """
-    return ivy.current_backend(x).reciprocal(x, out=out)
-
-
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device
-def deg2rad(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Convert the input from degrees to radians.
-
-    Parameters
-    ----------
-    x
-        input array whose elements are each expressed in degrees.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        an array with each element in ``x`` converted from degrees to radians.
-
-    Examples
-    --------
-    With :class:`ivy.Array` input:
-
-    >>> x=ivy.array([0,90,180,270,360], dtype=ivy.float32)
-    >>> y=ivy.deg2rad(x)
-    >>> print(y)
-    ivy.array([0., 1.57079633, 3.14159265, 4.71238898, 6.28318531])
-
-    >>> x=ivy.array([0,-1.5,-50,ivy.nan])
-    >>> y=ivy.zeros(4)
-    >>> ivy.deg2rad(x,out=y)
-    >>> print(y)
-    ivy.array([ 0., -0.02617994, -0.87266463, nan])
-
-    >>> x = ivy.array([[1.1, 2.2, 3.3],[-4.4, -5.5, -6.6]])
-    >>> ivy.deg2rad(x, out=x)
-    >>> print(x)
-    ivy.array([[ 0.01919862,  0.03839725,  0.05759586],
-           [-0.07679449, -0.09599311, -0.11519173]])
-
-    >>> x=ivy.native_array([-0,20.1,ivy.nan])
-    >>> y=ivy.zeros(3)
-    >>> ivy.deg2rad(x,out=y)
-    >>> print(y)
-    ivy.array([0., 0.35081118, nan])
-
-    With :class:`ivy.Container` input:
-
-    >>> x=ivy.Container(a=ivy.array([-0,20.1,-50.5,-ivy.nan]),
-    ...                 b=ivy.array([0,90.,180,270,360], dtype=ivy.float32))
-    >>> y=ivy.deg2rad(x)
-    >>> print(y)
-    {
-        a: ivy.array([0., 0.35081118, -0.88139129, nan]),
-        b: ivy.array([0., 1.57079633, 3.14159265, 4.71238898, 6.28318531])
-    }
-
-    >>> x=ivy.Container(a=ivy.array([0,90,180,270,360], dtype=ivy.float32),
-    ...                 b=ivy.native_array([0,-1.5,-50,ivy.nan]))
-    >>> y=ivy.deg2rad(x)
-    >>> print(y)
-    {
-        a: ivy.array([0., 1.57079633, 3.14159265, 4.71238898, 6.28318531]),
-        b: ivy.array([0., -0.02617994, -0.87266463, nan])
-    }
-    """
-    return ivy.current_backend(x).deg2rad(x, out=out)
-
-
 @handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
@@ -7088,6 +7200,45 @@ def rad2deg(
 
 
 @handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device
+def reciprocal(
+    x: Union[float, ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Return a new array with the reciprocal of each element in ``x``.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        A new array with the positive value of each element in ``x``.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.reciprocal(x)
+    >>> print(y)
+    ivy.array([1.        , 0.5       , 0.33333333])
+    """
+    return ivy.current_backend(x).reciprocal(x, out=out)
+
+
+@handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -7132,6 +7283,7 @@ def trunc_divide(
     return ivy.trunc(ivy.divide(x1, x2), out=out)
 
 
+pow.unsupported_gradients = {"torch": ["float16"]}
 trunc_divide.mixed_backend_wrappers = {
     "to_add": (
         "handle_backend_invalid",
@@ -7143,153 +7295,3 @@ trunc_divide.mixed_backend_wrappers = {
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
-
-
-@handle_exceptions
-@handle_backend_invalid
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device
-def isreal(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Test each element ``x_i`` of the input array ``x`` to determine whether
-    the element is real number. Returns a bool array, where True if input
-    element is real. If element has complex type with zero complex part, the
-    return value for that element is True.
-
-    Parameters
-    ----------
-    x
-        input array.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        an array containing test results. An element ``out_i`` is ``True`` if ``x_i`` is
-        real number and ``False`` otherwise. The returned array should have a data type
-        of ``bool``.
-
-    The descriptions above assume an array input for simplicity, but
-    the method also accepts :class:`ivy.Container` instances in place of
-    :class:`ivy.Array` or :class:`ivy.NativeArray` instances, as shown in the type hints
-    and also the examples below.
-
-    Examples
-    --------
-    With :class:`ivy.Array` inputs:
-
-    >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
-    >>> z = ivy.isreal(x)
-    >>> print(z)
-    ivy.array([[[True], [True], [True]]])
-
-    >>> x = ivy.array([1-0j, 3j, 7+5j])
-    >>> z = ivy.isreal(x)
-    >>> print(z)
-    ivy.array([ True, False, False])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([-6.7-7j, -np.inf, 1.23]),\
-                          b=ivy.array([5j, 5-6j, 3]))
-    >>> z = ivy.isreal(x)
-    >>> print(z)
-    {
-        a: ivy.array([False, True, True]),
-        b: ivy.array([False, False, True])
-    }
-    """
-    return ivy.current_backend(x).isreal(x, out=out)
-
-
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device
-def fmod(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
-    """Compute the element-wise remainder of divisions of two arrays.
-
-    Parameters
-    ----------
-    x1
-        First input array.
-    x2
-        Second input array
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        Array with element-wise remainder of divisions.
-
-    Examples
-    --------
-    >>> x1 = ivy.array([2, 3, 4])
-    >>> x2 = ivy.array([1, 5, 2])
-    >>> ivy.fmod(x1, x2)
-    ivy.array([ 0,  3,  0])
-
-    >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
-    >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
-    >>> ivy.fmod(x1, x2)
-    ivy.array([ nan,  nan,  nan])
-    """
-    return ivy.current_backend(x1, x2).fmod(x1, x2, out=out)
-
-
-@handle_backend_invalid
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_device
-def lcm(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Compute the element-wise least common multiple (LCM) of x1 and x2.
-
-    Parameters
-    ----------
-    x1
-        first input array, must be integers
-    x2
-        second input array, must be integers
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        an array that includes the element-wise least common multiples of x1 and x2
-
-    Examples
-    --------
-    With :class:`ivy.Array` input:
-
-    >>> x1=ivy.array([2, 3, 4])
-    >>> x2=ivy.array([5, 7, 15])
-    >>> x1.lcm(x1, x2)
-    ivy.array([10, 21, 60])
-    """
-    return ivy.current_backend(x1, x2).lcm(x1, x2, out=out)

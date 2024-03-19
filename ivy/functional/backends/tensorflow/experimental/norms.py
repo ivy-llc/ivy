@@ -5,67 +5,6 @@ from . import backend_version
 import math
 
 
-@with_unsupported_dtypes({"2.15.0 and below": "uint8"}, backend_version)
-def l1_normalize(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    axis: Optional[int] = None,
-    out: Optional[tf.Tensor] = None,
-) -> tf.Tensor:
-    denorm = tf.norm(x, ord=1, axis=axis, keepdims=True)
-    denorm = tf.math.maximum(denorm, 1e-12)
-    return tf.math.divide(x, denorm)
-
-
-def l2_normalize(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    axis: Optional[int] = None,
-    out: Optional[tf.Tensor] = None,
-) -> tf.Tensor:
-    denorm = tf.norm(x, axis=axis, keepdims=True)
-    denorm = tf.math.maximum(denorm, 1e-12)
-    return tf.math.divide(x, denorm)
-
-
-@with_supported_dtypes({"2.15.0 and below": ("float32", "float16")}, backend_version)
-def local_response_norm(
-    x: Union[tf.Tensor, tf.Variable],
-    size,
-    /,
-    *,
-    bias: Optional[float] = 1.0,
-    alpha: Optional[float] = 1.0,
-    beta: Optional[float] = 0.5,
-    average: bool = False,
-    data_format: Optional[Literal["NHWC", "NCHW"]] = "NHWC",
-    out: Optional[tf.Tensor] = None,
-) -> tf.Tensor:
-    if data_format == "NCHW":
-        x = tf.transpose(x, (0, 2, 3, 1))
-    # `alpha = alpha/size if average else alpha` was causing numerical instability
-    if average:
-        ret = tf.nn.local_response_normalization(
-            x / math.sqrt(size),
-            depth_radius=size // 2,
-            bias=bias,
-            alpha=alpha,
-            beta=beta,
-        ) * math.sqrt(size)
-    else:
-        ret = tf.nn.local_response_normalization(
-            x, depth_radius=size // 2, bias=bias, alpha=alpha, beta=beta
-        )
-    if data_format == "NCHW":
-        ret = tf.transpose(ret, (0, 3, 1, 2))
-    return ret
-
-
-local_response_norm.partial_mixed_handler = lambda x, size, **kwargs: size % 2 != 0
-
-
 @with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, backend_version)
 def batch_norm(
     x: Union[tf.Tensor, tf.Variable],
@@ -194,6 +133,64 @@ def instance_norm(
     )
 
 
+@with_unsupported_dtypes({"2.15.0 and below": "uint8"}, backend_version)
+def l1_normalize(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[int] = None,
+    out: Optional[tf.Tensor] = None,
+) -> tf.Tensor:
+    denorm = tf.norm(x, ord=1, axis=axis, keepdims=True)
+    denorm = tf.math.maximum(denorm, 1e-12)
+    return tf.math.divide(x, denorm)
+
+
+def l2_normalize(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[int] = None,
+    out: Optional[tf.Tensor] = None,
+) -> tf.Tensor:
+    denorm = tf.norm(x, axis=axis, keepdims=True)
+    denorm = tf.math.maximum(denorm, 1e-12)
+    return tf.math.divide(x, denorm)
+
+
+@with_supported_dtypes({"2.15.0 and below": ("float32", "float16")}, backend_version)
+def local_response_norm(
+    x: Union[tf.Tensor, tf.Variable],
+    size,
+    /,
+    *,
+    bias: Optional[float] = 1.0,
+    alpha: Optional[float] = 1.0,
+    beta: Optional[float] = 0.5,
+    average: bool = False,
+    data_format: Optional[Literal["NHWC", "NCHW"]] = "NHWC",
+    out: Optional[tf.Tensor] = None,
+) -> tf.Tensor:
+    if data_format == "NCHW":
+        x = tf.transpose(x, (0, 2, 3, 1))
+    # `alpha = alpha/size if average else alpha` was causing numerical instability
+    if average:
+        ret = tf.nn.local_response_normalization(
+            x / math.sqrt(size),
+            depth_radius=size // 2,
+            bias=bias,
+            alpha=alpha,
+            beta=beta,
+        ) * math.sqrt(size)
+    else:
+        ret = tf.nn.local_response_normalization(
+            x, depth_radius=size // 2, bias=bias, alpha=alpha, beta=beta
+        )
+    if data_format == "NCHW":
+        ret = tf.transpose(ret, (0, 3, 1, 2))
+    return ret
+
+
 def lp_normalize(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -205,3 +202,6 @@ def lp_normalize(
     denorm = tf.norm(x, ord=p, axis=axis, keepdims=True)
     denorm = tf.math.maximum(denorm, 1e-12)
     return tf.math.divide(x, denorm)
+
+
+local_response_norm.partial_mixed_handler = lambda x, size, **kwargs: size % 2 != 0

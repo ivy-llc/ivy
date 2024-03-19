@@ -8,59 +8,8 @@ from ivy.func_wrapper import (
 from . import backend_version
 
 
-def huber_loss(
-    input: JaxArray, target: JaxArray, /, *, delta: float = 1.0, reduction: str = "mean"
-) -> JaxArray:
-    residual = jnp.abs(input - target)
-    quadratic_loss = 0.5 * (residual**2)
-    linear_loss = delta * residual - 0.5 * (delta**2)
-    loss = jnp.where(residual < delta, quadratic_loss, linear_loss)
-
-    if reduction == "mean":
-        loss = jnp.mean(loss)
-    elif reduction == "sum":
-        loss = jnp.sum(loss)
-
-    return loss
-
-
-def smooth_l1_loss(
-    input: JaxArray,
-    target: JaxArray,
-    /,
-    *,
-    beta: float = 1.0,
-    reduction: str = "mean",
-) -> JaxArray:
-    if beta < 1e-5:
-        loss = jnp.abs(input - target)
-    else:
-        diff = jnp.abs(input - target)
-        loss = jnp.where(diff < beta, 0.5 * diff**2 / beta, diff - 0.5 * beta)
-
-    if reduction == "mean":
-        return jnp.mean(loss)
-    elif reduction == "sum":
-        return jnp.sum(loss)
-    else:
-        return loss
-
-
-def soft_margin_loss(
-    input: JaxArray,
-    target: JaxArray,
-    /,
-    *,
-    reduction: str = "mean",
-) -> JaxArray:
-    loss = jnp.sum(jnp.log1p(jnp.exp(-input * target))) / jnp.size(input)
-
-    if reduction == "mean":
-        return jnp.mean(loss)
-    elif reduction == "sum":
-        return jnp.sum(loss)
-    else:
-        return loss
+# --- Helpers --- #
+# --------------- #
 
 
 def _apply_loss_reduction(loss: JaxArray, reduction: str) -> JaxArray:
@@ -114,6 +63,47 @@ def _validate_poisson_nll_params(
 @with_supported_device_and_dtypes(
     {
         "0.4.18 and below": {
+            "cpu": ("float32", "float64"),
+        }
+    },
+    backend_version,
+)
+def hinge_embedding_loss(
+    input: JaxArray,
+    target: JaxArray,
+    *,
+    margin: float = 1.0,
+    reduction: str = "mean",
+) -> JaxArray:
+    zero_ = jnp.zeros([1], dtype=input.dtype)
+
+    relu_part = jnp.maximum(margin - input, 0)
+
+    loss = jnp.where(target == 1.0, input, zero_) + jnp.where(
+        target == -1.0, relu_part, zero_
+    )
+    return _apply_loss_reduction(loss, reduction)
+
+
+def huber_loss(
+    input: JaxArray, target: JaxArray, /, *, delta: float = 1.0, reduction: str = "mean"
+) -> JaxArray:
+    residual = jnp.abs(input - target)
+    quadratic_loss = 0.5 * (residual**2)
+    linear_loss = delta * residual - 0.5 * (delta**2)
+    loss = jnp.where(residual < delta, quadratic_loss, linear_loss)
+
+    if reduction == "mean":
+        loss = jnp.mean(loss)
+    elif reduction == "sum":
+        loss = jnp.sum(loss)
+
+    return loss
+
+
+@with_supported_device_and_dtypes(
+    {
+        "0.4.18 and below": {
             "cpu": ("float16", "float32", "float64"),
         }
     },
@@ -154,26 +144,40 @@ def poisson_nll_loss(
     return _apply_loss_reduction(loss, reduction)
 
 
-@with_supported_device_and_dtypes(
-    {
-        "0.4.18 and below": {
-            "cpu": ("float32", "float64"),
-        }
-    },
-    backend_version,
-)
-def hinge_embedding_loss(
+def smooth_l1_loss(
     input: JaxArray,
     target: JaxArray,
+    /,
     *,
-    margin: float = 1.0,
+    beta: float = 1.0,
     reduction: str = "mean",
 ) -> JaxArray:
-    zero_ = jnp.zeros([1], dtype=input.dtype)
+    if beta < 1e-5:
+        loss = jnp.abs(input - target)
+    else:
+        diff = jnp.abs(input - target)
+        loss = jnp.where(diff < beta, 0.5 * diff**2 / beta, diff - 0.5 * beta)
 
-    relu_part = jnp.maximum(margin - input, 0)
+    if reduction == "mean":
+        return jnp.mean(loss)
+    elif reduction == "sum":
+        return jnp.sum(loss)
+    else:
+        return loss
 
-    loss = jnp.where(target == 1.0, input, zero_) + jnp.where(
-        target == -1.0, relu_part, zero_
-    )
-    return _apply_loss_reduction(loss, reduction)
+
+def soft_margin_loss(
+    input: JaxArray,
+    target: JaxArray,
+    /,
+    *,
+    reduction: str = "mean",
+) -> JaxArray:
+    loss = jnp.sum(jnp.log1p(jnp.exp(-input * target))) / jnp.size(input)
+
+    if reduction == "mean":
+        return jnp.mean(loss)
+    elif reduction == "sum":
+        return jnp.sum(loss)
+    else:
+        return loss

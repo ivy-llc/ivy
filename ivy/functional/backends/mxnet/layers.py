@@ -70,20 +70,6 @@ def conv2d_transpose(
     raise IvyNotImplementedException()
 
 
-def depthwise_conv2d(
-    x: Union[(None, mx.ndarray.NDArray)],
-    filters: Union[(None, mx.ndarray.NDArray)],
-    strides: Union[(int, Tuple[(int, int)])],
-    padding: Union[(str, int, Sequence[Tuple[(int, int)]])],
-    /,
-    *,
-    data_format: str = "NHWC",
-    dilations: Union[(int, Tuple[(int, int)])] = 1,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
 def conv3d(
     x: Union[(None, mx.ndarray.NDArray)],
     filters: Union[(None, mx.ndarray.NDArray)],
@@ -148,6 +134,20 @@ def conv_general_transpose(
     dilations: Union[(int, Tuple[int], Tuple[(int, int)], Tuple[(int, int, int)])] = 1,
     feature_group_count: int = 1,
     bias: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def depthwise_conv2d(
+    x: Union[(None, mx.ndarray.NDArray)],
+    filters: Union[(None, mx.ndarray.NDArray)],
+    strides: Union[(int, Tuple[(int, int)])],
+    padding: Union[(str, int, Sequence[Tuple[(int, int)]])],
+    /,
+    *,
+    data_format: str = "NHWC",
+    dilations: Union[(int, Tuple[(int, int)])] = 1,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()

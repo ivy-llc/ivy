@@ -18,6 +18,48 @@ from . import backend_version
 from ...ivy.manipulation import _calculate_out_shape
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+def _reshape_fortran_paddle(x, shape):
+    if len(x.shape) > 0:
+        x = paddle_backend.permute_dims(x, list(reversed(range(x.ndim))))
+    return paddle_backend.permute_dims(
+        paddle.reshape(x, shape[::-1]), list(range(len(shape)))[::-1]
+    )
+
+
+def clip(
+    x: paddle.Tensor,
+    /,
+    x_min: Optional[Union[Number, paddle.Tensor]] = None,
+    x_max: Optional[Union[Number, paddle.Tensor]] = None,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if x_min is None and x_max is None:
+        raise ValueError("At least one of the x_min or x_max must be provided")
+    promoted_type = x.dtype
+    if x_min is not None:
+        if not hasattr(x_min, "dtype"):
+            x_min = ivy.array(x_min).data
+        promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
+        x = paddle_backend.maximum(
+            paddle.cast(x, promoted_type), paddle.cast(x_min, promoted_type)
+        )
+    if x_max is not None:
+        if not hasattr(x_max, "dtype"):
+            x_max = ivy.array(x_max).data
+        promoted_type = ivy.as_native_dtype(
+            ivy.promote_types(promoted_type, x_max.dtype)
+        )
+        x = paddle_backend.minimum(
+            paddle.cast(x, promoted_type), paddle.cast(x_max, promoted_type)
+        )
+    return x
+
+
 # Array API Standard #
 # -------------------#
 
@@ -60,6 +102,37 @@ def concat(
     if dtype == paddle.int16:
         ret = ret.cast("int16")
     return ret
+
+
+@with_unsupported_dtypes(
+    {
+        "2.6.0 and below": (
+            "bfloat16",
+            "float16",
+            "int8",
+            "int16",
+            "uint8",
+        )
+    },
+    backend_version,
+)
+def constant_pad(
+    x: paddle.Tensor,
+    /,
+    pad_width: List[List[int]],
+    *,
+    value: Number = 0.0,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    paddings = []
+    pad_width = list(pad_width)
+    for item in pad_width:
+        if len(item) != 2:
+            raise ivy.utils.exceptions.IvyException("Length of each item should be 2")
+        else:
+            paddings.append(item[0])
+            paddings.append(item[1])
+    return paddle.nn.functional.pad(x=x, pad=paddings, value=value)
 
 
 @with_supported_dtypes(
@@ -126,12 +199,40 @@ def permute_dims(
     return paddle.transpose(x, axes)
 
 
-def _reshape_fortran_paddle(x, shape):
-    if len(x.shape) > 0:
-        x = paddle_backend.permute_dims(x, list(reversed(range(x.ndim))))
-    return paddle_backend.permute_dims(
-        paddle.reshape(x, shape[::-1]), list(range(len(shape)))[::-1]
-    )
+@with_supported_dtypes(
+    {"2.6.0 and below": ("complex", "float32", "float64", "int32", "int64")},
+    backend_version,
+)
+def repeat(
+    x: paddle.Tensor,
+    /,
+    repeats: Union[int, Iterable[int]],
+    *,
+    axis: Optional[int] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    # handle the case when repeats contains 0 as paddle doesn't support it
+    if (isinstance(repeats, Number) and repeats == 0) or (
+        isinstance(repeats, paddle.Tensor) and repeats.size == 1 and repeats.item() == 0
+    ):
+        if axis is None:
+            return paddle.to_tensor([], dtype=x.dtype)
+        else:
+            shape = x.shape
+            shape[axis] = 0
+            return paddle.zeros(shape=shape).cast(x.dtype)
+
+    if isinstance(repeats, paddle.Tensor) and repeats.size == 1:
+        repeats = repeats.item()
+
+    if axis is not None:
+        axis %= x.ndim
+    if paddle.is_complex(x):
+        return paddle.complex(
+            paddle.repeat_interleave(x.real(), repeats=repeats, axis=axis),
+            paddle.repeat_interleave(x.imag(), repeats=repeats, axis=axis),
+        )
+    return paddle.repeat_interleave(x, repeats=repeats, axis=axis)
 
 
 def reshape(
@@ -321,39 +422,33 @@ def split(
 
 
 @with_supported_dtypes(
-    {"2.6.0 and below": ("complex", "float32", "float64", "int32", "int64")},
+    {
+        "2.6.0 and below": (
+            "bool",
+            "int32",
+            "int64",
+            "float16",
+            "bfloat16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
     backend_version,
 )
-def repeat(
+def swapaxes(
     x: paddle.Tensor,
+    axis0: int,
+    axis1: int,
     /,
-    repeats: Union[int, Iterable[int]],
     *,
-    axis: Optional[int] = None,
+    copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    # handle the case when repeats contains 0 as paddle doesn't support it
-    if (isinstance(repeats, Number) and repeats == 0) or (
-        isinstance(repeats, paddle.Tensor) and repeats.size == 1 and repeats.item() == 0
-    ):
-        if axis is None:
-            return paddle.to_tensor([], dtype=x.dtype)
-        else:
-            shape = x.shape
-            shape[axis] = 0
-            return paddle.zeros(shape=shape).cast(x.dtype)
-
-    if isinstance(repeats, paddle.Tensor) and repeats.size == 1:
-        repeats = repeats.item()
-
-    if axis is not None:
-        axis %= x.ndim
-    if paddle.is_complex(x):
-        return paddle.complex(
-            paddle.repeat_interleave(x.real(), repeats=repeats, axis=axis),
-            paddle.repeat_interleave(x.imag(), repeats=repeats, axis=axis),
-        )
-    return paddle.repeat_interleave(x, repeats=repeats, axis=axis)
+    axes = [x for x in range(x.ndim)]
+    axes[axis0], axes[axis1] = axes[axis1], axes[axis0]
+    return paddle_backend.permute_dims(x, axes)
 
 
 @with_unsupported_dtypes(
@@ -399,108 +494,6 @@ def tile(
 
 
 @with_unsupported_dtypes(
-    {
-        "2.6.0 and below": (
-            "bfloat16",
-            "float16",
-            "int8",
-            "int16",
-            "uint8",
-        )
-    },
-    backend_version,
-)
-def constant_pad(
-    x: paddle.Tensor,
-    /,
-    pad_width: List[List[int]],
-    *,
-    value: Number = 0.0,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    paddings = []
-    pad_width = list(pad_width)
-    for item in pad_width:
-        if len(item) != 2:
-            raise ivy.utils.exceptions.IvyException("Length of each item should be 2")
-        else:
-            paddings.append(item[0])
-            paddings.append(item[1])
-    return paddle.nn.functional.pad(x=x, pad=paddings, value=value)
-
-
-@with_unsupported_dtypes({"2.6.0 and below": ("float16",)}, backend_version)
-def zero_pad(
-    x: paddle.Tensor,
-    /,
-    pad_width: List[List[int]],
-    *,
-    out: Optional[paddle.Tensor] = None,
-):
-    return paddle_backend.constant_pad(x, pad_width=pad_width, value=0)
-
-
-@with_supported_dtypes(
-    {
-        "2.6.0 and below": (
-            "bool",
-            "int32",
-            "int64",
-            "float16",
-            "bfloat16",
-            "float32",
-            "float64",
-            "complex64",
-            "complex128",
-        )
-    },
-    backend_version,
-)
-def swapaxes(
-    x: paddle.Tensor,
-    axis0: int,
-    axis1: int,
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    axes = [x for x in range(x.ndim)]
-    axes[axis0], axes[axis1] = axes[axis1], axes[axis0]
-    return paddle_backend.permute_dims(x, axes)
-
-
-def clip(
-    x: paddle.Tensor,
-    /,
-    x_min: Optional[Union[Number, paddle.Tensor]] = None,
-    x_max: Optional[Union[Number, paddle.Tensor]] = None,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    if x_min is None and x_max is None:
-        raise ValueError("At least one of the x_min or x_max must be provided")
-    promoted_type = x.dtype
-    if x_min is not None:
-        if not hasattr(x_min, "dtype"):
-            x_min = ivy.array(x_min).data
-        promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
-        x = paddle_backend.maximum(
-            paddle.cast(x, promoted_type), paddle.cast(x_min, promoted_type)
-        )
-    if x_max is not None:
-        if not hasattr(x_max, "dtype"):
-            x_max = ivy.array(x_max).data
-        promoted_type = ivy.as_native_dtype(
-            ivy.promote_types(promoted_type, x_max.dtype)
-        )
-        x = paddle_backend.minimum(
-            paddle.cast(x, promoted_type), paddle.cast(x_max, promoted_type)
-        )
-    return x
-
-
-@with_unsupported_dtypes(
     {"2.6.0 and below": ("int16", "int8", "uint8", "bfloat16")}, backend_version
 )
 def unstack(
@@ -526,3 +519,14 @@ def unstack(
     if keepdims:
         return [paddle_backend.expand_dims(r, axis=axis) for r in ret]
     return ret
+
+
+@with_unsupported_dtypes({"2.6.0 and below": ("float16",)}, backend_version)
+def zero_pad(
+    x: paddle.Tensor,
+    /,
+    pad_width: List[List[int]],
+    *,
+    out: Optional[paddle.Tensor] = None,
+):
+    return paddle_backend.constant_pad(x, pad_width=pad_width, value=0)

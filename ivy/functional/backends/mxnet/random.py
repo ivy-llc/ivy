@@ -11,32 +11,6 @@ import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
-def random_uniform(
-    *,
-    low: Union[(float, None, mx.ndarray.NDArray)] = 0.0,
-    high: Union[(float, None, mx.ndarray.NDArray)] = 1.0,
-    shape: Optional[Union[(ivy.NativeShape, Sequence[int], None)]] = None,
-    dtype: None,
-    device: str,
-    seed: Optional[int] = None,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
-def random_normal(
-    *,
-    mean: Union[(float, None, mx.ndarray.NDArray)] = 0.0,
-    std: Union[(float, None, mx.ndarray.NDArray)] = 1.0,
-    shape: Optional[Union[(ivy.NativeShape, Sequence[int])]] = None,
-    dtype: None,
-    seed: Optional[int] = None,
-    device: str,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -60,6 +34,32 @@ def randint(
     shape: Optional[Union[(ivy.NativeShape, Sequence[int])]] = None,
     device: str,
     dtype: Optional[Union[(None, ivy.Dtype)]] = None,
+    seed: Optional[int] = None,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def random_normal(
+    *,
+    mean: Union[(float, None, mx.ndarray.NDArray)] = 0.0,
+    std: Union[(float, None, mx.ndarray.NDArray)] = 1.0,
+    shape: Optional[Union[(ivy.NativeShape, Sequence[int])]] = None,
+    dtype: None,
+    seed: Optional[int] = None,
+    device: str,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def random_uniform(
+    *,
+    low: Union[(float, None, mx.ndarray.NDArray)] = 0.0,
+    high: Union[(float, None, mx.ndarray.NDArray)] = 1.0,
+    shape: Optional[Union[(ivy.NativeShape, Sequence[int], None)]] = None,
+    dtype: None,
+    device: str,
     seed: Optional[int] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:

@@ -14,8 +14,38 @@ from ivy.functional.backends.jax import JaxArray
 from . import backend_version
 
 
+# --- Helpers --- #
+# --------------- #
+
+
 def _flat_array_to_1_dim_array(x):
     return x.reshape((1,)) if x.shape == () else x
+
+
+def clip(
+    x: JaxArray,
+    /,
+    x_min: Optional[Union[Number, JaxArray]] = None,
+    x_max: Optional[Union[Number, JaxArray]] = None,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if x_min is None and x_max is None:
+        raise ValueError("At least one of the x_min or x_max must be provided")
+    promoted_type = x.dtype
+    if x_min is not None:
+        if not hasattr(x_min, "dtype"):
+            x_min = ivy.array(x_min).data
+        promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
+        x = jnp.where(x < x_min, x_min.astype(promoted_type), x.astype(promoted_type))
+    if x_max is not None:
+        if not hasattr(x_max, "dtype"):
+            x_max = ivy.array(x_max).data
+        promoted_type = ivy.as_native_dtype(
+            ivy.promote_types(promoted_type, x_max.dtype)
+        )
+        x = jnp.where(x > x_max, x_max.astype(promoted_type), x.astype(promoted_type))
+    return x
 
 
 # Array API Standard #
@@ -42,6 +72,18 @@ def concat(
         return jnp.concatenate(xs, axis)
     except ValueError as error:
         raise ivy.utils.exceptions.IvyIndexError(error) from error
+
+
+@with_unsupported_dtypes({"0.4.24 and below": ("uint64",)}, backend_version)
+def constant_pad(
+    x: JaxArray,
+    /,
+    pad_width: List[List[int]],
+    *,
+    value: Number = 0.0,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
 
 
 def expand_dims(
@@ -82,6 +124,17 @@ def permute_dims(
         newarr = jnp.copy(x)
         return jnp.transpose(newarr, axes)
     return jnp.transpose(x, axes)
+
+
+def repeat(
+    x: JaxArray,
+    /,
+    repeats: Union[int, Iterable[int]],
+    *,
+    axis: Optional[int] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.repeat(x, repeats, axis)
 
 
 def reshape(
@@ -190,59 +243,22 @@ def split(
     return jnp.split(x, num_or_size_splits, axis)
 
 
-def repeat(
+def swapaxes(
     x: JaxArray,
+    axis0: int,
+    axis1: int,
     /,
-    repeats: Union[int, Iterable[int]],
     *,
-    axis: Optional[int] = None,
+    copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.repeat(x, repeats, axis)
+    return jnp.swapaxes(x, axis0, axis1)
 
 
 def tile(
     x: JaxArray, /, repeats: Iterable[int], *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.tile(x, repeats)
-
-
-def clip(
-    x: JaxArray,
-    /,
-    x_min: Optional[Union[Number, JaxArray]] = None,
-    x_max: Optional[Union[Number, JaxArray]] = None,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    if x_min is None and x_max is None:
-        raise ValueError("At least one of the x_min or x_max must be provided")
-    promoted_type = x.dtype
-    if x_min is not None:
-        if not hasattr(x_min, "dtype"):
-            x_min = ivy.array(x_min).data
-        promoted_type = ivy.as_native_dtype(ivy.promote_types(x.dtype, x_min.dtype))
-        x = jnp.where(x < x_min, x_min.astype(promoted_type), x.astype(promoted_type))
-    if x_max is not None:
-        if not hasattr(x_max, "dtype"):
-            x_max = ivy.array(x_max).data
-        promoted_type = ivy.as_native_dtype(
-            ivy.promote_types(promoted_type, x_max.dtype)
-        )
-        x = jnp.where(x > x_max, x_max.astype(promoted_type), x.astype(promoted_type))
-    return x
-
-
-@with_unsupported_dtypes({"0.4.24 and below": ("uint64",)}, backend_version)
-def constant_pad(
-    x: JaxArray,
-    /,
-    pad_width: List[List[int]],
-    *,
-    value: Number = 0.0,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
 
 
 def unstack(
@@ -267,15 +283,3 @@ def zero_pad(
     x: JaxArray, /, pad_width: List[List[int]], *, out: Optional[JaxArray] = None
 ):
     return jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=0)
-
-
-def swapaxes(
-    x: JaxArray,
-    axis0: int,
-    axis1: int,
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.swapaxes(x, axis0, axis1)
