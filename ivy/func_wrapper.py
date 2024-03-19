@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import contextlib
 import ivy
 import functools
@@ -1912,3 +1914,19 @@ class override(contextlib.ContextDecorator):
                 if isinstance(globals_getter_func()[item], FunctionType):
                     # we need to add the decorator
                     globals_getter_func([item, "override"])
+
+
+def store_frame_info(fn):
+
+    @functools.wraps(fn)
+    def frame_info_wrapper(self, *args, **kwargs):
+        if self._previous_frame_info is None:
+            # store the info about the calling frame.
+            stack = inspect.stack()
+            self._previous_frame_info = stack[1]
+        res = fn(self, *args, **kwargs)
+        # reset the frame-info
+        self._previous_frame_info = None
+        return res
+
+    return frame_info_wrapper

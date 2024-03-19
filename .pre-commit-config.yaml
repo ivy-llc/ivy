@@ -34,6 +34,6 @@ repos:
     hooks:
       - id: docformatter
   - repo: https://github.com/unifyai/lint-hook
-    rev: a72ffb17562d919311653d7f593cb537d1245c19
+    rev: c23adcd108eed66d09023c185abf9781895252e2
     hooks:
       - id: ivy-lint
