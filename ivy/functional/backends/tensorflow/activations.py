@@ -1,20 +1,19 @@
-"""
-TensorFlow activation functions.
+"""TensorFlow activation functions.
 
 Collection of TensorFlow activation functions, wrapped to fit Ivy syntax
 and signature.
 """
 
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 
 # global
 import tensorflow as tf
 from tensorflow.python.types.core import Tensor
 
 # local
-import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
+import ivy.functional.backends.tensorflow as tf_backend
 
 
 def gelu(
@@ -41,26 +40,44 @@ def leaky_relu(
     return tf.nn.leaky_relu(x, alpha)
 
 
+@with_supported_dtypes(
+    {
+        "2.15.0 and below": (
+            "float",
+            "int",
+            "complex",
+        )
+    },
+    backend_version,
+)
 def relu(x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.relu(x)
 
 
-def sigmoid(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
-    if not ivy.is_array(x):
-        x = float(x)
-    return tf.nn.sigmoid(x)
+def sigmoid(
+    x: Tensor, /, *, complex_mode="jax", out: Optional[Tensor] = None
+) -> Tensor:
+    return 1 / (1 + tf.exp(-x))
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def softmax(
     x: Tensor, /, *, axis: Optional[int] = None, out: Optional[Tensor] = None
 ) -> Tensor:
+    if axis is None:
+        axis = -1
+    dtype = x.dtype
+    if "complex" in str(dtype):
+        amax = tf_backend.max(x, axis=axis, keepdims=True)
+        normalized = tf.exp(tf.subtract(x, amax))
+        return tf.divide(
+            normalized, tf.reduce_sum(normalized, axis=axis, keepdims=True)
+        )
     return tf.nn.softmax(x, axis)
 
 
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "float16",
             "bfloat16",
             "float32",
@@ -94,7 +111,7 @@ def softplus(
 # Softsign
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "float16",
             "bfloat16",
             "float32",
@@ -109,23 +126,43 @@ def softsign(x: tf.Tensor, /, out: Optional[tf.Tensor] = None) -> tf.Tensor:
     return tf.nn.softsign(x)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def log_softmax(
-    x: Tensor, /, *, axis: Optional[int] = None, out: Optional[Tensor] = None
+    x: Tensor,
+    /,
+    *,
+    axis: Optional[int] = -1,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[Tensor] = None,
 ):
+    if "complex" in str(x.dtype):
+        x_max = tf_backend.max(x, axis=axis, keepdims=True)
+        sub_temp = tf.subtract(x, x_max)
+        ret = tf.reduce_sum(tf.exp(sub_temp), axis=axis, keepdims=True)
+        ret = tf.math.log(ret)
+        return tf.subtract(sub_temp, ret)
     return tf.nn.log_softmax(x, axis)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def mish(
     x: Tensor,
     /,
     *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[Tensor] = None,
 ) -> Tensor:
-    return x * tf.math.tanh(tf.math.softplus(x))
+    if "complex" in str(x.dtype):
+        x_norm = tf.math.log1p(tf.exp(x))
+    else:
+        x_norm = tf.math.softplus(x)
+    return tf.multiply(x, tf.math.tanh(x_norm))
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
-def hardswish(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
+def hardswish(
+    x: Tensor,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[Tensor] = None,
+) -> Tensor:
     return x * tf.nn.relu6(x + 3) / 6

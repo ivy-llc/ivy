@@ -94,7 +94,7 @@ def _get_user_input(fn, *args, **kwargs):
                 break
         except KeyboardInterrupt:
             print("Aborted.")
-            exit()
+            sys.exit()
 
 
 def _update_native_config_value(key):
@@ -102,34 +102,34 @@ def _update_native_config_value(key):
     ret = input(
         "\nPress ENTER to skip, use full namespace\n"
         f"Enter a value for {Style.BRIGHT + key + Style.NORMAL} "
-        "(case sensistive) "
+        "(case sensitive) "
         f"default: '{Style.BRIGHT}{config_natives[key]['name']}{Style.NORMAL}': "
     )
     if ret != "" and _imported_backend is not None:
         parsed = ret.strip().rpartition(".")
         try:
             if parsed[1] == "":
-                # Primitve type
+                # primitive type
                 try:
                     obj = __builtins__.__dict__[parsed[-1]]
                 except KeyError:
-                    print(Fore.RED + f"{parsed[-1]} is not a primitive object.")
+                    print(f"{Fore.RED}{parsed[-1]} is not a primitive object.")
                     return False
             else:
                 try:
                     mod = import_module(parsed[0])
                 except ModuleNotFoundError:
-                    print(Fore.RED + f"failed to import {parsed[0]}")
+                    print(f"{Fore.RED}failed to import {parsed[0]}")
                     return False
                 try:
                     obj = getattr(mod, parsed[-1])
                 except AttributeError:
-                    print(Fore.RED + f"{parsed[-1]} is not found in module.")
+                    print(f"{Fore.RED}{parsed[-1]} is not found in module.")
                     return False
             if not inspect.isclass(obj):
-                print(Fore.RED + f"{obj} is not a class.")
+                print(f"{Fore.RED}{obj} is not a class.")
                 return False
-            print(Fore.GREEN + f"Found class: {obj}")
+            print(f"{Fore.GREEN}Found class: {obj}")
             # Use alias if exists
             if backend["alias"] is not None:
                 modified_namespace = parsed[0].replace(
@@ -140,7 +140,7 @@ def _update_native_config_value(key):
             )
             return True
         except KeyError:
-            print(Fore.RED + f"Couldn't find {ret}")
+            print(f"{Fore.RED}Couldn't find {ret}")
             return False
     return True
 
@@ -163,16 +163,15 @@ def _should_install_backend(package_name):
                 reqr_file.write("\n" + package_name + "\n")
         except subprocess.CalledProcessError as e:
             raise RuntimeError(
-                Fore.RED + f"Installing {package_name} failed. {e}"
+                f"{Fore.RED}Installing {package_name} failed. {e}"
             ) from e
     elif ret.lower() == "n":
         print(
-            Fore.YELLOW
-            + "Will continue without backend installed, "
+            Fore.YELLOW + "Will continue without backend installed, "
             "type checking won't be available.\n"
         )
     else:
-        print(Fore.RED + f"{ret} not understood.")
+        print(f"{Fore.RED}{ret} not understood.")
         return False
 
     return True
@@ -221,12 +220,12 @@ def _get_backend():
         _get_user_input(_import_name)
 
         global _imported_backend
-        print(Style.BRIGHT + f"Importing {backend['name']} for type checking...")
+        print(f"{Style.BRIGHT}Importing {backend['name']} for type checking...")
         try:
             _imported_backend = import_module(backend["name"])
             return True
         except Exception as e:
-            print(Fore.RED + f"Failed to import {backend['name']}:{e}")
+            print(f"{Fore.RED}Failed to import {backend['name']}:{e}")
             return False
 
     return True
@@ -253,9 +252,9 @@ def _update_flag_config_value(key):
     if ret == "y":
         config_flags[key] = not config_flags[key]
         return True
-    elif ret == "n" or ret == "":
+    elif ret in ["n", ""]:
         return True
-    print(Fore.RED + f"{ret} not understood.")
+    print(f"{Fore.RED}{ret} not understood.")
     return False
 
 
@@ -264,13 +263,13 @@ def _update_valid_config_value(key):
     print(f"Select items to remove from list {Style.BRIGHT}{key}:\n")
     for i, item in enumerate(config_valids[key]):
         print(f"{i}. {item}")
-    ret = input("\nPress ENTER to skip. Enter numbers (space seperated): ")
+    ret = input("\nPress ENTER to skip. Enter numbers (space separated): ")
     ret = ret.strip("")
     if ret == "":
         return True
-    indicies = ret.split(" ")
-    indicies = [int(item.strip(" ")) for item in indicies]
-    for i in sorted(indicies, reverse=True):
+    indices = ret.split(" ")
+    indices = [int(item.strip(" ")) for item in indices]
+    for i in sorted(indices, reverse=True):
         del config_valids[key][i]
     return True
 
@@ -327,15 +326,15 @@ if __name__ == "__main__":
     for key, value in config_valids.copy().items():
         all_items = fullset_mapping[key]
         invalid_items = list(set(all_items).difference(value))
-        config_valids["in" + key] = invalid_items
+        config_valids[f"in{key}"] = invalid_items
 
     for key in config_valids["valid_dtypes"]:
-        new_key = "native_" + key
+        new_key = f"native_{key}"
         config_natives[new_key] = asdict(BackendNativeObject(name="None", namespace=""))
         _get_user_input(_update_native_config_value, new_key)
 
     for key in config_valids["invalid_dtypes"]:
-        new_key = "native_" + key
+        new_key = f"native_{key}"
         config_natives[new_key] = asdict(BackendNativeObject(name="None", namespace=""))
 
     print("\n:: Backend\n")
@@ -344,14 +343,13 @@ if __name__ == "__main__":
     pprint.pprint(config_natives, sort_dicts=False)
 
     # Print valids
-    for key in config_valids.keys():
-        if key.startswith("in"):
-            continue
-        valid_items = config_valids[key]
-        invalid_items = config_valids["in" + key]
+    for key, valid_itesm in config_valids.items():
+        if not key.startswith("in"):
+            valid_items = config_valids[key]
+            invalid_items = config_valids[f"in{key}"]
         print("\n:: " + key.partition("_")[-1])
-        print(Fore.GREEN + "valid > " + valid_items.__str__())
-        print(Fore.RED + "invalid > " + invalid_items.__str__())
+        print(f"{Fore.GREEN}valid > {valid_items.__str__()}")
+        print(f"{Fore.RED}invalid > {invalid_items.__str__()}")
 
     # Print flags
     for key, value in config_flags.items():

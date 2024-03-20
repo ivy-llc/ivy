@@ -1,4 +1,5 @@
 # global
+import numpy as np
 from hypothesis import strategies as st
 
 # local
@@ -450,27 +451,25 @@ def test_torch_huber_loss(
 # kl_div
 @handle_frontend_test(
     fn_tree="torch.nn.functional.kl_div",
-    dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        allow_inf=False,
-        shared_dtype=True,
-        min_value=0,
-        max_value=10,
-        min_num_dims=0,
-        max_num_dims=10,
-        min_dim_size=0,
-        max_dim_size=10,
-        num_arrays=2,
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=1e-04,
+        max_value=1,
     ),
-    size_average=st.booleans(),
-    reduce=st.booleans(),
-    reduction=st.sampled_from(["none", "mean", "sum", "batchmean"]),
+    dtype_and_target=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=1e-04,
+        max_value=1,
+    ),
+    reduction=st.sampled_from(["none", "sum", "batchmean", "mean"]),
     log_target=st.booleans(),
-    test_with_out=st.just(False),
+    size_average=st.one_of(st.just(None), st.booleans()),
+    reduce=st.one_of(st.just(None), st.booleans()),
 )
 def test_torch_kl_div(
     *,
-    dtype_and_inputs,
+    dtype_and_input,
+    dtype_and_target,
     size_average,
     reduce,
     reduction,
@@ -481,16 +480,20 @@ def test_torch_kl_div(
     backend_fw,
     on_device,
 ):
-    inputs_dtype, inputs = dtype_and_inputs
+    input_dtype, input = dtype_and_input
+    input[0] = np.array(np.log(input[0]))
+    target_dtype, target = dtype_and_target
+    if log_target:
+        target[0] = np.array(np.log(target[0]))
     helpers.test_frontend_function(
-        input_dtypes=inputs_dtype,
+        input_dtypes=input_dtype + target_dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=inputs[0],
-        target=inputs[1],
+        input=input[0],
+        target=target[0],
         size_average=size_average,
         reduce=reduce,
         reduction=reduction,
@@ -502,7 +505,7 @@ def test_torch_kl_div(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.l1_loss",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
@@ -682,11 +685,13 @@ def test_torch_multilabel_margin_loss(
     reduce,
     test_flags,
     fn_tree,
+    backend_fw,
     frontend,
     on_device,
 ):
     input_dtype, x = dtype_and_inputs
     helpers.test_frontend_function(
+        backend_to_test=backend_fw,
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,

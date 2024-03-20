@@ -370,7 +370,7 @@ The actual implementation for the :class:`ivy.Linear` layer exposed in the Ivy s
               self.v.b if self._with_bias else None)
 
 The :class:`ivy.Initializer` class has a single abstract method, :code:`create_variables(var_shape, dev, fan_out=None, fan_in=None, *args, **kwargs)`.
-Check out the `code <https://github.com/unifyai/ivy/blob/main/ivy/stateful/initializers.py>`_ or `docs <https://unify.ai/docs/ivy/overview/design/ivy_as_a_framework/ivy_stateful_api.html#initializers>`_ for more details.
+Check out the `code <https://github.com/unifyai/ivy/blob/main/ivy/stateful/initializers.py>`_ or :ref:`docs <overview/design/ivy_as_a_framework/ivy_stateful_api:Initializers>` for more details.
 The default initializer for the weights is :class:`ivy.GlorotUniform` and for this bias is :class:`ivy.Zeros`.
 Let’s take a quick look at what these look like.
 :class:`ivy.GlorotUniform` derives from a more general :class:`ivy.Uniform` initializer class, and is then simply implemented as follows:
@@ -427,18 +427,18 @@ The implementation is as follows:
 
         def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999,
                      epsilon=1e-07, inplace=None,
-                     stop_gradients=True, compile_on_next_step=False,
+                     stop_gradients=True, trace_on_next_step=False,
                      dev=None):
             ivy.Optimizer.__init__(
                 self, lr, inplace, stop_gradients, True,
-                compile_on_next_step, dev)
+                trace_on_next_step, dev)
             self._beta1 = beta1
             self._beta2 = beta2
             self._epsilon = epsilon
             self._mw = None
             self._vw = None
             self._first_pass = True
-            self._should_compile = False
+            self._should_trace = False
 
         # Custom Step
 

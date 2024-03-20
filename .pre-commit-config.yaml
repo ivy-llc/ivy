@@ -1,31 +1,39 @@
 repos:
-  - repo: https://github.com/psf/black
-    rev: 23.7.0
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-yaml
+      - id: trailing-whitespace
+      - id: check-toml
+      - id: end-of-file-fixer
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.3.0
+    hooks:
+      # Run the linter.
+      - id: ruff
+        args: [ --fix ]
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: 24.2.0
     hooks:
       - id: black
         language_version: python3
         args:
           - "--preview"
+        exclude: >
+          (?x)
+          (
+            ivy/functional/frontends/(?!.*(?:config\.py|__init__\.py)$).* |
+            ivy_tests/test_ivy/(?!.*(?:__init__\.py|conftest\.py|helpers/.*|test_frontends/config/.*$)).*
+          )
   - repo: https://github.com/PyCQA/autoflake
-    rev: v2.2.0
+    rev: v2.3.0
     hooks:
       - id: autoflake
-  - repo: https://github.com/pycqa/flake8
-    rev: 6.1.0
-    hooks:
-      - id: flake8
-        exclude: ^.*__init__.py$
   - repo: https://github.com/PyCQA/docformatter
     rev: v1.7.5
     hooks:
       - id: docformatter
-  - repo: https://github.com/pycqa/pydocstyle
-    rev: 6.3.0
-    hooks:
-      - id: pydocstyle
-        # Exclude everything in frontends except __init__.py, and func_wrapper.py
-        exclude: 'ivy/functional/(frontends|backends)/(?!.*/func_wrapper\.py$).*(?!__init__\.py$)'
   - repo: https://github.com/unifyai/lint-hook
-    rev: 2ea80bc854c7f74b09620151028579083ff92ec2
+    rev: a72ffb17562d919311653d7f593cb537d1245c19
     hooks:
       - id: ivy-lint

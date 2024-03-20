@@ -17,10 +17,9 @@ class _ArrayWithActivations(abc.ABC):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.relu. This method simply wraps the
-        function, and so the docstring for ivy.relu also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.relu. This method simply
+        wraps the function, and so the docstring for ivy.relu also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -55,10 +54,9 @@ class _ArrayWithActivations(abc.ABC):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.leaky_relu. This method simply wraps
-        the function, and so the docstring for ivy.leaky_relu also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.leaky_relu. This method
+        simply wraps the function, and so the docstring for ivy.leaky_relu also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -97,10 +95,9 @@ class _ArrayWithActivations(abc.ABC):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.gelu. This method simply wraps the
-        function, and so the docstring for ivy.gelu also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.gelu. This method simply
+        wraps the function, and so the docstring for ivy.gelu also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -131,9 +128,14 @@ class _ArrayWithActivations(abc.ABC):
             self._data, approximate=approximate, complex_mode=complex_mode, out=out
         )
 
-    def sigmoid(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.sigmoid.
+    def sigmoid(
+        self: ivy.Array,
+        /,
+        *,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.sigmoid.
 
         This method simply wraps the function, and so the docstring for ivy.sigmoid also
         applies to this method with minimal changes.
@@ -142,6 +144,9 @@ class _ArrayWithActivations(abc.ABC):
         ----------
         self
             Input array
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output array for writing the result to. It must have the same shape
             the input broadcast to default: None
@@ -159,19 +164,19 @@ class _ArrayWithActivations(abc.ABC):
         >>> print(y)
         ivy.array([0.269, 0.731, 0.881])
         """
-        return ivy.sigmoid(self._data, out=out)
+        return ivy.sigmoid(self._data, complex_mode=complex_mode, out=out)
 
     def softmax(
         self: ivy.Array,
         /,
         *,
         axis: Optional[int] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.softmax. This method simply wraps the
-        function, and so the docstring for ivy.softmax also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.softmax. This method simply
+        wraps the function, and so the docstring for ivy.softmax also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -179,6 +184,9 @@ class _ArrayWithActivations(abc.ABC):
             input array.
         axis
             the axis or axes along which the softmax should be computed
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -195,7 +203,7 @@ class _ArrayWithActivations(abc.ABC):
         >>> print(y)
         ivy.array([0.422, 0.155, 0.422])
         """
-        return ivy.softmax(self._data, axis=axis, out=out)
+        return ivy.softmax(self._data, axis=axis, complex_mode=complex_mode, out=out)
 
     def softplus(
         self: ivy.Array,
@@ -206,10 +214,9 @@ class _ArrayWithActivations(abc.ABC):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.softplus. This method simply wraps the
-        function, and so the docstring for ivy.softplus also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.softplus. This method
+        simply wraps the function, and so the docstring for ivy.softplus also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -259,13 +266,13 @@ class _ArrayWithActivations(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        axis: Optional[int] = None,
+        axis: Optional[int] = -1,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.log_softmax. This method simply wraps
-        the function, and so the docstring for ivy.log_softmax also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.log_softmax. This method
+        simply wraps the function, and so the docstring for ivy.log_softmax
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -273,6 +280,9 @@ class _ArrayWithActivations(abc.ABC):
             input array.
         axis
             the axis or axes along which the log_softmax should be computed
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -293,18 +303,31 @@ class _ArrayWithActivations(abc.ABC):
         >>> y = x.log_softmax(x)
         ivy.array([-1.62, -0.221, -7.82 ])
         """
-        return ivy.log_softmax(self._data, axis=axis, out=out)
+        return ivy.log_softmax(
+            self._data,
+            axis=axis,
+            complex_mode=complex_mode,
+            out=out,
+        )
 
-    def mish(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.mish. This method simply wraps the
-        function, and so the docstring for ivy.mish also applies to this method with
-        minimal changes.
+    def mish(
+        self: ivy.Array,
+        /,
+        *,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.mish. This method simply
+        wraps the function, and so the docstring for ivy.mish also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
         self
             input array.
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -316,16 +339,24 @@ class _ArrayWithActivations(abc.ABC):
         >>> print(y)
         ivy.array([-0.30340147,  0.        ,  0.86509842])
         """
-        return ivy.mish(self._data, out=out)
+        return ivy.mish(self._data, complex_mode=complex_mode, out=out)
 
-    def hardswish(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
-        """
-        Apply the hardswish activation function element-wise.
+    def hardswish(
+        self: ivy.Array,
+        /,
+        *,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """Apply the hardswish activation function element-wise.
 
         Parameters
         ----------
         x
             input array
+        complex_mode
+            optional specifier for how to handle complex data types. See
+            ``ivy.func_wrapper.handle_complex_input`` for more detail.
         out
             optional output array, for writing the result to. It must have
             a shape that the inputs broadcast to.
@@ -354,4 +385,4 @@ class _ArrayWithActivations(abc.ABC):
             b: ivy.array([0., 5.])
         }
         """
-        return ivy.hardswish(self._data, out=out)
+        return ivy.hardswish(self._data, complex_mode=complex_mode, out=out)

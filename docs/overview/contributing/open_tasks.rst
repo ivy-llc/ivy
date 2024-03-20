@@ -3,118 +3,85 @@ Open Tasks
 
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`open tasks channel`: https://discord.com/channels/799879767196958751/985156466963021854
+.. _`open tasks thread`: https://discord.com/channels/799879767196958751/1189903501011202128
 .. _`issue description`: https://github.com/unifyai/ivy/issues/1526
 .. _`reference API`: https://numpy.org/doc/stable/reference/routines.linalg.html
 .. _`imports`: https://github.com/unifyai/ivy/blob/38dbb607334cb32eb513630c4496ad0024f80e1c/ivy/functional/frontends/numpy/__init__.py#L27
+.. _`Deep Dive`: ../deep_dive.rst
 
 Here, we explain all tasks which are currently open for contributions from the community!
 
 This section of the docs will be updated frequently, whereby new tasks will be added and completed tasks will be removed.
 The tasks outlined here are generally broad high-level tasks, each of which is made up of many individual sub-tasks, distributed across task-specific `ToDo List Issues <https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo>`_.
 
-Please read about `ToDo List Issues <https://unify.ai/docs/ivy/overview/contributing/the_basics.html#todo-list-issues>`_ in detail before continuing.
+Please read about :ref:`overview/contributing/the_basics:ToDo List Issues` in detail before continuing.
 All tasks should be selected and allocated as described in the ToDo List Issues section.
 We make no mention of task selection and allocation in the explanations below, which instead focus on the steps to complete only once a sub-task has been allocated to you.
 
 The tasks currently open are:
 
+#. Fixing Failing Tests
 #. Function Formatting
 #. Frontend APIs
 #. Ivy Experimental API
 
-We try to explain these tasks as clearly as possible, but in cases where things are not clear, then please feel free to reach out on `discord`_ in the `open tasks channel`_!
+We try to explain these tasks as clearly as possible, but in cases where things are not clear, then please feel free to reach out on `discord`_ in the `open tasks thread`_!
 
 Please always use the latest commit on GitHub when working on any of these tasks, **DO NOT** develop your code using the latest PyPI release of :code:`ivy`.
 
-Function Formatting
--------------------
+Fixing Failing Tests
+--------------------
 
-Currently, we have many ToDo list issues `open <https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3A%22Function+Reformatting%22+label%3AToDo>`_ for a general function formatting task, which is explained below.
+We've identified a range of functions and tests that fail the tests.
+The root of these issues is not always straightforward.
+In some instances, the problem may lie within the function implementations, while in others, it could be the way the tests were added previously.
+Certain failing tests are more urgent to fix than others, as mentioned in the sub-section below.
+We encourage contributions from the community to help tackle these challenges.
 
-Each function in each submodule should be updated to follow the implementation instructions given in the :ref:`Deep Dive` section.
-The updates should be applied for the:
+How to Contribute
+~~~~~~~~~~~~~~~~~
 
-#. ivy API
-#. all backend APIs
-#. array instance methods
-#. container instance methods
-#. array operators
-#. array reverse operators
-#. container operators
-#. container reverse operators
+**Identifying Issues**
 
-The :ref:`Deep Dive` is an **essential** resource for learning how each of these functions/methods should be implemented.
-Before starting any contribution task, you should go through the :ref:`Deep Dive`, and familiarize yourself with the content.
+To get started, visit our issues page: `Failing Tests <https://github.com/unifyai/ivy/issues?q=is%3Aissue+is%3Aopen+label%3A%22Failing+Test%22+label%3A%22ToDo%22>`_.
+Here, you will find a list of open issues labeled as "Failing Test" and "ToDo".
+These issues are categorised under various frameworks supported by our repository.
+We encourage you to select a framework you're comfortable with or interested in contributing to.
 
-At the time of writing, many of the functions are not implemented as they should be.
-You will need to make changes to the current implementations, but you do not need to address *all* sections of the :ref:`Deep Dive` in detail.
-Specifically, you **do not** need to address the following:
+**Selecting a Test**
 
-#. Implement the hypothesis testing for the function
-#. Get the tests passing for your function, if they are failing before you start
+Within each framework, tests are classified as either "Priority Open" or "Other Open."
+While we prioritize fixing the "Priority Open" tests, contributions towards any test, including those labeled "Other Open," are highly valuable.
+Each test issue is linked directly to the specific failing workflow.
+This linkage provides you with immediate access to the details of what exactly is failing and the context around it.
 
-However, everything else covered in the :ref:`Deep Dive` must be addressed.
-Some common important tasks are:
+**Making Your Contribution**
 
-#. Remove all :code:`lambda` and direct bindings for the backend functions (in :code:`ivy.functional.backends`), with each function instead defined using :code:`def`.
-#. Implement the following if they don't exist but should do: :class:`ivy.Array` instance method, :class:`ivy.Container` instance method, :class:`ivy.Array` special method, :class:`ivy.Array` reverse special method, :class:`ivy.Container` special method, :class:`ivy.Container` reverse special method.
-#. Make sure that the aforementioned methods are added into the correct category-specific parent class, such as :class:`ivy.ArrayWithElementwise`, :class:`ivy.ContainerWithManipulation` etc.
-#. Correct all of the :ref:`Function Arguments` and the type hints for every function **and** its *relevant methods*, including those you did not implement yourself.
-#. Add the correct :ref:`Docstrings` to every function **and** its *relevant methods*, including those you did not implement yourself.
-#. Add thorough :ref:`Docstring Examples` for every function **and** its *relevant methods* and ensure they pass the docstring tests.
+After selecting a test to work on, please make the necessary changes and create a PR referring to `the basics <the_basics.rst>`_.
+Ensure that your solution addresses the issue effectively and doesn't introduce new errors.
+Once you're confident in your fix, submit a pull request to the main repository.
+Our team will review your contribution, provide feedback if necessary, and then merge your changes once we're good to go.
 
-Formatting checklist
-~~~~~~~~~~~~~~~~~~~~
+**Video**
 
-After creating your Pull Request on github, you should then produce the checklist for the formatting task as follows: 
+.. raw:: html
 
-1. Add a comment with the following format: :code:`add_reformatting_checklist_<category_name>` on your PR, where *<category_name>* is the name of the category that the function belongs to.
-   An example of this is shown below.
-
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_generator.png?raw=true
-   :width: 420
-
-Using this formatting will then trigger our github automation bots to update your comment with the proper markdown text for the checklist.
-These updates might take a few moments to take effect, so please be patient 🙂.
-
-2. After adding the checklist to your PR, you should then modify this checklist with the status of each item according to the symbols(emojis) within the LEGEND section.
-
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_legend.png?raw=true
-   :width: 420
-
-3. When all check items are marked as (✅, ⏩, or 🆗), you should request a review for your PR and we will start checking your implementation and marking the items as complete using the checkboxes next to them.
-
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_checked.png?raw=true
-   :width: 420
-
-4. In case you are stuck or need help with one of the checklist items, please add the 🆘 symbol next to the item on the checklist, and proceed to add a comment elaborating on your point of struggle with this item.
-The PR assignee will then see this comment and address your issues.
-
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_SOS.png?raw=true
-   :width: 420
-
-**Notes**: 
-
-1. It is important that the PR author is the one to add the checklist generating comment in order to ensure they will have access to edit and update it later.
-2. The checklist items' statuses should be manually updated by the PR author.
-   It does not automatically run any tests to update them!
-3. Do not edit the checklist text, only the emoji symbols. 😅
-4. Please refrain from using the checkboxes next to checklist items.
-
+    <iframe width="420" height="315" allow="fullscreen;"
+    src="https://www.youtube.com/embed/EmN2T_O_Ggw" class="video" allowfullscreen="true">
+    </iframe>
 
 Frontend APIs
 -------------
 
-For this task, the goal will be to implement functions for each of the frontend functional APIs (see :ref:`Ivy as a Transpiler`), with frontend APIs implemented for: :code:`JAX`, :code:`NumPy`, :code:`TensorFlow` :code:`PyTorch`, :code:`Paddle`, :code:`Scipy`, :code:`MXNet` and :code:`MindSpore`.
+For this task, the goal will be to implement functions for each of the frontend functional APIs (see `Ivy as a Transpiler <../design/ivy_as_a_transpiler.rst>`_), with frontend APIs implemented for: :code:`JAX`, :code:`NumPy`, :code:`TensorFlow` :code:`PyTorch`, :code:`Paddle`, :code:`Scipy`, :code:`MXNet` and :code:`MindSpore`.
 
 Currently, we have many ToDo list issues `open <https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo+label%3A%22JAX+Frontend%22%2C%22TensorFlow+Frontend%22%2C%22PyTorch+Frontend%22%2C%22NumPy+Frontend%22+-label%3A%22Test+Sweep%22>`_ for this task.
 
 The general workflow for this task is:
 
-#. Find the correct location for the function by following the :ref:`Where to place a frontend function` subsection below
-#. Implement the function by following the :ref:`Ivy Frontends` guide
-#. Write tests for your function by following the :ref:`Ivy Frontend Tests` guide
+#. Find the correct location for the function by following the :ref:`overview/contributing/open_tasks:Where to place a frontend function` subsection below
+#. Implement the function by following the `Ivy Frontends <../deep_dive/ivy_frontends.rst>`_ guide
+#. Write tests for your function by following the `Ivy Frontend Tests <../deep_dive/ivy_frontends_tests.rst>`_ guide
 #. Verify that the tests for your function are passing
 
 If you feel as though there is an ivy function :code:`ivy.<func_name>` clearly missing, which would make your frontend function much simpler to implement, then you should first do the following:
@@ -128,7 +95,7 @@ At some point, a member of our team will assess whether it should be added, and 
 
 After this, you then have two options for how to proceed:
 
-#. Try to implement the function as a composition of currently present ivy functions, as explained in the "Temporary Compositions" sub-section of the :ref:`Ivy Frontends` guide, and add the :code:`#ToDo` comment in the implementation as explained.
+#. Try to implement the function as a composition of currently present ivy functions, as explained in the :ref:`overview/deep_dive/ivy_frontends:Short Frontend Implementations` sub-section of the `Ivy Frontends <../deep_dive/ivy_frontends.rst>`_ guide, and add the :code:`#ToDo` comment in the implementation as explained.
    Once the PR is merged, your sub-task issue will then be closed as normal.
 #. Alternatively, if you do not want to try and implement the frontend function compositionally, or if this is not feasible, then you can simply choose another frontend function to work on.
    You could also choose to work on another open task entirely at this point if you wanted to.
@@ -217,9 +184,86 @@ However, you can still use the checklist as a reference in cases where you do un
 
 **Notes**:
 
-1. More details on how to update the checklist items can be found in the :ref:`Formatting checklist` part of our docs.
+1. More details on how to update the checklist items can be found in the :ref:`overview/contributing/open_tasks:Formatting checklist` part of our docs.
 2. Do not edit the checklist text, only the emoji symbols.
 3. Please refrain from using the checkboxes next to checklist items.
+
+
+Function Formatting
+-------------------
+
+Currently, we have many ToDo list issues `open <https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3A%22Function+Reformatting%22+label%3AToDo>`_ for a general function formatting task, which is explained below.
+
+Each function in each submodule should be updated to follow the implementation instructions given in the `Deep Dive`_ section.
+The updates should be applied for the:
+
+#. ivy API
+#. all backend APIs
+#. array instance methods
+#. container instance methods
+#. array operators
+#. array reverse operators
+#. container operators
+#. container reverse operators
+
+The `Deep Dive`_ is an **essential** resource for learning how each of these functions/methods should be implemented.
+Before starting any contribution task, you should go through the `Deep Dive`_, and familiarize yourself with the content.
+
+At the time of writing, many of the functions are not implemented as they should be.
+You will need to make changes to the current implementations, but you do not need to address *all* sections of the `Deep Dive`_ in detail.
+Specifically, you **do not** need to address the following:
+
+#. Implement the hypothesis testing for the function
+#. Get the tests passing for your function, if they are failing before you start
+
+However, everything else covered in the `Deep Dive`_ must be addressed.
+Some common important tasks are:
+
+#. Remove all :code:`lambda` and direct bindings for the backend functions (in :code:`ivy.functional.backends`), with each function instead defined using :code:`def`.
+#. Implement the following if they don't exist but should do: :class:`ivy.Array` instance method, :class:`ivy.Container` instance method, :class:`ivy.Array` special method, :class:`ivy.Array` reverse special method, :class:`ivy.Container` special method, :class:`ivy.Container` reverse special method.
+#. Make sure that the aforementioned methods are added into the correct category-specific parent class, such as :class:`ivy.ArrayWithElementwise`, :class:`ivy.ContainerWithManipulation` etc.
+#. Correct all of the `Function Arguments <../deep_dive/function_arguments.rst>`_ and the type hints for every function **and** its *relevant methods*, including those you did not implement yourself.
+#. Add the correct `Docstrings <../deep_dive/docstrings.rst>`_ to every function **and** its *relevant methods*, including those you did not implement yourself.
+#. Add thorough `Docstring Examples <../deep_dive/docstring_examples.rst>`_ for every function **and** its *relevant methods* and ensure they pass the docstring tests.
+
+Formatting checklist
+~~~~~~~~~~~~~~~~~~~~
+
+After creating your Pull Request on github, you should then produce the checklist for the formatting task as follows:
+
+1. Add a comment with the following format: :code:`add_reformatting_checklist_<category_name>` on your PR, where *<category_name>* is the name of the category that the function belongs to.
+   An example of this is shown below.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_generator.png?raw=true
+   :width: 420
+
+Using this formatting will then trigger our github automation bots to update your comment with the proper markdown text for the checklist.
+These updates might take a few moments to take effect, so please be patient 🙂.
+
+2. After adding the checklist to your PR, you should then modify this checklist with the status of each item according to the symbols(emojis) within the LEGEND section.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_legend.png?raw=true
+   :width: 420
+
+3. When all check items are marked as (✅, ⏩, or 🆗), you should request a review for your PR and we will start checking your implementation and marking the items as complete using the checkboxes next to them.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_checked.png?raw=true
+   :width: 420
+
+4. In case you are stuck or need help with one of the checklist items, please add the 🆘 symbol next to the item on the checklist, and proceed to add a comment elaborating on your point of struggle with this item.
+The PR assignee will then see this comment and address your issues.
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/open_tasks/checklist_SOS.png?raw=true
+   :width: 420
+
+**Notes**:
+
+1. It is important that the PR author is the one to add the checklist generating comment in order to ensure they will have access to edit and update it later.
+2. The checklist items' statuses should be manually updated by the PR author.
+   It does not automatically run any tests to update them!
+3. Do not edit the checklist text, only the emoji symbols. 😅
+4. Please refrain from using the checkboxes next to checklist items.
+
 
 Ivy Experimental API
 --------------------
@@ -233,29 +277,29 @@ There is only one central ToDo list `issue <https://github.com/unifyai/ivy/issue
 
 A general workflow for these tasks would be:
 
-#. Analyze the function type, we have a very detailed section for it in the deep dive `Function Types Guide <https://unify.ai/docs/ivy/overview/deep_dive/function_types.html>`_
-#. Every function will have a different file structure according to the function type, refer to :ref:`Where to place a backend function` subsection below.
-#. Implement the container instance method in :mod:`ivy/container/experimental/[relevant_submodule].py` and the array instance method 
+#. Analyze the function type, we have a very detailed section for it in the deep dive `Function Types Guide <../deep_dive/function_types.rst>`_
+#. Every function will have a different file structure according to the function type, refer to :ref:`overview/contributing/open_tasks:Where to place a backend function` subsection below.
+#. Implement the container instance method in :mod:`ivy/container/experimental/[relevant_submodule].py` and the array instance method
    in :mod:`ivy/array/experimental/[relevant_submodule].py`
-#. Write tests for the function using the :ref:`Ivy Tests` guide, and make sure they are passing.
+#. Write tests for the function using the `Ivy Tests <../deep_dive/ivy_tests.rst>`_ guide, and make sure they are passing.
 
 A few points to keep in mind while doing this:
 
 #. Make sure all the positional arguments are positional-only and optional arguments are keyword-only.
 #. In case some tests require function-specific parameters, you can create composite hypothesis strategies using the :code:`draw` function in the hypothesis library.
 
-If you’re stuck on a function which requires complex compositions, feel free to reselect a function 
+If you’re stuck on a function which requires complex compositions, feel free to reselect a function
 
 Extending the Ivy API
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-We primarily invite contributors to work on the tasks listed as :ref:`Open Tasks`, as these are on our current roadmap. As a result of this, we prompt everyone interested in contributing to our Experimental API to do so under the `Ivy Experimental API Open Task`_.
+We primarily invite contributors to work on the tasks listed as :ref:`overview/contributing/open_tasks:Open Tasks`, as these are on our current roadmap. As a result of this, we prompt everyone interested in contributing to our Experimental API to do so under the :ref:`Ivy Experimental API Open Task <overview/contributing/open_tasks:Ivy Experimental API>`.
 
-However, if you would like to extend Ivy's functionality with a new function, you are invited to open an issue using the *Missing Function Suggestion* template as described in `Creating an Issue on Ivy’s GitHub using a Template <https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#creating-an-issue-on-ivy-s-github-using-a-template>`_.
+However, if you would like to extend Ivy's functionality with a new function, you are invited to open an issue using the *Missing Function Suggestion* template as described in :ref:`overview/contributing/open_tasks:Creating an Issue on Ivy's GitHub using a Template`.
 
 In this template form, you'll be asked to fill in the reason you think we should implement the suggested function, as well as the links to any native implementations of the suggested function.
 
-We will review your issue as soon as possible and let you know if it's been accepted or not. In case we deem that the suggested function fits our roadmap, we will add it as a subtask to the `Ivy Experimental API Open Task`_.
+We will review your issue as soon as possible and let you know if it's been accepted or not. In case we deem that the suggested function fits our roadmap, we will add it as a subtask to the `Ivy Experimental API Open Task <overview/contributing/open_tasks:Ivy Experimental API>`_.
 
 Where to place a backend function
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -267,15 +311,15 @@ There are multiple types of backend functions as discussed above, we will go thr
 **Primary Functions**
 
 Implement the function in :mod:`ivy/functional/ivy/experimental/[relevant_submodule].py` simply deferring to their backend-specific implementation
-(where ivy.current_backend(x).function_name() is called), refer to the `Ivy API Guide <https://unify.ai/docs/ivy/overview/deep_dive/navigating_the_code.html#ivy-api>`_
+(where ivy.current_backend(x).function_name() is called), refer to the :ref:`Ivy API Guide <overview/deep_dive/navigating_the_code:Ivy API>`
 to get a clearer picture of how this must be done. Then, implement the functions in each of the backend files :mod:`ivy/functional/backends/backend_name/experimental/[relevant_submodule].py`,
-you can refer to the `Backend API Guide <https://unify.ai/docs/ivy/overview/deep_dive/navigating_the_code.html#backend-api>`_ for this.
+you can refer to the :ref:`Backend API Guide <overview/deep_dive/navigating_the_code:Backend API>` for this.
 
 **Compositional Functions**
 
 Implement the function in :mod:`ivy/functional/ivy/experimental/[relevant_submodule].py`, we will not use the primary function approach in this
 case, the implementation will be a composition of functions from Ivy's functional API. You can refer to
-`Compositional Functions Guide <https://unify.ai/docs/ivy/overview/deep_dive/function_types.html#compositional-functions>`_ for a better understanding of this.
+:ref:`overview/deep_dive/function_types:Compositional Functions` for a better understanding of this.
 You don't need to add any implementation in any other file in this case.
 
 **Mixed Functions**
@@ -287,8 +331,8 @@ will be a composition of functions from Ivy's functional API. After you are done
 
 **Other Function Types**
 
-`Standalone Functions <https://unify.ai/docs/ivy/overview/deep_dive/function_types.html#standalone-functions>`_, `Nestable Functions <https://unify.ai/docs/ivy/overview/deep_dive/function_types.html#nestable-functions>`_ and
-`Convenience Functions <https://unify.ai/docs/ivy/overview/deep_dive/function_types.html#convenience-functions>`_ are the ones which you will rarely come across
+:ref:`overview/deep_dive/function_types:Standalone Functions`, :ref:`overview/deep_dive/function_types:Nestable Functions` and
+:ref:`overview/deep_dive/function_types:Convenience Functions` are the ones which you will rarely come across
 while implementing a function from the ToDo List but they are an essential part of the Ivy API.
 
 
@@ -315,4 +359,4 @@ Creating an Issue on Ivy's GitHub using a Template
 
 This should have hopefully given you a good understanding of the basics for contributing.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `open tasks channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `open tasks thread`_!

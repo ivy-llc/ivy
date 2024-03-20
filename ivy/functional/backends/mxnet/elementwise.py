@@ -463,8 +463,8 @@ def positive(
 
 
 def pow(
-    x1: Union[(float, None, mx.ndarray.NDArray)],
-    x2: Union[(float, None, mx.ndarray.NDArray)],
+    x1: Union[(None, mx.ndarray.NDArray)],
+    x2: Union[(int, float, None, mx.ndarray.NDArray)],
     /,
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,

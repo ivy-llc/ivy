@@ -873,7 +873,7 @@ def test_array__ipow__(
     input_dtype, x = dtype_and_x
 
     # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtype))
+    assume("bfloat16" not in input_dtype)
 
     # Make sure x2 isn't a float when x1 is integer
     assume(
@@ -1502,7 +1502,7 @@ def test_array__pow__(
     input_dtype, x = dtype_and_x
 
     # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtype))
+    assume("bfloat16" not in input_dtype)
 
     # Make sure x2 isn't a float when x1 is integer
     assume(
@@ -1881,7 +1881,7 @@ def test_array__rpow__(
     input_dtype, x = dtype_and_x
 
     # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in input_dtype))
+    assume("bfloat16" not in input_dtype)
 
     # Make sure x2 isn't a float when x1 is integer
     assume(
@@ -2257,7 +2257,8 @@ def test_array_function():
             return HANDLED_FUNCTIONS[func](*args, **kwargs)
 
     def implements(ivy_function):
-        """Register an __ivy_array_function__ implementation for MyArray objects."""
+        """Register an __ivy_array_function__ implementation for MyArray
+        objects."""
 
         def decorator(func):
             HANDLED_FUNCTIONS[ivy_function] = func
@@ -2538,3 +2539,19 @@ def test_array_property_strides(dtype_x, backend_fw):
         ivy_backend.utils.assertions.check_equal(
             x.strides, ivy_backend.to_numpy(x).strides, as_array=False
         )
+
+
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    op=st.sampled_from(
+        ["!=", ">", "<", ">=", "<=", "*", "/", "%", "==", "&", "@", "**", "/"],
+    ),
+)
+def test_dunder_wrapping(backend_fw, op):
+    ivy.set_backend(backend_fw)
+    x = ivy.native_array([1])
+    y = ivy.array([1])
+    assert ivy.is_ivy_array(y)
+    assert ivy.is_native_array(x)
+    res = eval(f"x {op} y")
+    assert ivy.is_ivy_array(res)

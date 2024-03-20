@@ -24,7 +24,7 @@ jobs:
           cat combined_test_results.txt
 
   run_tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -51,6 +51,15 @@ jobs:
           submodules: "recursive"
           fetch-depth: 100
 
+      - name: Install ivy and fetch binaries
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          cd ..
+
       - name: Get Job URL
         uses: Tiryoh/gha-jobid-action@v0
         id: jobs
@@ -62,14 +71,11 @@ jobs:
         env:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
-          source ./ivy/clone_mapping.sh master${{ matrix.branch }}
-          pip install pydriller pymongo 
+          source ./ivy/scripts/shell/clone_mapping.sh master${{ matrix.branch }}
+          pip install pydriller pymongo
           cp Mapping/tests.pbz2 ivy/
           cd ivy
-          mkdir .ivy
-          touch .ivy/key.pem
-          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          python determine_tests.py ${{ matrix.branch }}
+          python scripts/determine_tests/determine_tests.py ${{ matrix.branch }}
           cd ..
           cp ivy/tests.pbz2 Mapping/
           cd Mapping
@@ -83,7 +89,7 @@ jobs:
         run: |
           cd ivy
           set -o pipefail
-          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} 'false' ${{ steps.jobs.outputs.html_url }} | tee test_results_${{ matrix.branch }}.txt
+          python scripts/run_tests/run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} 'false' 'false' 'false' ${{ steps.jobs.outputs.html_url }} | tee test_results_${{ matrix.branch }}.txt
         continue-on-error: true
 
       - name: Upload test results

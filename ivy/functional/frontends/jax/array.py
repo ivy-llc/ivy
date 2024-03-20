@@ -36,7 +36,7 @@ class Array:
 
     @property
     def shape(self):
-        return self.ivy_array.shape
+        return tuple(self.ivy_array.shape.shape)
 
     @property
     def at(self):
@@ -74,7 +74,7 @@ class Array:
                 f"Dtype {self.dtype} is not castable to {dtype}"
             )
 
-    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    @with_unsupported_dtypes({"2.6.0 and below": ("float16", "bfloat16")}, "paddle")
     def argmax(
         self,
         /,
@@ -90,7 +90,7 @@ class Array:
             keepdims=keepdims,
         )
 
-    @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+    @with_unsupported_dtypes({"2.6.0 and below": ("float16", "bfloat16")}, "paddle")
     def argmin(
         self,
         /,
@@ -105,6 +105,9 @@ class Array:
             out=out,
             keepdims=keepdims,
         )
+
+    def squeeze(self, axis=None):
+        return jax_frontend.numpy.squeeze(self, axis=axis)
 
     def conj(self, /):
         return jax_frontend.numpy.conj(self._ivy_array)
@@ -381,6 +384,19 @@ class Array:
             self, axis=axis, out=out, keepdims=keepdims, where=where
         )
 
+    def std(
+        self, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None
+    ):
+        return jax_frontend.numpy.std(
+            self,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            ddof=ddof,
+            keepdims=keepdims,
+            where=where,
+        )
+
     def var(
         self, *, axis=None, dtype=None, out=None, ddof=False, keepdims=False, where=None
     ):
@@ -393,6 +409,9 @@ class Array:
             keepdims=keepdims,
             where=where,
         )
+
+    def swapaxes(self, axis1, axis2):
+        return jax_frontend.numpy.swapaxes(self, axis1=axis1, axis2=axis2)
 
 
 # Jax supports DeviceArray from 0.4.13 and below

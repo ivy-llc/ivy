@@ -42,6 +42,15 @@ jobs:
           submodules: "recursive"
           fetch-depth: 100
 
+      - name: Install ivy and fetch binaries
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          cd ..
+
       - name: Get Job URL
         uses: Tiryoh/gha-jobid-action@v0
         id: jobs
@@ -53,12 +62,9 @@ jobs:
         run: |
           pip3 install pymongo
           cd ivy
-          mkdir .ivy
-          touch .ivy/key.pem
-          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          python run_tests_CLI/filter_tests.py ${{ matrix.branch }}
+          python scripts/setup_tests/filter_tests.py ${{ matrix.branch }}
           set -o pipefail
-          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} 'false' ${{ steps.jobs.outputs.html_url }} | tee test_results_${{ matrix.branch }}.txt
+          python scripts/run_tests/run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} 'false' 'false' 'false' ${{ steps.jobs.outputs.html_url }} | tee test_results_${{ matrix.branch }}.txt
         continue-on-error: true
 
       - name: Upload test results

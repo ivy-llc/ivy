@@ -56,15 +56,12 @@ RUN pip3 install --no-cache-dir torch --target '/opt/fw/torch' --extra-index-url
 RUN export ver=$(pip show torch --path '/opt/fw/torch' | grep Version | cut -d ' ' -f2) && \
     pip3 install --target '/opt/fw/torch' --no-cache-dir --upgrade torch-scatter -f https://data.pyg.org/whl/torch-$ver.html
 
-
 # requirement mappings directs which dependency to be installed and where
 COPY /docker/requirement_mappings.json .
 SHELL ["/bin/bash", "-c"]
 
 # installing requirements based on mappings in location /opt/fw/$framework
-RUN jq -r 'to_entries[] | select(.value != [""]) | .key as $dir | .value[] | @sh "/opt/fw/\($dir) \(.)"' requirement_mappings.json | xargs -I {} sh -c 'printf "Installing %s\n" $2 && pip install --ignore-installed --target $1 $2' sh {}
-
-
+RUN jq -r 'to_entries[] | select(.value != [""]) | .key as $dir | .value[] | @sh "/opt/fw/\($dir) \(.)"' requirement_mappings.json | xargs -I {} sh -c 'printf "Installing %s\n" $2 && pip install --ignore-installed --target $1 $2 --extra-index-url  https://download.pytorch.org/whl/cpu --no-cache-dir' sh {}
 
 # install the requirements.txt, optional.txt with the mapped dependencies filtered out
 RUN pip install --upgrade -r  requirements.txt &&\
@@ -73,9 +70,9 @@ RUN pip install --upgrade -r  requirements.txt &&\
 
 
 # add all the directories to environment path so that python knows where to find them
-ENV PYTHONPATH "/opt/fw/mxnet:/opt/fw/numpy:/opt/fw/jax:/opt/fw/torch:/opt/fw/tensorflow:/opt/fw/paddle:/opt/miniconda/envs/multienv/bin"
+ENV PYTHONPATH "/opt/fw/mxnet:/opt/fw/numpy:/opt/fw/tensorflow:/opt/fw/jax:/opt/fw/torch:/opt/fw/paddle:/opt/miniconda/envs/multienv/bin"
 
-COPY run_tests_CLI/test_dependencies.py .
+COPY scripts/test_dependencies.py .
 RUN python3 test_dependencies.py -fp requirements.txt,optional.txt && \
     rm -rf requirements.txt && \
     rm -rf optional.txt && \

@@ -11,7 +11,7 @@ from hypothesis.database import (
 from hypothesis.extra.redis import RedisExampleDatabase
 
 
-hypothesis_cache = os.getcwd() + "/.hypothesis/examples/"
+hypothesis_cache = f"{os.getcwd()}/.hypothesis/examples/"
 redis_connect_dev = None
 redis_connect_master = None
 try:
@@ -53,7 +53,7 @@ def pytest_terminal_summary(terminalreporter):
         return
 
     passed_ratio = 1 - (session.testsfailed / session.testscollected)
-    text = " {:.1%} of {} passed ".format(passed_ratio, session.testscollected)
+    text = f" {passed_ratio:.1%} of {session.testscollected} passed "
     text = text.center(terminalreporter._screen_width, "=")
     terminalreporter.write(content=Fore.GREEN + text)
     for key in mod_backend:
@@ -109,7 +109,7 @@ def pytest_configure(config):
     max_examples = getopt("--num-examples")
     deadline = getopt("--deadline")
     if (
-        os.getenv("REDIS_URL", default=False)
+        os.getenv("REDIS_URL", default=None)
         and os.environ["REDIS_URL"]
         and is_db_available(
             master=True,
@@ -139,6 +139,8 @@ def pytest_configure(config):
 
     if max_examples:
         profile_settings["max_examples"] = max_examples
+    else:
+        profile_settings["max_examples"] = 10
     if deadline:
         profile_settings["deadline"] = deadline
 

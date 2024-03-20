@@ -1,7 +1,6 @@
 # global
 from typing import Optional, Union, Sequence
 import paddle
-from ivy.functional.backends.paddle.device import to_device
 from ivy import with_unsupported_device_and_dtypes
 from ivy.functional.backends.paddle import backend_version
 from ivy.utils.exceptions import IvyNotImplementedException
@@ -17,7 +16,7 @@ from ivy import with_supported_device_and_dtypes
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -71,7 +70,7 @@ def beta(
     dist = paddle.distribution.Beta(alpha, beta)
     sample = dist.sample(shape)
     sample = paddle.cast(sample, dtype)
-    return to_device(sample, device) if device is not None else sample
+    return sample
 
 
 def gamma(
@@ -92,8 +91,8 @@ def poisson(
     lam: Union[float, paddle.Tensor],
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: core.Place,
-    dtype: paddle.dtype,
+    device: core.Place = None,
+    dtype: paddle.dtype = None,
     seed: Optional[int] = None,
     fill_value: Optional[Union[float, int]] = 0,
     out: Optional[paddle.Tensor] = None,
@@ -123,11 +122,12 @@ def bernoulli(
     *,
     logits: Union[float, paddle.Tensor] = None,
     shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
-    device: core.Place,
+    device: core.Place = None,
     dtype: paddle.dtype,
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    dtype = dtype if dtype is not None else probs.dtype
     if seed is not None:
         paddle.seed(seed)
     if probs is not None:
@@ -135,7 +135,9 @@ def bernoulli(
     elif logits is not None:
         probs = ivy.softmax(logits)
     probs = paddle.cast(probs, dtype)
-    probs = paddle.unsqueeze(probs, 0) if len(probs.shape) == 0 else probs
+    squeeze = len(probs.shape) == 0
+    probs = paddle.unsqueeze(probs, 0) if squeeze else probs
     probs = paddle.maximum(probs, paddle.full_like(probs, 1e-6))
     sample = paddle.bernoulli(probs)
-    return to_device(sample, device)
+    sample = paddle.squeeze(sample, 0) if squeeze else sample
+    return sample

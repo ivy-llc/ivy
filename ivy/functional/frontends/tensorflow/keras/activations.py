@@ -16,8 +16,23 @@ ACTIVATION_FUNCTIONS = [
 ]
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+# note: defined to avoid AST call extraction of
+# 'tf_frontend.keras.activations.__dict__.items()
+# or 'tf_frontend.keras.activations.__dict__.values()'
+def _get_tf_keras_activations():
+    return tf_frontend.keras.activations.__dict__.items()
+
+
+# --- Main --- #
+# ------------ #
+
+
 @with_supported_dtypes(
-    {"2.13.0 and below": ("float16", "float32", "float64")},
+    {"2.15.0 and below": ("float16", "float32", "float64")},
     "tensorflow",
 )
 def deserialize(name, custom_objects=None):
@@ -47,7 +62,7 @@ def deserialize(name, custom_objects=None):
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float16", "float32", "float64")},
+    {"2.15.0 and below": ("bfloat16", "float16", "float32", "float64")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
@@ -103,12 +118,52 @@ def relu(x, alpha=0.0, max_value=None, threshold=0.0):
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("float16", "float32", "float64")},
+    {"2.15.0 and below": ("float16", "float32", "float64")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
 def selu(x):
     return ivy.selu(x)
+
+
+@with_supported_dtypes(
+    {"2.15.0 and below": ("float16", "float32", "float64")},
+    "tensorflow",
+)
+def serialize(activation, use_legacy_format=False, custom_objects=None):
+    # If the activation function is None, return None
+    if activation is None:
+        return None
+
+    # If the activation function is already a string, return it
+    elif isinstance(activation, str):
+        return activation
+
+    # If the activation function is callable (a function), get its name
+    elif callable(activation):
+        # Check if the function is in the custom_objects dictionary
+        if custom_objects:
+            for name, custom_func in custom_objects.items():
+                if custom_func == activation:
+                    return name
+
+        tf_keras_frontend_activations = _get_tf_keras_activations()
+
+        # Check if the function is in the ACTIVATION_FUNCTIONS list
+        if activation.__name__ in ACTIVATION_FUNCTIONS:
+            return activation.__name__
+
+        # Check if the function is in the TensorFlow frontend activations
+        elif activation in [fn for name, fn in tf_keras_frontend_activations]:
+            for name, tf_func in tf_keras_frontend_activations:
+                if tf_func == activation:
+                    return name
+
+        else:
+            raise ValueError(f"Unknown activation function: {activation}.")
+
+    else:
+        raise ValueError(f"Could not interpret activation function: {activation}")
 
 
 @to_ivy_arrays_and_back

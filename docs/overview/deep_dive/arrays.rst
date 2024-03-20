@@ -21,11 +21,11 @@ Arrays
 .. _`__truediv__`: https://github.com/unifyai/ivy/blob/e4d9247266f5d99faad59543923bb24b88a968d9/ivy/array/__init__.py#L319
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`arrays channel`: https://discord.com/channels/799879767196958751/933380487353872454
+.. _`arrays thread`: https://discord.com/channels/799879767196958751/1189905906905919609
 .. _`wrapped logic`: https://github.com/unifyai/ivy/blob/6a729004c5e0db966412b00aa2fce174482da7dd/ivy/func_wrapper.py#L95
 .. _`NumPy's`: https://numpy.org/doc/stable/user/basics.dispatch.html#basics-dispatch
 .. _`PyTorch's`: https://pytorch.org/docs/stable/notes/extending.html#extending-torch
-There are two types of array in Ivy, there is the :class:`ivy.NativeArray` and also the :class:`ivy.Array`.
+There are two types of arrays in Ivy, there is the :class:`ivy.NativeArray` and also the :class:`ivy.Array`.
 
 Native Array
 ------------
@@ -44,7 +44,7 @@ All functions in the Ivy functional API which accept *at least one array argumen
 The only exceptions to this are functions in the `nest <https://github.com/unifyai/ivy/blob/906ddebd9b371e7ae414cdd9b4bf174fd860efc0/ivy/functional/ivy/nest.py>`_ module and the `meta <https://github.com/unifyai/ivy/blob/906ddebd9b371e7ae414cdd9b4bf174fd860efc0/ivy/functional/ivy/meta.py>`_ module, which have no instance method implementations.
 
 The organization of these instance methods follows the same organizational structure as the files in the functional API.
-The :class:`ivy.Array` class `inherits`_ from many category-specific array classes, such as `ArrayWithElementwise`_, each of which implement the category-specific instance methods.
+The :class:`ivy.Array` class `inherits`_ from many category-specific array classes, such as `ArrayWithElementwise`_, each of which implements the category-specific instance methods.
 
 Each instance method simply calls the functional API function internally, but passes in :code:`self._data` as the first *array* argument.
 `ivy.Array.add`_ is a good example.
@@ -85,7 +85,7 @@ Therefore, most functions in Ivy must adopt the following pipeline:
 #. call the backend-specific function, passing in these :class:`ivy.NativeArray` instances
 #. convert all of the :class:`ivy.NativeArray` instances which are returned from the backend function back into :class:`ivy.Array` instances, and return
 
-Given the repeating nature of these steps, this is all entirely handled in the `inputs_to_native_arrays`_ and `outputs_to_ivy_arrays`_ wrappers, as explained in the :ref:`Function Wrapping` section.
+Given the repeating nature of these steps, this is all entirely handled in the `inputs_to_native_arrays`_ and `outputs_to_ivy_arrays`_ wrappers, as explained in the `Function Wrapping <function_wrapping.rst>`_ section.
 
 All Ivy functions *also* accept :class:`ivy.NativeArray` instances in the input.
 This is for a couple of reasons.
@@ -93,11 +93,11 @@ Firstly, :class:`ivy.Array` instances must be converted to :class:`ivy.NativeArr
 Secondly, this makes it easier to combine backend-specific code with Ivy code, without needing to explicitly wrap any arrays before calling sections of Ivy code.
 
 Therefore, all input arrays to Ivy functions have type :code:`Union[ivy.Array, ivy.NativeArray]`, whereas the output arrays have type :class:`ivy.Array`.
-This is further explained in the :ref:`Function Arguments` section.
+This is further explained in the `Function Arguments <function_arguments.rst>`_ section.
 
 However, :class:`ivy.NativeArray` instances are not permitted for the :code:`out` argument, which is used in most functions.
 This is because the :code:`out` argument dictates the array to which the result should be written, and so it effectively serves the same purpose as the function return.
-This is further explained in the :ref:`Inplace Updates` section.
+This is further explained in the `Inplace Updates <inplace_updates.rst>`_ section.
 
 As a final point, extra attention is required for *compositional* functions, as these do not directly defer to a backend implementation.
 If the first line of code in a compositional function performs operations on the input array, then this will call the special methods on an :class:`ivy.NativeArray` and not on an :class:`ivy.Array`.
@@ -113,7 +113,7 @@ Ivy's functional API and its functions can easily be integrated with non-Ivy cla
 To make use of that feature, the class must contain an implementation for these functions and it must contain an implementation for the function :code:`__ivy_array_function__`. If a non-Ivy class is passed to an Ivy function, a call to this class's :code:`__ivy_array_function__` is made which directs Ivy's function to handle that input type correctly. This allows users to define custom implementations for any of the functions that can be found in Ivy's functional API which would further make it easy to integrate those classes with other Ivy projects.
 
 **Note**
-This functionality is inspired by `NumPy's`_ :code:`__ivy_array_function__` and `PyTorch's`_ :code:`__torch_function__`. 
+This functionality is inspired by `NumPy's`_ :code:`__ivy_array_function__` and `PyTorch's`_ :code:`__torch_function__`.
 
 As an example, consider the following class :code:`MyArray` with the following definition:
 
@@ -138,12 +138,12 @@ There are different ways to do so. One way is to use a global dict :code:`HANDLE
     			return NotImplemented
     		if not all(issubclass(t, (MyArray, ivy.Array, ivy.NativeArray)) for t in types):
     			return NotImplemented
-    		return HANDLED_FUNCTIONS[func](*args, **kwargs)		
+    		return HANDLED_FUNCTIONS[func](*args, **kwargs)
 
-:code:`__ivy_array_function__` accepts four parameters: :code:`func` representing a reference to the array API function being 
+:code:`__ivy_array_function__` accepts four parameters: :code:`func` representing a reference to the array API function being
 overridden, :code:`types` a list of the types of objects implementing :code:`__ivy_array_function__`, :code:`args` a tuple of arguments supplied to the function, and :code:`kwargs` being a dictionary of keyword arguments passed to the function.
 While this class contains an implementation for :code:`__ivy_array_function__`, it is still not enough as it is necessary to implement any needed Ivy functions with the new :code:`MyArray` class as input(s) for the code to run successfully.
-We will define a decorator function :code:`implements` that can be used to add functions to :code:`HANDLED_FUNCTIONS`: 
+We will define a decorator function :code:`implements` that can be used to add functions to :code:`HANDLED_FUNCTIONS`:
 
 .. code-block:: python
 
@@ -151,7 +151,7 @@ We will define a decorator function :code:`implements` that can be used to add f
         def decorator(func):
             HANDLED_FUNCTIONS[ivy_function] = func
             return func
-        return decorator		
+        return decorator
 
 Lastly, we need to apply that decorator to the override function. Let’s consider for example a function that overrides :code:`ivy.abs`:
 
@@ -168,7 +168,7 @@ Now that we have added the function to :code:`HANDLED_FUNCTIONS`, we can now use
     X = MyArray(-3)
     X = ivy.abs(X)
 
-Of course :code:`ivy.abs` is an example of a function that is easy to override since it only requires one operand. The same approach can be used to override functions with multiple operands, including arrays or array-like objects that define :code:`__ivy_array_function__`. 
+Of course :code:`ivy.abs` is an example of a function that is easy to override since it only requires one operand. The same approach can be used to override functions with multiple operands, including arrays or array-like objects that define :code:`__ivy_array_function__`.
 
 It is relevant to mention again that any function not stored inside the dict :code:`HANDLED_FUNCTIONS` will not work and it is also important to notice that the operands passed to the function must match that of the function stored in the dict. For instance :code:`my_abs` takes only one parameter which is a :code:`MyArray` object. So, passing any other operands to the function will result in an exception :code:`IvyBackendException` being thrown. Lastly, for a custom class to be covered completely with Ivy's functional API, it is necessary to create an implementation for all the relevant functions within the API that will be used by this custom class. That can be all the functions in the API or only a subset of them.
 
@@ -176,7 +176,7 @@ It is relevant to mention again that any function not stored inside the dict :co
 
 This should have hopefully given you a good feel for the different types of arrays, and how these are handled in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `arrays channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `arrays thread`_!
 
 
 **Video**

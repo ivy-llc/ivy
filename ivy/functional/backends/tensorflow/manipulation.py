@@ -10,7 +10,7 @@ import tensorflow as tf
 import ivy
 
 # noinspection PyProtectedMember
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.manipulation import _calculate_out_shape
 from . import backend_version
 
@@ -32,26 +32,25 @@ def concat(
     axis: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    is_tuple = type(xs) is tuple
-    is_axis_none = axis is None
-    if is_tuple:
-        xs = list(xs)
-    highest_dtype = xs[0].dtype
-    for i in xs:
-        highest_dtype = ivy.as_native_dtype(ivy.promote_types(highest_dtype, i.dtype))
-
-    for i in range(len(xs)):
-        if is_axis_none:
-            xs[i] = tf.reshape(xs[i], -1)
-        xs[i] = ivy.astype(xs[i], highest_dtype, copy=False).to_native()
-    if is_axis_none:
-        axis = 0
-        if is_tuple:
-            xs = tuple(xs)
-    try:
-        return tf.concat(xs, axis)
-    except (tf.errors.InvalidArgumentError, np.AxisError) as error:
-        raise ivy.utils.exceptions.IvyIndexError(error)
+    if axis is not None:
+        try:
+            return tf.concat(xs, axis)
+        except tf.errors.InvalidArgumentError as error:
+            if "(zero-based) was expected to be" in error.message:
+                highest_dtype = xs[0].dtype
+                for i in xs:
+                    highest_dtype = ivy.promote_types(highest_dtype, i.dtype)
+                highest_dtype = ivy.as_native_dtype(highest_dtype)
+                return tf.concat(
+                    [
+                        tf.cast(x, highest_dtype) if x.dtype != highest_dtype else x
+                        for x in xs
+                    ],
+                    axis,
+                )
+            else:
+                raise
+    return concat([tf.reshape(x, -1) for x in xs], axis=0)
 
 
 def expand_dims(
@@ -63,11 +62,56 @@ def expand_dims(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     try:
-        out_shape = _calculate_out_shape(axis, x.shape)
+        out_shape = _calculate_out_shape(axis, tf.shape(x))
         ret = tf.reshape(x, shape=out_shape)
         return ret
     except (tf.errors.InvalidArgumentError, np.AxisError) as error:
-        raise ivy.utils.exceptions.IvyIndexError(error)
+        raise ivy.utils.exceptions.IvyIndexError(error) from error
+
+
+def flatten(
+    x: tf.Tensor,
+    /,
+    *,
+    copy: Optional[bool] = None,
+    start_dim: Optional[int] = 0,
+    end_dim: Optional[int] = -1,
+    order: Optional[str] = "C",
+    out: Optional[tf.Tensor] = None,
+) -> tf.Tensor:
+    if x.shape == ():
+        x = tf.reshape(x, (1, -1))[0, :]
+    if start_dim == end_dim:
+        return ivy.inplace_update(out, x) if ivy.exists(out) else x
+    if start_dim not in range(-x.shape.rank, x.shape.rank):
+        raise IndexError(
+            "Dimension out of range (expected to be in range of"
+            f" {[-x.shape.rank, x.shape.rank - 1]}, but got {start_dim}"
+        )
+    if end_dim not in range(-x.shape.rank, x.shape.rank):
+        raise IndexError(
+            "Dimension out of range (expected to be in range of"
+            f" {[-x.shape.rank, x.shape.rank - 1]}, but got {end_dim}"
+        )
+
+    # If end_dim or start_dim is negative, count them from the end
+    if end_dim < 0:
+        end_dim += x.shape.rank
+    if start_dim < 0:
+        start_dim += x.shape.rank
+
+    if start_dim == end_dim:
+        return x
+
+    in_shape = tf.shape(x)
+    flattened_dim = tf.math.reduce_prod(in_shape[start_dim : end_dim + 1])
+    out_shape = tf.concat(
+        [in_shape[:start_dim], [flattened_dim], in_shape[end_dim + 1 :]], axis=0
+    )
+    ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
+    if order == "F":
+        return _reshape_fortran_tf(x, out_shape)
+    return tf.reshape(x, out_shape)
 
 
 def flip(
@@ -86,7 +130,7 @@ def flip(
             new_axis = list(range(num_dims))
         else:
             new_axis = axis
-        if type(new_axis) is int:
+        if isinstance(new_axis, int):
             new_axis = [new_axis]
         else:
             new_axis = new_axis
@@ -158,9 +202,7 @@ def squeeze(
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(axis, int):
         if ivy.any(x.shape[axis] > 1):
-            raise ValueError(
-                "{} must be lesser than or equal to {}".format(x.shape[axis], 1)
-            )
+            raise ValueError(f"{x.shape[axis]} must be lesser than or equal to 1")
         ret = tf.squeeze(x, axis)
     elif axis is None:
         ret = tf.squeeze(x)
@@ -178,9 +220,8 @@ def squeeze(
         for i in axis_updated_after_squeeze:
             if x.shape[i] > 1:
                 raise ValueError(
-                    "Expected dimension of size 1, but found dimension size {}".format(
-                        x.shape[i]
-                    )
+                    "Expected dimension of size 1, but found dimension size"
+                    f" {x.shape[i]}"
                 )
             else:
                 x = tf.squeeze(x, i)
@@ -188,7 +229,7 @@ def squeeze(
     return ret
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, backend_version)
 def stack(
     arrays: Union[Tuple[tf.Tensor], List[tf.Tensor]],
     /,
@@ -199,7 +240,7 @@ def stack(
     try:
         return tf.experimental.numpy.stack(arrays, axis)
     except ValueError as e:
-        raise ivy.utils.exceptions.IvyIndexError(e)
+        raise ivy.utils.exceptions.IvyIndexError(e) from e
 
 
 # Extra #
@@ -220,9 +261,8 @@ def split(
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise ivy.utils.exceptions.IvyException(
-                "input array had no shape, but num_sections specified was {}".format(
-                    num_or_size_splits
-                )
+                "input array had no shape, but num_sections specified was"
+                f" {num_or_size_splits}"
             )
         return [x]
     if num_or_size_splits is None:
@@ -230,7 +270,6 @@ def split(
         num_or_size_splits = int(dim_size)
     if isinstance(num_or_size_splits, (tf.Tensor, tf.Variable)):
         num_or_size_splits = tf.cast(num_or_size_splits, tf.int32)
-        num_or_size_splits = num_or_size_splits.numpy().tolist()
     elif isinstance(num_or_size_splits, int) and with_remainder:
         num_chunks = x.shape[axis] / num_or_size_splits
         num_chunks_int = math.floor(num_chunks)
@@ -243,13 +282,12 @@ def split(
     return tf.split(x, num_or_size_splits, axis)
 
 
-@with_supported_dtypes({"2.13.0 and below": ("int32", "int64")}, backend_version)
 def repeat(
     x: Union[tf.Tensor, tf.Variable],
     /,
     repeats: Union[int, List[int]],
     *,
-    axis: int = None,
+    axis: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.repeat(x, repeats, axis)
@@ -257,7 +295,7 @@ def repeat(
 
 @with_unsupported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "uint8",
             "uint16",
             "uint32",
@@ -328,12 +366,12 @@ def swapaxes(
     return tf.transpose(x, config)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
 def clip(
     x: Union[tf.Tensor, tf.Variable],
-    x_min: Union[Number, tf.Tensor, tf.Variable],
-    x_max: Union[Number, tf.Tensor, tf.Variable],
     /,
+    x_min: Optional[Union[Number, tf.Tensor, tf.Variable]] = None,
+    x_max: Optional[Union[Number, tf.Tensor, tf.Variable]] = None,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:

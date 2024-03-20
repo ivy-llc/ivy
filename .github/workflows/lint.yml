@@ -1,8 +1,16 @@
 name: lint
 
-on: [push, pull_request]
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
 
 jobs:
   check-formatting:
     name: Check formatting
     uses: unifyai/workflows/.github/workflows/lint.yml@main
+    secrets: inherit

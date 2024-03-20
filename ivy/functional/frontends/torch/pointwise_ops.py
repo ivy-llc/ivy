@@ -5,7 +5,12 @@ from ivy.func_wrapper import (
     with_supported_dtypes,
 )
 import ivy.functional.frontends.torch as torch_frontend
-from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.torch.func_wrapper import (
+    to_ivy_arrays_and_back,
+)
+
+
+erfc = torch_frontend.special.erfc
 
 
 @to_ivy_arrays_and_back
@@ -13,13 +18,13 @@ def abs(input, *, out=None):
     return ivy.abs(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def acos(input, *, out=None):
     return ivy.acos(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def acosh(input, *, out=None):
     return ivy.acosh(input, out=out)
@@ -35,13 +40,13 @@ def add(input, other, *, alpha=1, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
 def addcdiv(input, tensor1, tensor2, *, value=1, out=None):
     return ivy.add(input, ivy.multiply(value, ivy.divide(tensor1, tensor2)), out=out)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
 def addcmul(input, tensor1, tensor2, *, value=1, out=None):
     return ivy.add(input, ivy.multiply(value, ivy.multiply(tensor1, tensor2)), out=out)
 
@@ -51,32 +56,32 @@ def angle(input, *, out=None):
     return ivy.angle(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def asin(input, *, out=None):
     return ivy.asin(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def asinh(input, *, out=None):
     return ivy.asinh(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def atan(input, *, out=None):
     return ivy.atan(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def atan2(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.atan2(input, other, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def atanh(input, *, out=None):
     return ivy.atanh(input, out=out)
@@ -117,13 +122,13 @@ def bitwise_xor(input, other, *, out=None):
     return ivy.bitwise_xor(input, other, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def ceil(input, *, out=None):
     return ivy.ceil(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16", "complex")}, "torch")
 @to_ivy_arrays_and_back
 def clamp(input, min=None, max=None, *, out=None):
     ivy.utils.assertions.check_all_or_any_fn(
@@ -152,7 +157,7 @@ def copysign(input, other, *, out=None):
     return ivy.copysign(input, other, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def cos(input, *, out=None):
     return ivy.cos(input, out=out)
@@ -181,31 +186,25 @@ def div(input, other, *, rounding_mode=None, out=None):
         return ivy.divide(input, other, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16", "complex")}, "torch")
 @to_ivy_arrays_and_back
 def erf(input, *, out=None):
     return ivy.erf(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
-@to_ivy_arrays_and_back
-def erfc(input, *, out=None):
-    return 1.0 - ivy.erf(input, out=out)
-
-
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def exp(input, *, out=None):
     return ivy.exp(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def exp2(input, out=None):
     return ivy.exp2(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def expm1(input, out=None):
     return ivy.expm1(input, out=out)
@@ -223,7 +222,7 @@ def float_power(input, exponent, *, out=None):
     return ivy.float_power(input, exponent, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def floor(input, *, out=None):
     return ivy.floor(input, out=out)
@@ -234,7 +233,7 @@ def floor_divide(input, other, *, out=None):
     return ivy.floor_divide(input, other, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def fmod(x1, x2, out=None):
     return ivy.fmod(x1, x2, out=out)
@@ -245,31 +244,31 @@ def frac(input, *, out=None):
     return input - ivy.sign(input) * ivy.floor(ivy.abs(input))
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def frexp(input, *, out=None):
     return ivy.frexp(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
 @to_ivy_arrays_and_back
 def gradient(input, *, spacing=1, dim=None, edge_order=1):
     return ivy.gradient(input, spacing=spacing, edge_order=edge_order, axis=dim)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def hypot(input, other, *, out=None):
     return ivy.hypot(input, other, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def i0(input, *, out=None):
     return ivy.i0(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
 @to_ivy_arrays_and_back
 def igamma(input, other, *, out=None):
     return ivy.igamma(input, x=other, out=out)
@@ -280,7 +279,7 @@ def imag(input):
     return ivy.imag(input)
 
 
-@with_supported_dtypes({"2.0.1 and below": ("float16", "float32", "float64")}, "torch")
+@with_supported_dtypes({"2.2 and below": ("float16", "float32", "float64")}, "torch")
 @to_ivy_arrays_and_back
 def ldexp(input, other, *, out=None):
     value = ivy.pow(2, other, out=out)
@@ -288,49 +287,49 @@ def ldexp(input, other, *, out=None):
     return value
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def lerp(input, end, weight, *, out=None):
     return ivy.lerp(input, end, weight, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def lgamma(input, *, out=None):
     return ivy.lgamma(input, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 def log(input, *, out=None):
     return ivy.log(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def log10(input, *, out=None):
     return ivy.log10(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def log1p(input, *, out=None):
     return ivy.log1p(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def log2(input, *, out=None):
     return ivy.log2(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def logaddexp(x1, x2, out=None):
     return ivy.logaddexp(x1, x2, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def logaddexp2(x1, x2, out=None):
     return ivy.logaddexp2(x1, x2, out=out)
@@ -359,20 +358,13 @@ def logical_xor(input, other, *, out=None):
     return ivy.logical_xor(input, other, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def logit(input, eps=None, *, out=None):
-    if eps is None:
-        eps = -1.0
-    lo = eps
-    hi = 1 - eps
-
-    input = ivy.clip(input, lo, hi, out=out)
-
-    return ivy.log(ivy.divide(input, ivy.subtract(1, input), out=out), out=out)
+    return ivy.logit(input, eps=eps, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
 @to_ivy_arrays_and_back
 def masked_fill(input, mask, value):
     return ivy.where(mask, value, input, out=input)
@@ -384,19 +376,35 @@ def mul(input, other, *, out=None):
     return ivy.multiply(input, other, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "tensorflow")
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
+def mvlgamma(input, p, *, out=None):
+    ivy.assertions.check_greater(
+        p, 1, allow_equal=True, message="p has to be greater than or equal to 1"
+    )
+    c = 0.25 * p * (p - 1) * ivy.log(ivy.pi, out=out)
+    b = 0.5 * ivy.arange((1 - p), 1, 1, dtype=input.dtype, device=input.device, out=out)
+    return (
+        ivy.sum(
+            ivy.lgamma(ivy.expand_dims(input, axis=-1) + b, out=out), axis=-1, out=out
+        )
+        + c
+    )
+
+
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def nan_to_num(input, nan=0.0, posinf=None, neginf=None, *, out=None):
     return ivy.nan_to_num(input, nan=nan, posinf=posinf, neginf=neginf, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bool",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("bool",)}, "torch")
 @to_ivy_arrays_and_back
 def negative(input, *, out=None):
     return ivy.negative(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16", "float16")}, "torch")
 @to_ivy_arrays_and_back
 def nextafter(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
@@ -408,9 +416,25 @@ def positive(input, *, out=None):
     return ivy.positive(input, out=out)
 
 
+@with_unsupported_dtypes({"2.2 and below": ("bool",)}, "torch")
 @to_ivy_arrays_and_back
 def pow(input, exponent, *, out=None):
-    return ivy.pow(input, exponent, out=out)
+    if not ivy.is_array(exponent):
+        if (
+            any(dtype in str(input.dtype) for dtype in ["int8", "int16"])
+            and isinstance(exponent, int)
+        ) or ("float16" in str(input.dtype) and isinstance(exponent, float)):
+            exponent = ivy.array(exponent, dtype=input.dtype)
+        else:
+            exponent = torch_frontend.as_tensor(exponent).ivy_array
+    input, exponent = torch_frontend.promote_types_of_torch_inputs(input, exponent)
+    ret_dtype = input.dtype
+    if not ivy.is_int_dtype(exponent) and ivy.is_int_dtype(ret_dtype):
+        ret_dtype = exponent.dtype
+    ret = ivy.pow(input, exponent)
+    if ivy.any(input == 0) and ivy.is_int_dtype(exponent):
+        ret = ivy.where(ivy.bitwise_and(input == 0, exponent < 0), 0, ret, out=out)
+    return ret.astype(ret_dtype)
 
 
 @to_ivy_arrays_and_back
@@ -435,16 +459,16 @@ def remainder(input, other, *, out=None):
     return ivy.remainder(input, other, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
 @to_ivy_arrays_and_back
 def round(input, *, decimals=0, out=None):
     m = ivy.full(input.shape, 10.0**decimals)
     upscale = ivy.multiply(input, m)
     rounded = ivy.round(upscale)
-    return ivy.divide(rounded, m, out=out)
+    return ivy.divide(rounded, m, out=out).astype(input.dtype)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def rsqrt(input, *, out=None):
     return ivy.reciprocal(ivy.sqrt(input), out=out)
@@ -463,43 +487,43 @@ def sgn(input, *, out=None):
         return ivy.sign(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def sigmoid(input, *, out=None):
     return ivy.sigmoid(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("complex",)}, "torch")
 @to_ivy_arrays_and_back
 def sign(input, *, out=None):
     return ivy.sign(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("complex",)}, "torch")
 @to_ivy_arrays_and_back
 def signbit(input, *, out=None):
     return ivy.signbit(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def sin(input, *, out=None):
     return ivy.sin(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def sinc(input, *, out=None):
     return ivy.sinc(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def sinh(input, *, out=None):
     return ivy.sinh(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def sqrt(input, *, out=None):
     return ivy.sqrt(input, out=out)
@@ -516,13 +540,13 @@ def subtract(input, other, *, alpha=1, out=None):
     return ivy.subtract(input, other * alpha, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def tan(input, *, out=None):
     return ivy.tan(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def tanh(input, *, out=None):
     return ivy.tanh(input, out=out)
@@ -534,13 +558,13 @@ def true_divide(input, other, *, out=None):
     return ivy.divide(input, other, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def trunc(input, *, out=None):
     return ivy.trunc(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def xlogy(input, other, *, out=None):
     return ivy.xlogy(input, other, out=out)

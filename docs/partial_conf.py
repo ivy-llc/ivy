@@ -42,9 +42,15 @@ autosummary_generate = ["index.rst"]
 
 skippable_method_attributes = [{"__qualname__": "_wrap_function.<locals>.new_function"}]
 
+autosectionlabel_prefix_document = True
+
 # Retrieve html_theme_options from docs/conf.py
 from docs.conf import html_theme_options
 
 html_theme_options["switcher"]["json_url"] = "https://unify.ai/docs/versions/ivy.json"
+html_sidebars = {"**": ["custom-toc-tree"]}
 
 repo_name = "ivy"
+
+# Retrieve demos specific configuration
+from docs.demos.demos_conf import *  # noqa

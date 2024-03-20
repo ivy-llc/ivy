@@ -3,6 +3,7 @@ import paddle.nn.functional as F
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
 from typing import Optional, Tuple
+from ivy.func_wrapper import with_supported_dtypes
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
 
@@ -11,7 +12,7 @@ from . import backend_version
 # use numpy implementation with ivy functions
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -41,9 +42,9 @@ def batch_norm(
     out: Optional[Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor]] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor]:
     if x.dtype not in [paddle.float32, paddle.float64]:
-        x, mean, variance, scale, offset = [
+        x, mean, variance, scale, offset = (
             t.cast("float32") for t in [x, mean, variance, scale, offset]
-        ]
+        )
     runningmean = mean
     runningvariance = variance
     data_formats = ["NC", "NCL", "NCHW", "NCDHW", "NLC", "NHWC", "NDHWC"]
@@ -54,11 +55,11 @@ def batch_norm(
             if data_format[-1] == "C"
             else data_formats[0:4][x.ndim - 2]
         )
-    except IndexError:
+    except IndexError as e:
         raise IndexError(
-            "data_format must be one of 'NC', 'NCL', 'NCHW', 'NCDHW', "
-            "'NLC', 'NHWC', 'NDHWC' but receive {}".format(data_format)
-        )
+            "data_format must be one of 'NC', 'NCL', 'NCHW', 'NCDHW', 'NLC', 'NHWC',"
+            f" 'NDHWC' but receive {data_format}"
+        ) from e
 
     with ivy.ArrayMode(False):
         if training:
@@ -104,9 +105,12 @@ batch_norm.partial_mixed_handler = lambda x, *args, scale, offset, **kwargs: (
 )
 
 
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, backend_version)
 def l1_normalize(
-    x: paddle.Tensor, /, *, axis: int = None, out: paddle.Tensor = None
+    x: paddle.Tensor, /, *, axis: Optional[int] = None, out: paddle.Tensor = None
 ) -> paddle.Tensor:
+    if not isinstance(x, paddle.Tensor):
+        x = paddle.to_tensor(x)
     if axis is None:
         axis = list(range(x.ndim))
     elif isinstance(axis, int):
@@ -127,7 +131,7 @@ def l1_normalize(
 
 
 def l2_normalize(
-    x: paddle.Tensor, /, *, axis: int = None, out: paddle.Tensor = None
+    x: paddle.Tensor, /, *, axis: Optional[int] = None, out: paddle.Tensor = None
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
 
@@ -151,11 +155,20 @@ def instance_norm(
             paddle.Tensor,
         ]
     ] = None,
-) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor,]:
+) -> Tuple[
+    paddle.Tensor,
+    paddle.Tensor,
+    paddle.Tensor,
+]:
     raise IvyNotImplementedException()
 
 
 def lp_normalize(
-    x: paddle.Tensor, /, *, p: float = 2, axis: int = None, out: paddle.Tensor = None
+    x: paddle.Tensor,
+    /,
+    *,
+    p: float = 2,
+    axis: Optional[int] = None,
+    out: paddle.Tensor = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()

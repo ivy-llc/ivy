@@ -22,18 +22,17 @@ class _ContainerWithRandomExperimental(ContainerBase):
         seed: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.dirichlet. This method simply wraps
-        the function, and so the docstring for ivy.dirichlet also applies to this method
-        with minimal changes.
+        """ivy.Container static method variant of ivy.dirichlet. This method
+        simply wraps the function, and so the docstring for ivy.dirichlet also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
         alpha
-            Sequence of floats of length k 
+            Sequence of floats of length k
         size
-            optional container including ints or tuple of ints, 
-            Output shape for the arrays in the input container. 
+            optional container including ints or tuple of ints,
+            Output shape for the arrays in the input container.
         dtype
             output container array data type. If ``dtype`` is ``None``, the output data
             type will be the default floating-point data type. Default ``None``
@@ -89,18 +88,17 @@ class _ContainerWithRandomExperimental(ContainerBase):
         seed: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.dirichlet. This method simply wraps
-        the function, and so the docstring for ivy.shuffle also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.dirichlet. This method
+        simply wraps the function, and so the docstring for ivy.shuffle also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
         self
-            Sequence of floats of length k 
+            Sequence of floats of length k
         size
-            optional container including ints or tuple of ints, 
-            Output shape for the arrays in the input container. 
+            optional container including ints or tuple of ints,
+            Output shape for the arrays in the input container.
         dtype
             output container array data type. If ``dtype`` is ``None``, the output data
             type will be the default floating-point data type. Default ``None``
@@ -158,10 +156,9 @@ class _ContainerWithRandomExperimental(ContainerBase):
         seed: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.beta. This method simply wraps the
-        function, and so the docstring for ivy.beta also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.beta. This method simply
+        wraps the function, and so the docstring for ivy.beta also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -229,10 +226,9 @@ class _ContainerWithRandomExperimental(ContainerBase):
         seed: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.beta. This method simply wraps the
-        function, and so the docstring for ivy.beta also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.beta. This method
+        simply wraps the function, and so the docstring for ivy.beta also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -299,10 +295,9 @@ class _ContainerWithRandomExperimental(ContainerBase):
         fill_value: Optional[Union[float, int, ivy.Container]] = 0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.poisson. This method simply wraps the
-        function, and so the docstring for ivy.poisson also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.poisson. This method
+        simply wraps the function, and so the docstring for ivy.poisson also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -369,10 +364,9 @@ class _ContainerWithRandomExperimental(ContainerBase):
         fill_value: Optional[Union[float, int, ivy.Container]] = 0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.poisson. This method simply wraps
-        the function, and so the docstring for ivy.poisson also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.poisson. This method
+        simply wraps the function, and so the docstring for ivy.poisson also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -575,10 +569,9 @@ class _ContainerWithRandomExperimental(ContainerBase):
         seed: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ):
-        """
-        ivy.Container static method variant of ivy.gamma. This method simply wraps the
-        function, and so the docstring for ivy.gamma also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.gamma. This method simply
+        wraps the function, and so the docstring for ivy.gamma also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -646,10 +639,9 @@ class _ContainerWithRandomExperimental(ContainerBase):
         seed: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ):
-        """
-        ivy.Container method variant of ivy.gamma. This method simply wraps the
-        function, and so the docstring for ivy.gamma also applies to this method with
-        minimal changes.
+        """ivy.Container method variant of ivy.gamma. This method simply wraps
+        the function, and so the docstring for ivy.gamma also applies to this
+        method with minimal changes.
 
         Parameters
         ----------

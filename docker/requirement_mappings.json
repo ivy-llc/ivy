@@ -1,7 +1,8 @@
 {
-  "tensorflow": ["tensorflow-cpu", "tensorflow-probability"],
-  "jax": ["jax[cpu]","dm-haiku", "flax", "jaxlib"],
+  "tensorflow": ["tensorflow-cpu==2.15.1", "tensorflow-probability"],
+  "jax": ["ml-dtypes","jax[cpu]","dm-haiku", "flax", "jaxlib"],
   "numpy": ["numpy"],
   "paddle": ["paddlepaddle"],
-  "mxnet": ["mxnet"]
+  "mxnet": ["mxnet"],
+  "torch": ["torchvision"]
 }

@@ -14,13 +14,12 @@ class _ArrayWithLosses(abc.ABC):
         *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        reduction: str = "sum",
+        reduction: str = "mean",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.cross_entropy. This method simply wraps
-        the function, and so the docstring for ivy.cross_entropy also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.cross_entropy. This method
+        simply wraps the function, and so the docstring for ivy.cross_entropy
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -51,7 +50,7 @@ class _ArrayWithLosses(abc.ABC):
         >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
         >>> z = x.cross_entropy(y)
         >>> print(z)
-        ivy.array(1.3862944)
+        ivy.array(0.34657359)
         """
         return ivy.cross_entropy(
             self._data, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
@@ -64,15 +63,15 @@ class _ArrayWithLosses(abc.ABC):
         *,
         from_logits: bool = False,
         epsilon: float = 0.0,
-        reduction: str = "none",
+        reduction: str = "mean",
         pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         axis: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.binary_cross_entropy. This method
-        simply wraps the function, and so the docstring for ivy.binary_cross_entropy
-        also applies to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.binary_cross_entropy. This
+        method simply wraps the function, and so the docstring for
+        ivy.binary_cross_entropy also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -111,7 +110,7 @@ class _ArrayWithLosses(abc.ABC):
         >>> y = ivy.array([0.7, 0.8, 0.2])
         >>> z = x.binary_cross_entropy(y)
         >>> print(z)
-        ivy.array([0.357, 0.223, 0.223])
+        ivy.array(0.26765382)
         """
         return ivy.binary_cross_entropy(
             self._data,
@@ -131,13 +130,13 @@ class _ArrayWithLosses(abc.ABC):
         *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        reduction: str = "sum",
+        reduction: str = "mean",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.sparse_cross_entropy. This method
-        simply wraps the function, and so the docstring for ivy.sparse_cross_entropy
-        also applies to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.sparse_cross_entropy. This
+        method simply wraps the function, and so the docstring for
+        ivy.sparse_cross_entropy also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -171,7 +170,7 @@ class _ArrayWithLosses(abc.ABC):
         >>> y = ivy.array([0.7, 0.8, 0.2])
         >>> z = x.sparse_cross_entropy(y)
         >>> print(z)
-        ivy.array([0.223, 0.223, 0.357])
+        ivy.array([0.07438118, 0.07438118, 0.11889165])
         """
         return ivy.sparse_cross_entropy(
             self._data, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out

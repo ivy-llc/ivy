@@ -4,7 +4,6 @@ from typing import Union, Optional, Sequence
 
 # local
 import ivy
-from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 from ivy.utils.einsum_parser import legalise_einsum_expr
@@ -13,20 +12,34 @@ from ivy.utils.einsum_parser import legalise_einsum_expr
 # -------------------#
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("complex", "bool", "uint64")}, backend_version
+)
 def min(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
+    if where is not None:
+        max_val = (
+            ivy.iinfo(x.dtype).max
+            if ivy.is_int_dtype(x.dtype)
+            else ivy.finfo(x.dtype).max
+        )
+        x = tf.where(where, x, tf.ones_like(x) * max_val)
+    result = tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
+    if initial is not None:
+        result = tf.minimum(result, initial)
+    return result
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bool",)}, backend_version)
 def max(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -35,10 +48,25 @@ def max(
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if "complex" in str(x.dtype):
+        real = tf.math.real(x)
+        img = tf.math.imag(x)
+        const = tf.constant(1j, dtype=x.dtype)
+        real_max = tf.reduce_max(real, axis=axis, keepdims=keepdims)
+        imag = tf.where(
+            real == real_max,
+            img,
+            tf.experimental.numpy.finfo(img.dtype).min,
+        )
+        # we consider the number with the biggest real and imag part
+        img_max = tf.reduce_max(imag, axis=axis, keepdims=keepdims)
+        img_max = tf.cast(img_max, x.dtype)
+        return tf.add(tf.cast(real_max, x.dtype), tf.multiply(img_max, const))
     axis = tuple(axis) if isinstance(axis, list) else axis
     return tf.math.reduce_max(x, axis=axis, keepdims=keepdims)
 
 
+@with_unsupported_dtypes({"2.15.0 and below": ("bool",)}, backend_version)
 def mean(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -150,7 +178,7 @@ def var(
 # ------#
 
 
-@with_unsupported_dtypes({"2.13.0 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16", "bool")}, backend_version)
 def cumprod(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -172,6 +200,7 @@ def cumprod(
     return tf.math.cumprod(x, axis, exclusive, reverse)
 
 
+@with_unsupported_dtypes({"2.15.0 and below": "bool"}, backend_version)
 def cumsum(
     x: Union[tf.Tensor, tf.Variable],
     axis: int = 0,
@@ -195,7 +224,7 @@ def cumsum(
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("unsigned", "int8", "int16")},
+    {"2.15.0 and below": ("unsigned", "int8", "int16")},
     backend_version,
 )
 def einsum(
@@ -203,6 +232,15 @@ def einsum(
     *operands: Union[tf.Tensor, tf.Variable],
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    dtype = _get_promoted_type_of_operands(operands)
     equation = legalise_einsum_expr(*[equation, *operands])
-    return tf.cast(tf.einsum(equation, *operands), dtype)
+    dtype_list = set(map(lambda x: x.dtype, operands))
+    dtype = dtype_list.pop()
+    if len(dtype_list) > 0:
+        for d in dtype_list:
+            dtype = ivy.promote_types(dtype, d)
+        dtype = ivy.as_native_dtype(dtype)
+        operands = list(
+            map(lambda x: tf.cast(x, dtype) if x.dtype != dtype else x, operands)
+        )
+
+    return tf.einsum(equation, *operands)

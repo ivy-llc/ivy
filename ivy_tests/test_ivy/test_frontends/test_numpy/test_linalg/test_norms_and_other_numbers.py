@@ -217,7 +217,8 @@ def test_numpy_slogdet(
 
 
 @handle_frontend_test(
-    fn_tree="numpy.trace",
+    fn_tree="numpy.linalg.trace",
+    gt_fn_tree="numpy.trace",
     dtype_and_x_axes=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         valid_axis=True,
@@ -237,6 +238,7 @@ def test_numpy_trace(
     frontend,
     test_flags,
     fn_tree,
+    gt_fn_tree,
     backend_fw,
     on_device,
 ):
@@ -247,6 +249,7 @@ def test_numpy_trace(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        gt_fn_tree=gt_fn_tree,
         on_device=on_device,
         rtol=1e-2,
         a=x[0],

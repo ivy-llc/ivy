@@ -201,7 +201,7 @@ def svd(input, some=True, compute_uv=True, *, out=None):
     return ret
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def trapezoid(y, x=None, *, dx=None, dim=-1):
     if x is not None:

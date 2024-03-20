@@ -14,16 +14,25 @@ from ivy.utils.einsum_parser import legalise_einsum_expr
 # -------------------#
 
 
+@_scalar_output_to_0d_array
 def min(
     x: np.ndarray,
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[np.ndarray] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.asarray(np.amin(a=x, axis=axis, keepdims=keepdims, out=out))
+    if where is not None:
+        ret = np.amin(
+            a=x, axis=axis, keepdims=keepdims, initial=initial, where=where, out=out
+        )
+    else:
+        ret = np.amin(a=x, axis=axis, keepdims=keepdims, initial=initial, out=out)
+    return np.asarray(ret)
 
 
 min.support_native_out = True
@@ -54,9 +63,7 @@ def mean(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return ivy.astype(
-        np.mean(x, axis=axis, keepdims=keepdims, out=out), x.dtype, copy=False
-    )
+    return np.mean(x, axis=axis, keepdims=keepdims, dtype=x.dtype, out=out)
 
 
 mean.support_native_out = True
@@ -171,7 +178,7 @@ var.support_native_out = True
 # ------#
 
 
-@with_unsupported_dtypes({"1.25.2 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": ("bfloat16", "bool")}, backend_version)
 def cumprod(
     x: np.ndarray,
     /,
@@ -183,10 +190,7 @@ def cumprod(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None:
-        if x.dtype == "bool":
-            dtype = ivy.default_int_dtype(as_native=True)
-        else:
-            dtype = _infer_dtype(x.dtype)
+        dtype = _infer_dtype(x.dtype)
     if not (exclusive or reverse):
         return np.cumprod(x, axis, dtype=dtype, out=out)
     elif exclusive and reverse:
@@ -218,10 +222,6 @@ def cumsum(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None:
-        if x.dtype == "bool":
-            dtype = ivy.default_int_dtype(as_native=True)
-        if ivy.is_int_dtype(x.dtype):
-            dtype = ivy.promote_types(x.dtype, ivy.default_int_dtype(as_native=True))
         dtype = _infer_dtype(x.dtype)
 
     if exclusive or reverse:

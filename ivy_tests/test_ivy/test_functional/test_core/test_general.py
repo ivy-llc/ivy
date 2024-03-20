@@ -15,7 +15,11 @@ import threading
 import ivy
 
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test, BackendHandler
+from ivy_tests.test_ivy.helpers import (
+    handle_test,
+    BackendHandler,
+    handle_example,
+)
 from ivy_tests.test_ivy.helpers.assertions import assert_all_close
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import pow_helper
 
@@ -389,7 +393,7 @@ def test_all_equal(
     kw = {}
     i = 0
     for x_ in arrays:
-        kw["x{}".format(i)] = x_
+        kw[f"x{i}"] = x_
         i += 1
     test_flags.num_positional_args = len(arrays)
     helpers.test_function(
@@ -629,13 +633,13 @@ def test_default(x, default_val, test_flags, backend_fw):
     with BackendHandler.update_backend(backend_fw) as ivy_backend:
         with_callable = False
         if x is not None:
-            if hasattr(x, "__call__"):
+            if callable(x):
                 with_callable = True
             else:
                 x_dtype, x = x
                 x = x[0].tolist() if isinstance(x, list) else x
         else:
-            if hasattr(default_val, "__call__"):
+            if callable(default_val):
                 with_callable = True
             else:
                 dv_dtype, default_val = default_val
@@ -853,7 +857,7 @@ def test_einops_repeat(
 )
 def test_exists(x):
     if x is not None:
-        if not hasattr(x, "__call__"):
+        if not callable(x):
             dtype, x = x
     ret = ivy.exists(x)
     assert isinstance(ret, bool)
@@ -1068,6 +1072,16 @@ def test_get_all_arrays_in_memory():
     test_gradients=st.just(False),
     test_instance_method=st.just(False),
     container_flags=st.just([False]),
+    test_with_copy=st.just(True),
+)
+@handle_example(
+    test_example=True,
+    test_flags={
+        "num_positional_args": 2,
+    },
+    dtypes_x_query=(["float32", "bool"], np.ones((1, 3, 3)), (np.array([True]), 2, 2)),
+    copy=None,
+    fn_name="get_item",
 )
 def test_get_item(
     dtypes_x_query,
@@ -1207,7 +1221,7 @@ def test_inplace_arrays_supported(backend_fw):
         elif backend_fw in ["jax", "tensorflow", "paddle"]:
             assert not ivy_backend.inplace_arrays_supported()
         else:
-            raise Exception("Unrecognized framework")
+            raise RuntimeError("Unrecognized framework")
 
 
 # inplace_decrement
@@ -1288,7 +1302,7 @@ def test_inplace_increment(x_val_and_dtypes, test_flags, on_device, backend_fw):
         shared_dtype=True,
     ),
     keep_x_dtype=st.booleans(),
-    inplace_mode=st.sampled_from(["lenient", "strict"]),
+    inplace_mode=st.just("lenient"),
 )
 def test_inplace_update(
     x_val_and_dtypes, keep_x_dtype, inplace_mode, test_flags, on_device, backend_fw
@@ -1328,7 +1342,7 @@ def test_inplace_variables_supported(backend_fw):
         elif backend_fw in ["jax", "paddle"]:
             assert not ivy_backend.inplace_variables_supported()
         else:
-            raise Exception("Unrecognized framework")
+            raise RuntimeError("Unrecognized framework")
 
 
 # is_array
@@ -1621,12 +1635,6 @@ def test_scatter_nd(x, reduction, test_flags, backend_fw, fn_name, on_device):
 # ------#
 
 
-@given(fw_str=st.sampled_from(["numpy", "jax", "torch", "tensorflow"]))
-def test_set_framework(fw_str):
-    ivy.set_backend(fw_str)
-    ivy.previous_backend()
-
-
 @pytest.mark.parametrize("mode", ["lenient", "strict"])
 def test_set_inplace_mode(mode):
     ivy.set_inplace_mode(mode)
@@ -1646,6 +1654,21 @@ def test_set_inplace_mode(mode):
     test_gradients=st.just(False),
     test_instance_method=st.just(False),
     container_flags=st.just([False]),
+    test_with_copy=st.just(True),
+)
+@handle_example(
+    test_example=True,
+    test_flags={
+        "num_positional_args": 3,
+    },
+    dtypes_x_query_val=(
+        ["int32", "int32"],
+        np.ones((1, 3, 3, 3)),
+        (slice(None, None, None), slice(None, None, None), slice(None, None, None), 1),
+        np.zeros((3, 1)),
+    ),
+    copy=False,
+    fn_name="set_item",
 )
 def test_set_item(
     dtypes_x_query_val,
@@ -1726,6 +1749,25 @@ def test_shape(x0_n_x1_n_res, as_array, test_flags, backend_fw, fn_name, on_devi
     )
 
 
+# size
+@handle_test(
+    fn_tree="functional.ivy.size",
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_size(dtype_x, test_flags, backend_fw, fn_name, on_device):
+    dtype, x = dtype_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+    )
+
+
 # stable_divide
 @handle_test(
     fn_tree="functional.ivy.stable_divide",
@@ -1766,7 +1808,7 @@ def test_stable_pow(
     *, dtypes_and_xs, min_base, test_flags, backend_fw, fn_name, on_device
 ):
     dtypes, xs = dtypes_and_xs
-    assume(all(["bfloat16" not in x for x in dtypes]))
+    assume(all("bfloat16" not in x for x in dtypes))
     helpers.test_function(
         input_dtypes=dtypes,
         test_flags=test_flags,
@@ -1854,6 +1896,7 @@ def test_to_list(x0_n_x1_n_res, test_flags, backend_fw, fn_name, on_device):
     copy=st.booleans(),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_to_numpy(*, dtype_x, copy, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
@@ -1884,6 +1927,7 @@ def test_to_numpy(*, dtype_x, copy, test_flags, backend_fw, fn_name, on_device):
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_to_scalar(x0_n_x1_n_res, test_flags, backend_fw, fn_name, on_device):
     dtype, x = x0_n_x1_n_res

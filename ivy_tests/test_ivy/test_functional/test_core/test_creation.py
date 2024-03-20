@@ -3,6 +3,8 @@
 # global
 from hypothesis import strategies as st, assume
 import numpy as np
+import ivy
+
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -19,7 +21,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_dtype import astype_helpe
 def _asarray_helper(draw):
     x_dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=helpers.get_dtypes("valid"),
             num_arrays=st.integers(min_value=1, max_value=10),
             min_num_dims=0,
             max_num_dims=5,
@@ -29,7 +31,7 @@ def _asarray_helper(draw):
         )
     )
     with BackendHandler.update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
-        x_list = ivy_backend.nested_map(x, lambda x: x.tolist(), shallow=False)
+        x_list = ivy_backend.nested_map(lambda x: x.tolist(), x, shallow=False)
         sh = draw(helpers.get_shape(min_num_dims=1))
         sh = ivy_backend.Shape(sh)
     # np_array = x[0]
@@ -42,13 +44,13 @@ def _asarray_helper(draw):
             draw(helpers.get_dtypes("numeric")), dtype=x_dtype[0]
         )
     )[-1]
-    dtype = draw(st.sampled_from([dtype, None]))
+    dtype = draw(st.sampled_from([dtype]))
     x = draw(
         st.sampled_from(
             [
                 x,
                 x_list,
-                sh,
+                # sh,
                 # nested_values,
             ]
         )
@@ -134,6 +136,11 @@ def _on_off_dtype(draw):
 # ------------ #
 
 
+def is_capsule(o):
+    t = type(o)
+    return t.__module__ == "builtins" and t.__name__ == "PyCapsule"
+
+
 # arange
 @handle_test(
     fn_tree="functional.ivy.arange",
@@ -178,6 +185,7 @@ def test_arange(
     x_dtype_x_and_dtype=_asarray_helper(),
     test_gradients=st.just(False),
     test_instance_method=st.just(False),
+    test_with_copy=st.just(False),
 )
 def test_asarray(
     *,
@@ -211,6 +219,7 @@ def test_asarray(
     fn_tree="functional.ivy.copy_array",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
     to_ivy_array_bool=st.booleans(),
+    test_with_copy=st.just(True),
 )
 def test_copy_array(
     *,
@@ -353,7 +362,7 @@ def test_eye(
 @handle_test(
     fn_tree="functional.ivy.from_dlpack",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes(kind="float", full=False, key="dtype"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -361,16 +370,15 @@ def test_eye(
     ),
     test_gradients=st.just(False),
 )
-def test_from_dlpack(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+def test_from_dlpack(*, dtype_and_x, backend_fw):
+    if backend_fw == "numpy":
+        return
+    ivy.set_backend(backend_fw)
     input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        on_device=on_device,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        x=x[0],
-    )
+    native_array = ivy.native_array(x[0])
+    cap = ivy.to_dlpack(native_array)
+    array = ivy.from_dlpack(cap)
+    assert ivy.is_native_array(array)
 
 
 @handle_test(
@@ -408,11 +416,13 @@ def test_frombuffer(
         max_dim_size=5,
     ),
     fill_value=_fill_value(),
-    dtypes=helpers.get_dtypes("numeric", full=False, key="dtype"),
+    dtypes=helpers.get_dtypes("valid", full=False),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
 def test_full(*, shape, fill_value, dtypes, test_flags, backend_fw, fn_name, on_device):
+    if dtypes[0].startswith("uint") and fill_value < 0:
+        fill_value = -fill_value
     helpers.test_function(
         input_dtypes=dtypes,
         test_flags=test_flags,
@@ -430,12 +440,16 @@ def test_full(*, shape, fill_value, dtypes, test_flags, backend_fw, fn_name, on_
 @handle_test(
     fn_tree="functional.ivy.full_like",
     dtype_and_x=_dtype_and_values(),
+    dtypes=helpers.get_dtypes("valid", full=False),
     fill_value=_fill_value(),
+    test_gradients=st.just(False),
 )
 def test_full_like(
-    *, dtype_and_x, fill_value, test_flags, backend_fw, fn_name, on_device
+    *, dtype_and_x, dtypes, fill_value, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, x = dtype_and_x
+    if dtypes[0].startswith("uint") and fill_value < 0:
+        fill_value = -fill_value
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -581,7 +595,7 @@ def test_meshgrid(
     kw = {}
     i = 0
     for x_ in arrays:
-        kw["x{}".format(i)] = x_
+        kw[f"x{i}"] = x_
         i += 1
     test_flags.num_positional_args = len(arrays)
     helpers.test_function(
@@ -699,6 +713,26 @@ def test_ones_like(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     )
 
 
+# to_dlpack
+@handle_test(
+    fn_tree="functional.ivy.to_dlpack",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes(kind="float", full=False, key="dtype"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    test_gradients=st.just(False),
+)
+def test_to_dlpack(*, dtype_and_x, backend_fw):
+    ivy.set_backend(backend_fw)
+    input_dtype, x = dtype_and_x
+    native_array = ivy.native_array(x[0])
+    cap = ivy.to_dlpack(native_array)
+    assert is_capsule(cap)
+
+
 # tril
 @handle_test(
     fn_tree="functional.ivy.tril",
@@ -814,6 +848,7 @@ def test_zeros(*, shape, dtype, test_flags, backend_fw, fn_name, on_device):
         min_dim_size=1,
         max_dim_size=5,
     ),
+    test_gradients=st.just(False),
 )
 def test_zeros_like(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x

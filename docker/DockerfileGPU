@@ -1,129 +1,101 @@
-# BASE CUDA IMAGE #
-# ----------------#
-
-ARG UBUNTU_VERSION=20.04
-ARG CUDA=11.2
-FROM nvidia/cuda:${CUDA}.2-base-ubuntu${UBUNTU_VERSION} as base
+# installs multiple versions of cuda and cudnn and then installs the
+# latest frameworks and the requirements
+FROM debian:buster
 WORKDIR /ivy
 
-# For TensorFlow #
-# ---------------#
-# Adapted from
-# https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu.Dockerfile
+# arguments
+ARG fw
+ARG pycon=3.10
 
-# CUDA is specified again because the FROM directive resets ARGs
-# (but their default value is retained if set previously)
-ARG CUDA
-ARG CUDNN=8.1.0.77-1
-ARG CUDNN_MAJOR_VERSION=8
-ARG LIB_DIR_PREFIX=x86_64
-ARG LIBNVINFER=7.2.2-1
-ARG LIBNVINFER_MAJOR_VERSION=7
-
-# Let us install tzdata painlessly
+# environment variables
 ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Moscow
+ENV CONDA_DIR /opt/miniconda/
 
-# Needed for string substitution
-SHELL ["/bin/bash", "-c"]
 
-# taken from https://github.com/Kaggle/docker-python/commit/f1a3cfc6ee71899b1af8d76598b42a2da280448d
-RUN \
-    # Temporarily swap the NVIDIA GPG key. Remove once new base image with new GPG key is released.
-    rm /etc/apt/sources.list.d/cuda.list && \
-    apt-key del 7fa2af80 && \
-    apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub && \
-    apt-get update
+# install base libraries
+RUN grep security /etc/apt/sources.list | tee /etc/apt/security.sources.list && \
+    apt-get update && \
+    apt-get upgrade -o Dir::Etc::SourceList=/etc/apt/security.sources.list -y &&\
+    apt-get -y update && \
+    apt-get install -y gnupg  \
+    curl  \
+    wget  \
+    software-properties-common  \
+    gcc  \
+    nano \
+    procps
 
-# Refer to https://forums.developer.nvidia.com/t/notice-cuda-linux-repository-key-rotation/212772
-RUN apt-get update && apt-get install -y wget
-RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb
-RUN dpkg -i cuda-keyring_1.0-1_all.deb
-RUN apt-get update
 
-# Pick up some TF dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        build-essential \
-        cuda-command-line-tools-${CUDA/./-} \
-        libcublas-${CUDA/./-} \
-        cuda-nvrtc-${CUDA/./-} \
-        libcufft-${CUDA/./-} \
-        libcurand-${CUDA/./-} \
-        libcusolver-${CUDA/./-} \
-        libcusparse-${CUDA/./-} \
-        curl \
-        libcudnn8=${CUDNN}+cuda${CUDA} \
-        libfreetype6-dev \
-        libhdf5-serial-dev \
-        libzmq3-dev \
-        pkg-config \
-        software-properties-common \
-        unzip
+# install miniconda
+RUN apt clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get update && \
+    apt-get install -y wget && \
+    apt-get install -y jq && \
+    apt-get install git -y && \
+    wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
+     /bin/bash ~/miniconda.sh -b -p /opt/miniconda
 
-# Install TensorRT if not building for PowerPC
+
+# create conda environment
+ENV PATH=$CONDA_DIR/bin:$PATH
+RUN conda create --name multienv python==$pycon -y
+
+
+# fix protobuf conflicts
+ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION python
+ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
 RUN apt-get update && \
-        apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/7fa2af80.pub && \
-        echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64 /"  > /etc/apt/sources.list.d/tensorRT.list && \
-        apt-get update && \
-        apt-get install -y --no-install-recommends libnvinfer${LIBNVINFER_MAJOR_VERSION}=${LIBNVINFER}+cuda11.0 \
-        libnvinfer-plugin${LIBNVINFER_MAJOR_VERSION}=${LIBNVINFER}+cuda11.0 \
-        && apt-get clean \
-        && rm -rf /var/lib/apt/lists/*
+    apt-get install -y python3-pip python3-tk && \
+    apt-get install -y libsm6 libxext6 libxrender-dev libgl1-mesa-glx && \
+    apt-get install -y git && \
+    apt-get install -y rsync && \
+    apt-get install -y libusb-1.0-0 && \
+    apt-get install -y libglib2.0-0 && \
+    pip3 install --upgrade pip && \
+    pip3 install setuptools==58.5.3
 
-# For CUDA profiling, TensorFlow requires CUPTI.
-ENV LD_LIBRARY_PATH /usr/local/cuda-11.0/targets/x86_64-linux/lib:/usr/local/cuda/extras/CUPTI/lib64:/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
-# Link the libcuda stub to the location where tensorflow is searching for it and reconfigure
-# dynamic linker run-time bindings
-RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/libcuda.so.1 \
-    && echo "/usr/local/cuda/lib64/stubs" > /etc/ld.so.conf.d/z-cuda-stubs.conf \
-    && ldconfig
-
-# See http://bugs.python.org/issue19846
-ENV LANG C.UTF-8
-
-RUN apt-get update && apt-get install -y \
-    python3 \
-    python3-pip
-RUN pip3 install --upgrade pip
-
-RUN python3 -m pip --no-cache-dir install --upgrade \
-    pip \
-    setuptools==58.5.3
-
-# Some TF tools expect a "python" binary
-RUN ln -s $(which python3) /usr/local/bin/python
-
-RUN apt-get install -y git
-RUN apt-get install -y python-opengl
-
-# Ivy #
-# ----#
-
-# Make sure torch installed before torch-scatter (in optional_gpu.txt)
-RUN pip install --no-cache-dir torch==1.11.0+cu113 --extra-index-url https://download.pytorch.org/whl/cu113
-
-# Install Ivy Upstream
-RUN git clone --recurse-submodules https://github.com/unifyai/ivy --depth 1 && \
+# install Ivy Upstream
+RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --depth 1 && \
     cd ivy && \
-    cat requirements/requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
-    cat requirements/optional_gpu.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
-    python3 -m pip install --user -e . && \
     cd ivy_tests/array_api_testing/test_array_api && \
     pip3 install --no-cache-dir -r requirements.txt
 
-# Install local requirements
-COPY requirements/requirements.txt .
-RUN pip3 install --no-cache-dir -r requirements.txt
 
-# Install local optional
+# copy library files to workdir
+COPY docker/gpu_framework_directory.py .
 COPY requirements/optional_gpu.txt .
-RUN pip3 install --no-cache-dir -r optional_gpu.txt
+COPY requirements/requirements.txt .
 
-# Install jax cuda after optional_gpu.txt, otherwise cpu version will override
-RUN pip install --no-cache-dir jaxlib -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 
-COPY run_tests_CLI/test_dependencies.py .
+# setting torch path early on because torch-scatter needs it
+ENV PYTHONPATH "/opt/fw/torch:/opt/miniconda/envs/multienv/bin"
+
+
+# requirement mappings directs which dependency to be installed and where
+COPY /docker/requirement_mappings_gpu.json .
+SHELL ["/bin/bash", "-c"]
+
+
+# install all libraries based on the mappings
+RUN python3 gpu_framework_directory.py $fw &&\
+    jq -r 'to_entries[] | select(.value != [""]) | .key as $dir | .value[] | @sh "/opt/fw/\($dir) \(.)"' requirement_mappings_gpu.json | xargs -I {} sh -c 'printf "Installing %s\n" $2 && pip install --ignore-installed --target $1 $2 --extra-index-url https://download.pytorch.org/whl/cu118' sh {}
+RUN sed -i '/numpy/d' requirements.txt &&\
+    pip install -r  requirements.txt &&\
+    cp ./optional_gpu.txt tmp.txt  &&\
+    jq -r 'to_entries[] | [.key] + .value | select(length > 0 or (. == "")) | .[]' requirement_mappings_gpu.json | sort -u | xargs -I {} sed -i '/{}/d;/jaxlib/d' tmp.txt && pip install -r tmp.txt
+
+
+# add all the directories to environment path so that python knows where to find them
+ENV PYTHONPATH "/opt/fw/mxnet:/opt/fw/numpy:/opt/fw/tensorflow:/opt/fw/jax:/opt/fw/torch:/opt/fw/paddle:/opt/miniconda/envs/multienv/bin"
+
+
+# test dependencies
+COPY scripts/test_dependencies.py .
 RUN python3 test_dependencies.py -fp requirements.txt,optional_gpu.txt && \
     rm -rf requirements.txt && \
+    rm -rf tmp.txt && \
     rm -rf optional_gpu.txt && \
     rm -rf test_dependencies.py

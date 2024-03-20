@@ -148,7 +148,7 @@ def norm_helper(draw):
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -248,7 +248,7 @@ def test_jax_det(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -268,8 +268,8 @@ def test_jax_eig(
 ):
     dtype, x = dtype_and_x
     x = np.array(x[0], dtype=dtype[0])
-    """Make symmetric positive-definite since ivy does not support complex data dtypes
-    currently."""
+    """Make symmetric positive-definite since ivy does not support complex data
+    dtypes currently."""
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
 
     ret, frontend_ret = helpers.test_frontend_function(
@@ -306,7 +306,7 @@ def test_jax_eig(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -368,7 +368,7 @@ def test_jax_eigh(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -423,7 +423,7 @@ def test_jax_eigvals(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -468,7 +468,7 @@ def test_jax_eigvalsh(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-100,
         max_value=100,
-        shape=helpers.ints(min_value=1, max_value=10).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=1, max_value=10).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -500,6 +500,40 @@ def test_jax_inv(
     )
 
 
+# least squares
+@handle_frontend_test(
+    fn_tree="jax.numpy.linalg.lstsq",
+    dtype_and_a=helpers.get_first_solve_matrix(adjoint=True),
+    dtype_and_b=helpers.get_second_solve_matrix(),
+    test_with_out=st.just(False),
+)
+def test_jax_lstsq(
+    *,
+    dtype_and_a,
+    dtype_and_b,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    a_dtype, a, _ = dtype_and_a
+    b_dtype, b = dtype_and_b
+    helpers.test_frontend_function(
+        input_dtypes=[a_dtype, b_dtype],
+        rtol=1e-01,
+        atol=1e-01,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=a,
+        b=b,
+        test_values=False,
+    )
+
+
 # matrix_power
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.matrix_power",
@@ -507,7 +541,7 @@ def test_jax_inv(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-100,
         max_value=100,
-        shape=helpers.ints(min_value=1, max_value=10).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=1, max_value=10).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -578,7 +612,7 @@ def test_jax_matrix_rank(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
         num_arrays=2,
         shared_dtype=True,
     ).filter(
@@ -786,8 +820,8 @@ def test_jax_slogdet(
 # solve
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.solve",
-    x=helpers.get_first_solve_matrix(adjoint=False),
-    y=helpers.get_second_solve_matrix(),
+    x=helpers.get_first_solve_batch_matrix(),
+    y=helpers.get_second_solve_batch_matrix(),
     test_with_out=st.just(False),
 )
 def test_jax_solve(
@@ -801,7 +835,7 @@ def test_jax_solve(
     backend_fw,
 ):
     input_dtype1, x1, _ = x
-    input_dtype2, x2 = y
+    input_dtype2, x2, _ = y
     helpers.test_frontend_function(
         input_dtypes=[input_dtype1, input_dtype2],
         frontend=frontend,
@@ -809,8 +843,8 @@ def test_jax_solve(
         backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-1,
-        atol=1e-1,
+        rtol=1e-4,
+        atol=1e-4,
         a=x1,
         b=x2,
     )
@@ -823,7 +857,7 @@ def test_jax_solve(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]

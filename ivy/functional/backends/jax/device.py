@@ -1,4 +1,5 @@
-"""Collection of Jax device functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Jax device functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 import os
@@ -41,14 +42,11 @@ def dev(
 ) -> Union[ivy.Device, jaxlib.xla_extension.Device]:
     if isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
         return ""
-    try:
-        dv = _to_array(x).device_buffer.device
-        dv = dv()
-    except Exception:
+    if hasattr(x, "device_buffer"):
+        dv = _to_array(x).device_buffer.device()
+    else:
         dv = jax.devices()[0]
-    if as_native:
-        return dv
-    return as_ivy_dev(dv)
+    return dv if as_native else as_ivy_dev(dv)
 
 
 def to_device(
@@ -137,7 +135,7 @@ def tpu_is_available() -> bool:
 # noinspection PyMethodMayBeStatic
 class Profiler(BaseProfiler):
     def __init__(self, save_dir: str):
-        super(Profiler, self).__init__(save_dir)
+        super().__init__(save_dir)
         self._save_dir = os.path.join(self._save_dir, "profile")
 
     def start(self):

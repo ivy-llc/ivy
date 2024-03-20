@@ -1,5 +1,5 @@
 # local
-from typing import Optional, Union, Tuple, List
+from typing import Optional, Union, Tuple, List, Sequence
 from numbers import Number
 import ivy
 from ivy.func_wrapper import (
@@ -11,10 +11,243 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     handle_array_function,
     infer_dtype,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
+
+
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device
+def amax(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Calculate the maximum value of the input array ``x``.
+
+    .. note::
+       ``amax`` is an alias of ``max`` and both function
+       behaves similarly in every backend except PyTorch and PaddlePaddle
+       (see `PyTorch's amax function
+       documentation<https://pytorch.org/docs/stable/generated/torch.amax.html>`_`)
+       (see `PaddlePaddle's amax function documentation<https://www.paddlepaddle.org.cn/
+       documentation/docs/zh/api/paddle/amax_cn.html>`_`)
+
+    .. note::
+       When the number of elements over which to compute the maximum value is zero, the
+       maximum value is implementation-defined. Specification-compliant libraries may
+       choose to raise an error, return a sentinel value (e.g., if ``x`` is a
+       floating-point input array, return ``NaN``), or return the minimum possible
+       value for the input array ``x`` data type (e.g., if ``x`` is a floating-point
+       array, return ``-infinity``).
+
+    **Special Cases**
+
+    For floating-point operands,
+
+    -   If ``x_i`` is ``NaN``, the maximum value is ``NaN``
+        (i.e., ``NaN`` values propagate).
+
+    Parameters
+    ----------
+    x
+        input array. Should have a real-valued data type.
+    axis
+        axis or axes along which maximum values must be computed. By default, the
+        maximum value must be computed over the entire array. If a tuple of integers,
+        maximum values must be computed over multiple axes. Default: ``None``.
+    keepdims
+        optional boolean, if ``True``, the reduced axes (dimensions) must be included
+        in the result as singleton dimensions, and, accordingly, the result must be
+        compatible with the input array (see `broadcasting<https://data-apis.org/
+        array-api/latest/API_specification/broadcasting.html#broadcasting>`_).
+        Otherwise, if ``False``, the reduced axes (dimensions)
+        must not be included in the result.
+        Default: ``False``.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        if the maximum value was computed over the entire array, a zero-dimensional
+        array containing the maximum value; otherwise, a non-zero-dimensional array
+        containing the maximum values. The returned array must have the same data type
+        as ``x``.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.max.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.amax(x)
+    >>> print(y)
+    ivy.array(3)
+
+    >>> x = ivy.array([0, 1, 2])
+    >>> z = ivy.array([0, 0, 0])
+    >>> y = ivy.amax(x, out=z)
+    >>> print(z)
+    ivy.array(2)
+
+    >>> x = ivy.array([[0, 1, 2], [4, 6, 10]])
+    >>> y = ivy.amax(x, axis=0, keepdims=True)
+    >>> print(y)
+    ivy.array([[4, 6, 10]])
+
+    >>> x = ivy.native_array([[0, 1, 2], [4, 6, 10]])
+    >>> y = ivy.amax(x)
+    >>> print(y)
+    ivy.array(10)
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([2, 3, 4]))
+    >>> y = ivy.amax(x)
+    >>> print(y)
+    {
+        a: ivy.array(3),
+        b: ivy.array(4)
+    }
+    """
+    return ivy.current_backend(x).amax(x, axis=axis, keepdims=keepdims, out=out)
+
+
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device
+def amin(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Calculate the minimum value of the input array ``x``.
+
+    .. note::
+       ``amin`` is an alias of ``min`` and both function
+       behaves similarly in every backend except PyTorch and PaddlePaddle
+       (see `PyTorch's amin function
+       documentation<https://pytorch.org/docs/stable/generated/torch.amin.html>`_`)
+       (see `PaddlePaddle's amin function documentation<https://www.paddlepaddle.org.cn/
+       documentation/docs/zh/api/paddle/amin_cn.html>`_`)
+
+    .. note::
+       When the number of elements over which to compute the minimum value is zero, the
+       minimum value is implementation-defined. Specification-compliant libraries may
+       choose to raise an error, return a sentinel value (e.g., if ``x`` is a
+       floating-point input array, return ``NaN``), or return the maximum possible value
+       for the input array ``x`` data type (e.g., if ``x`` is a floating-point array,
+       return ``+infinity``).
+
+    **Special Cases**
+
+    For floating-point operands,
+
+    -   If ``x_i`` is ``NaN``, the minimum value is ``NaN``
+        (i.e., ``NaN`` values propagate).
+
+    Parameters
+    ----------
+    x
+        input array. Should have a real-valued data type.
+    axis
+        axis or axes along which minimum values must be computed. By default, the
+        minimum value must be computed over the entire array. If a tuple of integers,
+        minimum values must be computed over multiple axes. Default: ``None``.
+
+    keepdims
+        optional boolean, if ``True``, the reduced axes (dimensions) must be included
+        in the result as singleton dimensions, and, accordingly, the result must be
+        compatible with the input array (see `broadcasting<https://data-apis.org/
+        array-api/latest/API_specification/broadcasting.html#broadcasting>`_).
+        Otherwise, if ``False``, the reduced axes (dimensions)
+        must not be included in the result.
+        Default: ``False``.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        if the minimum value was computed over the entire array, a zero-dimensional
+        array containing the minimum value; otherwise, a non-zero-dimensional array
+        containing the minimum values. The returned array must have the same data type
+        as ``x``.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.min.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.amin(x)
+    >>> print(y)
+    ivy.array(1)
+
+    >>> x = ivy.array([0, 1, 2])
+    >>> z = ivy.array([0, 0, 0])
+    >>> y = ivy.amin(x, out=z)
+    >>> print(z)
+    ivy.array(0)
+
+    >>> x = ivy.array([[0, 1, 2], [4, 6, 10]])
+    >>> y = ivy.amin(x, axis=0, keepdims=True)
+    >>> print(y)
+    ivy.array([[0, 1, 2]])
+
+    >>> x = ivy.native_array([[0, 1, 2], [4, 6, 10]])
+    >>> y = ivy.amin(x)
+    >>> print(y)
+    ivy.array(0)
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([2, 3, 4]))
+    >>> y = ivy.amin(x)
+    >>> print(y)
+    {
+        a: ivy.array(1),
+        b: ivy.array(2)
+    }
+    """
+    return ivy.current_backend(x).amin(x, axis=axis, keepdims=keepdims, out=out)
 
 
 @handle_exceptions
@@ -30,8 +263,8 @@ def lgamma(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the natural logarithm of the absolute value of the gamma function on x.
+    """Compute the natural logarithm of the absolute value of the gamma
+    function on x.
 
     Parameters
     ----------
@@ -74,18 +307,18 @@ def lgamma(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def sinc(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Calculate an implementation-dependent approximation of the principal value of the
-    normalized sinc function, having domain ``(-infinity, +infinity)`` and codomain
-    ``[-0.217234, 1]``, for each element ``x_i`` of the input array ``x``. Each element
-    ``x_i`` is assumed to be expressed in radians.
+    """Calculate an implementation-dependent approximation of the principal
+    value of the normalized sinc function, having domain ``(-infinity,
+    +infinity)`` and codomain ``[-0.217234, 1]``, for each element ``x_i`` of
+    the input array ``x``. Each element ``x_i`` is assumed to be expressed in
+    radians.
 
     **Special cases**
 
@@ -150,7 +383,7 @@ def sinc(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def fmax(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -158,10 +391,9 @@ def fmax(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Compute the element-wise maximums of two arrays. Differs from ivy.maximum in the
-    case where one of the elements is NaN. ivy.maximum returns the NaN element while
-    ivy.fmax returns the non-NaN element.
+    """Compute the element-wise maximums of two arrays. Differs from
+    ivy.maximum in the case where one of the elements is NaN. ivy.maximum
+    returns the NaN element while ivy.fmax returns the non-NaN element.
 
     Parameters
     ----------
@@ -196,7 +428,7 @@ def fmax(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def float_power(
     x1: Union[ivy.Array, float, list, tuple],
     x2: Union[ivy.Array, float, list, tuple],
@@ -204,11 +436,10 @@ def float_power(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Raise each base in x1 to the positionally-corresponding power in x2. x1 and x2 must
-    be broadcastable to the same shape. This differs from the power function in that
-    integers, float16, and float32 are promoted to floats with a minimum precision of
-    float64 so that the result is always inexact.
+    """Raise each base in x1 to the positionally-corresponding power in x2. x1
+    and x2 must be broadcastable to the same shape. This differs from the power
+    function in that integers, float16, and float32 are promoted to floats with
+    a minimum precision of float64 so that the result is always inexact.
 
     Parameters
     ----------
@@ -245,7 +476,7 @@ def float_power(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def copysign(
     x1: Union[ivy.Array, ivy.NativeArray, Number],
     x2: Union[ivy.Array, ivy.NativeArray, Number],
@@ -253,9 +484,8 @@ def copysign(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Change the signs of x1 to match x2 x1 and x2 must be broadcastable to a common
-    shape.
+    """Change the signs of x1 to match x2 x1 and x2 must be broadcastable to a
+    common shape.
 
     Parameters
     ----------
@@ -293,7 +523,7 @@ def copysign(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @infer_dtype
-@handle_device_shifting
+@handle_device
 def count_nonzero(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -303,8 +533,7 @@ def count_nonzero(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Count the number of non-zero values in the array a.
+    """Count the number of non-zero values in the array a.
 
     Parameters
     ----------
@@ -353,7 +582,7 @@ def count_nonzero(
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
-@handle_device_shifting
+@handle_device
 def nansum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -363,9 +592,8 @@ def nansum(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the sum of array elements over a given axis treating Not a Numbers (NaNs) as
-    zero.
+    """Return the sum of array elements over a given axis treating Not a
+    Numbers (NaNs) as zero.
 
     Parameters
     ----------
@@ -411,7 +639,7 @@ def nansum(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def isclose(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -422,8 +650,8 @@ def isclose(
     equal_nan: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return a boolean array where two arrays are element-wise equal within a tolerance.
+    """Return a boolean array where two arrays are element-wise equal within a
+    tolerance.
 
     The tolerance values are positive, typically very small numbers.
     The relative difference (rtol * abs(b)) and the absolute difference
@@ -476,15 +704,14 @@ def isclose(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def signbit(
     x: Union[ivy.Array, ivy.NativeArray, float, int, list, tuple],
     /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return element-wise True where signbit is set (less than zero).
+    """Return element-wise True where signbit is set (less than zero).
 
     Parameters
     ----------
@@ -512,7 +739,7 @@ def signbit(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def hypot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -520,8 +747,7 @@ def hypot(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Return the hypotenuse given the two sides of a right angle triangle.
+    """Return the hypotenuse given the two sides of a right angle triangle.
 
     Parameters
     ----------
@@ -550,7 +776,7 @@ def hypot(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def diff(
     x: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
@@ -561,8 +787,7 @@ def diff(
     append: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the n-th discrete difference along the given axis.
+    """Return the n-th discrete difference along the given axis.
 
     Parameters
     ----------
@@ -606,7 +831,7 @@ def diff(
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def allclose(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -617,9 +842,8 @@ def allclose(
     equal_nan: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> bool:
-    """
-    Return a True if the two arrays are element-wise equal within given tolerance;
-    otherwise False.
+    """Return a True if the two arrays are element-wise equal within given
+    tolerance; otherwise False.
 
     The tolerance values are positive, typically very small numbers.
     The relative difference (rtol * abs(x2)) and the absolute difference
@@ -681,16 +905,15 @@ def allclose(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def fix(
     x: Union[ivy.Array, ivy.NativeArray, float, int, list, tuple],
     /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Round an array of floats element-wise to nearest integer towards zero. The rounded
-    values are returned as floats.
+    """Round an array of floats element-wise to nearest integer towards zero.
+    The rounded values are returned as floats.
 
     Parameters
     ----------
@@ -720,7 +943,7 @@ def fix(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def nextafter(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -728,8 +951,7 @@ def nextafter(
     *,
     out: Optional[ivy.Array] = None,
 ) -> bool:
-    """
-    Return the next floating-point value after x1 towards x2, element-wise.
+    """Return the next floating-point value after x1 towards x2, element-wise.
 
     Parameters
     ----------
@@ -762,7 +984,7 @@ def nextafter(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def zeta(
     x: Union[ivy.Array, ivy.NativeArray],
     q: Union[ivy.Array, ivy.NativeArray],
@@ -770,9 +992,8 @@ def zeta(
     *,
     out: Optional[ivy.Array] = None,
 ) -> bool:
-    """
-    Compute the Hurwitz zeta function elementwisely with each pair of floats in two
-    arrays.
+    """Compute the Hurwitz zeta function elementwisely with each pair of floats
+    in two arrays.
 
     Parameters
     ----------
@@ -805,7 +1026,7 @@ def zeta(
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -814,8 +1035,7 @@ def gradient(
     edge_order: int = 1,
     axis: Optional[Union[int, list, tuple]] = None,
 ) -> Union[ivy.Array, List[ivy.Array]]:
-    """
-    Calculate gradient of x with respect to (w.r.t.) spacing.
+    """Calculate gradient of x with respect to (w.r.t.) spacing.
 
     Parameters
     ----------
@@ -831,7 +1051,7 @@ def gradient(
         Note: jax supports edge_order=1 case only
     axis
         dimension(s) to approximate the gradient over
-        by default partial gradient is computed in every dimention
+        by default partial gradient is computed in every dimension
 
     Returns
     -------
@@ -885,7 +1105,7 @@ def gradient(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def xlogy(
     x: Union[ivy.Array, ivy.NativeArray],
     y: Union[ivy.Array, ivy.NativeArray],
@@ -893,8 +1113,7 @@ def xlogy(
     *,
     out: Optional[ivy.Array] = None,
 ) -> bool:
-    """
-    Compute x*log(y) element-wise so that the result is 0 if x = 0.
+    """Compute x*log(y) element-wise so that the result is 0 if x = 0.
 
     Parameters
     ----------
@@ -938,9 +1157,8 @@ def binarizer(
     threshold: float = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Map the values of the input tensor to either 0 or 1, element-wise, based on the
-    outcome of a comparison against a threshold value.
+    """Map the values of the input tensor to either 0 or 1, element-wise, based
+    on the outcome of a comparison against a threshold value.
 
     Parameters
     ----------
@@ -973,15 +1191,15 @@ def binarizer(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def conj(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the complex conjugate for each element ``x_i`` of the input array ``x``.
+    """Return the complex conjugate for each element ``x_i`` of the input array
+    ``x``.
 
     For complex number of the form
 
@@ -1018,7 +1236,7 @@ def conj(
     Returns
     -------
     ret
-        an arrray of the same dtype as the input array with
+        an array of the same dtype as the input array with
         the complex conjugates of the complex values present
         in the input array. If x is a scalar then a scalar
         will be returned.
@@ -1056,7 +1274,7 @@ def conj(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def ldexp(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1064,8 +1282,7 @@ def ldexp(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return x1 * (2**x2), element-wise.
+    """Return x1 * (2**x2), element-wise.
 
     Parameters
     ----------
@@ -1098,7 +1315,7 @@ def ldexp(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def lerp(
     input: Union[ivy.Array, ivy.NativeArray],
     end: Union[ivy.Array, ivy.NativeArray],
@@ -1107,8 +1324,8 @@ def lerp(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return a linear interpolation of two arrays start (given by input) and end.
+    """Return a linear interpolation of two arrays start (given by input) and
+    end.
 
     based on a scalar or array weight.
         input + weight * (end - input),  element-wise.
@@ -1204,9 +1421,8 @@ def lerp(
     if ivy.is_array(weight):
         if ivy.dtype(weight) not in weight_allowed_types:
             weight = ivy.astype(weight, "float64")
-    else:
-        if not isinstance(weight, float):
-            weight = ivy.astype(ivy.array([weight]), "float64")
+    elif not isinstance(weight, float):
+        weight = ivy.astype(ivy.array([weight]), "float64")
 
     return ivy.add(input, ivy.multiply(weight, ivy.subtract(end, input)), out=out)
 
@@ -1216,7 +1432,7 @@ lerp.mixed_backend_wrappers = {
         "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }
@@ -1228,15 +1444,14 @@ lerp.mixed_backend_wrappers = {
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def frexp(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[Tuple[ivy.Array, ivy.Array]] = None,
 ) -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Decompose the elements of x into mantissa and twos exponent.
+    """Decompose the elements of x into mantissa and twos exponent.
 
     Parameters
     ----------
@@ -1272,8 +1487,7 @@ def modf(
     *,
     out: Optional[Tuple[ivy.Array, ivy.Array]] = None,
 ) -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Decompose the elements of x into fractional and integral parts.
+    """Decompose the elements of x into fractional and integral parts.
 
     Parameters
     ----------
@@ -1307,8 +1521,7 @@ def digamma(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the logarithmic derivative of the gamma function at x.
+    """Compute the logarithmic derivative of the gamma function at x.
 
     Note
     ----
@@ -1348,9 +1561,8 @@ def sparsify_tensor(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Zeros out all elements in the tensor except `card` elements with maximum absolute
-    values.
+    """Zeros out all elements in the tensor except `card` elements with maximum
+    absolute values.
 
     Parameters
     ----------
@@ -1388,3 +1600,76 @@ def sparsify_tensor(
     tensor = ivy.concat([ivy.zeros(len(x) - card, dtype=x.dtype), x[-card:]], axis=0)
 
     return ivy.reshape(tensor, _shape, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device
+def erfc(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Complementary error function, 1 - erf(x)
+
+    Parameters
+    ----------
+    x
+        Input array of real or complex valued argument.
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Values of the complementary error function.
+
+    Examples
+    --------
+    >>> x = ivy.array([2, -1., 0])
+    >>> ivy.erfc(x)
+    ivy.array([0.00467773, 1.84270084, 1.        ])
+    """
+    return ivy.current_backend(x).erfc(x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device
+def erfinv(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+):
+    """Compute the inverse error function.
+
+    Parameters
+    ----------
+    x
+        Input array of real or complex valued argument.
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Values of the inverse error function.
+
+    Examples
+    --------
+    >>> x = ivy.array([0, 0.5, -1.])
+    >>> ivy.erfinv(x)
+    ivy.array([0.0000, 0.4769,   -inf])
+    """
+    return ivy.current_backend(x).erfinv(x, out=out)
