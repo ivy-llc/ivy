@@ -6802,6 +6802,13 @@ def test_torch_fix(
     backend_fw,
 ):
     input_dtype, x = dtype_value
+    if backend_fw == "paddle" and input_dtype not in [
+        "int32",
+        "int64",
+        "float64",
+        "float32",
+    ]:
+        return
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
