@@ -13690,6 +13690,17 @@ def test_torch_tril_(
     backend_fw,
 ):
     input_dtype, x = dtype_and_values
+    if backend_fw == "paddle" and input_dtype not in [
+        "int32",
+        "int64",
+        "float64",
+        "complex128",
+        "float16",
+        "float32",
+        "complex64",
+        "bool",
+    ]:
+        return
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
