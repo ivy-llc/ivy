@@ -70,7 +70,7 @@ class Tensor:
 
     @property
     def shape(self):
-        return Size(self.ivy_array.shape)
+        return Size(ivy.shape(self.ivy_array, as_array=True))
 
     @property
     def real(self):
