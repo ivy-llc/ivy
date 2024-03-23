@@ -24,9 +24,9 @@ def hinge_embedding_loss(
     margin: float = 1.0,
     reduction: str = "mean",
 ) -> ivy.Array:
-    r"""
-    Measures loss from input `x` and label `y` with values 1 or -1. It evaluates if two
-    inputs are similar or not, often used for embedding or semi-supervised learning.
+    r"""Measures loss from input `x` and label `y` with values 1 or -1. It
+    evaluates if two inputs are similar or not, often used for embedding or
+    semi-supervised learning.
 
     Loss for the `n`-th sample:
         .. math::
@@ -116,8 +116,8 @@ def huber_loss(
     reduction: str = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the Huber loss (smooth L1 loss) between true and predicted values.
+    """Compute the Huber loss (smooth L1 loss) between true and predicted
+    values.
 
     Parameters
     ----------
@@ -180,8 +180,7 @@ def kl_div(
     log_target=False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the Kullback-Leibler divergence loss between two input tensors
+    """Compute the Kullback-Leibler divergence loss between two input tensors
     (conventionally, probability distributions).
 
     Parameters
@@ -316,13 +315,13 @@ def log_poisson_loss(
     reduction: str = "none",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the log-likelihood loss between the prediction and the target under the
-    assumption that the target has a Poisson distribution. Caveat: By default, this is
-    not the exact loss, but the loss minus a constant term [log(z!)]. That has no effect
-    for optimization, but does not play well with relative loss comparisons. To compute
-    an approximation of the log factorial term, specify ``compute_full_loss=True`` to
-    enable Stirling's Approximation.
+    """Compute the log-likelihood loss between the prediction and the target
+    under the assumption that the target has a Poisson distribution. Caveat: By
+    default, this is not the exact loss, but the loss minus a constant term
+    [log(z!)]. That has no effect for optimization, but does not play well with
+    relative loss comparisons. To compute an approximation of the log factorial
+    term, specify ``compute_full_loss=True`` to enable Stirling's
+    Approximation.
 
     Parameters
     ----------
@@ -398,8 +397,7 @@ def poisson_nll_loss(
     eps: float = 1e-8,
     reduction: str = "mean",
 ) -> ivy.Array:
-    r"""
-    Compute the Poisson Negative Log Likelihood Loss.
+    r"""Compute the Poisson Negative Log Likelihood Loss.
 
     This function calculates the negative log likelihood loss
     between the `input` and `target`under the assumption that
@@ -477,8 +475,7 @@ def smooth_l1_loss(
     reduction: str = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the smooth L1 loss between two input tensors.
+    """Compute the smooth L1 loss between two input tensors.
 
     Parameters
     ----------
@@ -606,8 +603,8 @@ def soft_margin_loss(
     reduction: str = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the soft-margin hinge loss between predicted scores and true binary labels.
+    """Compute the soft-margin hinge loss between predicted scores and true
+    binary labels.
 
     Parameters
     ----------

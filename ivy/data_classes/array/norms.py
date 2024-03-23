@@ -20,10 +20,9 @@ class _ArrayWithNorms(abc.ABC):
         new_std: float = 1.0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.layer_norm. This method simply wraps
-        the function, and so the docstring for ivy.layer_norm also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.layer_norm. This method
+        simply wraps the function, and so the docstring for ivy.layer_norm also
+        applies to this method with minimal changes.
 
         Parameters
         ----------

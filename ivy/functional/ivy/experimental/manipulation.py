@@ -451,8 +451,7 @@ def as_strided(
     strides: Sequence[int],
     /,
 ) -> ivy.Array:
-    """
-    Create a copy of the input array with the given shape and strides.
+    """Create a copy of the input array with the given shape and strides.
 
     Parameters
     ----------
@@ -515,8 +514,7 @@ def associative_scan(
     reverse: bool = False,
     axis: int = 0,
 ) -> ivy.Array:
-    """
-    Perform an associative scan over the given array.
+    """Perform an associative scan over the given array.
 
     Parameters
     ----------
@@ -594,9 +592,9 @@ def atleast_1d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """
-    Convert inputs to arrays with at least one dimension. Scalar inputs are converted to
-    1-dimensional arrays, whilst higher-dimensional inputs are preserved.
+    """Convert inputs to arrays with at least one dimension. Scalar inputs are
+    converted to 1-dimensional arrays, whilst higher-dimensional inputs are
+    preserved.
 
     Parameters
     ----------
@@ -638,9 +636,9 @@ def atleast_2d(
     *arys: Union[ivy.Array, ivy.NativeArray],
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """
-    Convert inputs to arrays with at least two dimension. Scalar inputs are converted to
-    2-dimensional arrays, whilst higher-dimensional inputs are preserved.
+    """Convert inputs to arrays with at least two dimension. Scalar inputs are
+    converted to 2-dimensional arrays, whilst higher-dimensional inputs are
+    preserved.
 
     Parameters
     ----------
@@ -684,9 +682,9 @@ def atleast_3d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """
-    Convert inputs to arrays with at least three dimension. Scalar inputs are converted
-    to 3-dimensional arrays, whilst higher-dimensional inputs are preserved.
+    """Convert inputs to arrays with at least three dimension. Scalar inputs
+    are converted to 3-dimensional arrays, whilst higher-dimensional inputs are
+    preserved.
 
     Parameters
     ----------
@@ -732,8 +730,7 @@ def atleast_3d(
 @handle_exceptions
 @inputs_to_native_shapes
 def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
-    """
-    Broadcasts shapes.
+    """Broadcasts shapes.
 
     Parameters
     ----------
@@ -780,8 +777,7 @@ def choose(
     out: None = None,
     mode: Union[str, None] = None,
 ) -> ivy.Array:
-    """
-    Take values from the input array by matching 1d index and data slices.
+    """Take values from the input array by matching 1d index and data slices.
 
     Parameters
     ----------
@@ -827,8 +823,7 @@ def column_stack(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Create a new array by horizontally stacking the arrays in arrays.
+    """Create a new array by horizontally stacking the arrays in arrays.
 
     Equivalent to `ivy.hstack(arrays)`, except each zero or one dimensional
     array `x` in arrays is first reshaped into a `(x.size(), 1)` column
@@ -890,8 +885,7 @@ def concat_from_sequence(
     axis: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Concatenate a sequence of arrays along a new or an existing axis.
+    """Concatenate a sequence of arrays along a new or an existing axis.
 
     Parameters
     ----------
@@ -932,8 +926,7 @@ def dsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """
-    Split an array into multiple sub-arrays along the 3rd axis.
+    """Split an array into multiple sub-arrays along the 3rd axis.
 
     Parameters
     ----------
@@ -984,8 +977,7 @@ def dstack(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Stack arrays in sequence depth wise (along third axis).
+    """Stack arrays in sequence depth wise (along third axis).
 
     Parameters
     ----------
@@ -1032,8 +1024,8 @@ def expand(
     copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Broadcast the input Array following the given shape and the broadcast rule.
+    """Broadcast the input Array following the given shape and the broadcast
+    rule.
 
     Parameters
     ----------
@@ -1070,8 +1062,7 @@ def fill_diagonal(
     *,
     wrap: bool = False,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Fill the main diagonal of the given array of any dimensionality..
+    """Fill the main diagonal of the given array of any dimensionality..
 
     Parameters
     ----------
@@ -1130,10 +1121,10 @@ def flatten(
     order: str = "C",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Flattens input by reshaping it into a one-dimensional tensor. If start_dim or
-    end_dim are passed, only dimensions starting with start_dim and ending with end_dim
-    are flattened. The order of elements in input is unchanged.
+    """Flattens input by reshaping it into a one-dimensional tensor. If
+    start_dim or end_dim are passed, only dimensions starting with start_dim
+    and ending with end_dim are flattened. The order of elements in input is
+    unchanged.
 
     Parameters
     ----------
@@ -1273,10 +1264,9 @@ def fliplr(
     copy: Optional[bool] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Flip array in the left/right direction. Flip the entries in each column in the
-    left/right direction. Columns are preserved, but appear in a different order than
-    before.
+    """Flip array in the left/right direction. Flip the entries in each column
+    in the left/right direction. Columns are preserved, but appear in a
+    different order than before.
 
     Parameters
     ----------
@@ -1321,9 +1311,9 @@ def flipud(
     copy: Optional[bool] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Flip array in the up/down direction. Flip the entries in each column in the up/down
-    direction. Rows are preserved, but appear in a different order than before.
+    """Flip array in the up/down direction. Flip the entries in each column in
+    the up/down direction. Rows are preserved, but appear in a different order
+    than before.
 
     Parameters
     ----------
@@ -1368,9 +1358,9 @@ def fold(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Refolds the mode-`mode` unfolding into a tensor of shape `shape` In other words,
-    refolds the n-mode unfolded tensor into the original tensor of the specified shape.
+    """Refolds the mode-`mode` unfolding into a tensor of shape `shape` In
+    other words, refolds the n-mode unfolded tensor into the original tensor of
+    the specified shape.
 
     Parameters
     ----------
@@ -1407,8 +1397,7 @@ def heaviside(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the Heaviside step function for each element in x1.
+    """Compute the Heaviside step function for each element in x1.
 
     Parameters
     ----------
@@ -1457,8 +1446,7 @@ def hsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """
-    Split an array into multiple sub-arrays horizontally.
+    """Split an array into multiple sub-arrays horizontally.
 
     Parameters
     ----------
@@ -1512,8 +1500,7 @@ def hstack(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Stack arrays in sequence horizotally (column wise).
+    """Stack arrays in sequence horizotally (column wise).
 
     Parameters
     ----------
@@ -1554,8 +1541,7 @@ def i0(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute the Bessel i0 function of x element-wise.
+    """Compute the Bessel i0 function of x element-wise.
 
     Parameters
     ----------
@@ -1593,8 +1579,7 @@ def matricize(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Matricizes the given tensor.
+    """Matricizes the given tensor.
 
     Parameters
     ----------
@@ -1654,8 +1639,7 @@ def moveaxis(
     copy: Optional[bool] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Move axes of an array to new positions..
+    """Move axes of an array to new positions..
 
     Parameters
     ----------
@@ -1725,8 +1709,7 @@ def pad(
     reflect_type: Literal["even", "odd"] = "even",
     **kwargs: Optional[Any],
 ) -> ivy.Array:
-    """
-    Pad an array.
+    """Pad an array.
 
     Parameters
     ----------
@@ -1954,8 +1937,7 @@ def partial_fold(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Re-folds a partially unfolded tensor.
+    """Re-folds a partially unfolded tensor.
 
     Parameters
     ----------
@@ -1997,9 +1979,8 @@ def partial_tensor_to_vec(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Partial vectorization of a tensor while ignoring the specified dimension at the
-    beginning and the end.
+    """Partial vectorization of a tensor while ignoring the specified dimension
+    at the beginning and the end.
 
     Parameters
     ----------
@@ -2044,11 +2025,11 @@ def partial_unfold(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Partial unfolding of a tensor while ignoring the specified number of dimensions at
-    the beginning and the end. For instance, if the first dimension of the tensor is the
-    number of samples, to unfold each sample, set skip_begin=1. This would, for each i
-    in ``range(tensor.shape[0])``, unfold ``tensor[i, ...]``.
+    """Partial unfolding of a tensor while ignoring the specified number of
+    dimensions at the beginning and the end. For instance, if the first
+    dimension of the tensor is the number of samples, to unfold each sample,
+    set skip_begin=1. This would, for each i in ``range(tensor.shape[0])``,
+    unfold ``tensor[i, ...]``.
 
     Parameters
     ----------
@@ -2100,8 +2081,7 @@ def partial_vec_to_tensor(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Refolds a partially vectorised tensor into a full one.
+    """Refolds a partially vectorised tensor into a full one.
 
     Parameters
     ----------
@@ -2138,9 +2118,8 @@ def put_along_axis(
     mode: Literal["sum", "min", "max", "mul", "mean", "replace"] = "replace",
     out: Optional[ivy.Array] = None,
 ) -> None:
-    """
-    Put values into the input array by matching 1d index and data slices along a
-    specified axis.
+    """Put values into the input array by matching 1d index and data slices
+    along a specified axis.
 
     Parameters
     ----------
@@ -2220,9 +2199,8 @@ def rot90(
     axes: Tuple[int, int] = (0, 1),
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Rotate an array by 90 degrees in the plane specified by axes. Rotation direction is
-    from the first towards the second axis.
+    """Rotate an array by 90 degrees in the plane specified by axes. Rotation
+    direction is from the first towards the second axis.
 
     Parameters
     ----------
@@ -2304,8 +2282,7 @@ def soft_thresholding(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Soft-thresholding operator.
+    """Soft-thresholding operator.
 
         sign(tensor) * max[abs(tensor) - threshold, 0]
 
@@ -2367,8 +2344,7 @@ def take(
     fill_value: Optional[Number] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return elements of an array along an axis.
+    """Return elements of an array along an axis.
 
     .. note::
         Conceptually, take(x, indices, axis=3) is equivalent to x[:,:,:,indices,...];
@@ -2482,8 +2458,7 @@ def take_along_axis(
     mode: str = "fill",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Take values from the input array by matching 1d index and data slices.
+    """Take values from the input array by matching 1d index and data slices.
 
     Parameters
     ----------
@@ -2535,8 +2510,8 @@ def top_k(
     sorted: bool = True,
     out: Optional[tuple] = None,
 ) -> Tuple[ivy.Array, ivy.NativeArray]:
-    """
-    Return the `k` largest elements of the given input array along a given axis.
+    """Return the `k` largest elements of the given input array along a given
+    axis.
 
     Parameters
     ----------
@@ -2609,10 +2584,9 @@ def trim_zeros(
     *,
     trim: str = "fb",
 ) -> ivy.Array:
-    """
-    ivy.Container instance method variant of ivy.trim_zeros. This method simply wraps
-    the function, and so the docstring for ivy.trim_zeros also applies to this method
-    with minimal changes.
+    """ivy.Container instance method variant of ivy.trim_zeros. This method
+    simply wraps the function, and so the docstring for ivy.trim_zeros also
+    applies to this method with minimal changes.
 
     Parameters
     ----------
@@ -2658,8 +2632,7 @@ def unflatten(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Expand a dimension of the input tensor over multiple dimensions.
+    """Expand a dimension of the input tensor over multiple dimensions.
 
     Parameters
     ----------
@@ -2716,8 +2689,7 @@ def unfold(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return the mode-`mode` unfolding of `tensor` with modes starting at `0`.
+    """Return the mode-`mode` unfolding of `tensor` with modes starting at `0`.
 
     Parameters
     ----------
@@ -2753,9 +2725,8 @@ def unique_consecutive(
     Union[ivy.Array, ivy.NativeArray],
     Union[ivy.Array, ivy.NativeArray],
 ]:
-    """
-    Eliminates all but the first element from every consecutive group of equivalent
-    elements in ``x``.
+    """Eliminates all but the first element from every consecutive group of
+    equivalent elements in ``x``.
 
     Parameters
     ----------
@@ -2804,8 +2775,7 @@ def vsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[ivy.Array]:
-    """
-    Split an array vertically into multiple sub-arrays.
+    """Split an array vertically into multiple sub-arrays.
 
     Parameters
     ----------
@@ -2852,8 +2822,7 @@ def vstack(
     *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
-    """
-    Stack arrays in sequence vertically (row wise).
+    """Stack arrays in sequence vertically (row wise).
 
     Parameters
     ----------

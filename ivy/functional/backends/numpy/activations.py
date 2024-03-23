@@ -1,4 +1,5 @@
-"""Collection of Numpy activation functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Numpy activation functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 from typing import Optional, Union, Literal

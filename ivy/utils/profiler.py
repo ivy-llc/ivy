@@ -9,8 +9,7 @@ is_snakeviz = find_spec("snakeviz")
 
 
 class Profiler(cProfile.Profile):
-    """
-    A Profiler class that allows code profiling.
+    """A Profiler class that allows code profiling.
 
     Attributes
     ----------
@@ -63,8 +62,7 @@ def tensorflow_profile_start(
     device_tracer_level: int = 1,
     delay_ms: int = None,
 ):
-    """
-    Initialize and start the profiler.
+    """Initialize and start the profiler.
 
     Parameters
     ----------
@@ -114,8 +112,7 @@ def torch_profiler_init(
     with_modules=False,
     experimental_config=None,
 ):
-    """
-    Initialize and returns a Torch profiler instance.
+    """Initialize and returns a Torch profiler instance.
 
     Parameters
     ----------
@@ -184,8 +181,7 @@ def torch_profiler_init(
 
 
 def torch_profiler_start(profiler):
-    """
-    Start the profiler.
+    """Start the profiler.
 
     Parameters
     ----------
@@ -200,8 +196,7 @@ def torch_profiler_start(profiler):
 
 
 def torch_profiler_stop(profiler):
-    """
-    Start the profiler.
+    """Start the profiler.
 
     Parameters
     ----------

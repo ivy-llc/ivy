@@ -18,8 +18,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 
 
 def _chbevl(x, coef, N):
-    """
-    Evaluates the series.
+    """Evaluates the series.
 
             N-1
              - '
@@ -60,8 +59,7 @@ def _chbevl(x, coef, N):
 
 
 def _get_chebyshev_coefficients_for_exp_i1():
-    """
-    Chebyshev coefficients for exp(-x) I1(x) / x in the interval [0,8].
+    """Chebyshev coefficients for exp(-x) I1(x) / x in the interval [0,8].
 
     lim(x->0){ exp(-x) I1(x) / x } = 1/2.
 
@@ -104,9 +102,8 @@ def _get_chebyshev_coefficients_for_exp_i1():
 
 
 def _get_chebyshev_coefficients_for_exp_sqrt_i1():
-    """
-    Chebyshev coefficients for exp(-x) sqrt(x) I1(x) in the inverted interval
-    [8,infinity].
+    """Chebyshev coefficients for exp(-x) sqrt(x) I1(x) in the inverted
+    interval [8,infinity].
 
     lim(x->inf){ exp(-x) sqrt(x) I1(x) } = 1/sqrt(2pi).
 

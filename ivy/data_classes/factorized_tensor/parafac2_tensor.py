@@ -90,8 +90,7 @@ class Parafac2Tensor(FactorizedTensor):
 
     @classmethod
     def from_CPTensor(cls, cp_tensor, parafac2_tensor_ok=False):
-        """
-        Create a Parafac2Tensor from a CPTensor.
+        """Create a Parafac2Tensor from a CPTensor.
 
         Parameters
         ----------
@@ -124,9 +123,8 @@ class Parafac2Tensor(FactorizedTensor):
     # ---------------#
     @staticmethod
     def validate_parafac2_tensor(parafac2_tensor):
-        """
-        Validate a parafac2_tensor in the form (weights, factors) Return the rank and
-        shape of the validated tensor.
+        """Validate a parafac2_tensor in the form (weights, factors) Return the
+        rank and shape of the validated tensor.
 
         Parameters
         ----------
@@ -210,8 +208,7 @@ class Parafac2Tensor(FactorizedTensor):
 
     @staticmethod
     def parafac2_normalise(parafac2_tensor):
-        """
-        Return parafac2_tensor with factors normalised to unit length.
+        """Return parafac2_tensor with factors normalised to unit length.
 
         Turns ``factors = [|U_1, ... U_n|]`` into ``[weights; |V_1, ... V_n|]``,
         where the columns of each `V_k` are normalized to unit Euclidean length
@@ -267,8 +264,7 @@ class Parafac2Tensor(FactorizedTensor):
 
     @staticmethod
     def apply_parafac2_projections(parafac2_tensor):
-        """
-        Apply the projection matrices to the evolving factor.
+        """Apply the projection matrices to the evolving factor.
 
         Parameters
         ----------
@@ -297,8 +293,8 @@ class Parafac2Tensor(FactorizedTensor):
 
     @staticmethod
     def parafac2_to_slice(parafac2_tensor, slice_idx, validate=True):
-        """
-        Generate a single slice along the first mode from the PARAFAC2 tensor.
+        """Generate a single slice along the first mode from the PARAFAC2
+        tensor.
 
         The decomposition is on the form :math:`(A [B_i] C)` such that the
         i-th frontal slice, :math:`X_i`, of :math:`X` is given by
@@ -362,8 +358,7 @@ class Parafac2Tensor(FactorizedTensor):
 
     @staticmethod
     def parafac2_to_slices(parafac2_tensor, validate=True):
-        """
-        Generate all slices along the first mode from a PARAFAC2 tensor.
+        """Generate all slices along the first mode from a PARAFAC2 tensor.
 
         Generates a list of all slices from a PARAFAC2 tensor. A list is returned
         since the tensor might have varying size along the second mode. To return
@@ -432,8 +427,7 @@ class Parafac2Tensor(FactorizedTensor):
 
     @staticmethod
     def parafac2_to_tensor(parafac2_tensor):
-        """
-        Construct a full tensor from a PARAFAC2 decomposition.
+        """Construct a full tensor from a PARAFAC2 decomposition.
 
         The decomposition is on the form :math:`(A [B_i] C)` such that the
         i-th frontal slice, :math:`X_i`, of :math:`X` is given by
@@ -494,9 +488,8 @@ class Parafac2Tensor(FactorizedTensor):
 
     @staticmethod
     def parafac2_to_unfolded(parafac2_tensor, mode):
-        """
-        Construct an unfolded tensor from a PARAFAC2 decomposition. Uneven slices are
-        padded by zeros.
+        """Construct an unfolded tensor from a PARAFAC2 decomposition. Uneven
+        slices are padded by zeros.
 
         The decomposition is on the form :math:`(A [B_i] C)` such that the
         i-th frontal slice, :math:`X_i`, of :math:`X` is given by
@@ -547,9 +540,8 @@ class Parafac2Tensor(FactorizedTensor):
 
     @staticmethod
     def parafac2_to_vec(parafac2_tensor):
-        """
-        Construct a vectorized tensor from a PARAFAC2 decomposition. Uneven slices are
-        padded by zeros.
+        """Construct a vectorized tensor from a PARAFAC2 decomposition. Uneven
+        slices are padded by zeros.
 
         The decomposition is on the form :math:`(A [B_i] C)` such that
         the i-th frontal slice, :math:`X_i`, of :math:`X` is given by

@@ -87,9 +87,8 @@ def traced_if_required(
 
 
 def _find_instance_in_args(backend: str, args, array_indices, mask):
-    """
-    Find the first element in the arguments that is considered to be an instance of
-    Array or Container class.
+    """Find the first element in the arguments that is considered to be an
+    instance of Array or Container class.
 
     Parameters
     ----------
@@ -452,9 +451,8 @@ def test_function(
     return_flat_np_arrays: bool = False,
     **all_as_kwargs_np,
 ):
-    """
-    Test a function that consumes (or returns) arrays for the current backend by
-    comparing the result with numpy.
+    """Test a function that consumes (or returns) arrays for the current
+    backend by comparing the result with numpy.
 
     Parameters
     ----------
@@ -798,9 +796,8 @@ def test_frontend_function(
     test_values: bool = True,
     **all_as_kwargs_np,
 ):
-    """
-    Test a frontend function for the current backend by comparing the result with the
-    function in the associated framework.
+    """Test a frontend function for the current backend by comparing the result
+    with the function in the associated framework.
 
     Parameters
     ----------
@@ -1721,9 +1718,8 @@ def test_method(
     on_device: str,
     return_flat_np_arrays: bool = False,
 ):
-    """
-    Test a class-method that consumes (or returns) arrays for the current backend by
-    comparing the result with numpy.
+    """Test a class-method that consumes (or returns) arrays for the current
+    backend by comparing the result with numpy.
 
     Parameters
     ----------
@@ -2038,9 +2034,8 @@ def test_frontend_method(
     tolerance_dict: Optional[dict] = None,
     test_values: Union[bool, str] = True,
 ):
-    """
-    Test a class-method that consumes (or returns) arrays for the current backend by
-    comparing the result with numpy.
+    """Test a class-method that consumes (or returns) arrays for the current
+    backend by comparing the result with numpy.
 
     Parameters
     ----------
@@ -2379,8 +2374,7 @@ def _get_framework_atol(atols: dict, current_fw: str):
 
 
 def _get_nested_np_arrays(nest):
-    """
-    Search for a NumPy arrays in a nest.
+    """Search for a NumPy arrays in a nest.
 
     Parameters
     ----------
@@ -2410,8 +2404,7 @@ def create_args_kwargs(
     test_flags: Union[pf.FunctionTestFlags, pf.MethodTestFlags],
     on_device,
 ):
-    """
-    Create arguments and keyword-arguments for the function to test.
+    """Create arguments and keyword-arguments for the function to test.
 
     Parameters
     ----------
@@ -2482,8 +2475,7 @@ def wrap_frontend_function_args(argument):
 
 
 def kwargs_to_args_n_kwargs(*, num_positional_args, kwargs):
-    """
-    Split the kwargs into args and kwargs.
+    """Split the kwargs into args and kwargs.
 
     The first num_positional_args ported to args.
     """
@@ -2575,8 +2567,7 @@ def get_ret_and_flattened_np_array(
     precision_mode=False,
     **kwargs,
 ):
-    """
-    Run func with args and kwargs.
+    """Run func with args and kwargs.
 
     Return the result along with its flattened version.
     """

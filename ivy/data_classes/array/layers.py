@@ -20,10 +20,9 @@ class _ArrayWithLayers(abc.ABC):
         bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.linear. This method simply wraps the
-        function, and so the docstring for ivy.linear also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.linear. This method simply
+        wraps the function, and so the docstring for ivy.linear also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -78,10 +77,9 @@ class _ArrayWithLayers(abc.ABC):
         noise_shape: Optional[Sequence[int]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.dropout. This method simply wraps the
-        function, and so the docstring for ivy.dropout also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.dropout. This method simply
+        wraps the function, and so the docstring for ivy.dropout also applies
+        to this method with minimal changes.
 
         Parameters
         ----------
@@ -157,10 +155,9 @@ class _ArrayWithLayers(abc.ABC):
         data_format: str = "NWC",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.dropout1d. This method simply wraps the
-        function, and so the docstring for ivy.droput1d also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.dropout1d. This method
+        simply wraps the function, and so the docstring for ivy.droput1d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -205,10 +202,9 @@ class _ArrayWithLayers(abc.ABC):
         data_format: str = "NHWC",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.dropout2d. This method simply wraps the
-        function, and so the docstring for ivy.droput1d also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.dropout2d. This method
+        simply wraps the function, and so the docstring for ivy.droput1d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -254,10 +250,9 @@ class _ArrayWithLayers(abc.ABC):
         data_format: str = "NDHWC",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.dropout3d. This method simply wraps the
-        function, and so the docstring for ivy.droput3d also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.dropout3d. This method
+        simply wraps the function, and so the docstring for ivy.droput3d also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -299,11 +294,10 @@ class _ArrayWithLayers(abc.ABC):
         training: Optional[bool] = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.scaled_dot_product_attention. This
-        method simply wraps the function, and so the docstring for
-        ivy.scaled_dot_product_attention also applies to this method with minimal
-        changes.
+        """ivy.Array instance method variant of
+        ivy.scaled_dot_product_attention. This method simply wraps the
+        function, and so the docstring for ivy.scaled_dot_product_attention
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -463,10 +457,9 @@ class _ArrayWithLayers(abc.ABC):
         bias: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.conv1d. This method simply wraps the
-        function, and so the docstring for ivy.conv1d also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.conv1d. This method simply
+        wraps the function, and so the docstring for ivy.conv1d also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -536,10 +529,9 @@ class _ArrayWithLayers(abc.ABC):
         bias: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.conv1d_transpose. This method simply
-        wraps the function, and so the docstring for ivy.conv1d_transpose also applies
-        to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.conv1d_transpose. This
+        method simply wraps the function, and so the docstring for
+        ivy.conv1d_transpose also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -610,10 +602,9 @@ class _ArrayWithLayers(abc.ABC):
         dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.depthwise_conv2d. This method simply
-        wraps the function, and so the docstring for ivy.depthwise_conv2d also applies
-        to this method with minimal changes.
+        """ivy.Array instance method variant of ivy.depthwise_conv2d. This
+        method simply wraps the function, and so the docstring for
+        ivy.depthwise_conv2d also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -671,10 +662,9 @@ class _ArrayWithLayers(abc.ABC):
         bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of `ivy.conv2d`. This method simply wraps the
-        function, and so the docstring for `ivy.conv2d` also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of `ivy.conv2d`. This method
+        simply wraps the function, and so the docstring for `ivy.conv2d` also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -750,10 +740,10 @@ class _ArrayWithLayers(abc.ABC):
         out: Optional[ivy.Array] = None,
         bias: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of `ivy.conv2d_transpose`. This method simply
-        wraps the function, and so the docstring for `ivy.conv2d_transpose` also applies
-        to this method with minimal changes.
+        """ivy.Array instance method variant of `ivy.conv2d_transpose`. This
+        method simply wraps the function, and so the docstring for
+        `ivy.conv2d_transpose` also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -824,10 +814,9 @@ class _ArrayWithLayers(abc.ABC):
         bias: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of `ivy.conv3d`. This method simply wraps the
-        function, and so the docstring for `ivy.conv3d` also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of `ivy.conv3d`. This method
+        simply wraps the function, and so the docstring for `ivy.conv3d` also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -896,10 +885,10 @@ class _ArrayWithLayers(abc.ABC):
         bias: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of `ivy.conv3d_transpose`. This method simply
-        wraps the function, and so the docstring for `ivy.conv3d_transpose` also applies
-        to this method with minimal changes.
+        """ivy.Array instance method variant of `ivy.conv3d_transpose`. This
+        method simply wraps the function, and so the docstring for
+        `ivy.conv3d_transpose` also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -968,10 +957,9 @@ class _ArrayWithLayers(abc.ABC):
         bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> Tuple[ivy.Array, ivy.Array]:
-        """
-        ivy.Array instance method variant of ivy.lstm_update. This method simply wraps
-        the function, and so the docstring for ivy.lstm_update also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.lstm_update. This method
+        simply wraps the function, and so the docstring for ivy.lstm_update
+        also applies to this method with minimal changes.
 
         Parameters
         ----------

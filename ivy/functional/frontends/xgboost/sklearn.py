@@ -98,9 +98,8 @@ class XGBModel(XGBModelBase):
         return hasattr(self, "_Booster")
 
     def get_booster(self):
-        """
-        Get the underlying xgboost Booster of this model. This will raise an exception
-        when fit was not called.
+        """Get the underlying xgboost Booster of this model. This will raise an
+        exception when fit was not called.
 
         Returns
         -------
@@ -176,8 +175,7 @@ class XGBModel(XGBModelBase):
         feature_weights=None,
         callbacks=None,
     ):
-        """
-        Fit gradient boosting model.
+        """Fit gradient boosting model.
 
         Note that calling ``fit()`` multiple times will cause the model object to be
         re-fit from scratch. To resume training from a previous checkpoint, explicitly

@@ -27,7 +27,8 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 def _arrays_to_float_variables(xs, xs_grad_idxs=None):
-    """Convert all required arrays to float variables for gradient calculation."""
+    """Convert all required arrays to float variables for gradient
+    calculation."""
 
     def inner_fn(x):
         if ivy.is_array(x, exclusive=True):
@@ -55,8 +56,7 @@ def _check_if_empty(idxs):
 
 
 def _flatten_containers(inputs):
-    """
-    Flatten containers into a single tuple of arrays.
+    """Flatten containers into a single tuple of arrays.
 
     Returns a flattened tuple of arrays and the indices of the arrays in
     the original containers.
@@ -78,7 +78,8 @@ def _flatten_containers(inputs):
 
 
 def _get_duplicate_index_chains(xs):
-    """Generate a list of duplicate index chains for a given nested structure."""
+    """Generate a list of duplicate index chains for a given nested
+    structure."""
     duplicate_index_chains = ()
     if isinstance(xs, ivy.Container):
         duplicate_index_chains = xs.cont_duplicate_array_keychains()
@@ -88,7 +89,8 @@ def _get_duplicate_index_chains(xs):
 
 
 def _get_native_variables_and_indices(x, reshape=True, idxs=None, create_var=False):
-    """Extract all relevant results from the output nested structure of a function."""
+    """Extract all relevant results from the output nested structure of a
+    function."""
 
     def map_fn(x_):
         if ivy.is_array(x_):
@@ -137,8 +139,7 @@ def _get_native_y(y):
 
 
 def _get_required_float_variables(xs, xs_grad_idxs):
-    """
-    Convert all required arrays to float variables for gradient calculation.
+    """Convert all required arrays to float variables for gradient calculation.
 
     Also, returns a list of duplicate index chains for the nested
     structure.
@@ -245,8 +246,7 @@ def _non_finite_to_zero(xs):
 
 
 def _process_func_ret_and_grads(func_ret, grads, retain_grads):
-    """
-    Stop gradients propagation.
+    """Stop gradients propagation.
 
     Set the gradients of non-finite values to zero, and stopping
     gradient propagation of the function results.
@@ -276,7 +276,8 @@ def _rebuild_flattened_containers(outputs, ret_idxs):
 
 
 def _set_duplicates(xs, duplicate_index_chains):
-    """Set the duplicates in the nested structure to have the same reference."""
+    """Set the duplicates in the nested structure to have the same
+    reference."""
     originals = list(
         map(
             lambda key_chains: [key_chains[0]] * (len(key_chains) - 1),
@@ -338,8 +339,7 @@ def _variable(x):
 def _variable_data(
     x: Union[ivy.Array, ivy.NativeArray],
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Get the contents of the input.
+    """Get the contents of the input.
 
     Parameters
     ----------
@@ -372,9 +372,9 @@ def execute_with_gradients(
     xs_grad_idxs: Sequence[Sequence[Union[str, int]]] = ((0,),),
     ret_grad_idxs: Sequence[Sequence[Union[str, int]]] = ((0,),),
 ) -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Call function func with input of xs variables, and return the function result
-    func_ret and the gradients of each output variable w.r.t each input variable,
+    """Call function func with input of xs variables, and return the function
+    result func_ret and the gradients of each output variable w.r.t each input
+    variable,
 
     Parameters
     ----------
@@ -447,8 +447,7 @@ def execute_with_gradients(
 
 @handle_exceptions
 def grad(func: Callable, argnums: Union[int, Sequence[int]] = 0) -> Callable:
-    """
-    Call function func, and return func's gradients.
+    """Call function func, and return func's gradients.
 
     Parameters
     ----------
@@ -478,8 +477,7 @@ def grad(func: Callable, argnums: Union[int, Sequence[int]] = 0) -> Callable:
 
 @handle_exceptions
 def jac(func: Callable) -> Callable:
-    """
-    Call function func, and return func's Jacobian partial derivatives.
+    """Call function func, and return func's Jacobian partial derivatives.
 
     Parameters
     ----------
@@ -522,8 +520,7 @@ def stop_gradient(
     preserve_type: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Stop gradient computation.
+    """Stop gradient computation.
 
     Parameters
     ----------
@@ -587,8 +584,7 @@ def stop_gradient(
 
 @handle_exceptions
 def value_and_grad(func: Callable) -> Callable:
-    """
-    Create a function that evaluates both func and the gradient of func.
+    """Create a function that evaluates both func and the gradient of func.
 
     Parameters
     ----------
@@ -635,9 +631,8 @@ def adam_step(
     epsilon: float = 1e-7,
     out: Optional[ivy.Array] = None,
 ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
-    """
-    Compute adam step delta, given the derivatives of some cost c with respect to
-    weights ws, using ADAM update. `[reference]
+    """Compute adam step delta, given the derivatives of some cost c with
+    respect to weights ws, using ADAM update. `[reference]
 
     <https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam>`_
 
@@ -786,9 +781,8 @@ def adam_update(
     stop_gradients: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
-    """
-    Update weights ws of some function, given the derivatives of some cost c with
-    respect to ws, using ADAM update. `[reference]
+    """Update weights ws of some function, given the derivatives of some cost c
+    with respect to ws, using ADAM update. `[reference]
 
     <https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam>`_
 
@@ -942,9 +936,8 @@ def gradient_descent_update(
     stop_gradients: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Update weights ws of some function, given the derivatives of some cost c with
-    respect to ws, [dc/dw for w in ws].
+    """Update weights ws of some function, given the derivatives of some cost c
+    with respect to ws, [dc/dw for w in ws].
 
     Parameters
     ----------
@@ -1043,9 +1036,8 @@ def lamb_update(
     stop_gradients: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
-    """
-    Update weights ws of some function, given the derivatives of some cost c with
-    respect to ws, [dc/dw for w in ws], by applying LAMB method.
+    """Update weights ws of some function, given the derivatives of some cost c
+    with respect to ws, [dc/dw for w in ws], by applying LAMB method.
 
     Parameters
     ----------
@@ -1205,10 +1197,9 @@ def lars_update(
     stop_gradients: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Update weights ws of some function, given the derivatives of some cost c with
-    respect to ws, [dc/dw for w in ws], by applying Layerwise Adaptive Rate Scaling
-    (LARS) method.
+    """Update weights ws of some function, given the derivatives of some cost c
+    with respect to ws, [dc/dw for w in ws], by applying Layerwise Adaptive
+    Rate Scaling (LARS) method.
 
     Parameters
     ----------
@@ -1307,9 +1298,8 @@ def optimizer_update(
     stop_gradients: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Update weights ws of some function, given the true or effective derivatives of some
-    cost c with respect to ws, [dc/dw for w in ws].
+    """Update weights ws of some function, given the true or effective
+    derivatives of some cost c with respect to ws, [dc/dw for w in ws].
 
     Parameters
     ----------
