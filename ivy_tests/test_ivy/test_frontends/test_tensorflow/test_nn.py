@@ -1256,6 +1256,8 @@ def test_tensorflow_embedding_lookup(
         max_norm=max_norm,
         atol=1e-4,
     )
+
+
 # embedding_lookup_sparse
 @handle_frontend_test(
     fn_tree="tensorflow.nn.embedding_lookup_sparse",
