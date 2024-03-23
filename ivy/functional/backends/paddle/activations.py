@@ -117,6 +117,9 @@ def softmax(
     return paddle.divide(exp_x, paddle.sum(exp_x, axis=axis, keepdim=True))
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
+)
 def softplus(
     x: paddle.Tensor,
     /,
