@@ -505,8 +505,9 @@ def adaptive_avg_pool1d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: int,
 ) -> ivy.Array:
-    """Apply a 1D adaptive average pooling over an input signal composed of
-    several input planes.
+    """
+    Apply a 1D adaptive average pooling over an input signal composed of several input
+    planes.
 
     Parameters
     ----------
@@ -579,8 +580,9 @@ def adaptive_avg_pool2d(
     *,
     data_format: str = "NHWC",
 ) -> ivy.Array:
-    """Apply a 2D adaptive average pooling over an input signal composed of
-    several input planes.
+    """
+    Apply a 2D adaptive average pooling over an input signal composed of several input
+    planes.
 
     Parameters
     ----------
@@ -675,8 +677,9 @@ def adaptive_max_pool2d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: Union[Sequence[int], int],
 ):
-    """Apply a 2D adaptive maximum pooling over an input signal composed of
-    several input planes.
+    """
+    Apply a 2D adaptive maximum pooling over an input signal composed of several input
+    planes.
 
     Parameters
     ----------
@@ -756,8 +759,9 @@ def adaptive_max_pool3d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: Union[Sequence[int], int],
 ):
-    """Apply a 3D adaptive maximum pooling over an input signal composed of
-    several input planes.
+    """
+    Apply a 3D adaptive maximum pooling over an input signal composed of several input
+    planes.
 
     Parameters
     ----------
@@ -918,7 +922,8 @@ def avg_pool1d(
     divisor_override: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute a 1-D avg pool given 3-D input x.
+    """
+    Compute a 1-D avg pool given 3-D input x.
 
     Parameters
     ----------
@@ -1000,7 +1005,8 @@ def avg_pool2d(
     divisor_override: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute a 2-D average pool given 4-D input x.
+    """
+    Compute a 2-D average pool given 4-D input x.
 
     Parameters
     ----------
@@ -1087,7 +1093,8 @@ def avg_pool3d(
     divisor_override: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute a 3-D avg pool given 5-D input x.
+    """
+    Compute a 3-D avg pool given 5-D input x.
 
     Parameters
     ----------
@@ -1173,7 +1180,8 @@ def dct(
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Compute the 1D Discrete Cosine Transformation of a given signal.
+    """
+    Compute the 1D Discrete Cosine Transformation of a given signal.
 
     Parameters
     ----------
@@ -1284,7 +1292,8 @@ def dft(
     norm: str = "backward",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the discrete Fourier transform of input.
+    """
+    Compute the discrete Fourier transform of input.
 
     Parameters
     ----------
@@ -1362,10 +1371,11 @@ def dropout1d(
     data_format: str = "NWC",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Randomly zero out entire channels with probability prob using samples
-    from a Bernoulli distribution and the remaining channels are scaled by
-    (1/1-prob). In this case, dropout1d performs a channel-wise dropout but
-    assumes a channel is a 1D feature map.
+    """
+    Randomly zero out entire channels with probability prob using samples from a
+    Bernoulli distribution and the remaining channels are scaled by (1/1-prob). In this
+    case, dropout1d performs a channel-wise dropout but assumes a channel is a 1D
+    feature map.
 
     Parameters
     ----------
@@ -1437,10 +1447,11 @@ def dropout2d(
     data_format: str = "NHWC",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Randomly zero out entire channels with probability prob using samples
-    from a Bernoulli distribution and the remaining channels are scaled by
-    (1/1-prob). In this case, dropout2d performs a channel-wise dropout but
-    assumes a channel is a 2D feature map.
+    """
+    Randomly zero out entire channels with probability prob using samples from a
+    Bernoulli distribution and the remaining channels are scaled by (1/1-prob). In this
+    case, dropout2d performs a channel-wise dropout but assumes a channel is a 2D
+    feature map.
 
     Parameters
     ----------
@@ -1502,10 +1513,11 @@ def dropout3d(
     data_format: str = "NDHWC",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Randomly zero out entire channels with probability prob using samples
-    from a Bernoulli distribution and the remaining channels are scaled by
-    (1/1-prob). In this case, dropout3d performs a channel-wise dropout but
-    assumes a channel is a 1D feature map.
+    """
+    Randomly zero out entire channels with probability prob using samples from a
+    Bernoulli distribution and the remaining channels are scaled by (1/1-prob). In this
+    case, dropout3d performs a channel-wise dropout but assumes a channel is a 1D
+    feature map.
 
     Parameters
     ----------
@@ -1552,7 +1564,8 @@ def embedding(
     max_norm: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Embeds a given tensor of indices using a given tensor of weights.
+    """
+    Embeds a given tensor of indices using a given tensor of weights.
 
     Parameters
     ----------
@@ -1606,8 +1619,9 @@ def fft(
     n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    r"""Compute the one dimensional discrete Fourier transform given input at
-    least 1-D input x.
+    r"""
+    Compute the one dimensional discrete Fourier transform given input at least 1-D
+    input x.
 
     Parameters
     ----------
@@ -1673,7 +1687,8 @@ def fft2(
     norm: str = "backward",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    r"""Compute the 2-dimensional discrete Fourier Transform.
+    r"""
+    Compute the 2-dimensional discrete Fourier Transform.
 
     Parameters
     ----------
@@ -1773,7 +1788,8 @@ def idct(
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Compute the 1D Inverse Discrete Cosine Transformation of a given signal.
+    """
+    Compute the 1D Inverse Discrete Cosine Transformation of a given signal.
 
     Parameters
     ----------
@@ -1886,8 +1902,9 @@ def ifft(
     n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    r"""Compute the one dimensional discrete Fourier transform given input at
-    least 1-D input x.
+    r"""
+    Compute the one dimensional discrete Fourier transform given input at least 1-D
+    input x.
 
     Parameters
     ----------
@@ -1953,7 +1970,8 @@ def ifftn(
     norm: str = "backward",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    r"""Compute the N-dimensional inverse discrete Fourier Transform.
+    r"""
+    Compute the N-dimensional inverse discrete Fourier Transform.
 
     Parameters
     ----------
@@ -2120,8 +2138,9 @@ def interpolate(
     antialias: bool = False,  # ToDo: add support for antialias
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Down/up samples the input to the given size. The algorithm used for
-    interpolation is determined by mode.
+    """
+    Down/up samples the input to the given size. The algorithm used for interpolation is
+    determined by mode.
 
     Parameters
     ----------
@@ -2364,7 +2383,8 @@ def max_pool1d(
     ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute a 1-D max pool given 3-D input x.
+    """
+    Compute a 1-D max pool given 3-D input x.
 
     Parameters
     ----------
@@ -2451,7 +2471,8 @@ def max_pool2d(
     ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute a 2-D max pool given 4-D input x.
+    """
+    Compute a 2-D max pool given 4-D input x.
 
     Parameters
     ----------
@@ -2538,7 +2559,8 @@ def max_pool3d(
     ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute a 3-D max pool given 5-D input x.
+    """
+    Compute a 3-D max pool given 5-D input x.
 
     Parameters
     ----------
@@ -2622,8 +2644,8 @@ def max_unpool1d(
     padding: Union[int, Tuple[int]] = 0,
     data_format: Optional[str] = "NCW",
 ) -> ivy.Array:
-    """Compute a 1-D max unpooling given the 1-D pooled input x and its
-    indices.
+    """
+    Compute a 1-D max unpooling given the 1-D pooled input x and its indices.
 
     Parameters
     ----------
@@ -2713,7 +2735,8 @@ def pool(
     ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Perform an N-D pooling operation.
+    """
+    Perform an N-D pooling operation.
 
     Parameters
     ----------
@@ -2789,7 +2812,8 @@ def reduce_window(
     base_dilation: Union[int, Sequence[int]] = 1,
     window_dilation: Union[int, Sequence[int]] = 1,
 ) -> ivy.Array:
-    """Apply a reduction function to all elements in each window of an array.
+    """
+    Apply a reduction function to all elements in each window of an array.
 
     Parameters
     ----------
@@ -2855,8 +2879,8 @@ def rfft(
     norm: Literal["backward", "ortho", "forward"] = "backward",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the one-dimensional discrete Fourier transform for real-valued
-    input.
+    """
+    Compute the one-dimensional discrete Fourier transform for real-valued input.
 
     .. note::
         Applying the one-dimensional inverse discrete Fourier transform for
@@ -2965,7 +2989,8 @@ def rfftn(
     norm: Optional[str] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the N-dimensional discrete Fourier Transform for real input.
+    """
+    Compute the N-dimensional discrete Fourier Transform for real input.
 
     Parameters
     ----------
@@ -3056,7 +3081,8 @@ def rnn(
     zero_output_for_mask: bool = False,
     return_all_outputs: bool = True,
 ):
-    """Iterate over the time dimension of a tensor.
+    """
+    Iterate over the time dimension of a tensor.
 
     Parameters
     ----------
@@ -3342,7 +3368,8 @@ def sliding_window(
     dilation: Union[int, Tuple[int, int]] = 1,
     padding: Union[str, int, Tuple[int, int]] = "VALID",
 ) -> ivy.Array:
-    """Slide a window of specified dimension over all elements of an array.
+    """
+    Slide a window of specified dimension over all elements of an array.
 
     Parameters
     ----------
@@ -3466,7 +3493,8 @@ def stft(
     name: Optional[str] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """ivy.Container static method variant of ivy.stft.
+    """
+    ivy.Container static method variant of ivy.stft.
 
     This method simply wraps the function, and so the docstring for
     ivy.stft also applies to this method with minimal changes.

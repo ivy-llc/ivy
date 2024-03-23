@@ -97,8 +97,8 @@ def fftshift(x, axes=None, name=None):
 )
 @to_ivy_arrays_and_back
 def hfft(x, n=None, axes=-1, norm="backward", name=None):
-    """Compute the FFT of a signal that has Hermitian symmetry, resulting in a
-    real spectrum."""
+    """Compute the FFT of a signal that has Hermitian symmetry, resulting in a real
+    spectrum."""
     # Determine the input shape and axis length
     input_shape = x.shape
     input_len = input_shape[axes]

@@ -19,8 +19,8 @@ class ModuleHelpers:
         without_initialisation=False,
         _visited=None,
     ):
-        """Find all internal variables in obj. Return empty Container if obj is
-        None.
+        """
+        Find all internal variables in obj. Return empty Container if obj is None.
 
         Parameters
         ----------
@@ -100,10 +100,10 @@ class ModuleHelpers:
 
     @staticmethod
     def _extract_v(v, keychain_mappings: dict, orig_key_chain, /):
-        """Extract the variables from the variables container v using the key
-        orig_key_chain and reinstantiate the duplicate variables that were
-        removed by _remove_duplicate_variables in their correct locations using
-        keychain_mappings.
+        """
+        Extract the variables from the variables container v using the key
+        orig_key_chain and reinstantiate the duplicate variables that were removed by
+        _remove_duplicate_variables in their correct locations using keychain_mappings.
 
         Parameters
         ----------
@@ -137,7 +137,8 @@ class ModuleHelpers:
 
     @staticmethod
     def _remove_duplicate_variables(vs, created, /):
-        """Remove duplicate variables in `vs` referring to `created`.
+        """
+        Remove duplicate variables in `vs` referring to `created`.
 
         Parameters
         ----------
@@ -181,9 +182,10 @@ class ModuleHelpers:
     def _wrap_call_methods(
         self, keychain_mappings, /, *, key="", obj=None, _visited=None
     ):
-        """Wrap the call methods of the Module object by looping over all the
-        items within the module, wrapping the __call__ methods of all
-        submodules using _fn_with_var_arg.
+        """
+        Wrap the call methods of the Module object by looping over all the items within
+        the module, wrapping the __call__ methods of all submodules using
+        _fn_with_var_arg.
 
         Parameters
         ----------
@@ -240,8 +242,8 @@ class ModuleHelpers:
         return
 
     def _call(self, *args, v=None, buffers=None, **kwargs):
-        """Compute forward pass of the layer, treating layer instance as
-        callable function.
+        """
+        Compute forward pass of the layer, treating layer instance as callable function.
 
         Parameters
         ----------
@@ -335,7 +337,8 @@ class ModuleHelpers:
         return fn(*a, **kw, v=v)
 
     def _fn_with_var_arg(self, fn, v_fn, /, keychain_mappings, orig_key_chain):
-        """Extract variables from `v_fn` and use it as inputs for `fn`.
+        """
+        Extract variables from `v_fn` and use it as inputs for `fn`.
 
         Use `v_fn` to extract the variables and use the extracted
         variables as inputs to the call function fn of the module.
@@ -351,9 +354,9 @@ class ModuleHelpers:
         return _fn_with_var_arg_wrapper
 
     def _convert_tensors_to_numpy(self):
-        """Recursively traverses the module_dict attribute of a Module object
-        and converts every container containing tensors to numpy using the
-        to_numpy() method.
+        """
+        Recursively traverses the module_dict attribute of a Module object and converts
+        every container containing tensors to numpy using the to_numpy() method.
 
         Returns
         -------
@@ -366,9 +369,9 @@ class ModuleHelpers:
         self.v = self.v.to_numpy()
 
     def _convert_numpy_to_tensors(self):
-        """Recursively traverses the module_dict attribute of a Module object
-        and converts every container containing tensors to numpy using the
-        to_numpy() method.
+        """
+        Recursively traverses the module_dict attribute of a Module object and converts
+        every container containing tensors to numpy using the to_numpy() method.
 
         Returns
         -------

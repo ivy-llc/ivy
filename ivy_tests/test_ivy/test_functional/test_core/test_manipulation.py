@@ -152,9 +152,8 @@ def _get_splits(
     allow_array_indices=True,
     is_mod_split=False,
 ):
-    """Generate valid splits, either by generating an integer that evenly
-    divides the axis or a list of splits that sum to the length of the axis
-    being split."""
+    """Generate valid splits, either by generating an integer that evenly divides the
+    axis or a list of splits that sum to the length of the axis being split."""
     shape = draw(
         st.shared(helpers.get_shape(min_num_dims=min_num_dims), key="value_shape")
     )

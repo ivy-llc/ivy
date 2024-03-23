@@ -11,7 +11,8 @@ einsum_symbols_set = set(einsum_symbols)
 
 
 def flop_count(idx_contraction, inner, num_terms, size_dictionary):
-    """Compute the number of FLOPS in the contraction.
+    """
+    Compute the number of FLOPS in the contraction.
 
     Parameters
     ----------
@@ -46,8 +47,8 @@ def flop_count(idx_contraction, inner, num_terms, size_dictionary):
 
 
 def compute_size_by_dict(indices, idx_dict):
-    """Compute the product of the elements in indices based on the dictionary
-    idx_dict.
+    """
+    Compute the product of the elements in indices based on the dictionary idx_dict.
 
     Parameters
     ----------
@@ -73,7 +74,8 @@ def compute_size_by_dict(indices, idx_dict):
 
 
 def find_contraction(positions, input_sets, output_set):
-    """Find the contraction for a given set of input and output sets.
+    """
+    Find the contraction for a given set of input and output sets.
 
     Parameters
     ----------
@@ -129,9 +131,10 @@ def find_contraction(positions, input_sets, output_set):
 
 
 def optimal_path(input_sets, output_set, idx_dict, memory_limit):
-    """Compute all possible pair contractions, sieves the results based on
-    ``memory_limit`` and returns the lowest cost path. This algorithm scales
-    factorial with respect to the elements in the list ``input_sets``.
+    """
+    Compute all possible pair contractions, sieves the results based on ``memory_limit``
+    and returns the lowest cost path. This algorithm scales factorial with respect to
+    the elements in the list ``input_sets``.
 
     Parameters
     ----------
@@ -201,8 +204,9 @@ def optimal_path(input_sets, output_set, idx_dict, memory_limit):
 def parse_possible_contraction(
     positions, input_sets, output_set, idx_dict, memory_limit, path_cost, naive_cost
 ):
-    """Compute the cost (removed size + flops) and resultant indices for
-    performing the contraction specified by ``positions``.
+    """
+    Compute the cost (removed size + flops) and resultant indices for performing the
+    contraction specified by ``positions``.
 
     Parameters
     ----------
@@ -257,9 +261,9 @@ def parse_possible_contraction(
 
 
 def update_other_results(results, best):
-    """Update the positions and provisional input_sets of ``results`` based on
-    performing the contraction result ``best``. Remove any involving the
-    tensors contracted.
+    """
+    Update the positions and provisional input_sets of ``results`` based on performing
+    the contraction result ``best``. Remove any involving the tensors contracted.
 
     Parameters
     ----------
@@ -295,12 +299,12 @@ def update_other_results(results, best):
 
 
 def greedy_path(input_sets, output_set, idx_dict, memory_limit):
-    """Find the path by contracting the best pair until the input list is
-    exhausted. The best pair is found by minimizing the tuple
-    ``(-prod(indices_removed), cost)``.  What this amounts to is prioritizing
-    matrix multiplication or inner product operations, then Hadamard like
-    operations, and finally outer operations. Outer products are limited by
-    ``memory_limit``. This algorithm scales cubically with respect to the
+    """
+    Find the path by contracting the best pair until the input list is exhausted. The
+    best pair is found by minimizing the tuple ``(-prod(indices_removed), cost)``.  What
+    this amounts to is prioritizing matrix multiplication or inner product operations,
+    then Hadamard like operations, and finally outer operations. Outer products are
+    limited by ``memory_limit``. This algorithm scales cubically with respect to the
     number of elements in the list ``input_sets``.
 
     Parameters
@@ -407,8 +411,8 @@ def greedy_path(input_sets, output_set, idx_dict, memory_limit):
 
 
 def can_dot(inputs, result, idx_removed):
-    """Check if we can use BLAS (np.tensordot) call and its beneficial to do
-    so.
+    """
+    Check if we can use BLAS (np.tensordot) call and its beneficial to do so.
 
     Parameters
     ----------
@@ -510,7 +514,8 @@ def can_dot(inputs, result, idx_removed):
 
 
 def parse_einsum_input(operands, subscripts=None):
-    """Reproduction of einsum c side einsum parsing in python.
+    """
+    Reproduction of einsum c side einsum parsing in python.
 
     Returns
     -------

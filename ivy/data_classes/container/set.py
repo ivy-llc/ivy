@@ -19,9 +19,10 @@ class _ContainerWithSet(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.unique_all. This method
-        simply wraps the function, and so the docstring for ivy.unique_all also
-        applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.unique_all. This method simply wraps
+        the function, and so the docstring for ivy.unique_all also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -96,9 +97,10 @@ class _ContainerWithSet(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.unique_all. This method
-        simply wraps the function, and so the docstring for ivy.unique_all also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.unique_all. This method simply
+        wraps the function, and so the docstring for ivy.unique_all also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -170,9 +172,10 @@ class _ContainerWithSet(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.unique_counts. This
-        method simply wraps the function, and so the docstring for
-        ivy.unique_counts also applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.unique_counts. This method simply
+        wraps the function, and so the docstring for ivy.unique_counts also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -233,9 +236,10 @@ class _ContainerWithSet(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.unique_counts. This
-        method simply wraps the function, and so the docstring for
-        ivy.unique_counts also applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.unique_counts. This method simply
+        wraps the function, and so the docstring for ivy.unique_counts also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -322,8 +326,9 @@ class _ContainerWithSet(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.unique_values. This
-        method simply wraps the function and applies it on the container.
+        """
+        ivy.Container instance method variant of ivy.unique_values. This method simply
+        wraps the function and applies it on the container.
 
         Parameters
         ----------
@@ -399,9 +404,10 @@ class _ContainerWithSet(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.unique_inverse. This
-        method simply wraps the function, and so the docstring for
-        ivy.unique_inverse also applies to this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.unique_inverse. This method simply
+        wraps the function, and so the docstring for ivy.unique_inverse also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -463,9 +469,10 @@ class _ContainerWithSet(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.unique_inverse. This
-        method simply wraps the function, and so the docstring for
-        ivy.unique_inverse also applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.unique_inverse. This method simply
+        wraps the function, and so the docstring for ivy.unique_inverse also applies to
+        this method with minimal changes.
 
         Parameters
         ----------

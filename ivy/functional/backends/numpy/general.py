@@ -1,5 +1,4 @@
-"""Collection of Numpy general functions, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
 
 import multiprocessing as _multiprocessing
 from functools import reduce as _reduce

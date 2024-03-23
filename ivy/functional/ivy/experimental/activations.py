@@ -112,8 +112,9 @@ def celu(
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply the Continuously Differentiable Exponential Linear Unit (CELU)
-    activation function to each element of the input.
+    """
+    Apply the Continuously Differentiable Exponential Linear Unit (CELU) activation
+    function to each element of the input.
 
     Parameters
     ----------
@@ -170,7 +171,8 @@ def elu(
     alpha: float = 1.0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply the elu unit function element-wise.
+    """
+    Apply the elu unit function element-wise.
 
     Parameters
     ----------
@@ -231,7 +233,8 @@ def hardshrink(
     lambd: float = 0.5,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply the hardshrink function element-wise.
+    """
+    Apply the hardshrink function element-wise.
 
     Parameters
     ----------
@@ -278,7 +281,8 @@ def hardshrink(
 def hardsilu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Apply the hardsilu/hardswish function element-wise.
+    """
+    Apply the hardsilu/hardswish function element-wise.
 
     Parameters
     ----------
@@ -335,7 +339,8 @@ def hardtanh(
     min_val: float = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply the hardtanh unit function element-wise.
+    """
+    Apply the hardtanh unit function element-wise.
 
     Parameters
     ----------
@@ -399,7 +404,8 @@ def logit(
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the logit of x.
+    """
+    Compute the logit of x.
 
     logit(x) = log(x / (1 - x)).
 
@@ -452,7 +458,8 @@ def logsigmoid(
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply element-wise Log-sigmoid of x.
+    """
+    Apply element-wise Log-sigmoid of x.
 
     logsigmoid(x) = log(1 / (1 + exp(-x)).
 
@@ -507,7 +514,8 @@ def prelu(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Prelu takes input data (Array) and slope array as input,
+    """
+    Prelu takes input data (Array) and slope array as input,
 
     and produces one output data (array) where the function
     f(x) = slope * x for x < 0, f(x) = x for x >= 0., is applied
@@ -566,7 +574,8 @@ def relu6(
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply the rectified linear unit 6 function element-wise.
+    """
+    Apply the rectified linear unit 6 function element-wise.
 
     Parameters
     ----------
@@ -618,7 +627,8 @@ def scaled_tanh(
     beta: float = 0.67,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Compute the scaled hyperbolic tangent (tanh) activation.
+    """
+    Compute the scaled hyperbolic tangent (tanh) activation.
 
     The scaled tanh activation function is defined as:
     out = alpha * tanh(beta * x)
@@ -690,7 +700,8 @@ def scaled_tanh(
 def selu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Apply the scaled exponential linear unit function element-wise.
+    """
+    Apply the scaled exponential linear unit function element-wise.
 
     Parameters
     ----------
@@ -748,7 +759,8 @@ def selu(
 def silu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Apply the silu function element-wise.
+    """
+    Apply the silu function element-wise.
 
     Parameters
     ----------
@@ -800,7 +812,8 @@ def softshrink(
     lambd: float = 0.5,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply the softshrink function element-wise.
+    """
+    Apply the softshrink function element-wise.
 
     Parameters
     ----------
@@ -850,7 +863,8 @@ def softshrink(
 def tanhshrink(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Apply the tanhshrink function element-wise.
+    """
+    Apply the tanhshrink function element-wise.
 
     Parameters
     ----------
@@ -904,7 +918,8 @@ def threshold(
     value: float,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply the threshold function element-wise.
+    """
+    Apply the threshold function element-wise.
 
     Parameters
     ----------
@@ -960,7 +975,8 @@ def thresholded_relu(
     threshold: Union[int, float] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply the rectified linear unit function with custom threshold.
+    """
+    Apply the rectified linear unit function with custom threshold.
 
     Parameters
     ----------

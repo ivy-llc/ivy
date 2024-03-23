@@ -23,8 +23,8 @@ class Optimizer(abc.ABC):
         fallback_to_non_traced: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ):
-        """Construct a general Optimizer. This is an abstract class, and must
-        be derived.
+        """
+        Construct a general Optimizer. This is an abstract class, and must be derived.
 
         Parameters
         ----------
@@ -69,9 +69,9 @@ class Optimizer(abc.ABC):
 
     @abc.abstractmethod
     def _step(self, v: ivy.Container, grads: ivy.Container):
-        """Update nested variables container v from update step, using nested
-        grads container. Override this abstract method with child class custom
-        implementation.
+        """
+        Update nested variables container v from update step, using nested grads
+        container. Override this abstract method with child class custom implementation.
 
         Parameters
         ----------
@@ -92,7 +92,8 @@ class Optimizer(abc.ABC):
     def _step_fn(
         self, v: ivy.Container, grads: ivy.Container, ignore_missing: bool = False
     ):
-        """Call the custom child step function implementation.
+        """
+        Call the custom child step function implementation.
 
         Parameters
         ----------
@@ -116,7 +117,8 @@ class Optimizer(abc.ABC):
 
     @abc.abstractmethod
     def set_state(self, state: ivy.Container):
-        """Set state of the optimizer.
+        """
+        Set state of the optimizer.
 
         Parameters
         ----------
@@ -130,8 +132,8 @@ class Optimizer(abc.ABC):
     def step(
         self, v: ivy.Container, grads: ivy.Container, ignore_missing: bool = False
     ):
-        """Update nested variables container v from overridden private
-        self._step.
+        """
+        Update nested variables container v from overridden private self._step.
 
         Parameters
         ----------
@@ -166,7 +168,8 @@ class SGD(Optimizer):
         stop_gradients: bool = True,
         trace_on_next_step: bool = False,
     ):
-        """Construct a Stochastic-Gradient-Descent (SGD) optimizer.
+        """
+        Construct a Stochastic-Gradient-Descent (SGD) optimizer.
 
         Parameters
         ----------
@@ -190,8 +193,9 @@ class SGD(Optimizer):
     # Custom Step
 
     def _step(self, v: ivy.Container, grads: ivy.Container):
-        """Update nested variables container v by gradient descent step, using
-        nested gradients container.
+        """
+        Update nested variables container v by gradient descent step, using nested
+        gradients container.
 
         Parameters
         ----------
@@ -213,7 +217,8 @@ class SGD(Optimizer):
         )
 
     def set_state(self, state: ivy.Container):
-        """Set state of the optimizer.
+        """
+        Set state of the optimizer.
 
         Parameters
         ----------
@@ -236,7 +241,8 @@ class LARS(Optimizer):
         stop_gradients: bool = True,
         trace_on_next_step: bool = False,
     ):
-        """Construct a Layer-wise Adaptive Rate Scaling (LARS) optimizer.
+        """
+        Construct a Layer-wise Adaptive Rate Scaling (LARS) optimizer.
 
         Parameters
         ----------
@@ -263,8 +269,9 @@ class LARS(Optimizer):
     # Custom Step
 
     def _step(self, v: ivy.Container, grads: ivy.Container):
-        """Update nested variables container v by gradient descent step, using
-        nested gradients container.
+        """
+        Update nested variables container v by gradient descent step, using nested
+        gradients container.
 
         Parameters
         ----------
@@ -287,7 +294,8 @@ class LARS(Optimizer):
         )
 
     def set_state(self, state: ivy.Container):
-        """Set state of the optimizer.
+        """
+        Set state of the optimizer.
 
         Parameters
         ----------
@@ -313,7 +321,8 @@ class Adam(Optimizer):
         trace_on_next_step: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ):
-        """Construct an ADAM optimizer.
+        """
+        Construct an ADAM optimizer.
 
         Parameters
         ----------
@@ -355,8 +364,9 @@ class Adam(Optimizer):
     # Custom Step
 
     def _step(self, v: ivy.Container, grads: ivy.Container):
-        """Update nested variables container v by Adam update step, using
-        nested grads container.
+        """
+        Update nested variables container v by Adam update step, using nested grads
+        container.
 
         Parameters
         ----------
@@ -390,7 +400,8 @@ class Adam(Optimizer):
         return new_v
 
     def set_state(self, state: ivy.Container):
-        """Set state of the optimizer.
+        """
+        Set state of the optimizer.
 
         Parameters
         ----------
@@ -419,7 +430,8 @@ class LAMB(Optimizer):
         trace_on_next_step: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ):
-        """Construct an LAMB optimizer.
+        """
+        Construct an LAMB optimizer.
 
         Parameters
         ----------
@@ -466,8 +478,9 @@ class LAMB(Optimizer):
     # Custom Step
 
     def _step(self, v: ivy.Container, grads: ivy.Container):
-        """Update nested variables container v by LAMB update step, using
-        nested grads container.
+        """
+        Update nested variables container v by LAMB update step, using nested grads
+        container.
 
         Parameters
         ----------
@@ -503,7 +516,8 @@ class LAMB(Optimizer):
         return new_v
 
     def set_state(self, state: ivy.Container):
-        """Set state of the optimizer.
+        """
+        Set state of the optimizer.
 
         Parameters
         ----------
@@ -531,7 +545,8 @@ class AdamW(Adam):
         trace_on_next_step: bool = False,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ):
-        """Construct an ADAMW optimizer.
+        """
+        Construct an ADAMW optimizer.
 
         Parameters
         ----------
@@ -573,8 +588,9 @@ class AdamW(Adam):
         )
 
     def _step(self, v: ivy.Container, grads: ivy.Container):
-        """Update nested variables container v by AdamW update step, using
-        nested grads container.
+        """
+        Update nested variables container v by AdamW update step, using nested grads
+        container.
 
         Parameters
         ----------

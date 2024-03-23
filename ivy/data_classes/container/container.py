@@ -141,9 +141,9 @@ class Container(
         return self.cont_map(lambda x, kc: -x, map_sequences=True)
 
     def __pow__(self, power):
-        """ivy.Container special method for the power operator, calling
-        :code:`operator.pow` for each of the corresponding leaves of the two
-        containers.
+        """
+        ivy.Container special method for the power operator, calling
+        :code:`operator.pow` for each of the corresponding leaves of the two containers.
 
         Parameters
         ----------
@@ -196,9 +196,9 @@ class Container(
         return self.cont_map(lambda x, _: operator.ipow(x, power), map_sequences=True)
 
     def __add__(self, other):
-        """ivy.Container special method for the add operator, calling
-        :code:`operator.add` for each of the corresponding leaves of the two
-        containers.
+        """
+        ivy.Container special method for the add operator, calling :code:`operator.add`
+        for each of the corresponding leaves of the two containers.
 
         Parameters
         ----------
@@ -261,9 +261,9 @@ class Container(
         )
 
     def __radd__(self, other):
-        """ivy.Container reverse special method for the add operator, calling
-        :code:`operator.add` for each of the corresponding leaves of the two
-        containers.
+        """
+        ivy.Container reverse special method for the add operator, calling
+        :code:`operator.add` for each of the corresponding leaves of the two containers.
 
         Parameters
         ----------
@@ -300,9 +300,9 @@ class Container(
         )
 
     def __sub__(self, other):
-        """ivy.Container special method for the subtract operator, calling
-        :code:`operator.sub` for each of the corresponding leaves of the two
-        containers.
+        """
+        ivy.Container special method for the subtract operator, calling
+        :code:`operator.sub` for each of the corresponding leaves of the two containers.
 
         Parameters
         ----------
@@ -370,9 +370,9 @@ class Container(
         )
 
     def __rsub__(self, other):
-        """ivy.Container reverse special method for the subtract operator,
-        calling :code:`operator.sub` for each of the corresponding leaves of
-        the two containers.
+        """
+        ivy.Container reverse special method for the subtract operator, calling
+        :code:`operator.sub` for each of the corresponding leaves of the two containers.
 
         Parameters
         ----------
@@ -448,9 +448,10 @@ class Container(
         )
 
     def __truediv__(self, other):
-        """ivy.Container special method for the divide operator, calling
-        :code:`operator.truediv` for each of the corresponding leaves of the
-        two containers.
+        """
+        ivy.Container special method for the divide operator, calling
+        :code:`operator.truediv` for each of the corresponding leaves of the two
+        containers.
 
         Parameters
         ----------
@@ -563,9 +564,9 @@ class Container(
         )
 
     def __abs__(self):
-        """ivy.Container special method for the abs operator, calling
-        :code:`operator.abs` for each of the corresponding leaves of the two
-        containers.
+        """
+        ivy.Container special method for the abs operator, calling :code:`operator.abs`
+        for each of the corresponding leaves of the two containers.
 
         Parameters
         ----------
@@ -593,9 +594,9 @@ class Container(
         return self.cont_map(lambda x, kc: operator.abs(x), map_sequences=True)
 
     def __lt__(self, other):
-        """ivy.Container special method for the less operator, calling
-        :code:`operator.lt` for each of the corresponding leaves of the two
-        containers.
+        """
+        ivy.Container special method for the less operator, calling :code:`operator.lt`
+        for each of the corresponding leaves of the two containers.
 
         Parameters
         ----------
@@ -631,9 +632,9 @@ class Container(
         return self.cont_map(lambda x, kc: x < other, map_sequences=True)
 
     def __le__(self, other):
-        """ivy.Container special method for the less_equal operator, calling
-        :code:`operator.le` for each of the corresponding leaves of the two
-        containers.
+        """
+        ivy.Container special method for the less_equal operator, calling
+        :code:`operator.le` for each of the corresponding leaves of the two containers.
 
         Parameters
         ----------
@@ -669,9 +670,9 @@ class Container(
         return self.cont_map(lambda x, kc: x <= other, map_sequences=True)
 
     def __eq__(self, other):
-        """ivy.Container special method for the equal operator, calling
-        :code:`operator.eq` for each of the corresponding leaves of the two
-        containers.
+        """
+        ivy.Container special method for the equal operator, calling :code:`operator.eq`
+        for each of the corresponding leaves of the two containers.
 
         Parameters
         ----------
@@ -731,9 +732,9 @@ class Container(
         return self.cont_map(lambda x, kc: x == other, map_sequences=True)
 
     def __ne__(self, other):
-        """ivy.Container special method for the not_equal operator, calling
-        :code:`operator.ne` for each of the corresponding leaves of the two
-        containers.
+        """
+        ivy.Container special method for the not_equal operator, calling
+        :code:`operator.ne` for each of the corresponding leaves of the two containers.
 
         Parameters
         ----------
@@ -793,9 +794,9 @@ class Container(
         return self.cont_map(lambda x, kc: x != other, map_sequences=True)
 
     def __gt__(self, other):
-        """ivy.Container special method for the greater operator, calling
-        :code:`operator.gt` for each of the corresponding leaves of the two
-        containers.
+        """
+        ivy.Container special method for the greater operator, calling
+        :code:`operator.gt` for each of the corresponding leaves of the two containers.
 
         Parameters
         ----------
@@ -831,9 +832,9 @@ class Container(
         return self.cont_map(lambda x, kc: x > other, map_sequences=True)
 
     def __ge__(self, other):
-        """ivy.Container special method for the greater_equal operator, calling
-        :code:`operator.ge` for each of the corresponding leaves of the two
-        containers.
+        """
+        ivy.Container special method for the greater_equal operator, calling
+        :code:`operator.ge` for each of the corresponding leaves of the two containers.
 
         Parameters
         ----------
@@ -904,9 +905,9 @@ class Container(
         return self.cont_map(lambda x, kc: operator.not_(x), map_sequences=True)
 
     def __xor__(self, other):
-        """ivy.Container special method for the ge operator, calling
-        :code:`operator.ge` for each of the corresponding leaves of the two
-        containers.
+        """
+        ivy.Container special method for the ge operator, calling :code:`operator.ge`
+        for each of the corresponding leaves of the two containers.
 
         Parameters
         ----------
@@ -979,7 +980,8 @@ class Container(
         )
 
     def __rshift__(self, other):
-        """ivy.Container special method for the right shift operator, calling
+        """
+        ivy.Container special method for the right shift operator, calling
         :code:`operator.rshift` for each of the corresponding leaves of the two
         containers.
 
@@ -1047,9 +1049,10 @@ class Container(
         )
 
     def __rrshift__(self, other):
-        """ivy.Container reverse special method for the right shift operator,
-        calling :code:`operator.rshift` for each of the corresponding leaves of
-        the two containers.
+        """
+        ivy.Container reverse special method for the right shift operator, calling
+        :code:`operator.rshift` for each of the corresponding leaves of the two
+        containers.
 
         Parameters
         ----------

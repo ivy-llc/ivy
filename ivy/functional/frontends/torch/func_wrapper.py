@@ -131,7 +131,8 @@ def _to_ivy_array(x):
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_ivy_arrays_torch(*args, **kwargs):
-        """Convert `Tensor` into `ivy.Array` instances.
+        """
+        Convert `Tensor` into `ivy.Array` instances.
 
         Convert all `Tensor` instances in both the positional and keyword arguments
         into `ivy.Array` instances, and then call the function with the updated
@@ -168,7 +169,8 @@ def numpy_to_torch_style_args(func):  # noqa
 def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def outputs_to_frontend_arrays_torch(*args, **kwargs):
-        """Convert `ivy.Array` into `Tensor` instances.
+        """
+        Convert `ivy.Array` into `Tensor` instances.
 
         Call the function, and then convert all `ivy.Array` instances returned by the
         function into `Tensor` instances.
@@ -265,7 +267,8 @@ def outputs_to_native_arrays(fn: Callable):
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
-    """Wrap `fn` so it receives and returns `ivy.Array` instances.
+    """
+    Wrap `fn` so it receives and returns `ivy.Array` instances.
 
     Wrap `fn` so that input arrays are all converted to `ivy.Array` instances and
     return arrays are all converted to `Tensor` instances.
@@ -274,7 +277,8 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
 
 
 def to_ivy_shape(fn: Callable) -> Callable:
-    """Wrap `fn` so it receives `ivy.Shape` instances.
+    """
+    Wrap `fn` so it receives `ivy.Shape` instances.
 
     Wrap `fn` so that any `torch_frontend.Size` arguments are converted to
     `ivy.Shape` instances.

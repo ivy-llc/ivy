@@ -13,9 +13,10 @@ class _ContainerWithDevice(ContainerBase):
     def _static_dev(
         x: ivy.Container, /, *, as_native: Union[bool, ivy.Container] = False
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.dev. This method simply
-        wraps the function, and so the docstring for ivy.dev also applies to
-        this method with minimal changes.
+        """
+        ivy.Container static method variant of ivy.dev. This method simply wraps the
+        function, and so the docstring for ivy.dev also applies to this method with
+        minimal changes.
 
         Examples
         --------
@@ -34,9 +35,10 @@ class _ContainerWithDevice(ContainerBase):
     def dev(
         self: ivy.Container, as_native: Union[bool, ivy.Container] = False
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.dev. This method simply
-        wraps the function, and so the docstring for ivy.dev also applies to
-        this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.dev. This method simply wraps the
+        function, and so the docstring for ivy.dev also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -72,9 +74,10 @@ class _ContainerWithDevice(ContainerBase):
         stream: Optional[Union[int, Any, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.to_device. This method
-        simply wraps the function, and so the docstring for ivy.to_device also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.to_device. This method simply wraps
+        the function, and so the docstring for ivy.to_device also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -138,9 +141,10 @@ class _ContainerWithDevice(ContainerBase):
         stream: Optional[Union[int, Any, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.to_device. This method
-        simply wraps the function, and so the docstring for ivy.to_device also
-        applies to this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.to_device. This method simply wraps
+        the function, and so the docstring for ivy.to_device also applies to this method
+        with minimal changes.
 
         Parameters
         ----------

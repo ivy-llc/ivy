@@ -863,8 +863,8 @@ _register_pytree_node(dict, _dict_flatten, _dict_unflatten)
 
 
 def tree_flatten(pytree: PyTree) -> Tuple[List[Any], TreeSpec]:
-    """Flattens a pytree into a list of values and a TreeSpec that can be used
-    to reconstruct the pytree."""
+    """Flattens a pytree into a list of values and a TreeSpec that can be used to
+    reconstruct the pytree."""
     if _is_leaf(pytree):
         return [pytree], LeafSpec()
 
@@ -884,7 +884,8 @@ def tree_flatten(pytree: PyTree) -> Tuple[List[Any], TreeSpec]:
 
 
 def tree_unflatten(values: List[Any], spec: TreeSpec) -> PyTree:
-    """Given a list of values and a TreeSpec, builds a pytree.
+    """
+    Given a list of values and a TreeSpec, builds a pytree.
 
     This is the inverse operation of `tree_flatten`.
     """

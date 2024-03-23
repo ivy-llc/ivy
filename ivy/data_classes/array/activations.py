@@ -17,9 +17,10 @@ class _ArrayWithActivations(abc.ABC):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.relu. This method simply
-        wraps the function, and so the docstring for ivy.relu also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.relu. This method simply wraps the
+        function, and so the docstring for ivy.relu also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -54,9 +55,10 @@ class _ArrayWithActivations(abc.ABC):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.leaky_relu. This method
-        simply wraps the function, and so the docstring for ivy.leaky_relu also
-        applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.leaky_relu. This method simply wraps
+        the function, and so the docstring for ivy.leaky_relu also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -95,9 +97,10 @@ class _ArrayWithActivations(abc.ABC):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.gelu. This method simply
-        wraps the function, and so the docstring for ivy.gelu also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.gelu. This method simply wraps the
+        function, and so the docstring for ivy.gelu also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -135,7 +138,8 @@ class _ArrayWithActivations(abc.ABC):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.sigmoid.
+        """
+        ivy.Array instance method variant of ivy.sigmoid.
 
         This method simply wraps the function, and so the docstring for ivy.sigmoid also
         applies to this method with minimal changes.
@@ -174,9 +178,10 @@ class _ArrayWithActivations(abc.ABC):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.softmax. This method simply
-        wraps the function, and so the docstring for ivy.softmax also applies
-        to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.softmax. This method simply wraps the
+        function, and so the docstring for ivy.softmax also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -214,9 +219,10 @@ class _ArrayWithActivations(abc.ABC):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.softplus. This method
-        simply wraps the function, and so the docstring for ivy.softplus also
-        applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.softplus. This method simply wraps the
+        function, and so the docstring for ivy.softplus also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -270,9 +276,10 @@ class _ArrayWithActivations(abc.ABC):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.log_softmax. This method
-        simply wraps the function, and so the docstring for ivy.log_softmax
-        also applies to this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.log_softmax. This method simply wraps
+        the function, and so the docstring for ivy.log_softmax also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -317,9 +324,10 @@ class _ArrayWithActivations(abc.ABC):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.mish. This method simply
-        wraps the function, and so the docstring for ivy.mish also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.mish. This method simply wraps the
+        function, and so the docstring for ivy.mish also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -348,7 +356,8 @@ class _ArrayWithActivations(abc.ABC):
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """Apply the hardswish activation function element-wise.
+        """
+        Apply the hardswish activation function element-wise.
 
         Parameters
         ----------

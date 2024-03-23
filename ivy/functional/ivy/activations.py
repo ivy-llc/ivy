@@ -142,7 +142,8 @@ def gelu(
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply the Gaussian error linear unit (GELU) activation function.
+    """
+    Apply the Gaussian error linear unit (GELU) activation function.
 
     Parameters
     ----------
@@ -207,7 +208,8 @@ def hardswish(
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply the hardswish activation function element-wise.
+    """
+    Apply the hardswish activation function element-wise.
 
     Parameters
     ----------
@@ -264,7 +266,8 @@ def leaky_relu(
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply the leaky rectified linear unit function element-wise.
+    """
+    Apply the leaky rectified linear unit function element-wise.
 
     If the input is complex, then by default each element is scaled by `alpha` if
     either its real part is strictly negative or if its real part is zero and its
@@ -340,7 +343,8 @@ def log_softmax(
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply the log_softmax function element-wise.
+    """
+    Apply the log_softmax function element-wise.
 
     Parameters
     ----------
@@ -417,7 +421,8 @@ def mish(
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply the mish activation function element-wise.
+    """
+    Apply the mish activation function element-wise.
 
     Parameters
     ----------
@@ -480,7 +485,8 @@ def relu(
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply the rectified linear unit function element-wise.
+    """
+    Apply the rectified linear unit function element-wise.
 
     If the input is complex, then by default each element is set to zero  if
     either its real part is strictly negative or if its real part is zero and its
@@ -548,7 +554,8 @@ def sigmoid(
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply the sigmoid function element-wise.
+    """
+    Apply the sigmoid function element-wise.
 
     Parameters
     ----------
@@ -634,7 +641,8 @@ def softmax(
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply the softmax function element-wise.
+    """
+    Apply the softmax function element-wise.
 
     Parameters
     ----------
@@ -691,7 +699,8 @@ def softplus(
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply the softplus function element-wise.
+    """
+    Apply the softplus function element-wise.
 
     If the input is complex, then by default we apply the softplus operation
     `log(1+ exp(x))` to  each element
@@ -756,7 +765,8 @@ def softsign(
     /,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply the softsign function element-wise.
+    """
+    Apply the softsign function element-wise.
 
     Parameters
     ----------

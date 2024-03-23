@@ -19,7 +19,8 @@ class LayerNorm(Module):
         v=None,
         dtype=None,
     ):
-        """Class for applying Layer Normalization over a mini-batch of inputs.
+        """
+        Class for applying Layer Normalization over a mini-batch of inputs.
 
         Parameters
         ----------
@@ -67,7 +68,8 @@ class LayerNorm(Module):
         return {}
 
     def _forward(self, inputs):
-        """Perform forward pass of the LayerNorm layer.
+        """
+        Perform forward pass of the LayerNorm layer.
 
         Parameters
         ----------
@@ -111,7 +113,8 @@ class BatchNorm2D(Module):
         dtype=None,
         training=True,
     ):
-        """Class for applying Layer Normalization over a mini-batch of inputs.
+        """
+        Class for applying Layer Normalization over a mini-batch of inputs.
 
         Parameters
         ----------
@@ -181,7 +184,8 @@ class BatchNorm2D(Module):
         return {}
 
     def _forward(self, inputs):
-        """Perform forward pass of the BatchNorm layer.
+        """
+        Perform forward pass of the BatchNorm layer.
 
         Parameters
         ----------

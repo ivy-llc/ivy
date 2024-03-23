@@ -90,8 +90,9 @@ def _get_array_idxs(typ, idx_so_far=None):
 
 
 def fn_array_spec(fn):
-    """Return a specification of the function, indicating all arguments which
-    include arrays, and the indexes of these.
+    """
+    Return a specification of the function, indicating all arguments which include
+    arrays, and the indexes of these.
 
     Parameters
     ----------

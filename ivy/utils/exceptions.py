@@ -141,7 +141,8 @@ def _get_traces(curr_obj, area, local_dict, target_name):
 
 
 def _check_if_path_found(path, full_path):
-    """Check if the path is found in the full path.
+    """
+    Check if the path is found in the full path.
 
     Parameters
     ----------
@@ -159,7 +160,8 @@ def _check_if_path_found(path, full_path):
 
 
 def _configure_stack_trace(traceback):
-    """Configure the stack trace to be displayed in the console.
+    """
+    Configure the stack trace to be displayed in the console.
 
     Parameters
     ----------
@@ -199,7 +201,8 @@ def _configure_stack_trace(traceback):
 
 
 def _add_native_error(default):
-    """Append the native error to the message if it exists.
+    """
+    Append the native error to the message if it exists.
 
     Parameters
     ----------
@@ -332,7 +335,8 @@ _non_ivy_exceptions_mapping = {
 def handle_exceptions(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _handle_exceptions(*args, **kwargs):
-        """Catch all exceptions and raise them in IvyException.
+        """
+        Catch all exceptions and raise them in IvyException.
 
         Parameters
         ----------

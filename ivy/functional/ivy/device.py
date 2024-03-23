@@ -59,7 +59,8 @@ class DefaultDevice:
         device: Union[ivy.Device, ivy.NativeDevice],
         /,
     ) -> None:
-        """Initialize the DefaultDevice class.
+        """
+        Initialize the DefaultDevice class.
 
         Parameters
         ----------
@@ -75,7 +76,8 @@ class DefaultDevice:
         self._dev = device
 
     def __enter__(self):
-        """Enter the runtime context related to the specified device.
+        """
+        Enter the runtime context related to the specified device.
 
         Returns
         -------
@@ -101,7 +103,8 @@ class DefaultDevice:
         exc_val: Optional[Type[BaseException]],
         exc_tb: Optional[types.TracebackType],
     ) -> Union[ivy.Device, str]:
-        """Exit the runtime context related to the specified device.
+        """
+        Exit the runtime context related to the specified device.
 
         Parameters
         ----------
@@ -138,7 +141,8 @@ class DefaultDevice:
 
 
 class Profiler(abc.ABC):
-    """The profiler class is used to profile the execution of some code.
+    """
+    The profiler class is used to profile the execution of some code.
 
     Parameters
     ----------
@@ -151,7 +155,8 @@ class Profiler(abc.ABC):
 
     @abc.abstractmethod
     def start(self):
-        """Start the profiler.
+        """
+        Start the profiler.
 
         This should be called before the code to be profiled.
         """
@@ -159,7 +164,8 @@ class Profiler(abc.ABC):
 
     @abc.abstractmethod
     def stop(self):
-        """Stop the profiler.
+        """
+        Stop the profiler.
 
         This should be called after the code to be profiled.
         """
@@ -272,7 +278,8 @@ def get_all_ivy_arrays_on_dev(
     device: Union[ivy.Device, ivy.NativeDevice],
     /,
 ) -> ivy.Container:
-    """Get all ivy arrays which are currently alive on the specified device.
+    """
+    Get all ivy arrays which are currently alive on the specified device.
 
     Parameters
     ----------
@@ -307,8 +314,8 @@ def get_all_ivy_arrays_on_dev(
 
 @handle_exceptions
 def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
-    """Return the number of arrays which are currently alive on the specified
-    device.
+    """
+    Return the number of arrays which are currently alive on the specified device.
 
     Parameters
     ----------
@@ -349,8 +356,9 @@ def print_all_ivy_arrays_on_dev(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     attr_only: bool = True,
 ) -> None:
-    """Print the shape and dtype for all ivy arrays which are currently alive
-    on the specified device.
+    """
+    Print the shape and dtype for all ivy arrays which are currently alive on the
+    specified device.
 
     Parameters
     ----------
@@ -384,8 +392,9 @@ def print_all_ivy_arrays_on_dev(
 
 @handle_exceptions
 def set_soft_device_mode(mode: bool) -> None:
-    """Set the mode of whether to move input arrays to `ivy.default_device()`
-    before performing an operation.
+    """
+    Set the mode of whether to move input arrays to `ivy.default_device()` before
+    performing an operation.
 
     Parameter
     ---------
@@ -409,8 +418,9 @@ def set_soft_device_mode(mode: bool) -> None:
 
 @handle_exceptions
 def unset_soft_device_mode() -> None:
-    """Reset the mode of moving input arrays to `ivy.default_device()` before
-    performing an operation.
+    """
+    Reset the mode of moving input arrays to `ivy.default_device()` before performing an
+    operation.
 
     Examples
     --------
@@ -438,7 +448,8 @@ def unset_soft_device_mode() -> None:
 def dev(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_native: bool = False
 ) -> Union[ivy.Device, ivy.NativeDevice]:
-    """Get the native device handle for input array x.
+    """
+    Get the native device handle for input array x.
 
     Parameters
     ----------
@@ -476,7 +487,8 @@ def dev(
 
 @handle_exceptions
 def as_ivy_dev(device: Union[ivy.Device, str], /) -> ivy.Device:
-    """Convert device to string representation.
+    """
+    Convert device to string representation.
 
     Parameters
     ----------
@@ -499,7 +511,8 @@ def as_ivy_dev(device: Union[ivy.Device, str], /) -> ivy.Device:
 
 @handle_exceptions
 def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> ivy.NativeDevice:
-    """Convert device string representation to native device type.
+    """
+    Convert device string representation to native device type.
 
     Parameters
     ----------
@@ -543,7 +556,8 @@ def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> ivy.NativeD
 
 @handle_exceptions
 def clear_cached_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
-    """Clear memory cache on target device.
+    """
+    Clear memory cache on target device.
 
     Parameters
     ----------
@@ -567,8 +581,9 @@ def percent_used_mem_on_dev(
     *,
     process_specific: bool = False,
 ) -> float:
-    """Get the percentage used memory for a given device string. In case of
-    CPU, the used RAM is returned.
+    """
+    Get the percentage used memory for a given device string. In case of CPU, the used
+    RAM is returned.
 
     Parameters
     ----------
@@ -622,8 +637,9 @@ def percent_used_mem_on_dev(
 
 @handle_exceptions
 def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
-    """Get the total amount of memory (in GB) for a given device string. In
-    case of CPU, the total RAM is returned.
+    """
+    Get the total amount of memory (in GB) for a given device string. In case of CPU,
+    the total RAM is returned.
 
     Parameters
     ----------
@@ -665,8 +681,9 @@ def used_mem_on_dev(
     *,
     process_specific: bool = False,
 ) -> float:
-    """Get the used memory (in GB) for a given device string. In case of CPU,
-    the used RAM is returned.
+    """
+    Get the used memory (in GB) for a given device string. In case of CPU, the used RAM
+    is returned.
 
     Parameters
     ----------
@@ -725,7 +742,8 @@ def dev_util(
     device: Union[ivy.Device, ivy.NativeDevice],
     /,
 ) -> float:
-    """Get the current utilization (%) for a given device.
+    """
+    Get the current utilization (%) for a given device.
 
     Parameters
     ----------
@@ -767,7 +785,8 @@ def dev_util(
 
 @handle_exceptions
 def gpu_is_available() -> bool:
-    """Determine whether a GPU is available to use, with the backend framework.
+    """
+    Determine whether a GPU is available to use, with the backend framework.
 
     Returns
     -------
@@ -784,7 +803,8 @@ def gpu_is_available() -> bool:
 
 @handle_exceptions
 def num_cpu_cores(*, logical: bool = True) -> int:
-    """Determine the number of cores available in the cpu.
+    """
+    Determine the number of cores available in the cpu.
 
     Parameters
     ----------
@@ -809,7 +829,8 @@ def num_cpu_cores(*, logical: bool = True) -> int:
 
 @handle_exceptions
 def num_gpus() -> int:
-    """Determine the number of available GPUs, with the backend framework.
+    """
+    Determine the number of available GPUs, with the backend framework.
 
     Returns
     -------
@@ -826,7 +847,8 @@ def num_gpus() -> int:
 
 @handle_exceptions
 def tpu_is_available() -> bool:
-    """Determine whether a TPU is available to use, with the backend framework.
+    """
+    Determine whether a TPU is available to use, with the backend framework.
 
     Returns
     -------
@@ -854,11 +876,12 @@ def default_device(
     item: Optional[Union[list, tuple, dict, ivy.Array, ivy.NativeArray]] = None,
     as_native: Optional[bool] = None,
 ) -> Union[ivy.Device, ivy.NativeDevice]:
-    """Return the input device or the default device. If the as_native flag is
-    set, the device will be converted to a native device. If the item is
-    provided, the item's device is returned. If the device is not provided, the
-    last default device is returned. If a default device has not been set, the
-    first gpu is returned if available, otherwise the cpu is returned.
+    """
+    Return the input device or the default device. If the as_native flag is set, the
+    device will be converted to a native device. If the item is provided, the item's
+    device is returned. If the device is not provided, the last default device is
+    returned. If a default device has not been set, the first gpu is returned if
+    available, otherwise the cpu is returned.
 
     Parameters
     ----------
@@ -923,10 +946,10 @@ def default_device(
 def function_supported_devices(
     fn: Callable, recurse: bool = True
 ) -> Union[Tuple, dict]:
-    """Return the supported devices of the current backend's function. The
-    function returns a dict containing the supported devices for the
-    compositional and primary implementations in case of partial mixed
-    functions.
+    """
+    Return the supported devices of the current backend's function. The function returns
+    a dict containing the supported devices for the compositional and primary
+    implementations in case of partial mixed functions.
 
     Parameters
     ----------
@@ -981,10 +1004,10 @@ def function_supported_devices(
 def function_unsupported_devices(
     fn: Callable, recurse: bool = True
 ) -> Union[Tuple, dict]:
-    """Return the unsupported devices of the current backend's function. The
-    function returns a dict containing the unsupported devices for the
-    compositional and primary implementations in case of partial mixed
-    functions.
+    """
+    Return the unsupported devices of the current backend's function. The function
+    returns a dict containing the unsupported devices for the compositional and primary
+    implementations in case of partial mixed functions.
 
     Parameters
     ----------
@@ -1028,7 +1051,8 @@ def function_unsupported_devices(
 
 @handle_exceptions
 def set_default_device(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
-    """Sets the default device to the argument provided in the function.
+    """
+    Sets the default device to the argument provided in the function.
 
     Parameters
     ----------
@@ -1078,8 +1102,9 @@ def set_default_device(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
 def set_split_factor(
     factor: float, /, *, device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None
 ) -> None:
-    """Set the global split factor for a given device, which can be used to
-    scale batch splitting chunk sizes for the device across the codebase.
+    """
+    Set the global split factor for a given device, which can be used to scale batch
+    splitting chunk sizes for the device across the codebase.
 
     Parameters
     ----------
@@ -1124,7 +1149,8 @@ def set_split_factor(
 
 @handle_exceptions
 def unset_default_device() -> None:
-    """Reset the default device to "cpu".
+    """
+    Reset the default device to "cpu".
 
     Examples
     --------
@@ -1157,8 +1183,8 @@ def to_device(
     stream: Optional[Union[int, Any]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Move the input array x to the desired device, specified by device
-    string.
+    """
+    Move the input array x to the desired device, specified by device string.
 
     Parameters
     ----------
@@ -1198,8 +1224,9 @@ def split_factor(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     /,
 ) -> float:
-    """Get a device's global split factor, which can be used to scale the
-    device's batch splitting chunk sizes across the codebase.
+    """
+    Get a device's global split factor, which can be used to scale the device's batch
+    splitting chunk sizes across the codebase.
 
     If the global split factor is set for a given device,
         returns the split factor value for the device from the split factors dictionary
@@ -1245,9 +1272,10 @@ def split_func_call(
     stop_gradients: bool = False,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """Call a function by splitting its inputs along a given axis, and calling
-    the function in chunks, rather than feeding the entire input array at once.
-    This can be useful to reduce memory usage of the device the arrays are on.
+    """
+    Call a function by splitting its inputs along a given axis, and calling the function
+    in chunks, rather than feeding the entire input array at once. This can be useful to
+    reduce memory usage of the device the arrays are on.
 
     Parameters
     ----------

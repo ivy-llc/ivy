@@ -1,9 +1,6 @@
-"""Collection of Jax activation functions, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of Jax activation functions, wrapped to fit Ivy syntax and signature."""
 
 # global
-
-
 import jax
 import jax.numpy as jnp
 from typing import Optional, Union, Literal

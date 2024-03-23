@@ -1,5 +1,4 @@
-"""Collection of Paddle random functions, wrapped to fit Ivy syntax and
-signature."""
+"""Collection of Paddle random functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import paddle
