@@ -184,6 +184,36 @@ def test_shape__getitem__(
 
 @handle_method(
     init_tree=CLASS_TREE,
+    method_tree="Shape.__getnewargs__",
+    shape=helpers.get_shape(),
+)
+def test_shape__getnewargs__(
+    shape,
+    method_name,
+    class_name,
+    ground_truth_backend,
+    backend_fw,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    helpers.test_method(
+        on_device=on_device,
+        ground_truth_backend=ground_truth_backend,
+        backend_to_test=backend_fw,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={"shape_tup": shape},
+        init_input_dtypes=DUMMY_DTYPE,
+        method_input_dtypes=[],
+        method_all_as_kwargs_np={},
+        class_name=class_name,
+        method_name=method_name,
+    )
+
+
+@handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Shape.__gt__",
     shape_1=helpers.get_shape(),
     shape_2=helpers.get_shape(),
@@ -442,3 +472,33 @@ def test_shape_in_conditions():
     shape = ivy.Shape(())
     condition_is_true = True if shape else False
     assert not condition_is_true
+
+
+@handle_method(
+    init_tree=CLASS_TREE,
+    method_tree="Shape.numel",
+    shape=helpers.get_shape(),
+)
+def test_shape_numel(
+    shape,
+    method_name,
+    class_name,
+    ground_truth_backend,
+    backend_fw,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    helpers.test_method(
+        on_device=on_device,
+        ground_truth_backend=ground_truth_backend,
+        backend_to_test=backend_fw,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={"shape_tup": shape},
+        init_input_dtypes=DUMMY_DTYPE,
+        method_input_dtypes=[],
+        method_all_as_kwargs_np={},
+        class_name=class_name,
+        method_name=method_name,
+    )

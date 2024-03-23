@@ -66,6 +66,7 @@ def _statistical_dtype_values(draw, *, function, min_value=None, max_value=None)
     # TODO skip complex median test until added or add decorator
     # for unsupported dtypes?
     # because it is not supported in tensorflow (ground truth backend)
+    assume("complex" not in dtype[0])
     if any(ele in function for ele in ["std", "var"]):
         if size == 1:
             correction = 0

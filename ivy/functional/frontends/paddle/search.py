@@ -39,7 +39,9 @@ def argsort(x, /, *, axis=-1, descending=False, name=None):
 )
 @to_ivy_arrays_and_back
 def index_sample(x, index):
-    return x[ivy.arange(x.shape[0])[:, None], index]
+    index_dtype = index.dtype
+    arange_tensor = ivy.arange(x.shape[0], dtype=index_dtype)[:, None]
+    return x[arange_tensor, index]
 
 
 # kthvalue
