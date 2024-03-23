@@ -575,13 +575,6 @@ def test_tensorflow_clip_by_value(
     on_device,
 ):
     x_dtype, x, min, max = input_and_ranges
-    if backend_fw == "paddle" and x_dtype not in [
-        "int32",
-        "int64",
-        "float64",
-        "float32",
-    ]:
-        return
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
         frontend=frontend,
