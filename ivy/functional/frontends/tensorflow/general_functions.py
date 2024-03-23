@@ -94,7 +94,7 @@ def clip_by_norm(t, clip_norm, axes=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.15.0 and below": ("float16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "complex")}, "tensorflow")
 def clip_by_value(t, clip_value_min, clip_value_max):
     ivy.utils.assertions.check_all_or_any_fn(
         clip_value_min,
