@@ -361,6 +361,17 @@ class Shape(Sequence):
     def __dir__(self):
         return self._shape.__dir__()
 
+    def __getnewargs__(self):
+        if self._shape is None:
+            raise ivy.utils.exceptions.IvyException(
+                "Cannot calculate the number of elements in a partially known Shape"
+            )
+        return (
+            builtins.tuple(
+                self._shape,
+            ),
+        )
+
     @property
     def shape(self):
         return self._shape
@@ -476,6 +487,19 @@ class Shape(Sequence):
                 "Cannot convert a partially known Shape to a list"
             )
         return list(self._shape)
+
+    def numel(self):
+        if self._shape is None:
+            raise ivy.utils.exceptions.IvyException(
+                "Cannot calculate the number of elements in a partially known Shape"
+            )
+        res = 1
+        for dim in self._shape:
+            res *= dim
+        return res
+
+    def __concat__(self, other):
+        return self.concatenate(other)
 
 
 class IntDtype(Dtype):
