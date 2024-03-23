@@ -14,7 +14,7 @@ Top Contributors
      - Badges
    * - samunder singh
      - `samthakur587 <https://github.com/samthakur587>`_
-     - Merging Master Gold, Merging Wizard, Ivy Inspector Silver
+     - Merging Master Gold, Merging Wizard, Ivy Inspector Gold
    * - V\. Sai Suraj
      - `Sai-Suraj-27 <https://github.com/Sai-Suraj-27>`_
      - Merging Master Gold, Ivy Inspector Bronze
@@ -72,9 +72,6 @@ Contributors
    * - Ayush Lokare
      - `ayush111111 <https://github.com/ayush111111>`_
      - Merging Master, Ivy Inspector
-   * - Chaitanya Lakhchaura
-     - `ZenithFlux <https://github.com/ZenithFlux>`_
-     - Debugging Dynamo, Merging Master
    * - David Adlai Nettey
      - `Adlai-1 <https://github.com/Adlai-1>`_
      - Merging Master, Ivy Inspector
@@ -108,6 +105,9 @@ Contributors
    * - Aryan Pandey
      - `Aryan8912 <https://github.com/Aryan8912>`_
      - Merging Master
+   * - Chaitanya Lakhchaura
+     - `ZenithFlux <https://github.com/ZenithFlux>`_
+     - Merging Master
    * - Dhruv Sharma
      - `druvdub <https://github.com/druvdub>`_
      - Merging Master
@@ -116,6 +116,9 @@ Contributors
      - Merging Master
    * - Mehmet Bilgehan Bezcioglu
      - `BilgehanMehmet <https://github.com/BilgehanMehmet>`_
+     - Merging Master
+   * - Omkar khade
+     - `Omickeyee <https://github.com/Omickeyee>`_
      - Merging Master
    * - Sheroz Khan
      - `ksheroz <https://github.com/ksheroz>`_
