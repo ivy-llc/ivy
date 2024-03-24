@@ -66,6 +66,10 @@ def lgamma(
     return tf.math.lgamma(x)
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("bfloat16",)},
+    backend_version,
+)
 def sinc(
     x: Union[tf.Tensor, tf.Variable],
     /,
