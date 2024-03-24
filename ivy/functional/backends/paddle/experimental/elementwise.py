@@ -89,7 +89,7 @@ def fmax(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.6.0 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.6.0 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
 )
 def sinc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     y = ivy.pi * paddle.where(x == 0, paddle.to_tensor(1.0e-20, dtype=x.dtype), x)
