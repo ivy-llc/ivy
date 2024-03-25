@@ -1,5 +1,6 @@
 # global
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_out,
@@ -119,6 +120,7 @@ def nanpercentile(
 
 @to_ivy_arrays_and_back
 @handle_numpy_out
+@with_unsupported_dtypes({"1.26.4 and below": ("bool",)}, "numpy")
 def ptp(a, axis=None, out=None, keepdims=False):
     x = ivy.max(a, axis=axis, keepdims=keepdims)
     y = ivy.min(a, axis=axis, keepdims=keepdims)
