@@ -1,6 +1,4 @@
-> 🚀 We are granting access to **Ivy\'s Tracer and Transpiler**
-> to all of our users, [sign up on our console](https://console.unify.ai/) if you
-> want to test them out!
+> **[Sign up on our console](https://console.unify.ai/)** for pilot access!
 
 <img class="only-dark" width="100%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logo_dark.png#gh-dark-mode-only"/>
 
@@ -9,7 +7,7 @@
 ------------------------------------------------------------------------
 
 <div style="display: block;" align="center">
-<a href="https://unify.ai/">
+<a href="https://unify.ai/ivy">
     <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/website_button.svg">
 </a>
 <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
@@ -96,9 +94,8 @@
 Ivy is an open-source machine learning framework that
 enables you to:
 
-- 🔥 **Autotune your model**: Automatically find the optimal framework, compiler infrastructure and hardware for your specific use case using `ivy.autotune`.
 - 🔄 **Convert code into any framework**: Use and build on top of any model, library, or device by converting any code from one framework to another using `ivy.transpile`.
-- ⚒️ **Write framework-agnostic code**: Write your code once in ivy and then choose the most appropriate ML framework as the backend to leverage all the benefits and tools.
+- ⚒️ **Write framework-agnostic code**: Write your code once in `ivy` and then choose the most appropriate ML framework as the backend to leverage all the benefits and tools.
 
 [Join our growing community](https://discord.com/invite/sXyFF8tDtm) 🌍 to connect with people using Ivy. **Let\'s** [unify.ai](https://unify.ai) **together 🦾**
 
@@ -106,61 +103,45 @@ enables you to:
 
 # Getting started
 
-The best way to get familiar with Ivy is to go through the [Demos](https://unify.ai/docs/ivy/demos/examples_and_demos.html), a good starting point is [Learn The Basics](https://unify.ai/docs/ivy/demos/learn_the_basics.html).
+[Ivy's transpiler](https://unify.ai/docs/ivy/overview/design/ivy_as_a_transpiler.html) helps you convert code between different ML frameworks. To get pilot access to the transpiler, [sign up](https://console.unify.ai/) and generate an API key. The [Get Started](https://unify.ai/docs/ivy/overview/get_started.html) notebook should help you set up your API key and the [Quickstart](https://unify.ai/docs/ivy/demos/quickstart.html) notebook should give you a brief idea of the features!
 
 The most important notebooks are:
 
 - [How to convert your code between frameworks?](https://unify.ai/docs/ivy/demos/learn_the_basics/04_transpile_code.html)
 - [How to write framework-agnostic code?](https://unify.ai/docs/ivy/demos/learn_the_basics/01_write_ivy_code.html)
-- Accelerate your development (WIP)
-- Autotune and optimize models (WIP)
+
+Beyond that, based on the frameworks you want to convert code between, there are a few more [examples](#using-ivy) further down this page 👇 which contain a number of models and libraries transpiled between PyTorch, JAX, TensorFlow and NumPy.
 
 ------------------------------------------------------------------------
 
 ## Installing ivy
 
-There are various ways to use Ivy, depending on your preferred
-environment:
-
-### Installing using pip
-
-The easiest way to set up Ivy is to install it using pip with the
-following command:
+The easiest way to set up Ivy is to install it using **pip**:
 
 ``` bash
 pip install ivy
 ```
 
-or alternatively:
-
-``` bash
-python3 -m pip install ivy
-```
-
 <details>
-<summary>Docker</summary>
+<summary><b>Docker Images</b></summary>
 
-If you prefer to use containers, we also have pre-built Docker images
-with all the supported frameworks and some relevant packages already
-installed, which you can pull from:
-
-``` bash
-docker pull unifyai/ivy:latest
-```
-
-If you are working on a GPU device, you can pull from:
+Given the challenges of maintaining installations of various frameworks in a single environment,
+users who would want to test `ivy` with multiple frameworks at once can use our Docker images for a seamless experience.
+You can pull the images from:
 
 ``` bash
-docker pull unifyai/ivy:latest-gpu
+docker pull unifyai/ivy:latest      # CPU
+docker pull unifyai/ivy:latest-gpu  # GPU
 ```
+
 </details>
 
 <details>
-<summary>From Source</summary>
+<summary><b>From Source</b></summary>
 
 You can also install Ivy from source if you want to take advantage of
 the latest changes, but we can\'t ensure everything will work as
-expected. :sweat_smile:
+expected 😅
 
 ``` bash
 git clone https://github.com/unifyai/ivy.git
@@ -168,16 +149,8 @@ cd ivy
 pip install --user -e .
 ```
 
-or alternatively, for the last step:
-
-``` bash
-python3 -m pip install --user -e .
-```
-
-
 If you want to set up testing and various frameworks it\'s probably     best
-to check out the [Contributing - Setting
-Up](https://unify.ai/docs/ivy/overview/contributing/setting_up. html#setting-up)
+to check out the [Setting Up](https://unify.ai/docs/ivy/overview/contributing/setting_up.html)
 page, where OS-specific and IDE-specific instructions and video
 tutorials to do so are available!
 
@@ -233,24 +206,8 @@ After installing Ivy, you can start using it straight away, for example:
 
    </details>
 
-------------------------------------------------------------------------
 
-# Documentation
-
-You can find Ivy's documentation on the [Docs page](https://unify.ai/docs/ivy/), which includes:
-- [Motivation](https://unify.ai/docs/ivy/overview/background.html): This contextualizes the problem Ivy is trying to solve by going over
-    - The current [ML Explosion](https://unify.ai/docs/ivy/overview/background/ml_explosion.html#ml-explosion).
-    - Explaining why it is important [to solve this problem](https://unify.ai/docs/ivy/overview/background/why_unify.html#why-unify).
-    - Explaining how we adhere to existing [standards](https://unify.ai/docs/ivy/overview/background/standardization.html#standardization) to make this happen.
-- [Related Work](https://unify.ai/docs/ivy/overview/related_work.html): Which paints a picture of the role Ivy plays in the ML stack, comparing it to other existing solutions in terms of functionalities and abstraction level.
-- [Design](https://unify.ai/docs/ivy/overview/design.html): A user-focused guide about the design decision behind the architecture and the main building blocks of Ivy.
-- [Deep Dive](https://unify.ai/docs/ivy/overview/deep_dive.html): Which delves deeper into the implementation details of Ivy and is oriented towards potential contributors to the code base.
-
-
-------------------------------------------------------------------------
-
-# Examples
-
+\
 The [Examples page](https://unify.ai/demos/) features a wide range of
 demos and tutorials showcasing the functionalities of Ivy along with
 multiple use cases, but feel free to check out some shorter
@@ -277,7 +234,7 @@ eff_encoder = tf.keras.applications.efficientnet_v2.EfficientNetV2B0(
 
 # Transpile it into a torch.nn.Module with the corresponding parameters
 noise = tf.random.normal(shape=(1, 224, 224, 3))
-torch_eff_encoder = ivy.transpile(eff_encoder, to="torch", args=(noise,))
+torch_eff_encoder = ivy.transpile(eff_encoder, source="tensorflow", to="torch", args=(noise,))
 
 # Build a classifier using the transpiled encoder
 class Classifier(torch.nn.Module):
@@ -305,14 +262,15 @@ import jax
 import torch
 
 # Get a pretrained haiku model
-# https://unify.ai/demos/scripts/deepmind_perceiver_io.py
+# https://github.com/unifyai/demos/blob/15c235f/scripts/deepmind_perceiver_io.py
 from deepmind_perceiver_io import key, perceiver_backbone
 
 # Transpile it into a torch.nn.Module with the corresponding parameters
 dummy_input = jax.random.uniform(key, shape=(1, 3, 224, 224))
 params = perceiver_backbone.init(rng=key, images=dummy_input)
+ivy.set_backend("jax")
 backbone = ivy.transpile(
-    perceiver_backbone, to="torch", params_v=params, kwargs={"images": dummy_input}
+    perceiver_backbone, source="jax", to="torch", params_v=params, kwargs={"images": dummy_input}
 )
 
 # Build a classifier using the transpiled backbone
@@ -738,7 +696,7 @@ mlp_encoder = timm.create_model("mixer_b16_224", pretrained=True, num_classes=0)
 
 # Transpile it into a hk.Module with the corresponding parameters
 noise = torch.randn(1, 3, 224, 224)
-mlp_encoder = ivy.transpile(mlp_encoder, to="jax", args=(noise,))
+mlp_encoder = ivy.transpile(mlp_encoder, source="torch", to="haiku", args=(noise,))
 
 # Build a classifier using the transpiled encoder
 class Classifier(hk.Module):
@@ -774,6 +732,7 @@ import ivy
 import jax
 import haiku as hk
 import tensorflow as tf
+jax.config.update("jax_enable_x64", True)
 
 # Get a pretrained keras model
 eff_encoder = tf.keras.applications.efficientnet_v2.EfficientNetV2B0(
@@ -782,7 +741,7 @@ eff_encoder = tf.keras.applications.efficientnet_v2.EfficientNetV2B0(
 
 # Transpile it into a hk.Module with the corresponding parameters
 noise = tf.random.normal(shape=(1, 224, 224, 3))
-hk_eff_encoder = ivy.transpile(eff_encoder, to="jax", args=(noise,))
+hk_eff_encoder = ivy.transpile(eff_encoder, source="tensorflow", to="haiku", args=(noise,))
 
 # Build a classifier using the transpiled encoder
 class Classifier(hk.Module):
@@ -825,6 +784,7 @@ import kornia
 import requests
 import jax.numpy as jnp
 from PIL import Image
+jax.config.update("jax_enable_x64", True)
 
 # transpile kornia from torch to jax
 jax_kornia = ivy.transpile(kornia, source="torch", to="jax")
@@ -1150,8 +1110,7 @@ class IvyNet(ivy.Module):
         self.output_channels = output_channels
         self.num_classes = num_classes
         self.data_format = data_format
-        self.device = device
-        super().__init__()
+        super().__init__(device=device)
 
     def _build(self, *args, **kwargs):
         self.extractor = ivy.Sequential(
@@ -1219,14 +1178,12 @@ Last but not least, we can also build the training pipeline in pure ivy
 ``` python
 # helper function for loading the dataset in batches
 def generate_batches(images, classes, dataset_size, batch_size=32):
-    targets = {k: v for v, k in enumerate(np.unique(classes))}
-    y_train = [targets[classes[i]] for i in range(len(classes))]
     if batch_size > dataset_size:
         raise ivy.utils.exceptions.IvyError("Use a smaller batch size")
     for idx in range(0, dataset_size, batch_size):
-        yield ivy.stack(images[idx : min(idx + batch_size, dataset_size)]), ivy.array(
-            y_train[idx : min(idx + batch_size, dataset_size)]
-        )
+        yield images[idx : min(idx + batch_size, dataset_size)], classes[
+            idx : min(idx + batch_size, dataset_size)
+        ]
 
 
 # helper function to get the number of current predictions
@@ -1237,7 +1194,7 @@ def num_correct(preds, labels):
 # define a loss function
 def loss_fn(params):
     v, model, x, y = params
-    y_pred, probs = model(x)
+    _, probs = model(x, v=v)
     return ivy.cross_entropy(y, probs), probs
 ```
 
@@ -1248,11 +1205,11 @@ def loss_fn(params):
 
 ``` python
 # train the model on gpu if it's available
-device = "cuda:0" if ivy.gpu_is_available() else "cpu"
+device = "gpu:0" if ivy.gpu_is_available() else "cpu"
 
 # training hyperparams
-optimizer= ivy.Adam(1e-4)
-batch_size = 64
+optimizer = ivy.Adam(1e-4)
+batch_size = 4
 num_epochs = 20
 num_classes = 10
 
@@ -1263,20 +1220,20 @@ model = IvyNet(
     num_classes=num_classes,
     device=device,
 )
-model_name = type(model).__name__.lower()
+
+images = ivy.random_uniform(shape=(16, 1, 28, 28))
+classes = ivy.randint(0, num_classes - 1, shape=(16,))
 
 
 # training loop
 def train(images, classes, epochs, model, device, num_classes=10, batch_size=32):
     # training metrics
     epoch_loss = 0.0
-    running_loss = 0.0
-    fields = ["epoch", "epoch_loss", "training_accuracy"]
     metrics = []
     dataset_size = len(images)
 
     for epoch in range(epochs):
-        train_loss, train_correct = 0, 0
+        train_correct = 0
         train_loop = tqdm(
             generate_batches(images, classes, len(images), batch_size=batch_size),
             total=dataset_size // batch_size,
@@ -1285,8 +1242,7 @@ def train(images, classes, epochs, model, device, num_classes=10, batch_size=32)
         )
 
         for xbatch, ybatch in train_loop:
-            if device != "cpu":
-                xbatch, ybatch = xbatch.to_device("gpu:0"), ybatch.to_device("gpu:0")
+            xbatch, ybatch = xbatch.to_device(device), ybatch.to_device(device)
 
             # Since the cross entropy function expects the target classes to be in one-hot encoded format
             ybatch_encoded = ivy.one_hot(ybatch, num_classes)
@@ -1319,28 +1275,47 @@ def train(images, classes, epochs, model, device, num_classes=10, batch_size=32)
             end="\n",
         )
 
-    # write metrics for plotting
-    with open(f"/{model_name}_train_summary.csv", "w") as f:
-        f = csv.writer(f)
-        f.writerow(fields)
-        f.writerows(metrics)
-
 
 # assuming the dataset(images and classes) are already prepared in a folder
-train(images, classes, num_epochs, model, device, num_classes = num_classes, batch_size = batch_size)
+train(
+    images,
+    classes,
+    num_epochs,
+    model,
+    device,
+    num_classes=num_classes,
+    batch_size=batch_size,
+)
 ```
 
 </details>
 </details>
 
-------------------------------------------------------------------------
 
-# Diving deeper
+\
+For a more comprehensive overview, head over to the [Demos](https://unify.ai/docs/ivy/demos/index.html) section with more on the [basics](https://unify.ai/docs/ivy/demos/learn_the_basics.html), a few [guides](https://unify.ai/docs/ivy/demos/guides.html) and a wide-ranging set of [examples](https://unify.ai/docs/ivy/demos/examples_and_demos.html) that demonstrate the transpilation of various popular models. We continue to expand on that list, let us know what demos you'd like us to add next 🎯
 
-Although the [Docs](https://unify.ai/docs/ivy/) are the best place to learn more, in the next section we will take a look at how Ivy works both as a transpiler and a framework in a bit more detail to get an idea of why and where to use it.
+
+Let's take a look at how Ivy works both as a transpiler and a framework in a bit more detail to get an idea of why and where to use it.
 
 <details>
 <summary><b>Ivy as a transpiler</b></summary>
+
+<blockquote>
+<details>
+<summary>When should I use Ivy as a transpiler?</summary>
+
+If you want to use building blocks published in other frameworks (neural
+networks, layers, array computing libraries, training pipelines\...),
+you want to integrate code developed in various frameworks, or maybe
+straight up move code from one framework to another, the transpiler is
+definitely the tool 🔧 for the job! As the output of transpilation is
+native code in the target framework, you can use the converted code just
+as if it was code originally developed in that framework, applying
+framework-specific optimizations or tools, instantly exposing your
+project to all of the unique perks of a different framework.
+</details>
+</blockquote>
 
 Ivy\'s transpiler allows you to use code from any other framework (or
 from any other version of the same framework!) in your own code, by just
@@ -1404,22 +1379,24 @@ If you want to learn more, you can find more information in the [Ivy as
 a transpiler section of the
 docs!](https://unify.ai/docs/ivy/overview/design/ivy_as_a_transpiler.html)
 
-## When should I use Ivy as a transpiler?
-
-If you want to use building blocks published in other frameworks (neural
-networks, layers, array computing libraries, training pipelines\...),
-you want to integrate code developed in various frameworks, or maybe
-straight up move code from one framework to another, the transpiler is
-definitely the tool 🔧 for the job! As the output of transpilation is
-native code in the target framework, you can use the converted code just
-as if it was code originally developed in that framework, applying
-framework-specific optimizations or tools, instantly exposing your
-project to all of the unique perks of a different framework.
-
 </details>
 
 <details>
 <summary><b>Ivy as a framework</b></summary>
+
+<blockquote>
+<details>
+<summary>When should I use Ivy as a framework?</summary>
+
+As Ivy supports multiple backends, writing code in Ivy breaks you free
+from framework limitations. If you want to publish highly flexible code
+for everyone to use, independently of the framework they are using, or
+you plan to develop ML-related tools and want them to be interoperable
+with not only the already existing frameworks, but also with future
+frameworks, then Ivy is for you!
+
+</details>
+</blockquote>
 
 The Ivy framework is built on top of various essential components,
 mainly the [Backend
@@ -1552,16 +1529,20 @@ As always, you can find more information about [Ivy as a framework in
 the
 docs!](https://unify.ai/docs/ivy/overview/design/ivy_as_a_framework.html)
 
-<h2> When should I use Ivy as a framework? </h2>
-
-As Ivy supports multiple backends, writing code in Ivy breaks you free
-from framework limitations. If you want to publish highly flexible code
-for everyone to use, independently of the framework they are using, or
-you plan to develop ML-related tools and want them to be interoperable
-with not only the already existing frameworks, but also with future
-frameworks, then Ivy is for you!
-
 </details>
+
+------------------------------------------------------------------------
+
+# Documentation
+
+You can find Ivy's documentation on the [Docs page](https://unify.ai/docs/ivy/), which includes:
+- [Motivation](https://unify.ai/docs/ivy/overview/background.html): This contextualizes the problem Ivy is trying to solve by going over
+    - The current [ML Explosion](https://unify.ai/docs/ivy/overview/background/ml_explosion.html#ml-explosion).
+    - Explaining why it is important [to solve this problem](https://unify.ai/docs/ivy/overview/background/why_unify.html#why-unify).
+    - Explaining how we adhere to existing [standards](https://unify.ai/docs/ivy/overview/background/standardization.html#standardization) to make this happen.
+- [Related Work](https://unify.ai/docs/ivy/overview/related_work.html): Which paints a picture of the role Ivy plays in the ML stack, comparing it to other existing solutions in terms of functionalities and abstraction level.
+- [Design](https://unify.ai/docs/ivy/overview/design.html): A user-focused guide about the design decision behind the architecture and the main building blocks of Ivy.
+- [Deep Dive](https://unify.ai/docs/ivy/overview/deep_dive.html): Which delves deeper into the implementation details of Ivy and is oriented towards potential contributors to the code base.
 
 ------------------------------------------------------------------------
 
@@ -1572,13 +1553,11 @@ We believe that everyone can contribute and make a difference. Whether
 it\'s writing code 💻, fixing bugs 🐛, or simply sharing feedback 💬,
 your contributions are definitely welcome and appreciated 🙌
 
-Check out all of our open tasks, and find out more info in our
-[Contributing
-guide](https://unify.ai/docs/ivy/overview/contributing.html) in the
-docs!
+Check out all of our [Open Tasks](https://unify.ai/docs/ivy/overview/contributing/open_tasks.html),
+and find out more info in our [Contributing guide](https://unify.ai/docs/ivy/overview/contributing.html)
+in the docs!
 
-Join our amazing community as a code contributor, and help accelerate
-our journey to unify all ML frameworks!
+Join our amazing community as a [contributor](https://unify.ai/docs/ivy/overview/contributing/volunteer_program.html), and help accelerate our journey to unify all ML frameworks!
 
 <a href="https://github.com/unifyai/ivy/graphs/contributors">
   <img class="dark-light" src="https://contrib.rocks/image?repo=unifyai/ivy&anon=0&columns=20&max=100&r=true" />

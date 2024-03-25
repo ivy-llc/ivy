@@ -1818,6 +1818,7 @@ def test_torch_triu_indices(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
         force_int=True,
     ),
+    infer_dim=st.booleans(),
 )
 def test_torch_unflatten(
     *,
@@ -1829,9 +1830,14 @@ def test_torch_unflatten(
     backend_fw,
     shape,
     axis,
+    infer_dim,
 ):
     dtype, x = dtype_and_values
     sizes = sizes_(shape, axis)
+    if infer_dim and len(sizes) > 1:
+        sizes = list(sizes)
+        sizes[0] = -1
+        sizes = tuple(sizes)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,

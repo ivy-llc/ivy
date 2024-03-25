@@ -67,7 +67,7 @@ def install_pkg(path, pkg, base="fw/"):
         )
     elif pkg.split("==")[0] if "==" in pkg else pkg == "tensorflow":
         subprocess.run(
-            f"yes |pip install tensorflow[and-cuda] --target {path}",
+            f"yes |pip install tensorflow[and-cuda]==2.15.1 --target {path}",
             shell=True,
         )
     else:

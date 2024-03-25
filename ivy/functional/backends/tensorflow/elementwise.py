@@ -486,7 +486,7 @@ def logaddexp(
     return tf.experimental.numpy.logaddexp(x1, x2)
 
 
-@with_unsupported_dtypes({"2.15.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bool",)}, backend_version)
 def real(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -706,6 +706,7 @@ def sinh(
     return tf.sinh(x)
 
 
+@with_unsupported_dtypes({"2.15.0 and below": ("integer",)}, backend_version)
 def sqrt(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -740,6 +741,7 @@ def subtract(
     return tf.subtract(x1, x2)
 
 
+@with_unsupported_dtypes({"2.15.0 and below": ("integer",)}, backend_version)
 def tan(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -749,6 +751,7 @@ def tan(
     return tf.tan(x)
 
 
+@with_unsupported_dtypes({"2.15.0 and below": ("integer",)}, backend_version)
 def tanh(
     x: Union[tf.Tensor, tf.Variable],
     /,
