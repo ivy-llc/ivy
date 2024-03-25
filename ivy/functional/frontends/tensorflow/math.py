@@ -868,16 +868,6 @@ def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
 
 
-@with_supported_dtypes(
-    {
-        "2.15.0 and below": (
-            "float16",
-            "float32",
-            "float64",
-        )
-    },
-    "tensorflow",
-)
 @to_ivy_arrays_and_back
 def softplus(features, name=None):
     return ivy.softplus(features)
