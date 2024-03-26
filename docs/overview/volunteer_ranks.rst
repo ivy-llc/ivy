@@ -3,63 +3,6 @@ Contributor Leaderboard
 
 This page lists all of our amazing Contributors who have contributed to the project! We are grateful for your contributions and we hope to see you grow with the project! The ranks listed here are based on the `level of contribution <contributing/volunteer_program.rst>`_\.
 
-Top Contributors
-----------------
-.. list-table::
-   :widths: 50 50 50
-   :header-rows: 1
-
-   * - Name
-     - Github ID
-     - Badges
-   * - samunder singh
-     - `samthakur587 <https://github.com/samthakur587>`_
-     - Merging Master Gold, Merging Wizard, Ivy Inspector Gold
-   * - V\. Sai Suraj
-     - `Sai-Suraj-27 <https://github.com/Sai-Suraj-27>`_
-     - Merging Master Gold, Ivy Inspector Bronze
-Rising Contributors
--------------------
-.. list-table::
-   :widths: 50 50 50
-   :header-rows: 1
-
-   * - Name
-     - Github ID
-     - Badges
-   * - Muhammad ishaque
-     - `MuhammadNizamani <https://github.com/MuhammadNizamani>`_
-     - Merging Master Silver, Merging Wizard, Ivy Inspector
-   * - Zheng Jay Choy
-     - `ZJay07 <https://github.com/ZJay07>`_
-     - Merging Master Silver, Ivy Inspector
-Core Contributors
------------------
-.. list-table::
-   :widths: 50 50 50
-   :header-rows: 1
-
-   * - Name
-     - Github ID
-     - Badges
-   * - Suyash Gupta
-     - `sgalpha01 <https://github.com/sgalpha01>`_
-     - Debugging Dynamo, Merging Master Bronze, Merging Wizard Bronze
-   * - Sanjay Suthar
-     - `Sanjay8602 <https://github.com/Sanjay8602>`_
-     - Merging Master Bronze, Ivy Inspector Bronze
-   * - Chaitanya Lakhchaura
-     - `ZenithFlux <https://github.com/ZenithFlux>`_
-     - Merging Master Bronze
-   * - R E Zera Marveen Lyngkhoi
-     - `fleventy-5 <https://github.com/fleventy-5>`_
-     - Merging Master Bronze
-   * - nitesh kesharwani
-     - `NiteshK84 <https://github.com/NiteshK84>`_
-     - Ivy Inspector Bronze
-   * - sarvesh kesharwani
-     - `Sarvesh-Kesharwani <https://github.com/Sarvesh-Kesharwani>`_
-     - Ivy Inspector Bronze
 Contributors
 ------------
 .. list-table::
@@ -96,6 +39,9 @@ Contributors
    * - Mostafa Gamal
      - `Mr-Array22 <https://github.com/Mr-Array22>`_
      - Merging Master, Ivy Inspector
+   * - Muhammad ishaque 
+     - `MuhammadNizamani <https://github.com/MuhammadNizamani>`_
+     - Merging Wizard, Ivy Inspector
    * - Ogban Ugot
      - `ogbanugot <https://github.com/ogbanugot>`_
      - Merging Master, Ivy Inspector
@@ -108,7 +54,7 @@ Contributors
    * - Waqar Ahmed
      - `waqaarahmed <https://github.com/waqaarahmed>`_
      - Merging Master, Ivy Inspector
-   * - Aryan Pandey
+   * - Aryan Pandey 
      - `Aryan8912 <https://github.com/Aryan8912>`_
      - Merging Master
    * - Dhruv Sharma
@@ -123,15 +69,24 @@ Contributors
    * - Mehmet Bilgehan Bezcioglu
      - `BilgehanMehmet <https://github.com/BilgehanMehmet>`_
      - Merging Master
-   * - Mohamed Ibrahim
+   * - Mohamed Ibrahim 
      - `Medo072 <https://github.com/Medo072>`_
      - Merging Master
-   * - Omkar khade
+   * - Omkar khade 
      - `Omickeyee <https://github.com/Omickeyee>`_
      - Merging Master
    * - Sheroz Khan
      - `ksheroz <https://github.com/ksheroz>`_
      - Merging Master
+   * - Suyash Gupta
+     - `sgalpha01 <https://github.com/sgalpha01>`_
+     - Debugging Dynamo
    * - Syed Muzakkir Hussain
      - `muzakkirhussain011 <https://github.com/muzakkirhussain011>`_
      - Merging Master
+   * - Zheng Jay Choy
+     - `ZJay07 <https://github.com/ZJay07>`_
+     - Ivy Inspector
+   * - samunder singh
+     - `samthakur587 <https://github.com/samthakur587>`_
+     - Merging Wizard
