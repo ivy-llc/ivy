@@ -136,8 +136,8 @@ def equal(
     return paddle.equal(x1, x2)
 
 
-@with_unsupported_dtypes(
-    {"2.6.0 and below": ("bool",)},
+@with_supported_dtypes(
+    {"2.6.0 and below": ("bool", "float32", "float64", "int32", "int64")},
     backend_version,
 )
 def less_equal(
