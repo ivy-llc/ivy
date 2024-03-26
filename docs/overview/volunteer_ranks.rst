@@ -57,7 +57,7 @@ Rising Contributors
    * - nitesh kesharwani
      - `NiteshK84 <https://github.com/NiteshK84>`_
      - Ivy Inspector Bronze Initial, OG Silver
-   * - Muhammad ishaque 
+   * - Muhammad ishaque
      - `MuhammadNizamani <https://github.com/MuhammadNizamani>`_
      - Merging Master Silver Initial, Merging Wizard Initial, Ivy Inspector Initial
    * - Zheng Jay Choy
@@ -72,7 +72,7 @@ Core Contributors
    * - Name
      - Github ID
      - Badges
-   * - Mohamed Ibrahim 
+   * - Mohamed Ibrahim
      - `Medo072 <https://github.com/Medo072>`_
      - Merging Master Initial, OG Bronze
    * - Sheroz Khan
@@ -87,13 +87,13 @@ Core Contributors
    * - Mwape Bunda
      - `teckno <https://github.com/teckno>`_
      - OG Bronze
-   * - Sanjay Suthar 
+   * - Sanjay Suthar
      - `Sanjay8602 <https://github.com/Sanjay8602>`_
      - Merging Master Bronze Initial, Ivy Inspector Bronze Initial
    * - Chaitanya Lakhchaura
      - `ZenithFlux <https://github.com/ZenithFlux>`_
      - Merging Master Bronze Initial
-   * - R E Zera Marveen Lyngkhoi 
+   * - R E Zera Marveen Lyngkhoi
      - `fleventy-5 <https://github.com/fleventy-5>`_
      - Merging Master Bronze Initial
 Contributors
@@ -165,10 +165,10 @@ Contributors
    * - Aamir Nazir
      - `JARIS101 <https://github.com/JARIS101>`_
      -  Initial
-   * - Aazam Ajmal Thakur 
+   * - Aazam Ajmal Thakur
      - `aazam-gh <https://github.com/aazam-gh>`_
      -  Initial
-   * - Abdalkader Alhamoud 
+   * - Abdalkader Alhamoud
      - `Abdalkaderdev <https://github.com/Abdalkaderdev>`_
      -  Initial
    * - Abdallah Ellethy
@@ -177,10 +177,10 @@ Contributors
    * - Abdalrahman Mohamed Abdallah
      - `abdom7 <https://github.com/abdom7>`_
      -  Initial
-   * - Abdalrahmen yousef 
+   * - Abdalrahmen yousef
      - `abdalrahmenyousifMohamed <https://github.com/abdalrahmenyousifMohamed>`_
      -  Initial
-   * - Abdalrhman Gamal 
+   * - Abdalrhman Gamal
      - `abdalrhmangamal12 <https://github.com/abdalrhmangamal12>`_
      -  Initial
    * - AbdelRahman Elayyan
@@ -195,7 +195,7 @@ Contributors
    * - Abdelrahman Mahmoud Lotfy
      - `Warz1154 <https://github.com/Warz1154>`_
      -  Initial
-   * - Abderrahmane Khairat allah 
+   * - Abderrahmane Khairat allah
      - `Fine <https://github.com/Fine>`_
      -  Initial
    * - Abdihakiim Ahmed Abdi
@@ -282,10 +282,10 @@ Contributors
    * - Afifa Sadiq
      - `AfifaSadiq <https://github.com/AfifaSadiq>`_
      -  Initial
-   * - Afolabi Akinola Samuel 
+   * - Afolabi Akinola Samuel
      - `Eniiifeoluwa <https://github.com/Eniiifeoluwa>`_
      -  Initial
-   * - Afolabi Salau 
+   * - Afolabi Salau
      - `Folabi <https://github.com/Folabi>`_
      -  Initial
    * - Aftondil Idiyev
@@ -309,10 +309,10 @@ Contributors
    * - Ahmad Mustapha
      - `AhmadM-DL <https://github.com/AhmadM-DL>`_
      -  Initial
-   * - Ahmed Adel 
+   * - Ahmed Adel
      - `ahmadel1 <https://github.com/ahmadel1>`_
      -  Initial
-   * - Ahmed Ali 
+   * - Ahmed Ali
      - `a-alnaggar <https://github.com/a-alnaggar>`_
      -  Initial
    * - Ahmed Ali Khan
@@ -324,16 +324,16 @@ Contributors
    * - Ahmed Emad Eldeen Ahmed Kwaiz
      - `ahmeddemaad <https://github.com/ahmeddemaad>`_
      -  Initial
-   * - Ahmed Mohamed Alzemaity 
+   * - Ahmed Mohamed Alzemaity
      - `Alzemaity <https://github.com/Alzemaity>`_
      -  Initial
    * - Ahmed Osama Helmy
      - `ahmedoshelmy <https://github.com/ahmedoshelmy>`_
      -  Initial
-   * - Ahmed mohmmedali abdalhafiz Tambal 
+   * - Ahmed mohmmedali abdalhafiz Tambal
      - `Ahmedtambal <https://github.com/Ahmedtambal>`_
      -  Initial
-   * - Ahmed selim Kassem 
+   * - Ahmed selim Kassem
      - `ahmedselim48 <https://github.com/ahmedselim48>`_
      -  Initial
    * - Ahmet Cem Akgul
@@ -345,7 +345,7 @@ Contributors
    * - Aideon Quek
      - `PiggyPlex <https://github.com/PiggyPlex>`_
      -  Initial
-   * - Ait moussa Abdelaziz 
+   * - Ait moussa Abdelaziz
      - `azizou98 <https://github.com/azizou98>`_
      -  Initial
    * - Akadri Oluseyi Chinedu
@@ -369,7 +369,7 @@ Contributors
    * - Alban xhepi
      - `AlbanXhepi21 <https://github.com/AlbanXhepi21>`_
      -  Initial
-   * - Albert Baiden-Amissah 
+   * - Albert Baiden-Amissah
      - `Alberick45 <https://github.com/Alberick45>`_
      -  Initial
    * - Albert Mends
@@ -420,10 +420,10 @@ Contributors
    * - Aman Atman
      - `willtryagain <https://github.com/willtryagain>`_
      -  Initial
-   * - Amaobi Okeoma 
+   * - Amaobi Okeoma
      - `OkeyAmy <https://github.com/OkeyAmy>`_
      -  Initial
-   * - Ameen Ur Rehman 
+   * - Ameen Ur Rehman
      - `AmeenUrRehman <https://github.com/AmeenUrRehman>`_
      -  Initial
    * - Ameer Maktadir
@@ -468,7 +468,7 @@ Contributors
    * - Andrew Tetteh
      - `AndyCodeEasy <https://github.com/AndyCodeEasy>`_
      -  Initial
-   * - Andrés Membrillo Pérez 
+   * - Andrés Membrillo Pérez
      - `AndresMembrillo <https://github.com/AndresMembrillo>`_
      -  Initial
    * - Angel Casado
@@ -483,7 +483,7 @@ Contributors
    * - Anibal Chaim
      - `anibalvenn <https://github.com/anibalvenn>`_
      -  Initial
-   * - Aniket kumar keshri 
+   * - Aniket kumar keshri
      - `aniketkeshri <https://github.com/aniketkeshri>`_
      -  Initial
    * - Anil chandrakant Biradar
@@ -513,7 +513,7 @@ Contributors
    * - Anthony Okonneh
      - `Anteemony <https://github.com/Anteemony>`_
      -  Initial
-   * - Anto Benny 
+   * - Anto Benny
      - `AntoBenny06 <https://github.com/AntoBenny06>`_
      -  Initial
    * - Antonette Sekgwama
@@ -558,10 +558,10 @@ Contributors
    * - Arnav Singhal
      - `Arnav047 <https://github.com/Arnav047>`_
      -  Initial
-   * - Arpit Khare 
+   * - Arpit Khare
      - `Arpitkhare <https://github.com/Arpitkhare>`_
      -  Initial
-   * - Arpit Singh Gautam 
+   * - Arpit Singh Gautam
      - `arpitsinghgautam <https://github.com/arpitsinghgautam>`_
      -  Initial
    * - Artjola Ganellari
@@ -573,10 +573,10 @@ Contributors
    * - Aryan Kasat
      - `aryankasat <https://github.com/aryankasat>`_
      -  Initial
-   * - Aryan Pandey 
+   * - Aryan Pandey
      - `Aryan8912 <https://github.com/Aryan8912>`_
      - Merging Master Initial
-   * - Aryan Sharma 
+   * - Aryan Sharma
      - `Aryansharma9917 <https://github.com/Aryansharma9917>`_
      -  Initial
    * - Ashish Kumar
@@ -615,7 +615,7 @@ Contributors
    * - Ayantu Geremew
      - `Ayan-SE <https://github.com/Ayan-SE>`_
      -  Initial
-   * - Ayeku Deborah Ifeoluwa 
+   * - Ayeku Deborah Ifeoluwa
      - `adeborah3588 <https://github.com/adeborah3588>`_
      -  Initial
    * - Ayenew Walle
@@ -639,7 +639,7 @@ Contributors
    * - BHANUPRASADH SANTRA
      - `Bhanuprasadh Santra <https://github.com/Bhanuprasadh Santra>`_
      -  Initial
-   * - BHATTI MOINBHAI ISMAIL AHMAD 
+   * - BHATTI MOINBHAI ISMAIL AHMAD
      - `MOINBHAI  <https://github.com/MOINBHAI >`_
      -  Initial
    * - Baher Mohammad
@@ -654,7 +654,7 @@ Contributors
    * - Baraa Mohammed Zaid
      - `BaraaZ95  <https://github.com/BaraaZ95 >`_
      -  Initial
-   * - Bassem Reda Mohamed reiad 
+   * - Bassem Reda Mohamed reiad
      - `N/A <https://github.com/N/A>`_
      -  Initial
    * - Ben Mariem Bacem
@@ -699,10 +699,10 @@ Contributors
    * - Billy Gibendi
      - `GibzB <https://github.com/GibzB>`_
      -  Initial
-   * - Birtukan Birawo 
+   * - Birtukan Birawo
      - `mebirtukan <https://github.com/mebirtukan>`_
      -  Initial
-   * - Bodhisattwa Dhara 
+   * - Bodhisattwa Dhara
      - `bodhi12496 <https://github.com/bodhi12496>`_
      -  Initial
    * - Bodla Krishna Vamshi
@@ -711,13 +711,13 @@ Contributors
    * - Bohdan Markiv
      - `bohdan-markiv <https://github.com/bohdan-markiv>`_
      -  Initial
-   * - Boinelo Teteme 
+   * - Boinelo Teteme
      - `BoiThato <https://github.com/BoiThato>`_
      -  Initial
-   * - Bolton Derick Wilhems 
+   * - Bolton Derick Wilhems
      - `WILHEMS <https://github.com/WILHEMS>`_
      -  Initial
-   * - Bongiseni 
+   * - Bongiseni
      - `Bongiseni  <https://github.com/Bongiseni >`_
      -  Initial
    * - Boniface Kyumu
@@ -747,7 +747,7 @@ Contributors
    * - Catrin Satchell O'Keeffe
      - `CatSatOK <https://github.com/CatSatOK>`_
      -  Initial
-   * - Chandan Shashidhar 
+   * - Chandan Shashidhar
      - `chandan-shashidhar <https://github.com/chandan-shashidhar>`_
      -  Initial
    * - Chaouki Hjaiji
@@ -804,7 +804,7 @@ Contributors
    * - Daniel Shdeed
      - `Danieldotcomcoder <https://github.com/Danieldotcomcoder>`_
      -  Initial
-   * - Daniel Zerihun Geda 
+   * - Daniel Zerihun Geda
      - `DanielZerihunGeda  <https://github.com/DanielZerihunGeda >`_
      -  Initial
    * - Danilo Grujic
@@ -813,16 +813,16 @@ Contributors
    * - Danilo Pena
      - `danilopena0 <https://github.com/danilopena0>`_
      -  Initial
-   * - Danish Raza 
+   * - Danish Raza
      - `D-Raza <https://github.com/D-Raza>`_
      -  Initial
-   * - Daoulata Amadou Haidara 
+   * - Daoulata Amadou Haidara
      - `DH <https://github.com/DH>`_
      -  Initial
    * - Darsh Mashru
      - `darshmashru <https://github.com/darshmashru>`_
      -  Initial
-   * - David Hernando Castro Santiago 
+   * - David Hernando Castro Santiago
      - `Daxermangit <https://github.com/Daxermangit>`_
      -  Initial
    * - David Surur
@@ -849,7 +849,7 @@ Contributors
    * - Derek Akrasi Konadu
      - `obibaadoma <https://github.com/obibaadoma>`_
      -  Initial
-   * - Dhanvarshini 
+   * - Dhanvarshini
      - `Dhanvarshni-gopalsamy <https://github.com/Dhanvarshni-gopalsamy>`_
      -  Initial
    * - Dhruv Sharma
@@ -894,7 +894,7 @@ Contributors
    * - Egill Anton Hlöðversson
      - `egillanton <https://github.com/egillanton>`_
      -  Initial
-   * - Ekwam Emmanuel Okyere 
+   * - Ekwam Emmanuel Okyere
      - `Josambong <https://github.com/Josambong>`_
      -  Initial
    * - Elijah Jiya
@@ -906,13 +906,13 @@ Contributors
    * - Elyes Thabet
      - `CodeSailor411 <https://github.com/CodeSailor411>`_
      -  Initial
-   * - Emran Abedaljawad 
+   * - Emran Abedaljawad
      - `emran771 <https://github.com/emran771>`_
      -  Initial
    * - Emre Tanrikulu
      - `TanrikuluEmre <https://github.com/TanrikuluEmre>`_
      -  Initial
-   * - Erguibi Mohamed Said 
+   * - Erguibi Mohamed Said
      - `Mohamed-Said10 <https://github.com/Mohamed-Said10>`_
      -  Initial
    * - Eric Mbuthia Ngumi
@@ -921,7 +921,7 @@ Contributors
    * - Eslam Sameh Hamdy
      - `EslamElbassel <https://github.com/EslamElbassel>`_
      -  Initial
-   * - Esperant NGOYI KALONDA 
+   * - Esperant NGOYI KALONDA
      - `Esperant82 <https://github.com/Esperant82>`_
      -  Initial
    * - Esraa Mosaad Zaky Abdekrazek
@@ -978,7 +978,7 @@ Contributors
    * - Favour
      - `FavorC <https://github.com/FavorC>`_
      -  Initial
-   * - Fawzy Mohamed 
+   * - Fawzy Mohamed
      - `None <https://github.com/None>`_
      -  Initial
    * - Filippo Leonelli
@@ -993,7 +993,7 @@ Contributors
    * - Francesco Ippolito
      - `francesco-ippo <https://github.com/francesco-ippo>`_
      -  Initial
-   * - Frank Steven kileo 
+   * - Frank Steven kileo
      - `kileo  <https://github.com/kileo >`_
      -  Initial
    * - Frederico Wieser
@@ -1005,7 +1005,7 @@ Contributors
    * - Gasper Krasniqi
      - `gasper1 <https://github.com/gasper1>`_
      -  Initial
-   * - Gaurav Sarkar 
+   * - Gaurav Sarkar
      - `Gaurav7888 <https://github.com/Gaurav7888>`_
      -  Initial
    * - Gayathri Satheesh
@@ -1086,7 +1086,7 @@ Contributors
    * - Harshita Chandwani
      - `Harshi07-c <https://github.com/Harshi07-c>`_
      -  Initial
-   * - Harshith Satya Sai Dandabattula 
+   * - Harshith Satya Sai Dandabattula
      - `HarshithNz <https://github.com/HarshithNz>`_
      -  Initial
    * - Hasan Ahmad
@@ -1095,7 +1095,7 @@ Contributors
    * - Hasitha sai kutala
      - `hasithakutala <https://github.com/hasithakutala>`_
      -  Initial
-   * - Hatangishaka vedaste 
+   * - Hatangishaka vedaste
      - `Ndagukunda@123 <https://github.com/Ndagukunda@123>`_
      -  Initial
    * - Hazem Mohamed Abdelghafar
@@ -1113,13 +1113,13 @@ Contributors
    * - Hiba Hedfi
      - `hibahedfi03 <https://github.com/hibahedfi03>`_
      -  Initial
-   * - Hiba el Hamydy 
+   * - Hiba el Hamydy
      - `hibaelhamydy <https://github.com/hibaelhamydy>`_
      -  Initial
    * - Hillary Chejieh
      - `notabombe <https://github.com/notabombe>`_
      -  Initial
-   * - Hilton Tawanda Masarire 
+   * - Hilton Tawanda Masarire
      - `Htmasarire <https://github.com/Htmasarire>`_
      -  Initial
    * - Hrichika Nag
@@ -1134,7 +1134,7 @@ Contributors
    * - Husnain Manzoor
      - `Machineboy-999 <https://github.com/Machineboy-999>`_
      -  Initial
-   * - Ian Biwot 
+   * - Ian Biwot
      - `ianooh <https://github.com/ianooh>`_
      -  Initial
    * - Ibrahim Amin
@@ -1218,7 +1218,7 @@ Contributors
    * - Jaskirat Singh
      - `jaskiratsingh2000 <https://github.com/jaskiratsingh2000>`_
      -  Initial
-   * - Jasper Nwogu 
+   * - Jasper Nwogu
      - `Kach-hub <https://github.com/Kach-hub>`_
      -  Initial
    * - Jay Shah
@@ -1245,7 +1245,7 @@ Contributors
    * - Jesse Jackson Odhiambo
      - `oburuh <https://github.com/oburuh>`_
      -  Initial
-   * - Jeyabalan 
+   * - Jeyabalan
      - `www <https://github.com/www>`_
      -  Initial
    * - Jiarui (Jerry) Wu
@@ -1272,7 +1272,7 @@ Contributors
    * - John Handley
      - `johnhandleyd <https://github.com/johnhandleyd>`_
      -  Initial
-   * - John Lorance William 
+   * - John Lorance William
      - `Johnlorance  <https://github.com/Johnlorance >`_
      -  Initial
    * - Jonathan Ekow Apprey
@@ -1302,7 +1302,7 @@ Contributors
    * - Kacper Kożdoń
      - `Kacper-W-Kozdon <https://github.com/Kacper-W-Kozdon>`_
      - Merging Master Initial
-   * - Kalavadiya Umang Bipinbhai 
+   * - Kalavadiya Umang Bipinbhai
      - `umangkalavadiya <https://github.com/umangkalavadiya>`_
      -  Initial
    * - Kamal Aghazada
@@ -1356,7 +1356,7 @@ Contributors
    * - Kenfack Anafack Alex Bruno
      - `Br-Al <https://github.com/Br-Al>`_
      -  Initial
-   * - Kenneth NNODIM 
+   * - Kenneth NNODIM
      - `kennethugo <https://github.com/kennethugo>`_
      -  Initial
    * - Keram Yasin
@@ -1371,7 +1371,7 @@ Contributors
    * - Khaldoun bou Hadir
      - `N/A <https://github.com/N/A>`_
      -  Initial
-   * - Khaled Abdallah 
+   * - Khaled Abdallah
      - `Khaled2022abdallah <https://github.com/Khaled2022abdallah>`_
      -  Initial
    * - Khalid BARTAOUCH
@@ -1380,13 +1380,13 @@ Contributors
    * - Khethan R G
      - `khethan123 <https://github.com/khethan123>`_
      -  Initial
-   * - Khloud 
+   * - Khloud
      - `Non <https://github.com/Non>`_
      -  Initial
    * - Khondaker Tanvir Mahmud
      - `ktm72 <https://github.com/ktm72>`_
      -  Initial
-   * - Kingchrist Obosu 
+   * - Kingchrist Obosu
      - `Kingchrist1 <https://github.com/Kingchrist1>`_
      -  Initial
    * - Koleaje Olayinka
@@ -1395,10 +1395,10 @@ Contributors
    * - Kona Rajesh kumar
      - `0krk0 <https://github.com/0krk0>`_
      -  Initial
-   * - Konstantinos Soufleros 
+   * - Konstantinos Soufleros
      - `kostas696 <https://github.com/kostas696>`_
      -  Initial
-   * - Kourouma Aissata 
+   * - Kourouma Aissata
      - `Aicha@1995 <https://github.com/Aicha@1995>`_
      -  Initial
    * - Kruthik Ballari
@@ -1440,7 +1440,7 @@ Contributors
    * - Linah muthoni
      - `Lyns <https://github.com/Lyns>`_
      -  Initial
-   * - Lisa 
+   * - Lisa
      - `LLisaS <https://github.com/LLisaS>`_
      -  Initial
    * - Liya T Mathew
@@ -1452,7 +1452,7 @@ Contributors
    * - Lorenzo Bagnol
      - `lorenzobagnol <https://github.com/lorenzobagnol>`_
      -  Initial
-   * - Lucas Miranda 
+   * - Lucas Miranda
      - `x3naroth <https://github.com/x3naroth>`_
      -  Initial
    * - Lyne Tchapmi
@@ -1464,7 +1464,7 @@ Contributors
    * - MUHILVANAN J
      - `https://github.com/codewithMUHILAN <https://github.com/https://github.com/codewithMUHILAN>`_
      -  Initial
-   * - Magdy tarek magdy aboshady 
+   * - Magdy tarek magdy aboshady
      - `magdytarek11 <https://github.com/magdytarek11>`_
      -  Initial
    * - Mahdi Berranem
@@ -1488,7 +1488,7 @@ Contributors
    * - Mahmoud Rajab Mohamed
      - `MahmoudRajab77 <https://github.com/MahmoudRajab77>`_
      -  Initial
-   * - Mahmoud adel Ibrahim Ahmed 
+   * - Mahmoud adel Ibrahim Ahmed
      - `Mahmoud74xx <https://github.com/Mahmoud74xx>`_
      -  Initial
    * - Mahmoud ghareeb
@@ -1524,7 +1524,7 @@ Contributors
    * - Manoj Kumal
      - `manojkumal <https://github.com/manojkumal>`_
      -  Initial
-   * - Manuj Upadhyay 
+   * - Manuj Upadhyay
      - `ManujUpadhyay2002 <https://github.com/ManujUpadhyay2002>`_
      -  Initial
    * - Marcos Antonio Gonçalves Malheiros Filho
@@ -1548,13 +1548,13 @@ Contributors
    * - Maruthi Konjeti
      - `MaruthiKo <https://github.com/MaruthiKo>`_
      -  Initial
-   * - Marwan Alhawat 
+   * - Marwan Alhawat
      - `MarwanALHawwat <https://github.com/MarwanALHawwat>`_
      -  Initial
    * - Maryam Sayed Sidique Hassanin Muhammed
      - `MaryamSayed01 <https://github.com/MaryamSayed01>`_
      -  Initial
-   * - Masilo Ramatseba 
+   * - Masilo Ramatseba
      - `MasiloRamatseba <https://github.com/MasiloRamatseba>`_
      -  Initial
    * - Mathias Otoo
@@ -1578,7 +1578,7 @@ Contributors
    * - Mayssa Rekik
      - `Iammayssa <https://github.com/Iammayssa>`_
      -  Initial
-   * - Mbaakhu Azang Lucien 
+   * - Mbaakhu Azang Lucien
      - `Lucien  <https://github.com/Lucien >`_
      -  Initial
    * - Mehmet Bilgehan Bezcioglu
@@ -1605,7 +1605,7 @@ Contributors
    * - Michael Gift Simiyu
      - `MichaelGift <https://github.com/MichaelGift>`_
      -  Initial
-   * - Michael Ndai 
+   * - Michael Ndai
      - `Mjndai7 <https://github.com/Mjndai7>`_
      -  Initial
    * - Michelle
@@ -1614,7 +1614,7 @@ Contributors
    * - Miebaka Chepaka
      - `Mc4real  <https://github.com/Mc4real >`_
      -  Initial
-   * - Mikobi Baudouin 
+   * - Mikobi Baudouin
      - `Mbakama  <https://github.com/Mbakama >`_
      -  Initial
    * - Milton Ntlatleng
@@ -1626,10 +1626,10 @@ Contributors
    * - Minki Chun
      - `minkichunm <https://github.com/minkichunm>`_
      -  Initial
-   * - Mintesnot Fikir 
+   * - Mintesnot Fikir
      - `mintesnot96 <https://github.com/mintesnot96>`_
      -  Initial
-   * - Mira Shibangwa 
+   * - Mira Shibangwa
      - `None  <https://github.com/None >`_
      -  Initial
    * - Mitanshu Dodia
@@ -1641,19 +1641,19 @@ Contributors
    * - Moamen Nassar
      - `moamen20 <https://github.com/moamen20>`_
      -  Initial
-   * - Moaz Gamal Zain alabdeen 
+   * - Moaz Gamal Zain alabdeen
      - `Moaz20190549 <https://github.com/Moaz20190549>`_
      -  Initial
    * - Mohamad Ali
      - `NA <https://github.com/NA>`_
      -  Initial
-   * - Mohamed Abdalla Boghdady 
+   * - Mohamed Abdalla Boghdady
      - `Boghdady9 <https://github.com/Boghdady9>`_
      -  Initial
    * - Mohamed Ahmed Mohamed Badr
      - `Dedaras <https://github.com/Dedaras>`_
      -  Initial
-   * - Mohamed Ahmed Negm 
+   * - Mohamed Ahmed Negm
      - `negmeme2001 <https://github.com/negmeme2001>`_
      -  Initial
    * - Mohamed Alsisi
@@ -1671,7 +1671,7 @@ Contributors
    * - Mohamed Essam
      - `MohamedeEssam <https://github.com/MohamedeEssam>`_
      -  Initial
-   * - Mohamed Essam Abdelfatah 
+   * - Mohamed Essam Abdelfatah
      - `imessam <https://github.com/imessam>`_
      -  Initial
    * - Mohamed Habib Bani
@@ -1689,13 +1689,13 @@ Contributors
    * - Mohamed Mourad
      - `Mohamed-Mourad <https://github.com/Mohamed-Mourad>`_
      -  Initial
-   * - Mohamed Sherif 
+   * - Mohamed Sherif
      - `Avatar2001 <https://github.com/Avatar2001>`_
      -  Initial
-   * - Mohamed Shokry 
+   * - Mohamed Shokry
      - `Mohamed-ahmed-shokry <https://github.com/Mohamed-ahmed-shokry>`_
      -  Initial
-   * - Mohamed Yattara 
+   * - Mohamed Yattara
      - `GorMac <https://github.com/GorMac>`_
      -  Initial
    * - Mohamed Youssef Abdelnasser
@@ -1707,13 +1707,13 @@ Contributors
    * - Mohamed algebali almoazin
      - `Mohamed01555 <https://github.com/Mohamed01555>`_
      -  Initial
-   * - Mohamed ali Elshaghnouby 
+   * - Mohamed ali Elshaghnouby
      - `Mohamed shaghnouby  <https://github.com/Mohamed shaghnouby >`_
      -  Initial
-   * - Mohamed khiry Zahran 
+   * - Mohamed khiry Zahran
      - `zahran1234 <https://github.com/zahran1234>`_
      -  Initial
-   * - Mohammad Tarek Omar 
+   * - Mohammad Tarek Omar
      - `mohammadtarekkk <https://github.com/mohammadtarekkk>`_
      -  Initial
    * - Mohammad hamad alfnish
@@ -1725,10 +1725,10 @@ Contributors
    * - Mohammed Amansour
      - `mohammedamansour <https://github.com/mohammedamansour>`_
      -  Initial
-   * - Mohammed Ismail 
+   * - Mohammed Ismail
      - `masterismail <https://github.com/masterismail>`_
      -  Initial
-   * - Mohammed Safwan A 
+   * - Mohammed Safwan A
      - `MdSafwaan <https://github.com/MdSafwaan>`_
      -  Initial
    * - Mohd Quamar Tyagi
@@ -1743,7 +1743,7 @@ Contributors
    * - Moiz Ahmed
      - `MoizAhmed2517 <https://github.com/MoizAhmed2517>`_
      -  Initial
-   * - Moodhi Aljouali 
+   * - Moodhi Aljouali
      - `None <https://github.com/None>`_
      -  Initial
    * - Moses Yebei
@@ -1755,19 +1755,19 @@ Contributors
    * - Mostafa Mahmoud
      - `MoMahmoud8 <https://github.com/MoMahmoud8>`_
      -  Initial
-   * - Mostafa Samy Ahmed 
+   * - Mostafa Samy Ahmed
      - `mustafasamy28 <https://github.com/mustafasamy28>`_
      -  Initial
    * - MostafaHaggag
      - `Mostafa-Haggag <https://github.com/Mostafa-Haggag>`_
      -  Initial
-   * - Mubashir Shariq 
+   * - Mubashir Shariq
      - `Mubashirshariq <https://github.com/Mubashirshariq>`_
      -  Initial
    * - Mudassir Tanvir
      - `MudassirTanvir <https://github.com/MudassirTanvir>`_
      -  Initial
-   * - Muhammad AbouDeif 
+   * - Muhammad AbouDeif
      - `aboudeiff <https://github.com/aboudeiff>`_
      -  Initial
    * - Muhammad Ameer Hamza Shah
@@ -1776,10 +1776,10 @@ Contributors
    * - Muhammad Hammad
      - `muhammadhammad-tech <https://github.com/muhammadhammad-tech>`_
      -  Initial
-   * - Muhammad Hasaan 
+   * - Muhammad Hasaan
      - `hasaan1108 <https://github.com/hasaan1108>`_
      -  Initial
-   * - Muhammad Humza 
+   * - Muhammad Humza
      - `muhammadhumzadev <https://github.com/muhammadhumzadev>`_
      -  Initial
    * - Muhammad Okasha
@@ -1788,16 +1788,16 @@ Contributors
    * - Muhammad Osaid
      - `osaid460 <https://github.com/osaid460>`_
      -  Initial
-   * - Muhammad Salman Sarwar Khan 
+   * - Muhammad Salman Sarwar Khan
      - `Salmanshu4  <https://github.com/Salmanshu4 >`_
      -  Initial
-   * - Muhammad Sulait Sufian 
+   * - Muhammad Sulait Sufian
      - `MSulait <https://github.com/MSulait>`_
      -  Initial
    * - Muhammad Usman
      - `usmandevops123 <https://github.com/usmandevops123>`_
      -  Initial
-   * - Muhammad Usman 
+   * - Muhammad Usman
      - `usmanhidral <https://github.com/usmanhidral>`_
      -  Initial
    * - Muhammad Zaid
@@ -1809,7 +1809,7 @@ Contributors
    * - Muneeb Ali
      - `MunebAli132 <https://github.com/MunebAli132>`_
      -  Initial
-   * - Musa Marong 
+   * - Musa Marong
      - `MusaMarong  <https://github.com/MusaMarong >`_
      -  Initial
    * - Musa Mikail
@@ -1824,7 +1824,7 @@ Contributors
    * - Mzamani
      - `Makondomr <https://github.com/Makondomr>`_
      -  Initial
-   * - Nada hamdy Mostafa 
+   * - Nada hamdy Mostafa
      - `NadaHamdyMostafa <https://github.com/NadaHamdyMostafa>`_
      -  Initial
    * - Nadia TRIKI
@@ -1836,13 +1836,13 @@ Contributors
    * - Naitik Popli
      - `NA <https://github.com/NA>`_
      -  Initial
-   * - Najib Tackie 
+   * - Najib Tackie
      - `nnat157 <https://github.com/nnat157>`_
      -  Initial
    * - Nakul Gupta
      - `nakul010 <https://github.com/nakul010>`_
      -  Initial
-   * - Nakul Jain 
+   * - Nakul Jain
      - `nakulj2 <https://github.com/nakulj2>`_
      -  Initial
    * - Naman Srivastava
@@ -1857,7 +1857,7 @@ Contributors
    * - Nardeen Shaher Abdmariam Danial
      - `Nardeen-99 <https://github.com/Nardeen-99>`_
      -  Initial
-   * - Narimalla bhanu teja 
+   * - Narimalla bhanu teja
      - `Bhanu <https://github.com/Bhanu>`_
      -  Initial
    * - Nash Andrew Yagahon Bondoc
@@ -1935,13 +1935,13 @@ Contributors
    * - Noreen Lucy Ligare
      - `ligarenoreen <https://github.com/ligarenoreen>`_
      -  Initial
-   * - Nourhan AbdAllah Noureldin 
+   * - Nourhan AbdAllah Noureldin
      - `nourhan031 <https://github.com/nourhan031>`_
      -  Initial
    * - Nourhan Moustafa
      - `nourhan-moustafa <https://github.com/nourhan-moustafa>`_
      -  Initial
-   * - Nuru-rahman Akinpelu 
+   * - Nuru-rahman Akinpelu
      - `NururahmanAkinpelu  <https://github.com/NururahmanAkinpelu >`_
      -  Initial
    * - Nwaamaka Iduwe
@@ -1977,16 +1977,16 @@ Contributors
    * - Olga
      - `TravierO <https://github.com/TravierO>`_
      -  Initial
-   * - Olorunfemi Sanyaolu Timothy 
+   * - Olorunfemi Sanyaolu Timothy
      - `OlufemiboX <https://github.com/OlufemiboX>`_
      -  Initial
    * - Oluwasegunfunmi Dada
      - `shegzyrey <https://github.com/shegzyrey>`_
      -  Initial
-   * - Oluwatobi Ndom 
+   * - Oluwatobi Ndom
      - `Oluwatobi Ndom  <https://github.com/Oluwatobi Ndom >`_
      -  Initial
-   * - Omar Elnashar 
+   * - Omar Elnashar
      - `Oknashar <https://github.com/Oknashar>`_
      -  Initial
    * - Omar Helwe
@@ -1998,7 +1998,7 @@ Contributors
    * - Omar sherif tonsy
      - `omartonsy02 <https://github.com/omartonsy02>`_
      -  Initial
-   * - Omkar khade 
+   * - Omkar khade
      - `Omickeyee <https://github.com/Omickeyee>`_
      - Merging Master Initial
    * - OnesimusAddo Appiah
@@ -2028,7 +2028,7 @@ Contributors
    * - Oyelayo Seye Daniel
      - `Exwhybaba <https://github.com/Exwhybaba>`_
      -  Initial
-   * - Paritosh Dahiya 
+   * - Paritosh Dahiya
      - `hnhparitosh <https://github.com/hnhparitosh>`_
      -  Initial
    * - Parth Deshmukh
@@ -2043,19 +2043,19 @@ Contributors
    * - Paul Obare
      - `obarepa <https://github.com/obarepa>`_
      -  Initial
-   * - Paul Okewunmi 
+   * - Paul Okewunmi
      - `Paulooh007 <https://github.com/Paulooh007>`_
      -  Initial
    * - Penmetsa Chaitanya Varma
      - `pc099 <https://github.com/pc099>`_
      -  Initial
-   * - Peter adel shawkey 
+   * - Peter adel shawkey
      - `Don't know <https://github.com/Don't know>`_
      -  Initial
    * - Phillip Sosola
      - `Jake90059 <https://github.com/Jake90059>`_
      -  Initial
-   * - Piyush Aaryan 
+   * - Piyush Aaryan
      - `piyushgit011 <https://github.com/piyushgit011>`_
      -  Initial
    * - Piyush kumar mishra
@@ -2073,7 +2073,7 @@ Contributors
    * - Pratham Savaliya
      - `01PrathamS <https://github.com/01PrathamS>`_
      -  Initial
-   * - Pratham Verma 
+   * - Pratham Verma
      - `PrathamVerma999 <https://github.com/PrathamVerma999>`_
      -  Initial
    * - Pratik haldankar
@@ -2094,7 +2094,7 @@ Contributors
    * - Pritam Ravani
      - `pritam-ravani <https://github.com/pritam-ravani>`_
      -  Initial
-   * - Priyanka Kamila 
+   * - Priyanka Kamila
      - `priyankak17 <https://github.com/priyankak17>`_
      -  Initial
    * - Priyanka Nandwal
@@ -2124,7 +2124,7 @@ Contributors
    * - Rachel burra
      - `rachb8 <https://github.com/rachb8>`_
      -  Initial
-   * - Radwa Elfeky 
+   * - Radwa Elfeky
      - `Radwa28 <https://github.com/Radwa28>`_
      -  Initial
    * - Rafael Borges Allgayer
@@ -2148,7 +2148,7 @@ Contributors
    * - Rajaraman Sundararajan
      - `rsun0013 <https://github.com/rsun0013>`_
      -  Initial
-   * - Rajat Raina 
+   * - Rajat Raina
      - `rrrajat04 <https://github.com/rrrajat04>`_
      -  Initial
    * - Rakshit \.
@@ -2157,7 +2157,7 @@ Contributors
    * - Ramadhan Mwinyi Pembe
      - `Ramadhanpembe <https://github.com/Ramadhanpembe>`_
      -  Initial
-   * - Ramsha Niaz Ahmed 
+   * - Ramsha Niaz Ahmed
      - `ramray99 <https://github.com/ramray99>`_
      -  Initial
    * - Ramya Manasa Amancherla
@@ -2190,7 +2190,7 @@ Contributors
    * - Renduchinthala Lakshmi Prasoon Kumar
      - `Prasoon2510 <https://github.com/Prasoon2510>`_
      -  Initial
-   * - Rewan Salem 
+   * - Rewan Salem
      - `ronysalem <https://github.com/ronysalem>`_
      -  Initial
    * - Rim Missaoui
@@ -2211,10 +2211,10 @@ Contributors
    * - Ritwik Sinha
      - `ritwiksinha53 <https://github.com/ritwiksinha53>`_
      -  Initial
-   * - Rofiqul Alam Shehab 
+   * - Rofiqul Alam Shehab
      - `shehab0911 <https://github.com/shehab0911>`_
      -  Initial
-   * - Rohini Ranjan 
+   * - Rohini Ranjan
      - `rohini-ranjanR <https://github.com/rohini-ranjanR>`_
      -  Initial
    * - Rohinish k singh
@@ -2229,7 +2229,7 @@ Contributors
    * - Romina Stoica
      - `rominaRSG <https://github.com/rominaRSG>`_
      -  Initial
-   * - Rotimi Marvellous Oluwademilade 
+   * - Rotimi Marvellous Oluwademilade
      - `Demilade  <https://github.com/Demilade >`_
      -  Initial
    * - Rukndo Solomon Gossaye
@@ -2244,7 +2244,7 @@ Contributors
    * - Ruturaj Reddy
      - `ruturajreddy <https://github.com/ruturajreddy>`_
      -  Initial
-   * - SADDAM ELCASER 
+   * - SADDAM ELCASER
      - `Turkey  <https://github.com/Turkey >`_
      -  Initial
    * - SAI KRISHNA
@@ -2268,7 +2268,7 @@ Contributors
    * - Sabahudin Musinovic
      - `SabahudinM <https://github.com/SabahudinM>`_
      -  Initial
-   * - Saboor Ahmed 
+   * - Saboor Ahmed
      - `Saboor47 <https://github.com/Saboor47>`_
      -  Initial
    * - Sabrina Boumaiza
@@ -2283,13 +2283,13 @@ Contributors
    * - Sahan Nayanajith
      - `sahannt98 <https://github.com/sahannt98>`_
      -  Initial
-   * - Sahar Hamdi Abdulhafeez Gabri 
+   * - Sahar Hamdi Abdulhafeez Gabri
      - `sahar-hamdi <https://github.com/sahar-hamdi>`_
      -  Initial
    * - Sahil Gidwani
      - `gidwanisahil <https://github.com/gidwanisahil>`_
      -  Initial
-   * - Sahil Khan 
+   * - Sahil Khan
      - `iamsahilkhan <https://github.com/iamsahilkhan>`_
      -  Initial
    * - Sai Bhargav Dasari
@@ -2298,16 +2298,16 @@ Contributors
    * - Sai Tejah Srikanth
      - `SAITEJAHSRIKANTH <https://github.com/SAITEJAHSRIKANTH>`_
      -  Initial
-   * - Saif Elden Khaled Emera 
+   * - Saif Elden Khaled Emera
      - `SaifEKhaled <https://github.com/SaifEKhaled>`_
      -  Initial
-   * - Saif Rabaia 
+   * - Saif Rabaia
      - `Saif Rabaia  <https://github.com/Saif Rabaia >`_
      -  Initial
    * - Saipavanesh Guggilapu
      - `FelixFelicis555 <https://github.com/FelixFelicis555>`_
      -  Initial
-   * - Saketh Naidu pappala 
+   * - Saketh Naidu pappala
      - `sakethnaidu <https://github.com/sakethnaidu>`_
      -  Initial
    * - Saleh Tahir Mahamat
@@ -2343,7 +2343,7 @@ Contributors
    * - Sandhya Dassaye
      - `SandhyaDassaye1 <https://github.com/SandhyaDassaye1>`_
      -  Initial
-   * - Sandra Melito 
+   * - Sandra Melito
      - `sandramelito <https://github.com/sandramelito>`_
      -  Initial
    * - Sania Khan Tareen
@@ -2352,7 +2352,7 @@ Contributors
    * - Santiago Pelaez
      - `Santiagowwi <https://github.com/Santiagowwi>`_
      -  Initial
-   * - Sanyam Jain 
+   * - Sanyam Jain
      - `jnsanyam <https://github.com/jnsanyam>`_
      -  Initial
    * - Sara Naseef
@@ -2373,7 +2373,7 @@ Contributors
    * - Sashi Bhushan A Rajput
      - `bishopmate <https://github.com/bishopmate>`_
      -  Initial
-   * - Satya Bhagavan 
+   * - Satya Bhagavan
      - `satyabhagavan  <https://github.com/satyabhagavan >`_
      -  Initial
    * - Saumil Patel
@@ -2388,7 +2388,7 @@ Contributors
    * - Sedat Sonmez
      - `SedatMkvl <https://github.com/SedatMkvl>`_
      -  Initial
-   * - Seif El Din Mohamed 
+   * - Seif El Din Mohamed
      - `SeifEl-Din <https://github.com/SeifEl-Din>`_
      -  Initial
    * - Seifeddine cherif
@@ -2403,7 +2403,7 @@ Contributors
    * - Shady Ahmed Nagy
      - `shadynagy232 <https://github.com/shadynagy232>`_
      -  Initial
-   * - Shahd Mohamed Ali 
+   * - Shahd Mohamed Ali
      - `shahdzzz <https://github.com/shahdzzz>`_
      -  Initial
    * - Shambhavi Mishra
@@ -2421,10 +2421,10 @@ Contributors
    * - Shaun Bending
      - `StickMonkey615 <https://github.com/StickMonkey615>`_
      -  Initial
-   * - Sheref Hamdy 
+   * - Sheref Hamdy
      - `sheref10 <https://github.com/sheref10>`_
      -  Initial
-   * - Shiemaa Ibrahim Hagbakr Adlan 
+   * - Shiemaa Ibrahim Hagbakr Adlan
      - ` Shiemaa-Adlan <https://github.com/ Shiemaa-Adlan>`_
      -  Initial
    * - Shivam Tiwari
@@ -2448,7 +2448,7 @@ Contributors
    * - Shwetha M
      - `shwetha2024 <https://github.com/shwetha2024>`_
      -  Initial
-   * - Sid Ahmed El Mahdi Boualem 
+   * - Sid Ahmed El Mahdi Boualem
      - `bsmdev <https://github.com/bsmdev>`_
      -  Initial
    * - Siddhartth
@@ -2514,10 +2514,10 @@ Contributors
    * - Sushmasree Koneti
      - `sushmakoneti <https://github.com/sushmakoneti>`_
      -  Initial
-   * - Suvodeep 
+   * - Suvodeep
      - `DubeySuvodeep <https://github.com/DubeySuvodeep>`_
      -  Initial
-   * - Suyash Udchan 
+   * - Suyash Udchan
      - `suyash100 <https://github.com/suyash100>`_
      -  Initial
    * - Swarnim Pratap Singh
@@ -2568,7 +2568,7 @@ Contributors
    * - Tchokponhoue Olouwa-Tobi Oded
      - `Oded-tchokponhoue <https://github.com/Oded-tchokponhoue>`_
      -  Initial
-   * - Teja chinitha 
+   * - Teja chinitha
      - `Teja-07 <https://github.com/Teja-07>`_
      -  Initial
    * - Tejaswini Chennigaraya Arunkumar
@@ -2580,7 +2580,7 @@ Contributors
    * - Tesfaye Adugna Hordofa
      - `tesfayeadugna <https://github.com/tesfayeadugna>`_
      -  Initial
-   * - Thamer Algahtani 
+   * - Thamer Algahtani
      - `Notthamer_ <https://github.com/Notthamer_>`_
      -  Initial
    * - Thathsarani Sandarekha
@@ -2598,7 +2598,7 @@ Contributors
    * - Tina Mercer
      - `TinaMercer <https://github.com/TinaMercer>`_
      -  Initial
-   * - Tinsae Yirgu 
+   * - Tinsae Yirgu
      - `tinsudessalegn <https://github.com/tinsudessalegn>`_
      -  Initial
    * - Tobi Oyebade
@@ -2607,13 +2607,13 @@ Contributors
    * - Todimu Isewon Dr
      - `Oluwatodimu  <https://github.com/Oluwatodimu >`_
      -  Initial
-   * - Toka Mohsen Mohamed Abdelsamad 
+   * - Toka Mohsen Mohamed Abdelsamad
      - `Toka27 <https://github.com/Toka27>`_
      -  Initial
-   * - Toufic Noureddine 
+   * - Toufic Noureddine
      - `N/A <https://github.com/N/A>`_
      -  Initial
-   * - Tsegaye Mekuria 
+   * - Tsegaye Mekuria
      - `Tsegmekr <https://github.com/Tsegmekr>`_
      -  Initial
    * - Tshering Tobzang
@@ -2649,10 +2649,10 @@ Contributors
    * - Vaibhav dubey
      - `vaibhavdubey7 <https://github.com/vaibhavdubey7>`_
      -  Initial
-   * - Vaishnavi Hanumantha Nemakal 
+   * - Vaishnavi Hanumantha Nemakal
      - `vnav-hanum <https://github.com/vnav-hanum>`_
      -  Initial
-   * - Vaishnavi Mudaliar 
+   * - Vaishnavi Mudaliar
      - `VaishnaviMudaliar <https://github.com/VaishnaviMudaliar>`_
      -  Initial
    * - Vajiheh Sabzali
@@ -2664,7 +2664,7 @@ Contributors
    * - Vandana Yalla
      - `YVandana <https://github.com/YVandana>`_
      -  Initial
-   * - Vandit Tyagi 
+   * - Vandit Tyagi
      - `vandit98 <https://github.com/vandit98>`_
      -  Initial
    * - Varsha Raveendran
@@ -2685,19 +2685,19 @@ Contributors
    * - Victor Kipyegon
      - `kipyegon1 <https://github.com/kipyegon1>`_
      -  Initial
-   * - Vindya 
+   * - Vindya
      - `NA <https://github.com/NA>`_
      -  Initial
-   * - Vrinda Kohli 
+   * - Vrinda Kohli
      - `kohlivrinda <https://github.com/kohlivrinda>`_
      -  Initial
-   * - Waleed altarazi 
+   * - Waleed altarazi
      - `waleedtarazi <https://github.com/waleedtarazi>`_
      -  Initial
    * - Walid Najjar
      - `walidnk <https://github.com/walidnk>`_
      -  Initial
-   * - Walyson Scarazzati da Silva 
+   * - Walyson Scarazzati da Silva
      - `Walyson-scarazzati <https://github.com/Walyson-scarazzati>`_
      -  Initial
    * - Waseem Hassan
@@ -2706,7 +2706,7 @@ Contributors
    * - Willane Jaures Saboubanga
      - `WillaneJaures <https://github.com/WillaneJaures>`_
      -  Initial
-   * - Winnie Nyaberi Mauti 
+   * - Winnie Nyaberi Mauti
      - `WinniePauline  <https://github.com/WinniePauline >`_
      -  Initial
    * - YASH PATIDAR
@@ -2730,7 +2730,7 @@ Contributors
    * - Yassine Bennani
      - `sinfaur <https://github.com/sinfaur>`_
      -  Initial
-   * - Yaw Imbeah Mintah 
+   * - Yaw Imbeah Mintah
      - `Lay-ke <https://github.com/Lay-ke>`_
      -  Initial
    * - Yazan Nasser Nabulsi
@@ -2745,7 +2745,7 @@ Contributors
    * - Yi Han Wang
      - `Hanswang123456 <https://github.com/Hanswang123456>`_
      -  Initial
-   * - Yogesh sahu 
+   * - Yogesh sahu
      - `yotech1324 <https://github.com/yotech1324>`_
      -  Initial
    * - Yousef Shawky
@@ -2754,7 +2754,7 @@ Contributors
    * - Youssef Hassan Hussein
      - `You2751 <https://github.com/You2751>`_
      -  Initial
-   * - Youssef Zayn Elabden 
+   * - Youssef Zayn Elabden
      - `zayn309 <https://github.com/zayn309>`_
      -  Initial
    * - Youssef mostafa
@@ -2787,7 +2787,7 @@ Contributors
    * - Zeshan Gulzar
      - `- <https://github.com/->`_
      -  Initial
-   * - Zeyad Diaa 
+   * - Zeyad Diaa
      - `Zeyad-Diaa12 <https://github.com/Zeyad-Diaa12>`_
      -  Initial
    * - Zeyad Mahmoud Nagy
@@ -2865,7 +2865,7 @@ Contributors
    * - jatin prashant
      - `jatinprashant422 <https://github.com/jatinprashant422>`_
      -  Initial
-   * - khaled elhady eladawy 
+   * - khaled elhady eladawy
      - `khaledelhady44 <https://github.com/khaledelhady44>`_
      -  Initial
    * - khouloud moussaoui
@@ -2958,6 +2958,6 @@ Contributors
    * - Șipitca Serghei
      - ` garbelfest <https://github.com/ garbelfest>`_
      -  Initial
-   * - محمد الشيخ 
+   * - محمد الشيخ
      - ` Safwan <https://github.com/ Safwan>`_
      -  Initial
