@@ -1062,13 +1062,13 @@ def test_torch_norm(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-01,
-        atol=1e-08,
+        rtol=1e-04,
+        atol=1e-04,
         input=x,
         ord=p,
         dim=axis,
         keepdim=keepdim,
-        dtype=dtype,
+        dtype=x_dtype,
     )
 
 

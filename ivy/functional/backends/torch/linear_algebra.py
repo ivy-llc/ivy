@@ -211,10 +211,11 @@ def matrix_norm(
     if (
         "complex" in ivy.as_ivy_dtype(dtype) or "complex" in ivy.as_ivy_dtype(x.dtype)
     ) and ivy.exists(out):
-        out = ivy.astype(out, "float32").to_native()
+        out = ivy.astype(out, dtype).to_native()
     ret = torch.linalg.matrix_norm(
         x, ord=ord, dim=axis, keepdim=keepdims, dtype=dtype, out=out
     )
+    ret = ivy.astype(ret, dtype)
     return ret
 
 
@@ -525,7 +526,8 @@ def vector_norm(
     dtype = ivy.as_native_dtype(dtype)
     if dtype and x.dtype != dtype:
         x = x.type(dtype)
-    return torch.linalg.vector_norm(x, ord, axis, keepdims, out=out)
+    ret = torch.linalg.vector_norm(x, ord, axis, keepdims, out=out)
+    return ivy.astype(ret, dtype)
 
 
 vector_norm.support_native_out = True

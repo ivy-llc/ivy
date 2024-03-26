@@ -206,23 +206,34 @@ def multi_dot(tensors, *, out=None):
 @with_supported_dtypes(
     {"2.2 and below": ("float32", "float64", "complex64", "complex128")}, "torch"
 )
+@with_supported_dtypes({"2.2.1 and below": ("complex128", "complex64")}, "tensorflow")
+@with_supported_dtypes(
+    {"1.26.3 and below": ("complex128", "complex64", "float32", "float64")}, "numpy"
+)
 def norm(input, ord=None, dim=None, keepdim=False, *, dtype=None, out=None):
     if dim is None and (ord is not None):
         if input.ndim == 1:
-            ret = ivy.vector_norm(input, axis=dim, keepdims=keepdim, ord=ord)
+            ret = ivy.vector_norm(
+                input, axis=dim, keepdims=keepdim, ord=ord, dtype=dtype
+            )
         else:
-            ret = ivy.matrix_norm(input, keepdims=keepdim, ord=ord)
+            ret = ivy.matrix_norm(input, keepdims=keepdim, ord=ord, dtype=dtype)
     elif dim is None and ord is None:
         input = ivy.flatten(input)
-        ret = ivy.vector_norm(input, axis=0, keepdims=keepdim, ord=2)
+        ret = ivy.vector_norm(input, axis=0, keepdims=keepdim, ord=2, dtype=dtype)
     elif isinstance(dim, int):
-        ret = ivy.vector_norm(input, axis=dim, keepdims=keepdim, ord=ord)
+        ret = ivy.vector_norm(input, axis=dim, keepdims=keepdim, ord=ord, dtype=dtype)
     elif isinstance(dim, tuple) and len(dim) <= 2:
-        ret = ivy.matrix_norm(input, axis=dim, keepdims=keepdim, ord=ord)
+        ret = ivy.matrix_norm(input, axis=dim, keepdims=keepdim, ord=ord, dtype=dtype)
     elif isinstance(dim, tuple) and len(dim) > 2:
         raise RuntimeError(
             f"linalg.norm: If dim is specified, it must be of length 1 or 2. Got {dim}"
         )
+    if dtype == "complex64":
+        ret = ivy.astype(ret, "float32")
+    elif dtype == "complex128":
+        ret = ivy.astype(ret, "float64")
+
     return ret
 
 
