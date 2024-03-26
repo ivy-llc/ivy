@@ -27,9 +27,12 @@ Rising Contributors
    * - Name
      - Github ID
      - Badges
-   * - Muhammad ishaque
+   * - Muhammad ishaque 
      - `MuhammadNizamani <https://github.com/MuhammadNizamani>`_
      - Merging Master Silver, Merging Wizard, Ivy Inspector
+   * - Zheng Jay Choy
+     - `ZJay07 <https://github.com/ZJay07>`_
+     - Merging Master Silver, Ivy Inspector
 Core Contributors
 -----------------
 .. list-table::
@@ -42,13 +45,13 @@ Core Contributors
    * - Suyash Gupta
      - `sgalpha01 <https://github.com/sgalpha01>`_
      - Debugging Dynamo, Merging Master Bronze, Merging Wizard Bronze
-   * - Sanjay Suthar
+   * - Sanjay Suthar 
      - `Sanjay8602 <https://github.com/Sanjay8602>`_
      - Merging Master Bronze, Ivy Inspector Bronze
-   * - Zheng Jay Choy
-     - `ZJay07 <https://github.com/ZJay07>`_
-     - Merging Master Bronze, Ivy Inspector
-   * - R E Zera Marveen Lyngkhoi
+   * - Chaitanya Lakhchaura
+     - `ZenithFlux <https://github.com/ZenithFlux>`_
+     - Merging Master Bronze
+   * - R E Zera Marveen Lyngkhoi 
      - `fleventy-5 <https://github.com/fleventy-5>`_
      - Merging Master Bronze
    * - nitesh kesharwani
@@ -72,8 +75,17 @@ Contributors
    * - Ayush Lokare
      - `ayush111111 <https://github.com/ayush111111>`_
      - Merging Master, Ivy Inspector
+   * - Bhushan Srivastava
+     - `he11owthere <https://github.com/he11owthere>`_
+     - Merging Master, Ivy Inspector
    * - David Adlai Nettey
      - `Adlai-1 <https://github.com/Adlai-1>`_
+     - Merging Master, Ivy Inspector
+   * - Ebenezer Gadri-Akrong
+     - `aibenStunner <https://github.com/aibenStunner>`_
+     - Merging Master, Ivy Inspector
+   * - Edward Amimo
+     - `mobley-trent <https://github.com/mobley-trent>`_
      - Merging Master, Ivy Inspector
    * - Garima Saroj
      - `AndroGari <https://github.com/AndroGari>`_
@@ -93,34 +105,25 @@ Contributors
    * - Rohit Kumar Salla
      - `rohitsalla <https://github.com/rohitsalla>`_
      - Merging Master, Ivy Inspector
-   * - Shreya Kumar
-     - `alt-shreya <https://github.com/alt-shreya>`_
-     - Merging Master, Ivy Inspector
-   * - Srikar Vedantam
-     - `shruzki <https://github.com/shruzki>`_
-     - Merging Master, Merging Wizard
    * - Waqar Ahmed
      - `waqaarahmed <https://github.com/waqaarahmed>`_
      - Merging Master, Ivy Inspector
-   * - Aryan Pandey
+   * - Aryan Pandey 
      - `Aryan8912 <https://github.com/Aryan8912>`_
-     - Merging Master
-   * - Chaitanya Lakhchaura
-     - `ZenithFlux <https://github.com/ZenithFlux>`_
      - Merging Master
    * - Dhruv Sharma
      - `druvdub <https://github.com/druvdub>`_
      - Merging Master
+   * - Fayad Alman
+     - `Fayad-Alman <https://github.com/Fayad-Alman>`_
+     - Ivy Inspector
    * - Kacper Kożdoń
      - `Kacper-W-Kozdon <https://github.com/Kacper-W-Kozdon>`_
      - Merging Master
    * - Mehmet Bilgehan Bezcioglu
      - `BilgehanMehmet <https://github.com/BilgehanMehmet>`_
      - Merging Master
-   * - Mohamed Ismail
-     - `Medo072 <https://github.com/Medo072>`_
-     - Merging Master
-   * - Omkar khade
+   * - Omkar khade 
      - `Omickeyee <https://github.com/Omickeyee>`_
      - Merging Master
    * - Sheroz Khan
