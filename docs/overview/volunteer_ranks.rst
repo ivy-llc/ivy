@@ -39,7 +39,7 @@ Contributors
    * - Mostafa Gamal
      - `Mr-Array22 <https://github.com/Mr-Array22>`_
      - Merging Master, Ivy Inspector
-   * - Muhammad ishaque 
+   * - Muhammad ishaque
      - `MuhammadNizamani <https://github.com/MuhammadNizamani>`_
      - Merging Wizard, Ivy Inspector
    * - Ogban Ugot
@@ -54,7 +54,7 @@ Contributors
    * - Waqar Ahmed
      - `waqaarahmed <https://github.com/waqaarahmed>`_
      - Merging Master, Ivy Inspector
-   * - Aryan Pandey 
+   * - Aryan Pandey
      - `Aryan8912 <https://github.com/Aryan8912>`_
      - Merging Master
    * - Dhruv Sharma
@@ -69,10 +69,10 @@ Contributors
    * - Mehmet Bilgehan Bezcioglu
      - `BilgehanMehmet <https://github.com/BilgehanMehmet>`_
      - Merging Master
-   * - Mohamed Ibrahim 
+   * - Mohamed Ibrahim
      - `Medo072 <https://github.com/Medo072>`_
      - Merging Master
-   * - Omkar khade 
+   * - Omkar khade
      - `Omickeyee <https://github.com/Omickeyee>`_
      - Merging Master
    * - Sheroz Khan
