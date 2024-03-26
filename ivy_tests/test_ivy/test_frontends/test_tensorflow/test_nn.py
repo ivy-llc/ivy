@@ -1962,3 +1962,36 @@ def test_tensorflow_weighted_moments(
         frequency_weights=fw[0],
         keepdims=keepdims,
     )
+
+
+# zero_fraction
+@handle_frontend_test(
+    fn_tree="tensorflow.math.zero_fraction",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
+        min_num_dims=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_zero_fraction(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        value=x[0],
+    )
