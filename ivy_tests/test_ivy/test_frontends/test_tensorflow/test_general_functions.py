@@ -1480,7 +1480,7 @@ def test_tensorflow_rank(
     frontend,
     test_flags,
 ):
-    dtype, x, _ = dtype_and_x
+    dtype, x, *_ = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
