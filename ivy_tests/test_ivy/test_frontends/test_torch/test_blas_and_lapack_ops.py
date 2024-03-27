@@ -1,11 +1,14 @@
 # global
 import sys
 import numpy as np
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
+    matrix_is_stable,
+)
 
 
 # --- Helpers --- #
@@ -648,6 +651,7 @@ def test_torch_logdet(
     backend_fw,
 ):
     dtype, x = dtype_and_x
+    assume(matrix_is_stable(x))
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
