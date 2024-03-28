@@ -57,7 +57,7 @@ Rising Contributors
    * - nitesh kesharwani
      - `NiteshK84 <https://github.com/NiteshK84>`_
      - Ivy Inspector Bronze, OG Silver
-   * - Muhammad ishaque
+   * - Muhammad ishaque 
      - `MuhammadNizamani <https://github.com/MuhammadNizamani>`_
      - Merging Master Silver, Merging Wizard, Ivy Inspector
    * - Zheng Jay Choy
@@ -72,7 +72,7 @@ Core Contributors
    * - Name
      - Github ID
      - Badges
-   * - Mohamed Ibrahim
+   * - Mohamed Ibrahim 
      - `Medo072 <https://github.com/Medo072>`_
      - Merging Master, OG Bronze
    * - Sheroz Khan
@@ -84,16 +84,19 @@ Core Contributors
    * - Alvin Vinod
      - `alvin-98 <https://github.com/alvin-98>`_
      - OG Bronze
+   * - David Adlai Nettey
+     - `Adlai-1 <https://github.com/Adlai-1>`_
+     - Merging Master Bronze, Ivy Inspector
    * - Mwape Bunda
      - `teckno <https://github.com/teckno>`_
      - OG Bronze
-   * - Sanjay Suthar
+   * - Sanjay Suthar 
      - `Sanjay8602 <https://github.com/Sanjay8602>`_
      - Merging Master Bronze, Ivy Inspector Bronze
    * - Chaitanya Lakhchaura
      - `ZenithFlux <https://github.com/ZenithFlux>`_
      - Merging Master Bronze
-   * - R E Zera Marveen Lyngkhoi
+   * - R E Zera Marveen Lyngkhoi 
      - `fleventy-5 <https://github.com/fleventy-5>`_
      - Merging Master Bronze
 Contributors
@@ -110,9 +113,6 @@ Contributors
      - Merging Master, Merging Wizard, Ivy Inspector
    * - Ayush Lokare
      - `ayush111111 <https://github.com/ayush111111>`_
-     - Merging Master, Ivy Inspector
-   * - David Adlai Nettey
-     - `Adlai-1 <https://github.com/Adlai-1>`_
      - Merging Master, Ivy Inspector
    * - Garima Saroj
      - `AndroGari <https://github.com/AndroGari>`_
@@ -132,7 +132,7 @@ Contributors
    * - Waqar Ahmed
      - `waqaarahmed <https://github.com/waqaarahmed>`_
      - Merging Master, Ivy Inspector
-   * - Aryan Pandey
+   * - Aryan Pandey 
      - `Aryan8912 <https://github.com/Aryan8912>`_
      - Merging Master
    * - Dhruv Sharma
@@ -144,8 +144,11 @@ Contributors
    * - Mehmet Bilgehan Bezcioglu
      - `BilgehanMehmet <https://github.com/BilgehanMehmet>`_
      - Merging Master
-   * - Omkar khade
+   * - Omkar khade 
      - `Omickeyee <https://github.com/Omickeyee>`_
+     - Merging Master
+   * - Stefan Sanchez
+     - `StefanSan26 <https://github.com/StefanSan26>`_
      - Merging Master
    * - Syed Muzakkir Hussain
      - `muzakkirhussain011 <https://github.com/muzakkirhussain011>`_
