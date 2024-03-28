@@ -341,6 +341,28 @@ def embedding_lookup(params, ids, max_norm=None, name=None):
     return ivy.embedding(params, ids, max_norm=max_norm)
 
 
+@with_unsupported_dtypes({"2.11.1 and below": ("complex",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def embedding_lookup_sparse(
+    params,
+    sp_ids,
+    sp_weights,
+    combiner=None,
+    max_norm=None,
+    name=None,
+    allow_fast_lookup=False,
+):
+    embeddings = ivy.sparse_embedding(
+        params,
+        sp_ids,
+        sp_weights,
+        combiner=combiner,
+        max_norm=max_norm,
+        allow_fast_lookup=allow_fast_lookup,
+    )
+    return embeddings
+
+
 @to_ivy_arrays_and_back
 def gelu(features, approximate=False, name=None):
     return ivy.gelu(features, approximate=approximate)
