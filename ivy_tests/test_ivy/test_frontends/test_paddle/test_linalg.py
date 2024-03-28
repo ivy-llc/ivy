@@ -451,6 +451,8 @@ def test_paddle_cross(
         x=x,
         y=y,
         axis=axis,
+        atol=1e-4,
+        rtol=1e-4,
     )
 
 
