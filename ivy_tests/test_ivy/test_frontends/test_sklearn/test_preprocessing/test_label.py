@@ -39,3 +39,4 @@ def test_sklearn_label_encoder_fit(
         on_device=on_device,
         backend_to_test=backend_fw,
     )
+    
