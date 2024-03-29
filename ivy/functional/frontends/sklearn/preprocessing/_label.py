@@ -3,36 +3,17 @@ import ivy
 
 
 class LabelEncoder(TransformerMixin, BaseEstimator):
-    """A custom implementation of a label encoder for transforming categorical
-    labels into numerical labels and vice versa. This class inherits from
-    TransformerMixin and BaseEstimator classes from the sklearn.base module.
-
-    Attributes
-    ----------
-    classes_ (list): A list of unique classes found in the data after fitting.
-    class_to_index_ (list): A list mapping each unique class to an index.
-    encoded_ (list): A list of encoded classes after transformation.
-    decoded_ (list): A list of decoded classes after inverse transformation.
-    """
+    
 
     def __init__(self):
-        """Initializes the LabelEncoder object."""
+        
         self.classes_ = None
         self.class_to_index_ = None
         self.encoded_ = None
         self.decoded_ = None
 
     def fit(self, y):
-        """Fits the encoder to the data.
-
-        Args:
-        ----
-        y (array-like): The target values. It should be a 1D array or a 2D array with a single column.
-
-        Returns:
-        -------
-        self: Returns the instance itself.
-        """
+        
         # Initialize the classes and class_to_index lists
         self.classes_ = []
         self.class_to_index = []
@@ -65,29 +46,11 @@ class LabelEncoder(TransformerMixin, BaseEstimator):
         return self
 
     def fit_transform(self, y):
-        """Fits the encoder to the data and then transforms the data.
-
-        Args:
-        ----
-        y (array-like): The target values.
-
-        Returns:
-        -------
-        self: Returns the instance itself.
-        """
+        
         return self.fit(y).transform(y)
 
     def transform(self, y):
-        """Transforms the data into encoded form.
-
-        Args:
-        ----
-        y (array-like): The target values.
-
-        Returns:
-        -------
-        self: Returns the instance itself.
-        """
+        
         # Check if the encoder is fitted
         if self.classes_ is None or self.class_to_index_ is None:
             # Raise an error if the encoder is not fitted
@@ -117,16 +80,7 @@ class LabelEncoder(TransformerMixin, BaseEstimator):
         return self
 
     def inverse_transform(self, indices):
-        """Transforms the data back into original form.
-
-        Args:
-        ----
-        indices (array-like): The encoded values.
-
-        Returns:
-        -------
-        self: Returns the instance itself.
-        """
+        
         # Check if the encoder is fitted
         if self.classes_ is None:
             # Raise an error if the encoder is not fitted
