@@ -274,7 +274,7 @@ def test_jax_numpy_ifftn(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=True,
-     
+
         x=arr[0],
         axes=None,
 
