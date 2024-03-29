@@ -3,17 +3,13 @@ import ivy
 
 
 class LabelEncoder(TransformerMixin, BaseEstimator):
-    
-
     def __init__(self):
-        
         self.classes_ = None
         self.class_to_index_ = None
         self.encoded_ = None
         self.decoded_ = None
 
     def fit(self, y):
-        
         # Initialize the classes and class_to_index lists
         self.classes_ = []
         self.class_to_index = []
@@ -46,11 +42,9 @@ class LabelEncoder(TransformerMixin, BaseEstimator):
         return self
 
     def fit_transform(self, y):
-        
         return self.fit(y).transform(y)
 
     def transform(self, y):
-        
         # Check if the encoder is fitted
         if self.classes_ is None or self.class_to_index_ is None:
             # Raise an error if the encoder is not fitted
@@ -80,7 +74,6 @@ class LabelEncoder(TransformerMixin, BaseEstimator):
         return self
 
     def inverse_transform(self, indices):
-        
         # Check if the encoder is fitted
         if self.classes_ is None:
             # Raise an error if the encoder is not fitted
