@@ -1,7 +1,7 @@
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
-from ivy import with_supported_dtypes
+from ivy import with_supported_dtypes, with_unsupported_dtypes
 
 
 ACTIVATION_FUNCTIONS = [
@@ -112,6 +112,10 @@ def linear(x):
     return ivy.array(x)
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("complex",)},
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def relu(x, alpha=0.0, max_value=None, threshold=0.0):
     return ivy.relu(x)

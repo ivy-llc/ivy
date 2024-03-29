@@ -860,7 +860,7 @@ def abs(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.6.0 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.6.0 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
 )
 def logaddexp(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None

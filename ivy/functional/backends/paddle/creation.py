@@ -510,14 +510,18 @@ def ones_like(
     return paddle_backend.ones(shape=x.shape, dtype=dtype, device=device)
 
 
-@with_unsupported_device_and_dtypes(
+@with_supported_device_and_dtypes(
     {
         "2.6.0 and below": {
             "cpu": (
-                "int8",
-                "int16",
-                "uint8",
-                "complex",
+                "int32",
+                "int64",
+                "float64",
+                "complex128",
+                "float16",
+                "float32",
+                "complex64",
+                "bool",
             )
         }
     },

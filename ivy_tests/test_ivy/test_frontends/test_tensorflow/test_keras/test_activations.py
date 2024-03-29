@@ -13,6 +13,18 @@ try:
 except ImportError:
     tf = SimpleNamespace()
 
+# Activation functions for testing
+ACTIVATION_FUNCTIONS = [
+    "gelu",
+    "leaky_relu",
+    "log_softmax",
+    "relu",
+    "sigmoid",
+    "silu",
+    "softmax",
+    "softplus",
+]
+
 
 # Helper function for deserialize.
 def get_callable_functions(
@@ -39,6 +51,7 @@ def simple_test_two_function(
     atol_: float = 1e-06,
     ivy_submodules: list = [],
     framework_submodules: list = [],
+    backend: str,
 ):
     ivy.set_backend(frontend)
     fn_ivy = ivy.functional.frontends.__dict__[frontend]
@@ -58,14 +71,15 @@ def simple_test_two_function(
     ret_ivy = ivy.array(ret_ivy, dtype=dtype_data)
     ret = ivy.array(ret, dtype=dtype_data)
 
-    ret_np_flat = helpers.flatten_and_to_np(ret=ret)
-    frontend_ret_np_flat = helpers.flatten_and_to_np(ret=ret_ivy)
+    ret_np_flat = helpers.flatten_and_to_np(backend=backend, ret=ret)
+    frontend_ret_np_flat = helpers.flatten_and_to_np(backend=backend, ret=ret_ivy)
 
     helpers.value_test(
         ret_np_flat=ret_np_flat,
         ret_np_from_gt_flat=frontend_ret_np_flat,
         rtol=rtol_,
         atol=atol_,
+        backend=backend,
         ground_truth_backend=frontend,
     )
     ivy.previous_backend()
@@ -75,17 +89,7 @@ def simple_test_two_function(
 @handle_frontend_test(
     fn_tree="tensorflow.keras.activations.deserialize",
     fn_name=st.sampled_from(get_callable_functions("keras.activations")).filter(
-        lambda x: not x[0].isupper()
-        and x
-        not in [
-            "deserialize",
-            "get",
-            "keras_export",
-            "serialize",
-            "deserialize_keras_object",
-            "serialize_keras_object",
-            "get_globals",
-        ]
+        lambda x: not x[0].isupper() and x in ACTIVATION_FUNCTIONS
     ),
     dtype_and_data=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
@@ -100,6 +104,7 @@ def test_tensorflow_deserialize(
     fn_name,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     dtype_data, data = dtype_and_data
     simple_test_two_function(
@@ -112,6 +117,7 @@ def test_tensorflow_deserialize(
         atol_=1e-01,
         ivy_submodules=["keras", "activations"],
         framework_submodules=["keras", "activations"],
+        backend=backend_fw,
     )
 
 
@@ -190,17 +196,7 @@ def test_tensorflow_gelu(
 @handle_frontend_test(
     fn_tree="tensorflow.keras.activations.get",
     fn_name=st.sampled_from(get_callable_functions("keras.activations")).filter(
-        lambda x: not x[0].isupper()
-        and x
-        not in [
-            "deserialize",
-            "get",
-            "keras_export",
-            "serialize",
-            "deserialize_keras_object",
-            "serialize_keras_object",
-            "get_globals",
-        ]
+        lambda x: not x[0].isupper() and x in ACTIVATION_FUNCTIONS
     ),
     dtype_and_data=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
@@ -209,12 +205,13 @@ def test_tensorflow_gelu(
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
 )
-def test_tensorflow_get(fn_name, dtype_and_data):
+def test_tensorflow_get(fn_name, dtype_and_data, backend_fw):
     dtype_data, data = dtype_and_data
     simple_test_two_function(
         fn_name=fn_name,
         x=data[0],
         frontend="tensorflow",
+        backend=backend_fw,
         fn_str="get",
         dtype_data=dtype_data[0],
         rtol_=1e-01,
