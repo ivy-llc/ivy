@@ -365,7 +365,7 @@ def tile(
 ) -> paddle.Tensor:
     repeats = repeats.tolist() if isinstance(repeats, paddle.Tensor) else list(repeats)
     # Paddle doesn't natively support repeats containing zeros
-    if len(repeats) > 0 and min(repeats) == 0:
+    if 0 in x.shape or (len(repeats) > 0 and min(repeats) == 0):
         if x.ndim == 0:
             shape = repeats
         elif len(repeats) <= x.ndim:
