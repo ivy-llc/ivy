@@ -541,6 +541,7 @@ def tril(
                 "int16",
                 "uint8",
                 "complex",
+                "bfloat16",
             )
         }
     },

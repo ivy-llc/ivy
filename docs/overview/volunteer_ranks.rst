@@ -33,6 +33,9 @@ Top Contributors
    * - Saptarshi Bandopadhyay
      - `Saptarshi-Bandopadhyay <https://github.com/Saptarshi-Bandopadhyay>`_
      - OG Gold
+   * - Tugay Gül
+     - `sondertg <https://github.com/sondertg>`_
+     - OG Gold
    * - Vismay Suramwar
      - `leacornelio <https://github.com/leacornelio>`_
      - OG Gold
@@ -57,6 +60,9 @@ Rising Contributors
    * - nitesh kesharwani
      - `NiteshK84 <https://github.com/NiteshK84>`_
      - Ivy Inspector Bronze, OG Silver
+   * - Abdullah Sabry
+     - `abdullahsabry <https://github.com/abdullahsabry>`_
+     - OG Silver
    * - Muhammad ishaque
      - `MuhammadNizamani <https://github.com/MuhammadNizamani>`_
      - Merging Master Silver, Merging Wizard, Ivy Inspector
@@ -131,6 +137,9 @@ Contributors
      - Merging Master, Ivy Inspector
    * - Rahul Prem
      - `rp097 <https://github.com/rp097>`_
+     - Merging Master, Ivy Inspector
+   * - Vaishnavi Mudaliar
+     - `VaishnaviMudaliar <https://github.com/VaishnaviMudaliar>`_
      - Merging Master, Ivy Inspector
    * - Waqar Ahmed
      - `waqaarahmed <https://github.com/waqaarahmed>`_
