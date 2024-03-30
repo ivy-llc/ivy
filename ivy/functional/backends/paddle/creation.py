@@ -152,6 +152,7 @@ def empty_like(
                 "complex64",
                 "complex128",
                 "bool",
+                "bfloat16",
             )
         }
     },
