@@ -155,7 +155,6 @@ class _ArrayWithLayers(abc.ABC):
         data_format: str = "NWC",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-
         """
         ivy.Array instance method variant of ivy.dropout1d. This method simply wraps the
         function, and so the docstring for ivy.dropout1d also applies to this method
