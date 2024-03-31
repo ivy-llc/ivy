@@ -30,7 +30,7 @@ def _get_embed_dim(
     pre_embed_dim = query.shape[-1]
     if ivy.exists(in_proj_weights):
         embed_dim = in_proj_weights.shape[0] / 3
-    elif all([ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]]):
+    elif all(ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]):
         embed_dim = q_proj_weights.shape[0]
     else:
         embed_dim = None
@@ -44,10 +44,9 @@ def _in_projection(
     w,
     b=None,
 ):
-    """
-    Projects query, key and value efficiently, depending on whether we are doing self-
-    attention (query is key is value) or cross-attention (key is value) or an attention
-    where query, key and value are all different.
+    """Projects query, key and value efficiently, depending on whether we are
+    doing self- attention (query is key is value) or cross-attention (key is
+    value) or an attention where query, key and value are all different.
 
     it is only used in
     multi_head_attention layer.
@@ -264,8 +263,7 @@ def dropout(
     noise_shape: Optional[Sequence[int]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Randomly setting a fraction of input tensor to zeroes with probability.
+    """Randomly setting a fraction of input tensor to zeroes with probability.
 
     `prob` at each update during training time to prevent possible overfitting.
     The inputs not set to 0 are scaled up `1 / (1 - prob)` by default, so that
@@ -396,7 +394,7 @@ def dropout(
     }
     """
     if prob == 0 or not training:
-        if dtype is not None:
+        if dtype is not None and x.dtype != dtype:
             x = ivy.astype(x, dtype)
         return ivy.inplace_update(out, x) if ivy.exists(out) else x
     if noise_shape is None:
@@ -449,8 +447,7 @@ def scaled_dot_product_attention(
     training: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply scaled dot product attention to inputs x using optional mask.
+    """Apply scaled dot product attention to inputs x using optional mask.
 
     Parameters
     ----------
@@ -521,9 +518,9 @@ def scaled_dot_product_attention(
     >>> result = ivy.scaled_dot_product_attention(q,k,v,scale=1,mask=mask)
     >>> print(result)
 
-    ivy.array([[[0.40000001, 1.29999995],
-    ...         [2.19994521, 3.09994531],
-    ...         [4.30000019, 5.30000019]]])
+    ivy.array([[[2.30000019, 3.23333359],
+        [2.30000019, 3.23333359],
+        [2.30000019, 3.23333359]]])
 
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
     >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
@@ -751,20 +748,20 @@ def multi_head_attention(
     training: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Apply multi-head attention to inputs x. This is an implementation of multi-headed
-    attention as described in the paper "Attention is all you Need" (Vaswani et al.,
-    2017). If `query`, `key`, `value` are the same, then this is self-attention. Each
-    timestep in `query` attends to the corresponding sequence in `key`, and returns a
-    fixed-width vector. This layer first projects `query`, `key` and `value`. These are
-    (effectively) a list of tensors of length `num_attention_heads`, where the
-    corresponding shapes are `(batch_size, <query dimensions>, key_dim)`, `(batch_size,
+    """Apply multi-head attention to inputs x. This is an implementation of
+    multi-headed attention as described in the paper "Attention is all you
+    Need" (Vaswani et al., 2017). If `query`, `key`, `value` are the same, then
+    this is self-attention. Each timestep in `query` attends to the
+    corresponding sequence in `key`, and returns a fixed-width vector. This
+    layer first projects `query`, `key` and `value`. These are (effectively) a
+    list of tensors of length `num_attention_heads`, where the corresponding
+    shapes are `(batch_size, <query dimensions>, key_dim)`, `(batch_size,
     <key/value dimensions>, key_dim)`, `(batch_size, <key/value dimensions>,
-    value_dim)`. Then, the query and key tensors are dot-producted and scaled. These are
-    softmaxed to obtain attention probabilities. The value tensors are then interpolated
-    by these probabilities, then concatenated back to a single tensor. Finally, the
-    result tensor with the last dimension as value_dim can take a linear projection and
-    return.
+    value_dim)`. Then, the query and key tensors are dot-producted and scaled.
+    These are softmaxed to obtain attention probabilities. The value tensors
+    are then interpolated by these probabilities, then concatenated back to a
+    single tensor. Finally, the result tensor with the last dimension as
+    value_dim can take a linear projection and return.
 
     Parameters
     ----------
@@ -856,15 +853,15 @@ def multi_head_attention(
     if key is None and value is None:
         key = value = query
     if num_dims == 2:
-        query, key, value = [ivy.expand_dims(x, axis=0) for x in [query, key, value]]
+        query, key, value = (ivy.expand_dims(x, axis=0) for x in [query, key, value])
     elif not batch_first:
-        query, key, value = [ivy.swapaxes(x, 0, 1) for x in [query, key, value]]
+        query, key, value = (ivy.swapaxes(x, 0, 1) for x in [query, key, value])
 
     # project query, key and value
     if ivy.exists(in_proj_weights):
         q, k, v = _in_projection(query, key, value, w=in_proj_weights, b=in_proj_bias)
         emb_dim = int(in_proj_weights.shape[0] / 3)
-    elif all([ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]]):
+    elif all(ivy.exists(x) for x in [q_proj_weights, k_proj_weights, v_proj_weights]):
         if ivy.exists(in_proj_bias):
             b_q, b_k, b_v = ivy.split(in_proj_bias, num_or_size_splits=3)
         else:
@@ -919,7 +916,7 @@ def multi_head_attention(
 
     # get attention scores
     attn_scores = ivy.matmul(q, ivy.swapaxes(k, 1, 2))
-    scale = 1 / (head_dim**0.5) if not scale else scale
+    scale = scale if scale else 1 / (head_dim**0.5)
     attn_scores *= scale
 
     # mask the attention scores
@@ -1023,8 +1020,7 @@ def conv1d(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 1-D convolution given 3-D input x and filters arrays.
+    """Compute a 1-D convolution given 3-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1128,20 +1124,21 @@ def conv1d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 1-D transpose convolution given 3-D input x and filters arrays.
+    """Compute a 1-D transpose convolution given 3-D input x and filters
+    arrays.
 
     Parameters
     ----------
     x
         Input image *[batch_size,w,d_in]* or *[batch_size,d_in,w]*.
     filters
-        Convolution filters *[fw,d_in,d_out]*.
+        Convolution filters *[fw,d_out,d_in]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -1149,6 +1146,9 @@ def conv1d_transpose(
         input's), or ‘VALID’ (padding so that the output's shape is `output_shape`).
     output_shape
         Shape of the output (Default value = None)
+    filter_format
+        Either "channel_first" or "channel_last". "channel_first" corresponds
+        to "IOW",input data formats, while "channel_last" corresponds to "WOI".
     data_format
         The ordering of the dimensions in the input, one of "NWC" or "NCW". "NWC"
         corresponds to input with shape (batch_size, width, channels), while "NCW"
@@ -1175,7 +1175,7 @@ def conv1d_transpose(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 3])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 6])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 6, 3])
     >>> y = ivy.conv1d_transpose(x, filters, 2, 'SAME')
     >>> print(y.shape)
     ivy.Shape(1, 56, 6)
@@ -1188,7 +1188,7 @@ def conv1d_transpose(
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 256, 64])
     >>> y = ivy.zeros((1, 258, 32))
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 64, 32])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 32, 64])
     >>> ivy.conv1d_transpose(x, filters, 1, 'VALID', out=y)
     >>> print(y.shape)
     ivy.Shape(1, 258, 32)
@@ -1196,9 +1196,9 @@ def conv1d_transpose(
     With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array(
-    ...         ivy.random_normal(mean=0, std=1, shape=[1,256,128]))
+    ...         ivy.random_normal(mean=0, std=1, shape=[1, 256, 128]))
     >>> filters = ivy.native_array(
-    ...         ivy.random_normal(mean=0, std=1, shape=[3, 128, 32]))
+    ...         ivy.random_normal(mean=0, std=1, shape=[3, 32, 128]))
     >>> y = ivy.conv1d_transpose(x, filters, 2, 'SAME')
     >>> print(y.shape)
     ivy.Shape(1, 512, 32)
@@ -1251,6 +1251,7 @@ def conv1d_transpose(
         strides,
         padding,
         output_shape=output_shape,
+        filter_format=filter_format,
         data_format=data_format,
         dilations=dilations,
         bias=bias,
@@ -1279,8 +1280,7 @@ def conv2d(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 2-D convolution given 4-D input x and filters arrays.
+    """Compute a 2-D convolution given 4-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1414,20 +1414,21 @@ def conv2d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NHWC",
     dilations: Union[int, Tuple[int, int]] = 1,
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 2-D transpose convolution given 4-D input x and filters arrays.
+    """Compute a 2-D transpose convolution given 4-D input x and filters
+    arrays.
 
     Parameters
     ----------
     x
         Input image *[batch_size,h,w,d_in]* or *[batch_size,d_in,h,w]*.
     filters
-        Convolution filters *[fh,fw,d_in,d_out]*.
+        Convolution filters *[fh,fw,d_out,d_in]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -1440,8 +1441,8 @@ def conv2d_transpose(
         corresponds to inputs with shape (batch_size, height, width, channels), while
         "NCHW" corresponds to input with shape (batch_size, channels, height, width).
     filter_format
-        Either "channel_first" or "channel_last". "channel_first" corresponds to
-        "OIDHW" input data formats, while "channel_last" corresponds to "DHWIO" .
+        Either "channel_first" or "channel_last". "channel_first" corresponds
+        to "IOHW",input data formats, while "channel_last" corresponds to "HWOI".
     x_dilations
         The dilation factor for each dimension of input. (Default value = 1)
     dilations
@@ -1465,7 +1466,7 @@ def conv2d_transpose(
     --------
     With :class:`ivy.Array` input:
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 6, 3])
     >>> y = ivy.conv2d_transpose(x,filters,2,'SAME')
     >>> print(y.shape)
     ivy.Shape(1, 56, 56, 6)
@@ -1478,7 +1479,7 @@ def conv2d_transpose(
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 256, 256, 64])
     >>> y = ivy.zeros((1, 258, 258, 32))
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 64, 32])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 32, 64])
     >>> ivy.conv2d_transpose(x,filters,[1, 1, 1],'VALID',out=y)
     >>> print(y.shape)
     ivy.Shape(1, 258, 258, 32)
@@ -1529,6 +1530,7 @@ def conv2d_transpose(
         strides,
         padding,
         output_shape=output_shape,
+        filter_format=filter_format,
         data_format=data_format,
         dilations=dilations,
         bias=bias,
@@ -1555,8 +1557,8 @@ def depthwise_conv2d(
     dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 2-D depthwise convolution given 4-D input ``x`` and filters arrays.
+    """Compute a 2-D depthwise convolution given 4-D input ``x`` and filters
+    arrays.
 
     Parameters
     ----------
@@ -1697,8 +1699,7 @@ def conv3d(
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 3-D convolution given 5-D input x and filters arrays.
+    """Compute a 3-D convolution given 5-D input x and filters arrays.
 
     Parameters
     ----------
@@ -1813,20 +1814,21 @@ def conv3d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int, int, int]] = 1,
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 3-D transpose convolution given 5-D input x and filters arrays.
+    """Compute a 3-D transpose convolution given 5-D input x and filters
+    arrays.
 
     Parameters
     ----------
     x
         Input volume *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.
     filters
-        Convolution filters *[fd,fh,fw,d_in,d_out]*.
+        Convolution filters *[fd,fh,fw,d_out,d_in]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -1834,6 +1836,9 @@ def conv3d_transpose(
         input's), or ‘VALID’ (padding so that the output's shape is `output_shape`).
     output_shape
         Shape of the output (Default value = None)
+    filter_format
+        Either "channel_first" or "channel_last". "channel_first" corresponds
+        to "IODHW",input data formats, while "channel_last" corresponds to "DHWOI".
     data_format
         The ordering of the dimensions in the input, one of "NDHWC" or "NCDHW". "NDHWC"
         corresponds to inputs with shape (batch_size, depth, height, width, channels),
@@ -1857,13 +1862,13 @@ def conv3d_transpose(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6, 3])
     >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'SAME')
     >>> print(y.shape)
     ivy.Shape(1, 6, 56, 56, 6)
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 64, 64, 3])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6, 3])
     >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'VALID', dilations=[1, 1, 1])
     >>> print(y.shape)
     ivy.Shape(1, 7, 129, 129, 6)
@@ -1927,6 +1932,7 @@ def conv3d_transpose(
         strides,
         padding,
         output_shape=output_shape,
+        filter_format=filter_format,
         data_format=data_format,
         dilations=dilations,
         bias=bias,
@@ -1958,9 +1964,8 @@ def conv_general_dilated(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 1-D, 2-D, and 3-D convolution given 3-D, 4-D and 5-D input x respectively
-    and filters arrays.
+    """Compute a 1-D, 2-D, and 3-D convolution given 3-D, 4-D and 5-D input x
+    respectively and filters arrays.
 
     Parameters
     ----------
@@ -2036,22 +2041,22 @@ def conv_general_transpose(
     *,
     dims: int = 2,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "channel_last",
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     feature_group_count: int = 1,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 1-D, 2-D, and 3-D transpose convolution given 3-D, 4-D and 5-D input x
-    respectively and filters arrays.
+    """Compute a 1-D, 2-D, and 3-D transpose convolution given 3-D, 4-D and 5-D
+    input x respectively and filters arrays.
 
     Parameters
     ----------
     x
         Input image *[batch_size,d,h,w,d_in]* or *[batch_size,d_in,d,h,w]*.
     filters
-        Convolution filters *[fd,fh,fw,d_in,d_out]*.
+        Convolution filters *[fd,fh,fw,d_out,d_in]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
@@ -2061,6 +2066,9 @@ def conv_general_transpose(
         Either 1, 2, or 3 corresponding to 1-D, 2-D, and 3-D convolution.
     output_shape
         Shape of the output.
+    filter_format
+        Either "channel_first" or "channel_last". "channel_first" corresponds
+        to "IODHW",input data formats, while "channel_last" corresponds to "DHWOI".
     data_format
         Either "channel_first" or "channel_last". "channel_first" corresponds to "NCW",
         "NCHW", "NCDHW" input data formatS for 1-D, 2-D, 3-D convolution respectively,
@@ -2084,12 +2092,12 @@ def conv_general_transpose(
     --------
     With :class:`ivy.Array` input:
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6, 3])
     >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'SAME')
     >>> print(y.shape)
     ivy.Shape(1, 6, 56, 56, 6)
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 64, 64, 3])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6, 3])
     >>> y = ivy.conv3d_transpose(x, filters, [2, 2, 2], 'VALID', dilations=[1, 1, 1])
     >>> print(y.shape)
     ivy.Shape(1, 7, 129, 129, 6)
@@ -2149,6 +2157,7 @@ def conv_general_transpose(
         padding,
         dims=dims,
         output_shape=output_shape,
+        filter_format=filter_format,
         data_format=data_format,
         dilations=dilations,
         feature_group_count=feature_group_count,
@@ -2180,9 +2189,8 @@ def conv(
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Compute a 1-D, 2-D, and 3-D transpose or dilated convolution given 3-D, 4-D and 5-D
-    input x respectively and filters arrays.
+    """Compute a 1-D, 2-D, and 3-D transpose or dilated convolution given 3-D,
+    4-D and 5-D input x respectively and filters arrays.
 
     Parameters
     ----------
@@ -2278,14 +2286,16 @@ def lstm_update(
     *,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     recurrent_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Perform long-short term memory update by unrolling time dimension of input array.
+    time_major: bool = False,
+) -> Tuple[ivy.Array, Tuple[ivy.Array, ivy.Array]]:
+    """Perform long-short term memory update by unrolling time dimension of
+    input array.
 
     Parameters
     ----------
     x
-        input tensor of LSTM layer *[batch_shape, t, in]*.
+        input tensor of LSTM layer *[batch_shape, t, in]* if time_major=False,
+        else *[t, batch_shape, in]*.
     init_h
         initial state tensor for the cell output *[batch_shape, out]*.
     init_c
@@ -2298,13 +2308,19 @@ def lstm_update(
         bias for cell kernel *[4 x out]*. (Default value = None)
     recurrent_bias
         bias for cell recurrent kernel *[4 x out]*. (Default value = None)
+    time_major
+        whether or not the input tensor `x` has the time dimension before batch dim.
 
     Returns
     -------
     ret
-        hidden state for all timesteps *[batch_shape,t,out]* and cell state for last
-        timestep *[batch_shape,out]*
+        hidden state for all timesteps of shape *[batch_shape,t,out]* if time_major
+        is False, else *[t, batch_shape, out]*, and a tuple containing the final cell
+        states, both of shape *[batch_shape,out]*.
     """
+    # ToDo: test_lstm_update needs to be fixed
+    if time_major:
+        x = ivy.swapaxes(x, 0, 1)
     # get shapes
     x_shape = list(x.shape)
     batch_shape = x_shape[:-2]
@@ -2356,7 +2372,195 @@ def lstm_update(
 
         hts_list.append(ivy.expand_dims(ht, axis=-2))
 
-    return ivy.concat(hts_list, axis=-2), ct
+    ret = ivy.concat(hts_list, axis=-2)
+    if time_major:
+        ret = ivy.swapaxes(ret, 0, 1)
+
+    return ret, (ht, ct)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def lstm(
+    input: ivy.Array,
+    initial_states: Tuple[ivy.Array],
+    all_weights: Tuple[ivy.Array],
+    num_layers: int,
+    dropout: float,
+    train: bool,
+    bidirectional: bool,
+    batch_first: bool = False,
+    batch_sizes: Sequence = None,
+    weights_transposed: bool = False,
+    has_ih_bias: bool = True,
+    has_hh_bias: bool = True,
+):
+    """Applies a multi-layer long-short term memory to an input sequence.
+
+    Parameters
+    ----------
+    input
+        input array of shape (seq_len, batch, input_size) when `batch_first` is False
+        or (batch, seq_len, input_size) when `batch_first` is True
+    initial_states
+        tuple of two arrays (h_0, c_0) where h_0 is the initial hidden state of shape
+        (num_layers * num_directions, batch, hidden_size) and c_0 is the initial cell
+        state of shape (num_layers * num_directions, batch, hidden_size)
+
+        (num_directions being 2 when `bidirectional`, otherwise 1)
+    all_weights
+        tuple of arrays representing the learnable weights of the lstm, with each
+        layer having up to four arrays (w_ih, w_hh, b_ih, b_hh) representing the weights
+        and biases (if biases are being used)
+
+        w_ih: weight of shape (4 * hidden_size, input_size)
+        w_hh: weight of shape (4 * hidden_size, hidden_size)
+        b_ih: bias of shape (4 * hidden_size,)
+        b_hh: bias of shape (4 * hidden_size,)
+    num_layers
+        number of layers for the lstm to use
+    dropout
+        dropout rate
+    train
+        whether to run the lstm in train mode or eval mode
+    bidirectional
+        whether the lstm is bidirectional or unidirectional
+    batch_first
+        defines the data format of the input and output arrays
+    batch_sizes
+        specifies the batch size at each timestep, when the input is a packed sequence
+    weights_transposed
+        whether the weights are transposed compared to the format
+        in which they are expected (input_size, 4 * hidden_size)
+        rather than (4 * hidden_size, input_size)
+    has_ih_bias
+        whether the `all_weights` argument includes a input-hidden bias
+    has_hh_bias
+        whether the `all_weights` argument includes a hidden-hidden bias
+
+    Returns
+    -------
+    output
+        output array of shape (seq_len, batch, num_directions * hidden_size) or
+        (batch, seq_len, num_directions * hidden_size), depending on `batch_first`
+    h_outs
+        final hidden state of shape (num_layers * num_directions, batch, hidden_size)
+    c_outs
+        final cell state of shape (num_layers * num_directions, batch, hidden_size)
+    """
+    # TODO: the test for this function needs to be fixed -
+    # see ivy_tests/test_ivy/test_functional/test_nn/test_layers.py::test_lstm
+
+    if weights_transposed:
+        # transpose the weights if they are in the wrong format
+        all_weights = [
+            ivy.swapaxes(weight, 1, 0) if weight.dim() == 2 else weight
+            for weight in all_weights
+        ]
+    else:
+        all_weights = list(all_weights)
+
+    if (has_ih_bias and not has_hh_bias) or (has_hh_bias and not has_ih_bias):
+        # insert zero biases into the weights where one set of biases is not used
+        shapes = []
+        for i in range(2, len(all_weights), 3):
+            shapes.append(tuple(all_weights[i].shape))
+        for i, shape in enumerate(shapes):
+            idx = (i + 1) * 4 - (1 if has_ih_bias else 2)
+            all_weights.insert(idx, ivy.zeros(shape))
+        has_ih_bias = True
+        has_hh_bias = True
+
+    weights_per_layer = 2
+    if has_ih_bias:
+        weights_per_layer += 1
+    if has_hh_bias:
+        weights_per_layer += 1
+
+    assert len(all_weights) == num_layers * weights_per_layer * (1 + bidirectional)
+    layer_weights = [
+        all_weights[i : i + weights_per_layer]
+        for i in range(0, len(all_weights), weights_per_layer)
+    ]
+
+    if batch_sizes is not None:
+        input, batch_sizes = _pad_packed_sequence(input, batch_sizes)
+
+    if batch_first:
+        input = ivy.swapaxes(input, 0, 1)
+
+    if dropout and train:
+        raise ivy.utils.exceptions.IvyNotImplementedException()
+
+    unidirectional = not bidirectional
+
+    h0, c0 = initial_states
+    h_outs, c_outs = [], []
+
+    output = input
+    for i in range(num_layers):
+        if unidirectional:
+            if weights_per_layer == 4:
+                weight_ih, weight_hh, (bias_i, bias_h) = _transform_weights(
+                    layer_weights, i
+                )
+            else:
+                weight_ih, weight_hh = _transform_weights_no_bias(layer_weights, i)
+                bias_i = bias_h = None
+
+            state_indices = i, i + 1
+        else:
+            if weights_per_layer == 4:
+                weight_ih_f, weight_hh_f, (bias_i_f, bias_h_f) = _transform_weights(
+                    layer_weights, 2 * i
+                )
+                weight_ih_b, weight_hh_b, (bias_i_b, bias_h_b) = _transform_weights(
+                    layer_weights, 2 * i + 1
+                )
+            else:
+                weight_ih_f, weight_hh_f = _transform_weights_no_bias(
+                    layer_weights, 2 * i
+                )
+                weight_ih_b, weight_hh_b = _transform_weights_no_bias(
+                    layer_weights, 2 * i + 1
+                )
+                bias_i_f = bias_h_f = bias_i_b = bias_h_b = None
+
+            weight_ih = weight_ih_f, weight_ih_b
+            weight_hh = weight_hh_f, weight_hh_b
+            bias_i = bias_i_f, bias_i_b
+            bias_h = bias_h_f, bias_h_b
+
+            state_indices = 2 * i, 2 * i + 2
+
+        output, (h_out, c_out) = _lstm_layer(
+            output,
+            (
+                _retrieve_state(h0, *state_indices, num_layers),
+                _retrieve_state(c0, *state_indices, num_layers),
+            ),
+            (weight_ih, weight_hh),
+            (bias_i, bias_h),
+            bidirectional,
+            batch_first=False,
+            batch_sizes=batch_sizes,
+        )
+        h_outs.append(h_out)
+        c_outs.append(c_out)
+
+    if batch_first:
+        output = ivy.swapaxes(output, 0, 1)
+
+    h_outs = h_out if num_layers == 1 else ivy.concat(h_outs, axis=0)
+    c_outs = c_out if num_layers == 1 else ivy.concat(c_outs, axis=0)
+
+    if batch_sizes is not None:
+        output = _pack_padded_sequence(output, batch_sizes)[0]
+
+    return output[:, -1], output, (h_outs, c_outs)
 
 
 # Helpers #
@@ -2439,9 +2643,6 @@ def _validate_max_pool_params(
             kernel = [1, 1, *kernel]
         else:
             kernel = [1, *kernel, 1]
-    new_kernel = tuple(
-        [dilation[i] * (kernel[i] - 1) + 1 for i in range(1, len(kernel))]
-    )
     new_kernel = tuple(dilation[i] * (kernel[i] - 1) + 1 for i in range(1, len(kernel)))
     if isinstance(padding, list) and len(padding) == len(new_kernel):
         ivy.utils.assertions.check_kernel_padding_size(new_kernel, padding)
@@ -2513,8 +2714,7 @@ def _get_x_data_format(dims: int = 2, data_format: str = "channel_first"):
 
 
 def _get_num_padded_values(i, p, n, k, s):
-    """
-    Get number of padded values in a specific window.
+    """Get number of padded values in a specific window.
 
     Parameters
     ----------
@@ -2605,6 +2805,139 @@ def _convert_boxes_to_roi_format(boxes):
     ids = ivy.concat(temp, axis=0)
     rois = ivy.concat([ids, concat_boxes], axis=1)
     return rois
+
+
+def _lstm_cell(
+    x,
+    init_h,
+    init_c,
+    kernel,
+    recurrent_kernel,
+    bias,
+    recurrent_bias,
+    batch_first,
+    batch_sizes=None,
+):
+    init_h = ivy.squeeze(init_h, axis=0)
+    init_c = ivy.squeeze(init_c, axis=0)
+    out, states = ivy.lstm_update(
+        x,
+        init_h,
+        init_c,
+        kernel,
+        recurrent_kernel,
+        bias=bias,
+        recurrent_bias=recurrent_bias,
+        time_major=not batch_first,
+    )
+    h, c = states
+    h = ivy.expand_dims(h) if len(h.shape) == 2 else h
+    c = ivy.expand_dims(c) if len(c.shape) == 2 else c
+    return out, (h, c)
+
+
+def _lstm_layer(
+    x, hidden, weights, biases, bidirectional, batch_first, batch_sizes=None
+):
+    if not bidirectional:
+        result, (h, c) = _lstm_cell(
+            x,
+            *hidden,
+            *weights,
+            *biases,
+            batch_first=batch_first,
+            batch_sizes=batch_sizes,
+        )
+    else:
+        result_fw, (h_fw, c_fw) = _lstm_cell(
+            x,
+            hidden[0][:1],
+            hidden[1][:1],
+            weights[0][0],
+            weights[1][0],
+            biases[0][0],
+            biases[1][0],
+            batch_first=batch_first,
+            batch_sizes=batch_sizes,
+        )
+        x_reversed = ivy.flip(x, axis=0)
+        result_bw, (h_bw, c_bw) = _lstm_cell(
+            x_reversed,
+            hidden[0][1:],
+            hidden[1][1:],
+            weights[0][1],
+            weights[1][1],
+            biases[0][1],
+            biases[1][1],
+            batch_first=batch_first,
+            batch_sizes=batch_sizes,
+        )
+        result_bw = ivy.flip(result_bw, axis=0)
+        result = ivy.concat([result_fw, result_bw], axis=len(result_fw.shape) - 1)
+        c = ivy.concat([c_fw, c_bw], axis=0)
+        h = ivy.concat([h_fw, h_bw], axis=0)
+    return result, (h, c)
+
+
+def _pack_padded_sequence(input, lengths):
+    input = ivy.swapaxes(input, 0, 1)
+    data = []
+    batch_sizes = []
+    for i in range(int(max(lengths))):
+        valid_data_mask = ivy.array(lengths) > i
+        data.append(input[valid_data_mask, i])
+        batch_sizes.append(int(sum(valid_data_mask)))
+    data = ivy.concat(data)
+    batch_sizes = ivy.array(batch_sizes, dtype=ivy.int64)
+    return data, batch_sizes
+
+
+def _pad_packed_sequence(data, batch_sizes):
+    padded_data = ivy.full(
+        (len(batch_sizes), int(max(batch_sizes)), *data.shape[1:]),
+        0,
+        dtype=data.dtype,
+        device=data.device,
+    )
+    data_offset = 0
+    for i, batch_size in enumerate(batch_sizes):
+        batch_size = int(batch_size)
+        padded_data[i, :batch_size] = data[data_offset : data_offset + batch_size]
+        data_offset += batch_size
+    lengths = ivy.sum(
+        ivy.arange(1, int(max(batch_sizes)) + 1)[:, ivy.newaxis] <= batch_sizes,
+        axis=1,
+        dtype=ivy.int64,
+    )
+    return padded_data, lengths
+
+
+def _retrieve_state(x, start, end, num_layers):
+    return x if num_layers == 1 else _slice_along_axis(x, start=start, stop=end, axis=0)
+
+
+def _transform_weights(layer_weights, layer_index):
+    weights = layer_weights[layer_index]
+    weight_ih, weight_hh, bias_ih, bias_hh = weights
+    return (
+        ivy.swapaxes(weight_ih, 0, 1),
+        ivy.swapaxes(weight_hh, 0, 1),
+        (bias_ih, bias_hh),
+    )
+
+
+def _transform_weights_no_bias(layer_weights, layer_index):
+    weights = layer_weights[layer_index]
+    weight_ih, weight_hh = weights
+    return ivy.swapaxes(weight_ih, 0, 1), ivy.swapaxes(weight_hh, 0, 1)
+
+
+def _slice_along_axis(x, start=0, stop=None, stride=1, axis=0):
+    if axis >= 0:
+        slices = [slice(None)] * axis + [slice(start, stop, stride)]
+    else:
+        slices = [Ellipsis, slice(start, stop, stride)] + [slice(None)] * (-1 - axis)
+    return x[tuple(slices)]
 
 
 @handle_exceptions

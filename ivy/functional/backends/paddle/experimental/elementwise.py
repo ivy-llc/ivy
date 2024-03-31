@@ -20,7 +20,7 @@ from .. import backend_version
 
 @with_supported_dtypes(
     {
-        "2.5.2 and below": (
+        "2.6.0 and below": (
             "float32",
             "float64",
             "int32",
@@ -42,7 +42,7 @@ def amax(
 
 @with_supported_dtypes(
     {
-        "2.5.2 and below": (
+        "2.6.0 and below": (
             "float32",
             "float64",
             "int32",
@@ -63,7 +63,7 @@ def amin(
 
 
 @with_supported_dtypes(
-    {"2.5.2 and below": ("float32", "float64")},
+    {"2.6.0 and below": ("float32", "float64")},
     backend_version,
 )
 def lgamma(
@@ -73,7 +73,7 @@ def lgamma(
 
 
 @with_supported_dtypes(
-    {"2.5.2 and below": ("float64", "float32", "int32", "int64")},
+    {"2.6.0 and below": ("float64", "float32", "int32", "int64")},
     backend_version,
 )
 def fmax(
@@ -89,7 +89,7 @@ def fmax(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.6.0 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
 )
 def sinc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     y = ivy.pi * paddle.where(x == 0, paddle.to_tensor(1.0e-20, dtype=x.dtype), x)
@@ -137,6 +137,9 @@ def ldexp(
         return ivy.astype(ret, out_dtype, copy=False)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
+)
 def copysign(
     x1: Union[paddle.Tensor, Number],
     x2: Union[paddle.Tensor, Number],
@@ -153,7 +156,7 @@ def copysign(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("uint8", "int8", "int16", "float16")}},
+    {"2.6.0 and below": {"cpu": ("uint8", "int8", "int16", "float16")}},
     backend_version,
 )
 def nansum(
@@ -162,7 +165,7 @@ def nansum(
     *,
     axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[paddle.dtype] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     result = paddle.nansum(x, axis=axis, dtype=dtype, keepdim=keepdims)
@@ -172,23 +175,23 @@ def nansum(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.6.0 and below": {"cpu": ("float16",)}}, backend_version
 )
 def isclose(
     a: paddle.Tensor,
     b: paddle.Tensor,
     /,
     *,
-    rtol: Optional[float] = 1e-05,
-    atol: Optional[float] = 1e-08,
-    equal_nan: Optional[bool] = False,
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
 @with_unsupported_dtypes(
-    {"2.5.2 and below": ("float16", "int16", "int8", "uint8")}, backend_version
+    {"2.6.0 and below": ("float16", "int16", "int8", "uint8")}, backend_version
 )
 def diff(
     x: Union[paddle.Tensor, list, tuple],
@@ -214,6 +217,9 @@ def diff(
     )
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("float16",)}}, backend_version
+)
 def signbit(
     x: Union[paddle.Tensor, float, int, list, tuple],
     /,
@@ -237,7 +243,7 @@ def hypot(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -258,14 +264,17 @@ def allclose(
     x2: paddle.Tensor,
     /,
     *,
-    rtol: Optional[float] = 1e-05,
-    atol: Optional[float] = 1e-08,
-    equal_nan: Optional[bool] = False,
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> bool:
     return paddle.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan).squeeze(0)
 
 
+@with_supported_dtypes(
+    {"2.6.0 and below": ("int32", "int64", "float64", "float32")}, backend_version
+)
 def fix(
     x: paddle.Tensor,
     /,
@@ -277,7 +286,7 @@ def fix(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.2 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.6.0 and below": {"cpu": ("float16",)}}, backend_version
 )
 def nextafter(
     x1: paddle.Tensor,
@@ -318,7 +327,7 @@ _BERNOULLI_COEFS = [
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -348,7 +357,7 @@ def zeta(
             if q.dtype == paddle.float32
             else paddle.to_tensor(8.0, dtype="float64")
         )
-        assert M <= len(_BERNOULLI_COEFS)
+        assert len(_BERNOULLI_COEFS) >= M
         k = paddle.unsqueeze(ivy.arange(N, dtype=q.dtype), tuple(range(q.ndim)))
         S = paddle.sum((a_ + k) ** -s_, -1)
         Q = ivy.divide((q + N) ** (1 - x), x - 1)
@@ -385,7 +394,7 @@ def _normalize_axis_tuple(axis: Union[int, list, tuple], ndim: int) -> Tuple[int
             axis = [operator.index(axis)]
         except TypeError:
             pass
-    axis = tuple([_normalize_axis_index(ax, ndim) for ax in axis])
+    axis = tuple(_normalize_axis_index(ax, ndim) for ax in axis)
     if len(set(axis)) != len(axis):
         raise ValueError("repeated axis")
     return axis
@@ -396,16 +405,16 @@ def _np_ndim(x):
 
 
 @with_supported_dtypes(
-    {"2.5.2 and below": ("float32", "float64")},
+    {"2.6.0 and below": ("float32", "float64")},
     backend_version,
 )
 def gradient(
     x: paddle.Tensor,
     /,
     *,
-    spacing: Optional[Union[int, list, tuple]] = 1,
+    spacing: Union[int, list, tuple] = 1,
     axis: Optional[Union[int, list, tuple]] = None,
-    edge_order: Optional[int] = 1,
+    edge_order: int = 1,
 ) -> Union[paddle.Tensor, List[paddle.Tensor]]:
     """Https://github.com/numpy/numpy/blob/v1.24.3/numpy/lib/
     function_base.py#L969-L1312."""
@@ -644,7 +653,7 @@ def count_nonzero(
     /,
     *,
     axis: Optional[Union[int, list, tuple]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
@@ -654,7 +663,7 @@ def count_nonzero(
 
 @with_supported_dtypes(
     {
-        "2.5.2 and below": (
+        "2.6.0 and below": (
             "complex64",
             "complex128",
             "float32",
@@ -669,11 +678,22 @@ def conj(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     return paddle.conj(x)
 
 
+@with_supported_dtypes(
+    {
+        "2.5.0 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    backend_version,
+)
 def modf(
     x: paddle.Tensor, /, *, out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
     with ivy.ArrayMode(False):
-        return paddle.modf(x, out=out)
+        integer_part = paddle.floor(x)
+        fractional_part = x - integer_part
+        return fractional_part, integer_part
 
 
 @with_supported_dtypes(
@@ -756,13 +776,14 @@ def _EvaluatePolynomial(x, coefficients):
 
 
 def _is_scalar(x):
-    """
-    Determines if the given tensor is a scalar.
+    """Determines if the given tensor is a scalar.
 
-    Args:
+    Args
+    ----
     - x (paddle.Tensor): Input tensor.
 
-    Returns:
+    Return
+    ------
     - bool: True if the tensor is a scalar, False otherwise.
     """
     return x.size == 1 and x.dim() == 0 and tuple(x.shape) == ()
@@ -771,7 +792,7 @@ def _is_scalar(x):
 # TODO: Repalce once native function becomes available.
 # Compute an approximation of the error function complement (1 - erf(x)).
 @with_supported_dtypes(
-    {"2.5.2 and below": ("float64", "float32")},
+    {"2.6.0 and below": ("float64", "float32")},
     backend_version,
 )
 def erfc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -810,3 +831,13 @@ def erfc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
         result = paddle.squeeze(result, axis=-1)
 
     return result
+
+
+@with_supported_dtypes(
+    {"2.6.0 and below": ("float32", "float64")},
+    backend_version,
+)
+def erfinv(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    return paddle.erfinv(x)

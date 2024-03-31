@@ -1,4 +1,5 @@
-"""Collection of Jax activation functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Jax activation functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 
@@ -36,7 +37,7 @@ def leaky_relu(
 def relu(
     x: JaxArray, /, *, complex_mode="jax", out: Optional[JaxArray] = None
 ) -> JaxArray:
-    return jnp.maximum(x, 0)
+    return jax.nn.relu(x)
 
 
 def sigmoid(

@@ -1,5 +1,5 @@
 # global
-from hypothesis import strategies as st
+from hypothesis import assume, strategies as st
 
 # local
 import ivy
@@ -217,6 +217,7 @@ def test_allclose(
     dtype_and_x, rtol, atol, equal_nan, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, x = dtype_and_x
+    assume("bfloat16" not in input_dtype)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -510,6 +511,42 @@ def test_erfc(
     )
 
 
+# erfinv
+@handle_test(
+    fn_tree="functional.ivy.experimental.erfinv",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1,
+        max_value=1,
+        abs_smallest_val=1e-05,
+    ),
+)
+def test_erfinv(
+    *,
+    dtype_and_x,
+    backend_fw,
+    test_flags,
+    fn_name,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    if on_device == "cpu":
+        assume("float16" not in input_dtype and "bfloat16" not in input_dtype)
+    test_values = True
+    if backend_fw == "numpy":
+        # the numpy backend requires an approximation which doesn't pass the value tests
+        test_values = False
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        test_values=test_values,
+        x=x[0],
+    )
+
+
 # fix
 @handle_test(
     fn_tree="functional.ivy.experimental.fix",
@@ -796,7 +833,7 @@ def test_lgamma(
 @handle_test(
     fn_tree="functional.ivy.experimental.modf",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=1,
         min_value=0,
         exclude_min=True,

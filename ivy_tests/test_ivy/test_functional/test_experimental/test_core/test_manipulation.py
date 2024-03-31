@@ -6,6 +6,7 @@ import numpy as np
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import sizes_
 from ivy_tests.test_ivy.helpers import handle_test, create_concatenable_arrays_dtypes
 from ivy.functional.ivy.experimental.manipulation import _check_bounds
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
@@ -47,7 +48,7 @@ def _associative_scan_helper(draw):
     shared_size = draw(
         st.shared(helpers.ints(min_value=1, max_value=5), key="shared_size")
     )
-    shape = tuple([random_size, shared_size, shared_size])
+    shape = (random_size, shared_size, shared_size)
     matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
@@ -194,7 +195,7 @@ def _matricize_data(draw):
         )
     )
     ndims = len(shape)
-    dims = set([*range(ndims)])
+    dims = {*range(ndims)}
     row_modes = set(
         draw(st.lists(helpers.ints(min_value=0, max_value=ndims - 1), min_size=1))
     )
@@ -1467,6 +1468,45 @@ def test_trim_zeros(
         fw=backend_fw,
         fn_name=fn_name,
         a=a[0],
+    )
+
+
+# unflatten
+@handle_test(
+    fn_tree="functional.ivy.experimental.unflatten",
+    shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        shape_key="shape",
+    ),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        force_int=True,
+    ),
+)
+def test_unflatten(
+    *,
+    dtype_and_values,
+    on_device,
+    fn_name,
+    test_flags,
+    backend_fw,
+    shape,
+    axis,
+):
+    shape_ = sizes_(shape, axis)
+    dtype, x = dtype_and_values
+    helpers.test_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        test_values=False,
+        x=x[0],
+        shape=shape_,
+        dim=axis,
     )
 
 

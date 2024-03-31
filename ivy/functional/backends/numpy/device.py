@@ -1,8 +1,10 @@
-"""Collection of Numpy general functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Numpy general functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 import os
 import time
+import logging
 import numpy as np
 from typing import Union, Optional, Any
 
@@ -19,20 +21,18 @@ def dev(x: np.ndarray, /, *, as_native: bool = False) -> Union[ivy.Device, str]:
 
 def as_ivy_dev(device: str, /):
     if "gpu" in device:
-        raise ivy.utils.exceptions.IvyException(
+        logging.warning(
             "Native Numpy does not support GPU placement, consider using Jax instead"
         )
-    elif "cpu" in device:
-        return ivy.Device("cpu")
+    return ivy.Device("cpu")
 
 
 def as_native_dev(device: str, /):
     if "gpu" in device:
-        raise ivy.utils.exceptions.IvyException(
+        logging.warning(
             "Native Numpy does not support GPU placement, consider using Jax instead"
         )
-    elif "cpu" in device:
-        return "cpu"
+    return "cpu"
 
 
 def clear_cached_mem_on_dev(device: str, /):

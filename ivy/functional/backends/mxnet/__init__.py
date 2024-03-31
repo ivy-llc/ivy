@@ -201,3 +201,8 @@ from . import control_flow_ops
 from .control_flow_ops import *
 from . import sub_backends
 from .sub_backends import *
+from . import module
+from .module import *
+
+
+NativeModule = mx.gluon.nn.Block

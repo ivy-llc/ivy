@@ -515,8 +515,18 @@ def test_torch_hardtanh_(
     fn_tree="torch.nn.functional.leaky_relu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        large_abs_safety_factor=25,
+        small_abs_safety_factor=25,
+        safety_factor_scale="log",
     ),
-    alpha=st.floats(min_value=0.0, max_value=1.0, exclude_min=True),
+    alpha=helpers.floats(
+        min_value=0,
+        max_value=1,
+        large_abs_safety_factor=25,
+        small_abs_safety_factor=25,
+        safety_factor_scale="log",
+    ),
     test_inplace=st.booleans(),
     test_with_out=st.just(False),
 )
@@ -583,11 +593,13 @@ def test_torch_leaky_relu_(
 # local_response_norm
 @handle_frontend_test(
     fn_tree="torch.nn.functional.local_response_norm",
-    dtype_x_and_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=3,
-        force_int_axis=True,
-        valid_axis=True,
+        max_num_dims=4,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     size=helpers.ints(min_value=3, max_value=10),
     alpha=helpers.floats(min_value=1e-4, max_value=1e-3),
@@ -596,7 +608,7 @@ def test_torch_leaky_relu_(
 )
 def test_torch_local_response_norm(
     *,
-    dtype_x_and_axis,
+    dtype_and_x,
     size,
     alpha,
     beta,
@@ -607,7 +619,7 @@ def test_torch_local_response_norm(
     test_flags,
     backend_fw,
 ):
-    dtype, x, axis = dtype_x_and_axis
+    dtype, x = dtype_and_x
     _filter_dtypes(dtype)
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -647,7 +659,6 @@ def test_torch_log_softmax(
     backend_fw,
 ):
     input_dtype, x, axis = dtype_x_and_axis
-    ivy.set_backend(backend_fw)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -658,9 +669,8 @@ def test_torch_log_softmax(
         input=x[0],
         dim=axis,
         _stacklevel=3,
-        dtype=ivy.as_ivy_dtype(dtypes[0]),
+        dtype=dtypes[0],
     )
-    ivy.previous_backend()
 
 
 # logsigmoid

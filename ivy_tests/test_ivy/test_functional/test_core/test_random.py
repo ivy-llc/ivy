@@ -146,8 +146,10 @@ def test_randint(*, dtype_low_high, seed, test_flags, backend_fw, fn_name, on_de
         ret=ret_gt, backend=test_flags.ground_truth_backend
     )
     for u, v in zip(ret, ret_gt):
-        assert ivy.all(u >= low) and ivy.all(u < high)
-        assert ivy.all(v >= low) and ivy.all(v < high)
+        assert ivy.all(u >= low)
+        assert ivy.all(u < high)
+        assert ivy.all(v >= low)
+        assert ivy.all(v < high)
 
 
 # random_normal

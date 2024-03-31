@@ -109,7 +109,7 @@ def pytest_configure(config):
     max_examples = getopt("--num-examples")
     deadline = getopt("--deadline")
     if (
-        os.getenv("REDIS_URL", default=False)
+        os.getenv("REDIS_URL", default=None)
         and os.environ["REDIS_URL"]
         and is_db_available(
             master=True,
@@ -139,6 +139,8 @@ def pytest_configure(config):
 
     if max_examples:
         profile_settings["max_examples"] = max_examples
+    else:
+        profile_settings["max_examples"] = 10
     if deadline:
         profile_settings["deadline"] = deadline
 

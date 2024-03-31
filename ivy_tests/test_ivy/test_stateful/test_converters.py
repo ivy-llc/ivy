@@ -309,9 +309,6 @@ def test_from_jax_module(bs_ic_oc, from_class_and_args, module_type, backend_fw)
         pytest.skip()
 
     batch_shape, input_channels, output_channels = bs_ic_oc
-
-    # using ivy_backend.utils.backend.ContextManager instead of update_backend,
-    # because with_backend doesn't work here
     with ivy.utils.backend.ContextManager(backend_fw) as ivy_backend:
         x = ivy_backend.astype(
             ivy_backend.linspace(
@@ -321,58 +318,50 @@ def test_from_jax_module(bs_ic_oc, from_class_and_args, module_type, backend_fw)
             ),
             "float32",
         )
-        native_module_class = NATIVE_MODULES[ivy_backend.current_backend_str()][
-            module_type
-        ]
-        module_converter = FROM_CONVERTERS[ivy_backend.current_backend_str()][
-            module_type
-        ]
-        module_converter = get_converter(
-            ivy_backend, FROM_CONVERTERS[ivy_backend.current_backend_str()][module_type]
+    native_module_class = NATIVE_MODULES["jax"][module_type]
+    module_converter = FROM_CONVERTERS["jax"][module_type]
+    module_converter = get_converter(ivy, FROM_CONVERTERS["jax"][module_type])
+    if from_class_and_args:
+        ivy_module = module_converter(
+            native_module_class,
+            instance_args=[x],
+            constructor_kwargs={
+                "in_size": input_channels,
+                "out_size": output_channels,
+            },
         )
+    else:
+        if module_type == "haiku":
 
-        if from_class_and_args:
-            ivy_module = module_converter(
-                native_module_class,
-                instance_args=[x],
-                constructor_kwargs={
-                    "in_size": input_channels,
-                    "out_size": output_channels,
-                },
-            )
+            def forward_fn(*a, **kw):
+                model = native_module_class(input_channels, output_channels)
+                return model(x.data)
+
+            native_module = hk.transform(forward_fn)
         else:
-            if module_type == "haiku":
+            native_module = native_module_class(
+                in_size=input_channels, out_size=output_channels
+            )
 
-                def forward_fn(*a, **kw):
-                    model = native_module_class(input_channels, output_channels)
-                    return model(ivy_backend.to_native(x))
+        fw_kwargs = {}
+        if module_type == "haiku":
+            fw_kwargs["params_hk"] = native_module.init(0, x)
+        else:
+            fw_kwargs["params_fx"] = native_module.init(jax.random.PRNGKey(0), x.data)
+        ivy_module = module_converter(native_module, **fw_kwargs)
 
-                native_module = hk.transform(forward_fn)
-            else:
-                native_module = native_module_class(
-                    in_size=input_channels, out_size=output_channels
-                )
+    def loss_fn(v_=None):
+        out = ivy_module(x, v=v_)
+        return ivy_backend.mean(out)
 
-            fw_kwargs = {}
-            if module_type == "haiku":
-                fw_kwargs["params_hk"] = native_module.init(0, x)
-            else:
-                fw_kwargs["params_fx"] = native_module.init(
-                    jax.random.PRNGKey(0), ivy_backend.to_native(x)
-                )
-            ivy_module = module_converter(native_module, **fw_kwargs)
+    # train
+    loss_tm1 = 1e12
+    loss = None
+    grads = None
+    loss_fn()  # for on-call mode
 
-        def loss_fn(v_=None):
-            out = ivy_module(x, v=v_)
-            return ivy_backend.mean(out)
-
-        # train
-        loss_tm1 = 1e12
-        loss = None
-        grads = None
-        loss_fn()  # for on-call mode
-
-        for i in range(10):
+    with ivy.utils.backend.ContextManager(backend_fw) as ivy_backend:
+        for _ in range(10):
             loss, grads = ivy_backend.execute_with_gradients(loss_fn, ivy_module.v)
             ivy_module.v = ivy_backend.gradient_descent_update(
                 ivy_module.v, grads, 1e-3

@@ -32,7 +32,7 @@ def tril_indices(
     k: int = 0,
     /,
     *,
-    device: str = None,
+    device: Optional[str] = None,
 ) -> Tuple[np.ndarray, ...]:
     return tuple(np.asarray(np.tril_indices(n=n_rows, k=k, m=n_cols)))
 
@@ -98,7 +98,7 @@ def unsorted_segment_min(
     elif data.dtype in [np.int32, np.int64, np.int8, np.int16, np.uint8]:
         init_val = np.iinfo(data.dtype).max
     else:
-        raise ValueError("Unsupported data type")
+        raise TypeError("Unsupported data type")
 
     res = np.full((num_segments,) + data.shape[1:], init_val, dtype=data.dtype)
 
@@ -194,9 +194,9 @@ def mel_weight_matrix(
         dtype=np.float32,
     )
     mel_edges = np.stack([mel_edges[i : i + 3] for i in range(num_mel_bins)])
-    lower_edge_mel, center_mel, upper_edge_mel = [
+    lower_edge_mel, center_mel, upper_edge_mel = (
         t.reshape((1, num_mel_bins)) for t in np.split(mel_edges, 3, axis=1)
-    ]
+    )
     lower_slopes = (spec_bin_mels - lower_edge_mel) / (center_mel - lower_edge_mel)
     upper_slopes = (upper_edge_mel - spec_bin_mels) / (upper_edge_mel - center_mel)
     mel_weights = np.maximum(zero, np.minimum(lower_slopes, upper_slopes))

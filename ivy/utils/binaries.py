@@ -1,7 +1,7 @@
 import os
 import logging
 import json
-from pip._vendor.packaging import tags
+from packaging import tags
 from urllib import request
 from tqdm import tqdm
 
@@ -9,8 +9,9 @@ from tqdm import tqdm
 def _get_paths_from_binaries(binaries, root_dir=""):
     """Get all the paths from the binaries.json into a list."""
     paths = []
+    ext = "pyd" if os.name == "nt" else "so"
     if isinstance(binaries, str):
-        return [os.path.join(root_dir, binaries)]
+        return [os.path.join(root_dir, binaries + "." + ext)]
     elif isinstance(binaries, dict):
         for k, v in binaries.items():
             paths += _get_paths_from_binaries(v, os.path.join(root_dir, k))
@@ -65,7 +66,7 @@ def cleanup_and_fetch_binaries(clean=True):
         binaries_dict = json.load(open(binaries_path))
         available_configs = json.load(open(available_configs_path))
         binaries_paths = _get_paths_from_binaries(binaries_dict, folder_path)
-        binaries_exts = set([path.split(".")[-1] for path in binaries_paths])
+        binaries_exts = {path.split(".")[-1] for path in binaries_paths}
 
         # clean up existing binaries
         if clean:
@@ -78,6 +79,7 @@ def cleanup_and_fetch_binaries(clean=True):
 
         print("Downloading new binaries...")
         all_tags = list(tags.sys_tags())
+
         version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
         terminate = False
 
@@ -95,7 +97,8 @@ def cleanup_and_fetch_binaries(clean=True):
                         continue
                     folders = path.split(os.sep)
                     _, file_path = os.sep.join(folders[:-1]), folders[-1]
-                    file_name = f"{file_path[:-3]}_{tag}.so"
+                    ext = "pyd" if os.name == "nt" else "so"
+                    file_name = f"{file_path[:-(len(ext)+1)]}_{tag}.{ext}"
                     search_path = f"{module}/{file_name}"
                     try:
                         response = request.urlopen(

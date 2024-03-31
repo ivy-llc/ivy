@@ -1,5 +1,4 @@
 torch-scatter # torch_scatter requires a prior existing installation of torch, hence 2 optional files
-functorch
 scipy
 dm-haiku  # mod_name=haiku
 flax
@@ -11,3 +10,4 @@ pandas
 pyspark
 autoflake  # for backend generation
 snakeviz  # for profiling
+ml-dtypes==0.2.0

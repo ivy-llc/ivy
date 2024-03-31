@@ -18,15 +18,13 @@ import ivy
 
 def _calculate_same_padding(kernel_size, stride, shape):
     padding = tuple(
-        [
-            max(
-                0,
-                math.ceil(((shape[i] - 1) * stride[i] + kernel_size[i] - shape[i]) / 2),
-            )
-            for i in range(len(kernel_size))
-        ]
+        max(
+            0,
+            math.ceil(((shape[i] - 1) * stride[i] + kernel_size[i] - shape[i]) / 2),
+        )
+        for i in range(len(kernel_size))
     )
-    if all([kernel_size[i] / 2 >= padding[i] for i in range(len(kernel_size))]):
+    if all(kernel_size[i] / 2 >= padding[i] for i in range(len(kernel_size))):
         if _is_same_padding(padding, stride, kernel_size, shape):
             return padding
     return (0, 0)
@@ -34,16 +32,12 @@ def _calculate_same_padding(kernel_size, stride, shape):
 
 def _is_same_padding(padding, stride, kernel_size, input_shape):
     output_shape = tuple(
-        [
-            (input_shape[i] + 2 * padding[i] - kernel_size[i]) // stride[i] + 1
-            for i in range(len(padding))
-        ]
+        (input_shape[i] + 2 * padding[i] - kernel_size[i]) // stride[i] + 1
+        for i in range(len(padding))
     )
     return all(
-        [
-            output_shape[i] == math.ceil(input_shape[i] / stride[i])
-            for i in range(len(padding))
-        ]
+        output_shape[i] == math.ceil(input_shape[i] / stride[i])
+        for i in range(len(padding))
     )
 
 
@@ -359,6 +353,40 @@ def test_mindspore_conv3d(
         dilation=dilations,
         groups=fc,
         pad_mode=pad_mode,
+    )
+
+
+# dropout
+@pytest.mark.skip("Testing pipeline not yet implemented")
+@handle_frontend_test(
+    fn_tree="mindspore.ops.function.nn_func.dropout",
+    d_type_and_x=helpers.dtype_and_values(),
+    p=helpers.floats(min_value=0.0, max_value=1.0),
+    training=st.booleans(),
+    seed=helpers.ints(min_value=0, max_value=100),
+)
+def test_mindspore_dropout(
+    *,
+    d_type_and_x,
+    p,
+    training,
+    seed,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = d_type_and_x
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        p=p,
+        training=training,
+        seed=seed,
     )
 
 

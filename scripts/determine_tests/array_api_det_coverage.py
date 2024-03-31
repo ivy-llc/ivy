@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 from pydriller import Repository
 from tqdm import tqdm
@@ -8,6 +9,8 @@ import _pickle as cPickle
 
 def main():
     BACKENDS = ["numpy", "jax", "tensorflow", "torch"]
+    N = 4
+    run_iter = int(sys.argv[1]) - 1
 
     test_names = []
     func_folder = "ivy_tests/array_api_testing/array_api_methods_to_test"
@@ -77,7 +80,11 @@ def main():
         x for x in directories if not (x.endswith("__pycache__") or "hypothesis" in x)
     ]
     directories = set(directories_filtered)
-    for test_backend in tqdm(test_names):
+    num_tests = len(test_names)
+    tests_per_run = num_tests // N
+    start = run_iter * tests_per_run
+    end = num_tests if run_iter == N - 1 else (run_iter + 1) * tests_per_run
+    for test_backend in tqdm(test_names[start:end]):
         test_name, backend = test_backend.split(",")
         command = (
             f"docker run --rm --env IVY_BACKEND={backend} --env "

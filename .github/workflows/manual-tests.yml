@@ -17,6 +17,16 @@ on:
         default: false
         required: false
 
+      tracer:
+        description: 'Tracer Testing :'
+        default: false
+        required: false
+
+      tracer_each:
+        description: 'Tracer Testing Each :'
+        default: false
+        required: false
+
 permissions:
   actions: read
 
@@ -40,7 +50,7 @@ jobs:
       - name: Install ivy and fetch binaries
         run: |
           cd ivy
-          pip3 install -e .
+          sudo pip3 install -e .
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
@@ -59,7 +69,7 @@ jobs:
           pip3 install pymongo
           cd ivy
           python3 scripts/setup_tests/setup_tests.py ${{ github.event.inputs.test }}
-          python3 scripts/run_tests/run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.event.inputs.gpu }} ${{ github.run_id }} 'false' ${{ steps.jobs.outputs.html_url }}
+          python3 scripts/run_tests/run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.event.inputs.gpu }} ${{ github.run_id }} 'false' ${{ github.event.inputs.tracer }} ${{ github.event.inputs.tracer_each }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
       - name: Check on failures
@@ -81,7 +91,7 @@ jobs:
       - name: Install ivy and fetch binaries
         run: |
           cd ivy
-          pip3 install -e .
+          sudo pip3 install -e .
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
@@ -99,9 +109,9 @@ jobs:
         run: |
           pip3 install pymongo
           cd ivy
-          pip3 install -e .
+          sudo pip3 install -e .
           python scripts/setup_tests/setup_tests.py "${{ github.event.inputs.test }}"
-          python scripts/run_tests/run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} 'false' ${{ github.run_id }} 'false' ${{ steps.jobs.outputs.html_url }}
+          python scripts/run_tests/run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} 'false' ${{ github.run_id }} 'false' ${{ github.event.inputs.tracer }} ${{ github.event.inputs.tracer_each }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
       - name: Check on failures
