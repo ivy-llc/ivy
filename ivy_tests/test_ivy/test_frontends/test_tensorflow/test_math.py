@@ -2432,8 +2432,9 @@ def test_tensorflow_reduce_min(
     fn_tree="tensorflow.math.reduce_prod",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_value=-5,
-        max_value=5,
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -2455,8 +2456,6 @@ def test_tensorflow_reduce_prod(
         fn_tree=fn_tree,
         on_device=on_device,
         input_tensor=x[0],
-        rtol=1e-02,
-        atol=1e-02,
     )
 
 
