@@ -860,7 +860,6 @@ def test_paddle_diff(
 ):
     input_dtype, array, axis = dtype_n_x_prepend_append
     x, prepend, append = array[0], array[1], array[2]
-    # x_shape = np.asarray(x).shape
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
