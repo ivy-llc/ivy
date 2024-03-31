@@ -345,11 +345,13 @@ class Model(tf.keras.Model, ModelHelpers):
     _with_partial_v = None
     _store_vars = True
     _built = False
-    _v = None
-    _buffers = None
-    _module_dict = None
-    _args = None
-    _kwargs = None
+    _v = dict()
+    _buffers = dict()
+    _module_dict = dict()
+    _args = tuple()
+    _kwargs = dict()
+    _call_args = tuple()
+    _call_kwargs = dict()
     _module_graph = None
     _target = None
     _lazy_traced = False
@@ -388,6 +390,8 @@ class Model(tf.keras.Model, ModelHelpers):
         self._module_dict = dict()
         self._args = args
         self._kwargs = kwargs
+        self._call_args = None
+        self._call_kwargs = None
         self._module_graph = None
         self._target = None
         self._lazy_traced = False
@@ -668,6 +672,8 @@ class Model(tf.keras.Model, ModelHelpers):
 
     @tf.autograph.experimental.do_not_convert
     def _call(self, *args, v=None, buffers=None, **kwargs):
+        self._call_args = args
+        self._call_kwargs = kwargs
         if not self._built or not self.built:
             if not self._built:
                 first_arr = self._get_first_array(*args, **kwargs)
@@ -787,6 +793,28 @@ class Model(tf.keras.Model, ModelHelpers):
             "When subclassing the `Model` class, you should implement a `call` method."
         )
 
+    def get_config(self):
+        base_config = super().get_config()
+        config = {}
+
+        # Get the names and values of positional arguments in __init__
+        init_signature = inspect.signature(self.__init__)
+        arg_names = list(init_signature.parameters.keys())
+
+        # Include the positional arguments in the config
+        for arg_name, arg in zip(arg_names, self._args[1:]):
+            config.update(
+                {
+                    arg_name: arg,
+                }
+            )
+
+        # Include the keywords arguments in the config
+        kwargs = self._kwargs.copy()
+        kwargs.pop("devices", None)
+        config.update(**kwargs)
+        return {**base_config, **config}
+
     # Methods to be Optionally Overridden #
     # -----------------------------------#
 
@@ -885,16 +913,21 @@ class Model(tf.keras.Model, ModelHelpers):
         if name in ["v", "buffers"]:
             name = "_" + name
         if isinstance(value, Model):
-            ret = super().__setattr__(name, value)
+            dic = getattr(self, "__dict__", None)
+            if dic:
+                dic[name] = value
             if (
                 hasattr(self, "_build_mode")
                 and self.build_mode == "on_init"
                 and getattr(self, "_built", False)
             ):
                 self._rebuild()
-            return ret
+            return
         elif isinstance(value, tf.Variable) and not name.startswith("_"):
             ret = self.register_parameter(name, value)
+            dic = getattr(self, "__dict__", None)
+            if dic:
+                dic[name] = value
             if (
                 hasattr(self, "_build_mode")
                 and self.build_mode == "on_init"
