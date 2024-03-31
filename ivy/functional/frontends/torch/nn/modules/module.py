@@ -21,7 +21,7 @@ class Module(ivy.Module):
             device=device,
             devices=devices,
             training=True,
-            build_mode="explicit",
+            build_mode="on_init",
             dynamic_backend=True,
             **kwargs,
         )
@@ -302,6 +302,13 @@ class Module(ivy.Module):
             mapping = self.__dict__["_attr_mapping"]
             if name in mapping:
                 return super().__getattribute__(mapping[name])
+        # Adding this for cases where self._modules e.g. is accessed before the
+        # super.__init__(...) in translated models
+        if name in ("_parameters", "_modules") and "_attr_mapping" not in self.__dict__:
+            if name == "_parameters":
+                return super().__getattribute__("v")
+            if name == "_modules":
+                return super().__getattribute__("module_dict")
         return super().__getattribute__(name)
 
     def __setattr__(self, name, value) -> None:
