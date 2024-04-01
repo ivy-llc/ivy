@@ -76,8 +76,7 @@ def sinc(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x = ivy.pi * x
-    return tf.cast(tf.where(x == 0, 1, tf.math.sin(x) / x), x.dtype)
+    return tf.experimental.numpy.sinc(x)
 
 
 @with_supported_dtypes(
