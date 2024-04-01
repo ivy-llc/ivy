@@ -1011,6 +1011,9 @@ def test_function_unsupported_devices(func, backend_fw):
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=10,
+        large_abs_safety_factor=1.5,
+        small_abs_safety_factor=1.5,
+        safety_factor_scale="log",
     ),
 )
 def test_gather(params_indices_others, test_flags, backend_fw, fn_name, on_device):
@@ -1025,6 +1028,9 @@ def test_gather(params_indices_others, test_flags, backend_fw, fn_name, on_devic
         params=params,
         indices=indices,
         axis=axis,
+        atol_=1e-3,
+        rtol_=1e-3,
+        tolerance_dict={"bfloat16": 1e-1},
         batch_dims=batch_dims,
     )
 

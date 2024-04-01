@@ -130,9 +130,9 @@ def test_numpy_average(
     on_device,
 ):
     try:
-        input_dtype, a, axis = dtype_and_a
+        input_dtype, a, axis, *_ = dtype_and_a
 
-        input_dtypes, xs, axiss = dtype_and_x
+        input_dtypes, xs, axiss, *_ = dtype_and_x
 
         if isinstance(axis, tuple):
             axis = axis[0]

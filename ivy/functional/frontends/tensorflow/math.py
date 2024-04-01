@@ -464,6 +464,9 @@ def greater(x, y, name=None):
     return ivy.greater(x, y)
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("complex64", "complex128")}, "tensorflow"
+)
 @to_ivy_arrays_and_back
 def greater_equal(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
@@ -560,6 +563,9 @@ def l2_normalize(x, axis=None, epsilon=1e-12, name=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("complex64", "complex128")}, "tensorflow"
+)
 def less(x, y, name="None"):
     x, y = check_tensorflow_casting(x, y)
     return ivy.less(x, y)
