@@ -66,7 +66,7 @@ Rising Contributors
    * - Abdullah Sabry
      - `abdullahsabry <https://github.com/abdullahsabry>`_
      - OG Silver
-   * - Muhammad ishaque 
+   * - Muhammad ishaque
      - `MuhammadNizamani <https://github.com/MuhammadNizamani>`_
      - Merging Master Silver, Merging Wizard, Ivy Inspector
    * - Zheng Jay Choy
@@ -81,7 +81,7 @@ Core Contributors
    * - Name
      - Github ID
      - Badges
-   * - Mohamed Ibrahim 
+   * - Mohamed Ibrahim
      - `Medo072 <https://github.com/Medo072>`_
      - Merging Master, OG Bronze
    * - Sheroz Khan
@@ -102,7 +102,7 @@ Core Contributors
    * - Rohit Kumar Salla
      - `rohitsalla <https://github.com/rohitsalla>`_
      - Merging Master Bronze, Ivy Inspector Bronze
-   * - Sanjay Suthar 
+   * - Sanjay Suthar
      - `Sanjay8602 <https://github.com/Sanjay8602>`_
      - Merging Master Bronze, Ivy Inspector Bronze
    * - Syed Muzakkir Hussain
@@ -111,7 +111,7 @@ Core Contributors
    * - Chaitanya Lakhchaura
      - `ZenithFlux <https://github.com/ZenithFlux>`_
      - Merging Master Bronze
-   * - R E Zera Marveen Lyngkhoi 
+   * - R E Zera Marveen Lyngkhoi
      - `fleventy-5 <https://github.com/fleventy-5>`_
      - Merging Master Bronze
 Contributors
@@ -144,13 +144,13 @@ Contributors
    * - Ramya Manasa Amancherla
      - `ramyamanasa <https://github.com/ramyamanasa>`_
      - Merging Master, Ivy Inspector
-   * - Vaishnavi Mudaliar 
+   * - Vaishnavi Mudaliar
      - `VaishnaviMudaliar <https://github.com/VaishnaviMudaliar>`_
      - Merging Master, Ivy Inspector
    * - Waqar Ahmed
      - `waqaarahmed <https://github.com/waqaarahmed>`_
      - Merging Master, Ivy Inspector
-   * - Aryan Pandey 
+   * - Aryan Pandey
      - `Aryan8912 <https://github.com/Aryan8912>`_
      - Merging Master
    * - Dhruv Sharma
@@ -162,7 +162,7 @@ Contributors
    * - Mehmet Bilgehan Bezcioglu
      - `BilgehanMehmet <https://github.com/BilgehanMehmet>`_
      - Merging Master
-   * - Omkar khade 
+   * - Omkar khade
      - `Omickeyee <https://github.com/Omickeyee>`_
      - Merging Master
    * - Stefan Sanchez
