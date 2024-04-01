@@ -30,8 +30,14 @@ Top Contributors
    * - Arunima Santhosh Kumar
      - `niixxaaa <https://github.com/niixxaaa>`_
      - OG Gold
+   * - Krishna Boppana
+     - `krishna-boppana <https://github.com/krishna-boppana>`_
+     - OG Gold
    * - Saptarshi Bandopadhyay
      - `Saptarshi-Bandopadhyay <https://github.com/Saptarshi-Bandopadhyay>`_
+     - OG Gold
+   * - Tugay Gül
+     - `sondertg <https://github.com/sondertg>`_
      - OG Gold
    * - Vismay Suramwar
      - `leacornelio <https://github.com/leacornelio>`_
@@ -57,6 +63,9 @@ Rising Contributors
    * - nitesh kesharwani
      - `NiteshK84 <https://github.com/NiteshK84>`_
      - Ivy Inspector Bronze, OG Silver
+   * - Abdullah Sabry
+     - `abdullahsabry <https://github.com/abdullahsabry>`_
+     - OG Silver
    * - Muhammad ishaque
      - `MuhammadNizamani <https://github.com/MuhammadNizamani>`_
      - Merging Master Silver, Merging Wizard, Ivy Inspector
@@ -132,6 +141,9 @@ Contributors
    * - Rahul Prem
      - `rp097 <https://github.com/rp097>`_
      - Merging Master, Ivy Inspector
+   * - Ramya Manasa Amancherla
+     - `ramyamanasa <https://github.com/ramyamanasa>`_
+     - Merging Master, Ivy Inspector
    * - Vaishnavi Mudaliar
      - `VaishnaviMudaliar <https://github.com/VaishnaviMudaliar>`_
      - Merging Master, Ivy Inspector
@@ -152,9 +164,6 @@ Contributors
      - Merging Master
    * - Omkar khade
      - `Omickeyee <https://github.com/Omickeyee>`_
-     - Merging Master
-   * - Ramya Manasa Amancherla
-     - `ramyamanasa <https://github.com/ramyamanasa>`_
      - Merging Master
    * - Stefan Sanchez
      - `StefanSan26 <https://github.com/StefanSan26>`_
