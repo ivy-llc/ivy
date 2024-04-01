@@ -66,17 +66,13 @@ def lgamma(
     return tf.math.lgamma(x)
 
 
-@with_unsupported_dtypes(
-    {"2.15.0 and below": ("bfloat16",)},
-    backend_version,
-)
 def sinc(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.sinc(x)
+    return tf.cast(tf.experimental.numpy.sinc(x), x.dtype)
 
 
 @with_supported_dtypes(
