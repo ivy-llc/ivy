@@ -752,9 +752,8 @@ def test_torch_inv_ex(
         atol=1e-02,
         A=A,
         inv=inv,
-        info=info
+        info=info,
     )
-
 
 
 # lu_factor
