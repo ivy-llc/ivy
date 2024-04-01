@@ -70,6 +70,14 @@ def ifft2(a, s=None, axes=(-2, -1), norm=None):
     return ivy.array(ivy.ifft2(a, s=s, dim=axes, norm=norm), dtype=ivy.dtype(a))
 
 
+@with_unsupported_dtypes({"1.24.3 and below": ("complex64", "bfloat16")}, "numpy")
+@to_ivy_arrays_and_back
+def ifftn(a, s=None, axes=None, norm=None):
+    a = ivy.asarray(a, dtype=ivy.complex128)
+    a = ivy.ifftn(a, s=s, axes=axes, norm=norm)
+    return a
+
+
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.25.2 and below": ("float16", "bfloat16")}, "numpy")
 def rfft(a, n=None, axis=-1, norm=None):

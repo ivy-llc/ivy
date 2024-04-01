@@ -860,7 +860,7 @@ def abs(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.6.0 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.6.0 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
 )
 def logaddexp(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
@@ -886,22 +886,8 @@ def logaddexp2(
         return ivy.log2(ivy.exp2(x1) + ivy.exp2(x2))
 
 
-@with_unsupported_device_and_dtypes(
-    {
-        "2.6.0 and below": {
-            "cpu": (
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-                "uint8",
-                "float16",
-                "float32",
-                "float64",
-                "bool",
-            )
-        }
-    },
+@with_supported_dtypes(
+    {"2.6.0 and below": ("complex",)},
     backend_version,
 )
 def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:

@@ -845,6 +845,8 @@ def test_frontend_function(
     if test_flags.with_copy is True:
         test_flags.with_out = False
         test_flags.inplace = False
+    if test_flags.test_trace or test_flags.test_trace_each:
+        test_flags.with_out = test_flags.inplace = False
 
     all_as_kwargs_np = {
         k[4:] if k.startswith("arg_") else k: v for k, v in all_as_kwargs_np.items()

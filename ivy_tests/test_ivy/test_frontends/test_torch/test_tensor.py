@@ -347,7 +347,15 @@ def _repeat_helper(draw):
         )
     )
 
-    repeats = draw(st.lists(st.integers(min_value=1, max_value=5), min_size=len(shape)))
+    MAX_NUMPY_DIMS = 32
+    repeats = draw(
+        st.lists(
+            st.integers(min_value=1, max_value=5),
+            min_size=len(shape),
+            max_size=MAX_NUMPY_DIMS,
+        )
+    )
+    assume(np.prod(repeats) * np.prod(shape) <= 2**28)
     return input_dtype, x, repeats
 
 
