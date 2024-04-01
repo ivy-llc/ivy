@@ -137,7 +137,7 @@ def equal(
 
 
 @with_supported_dtypes(
-    {"2.6.0 and below": ("bool", "float32", "float64", "int32", "int64")},
+    {"2.6.0 and below": ("bool", "float32", "float64", "int32", "int64", "complex")},
     backend_version,
 )
 def less_equal(
@@ -147,14 +147,17 @@ def less_equal(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    x1, x2, _ = _elementwise_helper(x1, x2)
     if isinstance(x1, paddle.Tensor) and isinstance(x2, paddle.Tensor):
         if paddle.is_complex(x1) and paddle.is_complex(x2):
-            real_comparison = paddle.real(x1) < paddle.real(x2)
-            imag_comparison = paddle_backend.logical_and(
-                paddle.real(x1) == paddle.real(x2), paddle.imag(x1) < paddle.imag(x2)
+            real_less_equal = paddle.real(x1) <= paddle.real(x2)
+            real_equal = paddle.real(x1) == paddle.real(x2)
+
+            imag_less_equal = paddle.imag(x1) <= paddle.imag(x2)
+
+            return paddle.logical_or(
+                real_less_equal, paddle.logical_and(real_equal, imag_less_equal)
             )
-            return paddle_backend.logical_or(real_comparison, imag_comparison)
 
     return paddle.less_equal(x1, x2)
 
