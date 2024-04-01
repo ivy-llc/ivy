@@ -141,6 +141,9 @@ Contributors
    * - Rahul Prem
      - `rp097 <https://github.com/rp097>`_
      - Merging Master, Ivy Inspector
+   * - Ramya Manasa Amancherla
+     - `ramyamanasa <https://github.com/ramyamanasa>`_
+     - Merging Master, Ivy Inspector
    * - Vaishnavi Mudaliar
      - `VaishnaviMudaliar <https://github.com/VaishnaviMudaliar>`_
      - Merging Master, Ivy Inspector
@@ -161,9 +164,6 @@ Contributors
      - Merging Master
    * - Omkar khade
      - `Omickeyee <https://github.com/Omickeyee>`_
-     - Merging Master
-   * - Ramya Manasa Amancherla
-     - `ramyamanasa <https://github.com/ramyamanasa>`_
      - Merging Master
    * - Stefan Sanchez
      - `StefanSan26 <https://github.com/StefanSan26>`_
