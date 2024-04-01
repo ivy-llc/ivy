@@ -7,6 +7,7 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 )
 
 
+
 @with_supported_dtypes(
     {"2.6.0 and below": ("float32", "float64")},
     "paddle",
@@ -114,3 +115,12 @@ def standard_normal(shape, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def uniform(shape, dtype=None, min=-1.0, max=1.0, seed=0, name=None):
     return ivy.random_uniform(low=min, high=max, shape=shape, dtype=dtype, seed=seed)
+
+
+@with_supported_dtypes(
+    {"2.6.0 and below": ("float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def uniform_(x, min=-1.0, max=1.0, seed=0, name=None):
+    return ivy.random_uniform_(x, low=min, high=max, seed=seed)
