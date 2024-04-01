@@ -160,6 +160,43 @@ def test_paddle_rand(
         dtype=dtype[0],
     )
 
+@handle_frontend_test(
+    fn_tree="paddle.uniform",
+    input_dtypes=helpers.get_dtypes("float"),
+    shape=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    ),
+    dtype=helpers.get_dtypes("valid", full=False),
+    min=st.floats(allow_nan=False, allow_infinity=False, width=32),
+    max=st.floats(allow_nan=False, allow_infinity=False, width=32),
+    seed=st.integers(min_value=2, max_value=5),
+)
+def test_paddle_uniform_(
+    input_dtypes,
+    shape,
+    dtype,
+    min,
+    max,
+    seed,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        test_values=False,
+        shape=shape,
+        dtype=dtype[0],
+        min=min,
+        max=max,
+        seed=seed,
+    )
+
 
 # randint
 @handle_frontend_test(
@@ -331,39 +368,4 @@ def test_paddle_uniform(
     )
 
 
-@handle_frontend_test(
-    fn_tree="paddle.uniform",
-    input_dtypes=helpers.get_dtypes("float"),
-    shape=st.tuples(
-        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
-    ),
-    dtype=helpers.get_dtypes("valid", full=False),
-    min=st.floats(allow_nan=False, allow_infinity=False, width=32),
-    max=st.floats(allow_nan=False, allow_infinity=False, width=32),
-    seed=st.integers(min_value=2, max_value=5),
-)
-def test_paddle_uniform_(
-    input_dtypes,
-    shape,
-    dtype,
-    min,
-    max,
-    seed,
-    frontend,
-    backend_fw,
-    test_flags,
-    fn_tree,
-):
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        test_values=False,
-        shape=shape,
-        dtype=dtype[0],
-        min=min,
-        max=max,
-        seed=seed,
-    )
+
