@@ -107,7 +107,6 @@ def eigvalsh(input, UPLO="L", *, out=None):
 def inv(A, *, out=None):
     return ivy.inv(A, out=out)
 
-
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {"2.2 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
@@ -125,7 +124,6 @@ def inv_ex(A, *, check_errors=False, out=None):
         inv = ivy.inv(A, out=out)
         info = ivy.zeros(A.shape[:-2], dtype=ivy.int32)
     return inv, info
-
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
