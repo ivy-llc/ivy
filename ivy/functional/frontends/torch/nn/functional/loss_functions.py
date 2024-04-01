@@ -86,30 +86,7 @@ def binary_cross_entropy(
     return result
 
 
-@to_ivy_arrays_and_back
-def binary_cross_entropy_with_logits(
-    input,
-    target,
-    weight=None,
-    size_average=None,
-    reduce=None,
-    reduction="mean",
-    pos_weight=None,
-):
-    if size_average is not None or reduce is not None:
-        reduction = _get_reduction_string(size_average, reduce)
-    result = ivy.binary_cross_entropy(
-        target,
-        input,
-        reduction=reduction,
-        from_logits=True,
-        pos_weight=pos_weight,
-    )
 
-    if weight is not None:
-        result = ivy.multiply(weight, result)
-
-    return result
 
 
 @to_ivy_arrays_and_back
@@ -580,3 +557,29 @@ def triplet_margin_with_distance_loss(
     loss = ivy.maximum(dist_pos - dist_neg + ivy.array(margin), ivy.array(0.0))
 
     return reduction(loss).astype(anchor.dtype)
+
+
+@to_ivy_arrays_and_back
+def binary_cross_entropy_with_logits(
+    input,
+    target,
+    weight=None,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+    pos_weight=None,
+):
+    if size_average is not None or reduce is not None:
+        reduction = _get_reduction_string(size_average, reduce)
+    result = ivy.binary_cross_entropy(
+        target,
+        input,
+        reduction=reduction,
+        from_logits=True,
+        pos_weight=pos_weight,
+    )
+
+    if weight is not None:
+        result = ivy.multiply(weight, result)
+
+    return result
