@@ -345,11 +345,13 @@ class Model(tf.keras.Model, ModelHelpers):
     _with_partial_v = None
     _store_vars = True
     _built = False
-    _v = None
-    _buffers = None
-    _module_dict = None
-    _args = None
-    _kwargs = None
+    _v = dict()
+    _buffers = dict()
+    _module_dict = dict()
+    _args = tuple()
+    _kwargs = dict()
+    _call_args = tuple()
+    _call_kwargs = dict()
     _module_graph = None
     _target = None
     _lazy_traced = False
@@ -359,12 +361,36 @@ class Model(tf.keras.Model, ModelHelpers):
     _dtype = None
     _previous_frame_info = None
 
+    def __new__(cls, *args, **kwargs):
+        instance = super().__new__(cls, *args, **kwargs)
+        instance._build_mode = None
+        instance._with_partial_v = None
+        instance._store_vars = True
+        instance._built = False
+        instance._v = dict()
+        instance._buffers = dict()
+        instance._module_dict = dict()
+        instance._args = tuple()
+        instance._kwargs = dict()
+        instance._call_args = tuple()
+        instance._call_kwargs = dict()
+        instance._module_graph = None
+        instance._target = None
+        instance._lazy_traced = False
+        instance._training = None
+        instance._dynamic_backend = None
+        instance._device = None
+        instance._dtype = None
+        instance._previous_frame_info = None
+        return instance
+
     def __init__(
         self,
         /,
         *args,
         v=None,
         buffers=None,
+        module_dict=None,
         build_mode="on_init",
         store_vars=True,
         with_partial_v=False,
@@ -382,12 +408,16 @@ class Model(tf.keras.Model, ModelHelpers):
         self._with_partial_v = with_partial_v
         self._store_vars = store_vars
         self._built = False
-        self._v_from_constructor = v if isinstance(v, dict) or v is None else dict(v)
+        self._v_from_constructor = (
+            dict()
+        )  # v if isinstance(v, dict) or v is None else dict(v)
         self._v = v if v is not None else dict()
         self._buffers = dict(buffers or {})
-        self._module_dict = dict()
+        self._module_dict = dict(module_dict or {})
         self._args = args
         self._kwargs = kwargs
+        self._call_args = None
+        self._call_kwargs = None
         self._module_graph = None
         self._target = None
         self._lazy_traced = False
@@ -668,6 +698,8 @@ class Model(tf.keras.Model, ModelHelpers):
 
     @tf.autograph.experimental.do_not_convert
     def _call(self, *args, v=None, buffers=None, **kwargs):
+        self._call_args = args
+        self._call_kwargs = kwargs
         if not self._built or not self.built:
             if not self._built:
                 first_arr = self._get_first_array(*args, **kwargs)
@@ -787,6 +819,28 @@ class Model(tf.keras.Model, ModelHelpers):
             "When subclassing the `Model` class, you should implement a `call` method."
         )
 
+    def get_config(self):
+        base_config = super().get_config()
+        config = {}
+
+        # Get the names and values of positional arguments in __init__
+        init_signature = inspect.signature(self.__init__)
+        arg_names = list(init_signature.parameters.keys())
+
+        # Include the positional arguments in the config
+        for arg_name, arg in zip(arg_names, self._args[1:]):
+            config.update(
+                {
+                    arg_name: arg,
+                }
+            )
+
+        # Include the keywords arguments in the config
+        kwargs = self._kwargs.copy()
+        kwargs.pop("devices", None)
+        config.update(**kwargs)
+        return {**base_config, **config}
+
     # Methods to be Optionally Overridden #
     # -----------------------------------#
 
@@ -885,16 +939,21 @@ class Model(tf.keras.Model, ModelHelpers):
         if name in ["v", "buffers"]:
             name = "_" + name
         if isinstance(value, Model):
-            ret = super().__setattr__(name, value)
+            dic = getattr(self, "__dict__", None)
+            if dic:
+                dic[name] = value
             if (
                 hasattr(self, "_build_mode")
                 and self.build_mode == "on_init"
                 and getattr(self, "_built", False)
             ):
                 self._rebuild()
-            return ret
+            return
         elif isinstance(value, tf.Variable) and not name.startswith("_"):
             ret = self.register_parameter(name, value)
+            _dict = getattr(self, "__dict__", None)
+            if _dict:
+                _dict[name] = value
             if (
                 hasattr(self, "_build_mode")
                 and self.build_mode == "on_init"
@@ -902,7 +961,14 @@ class Model(tf.keras.Model, ModelHelpers):
             ):
                 self._rebuild()
             return ret
-        return super().__setattr__(name, value)
+        _dict = getattr(self, "__dict__", None)
+        if _dict:
+            _dict[name] = value
+        try:
+            super().__setattr__(name, value)
+        except Exception:
+            pass
+        return
 
     @tf.autograph.experimental.do_not_convert
     def __delattr__(self, name):
