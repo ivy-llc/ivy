@@ -19,11 +19,7 @@ def arange(start, end=None, step=1, dtype=None, name=None):
 )
 @to_ivy_arrays_and_back
 def assign(x, output=None):
-    if len(ivy.shape(x)) == 0:
-        x = ivy.reshape(ivy.Array(x), (1,))
-        if ivy.exists(output):
-            output = ivy.reshape(ivy.Array(output), (1,))
-    else:
+    if len(ivy.shape(x)) != 0:
         x = ivy.reshape(x, ivy.shape(x))
     ret = ivy.copy_array(x, to_ivy_array=False, out=output)
     return ret
@@ -153,16 +149,16 @@ def to_tensor(data, /, *, dtype=None, place=None, stop_gradient=True):
     return paddle_frontend.Tensor(array, dtype=dtype, place=place)
 
 
-@with_unsupported_dtypes(
+@with_supported_dtypes(
     {
         "2.6.0 and below": (
-            "uint8",
-            "int8",
-            "int16",
-            "float16",
+            "bool",
+            "float64",
+            "float32",
+            "int32",
+            "int64",
             "complex64",
             "complex128",
-            "bool",
         )
     },
     "paddle",
@@ -180,16 +176,15 @@ def tril_indices(row, col, offset=0, dtype="int64"):
     return arr
 
 
-@with_unsupported_dtypes(
+@with_supported_dtypes(
     {
         "2.6.0 and below": (
-            "uint8",
-            "int8",
-            "int16",
-            "float16",
+            "float64",
+            "float32",
+            "int32",
+            "int64",
             "complex64",
             "complex128",
-            "bool",
         )
     },
     "paddle",

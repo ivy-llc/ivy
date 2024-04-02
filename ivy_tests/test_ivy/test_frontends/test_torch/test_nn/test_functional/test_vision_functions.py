@@ -68,8 +68,8 @@ def _pad_generator(draw, shape, mode):
             max_pad_value = shape[i] - 1
         pad = pad + draw(
             st.tuples(
-                st.integers(min_value=0, max_value=max(0, max_pad_value)),
-                st.integers(min_value=0, max_value=max(0, max_pad_value)),
+                st.integers(min_value=-3, max_value=max(0, max_pad_value)),
+                st.integers(min_value=-3, max_value=max(0, max_pad_value)),
             )
         )
     return pad
@@ -99,7 +99,7 @@ def _pad_helper(draw):
             ret_shape=True,
             min_num_dims=min_v,
             max_num_dims=max_v,
-            min_dim_size=2,
+            min_dim_size=5,
             min_value=-1e05,
             max_value=1e05,
         )

@@ -4219,11 +4219,11 @@ def test_paddle_max(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     method_name="mean",
-    dtype_and_x=_statistical_dtype_values(function="mean"),
+    dtype_x_axis=_statistical_dtype_values(function="mean"),
     keepdim=st.booleans(),
 )
 def test_paddle_mean(
-    dtype_and_x,
+    dtype_x_axis,
     keepdim,
     frontend,
     backend_fw,
@@ -4232,7 +4232,7 @@ def test_paddle_mean(
     method_flags,
     on_device,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis, *_ = dtype_x_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={"data": x[0]},

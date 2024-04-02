@@ -39,7 +39,7 @@ def cross_entropy(
     pred: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: int = -1,
+    axis: Optional[int] = None,
     epsilon: float = 1e-7,
     reduction: str = "mean",
     out: Optional[ivy.Array] = None,

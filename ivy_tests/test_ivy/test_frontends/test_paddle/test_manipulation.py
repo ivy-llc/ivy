@@ -297,6 +297,39 @@ def dtypes_x_reshape(draw):
 # ------------ #
 
 
+@handle_frontend_test(
+    fn_tree="paddle.one_hot",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["int64"],
+        min_value=0,
+        min_num_dims=1,
+        max_num_dims=5,
+    ),
+    num_classes=helpers.ints(min_value=1),
+)
+def test_one_hot(
+    *,
+    dtype_and_x,
+    num_classes,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        num_classes=num_classes,
+        backend_to_test=backend_fw,
+    )
+
+
 # abs
 @handle_frontend_test(
     fn_tree="paddle.abs",
