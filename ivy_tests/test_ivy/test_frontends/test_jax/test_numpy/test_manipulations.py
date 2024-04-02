@@ -369,6 +369,7 @@ def test_jax_append(
             axis=axis,
         )
 
+
 # array_split
 @handle_frontend_test(
     fn_tree="jax.numpy.array_split",
