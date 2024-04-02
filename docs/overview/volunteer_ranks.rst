@@ -48,6 +48,9 @@ Top Contributors
    * - V\. Sai Suraj
      - `Sai-Suraj-27 <https://github.com/Sai-Suraj-27>`_
      - Merging Master Gold, Ivy Inspector Bronze
+   * - Zheng Jay Choy
+     - `ZJay07 <https://github.com/ZJay07>`_
+     - Merging Master Gold, Ivy Inspector
 Rising Contributors
 -------------------
 .. list-table::
@@ -69,9 +72,6 @@ Rising Contributors
    * - Muhammad ishaque
      - `MuhammadNizamani <https://github.com/MuhammadNizamani>`_
      - Merging Master Silver, Merging Wizard, Ivy Inspector
-   * - Zheng Jay Choy
-     - `ZJay07 <https://github.com/ZJay07>`_
-     - Merging Master Silver, Ivy Inspector
 Core Contributors
 -----------------
 .. list-table::
@@ -164,6 +164,9 @@ Contributors
      - Merging Master
    * - Omkar khade
      - `Omickeyee <https://github.com/Omickeyee>`_
+     - Merging Master
+   * - Purity Nyagweth
+     - `Purity-E <https://github.com/Purity-E>`_
      - Merging Master
    * - Stefan Sanchez
      - `StefanSan26 <https://github.com/StefanSan26>`_

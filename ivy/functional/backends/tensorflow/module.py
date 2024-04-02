@@ -368,6 +368,7 @@ class Model(tf.keras.Model, ModelHelpers):
         instance._store_vars = True
         instance._built = False
         instance._v = dict()
+        instance._v_from_constructor = dict()
         instance._buffers = dict()
         instance._module_dict = dict()
         instance._args = tuple()
@@ -382,6 +383,11 @@ class Model(tf.keras.Model, ModelHelpers):
         instance._device = None
         instance._dtype = None
         instance._previous_frame_info = None
+
+        super(tf.keras.Model, instance).__init__(
+            trainable=True,
+            dtype=None,
+        )
         return instance
 
     def __init__(
@@ -597,6 +603,18 @@ class Model(tf.keras.Model, ModelHelpers):
         # return False if not from_call but build_mode is on_call
         if not from_call and self._build_mode == "on_call":
             return self.v
+
+        # return if we already have populated self._v
+        if not self._built and self._v != {}:
+            if self._module_dict == {}:
+                self._compute_module_dict()
+
+            # Check if we still need to populate the buffers and module_dict
+            if self._buffers == {}:
+                self._find_buffers()
+
+            self._built = True
+            return self._v
 
         # build local Module, and any child modules flagged with "explicit" build mode
         # this gets the child modules initialised at best, their weights
