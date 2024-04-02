@@ -7,8 +7,6 @@ from ivy.functional.frontends.jax.func_wrapper import (
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
 
-
-
 @to_ivy_arrays_and_back
 def append(arr, values, axis=None):
     if axis is None:
