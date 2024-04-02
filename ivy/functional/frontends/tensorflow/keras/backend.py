@@ -116,3 +116,7 @@ def rnn(
         zero_output_for_mask=zero_output_for_mask,
         return_all_outputs=return_all_outputs,
     )
+
+
+def sum(x, axis=None, keepdims=False):
+    return tf_frontend.reduce_sum(x, axis, keepdims)

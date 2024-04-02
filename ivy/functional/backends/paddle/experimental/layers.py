@@ -469,7 +469,35 @@ def interpolate(
     antialias: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ):
-    raise IvyNotImplementedException()
+    if mode not in ["linear", "bilinear", "bicubic", "trilinear"]:
+        align_corners = None
+    return paddle.nn.functional.interpolate(
+        x,
+        size=size,
+        scale_factor=scale_factor,
+        mode=mode,
+        align_corners=align_corners,
+    )
+
+
+interpolate.partial_mixed_handler = (
+    lambda *args, **kwargs: kwargs.get("mode", "linear")
+    not in [
+        "tf_area",
+        "nd",
+        "tf_bicubic",
+        "mitchellcubic",
+        "lanczos3",
+        "lanczos5",
+        "gaussian",
+    ]
+    and (
+        kwargs.get("mode", "linear") in ["linear", "bilinear", "bicubic", "trilinear"]
+        or not kwargs.get("align_corners", False)
+    )
+    and not kwargs.get("antialias", False)
+    and not kwargs.get("recompute_scale_factor", False)
+)
 
 
 def adaptive_max_pool2d(

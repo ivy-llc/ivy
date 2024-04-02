@@ -7,6 +7,24 @@ import functools
 import logging
 from tensorflow.python.util import nest
 from typing import NamedTuple, Callable, Any, Tuple, List, Dict, Type, Union
+import inspect
+
+
+def store_frame_info(fn):
+
+    @functools.wraps(fn)
+    def frame_info_wrapper(self, *args, **kwargs):
+        if self._previous_frame_info is None:
+            # store the info about the calling frame.
+            stack = inspect.stack()
+            self._previous_frame_info = stack[1]
+        res = fn(self, *args, **kwargs)
+        # reset the frame-info
+        self._previous_frame_info = None
+        return res
+
+    return frame_info_wrapper
+
 
 # A NodeDef holds two callables:
 # - flatten_fn should take the collection and return a flat list of values.
@@ -327,11 +345,13 @@ class Model(tf.keras.Model, ModelHelpers):
     _with_partial_v = None
     _store_vars = True
     _built = False
-    _v = None
-    _buffers = None
-    _module_dict = None
-    _args = None
-    _kwargs = None
+    _v = dict()
+    _buffers = dict()
+    _module_dict = dict()
+    _args = tuple()
+    _kwargs = dict()
+    _call_args = tuple()
+    _call_kwargs = dict()
     _module_graph = None
     _target = None
     _lazy_traced = False
@@ -339,6 +359,36 @@ class Model(tf.keras.Model, ModelHelpers):
     _dynamic_backend = None
     _device = None
     _dtype = None
+    _previous_frame_info = None
+
+    def __new__(cls, *args, **kwargs):
+        instance = super().__new__(cls, *args, **kwargs)
+        instance._build_mode = None
+        instance._with_partial_v = None
+        instance._store_vars = True
+        instance._built = False
+        instance._v = dict()
+        instance._v_from_constructor = dict()
+        instance._buffers = dict()
+        instance._module_dict = dict()
+        instance._args = tuple()
+        instance._kwargs = dict()
+        instance._call_args = tuple()
+        instance._call_kwargs = dict()
+        instance._module_graph = None
+        instance._target = None
+        instance._lazy_traced = False
+        instance._training = None
+        instance._dynamic_backend = None
+        instance._device = None
+        instance._dtype = None
+        instance._previous_frame_info = None
+
+        super(tf.keras.Model, instance).__init__(
+            trainable=True,
+            dtype=None,
+        )
+        return instance
 
     def __init__(
         self,
@@ -346,6 +396,7 @@ class Model(tf.keras.Model, ModelHelpers):
         *args,
         v=None,
         buffers=None,
+        module_dict=None,
         build_mode="on_init",
         store_vars=True,
         with_partial_v=False,
@@ -363,12 +414,16 @@ class Model(tf.keras.Model, ModelHelpers):
         self._with_partial_v = with_partial_v
         self._store_vars = store_vars
         self._built = False
-        self._v_from_constructor = v if isinstance(v, dict) or v is None else dict(v)
+        self._v_from_constructor = (
+            dict()
+        )  # v if isinstance(v, dict) or v is None else dict(v)
         self._v = v if v is not None else dict()
         self._buffers = dict(buffers or {})
-        self._module_dict = dict()
+        self._module_dict = dict(module_dict or {})
         self._args = args
         self._kwargs = kwargs
+        self._call_args = None
+        self._call_kwargs = None
         self._module_graph = None
         self._target = None
         self._lazy_traced = False
@@ -468,13 +523,32 @@ class Model(tf.keras.Model, ModelHelpers):
         flattened_kc = v_spec.get_keychains()
         new_weights = [None] * len(flattened_v)
         for i, (kc, x) in enumerate(zip(flattened_kc, flattened_v)):
+            cast_dtype = False
+            if x is not None:
+                # Manual solution for cases where a `tf.int32` tensor
+                # is placed on the GPU. TensorFlow doesn't have dedicated
+                # kernels for placing `tf.int32` variables on the GPU and so
+                # we manually cast them to `tf.int64` here otherwise due to
+                # `tf.config.soft_device_placement(True)` by default,
+                # TensorFlow puts the `tf.int32` variables on CPU which causes
+                # unintended consequences downstream during tracing or
+                # `tf.function` compilation e.g.
+                # Ref: https://github.com/tensorflow/tensorflow/issues/9506
+                # Ref: https://stackoverflow.com/questions/44813939/could-not-satisfy-explicit-device-specification-devicegpu0-because-no-devic
+                dtype = (
+                    tf.int64
+                    if x.dtype == tf.int32 and "gpu:" in x.device.lower()
+                    else x.dtype
+                )
+                cast_dtype = dtype != x.dtype
             new_weights[i] = (
                 self.add_weight(name=kc, shape=x.shape, dtype=x.dtype, trainable=True)
                 if x is not None and id(x) not in existing_ids
                 else x
             )
             if isinstance(x, tf.Variable):
-                new_weights[i].assign(x.value())
+                val = x.value() if not cast_dtype else tf.cast(x.value(), dtype)
+                new_weights[i].assign(val)
             if new_weights[i] is not None:
                 model_weights[id(new_weights[i])] = new_weights[i].numpy()
         self.v = tree_unflatten(new_weights, v_spec)
@@ -484,13 +558,22 @@ class Model(tf.keras.Model, ModelHelpers):
         flattened_kc = buf_spec.get_keychains()
         new_buf = [None] * len(flattened_buf)
         for i, (kc, x) in enumerate(zip(flattened_kc, flattened_buf)):
+            cast_dtype = False
+            if x is not None:
+                dtype = (
+                    tf.int64
+                    if x.dtype == tf.int32 and "gpu:" in x.device.lower()
+                    else x.dtype
+                )
+                cast_dtype = dtype != x.dtype
             new_buf[i] = (
                 self.add_weight(name=kc, shape=x.shape, dtype=x.dtype, trainable=False)
                 if x is not None and id(x) not in existing_ids
                 else x
             )
             if isinstance(x, tf.Variable):
-                new_buf[i].assign(x.value())
+                val = x.value() if not cast_dtype else tf.cast(x.value(), dtype)
+                new_buf[i].assign(val)
             if new_buf[i] is not None:
                 model_weights[id(new_buf[i])] = new_buf[i].numpy()
         self.buffers = tree_unflatten(new_buf, buf_spec)
@@ -520,6 +603,18 @@ class Model(tf.keras.Model, ModelHelpers):
         # return False if not from_call but build_mode is on_call
         if not from_call and self._build_mode == "on_call":
             return self.v
+
+        # return if we already have populated self._v
+        if not self._built and self._v != {}:
+            if self._module_dict == {}:
+                self._compute_module_dict()
+
+            # Check if we still need to populate the buffers and module_dict
+            if self._buffers == {}:
+                self._find_buffers()
+
+            self._built = True
+            return self._v
 
         # build local Module, and any child modules flagged with "explicit" build mode
         # this gets the child modules initialised at best, their weights
@@ -621,6 +716,8 @@ class Model(tf.keras.Model, ModelHelpers):
 
     @tf.autograph.experimental.do_not_convert
     def _call(self, *args, v=None, buffers=None, **kwargs):
+        self._call_args = args
+        self._call_kwargs = kwargs
         if not self._built or not self.built:
             if not self._built:
                 first_arr = self._get_first_array(*args, **kwargs)
@@ -635,14 +732,14 @@ class Model(tf.keras.Model, ModelHelpers):
                 # Don't use `keras` build method
                 if os.environ.get("USE_KERAS_BUILD", "False").lower() == "false":
                     self.inputs = tf.nest.flatten(args)
+                else:
+                    input_shapes = self._get_input_shapes(*args)
+                    if len(input_shapes) == 0:
+                        input_shapes = tf.TensorShape(None)
+                    elif len(input_shapes) == 1:
+                        input_shapes = input_shapes[0]
 
-                input_shapes = self._get_input_shapes(*args)
-                if len(input_shapes) == 0:
-                    input_shapes = tf.TensorShape(None)
-                elif len(input_shapes) == 1:
-                    input_shapes = input_shapes[0]
-
-                super(Model, self).build(input_shapes)  # noqa: UP008
+                super(Model, self).build(tf.TensorShape(None))  # noqa: UP008
 
         # If `v` was provided, replace with the module's v
         replace_v = False
@@ -740,6 +837,28 @@ class Model(tf.keras.Model, ModelHelpers):
             "When subclassing the `Model` class, you should implement a `call` method."
         )
 
+    def get_config(self):
+        base_config = super().get_config()
+        config = {}
+
+        # Get the names and values of positional arguments in __init__
+        init_signature = inspect.signature(self.__init__)
+        arg_names = list(init_signature.parameters.keys())
+
+        # Include the positional arguments in the config
+        for arg_name, arg in zip(arg_names, self._args[1:]):
+            config.update(
+                {
+                    arg_name: arg,
+                }
+            )
+
+        # Include the keywords arguments in the config
+        kwargs = self._kwargs.copy()
+        kwargs.pop("devices", None)
+        config.update(**kwargs)
+        return {**base_config, **config}
+
     # Methods to be Optionally Overridden #
     # -----------------------------------#
 
@@ -799,7 +918,7 @@ class Model(tf.keras.Model, ModelHelpers):
 
     # Dunder Methods #
     # ---------------#
-
+    @store_frame_info
     @tf.autograph.experimental.do_not_convert
     def __call__(
         self,
@@ -838,16 +957,21 @@ class Model(tf.keras.Model, ModelHelpers):
         if name in ["v", "buffers"]:
             name = "_" + name
         if isinstance(value, Model):
-            ret = super().__setattr__(name, value)
+            dic = getattr(self, "__dict__", None)
+            if dic:
+                dic[name] = value
             if (
                 hasattr(self, "_build_mode")
                 and self.build_mode == "on_init"
                 and getattr(self, "_built", False)
             ):
                 self._rebuild()
-            return ret
+            return
         elif isinstance(value, tf.Variable) and not name.startswith("_"):
             ret = self.register_parameter(name, value)
+            _dict = getattr(self, "__dict__", None)
+            if _dict:
+                _dict[name] = value
             if (
                 hasattr(self, "_build_mode")
                 and self.build_mode == "on_init"
@@ -855,7 +979,14 @@ class Model(tf.keras.Model, ModelHelpers):
             ):
                 self._rebuild()
             return ret
-        return super().__setattr__(name, value)
+        _dict = getattr(self, "__dict__", None)
+        if _dict:
+            _dict[name] = value
+        try:
+            super().__setattr__(name, value)
+        except Exception:
+            pass
+        return
 
     @tf.autograph.experimental.do_not_convert
     def __delattr__(self, name):

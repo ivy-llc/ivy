@@ -49,12 +49,6 @@ def current_backend_str() -> str:
     return "tensorflow"
 
 
-def _check_query(query):
-    return not isinstance(query, list) and (
-        not (ivy.is_array(query) and bool(query.ndim > 0))
-    )
-
-
 def get_item(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -62,18 +56,9 @@ def get_item(
     *,
     copy: Optional[bool] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if ivy.is_array(query) and ivy.is_bool_dtype(query):
-        if not len(query.shape):
-            return tf.expand_dims(x, 0)
-    return x.__getitem__(query)
-
-
-get_item.partial_mixed_handler = lambda x, query, **kwargs: (
-    all(_check_query(i) for i in query)
-    and len({i.shape for i in query if ivy.is_array(i)}) <= 1
-    if isinstance(query, tuple)
-    else _check_query(query)
-)
+    if ivy.is_array(query) and ivy.is_bool_dtype(query) and not len(query.shape):
+        return tf.expand_dims(x, 0)
+    return x[query]
 
 
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
@@ -372,9 +357,9 @@ def scatter_nd(
     )
 
     expected_shape = (
-        list(indices.shape[:-1]) + list(out.shape[indices.shape[-1] :])
+        list(tf.shape(indices)[:-1]) + list(out.shape[tf.shape(indices)[-1] :])
         if ivy.exists(out)
-        else list(indices.shape[:-1]) + list(shape[indices.shape[-1] :])
+        else list(tf.shape(indices)[:-1]) + list(shape[tf.shape(indices)[-1] :])
     )
     updates = _broadcast_to(updates, expected_shape)._data
     if len(updates.shape) == 0:

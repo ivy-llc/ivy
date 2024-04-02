@@ -845,6 +845,8 @@ def test_frontend_function(
     if test_flags.with_copy is True:
         test_flags.with_out = False
         test_flags.inplace = False
+    if test_flags.test_trace or test_flags.test_trace_each:
+        test_flags.with_out = test_flags.inplace = False
 
     all_as_kwargs_np = {
         k[4:] if k.startswith("arg_") else k: v for k, v in all_as_kwargs_np.items()
@@ -2580,6 +2582,8 @@ def get_ret_and_flattened_np_array(
     with BackendHandler.update_backend(backend_to_test) as ivy_backend:
         with ivy_backend.PreciseMode(precision_mode):
             ret = fn(*args, **kwargs)
+            if test_trace or test_trace_each:
+                ret = ivy_backend.to_ivy(ret, True)
 
         def map_fn(x):
             if _is_frontend_array(x):

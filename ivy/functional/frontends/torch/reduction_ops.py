@@ -135,6 +135,19 @@ def max(*input, dim=None, keepdim=False, out=None):
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.2.1 and below": (
+            "bfloat16",
+            "float16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "torch",
+)
 def mean(input, dim=None, keepdim=False, *, dtype=None, out=None):
     if dtype is not None:
         input = input.astype(dtype)

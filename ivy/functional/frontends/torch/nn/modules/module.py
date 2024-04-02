@@ -21,7 +21,7 @@ class Module(ivy.Module):
             device=device,
             devices=devices,
             training=True,
-            build_mode="explicit",
+            build_mode="on_init",
             dynamic_backend=True,
             **kwargs,
         )
@@ -107,15 +107,6 @@ class Module(ivy.Module):
             f'Module [{type(self).__name__}] is missing the required "forward" function'
         )
 
-    def call(self, inputs, *args, training=None, mask=None, **kwargs):
-        if isinstance(inputs, (list, tuple)):
-            try:
-                return self.forward(*inputs, *args, **kwargs)
-            except Exception:
-                return self.forward(inputs, *args, **kwargs)
-        else:
-            return self.forward(inputs, *args, **kwargs)
-
     def _forward(self, *a, **kw):
         ret = self._call_impl(*a, **kw)
         return ret
@@ -142,7 +133,9 @@ class Module(ivy.Module):
         fn(self)
         return self
 
-    def register_buffer(self, name: str, value: Optional["Tensor"]) -> None:
+    def register_buffer(
+        self, name: str, value: Optional["Tensor"], persistent: bool = False
+    ) -> None:
         super().register_buffer(name, value)
 
     def register_parameter(self, name: str, value: Optional["Parameter"]) -> None:
@@ -189,7 +182,7 @@ class Module(ivy.Module):
         for module_prefix, module in modules:
             members = get_members_fn(module)
             for k, v in members:
-                if v is None or id(v) in memo or not isinstance(v, Parameter):
+                if v is None or id(v) in memo or not isinstance(v, (Tensor, Parameter)):
                     continue
                 if remove_duplicate:
                     memo.add(id(v))
@@ -209,6 +202,21 @@ class Module(ivy.Module):
             )
         gen = self._named_members(
             lambda module: module.v.items(),
+            prefix=prefix,
+            recurse=recurse,
+            remove_duplicate=remove_duplicate,
+        )
+        yield from gen
+
+    def named_buffers(
+        self, prefix: str = "", recurse: bool = True, remove_duplicate: bool = True
+    ) -> Iterator[Tuple[str, Tensor]]:
+        if not getattr(self, "_built", False):
+            self.build(
+                *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
+            )
+        gen = self._named_members(
+            lambda module: module.buffers.items(),
             prefix=prefix,
             recurse=recurse,
             remove_duplicate=remove_duplicate,
@@ -279,14 +287,35 @@ class Module(ivy.Module):
             modules = self.__dict__["_module_dict"]
             if name in modules:
                 return modules[name]
+        else:
+            try:
+                modules = super().__getattribute__("_module_dict")
+                if name in modules:
+                    return modules[name]
+            except Exception:
+                pass
         if "_buffers" in self.__dict__:
             buffers = self.__dict__["_buffers"]
             if name in buffers:
                 return buffers[name]
+        else:
+            try:
+                buffers = super().__getattribute__("_buffers")
+                if name in buffers:
+                    return buffers[name]
+            except Exception:
+                pass
         if "_v" in self.__dict__:
             v = self.__dict__["_v"]
             if name in v:
                 return v[name]
+        else:
+            try:
+                v = super().__getattribute__("_v")
+                if name in v:
+                    return v[name]
+            except Exception:
+                pass
         # Adding this attribute mapping s.t if someone tries
         # to retrieve self._modules/self._parameters, we
         # can handle that here
@@ -294,6 +323,20 @@ class Module(ivy.Module):
             mapping = self.__dict__["_attr_mapping"]
             if name in mapping:
                 return super().__getattribute__(mapping[name])
+        else:
+            try:
+                mapping = super().__getattribute__("_attr_mapping")
+                if name in mapping:
+                    return mapping[name]
+            except Exception:
+                pass
+        # Adding this for cases where self._modules e.g. is accessed before the
+        # super.__init__(...) in translated models
+        if name in ("_parameters", "_modules") and "_attr_mapping" not in self.__dict__:
+            if name == "_parameters":
+                return super().__getattribute__("v")
+            if name == "_modules":
+                return super().__getattribute__("module_dict")
         return super().__getattribute__(name)
 
     def __setattr__(self, name, value) -> None:
@@ -305,7 +348,7 @@ class Module(ivy.Module):
                     else:
                         d.discard(name)
 
-        params = self.__dict__.get("_v")
+        params = self.__dict__.get("_v") or getattr(self, "_v", None)
         if params is not None and name in params and isinstance(value, Parameter):
             remove_from(self.__dict__, self._buffers, self._module_dict)
             self.register_parameter(name, value)

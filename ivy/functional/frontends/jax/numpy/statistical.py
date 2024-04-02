@@ -7,7 +7,6 @@ from ivy.functional.frontends.jax.func_wrapper import (
     handle_jax_dtype,
 )
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
-from ivy.functional.backends.jax.experimental.elementwise import _normalize_axis_tuple
 
 
 @to_ivy_arrays_and_back
@@ -444,7 +443,7 @@ def nanpercentile(
 
         nd = a.ndim
         if axis is not None:
-            axis = _normalize_axis_tuple(axis, nd)
+            axis = ivy._normalize_axis_tuple(axis, nd)
 
             if keepdims:
                 if out is not None:
