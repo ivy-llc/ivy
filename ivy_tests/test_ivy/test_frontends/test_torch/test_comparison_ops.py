@@ -143,7 +143,7 @@ def test_torch_eq(
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
-        min_value=1e-07,
+        abs_smallest_val=1e-07,
     ),
 )
 def test_torch_equal(
