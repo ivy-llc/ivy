@@ -338,18 +338,36 @@ def test_jax_append(
     test_flags,
 ):
     input_dtype, values, axis = dtype_values_axis
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        arr=values[0],
-        values=values[1],
-        axis=axis,
-    )
-
+    # Handle if axis is None
+    if axis is None:
+        # If axis is None, concatenate flattened arrays
+        expected_result = np.concatenate(
+            (np.ravel(values[0]), np.ravel(values[1])), axis=0
+        )
+        helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            arr=[values[0], values[1]],  # Pass list of arrays
+            values=None,  # No separate values to append
+            axis=axis,
+            expected_result=expected_result,  # Pass expected result
+        )
+    else:
+        helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            arr=values[0],
+            values=values[1],
+            axis=axis,
+        )
 
 # array_split
 @handle_frontend_test(
