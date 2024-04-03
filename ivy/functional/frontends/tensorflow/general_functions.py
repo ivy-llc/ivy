@@ -306,6 +306,9 @@ def norm(tensor, ord="euclidean", axis=None, keepdims=None, name=None):
     )
 
 
+@with_supported_dtypes(
+    {"2.15.0 and below": ("uint8", "int8", "int32", "int64")}, "tensorflow"
+)
 @to_ivy_arrays_and_back
 def one_hot(
     indices: ivy.Array,
