@@ -291,7 +291,7 @@ def test_jax_numpy_ifftshift(
         on_device=on_device,
         test_values=True,
         x=arr[0],
-        axes=None,
+        axes=None,  # You can change this to test specific axes if needed
     )
 
 

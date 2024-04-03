@@ -89,7 +89,7 @@ def ifftshift(x, axes=None):
 
     # If axes is None, shift all axes
     if axes is None:
-        axes = tuple(range(x.ndim))
+        axes = list(range(len(shape)))
 
     # Initialize a list to store the shift values
     shift_values = []
@@ -101,7 +101,7 @@ def ifftshift(x, axes=None):
         shift_values.append(shift)
 
     # Perform the shift using Ivy's roll function
-    result = ivy.roll(x, shift_values, axes)
+    result = ivy.roll(x, shift_values, axis=axes)
     return result
 
 
