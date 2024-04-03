@@ -838,39 +838,28 @@ def test_paddle_diagonal(
 # diff
 @handle_frontend_test(
     fn_tree="paddle.diff",
-    dtype_n_x_n_axis=helpers.dtype_values_axis(
-        available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
+    dtype_n_x_prepend_append=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=3,
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
+        shared_dtype=True,
     ),
     n=st.integers(min_value=1, max_value=1),
-    dtype_prepend=helpers.dtype_and_values(
-        available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
-        min_num_dims=1,
-        max_num_dims=1,
-    ),
-    dtype_append=helpers.dtype_and_values(
-        available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
-        min_num_dims=1,
-        max_num_dims=1,
-    ),
 )
 def test_paddle_diff(
     *,
-    dtype_n_x_n_axis,
+    dtype_n_x_prepend_append,
     n,
-    dtype_prepend,
-    dtype_append,
     test_flags,
     frontend,
     backend_fw,
     fn_tree,
     on_device,
 ):
-    input_dtype, x, axis = dtype_n_x_n_axis
-    _, prepend = dtype_prepend
-    _, append = dtype_append
+    input_dtype, array, axis = dtype_n_x_prepend_append
+    x, prepend, append = array[0], array[1], array[2]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -878,11 +867,11 @@ def test_paddle_diff(
         backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
+        x=x,
         n=n,
         axis=axis,
-        prepend=prepend[0],
-        append=append[0],
+        prepend=prepend,
+        append=append,
     )
 
 
