@@ -181,7 +181,7 @@ def test_disc_wl(
     dtype_p_fake, p_fake = dtype_and_p_fake
 
     helpers.test_function(
-        input_dtypes=dtype_p_real+dtype_p_fake,
+        input_dtypes=dtype_p_real + dtype_p_fake,
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_name=fn_name,
