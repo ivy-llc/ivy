@@ -70,7 +70,7 @@ class Tensor:
 
     @property
     def shape(self):
-        return Size(ivy.shape(self.ivy_array, as_array=True))
+        return Size(self.ivy_array.shape)
 
     @property
     def real(self):
@@ -1431,7 +1431,12 @@ class Tensor:
 
     def item(self):
         if all(dim == 1 for dim in self.shape):
-            return self.ivy_array.to_scalar()
+            if ivy.current_backend_str() == "tensorflow":
+                import tensorflow as tf
+
+                return tf.squeeze(self.ivy_array.data)
+            else:
+                return self.ivy_array.to_scalar()
         else:
             raise ValueError(
                 "only one element tensors can be converted to Python scalars"
