@@ -117,6 +117,16 @@ def index_add(x, index, axis, value, *, name=None):
     return ret
 
 
+@with_supported_dtypes({"2.5.1 and below": ("int32", "int64")}, "paddle")
+@to_ivy_arrays_and_back
+def one_hot(x, num_classes, name=None):
+    if not isinstance(num_classes, int) or num_classes <= 0:
+        raise ValueError("num_classes must be a positive integer.")
+
+    one_hot_tensor = ivy.one_hot(x, num_classes)
+    return one_hot_tensor.astype(ivy.float32)
+
+
 @to_ivy_arrays_and_back
 def put_along_axis(arr, indices, values, axis, reduce="assign"):
     result = ivy.put_along_axis(arr, indices, values, axis)

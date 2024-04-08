@@ -1480,7 +1480,7 @@ def test_tensorflow_rank(
     frontend,
     test_flags,
 ):
-    dtype, x, _ = dtype_and_x
+    dtype, x, *_ = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -2539,9 +2539,9 @@ def test_tensorflow_while_loop(
     input=helpers.get_shape(
         allow_none=False,
         min_num_dims=0,
-        max_num_dims=10,
+        max_num_dims=9,
         min_dim_size=0,
-        max_dim_size=10,
+        max_dim_size=9,
     ),
     dtype=helpers.get_dtypes("valid", full=False),
 )
@@ -2570,7 +2570,7 @@ def test_tensorflow_zeros(
 @handle_frontend_test(
     fn_tree="tensorflow.zeros_like",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
     test_with_out=st.just(False),

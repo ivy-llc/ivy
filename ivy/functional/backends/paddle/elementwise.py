@@ -482,12 +482,16 @@ def greater_equal(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    x1, x2, _ = _elementwise_helper(x1, x2)
     if isinstance(x1, paddle.Tensor) and isinstance(x2, paddle.Tensor):
         if paddle.is_complex(x1) and paddle.is_complex(x2):
-            real = paddle.greater_equal(x1.real(), x2.real())
-            imag = paddle.greater_equal(x1.imag(), x2.imag())
-            return paddle.logical_and(real, imag)
+            real_greater_equal = paddle.real(x1) >= paddle.real(x2)
+            real_equal = paddle.real(x1) == paddle.real(x2)
+            imag_greater_equal = paddle.imag(x1) >= paddle.imag(x2)
+            return paddle.logical_or(
+                real_greater_equal, paddle.logical_and(real_equal, imag_greater_equal)
+            )
+
     return paddle.greater_equal(x1, x2)
 
 
@@ -860,7 +864,7 @@ def abs(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.6.0 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.6.0 and below": {"cpu": ("float16", "bfloat16")}}, backend_version
 )
 def logaddexp(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
