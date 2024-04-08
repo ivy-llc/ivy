@@ -99,6 +99,9 @@ Core Contributors
    * - Mwape Bunda
      - `teckno <https://github.com/teckno>`_
      - OG Bronze
+   * - Ramya Manasa Amancherla
+     - `ramyamanasa <https://github.com/ramyamanasa>`_
+     - Merging Master Bronze, Ivy Inspector
    * - Rohit Kumar Salla
      - `rohitsalla <https://github.com/rohitsalla>`_
      - Merging Master Bronze, Ivy Inspector Bronze
@@ -140,9 +143,6 @@ Contributors
      - Merging Master, Ivy Inspector
    * - Rahul Prem
      - `rp097 <https://github.com/rp097>`_
-     - Merging Master, Ivy Inspector
-   * - Ramya Manasa Amancherla
-     - `ramyamanasa <https://github.com/ramyamanasa>`_
      - Merging Master, Ivy Inspector
    * - Vaishnavi Mudaliar
      - `VaishnaviMudaliar <https://github.com/VaishnaviMudaliar>`_
