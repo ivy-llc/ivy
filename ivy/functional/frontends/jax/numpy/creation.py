@@ -293,7 +293,6 @@ def single(x):
 
 @to_ivy_arrays_and_back
 def size(a, axis=None):
-    ivy.set_default_int_dtype("int64")
     if axis is not None:
         sh = ivy.shape(a)
         return sh[axis]
