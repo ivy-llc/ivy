@@ -80,28 +80,25 @@ def ifftn(a, s=None, axes=None, norm=None):
 
 @to_ivy_arrays_and_back
 def ifftshift(x, axes=None):
-    # Check if an array
     if not ivy.is_array(x):
-        raise ValueError("Input 'x' must be an  array")
+        raise ValueError("Input 'x' must be an array")
 
     # Get the shape of x
     shape = ivy.shape(x)
 
     # If axes is None, shift all axes
     if axes is None:
-        axes = list(range(len(shape)))
+        axes = tuple(range(x.ndim))
 
-    # Initialize a list to store the shift values
-    shift_values = []
+    # Convert axes to a list if it's not already
+    axes = [axes] if isinstance(axes, int) else list(axes)
 
-    # Calculate shift values for each axis
+    # Perform the shift for each axis
     for axis in axes:
         axis_size = shape[axis]
         shift = -ivy.floor(axis_size / 2).astype(ivy.int32)
-        shift_values.append(shift)
+        result = ivy.roll(x, shift, axis=axis)
 
-    # Perform the shift using Ivy's roll function
-    result = ivy.roll(x, shift_values, axis=axes)
     return result
 
 
