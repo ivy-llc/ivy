@@ -265,9 +265,10 @@ class _ContainerWithStatistical(ContainerBase):
     def mean(
         self: ivy.Container,
         /,
-        *,
         axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
         keepdims: Union[bool, ivy.Container] = False,
+        *,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -293,6 +294,10 @@ class _ContainerWithStatistical(ContainerBase):
             compatible with the input array (see :ref:`broadcasting`). Otherwise,
             if ``False``, the reduced axes (dimensions) must not be included in
             the result. Default: ``False``.
+        dtype
+            the desired data type of returned tensor. If specified, the input tensor
+            is casted to dtype before the operation is performed. This is useful for
+            preventing data type overflows. Default: None.
         key_chains
             The key-chains to apply or not apply the method to.
             Default is ``None``.
@@ -383,7 +388,7 @@ class _ContainerWithStatistical(ContainerBase):
         return self.cont_handle_inplace(
             self.cont_map(
                 lambda x_, _: (
-                    ivy.mean(x_, axis=axis, keepdims=keepdims)
+                    ivy.mean(x_, axis=axis, keepdims=keepdims, dtype=dtype)
                     if ivy.is_array(x_)
                     else x_
                 ),
