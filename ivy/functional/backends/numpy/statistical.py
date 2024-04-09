@@ -57,11 +57,14 @@ max.support_native_out = True
 def mean(
     x: np.ndarray,
     /,
-    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    *,
+    dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if dtype is not None:
+        x = ivy.astype(x, dtype).to_native()
     axis = tuple(axis) if isinstance(axis, list) else axis
     return np.mean(x, axis=axis, keepdims=keepdims, dtype=x.dtype, out=out)
 

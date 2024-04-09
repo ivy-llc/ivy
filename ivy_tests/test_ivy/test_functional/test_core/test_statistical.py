@@ -45,7 +45,7 @@ def _statistical_dtype_values(draw, *, function, min_value=None, max_value=None)
         small_abs_safety_factor = 24
     dtype, values, axis = draw(
         helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("valid"),
+            available_dtypes=helpers.get_dtypes("float_and_complex"),
             large_abs_safety_factor=large_abs_safety_factor,
             small_abs_safety_factor=small_abs_safety_factor,
             safety_factor_scale="log",
@@ -63,8 +63,9 @@ def _statistical_dtype_values(draw, *, function, min_value=None, max_value=None)
     shape = values[0].shape
     size = values[0].size
     max_correction = np.min(shape)
-    # TODO skip complex median test until added ?
-    #  because it is not supported in tensorflow (ground truth backend)
+    # TODO skip complex median test until added or add decorator
+    # for unsupported dtypes?
+    # because it is not supported in tensorflow (ground truth backend)
     assume("complex" not in dtype[0])
     if any(ele in function for ele in ["std", "var"]):
         if size == 1:
@@ -251,8 +252,11 @@ def test_max(*, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_devi
     fn_tree="functional.ivy.mean",
     dtype_and_x=_statistical_dtype_values(function="mean"),
     keep_dims=st.booleans(),
+    dtypes=helpers.get_dtypes("float", none=True, full=False),
 )
-def test_mean(*, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_device):
+def test_mean(
+    *, dtype_and_x, keep_dims, dtypes, test_flags, backend_fw, fn_name, on_device
+):
     input_dtype, x, axis, dtype3, where = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -266,6 +270,7 @@ def test_mean(*, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_dev
         x=x[0],
         axis=axis,
         keepdims=keep_dims,
+        dtype=dtypes[0],
     )
 
 
