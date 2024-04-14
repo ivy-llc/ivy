@@ -4885,14 +4885,14 @@ def test_torch_clamp_min(
     on_device,
     method_flags,
 ):
-    x_dtype, x, min = input_and_ranges
+    input_dtype, x, min = input_and_ranges
     helpers.test_frontend_method(
-        init_input_dtypes=x_dtype,
+        init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=x_dtype,
+        method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "min": min,
         },
@@ -4920,14 +4920,14 @@ def test_torch_clamp_min_(
     on_device,
     method_flags,
 ):
-    x_dtype, x, min = input_and_ranges
+    input_dtype, x, min = input_and_ranges
     helpers.test_frontend_method(
-        init_input_dtypes=x_dtype,
+        init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=x_dtype,
+        method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "min": min,
         },
@@ -5448,7 +5448,7 @@ def test_torch_cov(
 ):
     input_dtype, x, correction, fweights, aweights = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64", "int64", "float64"],
+        init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x,
@@ -5496,14 +5496,14 @@ def test_torch_cross(
     on_device,
     backend_fw,
 ):
-    dtype, input, other, dim = dtype_input_other_dim
+    input_dtype, input, other, dim = dtype_input_other_dim
     helpers.test_frontend_method(
-        init_input_dtypes=dtype,
+        init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": input,
         },
-        method_input_dtypes=dtype,
+        method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "other": other,
             "dim": dim,
@@ -5613,7 +5613,7 @@ def test_torch_cumprod(
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=dtypes,
+        method_input_dtypes=[],
         method_all_as_kwargs_np={
             "dim": dim,
             "dtype": dtypes[0],
@@ -5660,7 +5660,7 @@ def test_torch_cumsum(
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=dtypes,
+        method_input_dtypes=[],
         method_all_as_kwargs_np={
             "dim": dim,
             "dtype": dtypes[0],
@@ -5913,9 +5913,9 @@ def test_torch_diagonal(
     if dim2 < 0:
         assume(dim1 != dim2 + num_dims)
     helpers.test_frontend_method(
-        init_input_dtypes=[input_dtype[0]],
+        init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={"data": input},
-        method_input_dtypes=[input_dtype[0]],
+        method_input_dtypes=[],
         method_all_as_kwargs_np={
             "offset": offset,
             "dim1": dim1,
@@ -6929,14 +6929,14 @@ def test_torch_flip(
     on_device,
     backend_fw,
 ):
-    x, idxes, dtype = dtype_values_axis
+    x, idxes, input_dtype = dtype_values_axis
     helpers.test_frontend_method(
-        init_input_dtypes=dtype,
+        init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=dtype,
+        method_input_dtypes=[],
         method_all_as_kwargs_np={
             "dims": idxes,
         },
@@ -6967,9 +6967,9 @@ def test_torch_fliplr(
     on_device,
     backend_fw,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=dtype,
+        init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
@@ -7725,16 +7725,16 @@ def test_torch_index_add(
 ):
     xs, input_dtypes, axis, indices = xs_dtypes_dim_idx
     if xs[0].shape[axis] < xs[1].shape[axis]:
-        source, input = xs
+        (source, source_dtype), (input, input_dtype) = zip(xs, input_dtypes)
     else:
-        input, source = xs
+        (input, input_dtype), (source, source_dtype) = zip(xs, input_dtypes)
     helpers.test_frontend_method(
-        init_input_dtypes=[input_dtypes[0]],
+        init_input_dtypes=[input_dtype],
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": input,
         },
-        method_input_dtypes=["int64", input_dtypes[1]],
+        method_input_dtypes=["int64", source_dtype],
         method_all_as_kwargs_np={
             "dim": axis,
             "index": indices,
@@ -7772,16 +7772,16 @@ def test_torch_index_add_(
 ):
     xs, input_dtypes, axis, indices = xs_dtypes_dim_idx
     if xs[0].shape[axis] < xs[1].shape[axis]:
-        source, input = xs
+        (source, source_dtype), (input, input_dtype) = zip(xs, input_dtypes)
     else:
-        input, source = xs
+        (input, input_dtype), (source, source_dtype) = zip(xs, input_dtypes)
     helpers.test_frontend_method(
-        init_input_dtypes=[input_dtypes[0]],
+        init_input_dtypes=[input_dtype],
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": input,
         },
-        method_input_dtypes=["int64", input_dtypes[1]],
+        method_input_dtypes=["int64", source_dtype],
         method_all_as_kwargs_np={
             "dim": axis,
             "index": indices,
@@ -9293,14 +9293,14 @@ def test_torch_masked_fill(
     on_device,
     backend_fw,
 ):
-    dtype, x, mask, val = x_mask_val
+    input_dtype, x, mask, val = x_mask_val
     helpers.test_frontend_method(
-        init_input_dtypes=[dtype],
+        init_input_dtypes=[input_dtype],
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x,
         },
-        method_input_dtypes=["bool", dtype],
+        method_input_dtypes=["bool"],
         method_all_as_kwargs_np={
             "mask": mask,
             "value": val,
@@ -9329,14 +9329,14 @@ def test_torch_matmul(
     on_device,
     backend_fw,
 ):
-    dtype, tensor1, tensor2 = dtype_tensor1_tensor2
+    input_dtype, tensor1, tensor2 = dtype_tensor1_tensor2
     helpers.test_frontend_method(
-        init_input_dtypes=dtype,
+        init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": tensor1,
         },
-        method_input_dtypes=dtype,
+        method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={"other": tensor2},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
@@ -9630,14 +9630,14 @@ def test_torch_mm(
     on_device,
     backend_fw,
 ):
-    dtype, x, y = dtype_xy
+    input_dtype, x, y = dtype_xy
     helpers.test_frontend_method(
-        init_input_dtypes=dtype,
+        init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x,
         },
-        method_input_dtypes=dtype,
+        method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "mat2": y,
         },
@@ -10330,12 +10330,12 @@ def test_torch_new_empty(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=[input_dtype[0]],
+        init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x,
         },
-        method_input_dtypes=[ivy.int32],
+        method_input_dtypes=[],
         method_all_as_kwargs_np={
             "size": size,
         },
@@ -10417,7 +10417,7 @@ def test_torch_new_ones(
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=dtypes,
+        method_input_dtypes=[],
         method_all_as_kwargs_np={
             "size": size,
             "dtype": dtypes[0],
@@ -10505,7 +10505,7 @@ def test_torch_new_zeros(
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=dtypes,
+        method_input_dtypes=[],
         method_all_as_kwargs_np={
             "size": size,
             "dtype": dtypes[0],
@@ -10618,14 +10618,14 @@ def test_torch_normal_(
     on_device,
     backend_fw,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
 
     def call():
         return helpers.test_frontend_method(
-            init_input_dtypes=dtype,
+            init_input_dtypes=input_dtype,
             backend_to_test=backend_fw,
             init_all_as_kwargs_np={"data": x[0]},
-            method_input_dtypes=dtype,
+            method_input_dtypes=[],
             method_all_as_kwargs_np={
                 "mean": mean,
                 "std": std,
@@ -10795,7 +10795,7 @@ def test_torch_permute(
     on_device,
     backend_fw,
 ):
-    x, idxes, dtype = dtype_values_axis
+    x, idxes, input_dtype = dtype_values_axis
     unpack_dims = True
     if unpack_dims:
         method_flags.num_positional_args = len(idxes) + 1
@@ -10809,12 +10809,12 @@ def test_torch_permute(
             "dims": tuple(idxes),
         }
     helpers.test_frontend_method(
-        init_input_dtypes=dtype,
+        init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=dtype,
+        method_input_dtypes=[],
         method_all_as_kwargs_np=dims,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
@@ -11652,7 +11652,7 @@ def test_torch_scatter(
         init_all_as_kwargs_np={
             "data": x,
         },
-        method_input_dtypes=["int64", input_dtypes[0]],
+        method_input_dtypes=[input_dtypes[1], input_dtypes[2]],
         method_all_as_kwargs_np={
             "dim": axis,
             "index": indices,
@@ -11689,7 +11689,7 @@ def test_torch_scatter_(
         init_input_dtypes=[input_dtypes[0]],
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x},
-        method_input_dtypes=["int64", input_dtypes[0]],
+        method_input_dtypes=[input_dtypes[1], input_dtypes[2]],
         method_all_as_kwargs_np={
             "dim": axis,
             "index": indices,
@@ -11727,7 +11727,7 @@ def test_torch_scatter_add(
         init_all_as_kwargs_np={
             "data": x,
         },
-        method_input_dtypes=["int64", input_dtypes[0]],
+        method_input_dtypes=[input_dtypes[1], input_dtypes[2]],
         method_all_as_kwargs_np={
             "dim": axis,
             "index": indices,
@@ -11764,7 +11764,7 @@ def test_torch_scatter_add_(
         init_all_as_kwargs_np={
             "data": x,
         },
-        method_input_dtypes=["int64", input_dtypes[0]],
+        method_input_dtypes=[input_dtypes[1], input_dtypes[2]],
         method_all_as_kwargs_np={
             "dim": axis,
             "index": indices,
@@ -11803,7 +11803,7 @@ def test_torch_scatter_reduce(
         init_all_as_kwargs_np={
             "data": x,
         },
-        method_input_dtypes=["int64", input_dtypes[0]],
+        method_input_dtypes=[input_dtypes[1], input_dtypes[2]],
         method_all_as_kwargs_np={
             "dim": axis,
             "index": indices,
@@ -11843,7 +11843,7 @@ def test_torch_scatter_reduce_(
         init_all_as_kwargs_np={
             "data": x,
         },
-        method_input_dtypes=["int64", input_dtypes[0]],
+        method_input_dtypes=[input_dtypes[1], input_dtypes[2]],
         method_all_as_kwargs_np={
             "dim": axis,
             "index": indices,
@@ -14052,15 +14052,15 @@ def test_torch_unflatten(
     init_flags,
     method_flags,
 ):
-    dtype, x = dtype_and_values
+    input_dtype, x = dtype_and_values
     sizes = sizes_(shape, axis)
     helpers.test_frontend_method(
-        init_input_dtypes=dtype,
+        init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=dtype,
+        method_input_dtypes=[],
         method_all_as_kwargs_np={
             "dim": axis,
             "sizes": sizes,
