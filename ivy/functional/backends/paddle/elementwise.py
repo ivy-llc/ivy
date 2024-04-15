@@ -1067,7 +1067,7 @@ def erf(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
 
 
 @with_supported_dtypes(
-    {"2.6.0 and below": ("float32", "float64", "int32", "int64", "complex")},
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64", "complex64")},
     backend_version,
 )
 def minimum(
