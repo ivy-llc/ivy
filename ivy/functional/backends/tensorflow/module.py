@@ -533,8 +533,12 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
     def _compute_module_dict(self):
         self._module_dict = dict()
         for key, value in self.__dict__.items():
-            if isinstance(value, Layer):
-                if "stateful" in value.__module__ or hasattr(value, "_frontend_module"):
+            if isinstance(value, (Layer, tf.keras.layers.Layer)):
+                if (
+                    "stateful" in value.__module__
+                    or hasattr(value, "_frontend_module")
+                    or not hasattr(value, "_module_dict")
+                ):
                     self._module_dict[key] = value
                 else:
                     self._module_dict[key] = value._module_dict
@@ -798,13 +802,19 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
     def __setattr__(self, name, value):
         if name in ["v", "buffers"]:
             name = "_" + name
-        if isinstance(value, Layer):
+        if isinstance(value, (Layer, tf.keras.layers.Layer)):
             _dict = getattr(self, "__dict__", None)
             if _dict:
                 _dict[name] = value
 
             obj_to_search = (
-                self._modules if hasattr(self, "_modules") and self._modules else self
+                None
+                if not isinstance(value, Layer)
+                else (
+                    self._modules
+                    if hasattr(self, "_modules") and self._modules
+                    else self
+                )
             )
             found_vars = self._find_variables(
                 obj=obj_to_search,
@@ -875,7 +885,7 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
     @tf.autograph.experimental.do_not_convert
     def __delattr__(self, name):
         if hasattr(self, name):
-            if isinstance(getattr(self, name), Layer):
+            if isinstance(getattr(self, name), (Layer, tf.keras.layers.Layer)):
                 super().__delattr__(name)
                 return
         super().__delattr__(name)
@@ -1101,8 +1111,12 @@ class Model(tf.keras.Model, ModelHelpers):
     def _compute_module_dict(self):
         self._module_dict = dict()
         for key, value in self.__dict__.items():
-            if isinstance(value, (Layer, Model)):
-                if "stateful" in value.__module__ or hasattr(value, "_frontend_module"):
+            if isinstance(value, (Layer, tf.keras.layers.Layer, Model, tf.keras.Model)):
+                if (
+                    "stateful" in value.__module__
+                    or hasattr(value, "_frontend_module")
+                    or not hasattr(value, "_module_dict")
+                ):
                     self._module_dict[key] = value
                 else:
                     self._module_dict[key] = value._module_dict
@@ -1366,13 +1380,19 @@ class Model(tf.keras.Model, ModelHelpers):
     def __setattr__(self, name, value):
         if name in ["v", "buffers"]:
             name = "_" + name
-        if isinstance(value, (Layer, Model)):
+        if isinstance(value, (Layer, tf.keras.layers.Layer, Model, tf.keras.Model)):
             _dict = getattr(self, "__dict__", None)
             if _dict:
                 _dict[name] = value
 
             obj_to_search = (
-                self._modules if hasattr(self, "_modules") and self._modules else self
+                None
+                if not isinstance(value, (Layer, Model))
+                else (
+                    self._modules
+                    if hasattr(self, "_modules") and self._modules
+                    else self
+                )
             )
             found_vars = self._find_variables(
                 obj=obj_to_search,
@@ -1443,7 +1463,10 @@ class Model(tf.keras.Model, ModelHelpers):
     @tf.autograph.experimental.do_not_convert
     def __delattr__(self, name):
         if hasattr(self, name):
-            if isinstance(getattr(self, name), (Layer, Model)):
+            if isinstance(
+                getattr(self, name),
+                (Layer, tf.keras.layers.Layer, Model, tf.keras.Model),
+            ):
                 super().__delattr__(name)
                 return
         super().__delattr__(name)
