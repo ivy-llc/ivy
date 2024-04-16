@@ -4,7 +4,6 @@ import re
 import os
 import tensorflow as tf
 import functools
-import logging
 from tensorflow.python.util import nest
 from typing import NamedTuple, Callable, Any, Tuple, List, Dict, Type, Union
 import inspect
@@ -406,6 +405,7 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
         obj=None,
         without_initialisation=False,
         _visited=None,
+        trainable=True,
     ):
         _visited = _visited or {}
         vs = dict()
@@ -413,12 +413,13 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
             return vs
         _visited[id(obj)] = True
         if isinstance(obj, Layer) and obj is not self:
+            fn = "_build_and_return_v" if trainable else "_build_and_return_buffers"
             if not obj._built and without_initialisation:
-                return lambda: obj._build_and_return_v(
+                return lambda: getattr(obj, fn)(
                     *obj._args, dynamic_backend=self._dynamic_backend, **obj._kwargs
                 )
 
-            return obj._build_and_return_v(
+            return getattr(obj, fn)(
                 *obj._args, dynamic_backend=obj._dynamic_backend, **obj._kwargs
             )
         elif isinstance(obj, (list, tuple)):
@@ -427,6 +428,7 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
                     obj=v,
                     without_initialisation=without_initialisation,
                     _visited=_visited,
+                    trainable=trainable,
                 )
                 if ret:
                     vs[f"v{str(i)}"] = ret
@@ -437,6 +439,7 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
                     obj=v,
                     without_initialisation=without_initialisation,
                     _visited=_visited,
+                    trainable=trainable,
                 )
                 if ret:
                     vs[k[1:] if k[0] == "_" else k] = ret
@@ -451,6 +454,8 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
                     (
                         "_module_dict",
                         "_self_",
+                        "_args",
+                        "_kwargs",
                     )
                 )
             ):
@@ -458,6 +463,7 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
                     obj=v,
                     without_initialisation=without_initialisation,
                     _visited=_visited,
+                    trainable=trainable,
                 )
                 if ret:
                     vs[k[1:] if k[0] == "_" else k] = ret
@@ -477,78 +483,10 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
         return self.v
 
     @tf.autograph.experimental.do_not_convert
-    def _assign_weights(self):
-        model_weights = {}
-        existing_ids = [id(w) for w in self.weights]
-
-        # trainable weights
-        flattened_v, v_spec = tree_flatten(self.v)
-        flattened_kc = v_spec.get_keychains()
-        new_weights = [None] * len(flattened_v)
-        for i, (kc, x) in enumerate(zip(flattened_kc, flattened_v)):
-            cast_dtype = False
-            if x is not None:
-                # Manual solution for cases where a `tf.int32` tensor
-                # is placed on the GPU. TensorFlow doesn't have dedicated
-                # kernels for placing `tf.int32` variables on the GPU and so
-                # we manually cast them to `tf.int64` here otherwise due to
-                # `tf.config.soft_device_placement(True)` by default,
-                # TensorFlow puts the `tf.int32` variables on CPU which causes
-                # unintended consequences downstream during tracing or
-                # `tf.function` compilation e.g.
-                # Ref: https://github.com/tensorflow/tensorflow/issues/9506
-                # Ref: https://stackoverflow.com/questions/44813939/could-not-satisfy-explicit-device-specification-devicegpu0-because-no-devic
-                dtype = (
-                    tf.int64
-                    if x.dtype == tf.int32 and "gpu:" in x.device.lower()
-                    else x.dtype
-                )
-                cast_dtype = dtype != x.dtype
-            new_weights[i] = (
-                self.add_weight(name=kc, shape=x.shape, dtype=x.dtype, trainable=True)
-                if x is not None and id(x) not in existing_ids
-                else x
-            )
-            if isinstance(x, tf.Variable):
-                val = x.value() if not cast_dtype else tf.cast(x.value(), dtype)
-                new_weights[i].assign(val)
-            if new_weights[i] is not None:
-                model_weights[id(new_weights[i])] = new_weights[i].numpy()
-        self.v = tree_unflatten(new_weights, v_spec)
-
-        # non-trainable weights
-        flattened_buf, buf_spec = tree_flatten(self.buffers)
-        flattened_kc = buf_spec.get_keychains()
-        new_buf = [None] * len(flattened_buf)
-        for i, (kc, x) in enumerate(zip(flattened_kc, flattened_buf)):
-            cast_dtype = False
-            if x is not None:
-                dtype = (
-                    tf.int64
-                    if x.dtype == tf.int32 and "gpu:" in x.device.lower()
-                    else x.dtype
-                )
-                cast_dtype = dtype != x.dtype
-            new_buf[i] = (
-                self.add_weight(name=kc, shape=x.shape, dtype=x.dtype, trainable=False)
-                if x is not None and id(x) not in existing_ids
-                else x
-            )
-            if isinstance(x, tf.Variable):
-                val = x.value() if not cast_dtype else tf.cast(x.value(), dtype)
-                new_buf[i].assign(val)
-            if new_buf[i] is not None:
-                model_weights[id(new_buf[i])] = new_buf[i].numpy()
-        self.buffers = tree_unflatten(new_buf, buf_spec)
-
-        def _sort_weights(model_weights, weights):
-            sorted_weights = []
-            for weight in weights:
-                sorted_weights.append(model_weights[id(weight)])
-            return sorted_weights
-
-        if model_weights:
-            self.set_weights(_sort_weights(model_weights, self.weights))
+    def _build_and_return_buffers(self, *args, **kwargs):
+        if not self._built:
+            self.build(*args, **kwargs)
+        return self.buffers
 
     @tf.autograph.experimental.do_not_convert
     def _wrap_call_methods(
@@ -590,17 +528,6 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
                     keychain_mappings, key=k, obj=val, _visited=_visited
                 )
         return
-
-    @tf.autograph.experimental.do_not_convert
-    def _rebuild(self):
-        logging.warning(
-            "Building the module again as a trainable module was modified, "
-            'please use the "explicit" or "on_call" build_modes instead '
-            'of "on_init" to avoid repetitive building after each addition'
-        )
-        self._v = dict()
-        self._built = False
-        self.build(*self._args, **self._kwargs)
 
     @tf.autograph.experimental.do_not_convert
     def _compute_module_dict(self):
@@ -693,69 +620,9 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
         dynamic_backend=None,
         **kwargs,
     ):
-        self._device = device or self._device
-        self._dtype = dtype or self._dtype
-        self._dynamic_backend = dynamic_backend or self._dynamic_backend
-        # return False if not from_call but build_mode is on_call
-        if not from_call and self._build_mode == "on_call":
-            return self.v
-
-        # build local Module, and any child modules flagged with "explicit" build mode
-        # this gets the child modules initialised at best, their weights
-        # remain un-generated
-        built = self._build(*args, **kwargs) or True
-
-        # this creates weights for this Module only
-        created = self._create_variables(device=self._device, dtype=dtype)
-        created = (
-            created.cont_to_dict() if hasattr(created, "cont_to_dict") else created
-        )
-
-        # build variables based on locally built layers, if v not passed in constructor
-        created_n_found = dict(
-            **self._find_variables(
-                obj=self,
-                without_initialisation=(
-                    True
-                    if self._v_from_constructor and not self._with_partial_v
-                    else False
-                ),
-            ),
-            **created,
-        )
-        if self._v_from_constructor:
-            # TODO: Add logic here for when `v` is passed in the constructor
-            raise Exception("TODO: Implement this logic")
-        else:
-            self._v = created_n_found
-        # remove duplicates
-        self._v, keychain_mappings = self._remove_duplicate_variables(self._v, created)
-        # build any child 'on_call' layers
-        if not built and from_call:
-            # TODO: Add logic for here
-            raise Exception("TODO: Implement this logic")
-
-        # flag built and remove local variables if specified
-        self._built = bool(built)
-        v_ret = self.v
-        if not self._store_vars:
-            # ToDo: verify variables in self.v are released once this method exits
-            self._v = dict()
-
-        # compute the module dict
-        self._compute_module_dict()
-
-        # once all variables built, find and assign buffers
-        self._find_buffers()
-
-        # also assign the keras model trainable and non-trainable weights now
-        self._assign_weights()
-
-        # wrap call methods if the model is fully built
-        if built:
-            self._wrap_call_methods(keychain_mappings, obj=self)
-
-        return v_ret if bool(v_ret) or isinstance(built, bool) else built
+        if self._build_mode == "on_init":
+            self._built = True
+        return
 
     @tf.autograph.experimental.do_not_convert
     def register_buffer(self, name: str, value: Union[tf.Tensor, tf.Variable]):
@@ -785,6 +652,54 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
         raise NotImplementedError(
             "When subclassing the `Module` class, you should implement a `call` method."
         )
+
+    def get_config(self):
+        base_config = super().get_config()
+        config = {}
+
+        # Get the names and values of positional arguments in __init__
+        init_signature = inspect.signature(self.__init__)
+        arg_names = list(init_signature.parameters.keys())
+
+        # Include the positional arguments in the config
+        for arg_name, arg in zip(arg_names, self._args[1:]):
+            config.update(
+                {
+                    arg_name: arg,
+                }
+            )
+
+        # Include the keywords arguments in the config
+        kwargs = self._kwargs.copy()
+        kwargs.pop("devices", None)
+        config.update(**kwargs)
+        return {**base_config, **config}
+
+    @classmethod
+    def from_config(cls, config):
+        # Get the signature of the __init__ method
+        init_signature = inspect.signature(cls.__init__)
+        arg_names = list(init_signature.parameters.keys())
+
+        # Separate positional and keyword arguments based on the __init__ signature
+        args = []
+        kwargs = {}
+        for arg_name in arg_names:
+            if arg_name in config:
+                if (
+                    init_signature.parameters[arg_name].kind
+                    == init_signature.parameters[arg_name].VAR_POSITIONAL
+                ):
+                    args.append(config.pop(arg_name))
+                else:
+                    kwargs[arg_name] = config.pop(arg_name)
+
+        # Unpack positional arguments and the rest as keyword arguments
+        config.pop("name", None)
+        config.pop("trainable", None)
+        config.pop("dtype", None)
+        kwargs.update(config)
+        return cls(*args, **kwargs)
 
     # Methods to be Optionally Overridden #
     # -----------------------------------#
@@ -884,29 +799,77 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
         if name in ["v", "buffers"]:
             name = "_" + name
         if isinstance(value, Layer):
-            ret = super().__setattr__(name, value)
             _dict = getattr(self, "__dict__", None)
             if _dict:
                 _dict[name] = value
-            if (
-                hasattr(self, "_build_mode")
-                and self.build_mode == "on_init"
-                and getattr(self, "_built", False)
-            ):
-                self._rebuild()
-            return ret
+
+            obj_to_search = (
+                self._modules if hasattr(self, "_modules") and self._modules else self
+            )
+            found_vars = self._find_variables(
+                obj=obj_to_search,
+                without_initialisation=(
+                    True
+                    if self._v_from_constructor and not self._with_partial_v
+                    else False
+                ),
+            )
+            flattened_v, v_spec = tree_flatten(found_vars)
+            flattend_kc = v_spec.get_keychains()
+            for kc, v in zip(flattend_kc, flattened_v):
+                new_kc = kc.replace("/", ".")
+                if new_kc not in self.v:
+                    self.register_parameter(new_kc, v)
+
+            # compute the module dict
+            self._compute_module_dict()
+
+            # once all variables built, find and assign buffers
+            found_buffers = self._find_variables(
+                obj=obj_to_search,
+                without_initialisation=(
+                    True
+                    if self._v_from_constructor and not self._with_partial_v
+                    else False
+                ),
+                trainable=False,
+            )
+            flattened_buf, buf_spec = tree_flatten(found_buffers)
+            flattend_kc = buf_spec.get_keychains()
+            for kc, buf in zip(flattend_kc, flattened_buf):
+                new_kc = kc.replace("/", ".")
+                self.register_buffer(new_kc, buf)
+
+            super().__setattr__(name, value)
+            return
         elif isinstance(value, tf.Variable) and not name.startswith("_"):
-            ret = self.register_parameter(name, value)
             _dict = getattr(self, "__dict__", None)
             if _dict:
                 _dict[name] = value
-            if (
-                hasattr(self, "_build_mode")
-                and self.build_mode == "on_init"
-                and getattr(self, "_built", False)
-            ):
-                self._rebuild()
-            return ret
+            # Manual solution for cases where a `tf.int32` tensor
+            # is placed on the GPU. TensorFlow doesn't have dedicated
+            # kernels for placing `tf.int32` variables on the GPU and so
+            # we manually cast them to `tf.int64` here otherwise due to
+            # `tf.config.soft_device_placement(True)` by default,
+            # TensorFlow puts the `tf.int32` variables on CPU which causes
+            # unintended consequences downstream during tracing or
+            # `tf.function` compilation e.g.
+            # Ref: https://github.com/tensorflow/tensorflow/issues/9506
+            # Ref: https://stackoverflow.com/questions/44813939/could-not-satisfy-explicit-device-specification-devicegpu0-because-no-devic
+            dtype = (
+                tf.int64
+                if value.dtype == tf.int32 and "gpu:" in value.device.lower()
+                else value.dtype
+            )
+            cast_dtype = dtype != value.dtype
+            val = (
+                value
+                if not cast_dtype
+                else tf.Variable(initial_value=tf.cast(value.value(), dtype), name=name)
+            )
+            self.register_parameter(name, val)
+            super().__setattr__(name, val)
+            return
         return super().__setattr__(name, value)
 
     @tf.autograph.experimental.do_not_convert
@@ -914,8 +877,6 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
         if hasattr(self, name):
             if isinstance(getattr(self, name), Layer):
                 super().__delattr__(name)
-                if self.build_mode == "on_init":
-                    self._rebuild()
                 return
         super().__delattr__(name)
 
@@ -1012,6 +973,7 @@ class Model(tf.keras.Model, ModelHelpers):
         obj=None,
         without_initialisation=False,
         _visited=None,
+        trainable=True,
     ):
         _visited = _visited or {}
         vs = dict()
@@ -1019,12 +981,13 @@ class Model(tf.keras.Model, ModelHelpers):
             return vs
         _visited[id(obj)] = True
         if isinstance(obj, (Layer, Model)) and obj is not self:
+            fn = "_build_and_return_v" if trainable else "_build_and_return_buffers"
             if not obj._built and without_initialisation:
-                return lambda: obj._build_and_return_v(
+                return lambda: getattr(obj, fn)(
                     *obj._args, dynamic_backend=self._dynamic_backend, **obj._kwargs
                 )
 
-            return obj._build_and_return_v(
+            return getattr(obj, fn)(
                 *obj._args, dynamic_backend=obj._dynamic_backend, **obj._kwargs
             )
         elif isinstance(obj, (list, tuple)):
@@ -1033,6 +996,7 @@ class Model(tf.keras.Model, ModelHelpers):
                     obj=v,
                     without_initialisation=without_initialisation,
                     _visited=_visited,
+                    trainable=trainable,
                 )
                 if ret:
                     vs[f"v{str(i)}"] = ret
@@ -1043,6 +1007,7 @@ class Model(tf.keras.Model, ModelHelpers):
                     obj=v,
                     without_initialisation=without_initialisation,
                     _visited=_visited,
+                    trainable=trainable,
                 )
                 if ret:
                     vs[k[1:] if k[0] == "_" else k] = ret
@@ -1057,6 +1022,8 @@ class Model(tf.keras.Model, ModelHelpers):
                     (
                         "_module_dict",
                         "_self_",
+                        "_args",
+                        "_kwargs",
                     )
                 )
             ):
@@ -1064,6 +1031,7 @@ class Model(tf.keras.Model, ModelHelpers):
                     obj=v,
                     without_initialisation=without_initialisation,
                     _visited=_visited,
+                    trainable=trainable,
                 )
                 if ret:
                     vs[k[1:] if k[0] == "_" else k] = ret
@@ -1083,78 +1051,10 @@ class Model(tf.keras.Model, ModelHelpers):
         return self.v
 
     @tf.autograph.experimental.do_not_convert
-    def _assign_weights(self):
-        model_weights = {}
-        existing_ids = [id(w) for w in self.weights]
-
-        # trainable weights
-        flattened_v, v_spec = tree_flatten(self.v)
-        flattened_kc = v_spec.get_keychains()
-        new_weights = [None] * len(flattened_v)
-        for i, (kc, x) in enumerate(zip(flattened_kc, flattened_v)):
-            cast_dtype = False
-            if x is not None:
-                # Manual solution for cases where a `tf.int32` tensor
-                # is placed on the GPU. TensorFlow doesn't have dedicated
-                # kernels for placing `tf.int32` variables on the GPU and so
-                # we manually cast them to `tf.int64` here otherwise due to
-                # `tf.config.soft_device_placement(True)` by default,
-                # TensorFlow puts the `tf.int32` variables on CPU which causes
-                # unintended consequences downstream during tracing or
-                # `tf.function` compilation e.g.
-                # Ref: https://github.com/tensorflow/tensorflow/issues/9506
-                # Ref: https://stackoverflow.com/questions/44813939/could-not-satisfy-explicit-device-specification-devicegpu0-because-no-devic
-                dtype = (
-                    tf.int64
-                    if x.dtype == tf.int32 and "gpu:" in x.device.lower()
-                    else x.dtype
-                )
-                cast_dtype = dtype != x.dtype
-            new_weights[i] = (
-                self.add_weight(name=kc, shape=x.shape, dtype=x.dtype, trainable=True)
-                if x is not None and id(x) not in existing_ids
-                else x
-            )
-            if isinstance(x, tf.Variable):
-                val = x.value() if not cast_dtype else tf.cast(x.value(), dtype)
-                new_weights[i].assign(val)
-            if new_weights[i] is not None:
-                model_weights[id(new_weights[i])] = new_weights[i].numpy()
-        self.v = tree_unflatten(new_weights, v_spec)
-
-        # non-trainable weights
-        flattened_buf, buf_spec = tree_flatten(self.buffers)
-        flattened_kc = buf_spec.get_keychains()
-        new_buf = [None] * len(flattened_buf)
-        for i, (kc, x) in enumerate(zip(flattened_kc, flattened_buf)):
-            cast_dtype = False
-            if x is not None:
-                dtype = (
-                    tf.int64
-                    if x.dtype == tf.int32 and "gpu:" in x.device.lower()
-                    else x.dtype
-                )
-                cast_dtype = dtype != x.dtype
-            new_buf[i] = (
-                self.add_weight(name=kc, shape=x.shape, dtype=x.dtype, trainable=False)
-                if x is not None and id(x) not in existing_ids
-                else x
-            )
-            if isinstance(x, tf.Variable):
-                val = x.value() if not cast_dtype else tf.cast(x.value(), dtype)
-                new_buf[i].assign(val)
-            if new_buf[i] is not None:
-                model_weights[id(new_buf[i])] = new_buf[i].numpy()
-        self.buffers = tree_unflatten(new_buf, buf_spec)
-
-        def _sort_weights(model_weights, weights):
-            sorted_weights = []
-            for weight in weights:
-                sorted_weights.append(model_weights[id(weight)])
-            return sorted_weights
-
-        if model_weights:
-            self.set_weights(_sort_weights(model_weights, self.weights))
+    def _build_and_return_buffers(self, *args, **kwargs):
+        if not self._built:
+            self.build(*args, **kwargs)
+        return self.buffers
 
     @tf.autograph.experimental.do_not_convert
     def _wrap_call_methods(
@@ -1196,17 +1096,6 @@ class Model(tf.keras.Model, ModelHelpers):
                     keychain_mappings, key=k, obj=val, _visited=_visited
                 )
         return
-
-    @tf.autograph.experimental.do_not_convert
-    def _rebuild(self):
-        logging.warning(
-            "Building the module again as a trainable module was modified, "
-            'please use the "explicit" or "on_call" build_modes instead '
-            'of "on_init" to avoid repetitive building after each addition'
-        )
-        self._v = dict()
-        self._built = False
-        self.build(*self._args, **self._kwargs)
 
     @tf.autograph.experimental.do_not_convert
     def _compute_module_dict(self):
@@ -1299,69 +1188,9 @@ class Model(tf.keras.Model, ModelHelpers):
         dynamic_backend=None,
         **kwargs,
     ):
-        self._device = device or self._device
-        self._dtype = dtype or self._dtype
-        self._dynamic_backend = dynamic_backend or self._dynamic_backend
-        # return False if not from_call but build_mode is on_call
-        if not from_call and self._build_mode == "on_call":
-            return self.v
-
-        # build local Module, and any child modules flagged with "explicit" build mode
-        # this gets the child modules initialised at best, their weights
-        # remain un-generated
-        built = self._build(*args, **kwargs) or True
-
-        # this creates weights for this Module only
-        created = self._create_variables(device=self._device, dtype=dtype)
-        created = (
-            created.cont_to_dict() if hasattr(created, "cont_to_dict") else created
-        )
-
-        # build variables based on locally built layers, if v not passed in constructor
-        created_n_found = dict(
-            **self._find_variables(
-                obj=self,
-                without_initialisation=(
-                    True
-                    if self._v_from_constructor and not self._with_partial_v
-                    else False
-                ),
-            ),
-            **created,
-        )
-        if self._v_from_constructor:
-            # TODO: Add logic here for when `v` is passed in the constructor
-            raise Exception("TODO: Implement this logic")
-        else:
-            self._v = created_n_found
-        # remove duplicates
-        self._v, keychain_mappings = self._remove_duplicate_variables(self._v, created)
-        # build any child 'on_call' layers
-        if not built and from_call:
-            # TODO: Add logic for here
-            raise Exception("TODO: Implement this logic")
-
-        # flag built and remove local variables if specified
-        self._built = bool(built)
-        v_ret = self.v
-        if not self._store_vars:
-            # ToDo: verify variables in self.v are released once this method exits
-            self._v = dict()
-
-        # compute the module dict
-        self._compute_module_dict()
-
-        # once all variables built, find and assign buffers
-        self._find_buffers()
-
-        # also assign the keras model trainable and non-trainable weights now
-        self._assign_weights()
-
-        # wrap call methods if the model is fully built
-        if built:
-            self._wrap_call_methods(keychain_mappings, obj=self)
-
-        return v_ret if bool(v_ret) or isinstance(built, bool) else built
+        if self._build_mode == "on_init":
+            self._built = True
+        return
 
     @tf.autograph.experimental.do_not_convert
     def register_buffer(self, name: str, value: Union[tf.Tensor, tf.Variable]):
@@ -1391,6 +1220,54 @@ class Model(tf.keras.Model, ModelHelpers):
         raise NotImplementedError(
             "When subclassing the `Module` class, you should implement a `call` method."
         )
+
+    def get_config(self):
+        base_config = super().get_config()
+        config = {}
+
+        # Get the names and values of positional arguments in __init__
+        init_signature = inspect.signature(self.__init__)
+        arg_names = list(init_signature.parameters.keys())
+
+        # Include the positional arguments in the config
+        for arg_name, arg in zip(arg_names, self._args[1:]):
+            config.update(
+                {
+                    arg_name: arg,
+                }
+            )
+
+        # Include the keywords arguments in the config
+        kwargs = self._kwargs.copy()
+        kwargs.pop("devices", None)
+        config.update(**kwargs)
+        return {**base_config, **config}
+
+    @classmethod
+    def from_config(cls, config):
+        # Get the signature of the __init__ method
+        init_signature = inspect.signature(cls.__init__)
+        arg_names = list(init_signature.parameters.keys())
+
+        # Separate positional and keyword arguments based on the __init__ signature
+        args = []
+        kwargs = {}
+        for arg_name in arg_names:
+            if arg_name in config:
+                if (
+                    init_signature.parameters[arg_name].kind
+                    == init_signature.parameters[arg_name].VAR_POSITIONAL
+                ):
+                    args.append(config.pop(arg_name))
+                else:
+                    kwargs[arg_name] = config.pop(arg_name)
+
+        # Unpack positional arguments and the rest as keyword arguments
+        config.pop("name", None)
+        config.pop("trainable", None)
+        config.pop("dtype", None)
+        kwargs.update(config)
+        return cls(*args, **kwargs)
 
     # Methods to be Optionally Overridden #
     # -----------------------------------#
@@ -1490,29 +1367,77 @@ class Model(tf.keras.Model, ModelHelpers):
         if name in ["v", "buffers"]:
             name = "_" + name
         if isinstance(value, (Layer, Model)):
-            ret = super().__setattr__(name, value)
             _dict = getattr(self, "__dict__", None)
             if _dict:
                 _dict[name] = value
-            if (
-                hasattr(self, "_build_mode")
-                and self.build_mode == "on_init"
-                and getattr(self, "_built", False)
-            ):
-                self._rebuild()
-            return ret
+
+            obj_to_search = (
+                self._modules if hasattr(self, "_modules") and self._modules else self
+            )
+            found_vars = self._find_variables(
+                obj=obj_to_search,
+                without_initialisation=(
+                    True
+                    if self._v_from_constructor and not self._with_partial_v
+                    else False
+                ),
+            )
+            flattened_v, v_spec = tree_flatten(found_vars)
+            flattend_kc = v_spec.get_keychains()
+            for kc, v in zip(flattend_kc, flattened_v):
+                new_kc = kc.replace("/", ".")
+                if new_kc not in self.v:
+                    self.register_parameter(new_kc, v)
+
+            # compute the module dict
+            self._compute_module_dict()
+
+            # once all variables built, find and assign buffers
+            found_buffers = self._find_variables(
+                obj=obj_to_search,
+                without_initialisation=(
+                    True
+                    if self._v_from_constructor and not self._with_partial_v
+                    else False
+                ),
+                trainable=False,
+            )
+            flattened_buf, buf_spec = tree_flatten(found_buffers)
+            flattend_kc = buf_spec.get_keychains()
+            for kc, buf in zip(flattend_kc, flattened_buf):
+                new_kc = kc.replace("/", ".")
+                self.register_buffer(new_kc, buf)
+
+            super().__setattr__(name, value)
+            return
         elif isinstance(value, tf.Variable) and not name.startswith("_"):
-            ret = self.register_parameter(name, value)
             _dict = getattr(self, "__dict__", None)
             if _dict:
                 _dict[name] = value
-            if (
-                hasattr(self, "_build_mode")
-                and self.build_mode == "on_init"
-                and getattr(self, "_built", False)
-            ):
-                self._rebuild()
-            return ret
+
+            # Manual solution for cases where a `tf.int32` tensor
+            # is placed on the GPU. TensorFlow doesn't have dedicated
+            # kernels for placing `tf.int32` variables on the GPU and so
+            # we manually cast them to `tf.int64` here otherwise due to
+            # `tf.config.soft_device_placement(True)` by default,
+            # TensorFlow puts the `tf.int32` variables on CPU which causes
+            # unintended consequences downstream during tracing or
+            # `tf.function` compilation e.g.
+            # Ref: https://github.com/tensorflow/tensorflow/issues/9506
+            # Ref: https://stackoverflow.com/questions/44813939/could-not-satisfy-explicit-device-specification-devicegpu0-because-no-devic
+            dtype = (
+                tf.int64
+                if value.dtype == tf.int32 and "gpu:" in value.device.lower()
+                else value.dtype
+            )
+            cast_dtype = dtype != value.dtype
+            val = (
+                value
+                if not cast_dtype
+                else tf.Variable(initial_value=tf.cast(value.value(), dtype), name=name)
+            )
+            self.register_parameter(name, val)
+            super().__setattr__(name, val)
         return super().__setattr__(name, value)
 
     @tf.autograph.experimental.do_not_convert
@@ -1520,8 +1445,6 @@ class Model(tf.keras.Model, ModelHelpers):
         if hasattr(self, name):
             if isinstance(getattr(self, name), (Layer, Model)):
                 super().__delattr__(name)
-                if self.build_mode == "on_init":
-                    self._rebuild()
                 return
         super().__delattr__(name)
 
