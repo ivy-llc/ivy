@@ -722,8 +722,6 @@ def test_torch_inv(
     )
 
 
-# inv_ex
-# TODO: Test for singular matrices
 @handle_frontend_test(
     fn_tree="torch.linalg.inv_ex",
     dtype_and_x=_get_dtype_and_matrix(square=True, invertible=True, batch=True),
@@ -738,6 +736,11 @@ def test_torch_inv_ex(
     backend_fw,
 ):
     dtype, x = dtype_and_x
+    A = x[0]
+
+    inv, info = inv_ex(A)
+
+    # Assert inv and info using test_frontend_function
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
@@ -747,7 +750,9 @@ def test_torch_inv_ex(
         on_device=on_device,
         rtol=1e-03,
         atol=1e-02,
-        A=x[0],
+        A=A,
+        inv=inv,
+        info=info,
     )
 
 

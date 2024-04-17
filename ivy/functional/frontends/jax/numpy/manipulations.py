@@ -10,9 +10,13 @@ from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 @to_ivy_arrays_and_back
 def append(arr, values, axis=None):
     if axis is None:
-        return ivy.concat((ivy.flatten(arr), ivy.flatten(values)), axis=0)
+        if isinstance(arr, (list, tuple)):
+            arr = ivy.array(arr)
+        if isinstance(values, (list, tuple)):
+            values = ivy.array(values)
+        return ivy.concatenate((ivy.flatten(arr), ivy.flatten(values)), axis=0)
     else:
-        return ivy.concat((arr, values), axis=axis)
+        return ivy.concatenate((arr, values), axis=axis)
 
 
 @to_ivy_arrays_and_back
