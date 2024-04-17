@@ -1063,7 +1063,9 @@ class Tensor:
 
     def masked_fill(self, mask, value):
         dtype = ivy.as_native_dtype(self.dtype)
-        return ivy.astype(torch_frontend.where(mask, value, self), dtype)
+        return torch_frontend.tensor(
+            ivy.astype(torch_frontend.where(mask, value, self), dtype)
+        )
 
     def masked_fill_(self, mask, value):
         self.ivy_array = self.masked_fill(mask, value).ivy_array
