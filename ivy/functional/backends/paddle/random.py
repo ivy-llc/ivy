@@ -23,6 +23,7 @@ from . import backend_version
 # Extra #
 # ------#
 
+
 @with_unsupported_device_and_dtypes(
     {"2.6.0 and below": {"cpu": ("int8",)}},
     backend_version,
@@ -48,7 +49,9 @@ def random_uniform(
         _ = paddle.seed(seed)
     random_base = paddle.uniform(shape, min=0.0, max=1.0)
 
-    return paddle_backend.add(paddle_backend.multiply(random_base, rng), low).cast(dtype)
+    return paddle_backend.add(paddle_backend.multiply(random_base, rng), low).cast(
+        dtype
+    )
 
 
 @with_unsupported_dtypes(
@@ -161,6 +164,7 @@ def shuffle(
 
 # New Random Distribution Functions
 # -----------------------------------
+
 
 def random_exponential(
     *,

@@ -11,31 +11,35 @@ import ivy_tests.test_ivy.helpers as helpers
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
+
 # Refactored function to parse print statements
 def parse_print_statements(trimmed_docstring):
     parsed_output = ""
     sub = ">>> print("
     end_index = -1
-    
+
     for index, line in enumerate(trimmed_docstring):
         if sub in line:
-            for i, s in enumerate(trimmed_docstring[index + 1:]):
-                if s.startswith(">>>") or s.lower().startswith(("with", "#", "instance")):
+            for i, s in enumerate(trimmed_docstring[index + 1 :]):
+                if s.startswith(">>>") or s.lower().startswith(
+                    ("with", "#", "instance")
+                ):
                     end_index = index + i + 1
                     break
             else:
                 end_index = len(trimmed_docstring)
-                
-            p_output = trimmed_docstring[index + 1:end_index]
+
+            p_output = trimmed_docstring[index + 1 : end_index]
             p_output = "".join(p_output).replace(" ", "")
             p_output = p_output.replace("...", "")
-            
+
             if parsed_output != "":
                 parsed_output += ","
-            
+
             parsed_output += p_output
-    
+
     return parsed_output, end_index
+
 
 # Refactored function to execute docstring examples
 def execute_docstring_examples(executable_lines):
@@ -48,35 +52,37 @@ def execute_docstring_examples(executable_lines):
                 exec(line)
             except Exception as e:
                 print(e, " ", ivy.current_backend_str(), " ", line)
-    
+
     return f.getvalue()
+
 
 def trim(docstring):
     """Trim function from PEP-257."""
     if not docstring:
         return ""
-    
+
     lines = docstring.expandtabs().splitlines()
     indent = sys.maxsize
     for line in lines[1:]:
         stripped = line.lstrip()
         if stripped:
             indent = min(indent, len(line) - len(stripped))
-    
+
     trimmed = [lines[0].strip()]
     if indent < sys.maxsize:
         for line in lines[1:]:
             trimmed.append(line[indent:].rstrip())
-    
+
     while trimmed and not trimmed[-1]:
         trimmed.pop()
     while trimmed and not trimmed[0]:
         trimmed.pop(0)
-    
+
     if "\n" in docstring:
         trimmed.append("")
-    
+
     return "\n".join(trimmed)
+
 
 # Expanded skip list using dictionary for better management
 skip_list = {
@@ -85,11 +91,12 @@ skip_list = {
     ],
     "skip_list_temp": [
         # ... [Your initial skip_list_temp list]
-    ]
+    ],
 }
 
 # Improved logging using Python's logging module
 logging.basicConfig(level=logging.INFO)
+
 
 # Exception handling for more specific error reporting
 def execute_and_log(line):
@@ -98,6 +105,7 @@ def execute_and_log(line):
     except Exception as e:
         logging.error(f"Error executing line: {line}\nError: {e}")
 
+
 # Custom assertion for pytest to improve test reporting
 def assert_equal_with_logging(expected, actual, message=""):
     try:
@@ -105,15 +113,20 @@ def assert_equal_with_logging(expected, actual, message=""):
     except AssertionError as e:
         logging.error(f"AssertionError: {e}\nExpected: {expected}\nActual: {actual}")
 
-def check_docstring_examples_run(*, fn, from_container=False, from_array=False, num_sig_fig=2):
+
+def check_docstring_examples_run(
+    *, fn, from_container=False, from_array=False, num_sig_fig=2
+):
     parsed_output, end_index = parse_print_statements(trimmed_docstring)
-    
+
     if end_index == -1:
         return True
-    
-    executable_lines = [line.split(">>>")[1][1:] for line in trimmed_docstring if line.startswith(">>>")]
+
+    executable_lines = [
+        line.split(">>>")[1][1:] for line in trimmed_docstring if line.startswith(">>>")
+    ]
     is_multiline_executable = False
-    
+
     for line in trimmed_docstring:
         if line.startswith(">>>"):
             is_multiline_executable = True
@@ -121,22 +134,22 @@ def check_docstring_examples_run(*, fn, from_container=False, from_array=False, 
             executable_lines[-1] += line.split("...")[1][1:]
         if ">>> print(" in line:
             is_multiline_executable = False
-    
+
     output = execute_docstring_examples(executable_lines)
-    
+
     # Numeric comparison logic
     sig_fig = float(f"1e-{str(num_sig_fig)}")
     atol = sig_fig / 10000
     numeric_pattern = re.compile(r"[\{\}\(\)\[\]\<>]|\w+:", re.VERBOSE)
-    
+
     num_output = output.replace("ivy.array", "").replace("ivy.Shape", "")
     num_parsed_output = parsed_output.replace("ivy.array", "").replace("ivy.Shape", "")
     num_output = numeric_pattern.sub("", num_output)
     num_parsed_output = numeric_pattern.sub("", num_parsed_output)
-    
+
     num_output = num_output.split(",")
     num_parsed_output = num_parsed_output.split(",")
-    
+
     for doc_u, doc_v in zip(num_output, num_parsed_output):
         try:
             assert_equal_with_logging(
@@ -144,10 +157,10 @@ def check_docstring_examples_run(*, fn, from_container=False, from_array=False, 
                     np.nan_to_num(complex(doc_u)),
                     np.nan_to_num(complex(doc_v)),
                     rtol=sig_fig,
-                    atol=atol
+                    atol=atol,
                 ),
                 True,
-                message=f"Output mismatch: {doc_u} != {doc_v}"
+                message=f"Output mismatch: {doc_u} != {doc_v}",
             )
         except Exception:
             if str(doc_u) != str(doc_v):
@@ -155,8 +168,9 @@ def check_docstring_examples_run(*, fn, from_container=False, from_array=False, 
                     f"Output for {fn.__name__} on run: {output}\nOutput in docs: {parsed_output}\n{doc_u} != {doc_v}"
                 )
                 return False
-    
+
     return True
+
 
 # Test function
 @pytest.mark.parametrize("backend", ["jax", "numpy", "tensorflow", "torch"])
