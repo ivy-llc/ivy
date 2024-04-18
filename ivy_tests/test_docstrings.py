@@ -5,7 +5,7 @@ from contextlib import redirect_stdout
 from io import StringIO
 import numpy as np
 import sys
-import pytest 
+import pytest
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 
@@ -158,7 +158,7 @@ def check_docstring_examples_run(
 
     output = execute_docstring_examples(executable_lines)
 <<<<<<< HEAD
-    
+
 =======
 
     # Numeric comparison logic
@@ -210,7 +210,7 @@ def test_docstrings(backend):
 
     for k, v in ivy.__dict__.copy().items():
         docstring = getattr(v, "__doc__", "")
-        
+
         if k == "Array":
             for method_name in dir(v):
                 method = getattr(ivy.Array, method_name)
@@ -244,7 +244,7 @@ def test_docstrings(backend):
                 continue
             success = False
             failures.append(k)
-    
+
     if not success:
         assert (
             success

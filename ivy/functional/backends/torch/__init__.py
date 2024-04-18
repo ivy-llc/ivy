@@ -14,8 +14,8 @@ if hasattr(torch, "_dynamo"):
 
 # Determine the module in memory based on whether Ivy is local or not
 _module_in_memory = (
-    sys.modules[__name__] 
-    if not ivy.is_local() 
+    sys.modules[__name__]
+    if not ivy.is_local()
     else sys.modules[ivy.import_module_path].import_cache[__name__]
 )
 
@@ -87,15 +87,20 @@ unsupported_devices = ("tpu",)
 native_inplace_support = True
 supports_gradients = True
 
+
 # Closest valid dtype function
 def closest_valid_dtype(type=None, /, as_native=False):
     if type is None:
         type = ivy.default_dtype()
     elif isinstance(type, str) and type in invalid_dtypes:
-        type = ivy.as_ivy_dtype({"uint16": ivy.uint8, "uint32": ivy.uint8, "uint64": ivy.uint8}[type])
+        type = ivy.as_ivy_dtype(
+            {"uint16": ivy.uint8, "uint32": ivy.uint8, "uint64": ivy.uint8}[type]
+        )
     return ivy.as_ivy_dtype(type) if not as_native else ivy.as_native_dtype(type)
 
+
 backend = "torch"
+
 
 # Globals getter function
 def globals_getter_func(x=None):
@@ -103,6 +108,7 @@ def globals_getter_func(x=None):
         return globals()
     else:
         globals()[x[0]] = x[1]
+
 
 ivy.func_wrapper.globals_getter_func = globals_getter_func
 
