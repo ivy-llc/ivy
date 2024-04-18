@@ -5,13 +5,12 @@ from contextlib import redirect_stdout
 from io import StringIO
 import numpy as np
 import sys
-import pytest
+import pytest 
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-# Refactored function to parse print statements
 def parse_print_statements(trimmed_docstring):
     parsed_output = ""
     sub = ">>> print("
@@ -37,7 +36,6 @@ def parse_print_statements(trimmed_docstring):
     
     return parsed_output, end_index
 
-# Refactored function to execute docstring examples
 def execute_docstring_examples(executable_lines):
     f = StringIO()
     with redirect_stdout(f):
@@ -52,7 +50,6 @@ def execute_docstring_examples(executable_lines):
     return f.getvalue()
 
 def trim(docstring):
-    """Trim function from PEP-257."""
     if not docstring:
         return ""
     
@@ -78,34 +75,27 @@ def trim(docstring):
     
     return "\n".join(trimmed)
 
-# Expanded skip list using dictionary for better management
 skip_list = {
-    "to_skip": [
-        # ... [Your initial to_skip list]
-    ],
-    "skip_list_temp": [
-        # ... [Your initial skip_list_temp list]
-    ]
+    "to_skip": [],
+    "skip_list_temp": []
 }
 
-# Improved logging using Python's logging module
 logging.basicConfig(level=logging.INFO)
 
-# Exception handling for more specific error reporting
 def execute_and_log(line):
     try:
         exec(line)
     except Exception as e:
         logging.error(f"Error executing line: {line}\nError: {e}")
 
-# Custom assertion for pytest to improve test reporting
 def assert_equal_with_logging(expected, actual, message=""):
     try:
         assert expected == actual, message
     except AssertionError as e:
         logging.error(f"AssertionError: {e}\nExpected: {expected}\nActual: {actual}")
 
-def check_docstring_examples_run(*, fn, from_container=False, from_array=False, num_sig_fig=2):
+def check_docstring_examples_run(docstring, *, fn, from_container=False, from_array=False, num_sig_fig=2):
+    trimmed_docstring = trim(docstring)
     parsed_output, end_index = parse_print_statements(trimmed_docstring)
     
     if end_index == -1:
@@ -124,7 +114,6 @@ def check_docstring_examples_run(*, fn, from_container=False, from_array=False, 
     
     output = execute_docstring_examples(executable_lines)
     
-    # Numeric comparison logic
     sig_fig = float(f"1e-{str(num_sig_fig)}")
     atol = sig_fig / 10000
     numeric_pattern = re.compile(r"[\{\}\(\)\[\]\<>]|\w+:", re.VERBOSE)
@@ -152,13 +141,12 @@ def check_docstring_examples_run(*, fn, from_container=False, from_array=False, 
         except Exception:
             if str(doc_u) != str(doc_v):
                 logging.error(
-                    f"Output for {fn.__name__} on run: {output}\nOutput in docs: {parsed_output}\n{doc_u} != {doc_v}"
+                    f"Output mismatch for {fn.__name__}: {doc_u} != {doc_v}"
                 )
                 return False
     
     return True
 
-# Test function
 @pytest.mark.parametrize("backend", ["jax", "numpy", "tensorflow", "torch"])
 def test_docstrings(backend):
     ivy.set_default_device("cpu")
@@ -167,17 +155,19 @@ def test_docstrings(backend):
     success = True
 
     for k, v in ivy.__dict__.copy().items():
+        docstring = getattr(v, "__doc__", "")
+        
         if k == "Array":
             for method_name in dir(v):
                 method = getattr(ivy.Array, method_name)
                 if hasattr(ivy.functional, method_name):
                     if helpers.gradient_incompatible_function(
                         fn=getattr(ivy.functional, method_name)
-                    ) or check_docstring_examples_run(fn=method, from_array=True):
+                    ) or check_docstring_examples_run(docstring, fn=method, from_array=True):
                         continue
                 elif helpers.gradient_incompatible_function(
                     fn=method
-                ) or check_docstring_examples_run(fn=method, from_array=True):
+                ) or check_docstring_examples_run(docstring, fn=method, from_array=True):
                     continue
                 failures.append(f"Array.{method_name}")
                 success = False
@@ -187,21 +177,20 @@ def test_docstrings(backend):
                 if hasattr(ivy.functional, method_name):
                     if helpers.gradient_incompatible_function(
                         fn=getattr(ivy.functional, method_name)
-                    ) or check_docstring_examples_run(fn=method, from_container=True):
+                    ) or check_docstring_examples_run(docstring, fn=method, from_container=True):
                         continue
                 elif helpers.gradient_incompatible_function(
                     fn=method
-                ) or check_docstring_examples_run(fn=method, from_container=True):
+                ) or check_docstring_examples_run(docstring, fn=method, from_container=True):
                     continue
                 failures.append(f"Container.{method_name}")
                 success = False
         else:
-            if check_docstring_examples_run(
-                fn=v
-            ) or helpers.gradient_incompatible_function(fn=v):
+            if check_docstring_examples_run(docstring, fn=v) or helpers.gradient_incompatible_function(fn=v):
                 continue
             success = False
             failures.append(k)
+    
     if not success:
         assert (
             success
