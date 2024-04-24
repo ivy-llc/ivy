@@ -9,6 +9,47 @@ from typing import NamedTuple, Callable, Any, Tuple, List, Dict, Type, Union
 import inspect
 
 
+def get_assignment_dict():
+    # Traverse the call stack
+    lhs = None
+    for frame_info in inspect.stack():
+        # Check if the code context is an assignment statement
+        if frame_info.code_context and "=" in frame_info.code_context[0]:
+            # Split the assignment and retrieve the LHS
+            lhs = frame_info.code_context[0].split("=")[0].strip()
+            if "self" not in lhs:
+                continue
+            break
+
+    if not lhs:
+        return None, ""
+
+    # Replace indexing with attribute access
+    lhs = re.sub(r"\[(\d+)\]", r".\1", lhs)
+
+    # Split the LHS based on "." and get individual components
+    components = lhs.split(".")
+
+    # Initialize the dictionary
+    assignment_dict = {}
+
+    # Retrieve the live objects associated with each component
+    for i in range(len(components)):
+        # Construct the key
+        key = ".".join(components[: i + 1])
+
+        # Retrieve the value
+        if i == 0:
+            value = frame_info.frame.f_locals.get(components[i])
+        else:
+            value = getattr(assignment_dict[".".join(components[:i])], components[i])
+
+        # Add the key-value pair to the dictionary
+        assignment_dict[key] = value
+
+    return assignment_dict, lhs
+
+
 def store_frame_info(fn):
     @functools.wraps(fn)
     def frame_info_wrapper(self, *args, **kwargs):
@@ -370,6 +411,7 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
         training=True,
         dtype=None,
         device=None,
+        module_dict=None,
         **kwargs,
     ):
         super(Layer, self).__init__(
@@ -383,7 +425,7 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
         self._v_from_constructor = v if isinstance(v, dict) or v is None else dict(v)
         self._v = v if v is not None else dict()
         self._buffers = dict(buffers or {})
-        self._module_dict = dict()
+        self._module_dict = module_dict if module_dict is not None else dict()
         self._args = args
         self._kwargs = kwargs
         self._module_graph = None
@@ -624,16 +666,16 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
         dynamic_backend=None,
         **kwargs,
     ):
-        if self._build_mode == "on_init":
-            self._built = True
+        self._built = True
         return
 
     @tf.autograph.experimental.do_not_convert
     def register_buffer(self, name: str, value: Union[tf.Tensor, tf.Variable]):
-        if value is not None:
-            self._buffers.update({name: value})
-        else:
-            self.__setattr__(name, value)
+        if value is not None and not isinstance(value, tf.Variable):
+            value = tf.Variable(initial_value=value, name=name, trainable=False)
+            super().__setattr__(name, value)
+        self._buffers.update({name: value})
+        return value
 
     @tf.autograph.experimental.do_not_convert
     def register_parameter(self, name: str, value: Union[tf.Tensor, tf.Variable]):
@@ -666,12 +708,35 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
         arg_names = list(init_signature.parameters.keys())
 
         # Include the positional arguments in the config
-        for arg_name, arg in zip(arg_names, self._args[1:]):
-            config.update(
-                {
-                    arg_name: arg,
-                }
-            )
+        var_positional_arg_encountered = False
+        var_positional_arg_name = None
+        offset = 0
+        for i, arg in enumerate(self._args[1:]):
+            arg_name = arg_names[min(i, len(arg_names) - 1)]
+            if var_positional_arg_encountered:
+                config.update(
+                    {
+                        f"{var_positional_arg_name}_{i - offset}": arg,
+                    }
+                )
+            elif (
+                init_signature.parameters[arg_name].kind
+                == inspect.Parameter.VAR_POSITIONAL
+            ):
+                var_positional_arg_encountered = True
+                var_positional_arg_name = arg_name
+                offset = i
+                config.update(
+                    {
+                        f"{var_positional_arg_name}_{0}": arg,
+                    }
+                )
+            else:
+                config.update(
+                    {
+                        arg_name: arg,
+                    }
+                )
 
         # Include the keywords arguments in the config
         kwargs = self._kwargs.copy()
@@ -688,17 +753,34 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
         # Separate positional and keyword arguments based on the __init__ signature
         args = []
         kwargs = {}
+        var_positional_args = []
         for arg_name in arg_names:
-            if arg_name in config:
-                if (
-                    init_signature.parameters[arg_name].kind
-                    == init_signature.parameters[arg_name].VAR_POSITIONAL
-                ):
-                    args.append(config.pop(arg_name))
-                else:
-                    kwargs[arg_name] = config.pop(arg_name)
+            if (
+                arg_name in config
+                and init_signature.parameters[arg_name].kind
+                == inspect.Parameter.KEYWORD_ONLY
+            ):
+                # Handle keyword arguments
+                kwargs[arg_name] = config.pop(arg_name)
+            elif (
+                arg_name in config
+                and init_signature.parameters[arg_name].kind
+                == inspect.Parameter.POSITIONAL_OR_KEYWORD
+            ):
+                # Handle positional arguments
+                args.append(config.pop(arg_name))
+            elif any(re.match(rf"{arg_name}_\d+", key) for key in config.keys()):
+                # Handle variable positional arguments
+                var_positional_args.extend(
+                    [
+                        config.pop(key)
+                        for key in sorted(config.keys())
+                        if re.match(rf"{arg_name}_\d+", key)
+                    ]
+                )
 
         # Unpack positional arguments and the rest as keyword arguments
+        args.extend(var_positional_args)
         config.pop("name", None)
         config.pop("trainable", None)
         config.pop("dtype", None)
@@ -880,7 +962,42 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
             self.register_parameter(name, val)
             super().__setattr__(name, val)
             return
-        return super().__setattr__(name, value)
+        else:
+            try:
+                obj_to_search = getattr(self, name)
+            except AttributeError:
+                obj_to_search = None
+            if isinstance(obj_to_search, Layer):
+
+                # retrieve all hierarchical submodules
+                assign_dict, kc = get_assignment_dict()
+
+                # Iterate over all submods in assign_dict
+                # updating their `v` and `buffers` with the
+                # new value
+                for key, submod in assign_dict.items():
+                    # Get the subkey to match
+                    subkey = kc[len(key) :].lstrip(".")
+
+                    if hasattr(submod, "v"):
+                        for v_key, v_value in submod.v.items():
+                            if v_key.startswith(subkey):
+                                submod.register_parameter(v_key, value)
+
+                    # Repeat the same process for submod.buffers
+                    if hasattr(submod, "buffers"):
+                        for b_key, b_value in submod.buffers.items():
+                            if b_key.startswith(subkey):
+                                submod.register_buffer(b_key, value)
+
+                # finally update the module dict
+                self._module_dict[name] = value
+            elif isinstance(obj_to_search, tf.Variable) and obj_to_search.trainable:
+                self.register_parameter(name, value)
+            elif isinstance(obj_to_search, (tf.Variable, tf.Tensor)):
+                self.register_buffer(name, value)
+
+            return super().__setattr__(name, value)
 
     @tf.autograph.experimental.do_not_convert
     def __delattr__(self, name):
@@ -948,6 +1065,7 @@ class Model(tf.keras.Model, ModelHelpers):
         training=True,
         dtype=None,
         device=None,
+        module_dict=None,
         **kwargs,
     ):
         super(Model, self).__init__(
@@ -961,7 +1079,7 @@ class Model(tf.keras.Model, ModelHelpers):
         self._v_from_constructor = v if isinstance(v, dict) or v is None else dict(v)
         self._v = v if v is not None else dict()
         self._buffers = dict(buffers or {})
-        self._module_dict = dict()
+        self._module_dict = module_dict if module_dict is not None else dict()
         self._args = args
         self._kwargs = kwargs
         self._module_graph = None
@@ -1202,16 +1320,16 @@ class Model(tf.keras.Model, ModelHelpers):
         dynamic_backend=None,
         **kwargs,
     ):
-        if self._build_mode == "on_init":
-            self._built = True
+        self._built = True
         return
 
     @tf.autograph.experimental.do_not_convert
     def register_buffer(self, name: str, value: Union[tf.Tensor, tf.Variable]):
-        if value is not None:
-            self._buffers.update({name: value})
-        else:
-            self.__setattr__(name, value)
+        if value is not None and not isinstance(value, tf.Variable):
+            value = tf.Variable(initial_value=value, name=name, trainable=False)
+            super().__setattr__(name, value)
+        self._buffers.update({name: value})
+        return value
 
     @tf.autograph.experimental.do_not_convert
     def register_parameter(self, name: str, value: Union[tf.Tensor, tf.Variable]):
@@ -1244,12 +1362,35 @@ class Model(tf.keras.Model, ModelHelpers):
         arg_names = list(init_signature.parameters.keys())
 
         # Include the positional arguments in the config
-        for arg_name, arg in zip(arg_names, self._args[1:]):
-            config.update(
-                {
-                    arg_name: arg,
-                }
-            )
+        var_positional_arg_encountered = False
+        var_positional_arg_name = None
+        offset = 0
+        for i, arg in enumerate(self._args[1:]):
+            arg_name = arg_names[min(i, len(arg_names) - 1)]
+            if var_positional_arg_encountered:
+                config.update(
+                    {
+                        f"{var_positional_arg_name}_{i - offset}": arg,
+                    }
+                )
+            elif (
+                init_signature.parameters[arg_name].kind
+                == inspect.Parameter.VAR_POSITIONAL
+            ):
+                var_positional_arg_encountered = True
+                var_positional_arg_name = arg_name
+                offset = i
+                config.update(
+                    {
+                        f"{var_positional_arg_name}_{0}": arg,
+                    }
+                )
+            else:
+                config.update(
+                    {
+                        arg_name: arg,
+                    }
+                )
 
         # Include the keywords arguments in the config
         kwargs = self._kwargs.copy()
@@ -1266,17 +1407,34 @@ class Model(tf.keras.Model, ModelHelpers):
         # Separate positional and keyword arguments based on the __init__ signature
         args = []
         kwargs = {}
+        var_positional_args = []
         for arg_name in arg_names:
-            if arg_name in config:
-                if (
-                    init_signature.parameters[arg_name].kind
-                    == init_signature.parameters[arg_name].VAR_POSITIONAL
-                ):
-                    args.append(config.pop(arg_name))
-                else:
-                    kwargs[arg_name] = config.pop(arg_name)
+            if (
+                arg_name in config
+                and init_signature.parameters[arg_name].kind
+                == inspect.Parameter.KEYWORD_ONLY
+            ):
+                # Handle keyword arguments
+                kwargs[arg_name] = config.pop(arg_name)
+            elif (
+                arg_name in config
+                and init_signature.parameters[arg_name].kind
+                == inspect.Parameter.POSITIONAL_OR_KEYWORD
+            ):
+                # Handle positional arguments
+                args.append(config.pop(arg_name))
+            elif any(re.match(rf"{arg_name}_\d+", key) for key in config.keys()):
+                # Handle variable positional arguments
+                var_positional_args.extend(
+                    [
+                        config.pop(key)
+                        for key in sorted(config.keys())
+                        if re.match(rf"{arg_name}_\d+", key)
+                    ]
+                )
 
         # Unpack positional arguments and the rest as keyword arguments
+        args.extend(var_positional_args)
         config.pop("name", None)
         config.pop("trainable", None)
         config.pop("dtype", None)
@@ -1458,7 +1616,42 @@ class Model(tf.keras.Model, ModelHelpers):
             )
             self.register_parameter(name, val)
             super().__setattr__(name, val)
-        return super().__setattr__(name, value)
+        else:
+            try:
+                obj_to_search = getattr(self, name)
+            except AttributeError:
+                obj_to_search = None
+            if isinstance(obj_to_search, (Model, Layer)):
+
+                # retrieve all hierarchical submodules
+                assign_dict, kc = get_assignment_dict()
+
+                # Iterate over all submods in assign_dict
+                # updating their `v` and `buffers` with the
+                # new value
+                for key, submod in assign_dict.items():
+                    # Get the subkey to match
+                    subkey = kc[len(key) :].lstrip(".")
+
+                    if hasattr(submod, "v"):
+                        for v_key, v_value in submod.v.items():
+                            if v_key.startswith(subkey):
+                                submod.register_parameter(v_key, value)
+
+                    # Repeat the same process for submod.buffers
+                    if hasattr(submod, "buffers"):
+                        for b_key, b_value in submod.buffers.items():
+                            if b_key.startswith(subkey):
+                                submod.register_buffer(b_key, value)
+
+                # finally update the module dict
+                self._module_dict[name] = value
+            elif isinstance(obj_to_search, tf.Variable) and obj_to_search.trainable:
+                self.register_parameter(name, value)
+            elif isinstance(obj_to_search, (tf.Variable, tf.Tensor)):
+                self.register_buffer(name, value)
+
+            return super().__setattr__(name, value)
 
     @tf.autograph.experimental.do_not_convert
     def __delattr__(self, name):
