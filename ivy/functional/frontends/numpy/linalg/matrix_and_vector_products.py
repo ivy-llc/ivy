@@ -78,6 +78,9 @@ def matrix_power(a, n):
 @with_unsupported_dtypes({"2.0.0 and below": ("float16",)}, "torch")
 @handle_numpy_out
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"0.4.14 and below": "bfloat16"}, "jax")
+@with_unsupported_dtypes({"2.13.0 and below": "bfloat16"}, "tensorflow")
+@with_unsupported_dtypes({"2.0.1 and below": "bfloat16"}, "torch")
 def multi_dot(arrays, *, out=None):
     return ivy.multi_dot(arrays, out=out)
 
