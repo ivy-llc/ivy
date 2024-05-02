@@ -722,7 +722,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         size: Union[Sequence[int], int],
         /,
         *,
-        mode: Union[
+        mode: 
             Literal[
                 "linear",
                 "bilinear",
@@ -736,8 +736,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
                 "lanczos3",
                 "lanczos5",
                 "gaussian"
-            ]
-        ] = "linear",
+            ] = "linear",
         scale_factor: Optional[Union[Sequence[int], int]] = None,
         recompute_scale_factor: Optional[bool] = None,
         align_corners: Optional[bool] = None,
