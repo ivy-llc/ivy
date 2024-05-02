@@ -161,7 +161,7 @@ Using miniconda
 
    .. code-block:: none
 
-      pip install -r requirements.txt
+      pip install -r requirements/requirements.txt
 
    This will install packages required for running the tests in Array API suite.
 
