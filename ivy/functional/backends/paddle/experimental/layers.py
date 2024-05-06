@@ -470,7 +470,6 @@ def interpolate(
     antialias: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ):
-
     if recompute_scale_factor is True:
         align_mode = 1
     elif recompute_scale_factor is False:
