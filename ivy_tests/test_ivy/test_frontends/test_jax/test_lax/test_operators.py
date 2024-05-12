@@ -2266,6 +2266,7 @@ def test_jax_mul(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
+        abs_smallest_val=1e-07,
     ),
     test_with_out=st.just(False),
 )

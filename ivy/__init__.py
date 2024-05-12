@@ -501,6 +501,15 @@ class Shape(Sequence):
     def __concat__(self, other):
         return self.concatenate(other)
 
+    def flatten(self):
+        # check https://github.com/tensorflow/tensorflow/blob/0d2d8a66fca1cbcdd6dd4e0cd6971792782e6844/tensorflow/python/framework/tensor_shape.py#L1299 # noqa: E501
+        return []
+
+    def to_tensors(self, value):
+        # check https://github.com/tensorflow/tensorflow/blob/0d2d8a66fca1cbcdd6dd4e0cd6971792782e6844/tensorflow/python/framework/tensor_shape.py#L1294 # noqa: E501
+        del value
+        return []
+
 
 class IntDtype(Dtype):
     def __new__(cls, dtype_str):

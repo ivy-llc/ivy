@@ -12,6 +12,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_device,
     handle_backend_invalid,
+    infer_dtype,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -268,13 +269,15 @@ def max(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@infer_dtype
 @handle_device
 def mean(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Calculate the arithmetic mean of the input array ``x``.
@@ -299,6 +302,10 @@ def mean(
         as singleton dimensions, and, accordingly, the result must be compatible with
         the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced
         axes (dimensions) must not be included in the result. Default: ``False``.
+    dtype
+        the desired data type of returned tensor. If specified, the input tensor
+        is casted to dtype before the operation is performed. This is useful for
+        preventing data type overflows. Default: None.
     out
         optional output array, for writing the result to.
 
@@ -369,7 +376,9 @@ def mean(
         b: ivy.array([4.5, 5.5, 6.5])
     }
     """
-    return current_backend(x).mean(x, axis=axis, keepdims=keepdims, out=out)
+    return current_backend(x).mean(
+        x, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+    )
 
 
 @handle_exceptions
