@@ -216,7 +216,6 @@ def linear(
         ),
     )
 
-
     if ivy.exists(bias):
         # OBS x [1]*len(IBS) x OF
         bias_broadcast = ivy.reshape(

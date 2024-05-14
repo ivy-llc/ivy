@@ -27,7 +27,6 @@ def acos(input, *, out=None):
 @with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def acosh(input, *, out=None):
-    
     return ivy.acosh(input, out=out)
 
 

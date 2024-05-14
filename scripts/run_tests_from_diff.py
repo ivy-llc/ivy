@@ -1,7 +1,6 @@
-"""
-Script that attempts to find the test file(s) corresponding the all the changes made
-in a commit (git diff stored in commit-diff.txt), and runs all the tests it finds
-"""
+"""Script that attempts to find the test file(s) corresponding the all the
+changes made in a commit (git diff stored in commit-diff.txt), and runs all the
+tests it finds."""
 
 import os
 import re
@@ -9,19 +8,19 @@ import subprocess
 import sys
 
 
-with open('commit-diff.txt', 'r') as f:
+with open("commit-diff.txt", "r") as f:
     diff_lines = f.readlines()
 
 modified_files = set()
 for line in diff_lines:
-    if line.startswith('diff --git a/'):
-        file_path = line.split(' ')[2].strip().lstrip('a/')
+    if line.startswith("diff --git a/"):
+        file_path = line.split(" ")[2].strip().lstrip("a/")
         modified_files.add(file_path)
-    elif line.startswith('diff --git b/'):
-        file_path = line.split(' ')[2].strip().lstrip('b/')
+    elif line.startswith("diff --git b/"):
+        file_path = line.split(" ")[2].strip().lstrip("b/")
         modified_files.add(file_path)
-    elif line.startswith('diff --git '):
-        file_path = line.split(' ')[2].strip().lstrip('--git ')
+    elif line.startswith("diff --git "):
+        file_path = line.split(" ")[2].strip().lstrip("--git ")
         modified_files.add(file_path)
 
 nn = [
@@ -38,9 +37,9 @@ for file_path in set(modified_files):
         file_path = file_path.replace("/functional", "")
 
     if "/backends/" in file_path:
-        suffix = file_path.rsplit('/', 1)[1].replace(".py", "")
+        suffix = file_path.rsplit("/", 1)[1].replace(".py", "")
         file_path = re.sub(r"/backends/.*?/", "/", file_path)
-        file_path = file_path.rsplit('/', 1)[0]
+        file_path = file_path.rsplit("/", 1)[0]
         if suffix in nn:
             file_path += f"/nn/{suffix}.py"
         else:
@@ -53,7 +52,7 @@ for file_path in set(modified_files):
 
     # if the test file doesn't exist, step up a directory and run those tests instead (if that exists)
     if not os.path.exists(file_path):
-        file_path = file_path.rsplit('/', 1)[0]
+        file_path = file_path.rsplit("/", 1)[0]
 
     if os.path.exists(file_path):
         test_paths.append(file_path)
