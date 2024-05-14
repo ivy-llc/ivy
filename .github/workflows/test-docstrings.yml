@@ -13,7 +13,6 @@ jobs:
         with:
           path: ivy
           persist-credentials: false
-          submodules: "recursive"
       - uses: actions/setup-python@v3
         with:
           python-version: "3.8"
