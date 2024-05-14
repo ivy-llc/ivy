@@ -166,12 +166,14 @@ def max(
 def mean(
     x: paddle.Tensor,
     /,
-    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    *,
+    dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    ret_dtype = x.dtype
+    if dtype is not None:
+        x = ivy.astype(x, dtype).to_native()
     if paddle.is_complex(x):
         ret = paddle.complex(
             paddle.mean(x.real(), axis=axis, keepdim=keepdims),
@@ -187,7 +189,7 @@ def mean(
             axis = None
     if (x.ndim == 1 or axis is None) and not keepdims:
         ret = ret.squeeze()
-    return ret.astype(ret_dtype)
+    return ret
 
 
 @with_supported_dtypes(

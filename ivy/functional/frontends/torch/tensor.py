@@ -1062,8 +1062,9 @@ class Tensor:
         return torch_frontend.acosh(self)
 
     def masked_fill(self, mask, value):
+        dtype = ivy.as_native_dtype(self.dtype)
         return torch_frontend.tensor(
-            torch_frontend.where(mask, value, self), dtype=self.dtype
+            ivy.astype(torch_frontend.where(mask, value, self), dtype)
         )
 
     def masked_fill_(self, mask, value):
@@ -1431,7 +1432,12 @@ class Tensor:
 
     def item(self):
         if all(dim == 1 for dim in self.shape):
-            return self.ivy_array.to_scalar()
+            if ivy.current_backend_str() == "tensorflow":
+                import tensorflow as tf
+
+                return tf.squeeze(self.ivy_array.data)
+            else:
+                return self.ivy_array.to_scalar()
         else:
             raise ValueError(
                 "only one element tensors can be converted to Python scalars"

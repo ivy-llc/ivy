@@ -94,7 +94,9 @@ def clip_by_norm(t, clip_norm, axes=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.15.0 and below": ("float16",)}, "tensorflow")
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("complex64", "complex128")}, "tensorflow"
+)
 def clip_by_value(t, clip_value_min, clip_value_max):
     ivy.utils.assertions.check_all_or_any_fn(
         clip_value_min,
@@ -306,6 +308,9 @@ def norm(tensor, ord="euclidean", axis=None, keepdims=None, name=None):
     )
 
 
+@with_supported_dtypes(
+    {"2.15.0 and below": ("uint8", "int8", "int32", "int64")}, "tensorflow"
+)
 @to_ivy_arrays_and_back
 def one_hot(
     indices: ivy.Array,

@@ -453,7 +453,7 @@ def tensorsolve(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.6.0 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.6.0 and below": {"cpu": ("complex64", "complex128", "float16")}},
     backend_version,
 )
 def qr(

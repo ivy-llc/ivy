@@ -48,12 +48,16 @@ def max(
 def mean(
     x: JaxArray,
     /,
-    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    *,
+    dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     axis = tuple(axis) if isinstance(axis, list) else axis
+    if dtype is not None:
+        dtype = ivy.as_native_dtype(dtype)
+        x = x.astype(dtype)
     return jnp.mean(x, axis=axis, keepdims=keepdims, dtype=x.dtype)
 
 

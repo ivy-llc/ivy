@@ -89,17 +89,7 @@ def simple_test_two_function(
 @handle_frontend_test(
     fn_tree="tensorflow.keras.activations.deserialize",
     fn_name=st.sampled_from(get_callable_functions("keras.activations")).filter(
-        lambda x: not x[0].isupper()
-        and x
-        not in [
-            "deserialize",
-            "get",
-            "keras_export",
-            "serialize",
-            "deserialize_keras_object",
-            "serialize_keras_object",
-            "get_globals",
-        ]
+        lambda x: not x[0].isupper() and x in ACTIVATION_FUNCTIONS
     ),
     dtype_and_data=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
@@ -114,6 +104,7 @@ def test_tensorflow_deserialize(
     fn_name,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     dtype_data, data = dtype_and_data
     simple_test_two_function(
@@ -126,6 +117,7 @@ def test_tensorflow_deserialize(
         atol_=1e-01,
         ivy_submodules=["keras", "activations"],
         framework_submodules=["keras", "activations"],
+        backend=backend_fw,
     )
 
 

@@ -182,7 +182,7 @@ class Module(ivy.Module):
         for module_prefix, module in modules:
             members = get_members_fn(module)
             for k, v in members:
-                if v is None or id(v) in memo or not isinstance(v, Parameter):
+                if v is None or id(v) in memo:
                     continue
                 if remove_duplicate:
                     memo.add(id(v))
