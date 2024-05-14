@@ -1,7 +1,11 @@
-name: run-all-tests
+name: tests
 on:
   push:
+    branches:
+      - main
   pull_request:
+    branches:
+      - main
 
 permissions:
   actions: read
@@ -15,6 +19,13 @@ jobs:
           path: ivy
           persist-credentials: false
           fetch-depth: 100
+    
+      - name: Fetch Commit Changes
+        id: fetch_changes
+        run: |
+          cd ivy
+          git fetch origin main
+          git diff origin/main HEAD --output="diff.txt"
 
       - name: Install ivy and fetch binaries
         run: |
