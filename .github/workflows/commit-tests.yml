@@ -25,7 +25,7 @@ jobs:
         run: |
           cd ivy
           git fetch origin main
-          git diff origin/main HEAD --output="diff.txt"
+          git diff origin/main HEAD --output="commit-diff.txt"
 
       - name: Install ivy and fetch binaries
         run: |
