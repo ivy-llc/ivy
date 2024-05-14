@@ -85,7 +85,6 @@ jobs:
         with:
           path: ivy
           persist-credentials: false
-          submodules: "recursive"
           fetch-depth: 100
 
       - name: Install ivy and fetch binaries
