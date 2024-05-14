@@ -29,15 +29,22 @@ nn = [
     "losses",
     "norms",
 ]
+exclude = [
+    "conftest",
+]
 test_paths = []
 
 for file_path in set(modified_files):
+    suffix = file_path.rsplit("/", 1)[1].replace(".py", "")
+
+    if suffix in exclude:
+        continue
+
     # some regex logic to get the correct test file for the given modified file
     if "/frontends/" in file_path:
         file_path = file_path.replace("/functional", "")
 
     if "/backends/" in file_path:
-        suffix = file_path.rsplit("/", 1)[1].replace(".py", "")
         file_path = re.sub(r"/backends/.*?/", "/", file_path)
         file_path = file_path.rsplit("/", 1)[0]
         if suffix in nn:
@@ -54,7 +61,7 @@ for file_path in set(modified_files):
     if not os.path.exists(file_path):
         file_path = file_path.rsplit("/", 1)[0]
 
-    if os.path.exists(file_path):
+    if os.path.exists(file_path) and "ivy_tests/test_ivy/" in file_path:
         test_paths.append(file_path)
 
 print("Running tests:", test_paths)
