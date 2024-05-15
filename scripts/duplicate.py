@@ -4,6 +4,8 @@ import os
 import sys
 import glob
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 
 def get_all_functions_from_directory(root_dir, startswith="test"):
     if not os.path.exists(root_dir):
