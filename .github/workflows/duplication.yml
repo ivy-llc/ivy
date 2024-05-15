@@ -1,6 +1,8 @@
 name: duplicate-test-check
 on:
   push:
+    branches:
+        main
   pull_request:
 permissions:
   actions: read
@@ -13,7 +15,6 @@ jobs:
          with:
            path: ivy
            persist-credentials: false
-           submodules: "recursive"
            fetch-depth: 100
 
 
