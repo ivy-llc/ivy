@@ -58,7 +58,6 @@ def find_duplicate_functions(root_dir):
         "numel",  # torch.Size
         "requires_grad",
         "symmetrize",
-        
         # files to exclude
         "base.py",
         "func_wrapper.py",
@@ -71,12 +70,12 @@ def find_duplicate_functions(root_dir):
 
     for root, dirs, files in os.walk(root_dir):
         for file in files:
-            if file.endswith('.py'):
+            if file.endswith(".py"):
                 file_path = os.path.join(root, file)
                 file_name = file_path.split("/")[-1]
                 if file_name in exclude or file_name.startswith("_"):
                     continue
-                with open(file_path, 'r') as f:
+                with open(file_path, "r") as f:
                     tree = ast.parse(f.read())
                     for node in ast.walk(tree):
                         if isinstance(node, ast.Module):
@@ -92,15 +91,17 @@ def find_duplicate_functions(root_dir):
                             func_name = node.name
                             if (
                                 func_name in exclude  # ignore any fns in `exclude`
-                                or func_name.startswith("_")  # ignore any private or dunder methods
+                                or func_name.startswith(
+                                    "_"
+                                )  # ignore any private or dunder methods
                             ):
                                 continue
                             func_path = file_path
                             full_name = func_path + "::" + func_name
                             if (
-                                node.decorator_list and
-                                hasattr(node.decorator_list[0], "id") and
-                                node.decorator_list[0].id == "property"
+                                node.decorator_list
+                                and hasattr(node.decorator_list[0], "id")
+                                and node.decorator_list[0].id == "property"
                             ):
                                 # ignore properties
                                 continue
@@ -127,4 +128,4 @@ if __name__ == "__main__":
     if check_duplicate_functional_experimental_tests():
         sys.exit(1)
 
-    print('No duplicate functions found')
+    print("No duplicate functions found")

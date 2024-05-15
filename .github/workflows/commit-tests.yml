@@ -19,7 +19,7 @@ jobs:
           path: ivy
           persist-credentials: false
           fetch-depth: 100
-    
+
       - name: Fetch Commit Changes
         id: fetch_changes
         run: |
