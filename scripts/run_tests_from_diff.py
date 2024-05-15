@@ -70,6 +70,7 @@ for test_path in set(test_paths):
     pytest_command = (
         f"pytest {file_path} -p no:warnings --tb=short --backend jax,tensorflow,torch"
     )
+    print(f"Running test command: {pytest_command}")
     result = subprocess.run(pytest_command, shell=True)
 
     if result.returncode != 0:
