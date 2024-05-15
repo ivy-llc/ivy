@@ -4,34 +4,12 @@ on:
   pull_request_target:
     types:
       - opened
-      - edited
-      - synchronize
-      - reopened
   workflow_call:
 
 permissions:
   pull-requests: write
 
 jobs:
-  pr-compliance-checks:
-    name: PR Compliance Checks
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: mtfoley/pr-compliance-action@v0.5.0
-        with:
-          body-auto-close: false
-          protected-branch-auto-close: false
-          body-comment: >
-            ## Issue Reference
-
-            In order to be considered for merging, the pull request description must refer to a
-            specific issue number. This is described in our
-            [contributing guide](https://unify.ai/docs/ivy/overview/contributing/the_basics.html#todo-list-issues) and our PR template.
-
-            This check is looking for a phrase similar to: "Fixes #XYZ" or "Resolves #XYZ" where XYZ is the issue
-            number that this PR is meant to address.
-
   welcome:
     name: Welcome
     runs-on: ubuntu-latest
