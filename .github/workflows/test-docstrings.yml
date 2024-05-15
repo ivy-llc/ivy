@@ -1,8 +1,6 @@
 name: test-docstrings
 on:
   push:
-  pull_request:
-    types: [opened, synchronize, reopened, review_requested]
   workflow_dispatch:
 jobs:
   run-docstring-tests:
