@@ -7,7 +7,7 @@ on:
 permissions:
   actions: read
 jobs:
-  check-for-duplicates:
+  duplicates:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Ivy 🛎
