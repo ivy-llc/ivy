@@ -43,9 +43,8 @@ def check_duplicate_functional_experimental_tests():
 
 
 def find_duplicate_functions(root_dir):
-    """
-    Searches for any duplicate frontend functions within ivy's frontend api
-    """
+    """Searches for any duplicate frontend functions within ivy's frontend
+    api."""
     fns = []
     duplicates = []
     current_class_fns = []
