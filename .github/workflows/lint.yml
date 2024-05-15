@@ -10,7 +10,6 @@ permissions:
   contents: write
 
 jobs:
-  check-formatting:
-    name: Check formatting
+  lint:
     uses: unifyai/workflows/.github/workflows/lint.yml@main
     secrets: inherit
