@@ -57,7 +57,8 @@ for file_path in set(modified_files):
         path_list = ["test_" + p for p in path_list]
         file_path = "ivy_tests/" + "/".join(path_list)
 
-    # if the test file doesn't exist, step up a directory and run those tests instead (if that exists)
+    # if the test file doesn't exist, step up a directory
+    # and run those tests instead (if that exists)
     if not os.path.exists(file_path):
         file_path = file_path.rsplit("/", 1)[0]
 

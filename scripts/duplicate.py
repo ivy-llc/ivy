@@ -63,9 +63,10 @@ def find_duplicate_functions(root_dir):
         "loss_functions.py",
     ]
 
-    # NOTE: Size and Tensor are currently defined in the same file, which causes duplication
-    # overlapping as the class defs override each other when doing the breadth-first ast walk.
-    # Not causing any problems right now (excluded some methods), but worth noting.
+    # NOTE: Size and Tensor are currently defined in the same file, which
+    # causes duplication overlapping as the class defs override each
+    # other when doing the breadth-first ast walk. Not causing any
+    # problems right now (excluded some methods), but worth noting.
 
     for root, dirs, files in os.walk(root_dir):
         for file in files:
