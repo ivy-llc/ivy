@@ -198,10 +198,6 @@ def exp(input, *, out=None):
     return ivy.exp(input, out=out)
 
 
-def exp(input, *, out=None):
-    return ivy.exp(input, out=out)
-
-
 @with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def exp2(input, out=None):
