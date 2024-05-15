@@ -1,11 +1,11 @@
 name: duplicate-test-check
 on:
+  push:
   pull_request:
 permissions:
   actions: read
 jobs:
    run-check:
-     if: contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') || contains(github.event.pull_request.labels.*.name, 'Ivy API Experimental')
      runs-on: ubuntu-latest
      steps:
        - name: Checkout Ivy 🛎
