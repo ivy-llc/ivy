@@ -24,8 +24,13 @@ jobs:
         id: fetch_changes
         run: |
           cd ivy
-          git fetch origin main
-          git diff origin/main HEAD --output="commit-diff.txt"
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            git fetch origin main
+            git diff origin/main HEAD --output="commit-diff.txt"
+          else
+            git diff HEAD^ HEAD --output="commit-diff.txt"
+          fi
+
 
       - name: Install ivy and fetch binaries
         run: |
