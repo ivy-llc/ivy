@@ -3314,11 +3314,11 @@ def test_jax_trace(
 
 
 @handle_frontend_test(
-    fn_tree="jax.numpy.trapz",
+    fn_tree="jax.numpy.trapezoid",
     dtype_x_axis_rand_either=_either_x_dx(),
     test_with_out=st.just(False),
 )
-def test_jax_trapz(
+def test_jax_trapezoid(
     *,
     dtype_x_axis_rand_either,
     on_device,

@@ -903,8 +903,12 @@ def trace(a, offset=0, axis1=0, axis2=1, out=None):
 
 
 @to_ivy_arrays_and_back
-def trapz(y, x=None, dx=1.0, axis=-1, out=None):
+def trapezoid(y, x=None, dx=1.0, axis=-1, out=None):
     return ivy.trapz(y, x=x, dx=dx, axis=axis, out=out)
+
+
+def trapz(y, x=None, dx=1.0, axis=-1, out=None):
+    return trapezoid(y, x=x, dx=dx, axis=axis, out=out)
 
 
 @to_ivy_arrays_and_back
