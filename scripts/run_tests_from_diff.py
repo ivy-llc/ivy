@@ -65,9 +65,10 @@ for file_path in set(modified_files):
     if os.path.exists(file_path) and "ivy_tests/test_ivy/" in file_path:
         test_paths.append(file_path)
 
+test_paths = set(test_paths)
 print("Running tests:", test_paths)
 
-for test_path in set(test_paths):
+for test_path in test_paths:
     pytest_command = (
         f"pytest {test_path} -p no:warnings --tb=short --backend jax,tensorflow,torch"
     )
