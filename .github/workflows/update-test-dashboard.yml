@@ -131,7 +131,6 @@ jobs:
         continue-on-error: true
 
       - name: Check on failures
-        if: steps.tests.outputs != 'success'
         run: |
           if [[ "${{ steps.tests.outputs.exit_code }}" -eq 0 || "${{ steps.tests.outputs.exit_code }}" -eq 1 ]]; then
             exit 0
