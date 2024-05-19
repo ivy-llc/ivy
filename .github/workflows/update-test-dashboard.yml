@@ -39,7 +39,12 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
+          pytest_exit_code=$(docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }})
+          if [ $pytest_exit_code -eq 0 ] || [ $pytest_exit_code -eq 1 ]; then
+            exit 0
+          else
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Check on failures
@@ -74,7 +79,12 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_nn_functional_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
+          pytest_exit_code=$(docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_nn_functional_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }})
+          if [ $pytest_exit_code -eq 0 ] || [ $pytest_exit_code -eq 1 ]; then
+            exit 0
+          else
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Check on failures
@@ -109,7 +119,12 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
+          pytest_exit_code=$(docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }})
+          if [ $pytest_exit_code -eq 0 ] || [ $pytest_exit_code -eq 1 ]; then
+            exit 0
+          else
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Check on failures
@@ -143,7 +158,12 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_compat_v1_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
+          pytest_exit_code=$(docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_compat_v1_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }})
+          if [ $pytest_exit_code -eq 0 ] || [ $pytest_exit_code -eq 1 ]; then
+            exit 0
+          else
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Check on failures
@@ -177,7 +197,12 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_image_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
+          pytest_exit_code=$(docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_image_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }})
+          if [ $pytest_exit_code -eq 0 ] || [ $pytest_exit_code -eq 1 ]; then
+            exit 0
+          else
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Check on failures
@@ -211,7 +236,12 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_keras_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
+          pytest_exit_code=$(docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_keras_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }})
+          if [ $pytest_exit_code -eq 0 ] || [ $pytest_exit_code -eq 1 ]; then
+            exit 0
+          else
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Check on failures
