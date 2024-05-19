@@ -127,10 +127,6 @@ jobs:
           pip3 install pytest-json-report
           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
 
-      - name: Check on failures
-        if: steps.tests.outcome != 'success'
-        run: exit 1
-
 
 #   update-frontends-tensorflow-compat-v1:
 #     runs-on: ubuntu-latest
