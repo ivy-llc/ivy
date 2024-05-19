@@ -10,102 +10,8 @@ on:
 permissions:
   actions: read
 jobs:
-#   update-frontends-torch:
-#     runs-on: ubuntu-latest
-#     strategy:
-#         fail-fast: false
-#         matrix:
-#           backend :  [ numpy, torch, jax, tensorflow, paddle ]
-#           submodule : [ blas_and_lapack_ops, comparison_ops, creation_ops, dtype, func_wrapper,
-#                         indexing_slicing_joining_mutating_ops, linalg, locally_disabling_gradient_computation,
-#                         miscellaneous_ops, pointwise_ops, random_sampling, reduction_ops,
-#                         special_funcs, spectral_ops, tensor_functions, tensor, utilities ]
-
-#     steps:
-#       - name: Checkout 🛎️Ivy
-#         uses: actions/checkout@v3
-#         with:
-#           path: ivy
-#           persist-credentials: false
-
-#       - name: Install ivy
-#         run: |
-#           cd ivy
-#           sudo pip3 install -e .
-
-#       - name: Run Tests
-#         id: tests
-#         run: |
-#           exit_code=2
-#           cd ivy
-#           pip3 install pymongo
-#           pip3 install pytest-json-report
-#           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
-#           exit_code=$?
-#           echo "exit_code=$exit_code" >> $GITHUB_ENV
-#         continue-on-error: true
-
-#       - name: Check on failures
-#         if: steps.tests.outcome != 'success'
-#         run: |
-#           if [[ "$exit_code" -eq 0 || "$exit_code" -eq 1 ]]; then
-#             exit 0
-#           else
-#             exit 1
-#           fi
-
-#   update-frontends-torch-nn-functional:
-#     runs-on: ubuntu-latest
-#     strategy:
-#         fail-fast: false
-#         matrix:
-#           backend :  [ numpy, torch, jax, tensorflow, paddle ]
-#           submodule : [ convolution_functions, distance_functions, dropout_functions, layer_functions,
-#                         linear_functions, loss_functions, non_linear_activation_functions, norms,
-#                         pooling_functions, sparse_functions, vision_functions ]
-
-#     steps:
-#       - name: Checkout 🛎️Ivy
-#         uses: actions/checkout@v3
-#         with:
-#           path: ivy
-#           persist-credentials: false
-
-#       - name: Install ivy
-#         run: |
-#           cd ivy
-#           sudo pip3 install -e .
-
-#       - name: Run Tests
-#         id: tests
-#         run: |
-#           exit_code=2
-#           cd ivy
-#           pip3 install pymongo
-#           pip3 install pytest-json-report
-#           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_nn_functional_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
-#           exit_code=$?
-#           echo "exit_code=$exit_code" >> $GITHUB_ENV
-#         continue-on-error: true
-
-#       - name: Check on failures
-#         if: steps.tests.outcome != 'success'
-#         run: |
-#           if [[ "$exit_code" -eq 0 || "$exit_code" -eq 1 ]]; then
-#             exit 0
-#           else
-#             exit 1
-#           fi
-
-  update-frontends-tensorflow:
+  update-frontends-torch:
     runs-on: ubuntu-latest
-    strategy:
-        fail-fast: false
-        matrix:
-          backend :  [ numpy ]
-          submodule : [ __operators__, dtypes, func_wrapper, general_functions, linalg, math, nest, nn,
-                        quantization, random, raw_ops, sets, signal, sparse, tensor, tensorarray, tensorshape ]
-
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v3
@@ -125,130 +31,82 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_frontends.sh
+          exit_code=$?
+          echo "exit_code=$exit_code" >> $GITHUB_ENV
+        continue-on-error: true
 
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: |
+          if [[ "$exit_code" -eq 0 || "$exit_code" -eq 1 ]]; then
+            exit 0
+          else
+            exit 1
+          fi
 
-#   update-frontends-tensorflow-compat-v1:
-#     runs-on: ubuntu-latest
-#     strategy:
-#         fail-fast: false
-#         matrix:
-#           backend :  [ numpy, torch, jax, tensorflow, paddle ]
-#           submodule : [ nn ]
+  update-frontends-tensorflow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
 
-#     steps:
-#       - name: Checkout 🛎️Ivy
-#         uses: actions/checkout@v3
-#         with:
-#           path: ivy
-#           persist-credentials: false
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
 
-#       - name: Install ivy
-#         run: |
-#           cd ivy
-#           sudo pip3 install -e .
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          pip3 install pytest-json-report
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_frontends.sh
 
-#       - name: Run Tests
-#         id: tests
-#         run: |
-#           exit_code=2
-#           cd ivy
-#           pip3 install pymongo
-#           pip3 install pytest-json-report
-#           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_compat_v1_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
-#           exit_code=$?
-#           echo "exit_code=$exit_code" >> $GITHUB_ENV
-#         continue-on-error: true
+  update-frontends-jax:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
 
-#       - name: Check on failures
-#         if: steps.tests.outcome != 'success'
-#         run: |
-#           if [[ "$exit_code" -eq 0 || "$exit_code" -eq 1 ]]; then
-#             exit 0
-#           else
-#             exit 1
-#           fi
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
 
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          pip3 install pytest-json-report
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_jax_frontends.sh
 
-#   update-frontends-tensorflow-image:
-#     runs-on: ubuntu-latest
-#     strategy:
-#         fail-fast: false
-#         matrix:
-#           backend :  [ numpy, torch, jax, tensorflow, paddle ]
-#           submodule : [ cropping ]
+  update-frontends-numpy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
 
-#     steps:
-#       - name: Checkout 🛎️Ivy
-#         uses: actions/checkout@v3
-#         with:
-#           path: ivy
-#           persist-credentials: false
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
 
-#       - name: Install ivy
-#         run: |
-#           cd ivy
-#           sudo pip3 install -e .
-
-#       - name: Run Tests
-#         id: tests
-#         run: |
-#           exit_code=2
-#           cd ivy
-#           pip3 install pymongo
-#           pip3 install pytest-json-report
-#           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_image_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
-#           exit_code=$?
-#           echo "exit_code=$exit_code" >> $GITHUB_ENV
-#         continue-on-error: true
-
-#       - name: Check on failures
-#         if: steps.tests.outcome != 'success'
-#         run: |
-#           if [[ "$exit_code" -eq 0 || "$exit_code" -eq 1 ]]; then
-#             exit 0
-#           else
-#             exit 1
-#           fi
-
-
-#   update-frontends-tensorflow-keras:
-#     runs-on: ubuntu-latest
-#     strategy:
-#         fail-fast: false
-#         matrix:
-#           backend :  [ numpy, torch, jax, tensorflow, paddle ]
-#           submodule : [ activations, backend, layers, metrics, regularizers ]
-
-#     steps:
-#       - name: Checkout 🛎️Ivy
-#         uses: actions/checkout@v3
-#         with:
-#           path: ivy
-#           persist-credentials: false
-
-#       - name: Install ivy
-#         run: |
-#           cd ivy
-#           sudo pip3 install -e .
-
-#       - name: Run Tests
-#         id: tests
-#         run: |
-#           exit_code=2
-#           cd ivy
-#           pip3 install pymongo
-#           pip3 install pytest-json-report
-#           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_keras_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
-#           exit_code=$?
-#           echo "exit_code=$exit_code" >> $GITHUB_ENV
-#         continue-on-error: true
-
-#       - name: Check on failures
-#         if: steps.tests.outcome != 'success'
-#         run: |
-#           if [[ "$exit_code" -eq 0 || "$exit_code" -eq 1 ]]; then
-#             exit 0
-#           else
-#             exit 1
-#           fi
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          pip3 install pytest-json-report
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_numpy_frontends.sh
