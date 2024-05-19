@@ -131,6 +131,11 @@ jobs:
             exit 0
           fi
           exit 1
+        continue-on-error: true
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
 
 #   update-frontends-tensorflow-compat-v1:
