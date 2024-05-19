@@ -110,3 +110,113 @@ jobs:
           pip3 install pymongo
           pip3 install pytest-json-report
           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_numpy_frontends.sh
+
+  update-frontends-paddle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          pip3 install pytest-json-report
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_paddle_frontends.sh
+        
+  update-ivy-core:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          pip3 install pytest-json-report
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_core.sh
+    
+  update-ivy-experimental-core:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          pip3 install pytest-json-report
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_experimental_core.sh
+
+  update-ivy-experimental-nn:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          pip3 install pytest-json-report
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_experimental_nn.sh
+
+  update-ivy-nn:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          pip3 install pytest-json-report
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_nn.sh
