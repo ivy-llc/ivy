@@ -36,6 +36,7 @@ jobs:
       - name: Run Tests
         id: tests
         run: |
+          exit_code=2
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
@@ -78,6 +79,7 @@ jobs:
       - name: Run Tests
         id: tests
         run: |
+          exit_code=2
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
@@ -119,6 +121,7 @@ jobs:
       - name: Run Tests
         id: tests
         run: |
+          exit_code=2
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
@@ -160,6 +163,7 @@ jobs:
       - name: Run Tests
         id: tests
         run: |
+          exit_code=2
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
@@ -201,6 +205,7 @@ jobs:
       - name: Run Tests
         id: tests
         run: |
+          exit_code=2
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
@@ -242,6 +247,7 @@ jobs:
       - name: Run Tests
         id: tests
         run: |
+          exit_code=2
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
