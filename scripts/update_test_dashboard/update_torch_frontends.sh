@@ -11,5 +11,5 @@ pytest_exit_code=$?
 if [ $pytest_exit_code -eq 0 ] || [ $pytest_exit_code -eq 1 ]; then
     exit 0
 else
-    exit 1
+    exit 2
 fi

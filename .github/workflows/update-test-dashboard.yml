@@ -40,11 +40,18 @@ jobs:
           pip3 install pymongo
           pip3 install pytest-json-report
           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
+          exit_code=$?
+          echo "exit_code=$exit_code" >> $GITHUB_ENV
         continue-on-error: true
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
-        run: exit 1
+        run: |
+          if [[ "$exit_code" -eq 0 || "$exit_code" -eq 1 ]]; then
+            exit 0
+          else
+            exit 1
+          fi
 
   update-frontends-torch-nn-functional:
     runs-on: ubuntu-latest
@@ -75,11 +82,18 @@ jobs:
           pip3 install pymongo
           pip3 install pytest-json-report
           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_nn_functional_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
+          exit_code=$?
+          echo "exit_code=$exit_code" >> $GITHUB_ENV
         continue-on-error: true
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
-        run: exit 1
+        run: |
+          if [[ "$exit_code" -eq 0 || "$exit_code" -eq 1 ]]; then
+            exit 0
+          else
+            exit 1
+          fi
 
   update-frontends-tensorflow:
     runs-on: ubuntu-latest
@@ -109,11 +123,18 @@ jobs:
           pip3 install pymongo
           pip3 install pytest-json-report
           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
+          exit_code=$?
+          echo "exit_code=$exit_code" >> $GITHUB_ENV
         continue-on-error: true
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
-        run: exit 1
+        run: |
+          if [[ "$exit_code" -eq 0 || "$exit_code" -eq 1 ]]; then
+            exit 0
+          else
+            exit 1
+          fi
 
 
   update-frontends-tensorflow-compat-v1:
@@ -143,11 +164,18 @@ jobs:
           pip3 install pymongo
           pip3 install pytest-json-report
           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_compat_v1_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
+          exit_code=$?
+          echo "exit_code=$exit_code" >> $GITHUB_ENV
         continue-on-error: true
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
-        run: exit 1
+        run: |
+          if [[ "$exit_code" -eq 0 || "$exit_code" -eq 1 ]]; then
+            exit 0
+          else
+            exit 1
+          fi
 
 
   update-frontends-tensorflow-image:
@@ -177,11 +205,18 @@ jobs:
           pip3 install pymongo
           pip3 install pytest-json-report
           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_image_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
+          exit_code=$?
+          echo "exit_code=$exit_code" >> $GITHUB_ENV
         continue-on-error: true
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
-        run: exit 1
+        run: |
+          if [[ "$exit_code" -eq 0 || "$exit_code" -eq 1 ]]; then
+            exit 0
+          else
+            exit 1
+          fi
 
 
   update-frontends-tensorflow-keras:
@@ -211,8 +246,15 @@ jobs:
           pip3 install pymongo
           pip3 install pytest-json-report
           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_keras_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
+          exit_code=$?
+          echo "exit_code=$exit_code" >> $GITHUB_ENV
         continue-on-error: true
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
-        run: exit 1
+        run: |
+          if [[ "$exit_code" -eq 0 || "$exit_code" -eq 1 ]]; then
+            exit 0
+          else
+            exit 1
+          fi
