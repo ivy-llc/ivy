@@ -1,0 +1,50 @@
+name: update-test-dashboard
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * 0"
+permissions:
+  actions: read
+jobs:
+  update-frontends-torch:
+    runs-on: ubuntu-latest
+    strategy:
+        fail-fast: false
+        matrix:
+          backend :  [ numpy, torch, jax, tensorflow, paddle ]
+          submodule : [ blas_and_lapack_ops, comparison_ops, creation_ops, dtype, func_wrapper,
+                        indexing_slicing_joining_mutating_ops, linalg, locally_disabling_gradient_computation,
+                        miscellaneous_ops, pointwise_ops, random_sampling, reduction_ops,
+                        special_funcs, spectral_ops, tensor_functions, tensor, utilities ]
+
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          pip3 install pytest-json-report
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
+        #   docker run shell_script which runs the pytest to create the json, then script to parse the json and push to db
+
+        #   python scripts/setup_tests/cron_tests.py ${{ github.run_number }} false false
+        #   python scripts/run_tests/run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} 'false' 'false' 'false' ${{ steps.jobs.outputs.html_url }}
+        continue-on-error: true
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
+
+
+        # test torch nn functional
