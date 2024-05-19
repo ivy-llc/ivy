@@ -75,8 +75,6 @@ jobs:
           pip3 install pymongo
           pip3 install pytest-json-report
           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_nn_functional_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
-          exit_code=$?
-          echo "exit_code=$exit_code" >> $GITHUB_ENV
         continue-on-error: true
 
       - name: Check on failures
@@ -111,8 +109,6 @@ jobs:
           pip3 install pymongo
           pip3 install pytest-json-report
           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
-          exit_code=$?
-          echo "exit_code=$exit_code" >> $GITHUB_ENV
         continue-on-error: true
 
       - name: Check on failures
@@ -147,8 +143,6 @@ jobs:
           pip3 install pymongo
           pip3 install pytest-json-report
           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_compat_v1_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
-          exit_code=$?
-          echo "exit_code=$exit_code" >> $GITHUB_ENV
         continue-on-error: true
 
       - name: Check on failures
@@ -183,8 +177,6 @@ jobs:
           pip3 install pymongo
           pip3 install pytest-json-report
           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_image_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
-          exit_code=$?
-          echo "exit_code=$exit_code" >> $GITHUB_ENV
         continue-on-error: true
 
       - name: Check on failures
@@ -219,8 +211,6 @@ jobs:
           pip3 install pymongo
           pip3 install pytest-json-report
           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_keras_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
-          exit_code=$?
-          echo "exit_code=$exit_code" >> $GITHUB_ENV
         continue-on-error: true
 
       - name: Check on failures
