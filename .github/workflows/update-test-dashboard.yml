@@ -127,16 +127,10 @@ jobs:
           pip3 install pytest-json-report
           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
           exit_code=$?
-          echo "::set-output name=exit_code::$exit_code"
-        continue-on-error: true
-
-      - name: Check on failures
-        run: |
-          if [[ "${{ steps.tests.outputs.exit_code }}" -eq 0 || "${{ steps.tests.outputs.exit_code }}" -eq 1 ]]; then
+          if [ $exit_code -eq 0 ] || [ $exit_code -eq 1 ]; then
             exit 0
-          else
-            exit 1
           fi
+          exit 1
 
 
 #   update-frontends-tensorflow-compat-v1:
