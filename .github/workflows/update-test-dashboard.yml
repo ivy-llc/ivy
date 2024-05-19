@@ -40,18 +40,11 @@ jobs:
           pip3 install pymongo
           pip3 install pytest-json-report
           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
-          exit_code=$?
-          echo "exit_code=$exit_code" >> $GITHUB_ENV
         continue-on-error: true
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
-        run: |
-            if [[ "$exit_code" -eq 0 || "$exit_code" -eq 1 ]]; then
-            exit 0
-            else
-            exit 1
-            fi
+        run: exit 1
 
   update-frontends-torch-nn-functional:
     runs-on: ubuntu-latest
@@ -88,13 +81,7 @@ jobs:
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
-        run: |
-            if [[ "$exit_code" -eq 0 || "$exit_code" -eq 1 ]]; then
-            exit 0
-            else
-            exit 1
-            fi
-
+        run: exit 1
 
   update-frontends-tensorflow:
     runs-on: ubuntu-latest
@@ -130,12 +117,7 @@ jobs:
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
-        run: |
-            if [[ "$exit_code" -eq 0 || "$exit_code" -eq 1 ]]; then
-            exit 0
-            else
-            exit 1
-            fi
+        run: exit 1
 
 
   update-frontends-tensorflow-compat-v1:
@@ -171,12 +153,7 @@ jobs:
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
-        run: |
-            if [[ "$exit_code" -eq 0 || "$exit_code" -eq 1 ]]; then
-            exit 0
-            else
-            exit 1
-            fi
+        run: exit 1
 
 
   update-frontends-tensorflow-image:
@@ -212,12 +189,7 @@ jobs:
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
-        run: |
-            if [[ "$exit_code" -eq 0 || "$exit_code" -eq 1 ]]; then
-            exit 0
-            else
-            exit 1
-            fi
+        run: exit 1
 
 
   update-frontends-tensorflow-keras:
@@ -253,9 +225,4 @@ jobs:
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
-        run: |
-            if [[ "$exit_code" -eq 0 || "$exit_code" -eq 1 ]]; then
-            exit 0
-            else
-            exit 1
-            fi
+        run: exit 1
