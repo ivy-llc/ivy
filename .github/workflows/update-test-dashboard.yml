@@ -239,7 +239,7 @@ jobs:
         fail-fast: false
         matrix:
           submodule : [ broadcast, data_type_routines, fft, indexing_routines, linalg, logic, manipulation_routines,
-                        mathematical_functions, matrix, ndarray, random, sorting_searcing_counting, statistics, ufunc ]
+                        mathematical_functions, matrix, ndarray, random, sorting_searching_counting, statistics, ufunc ]
           backend : [ jax, numpy, tensorflow, torch ]
     steps:
       - name: Checkout 🛎️Ivy
@@ -370,3 +370,23 @@ jobs:
           pip3 install pymongo
           pip3 install pytest-json-report
           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_nn.sh ${{ matrix.submodule }} ${{ matrix.backend }}
+
+  commit-results-to-dashboard:
+    runs-on: ubuntu-latest
+    needs:
+      - update-frontends-torch
+      - update-frontends-torch-nn-functional
+      - update-frontends-tensorflow
+      - update-frontends-tensorflow-keras
+      - update-frontends-jax
+      - update-frontends-jax-lax
+      - update-frontends-jax-nn
+      - update-frontends-jax-numpy
+      - update-frontends-numpy
+      - update-ivy-core
+      - update-ivy-experimental-core
+      - update-ivy-experimental-nn
+      - update-ivy-nn
+    steps:
+      - name: Commit Results
+        run: echo "commit results here"
