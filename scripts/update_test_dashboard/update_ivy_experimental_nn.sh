@@ -1,7 +1,9 @@
 #!/bin/bash -e
 
+submodule=$1
+
 set +e
-pytest ivy_tests/test_ivy/test_functional/test_experimental/test_nn/ -p no:warnings --tb=short
+pytest ivy_tests/test_ivy/test_functional/test_experimental/test_nn/test_$submodule.py -p no:warnings --tb=short
 pytest_exit_code=$?
 set -e
 
