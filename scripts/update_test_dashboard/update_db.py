@@ -41,6 +41,7 @@ if __name__ == "__main__":
             "outcome": test["outcome"],
         }
         filter_criteria = {
+            "backend": backend,
             "function": test_function,
             "path": test_path,
         }
