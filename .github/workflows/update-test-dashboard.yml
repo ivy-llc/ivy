@@ -19,6 +19,7 @@ jobs:
                       indexing_slicing_joining_mutating_ops, linalg, miscellaneous_ops,
                       pointwise_ops, random_sampling, reduction_ops, special_funcs,
                       spectral_ops, tensor_functions, tensor, utilities ]
+        backend : [ jax, numpy, tensorflow, torch ]
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v3
@@ -37,18 +38,17 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_frontends.sh ${{ matrix.submodule }}
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
 
   update-frontends-torch-nn-functional:
     runs-on: ubuntu-latest
     strategy:
         fail-fast: false
         matrix:
-          backend :  [ numpy, torch, jax, tensorflow, paddle ]
           submodule : [ convolution_functions, distance_functions, dropout_functions, layer_functions,
                         linear_functions, loss_functions, non_linear_activation_functions, norms,
                         pooling_functions, sparse_functions, vision_functions ]
-
+          backend : [ jax, numpy, tensorflow, torch ]
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v3
@@ -67,7 +67,7 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_nn_functional_frontends.sh ${{ matrix.submodule }}
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_nn_functional_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
 
   update-frontends-tensorflow:
     runs-on: ubuntu-latest
@@ -76,6 +76,7 @@ jobs:
         matrix:
           submodule : [ __operators__, dtypes, func_wrapper, general_functions, linalg, math, nest, nn,
                         random, raw_ops, signal, tensor, tensorarray, tensorshape ]
+          backend : [ jax, numpy, tensorflow, torch ]
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v3
@@ -94,7 +95,7 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_frontends.sh ${{ matrix.submodule }}
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
 
   update-frontends-tensorflow-keras:
     runs-on: ubuntu-latest
@@ -102,6 +103,7 @@ jobs:
         fail-fast: false
         matrix:
           submodule : [ activations, backend ]
+          backend : [ jax, numpy, tensorflow, torch ]
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v3
@@ -120,7 +122,7 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_keras_frontends.sh ${{ matrix.submodule }}
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_keras_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
 
   update-frontends-jax:
     runs-on: ubuntu-latest
@@ -128,6 +130,7 @@ jobs:
         fail-fast: false
         matrix:
           submodule : [ array, func_wrapper, general_functions, random ]
+          backend : [ jax, numpy, tensorflow, torch ]
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v3
@@ -146,7 +149,7 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_jax_frontends.sh ${{ matrix.submodule }}
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_jax_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
 
   update-frontends-jax-lax:
     runs-on: ubuntu-latest
@@ -154,6 +157,7 @@ jobs:
         fail-fast: false
         matrix:
           submodule : [ control_flow_operators, custom_gradient_operators, linalg, operators ]
+          backend : [ jax, numpy, tensorflow, torch ]
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v3
@@ -172,7 +176,7 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_jax_lax_frontends.sh ${{ matrix.submodule }}
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_jax_lax_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
 
   update-frontends-jax-nn:
     runs-on: ubuntu-latest
@@ -180,6 +184,7 @@ jobs:
         fail-fast: false
         matrix:
           submodule : [ non_linear_activations ]
+          backend : [ jax, numpy, tensorflow, torch ]
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v3
@@ -198,7 +203,7 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_jax_nn_frontends.sh ${{ matrix.submodule }}
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_jax_nn_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
 
   update-frontends-jax-numpy:
     runs-on: ubuntu-latest
@@ -207,6 +212,7 @@ jobs:
         matrix:
           submodule : [ creation, dtype, fft, indexing, linalg, logic, manipulations,
                         mathematical_functions, searching_sorting, statistical ]
+          backend : [ jax, numpy, tensorflow, torch ]
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v3
@@ -225,7 +231,7 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_jax_numpy_frontends.sh ${{ matrix.submodule }}
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_jax_numpy_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
 
   update-frontends-numpy:
     runs-on: ubuntu-latest
@@ -234,6 +240,7 @@ jobs:
         matrix:
           submodule : [ broadcast, data_type_routines, fft, indexing_routines, linalg, logic, manipulation_routines,
                         mathematical_functions, matrix, ndarray, random, sorting_searcing_counting, statistics, ufunc ]
+          backend : [ jax, numpy, tensorflow, torch ]
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v3
@@ -252,7 +259,7 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_numpy_frontends.sh ${{ matrix.submodule }}
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_numpy_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }}
 
   update-ivy-core:
     runs-on: ubuntu-latest
@@ -261,6 +268,7 @@ jobs:
         matrix:
           submodule : [ creation, device, dtype, elementwise, general, gradients, linalg, manipulation, meta,
                         nest, random, searching, set, sorting, statistical, utility ]
+          backend : [ jax, numpy, tensorflow, torch ]
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v3
@@ -279,7 +287,7 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_core.sh ${{ matrix.submodule }}
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_core.sh ${{ matrix.submodule }} ${{ matrix.backend }}
     
   update-ivy-experimental-core:
     runs-on: ubuntu-latest
@@ -288,6 +296,7 @@ jobs:
         matrix:
           submodule : [ creation, elementwise, general, gradients, linalg, manipulation,
                         random, searching, sorting, sparse_array, statistical, utility ]
+          backend : [ jax, numpy, tensorflow, torch ]
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v3
@@ -306,7 +315,7 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_experimental_core.sh ${{ matrix.submodule }}
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_experimental_core.sh ${{ matrix.submodule }} ${{ matrix.backend }}
 
   update-ivy-experimental-nn:
     runs-on: ubuntu-latest
@@ -314,6 +323,7 @@ jobs:
         fail-fast: false
         matrix:
           submodule : [ activations, layers, losses, norms ]
+          backend : [ jax, numpy, tensorflow, torch ]
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v3
@@ -332,7 +342,7 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_experimental_nn.sh ${{ matrix.submodule }}
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_experimental_nn.sh ${{ matrix.submodule }} ${{ matrix.backend }}
 
   update-ivy-nn:
     runs-on: ubuntu-latest
@@ -340,6 +350,7 @@ jobs:
         fail-fast: false
         matrix:
           submodule : [ activations, layers, losses, norms ]
+          backend : [ jax, numpy, tensorflow, torch ]
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v3
@@ -358,4 +369,4 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_nn.sh ${{ matrix.submodule }}
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_nn.sh ${{ matrix.submodule }} ${{ matrix.backend }}

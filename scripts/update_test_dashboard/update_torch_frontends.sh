@@ -4,9 +4,10 @@
 # pytest ivy_tests/test_ivy/test_functional/test_core/test_elementwise.py -p no:warnings --json-report --json-report-file=report.json
 
 submodule=$1
+backend=$2
 
 set +e
-pytest ivy_tests/test_ivy/test_frontends/test_torch/test_$submodule.py -p no:warnings --tb=short --json-report --json-report-file=test_report.json
+pytest ivy_tests/test_ivy/test_frontends/test_torch/test_$submodule.py --backend $backend -p no:warnings --tb=short --json-report --json-report-file=test_report.json
 pytest_exit_code=$?
 set -e
 

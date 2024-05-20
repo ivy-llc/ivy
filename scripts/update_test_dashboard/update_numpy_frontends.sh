@@ -1,9 +1,10 @@
 #!/bin/bash -e
 
 submodule=$1
+backend=$2
 
 set +e
-pytest ivy_tests/test_ivy/test_frontends/test_numpy/test_$submodule/ -p no:warnings --tb=short --json-report --json-report-file=test_report.json
+pytest ivy_tests/test_ivy/test_frontends/test_numpy/test_$submodule/ --backend $backend -p no:warnings --tb=short --json-report --json-report-file=test_report.json
 pytest_exit_code=$?
 set -e
 
