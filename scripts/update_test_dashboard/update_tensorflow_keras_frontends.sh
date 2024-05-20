@@ -3,7 +3,7 @@
 submodule=$1
 
 set +e
-pytest ivy_tests/test_ivy/test_frontends/test_tensorflow/test_keras/test_$submodule.py -p no:warnings --tb=short
+pytest ivy_tests/test_ivy/test_frontends/test_tensorflow/test_keras/test_$submodule.py -p no:warnings --tb=short --json-report --json-report-file=test_report.json
 pytest_exit_code=$?
 set -e
 

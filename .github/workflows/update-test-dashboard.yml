@@ -101,7 +101,7 @@ jobs:
     strategy:
         fail-fast: false
         matrix:
-          submodule : [ activations, backend, layers, metrics, regularizers ]
+          submodule : [ activations, backend ]
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v3
@@ -232,9 +232,8 @@ jobs:
     strategy:
         fail-fast: false
         matrix:
-          submodule : [ broadcast, creations_routines, data_type_routines, fft, indexing_routines, linalg, logic,
-                        manipulation_routines, mathematical_functions, matrix, ndarray, random, sorting_searcing_counting,
-                        statistics, ufunc ]
+          submodule : [ broadcast, data_type_routines, fft, indexing_routines, linalg, logic, manipulation_routines,
+                        mathematical_functions, matrix, ndarray, random, sorting_searcing_counting, statistics, ufunc ]
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v3
