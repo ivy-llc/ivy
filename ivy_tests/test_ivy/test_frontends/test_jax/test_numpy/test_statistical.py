@@ -1329,7 +1329,7 @@ def test_jax_var(
     test_gradients=st.just(False),
     test_with_out=st.just(False),
 )
-def test_nanpercentile(
+def test_jax_nanpercentile(
     *, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, x, axis, interpolation, q = dtype_and_x
