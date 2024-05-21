@@ -1,8 +1,8 @@
 name: test-ivy-cron-multi-version
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '20 * * * *'
+#   schedule:
+#     - cron: '20 * * * *'
 permissions:
   actions: read
 jobs:
