@@ -287,7 +287,7 @@ jobs:
           pip3 install pymongo
           pip3 install pytest-json-report
           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_core.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/${{ github.job }}?check_suite_focus=true ${{ secrets.IVY_DASHBOARD_DB_KEY }}
-    
+
   update-ivy-experimental-core:
     runs-on: ubuntu-latest
     strategy:

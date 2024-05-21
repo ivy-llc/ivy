@@ -4,8 +4,14 @@ from pymongo import MongoClient
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Add all the tests within test_report.json to the remote MongoDB.")
-    parser.add_argument("--workflow-link", type=str, help="Link to the GitHub actions workflow corresponding to this test.")
+    parser = argparse.ArgumentParser(
+        description="Add all the tests within test_report.json to the remote MongoDB."
+    )
+    parser.add_argument(
+        "--workflow-link",
+        type=str,
+        help="Link to the GitHub actions workflow corresponding to this test.",
+    )
     parser.add_argument("--db-key", type=str, help="Key for the MongoDB database")
 
     args = parser.parse_args()
@@ -19,7 +25,7 @@ if __name__ == "__main__":
     uri = f"mongodb+srv://{args.db_key}@ivytestdashboard.mnzyom5.mongodb.net/?retryWrites=true&w=majority&appName=IvyTestDashboard"
     client = MongoClient(uri)
     db = client.ivytestdashboard
-    collection = db['test_results']
+    collection = db["test_results"]
 
     for test in tests_data:
         test_path, test_function_args = test["nodeid"].split("::")
