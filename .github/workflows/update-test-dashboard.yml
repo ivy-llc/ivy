@@ -1,5 +1,5 @@
 # Workflow to run all the tests for the ivy frontends and functional api,
-# and update the test dashboard with the results
+# and update the remote database with the results
 
 name: update-test-dashboard
 on:
