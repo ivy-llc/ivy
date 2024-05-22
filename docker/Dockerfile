@@ -15,7 +15,7 @@ RUN apt clean && \
     apt-get install -y wget  \
     git -y && \
     wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
-     /bin/bash ~/miniconda.sh -b -p /opt/miniconda
+    /bin/bash ~/miniconda.sh -b -p /opt/miniconda
 
 
 ENV PATH=$CONDA_DIR/bin:$PATH
@@ -39,7 +39,7 @@ RUN apt-get update && \
 
 
 # Install Ivy Upstream
-RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --depth 1 && \
+RUN git clone --progress --recurse-submodules https://github.com/Transpile-AI/ivy --depth 1 && \
     cd ivy && \
     cd ivy_tests/array_api_testing/test_array_api && \
     pip3 install --no-cache-dir -r requirements.txt
