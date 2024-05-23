@@ -1,10 +1,12 @@
 # Ivy Framework
+ivy/ @Sam-Armstrong
 ivy/func_wrapper.py @Sam-Armstrong
 **/gradients.py @Sam-Armstrong
 ivy/utils/backend @Sam-Armstrong
 ivy/utils/backend/ast_helpers.py @Sam-Armstrong
 
 # Ivy Testing
+ivy_tests/ @Sam-Armstrong
 ivy_tests/test_ivy/helpers/ @Sam-Armstrong
 
 # Docs builder
