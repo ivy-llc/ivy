@@ -10,7 +10,7 @@ on:
 permissions:
   actions: read
 jobs:
-  tests:
+  relevant-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Ivy 🛎

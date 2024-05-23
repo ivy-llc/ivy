@@ -1,4 +1,4 @@
-name: duplicates
+name: tests
 on:
   push:
     branches:
@@ -7,7 +7,7 @@ on:
 permissions:
   actions: read
 jobs:
-  test-duplicates:
+  duplicate-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Ivy 🛎
