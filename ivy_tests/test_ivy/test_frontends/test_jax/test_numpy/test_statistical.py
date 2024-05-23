@@ -1322,6 +1322,7 @@ def test_jax_var(
     )
 
 
+# nanpercentile
 @handle_frontend_test(
     fn_tree="jax.numpy.nanpercentile",
     dtype_and_x=_percentile_helper(),
