@@ -1,4 +1,4 @@
-name: test-docstrings
+name: tests
 on:
   push:
     branches:

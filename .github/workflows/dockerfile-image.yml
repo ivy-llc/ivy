@@ -3,6 +3,7 @@ name: Build Dockerfile
 on:
   workflow_dispatch:
   push:
+    branches: [ "main" ]
   pull_request:
     types: [review_requested]
     branches: [ "main" ]

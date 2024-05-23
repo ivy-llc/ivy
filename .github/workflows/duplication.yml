@@ -1,4 +1,4 @@
-name: test-duplicates
+name: tests
 on:
   push:
     branches:
