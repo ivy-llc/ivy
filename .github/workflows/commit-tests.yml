@@ -53,7 +53,7 @@ jobs:
         run: |
           pip3 install pymongo
           cd ivy
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 scripts/run_tests_from_diff.py
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis transpileai/ivy:latest python3 scripts/run_tests_from_diff.py
         continue-on-error: true
 
       - name: Check on failures
