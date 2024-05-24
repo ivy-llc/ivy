@@ -32,7 +32,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
-          per_page: 150
+          per_page: 64
 
       - name: Install ivy
         run: |
@@ -74,7 +74,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
-          per_page: 150
+          per_page: 44
 
       - name: Install ivy
         run: |
@@ -115,7 +115,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
-          per_page: 150
+          per_page: 56
 
       - name: Install ivy
         run: |
@@ -155,7 +155,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
-          per_page: 150
 
       - name: Install ivy
         run: |
@@ -195,7 +194,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
-          per_page: 150
 
       - name: Install ivy
         run: |
@@ -235,7 +233,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
-          per_page: 150
 
       - name: Install ivy
         run: |
@@ -275,7 +272,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
-          per_page: 150
 
       - name: Install ivy
         run: |
@@ -316,7 +312,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
-          per_page: 150
+          per_page: 40
 
       - name: Install ivy
         run: |
@@ -357,7 +353,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
-          per_page: 150
+          per_page: 56
 
       - name: Install ivy
         run: |
@@ -398,7 +394,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
-          per_page: 150
+          per_page: 64
 
       - name: Install ivy
         run: |
@@ -439,7 +435,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
-          per_page: 150
+          per_page: 48
 
       - name: Install ivy
         run: |
@@ -479,7 +475,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
-          per_page: 150
 
       - name: Install ivy
         run: |
@@ -519,7 +514,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
-          per_page: 150
 
       - name: Install ivy
         run: |
