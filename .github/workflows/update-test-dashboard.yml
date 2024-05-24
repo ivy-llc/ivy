@@ -27,8 +27,8 @@ jobs:
         uses: Tiryoh/gha-jobid-action@v0
         id: jobs
         with:
-          github_token: ${{ secrets.DEV_BOT_PAT }}
-          job_name: ${{ github.job }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: update-frontends-torch
 
       - name: Install ivy
         run: |
