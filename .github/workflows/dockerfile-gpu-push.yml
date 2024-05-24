@@ -22,5 +22,5 @@ jobs:
 
       - name: Build and push GPU image
         run: |
-          docker build --progress=plain --no-cache -t unifyai/ivy:latest-gpu -f docker/DockerfileGPU .
-          docker push unifyai/ivy:latest-gpu
+          docker build --progress=plain --no-cache -t transpileai/ivy:latest-gpu -f docker/DockerfileGPU .
+          docker push transpileai/ivy:latest-gpu
