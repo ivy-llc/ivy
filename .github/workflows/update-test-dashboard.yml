@@ -31,7 +31,7 @@ jobs:
         id: jobs
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }}) (${{ matrix.submodule }}, ${{ matrix.backend }})
+          job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
           per_page: 150
 
       - name: Install ivy
@@ -45,9 +45,12 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          echo "job_id: ${{ steps.jobs.outputs.job_id }}"
           echo "html_url: ${{ steps.jobs.outputs.html_url }}"
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
 
   update-frontends-torch-nn-functional:
     runs-on: ubuntu-latest
@@ -84,7 +87,12 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_nn_functional_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_nn_functional_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_nn_functional_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
 
   update-frontends-tensorflow:
     runs-on: ubuntu-latest
@@ -120,7 +128,12 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
 
   update-frontends-tensorflow-keras:
     runs-on: ubuntu-latest
@@ -155,7 +168,12 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_keras_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_keras_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_tensorflow_keras_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
 
   update-frontends-jax:
     runs-on: ubuntu-latest
@@ -190,7 +208,12 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_jax_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_jax_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_jax_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
 
   update-frontends-jax-lax:
     runs-on: ubuntu-latest
@@ -225,7 +248,12 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_jax_lax_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_jax_lax_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_jax_lax_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
 
   update-frontends-jax-nn:
     runs-on: ubuntu-latest
@@ -260,7 +288,12 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_jax_nn_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_jax_nn_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_jax_nn_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
 
   update-frontends-jax-numpy:
     runs-on: ubuntu-latest
@@ -296,7 +329,12 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_jax_numpy_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_jax_numpy_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_jax_numpy_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
 
   update-frontends-numpy:
     runs-on: ubuntu-latest
@@ -332,7 +370,12 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_numpy_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_numpy_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_numpy_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
 
   update-ivy-core:
     runs-on: ubuntu-latest
@@ -368,7 +411,12 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_core.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_core.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_core.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
 
   update-ivy-experimental-core:
     runs-on: ubuntu-latest
@@ -404,7 +452,12 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_experimental_core.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_experimental_core.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_experimental_core.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
 
   update-ivy-experimental-nn:
     runs-on: ubuntu-latest
@@ -439,7 +492,12 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_experimental_nn.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_experimental_nn.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_experimental_nn.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
 
   update-ivy-nn:
     runs-on: ubuntu-latest
@@ -474,4 +532,9 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_nn.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_nn.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_ivy_nn.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
