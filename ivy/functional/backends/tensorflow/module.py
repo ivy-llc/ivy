@@ -7,6 +7,7 @@ import functools
 from tensorflow.python.util import nest
 from typing import NamedTuple, Callable, Any, Tuple, List, Dict, Type, Union
 import inspect
+from collections import OrderedDict
 
 
 def get_assignment_dict():
@@ -464,6 +465,9 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
             return getattr(obj, fn)(
                 *obj._args, dynamic_backend=obj._dynamic_backend, **obj._kwargs
             )
+        elif isinstance(obj, tf.keras.layers.Layer) and obj is not self:
+            return obj.v if trainable else obj.buffers
+
         elif isinstance(obj, (list, tuple)):
             for i, v in enumerate(obj):
                 ret = self._find_variables(
@@ -671,9 +675,6 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
 
     @tf.autograph.experimental.do_not_convert
     def register_buffer(self, name: str, value: Union[tf.Tensor, tf.Variable]):
-        if value is not None and not isinstance(value, tf.Variable):
-            value = tf.Variable(initial_value=value, name=name, trainable=False)
-            super().__setattr__(name, value)
         self._buffers.update({name: value})
         return value
 
@@ -685,6 +686,11 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
     def train(self, mode: bool = True):
         self._training = mode
         for module in self.children():
+            if isinstance(module, tf.keras.layers.Layer) and not hasattr(
+                module, "train"
+            ):
+                module.trainable = mode
+                continue
             module.train(mode)
         self.trainable = mode
         return self
@@ -752,6 +758,7 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
 
         # Separate positional and keyword arguments based on the __init__ signature
         args = []
+        pos_or_kw = OrderedDict()
         kwargs = {}
         var_positional_args = []
         for arg_name in arg_names:
@@ -767,8 +774,8 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
                 and init_signature.parameters[arg_name].kind
                 == inspect.Parameter.POSITIONAL_OR_KEYWORD
             ):
-                # Handle positional arguments
-                args.append(config.pop(arg_name))
+                # Handle positional or keyword arguments
+                pos_or_kw[arg_name] = config.pop(arg_name)
             elif any(re.match(rf"{arg_name}_\d+", key) for key in config.keys()):
                 # Handle variable positional arguments
                 var_positional_args.extend(
@@ -780,11 +787,17 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
                 )
 
         # Unpack positional arguments and the rest as keyword arguments
-        args.extend(var_positional_args)
         config.pop("name", None)
         config.pop("trainable", None)
         config.pop("dtype", None)
         kwargs.update(config)
+
+        # Determine the final args and kwargs
+        if var_positional_args:
+            args = list(pos_or_kw.values()) + var_positional_args
+        else:
+            kwargs.update(pos_or_kw)
+
         return cls(*args, **kwargs)
 
     # Methods to be Optionally Overridden #
@@ -889,9 +902,12 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
             if _dict:
                 _dict[name] = value
 
+            # compute the module dict
+            self._compute_module_dict()
+
             obj_to_search = (
                 None
-                if not isinstance(value, Layer)
+                if not isinstance(value, (Layer, tf.keras.layers.Layer))
                 else (
                     self._modules
                     if hasattr(self, "_modules") and self._modules
@@ -912,9 +928,6 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
                 new_kc = kc.replace("/", ".")
                 if new_kc not in self.v:
                     self.register_parameter(new_kc, v)
-
-            # compute the module dict
-            self._compute_module_dict()
 
             # once all variables built, find and assign buffers
             found_buffers = self._find_variables(
@@ -968,7 +981,6 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
             except AttributeError:
                 obj_to_search = None
             if isinstance(obj_to_search, Layer):
-
                 # retrieve all hierarchical submodules
                 assign_dict, kc = get_assignment_dict()
 
@@ -992,10 +1004,6 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
 
                 # finally update the module dict
                 self._module_dict[name] = value
-            elif isinstance(obj_to_search, tf.Variable) and obj_to_search.trainable:
-                self.register_parameter(name, value)
-            elif isinstance(obj_to_search, (tf.Variable, tf.Tensor)):
-                self.register_buffer(name, value)
 
             return super().__setattr__(name, value)
 
@@ -1118,6 +1126,9 @@ class Model(tf.keras.Model, ModelHelpers):
             return getattr(obj, fn)(
                 *obj._args, dynamic_backend=obj._dynamic_backend, **obj._kwargs
             )
+        elif isinstance(obj, tf.keras.layers.Layer) and obj is not self:
+            return obj.v if trainable else obj.buffers
+
         elif isinstance(obj, (list, tuple)):
             for i, v in enumerate(obj):
                 ret = self._find_variables(
@@ -1325,9 +1336,6 @@ class Model(tf.keras.Model, ModelHelpers):
 
     @tf.autograph.experimental.do_not_convert
     def register_buffer(self, name: str, value: Union[tf.Tensor, tf.Variable]):
-        if value is not None and not isinstance(value, tf.Variable):
-            value = tf.Variable(initial_value=value, name=name, trainable=False)
-            super().__setattr__(name, value)
         self._buffers.update({name: value})
         return value
 
@@ -1339,6 +1347,11 @@ class Model(tf.keras.Model, ModelHelpers):
     def train(self, mode: bool = True):
         self._training = mode
         for module in self.children():
+            if isinstance(module, tf.keras.layers.Layer) and not hasattr(
+                module, "train"
+            ):
+                module.trainable = mode
+                continue
             module.train(mode)
         self.trainable = mode
         return self
@@ -1406,6 +1419,7 @@ class Model(tf.keras.Model, ModelHelpers):
 
         # Separate positional and keyword arguments based on the __init__ signature
         args = []
+        pos_or_kw = OrderedDict()
         kwargs = {}
         var_positional_args = []
         for arg_name in arg_names:
@@ -1421,8 +1435,8 @@ class Model(tf.keras.Model, ModelHelpers):
                 and init_signature.parameters[arg_name].kind
                 == inspect.Parameter.POSITIONAL_OR_KEYWORD
             ):
-                # Handle positional arguments
-                args.append(config.pop(arg_name))
+                # Handle positional or keyword arguments
+                pos_or_kw[arg_name] = config.pop(arg_name)
             elif any(re.match(rf"{arg_name}_\d+", key) for key in config.keys()):
                 # Handle variable positional arguments
                 var_positional_args.extend(
@@ -1434,11 +1448,17 @@ class Model(tf.keras.Model, ModelHelpers):
                 )
 
         # Unpack positional arguments and the rest as keyword arguments
-        args.extend(var_positional_args)
         config.pop("name", None)
         config.pop("trainable", None)
         config.pop("dtype", None)
         kwargs.update(config)
+
+        # Determine the final args and kwargs
+        if var_positional_args:
+            args = list(pos_or_kw.values()) + var_positional_args
+        else:
+            kwargs.update(pos_or_kw)
+
         return cls(*args, **kwargs)
 
     # Methods to be Optionally Overridden #
@@ -1543,9 +1563,12 @@ class Model(tf.keras.Model, ModelHelpers):
             if _dict:
                 _dict[name] = value
 
+            # compute the module dict
+            self._compute_module_dict()
+
             obj_to_search = (
                 None
-                if not isinstance(value, (Layer, Model))
+                if not isinstance(value, (tf.keras.layers.Layer, Layer, Model))
                 else (
                     self._modules
                     if hasattr(self, "_modules") and self._modules
@@ -1566,9 +1589,6 @@ class Model(tf.keras.Model, ModelHelpers):
                 new_kc = kc.replace("/", ".")
                 if new_kc not in self.v:
                     self.register_parameter(new_kc, v)
-
-            # compute the module dict
-            self._compute_module_dict()
 
             # once all variables built, find and assign buffers
             found_buffers = self._find_variables(
@@ -1622,7 +1642,6 @@ class Model(tf.keras.Model, ModelHelpers):
             except AttributeError:
                 obj_to_search = None
             if isinstance(obj_to_search, (Model, Layer)):
-
                 # retrieve all hierarchical submodules
                 assign_dict, kc = get_assignment_dict()
 
@@ -1646,10 +1665,6 @@ class Model(tf.keras.Model, ModelHelpers):
 
                 # finally update the module dict
                 self._module_dict[name] = value
-            elif isinstance(obj_to_search, tf.Variable) and obj_to_search.trainable:
-                self.register_parameter(name, value)
-            elif isinstance(obj_to_search, (tf.Variable, tf.Tensor)):
-                self.register_buffer(name, value)
 
             return super().__setattr__(name, value)
 
