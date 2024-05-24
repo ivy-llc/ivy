@@ -23,12 +23,17 @@ jobs:
           path: ivy
           persist-credentials: false
 
-      - name: Get Job URL
-        uses: Tiryoh/gha-jobid-action@v0
-        id: jobs
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          job_name: update-frontends-torch
+      - name: Get job URL
+        id: get_job_url
+        run: |
+          JOB_ID=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs \
+          | jq -r '.jobs[] | select(.name=="build (submodule=${{ matrix.submodule }}, backend=${{ matrix.backend }})") | .id')
+          JOB_URL="https://github.com/${{ github.repository }}/runs/$JOB_ID"
+          echo "Job URL: $JOB_URL"
+          echo "::set-output name=url::$JOB_URL"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install ivy
         run: |
@@ -41,8 +46,7 @@ jobs:
           cd ivy
           pip3 install pymongo
           pip3 install pytest-json-report
-          echo "job_id: ${{ steps.jobs.outputs.job_id }}"
-          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          echo "html_url: ${{ steps.get_job_url.outputs.url }}"
           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest scripts/update_test_dashboard/update_torch_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
 
 #   update-frontends-torch-nn-functional:
