@@ -2,8 +2,8 @@ name: Dockerfile Push
 
 on:
   schedule:
-    # run at everyday at 00:00 UTC
-    - cron:  '0 0 * * *'
+    # runs everyday at 23:00 UTC
+    - cron:  '0 23 * * *'
   workflow_dispatch:
 
 jobs:
