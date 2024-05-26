@@ -2,10 +2,6 @@ name: Update docs
 on:
   workflow_call:
   push:
-    branches:
-      - main
-    tags:
-      - v*
   workflow_dispatch:
 
 jobs:
