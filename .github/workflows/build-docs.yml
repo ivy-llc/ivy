@@ -69,8 +69,8 @@ jobs:
 
       - name: Commit and push
         run: |
-          git config --global user.email "ivydl.team@gmail.com"
-          git config --global user.name "ivy-seed"
+          git config --global user.email "hello@transpile-ai.com"
+          git config --global user.name "ivy-dev-bot"
           git add versions/
           git commit -m "Add ${{ github.ref_name }} to ${{ inputs.repo-name }}.json"
           git push

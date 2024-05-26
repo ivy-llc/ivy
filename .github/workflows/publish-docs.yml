@@ -91,7 +91,7 @@ jobs:
           target-folder: "${{ inputs.version != 'dev' && format('{0}/', inputs.version) || '' }}${{ inputs.repo-name }}"
           ssh-key: ${{ secrets.SSH_GH_PAGES }}
           branch: main
-          git-config-name: ivy-seed
-          git-config-email: ivydl.team@gmail.com
+          git-config-name: ivy-dev-bot
+          git-config-email: hello@transpile-ai.com
           repository-name: ${{ inputs.docs-repo }}
           clean: true
