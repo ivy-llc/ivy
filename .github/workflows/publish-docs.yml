@@ -85,7 +85,7 @@ jobs:
         with:
           folder: docs/build
           target-folder: "${{ inputs.version != 'dev' && format('{0}/', inputs.version) || '' }}${{ inputs.repo-name }}"
-          ssh-key: ${{ secrets.DOCS_DEPLOY_KEY }}
+          token: ${{ secrets.DEV_BOT_PAT }}
           branch: main
           git-config-name: ivy-dev-bot
           git-config-email: hello@transpile-ai.com
