@@ -18,6 +18,9 @@ on:
           default: Transpile-AI/docs
           type: string
 
+permissions:
+  contents: write
+
 jobs:
   publish-dev-docs:
     name: Publish dev docs

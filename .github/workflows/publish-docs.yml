@@ -23,6 +23,9 @@ on:
           default: Transpile-AI/docs
           type: string
 
+permissions:
+  contents: write
+
 jobs:
   publish-docs:
     runs-on: ubuntu-latest
