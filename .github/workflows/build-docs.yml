@@ -1,5 +1,5 @@
 name: Update docs
-on: 
+on:
   workflow_call:
       inputs:
         package-dependencies:

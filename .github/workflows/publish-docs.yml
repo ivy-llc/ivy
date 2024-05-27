@@ -1,5 +1,5 @@
 run-name: Publish ${{ inputs.version }} docs
-on: 
+on:
   workflow_call:
       inputs:
         version:
