@@ -18,12 +18,7 @@ def argsort(
     stable: bool = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    kind = "stable" if stable else "quicksort"
-    return (
-        jnp.argsort(x, axis=axis, kind=kind, descending=descending)
-        if descending
-        else jnp.argsort(x, axis=axis, kind=kind)
-    )
+    return jnp.argsort(x, axis=axis, stable=stable, descending=descending)
 
 
 def sort(
