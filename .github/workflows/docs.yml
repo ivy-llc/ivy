@@ -1,8 +1,9 @@
 name: Update docs
 on:
   workflow_call:
-  push:
   workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * *"
 
 permissions:
   contents: write
