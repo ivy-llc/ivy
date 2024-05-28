@@ -23,4 +23,4 @@ jobs:
       - name: Build and push Dockerfile
         run: |
           docker build --progress=plain --no-cache -t transpileai/multiversion:latest -f docker/DockerfileMultiversion .
-          docker push unifyai/multiversion:latest
+          docker push transpileai/multiversion:latest
