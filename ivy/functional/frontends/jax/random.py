@@ -30,7 +30,7 @@ def _remove_axis(shape, axis):
 
 
 @to_ivy_arrays_and_back
-def PRNGKey(seed):
+def PRNGKey(seed, *, impl=None):
     return ivy.array([0, seed % 4294967295 - (seed // 4294967295)], dtype=ivy.int64)
 
 
