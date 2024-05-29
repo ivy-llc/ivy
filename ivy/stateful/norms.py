@@ -212,8 +212,8 @@ class BatchNorm2D(Module):
 
     def _extra_repr(self) -> str:
         return (
-            f"num_features={self._num_features}, affine={self._affine}, "
-            f"data_format={self._data_format}, epsilon={self._epsilon} "
+            f"num_features={self.num_features}, affine={self._affine}, "
+            f"data_format={self.data_format}, epsilon={self._epsilon} "
             f"momentum={self._momentum}, "
             f"track_running_stats={self._track_running_stats}"
         )
