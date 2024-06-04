@@ -5,11 +5,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  publish-release-docs:
-    name: Publish Release Docs
-    uses: unifyai/workflows/.github/workflows/docs.yml@main
-    secrets: inherit
-
   publish-binaries:
     name: Publish Binaries
     uses: ./.github/workflows/binaries.yml

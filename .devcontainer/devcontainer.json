@@ -1,7 +1,7 @@
 {
 	"name": "Ivy Development Environment (image)",
 
-	"image": "unifyai/ivy:latest",
+	"image": "transpileai/ivy:latest",
 	"customizations": {
 		"vscode": {
 			"extensions": [

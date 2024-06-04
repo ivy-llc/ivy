@@ -46,7 +46,7 @@ def check_for_binaries():
                         "system or that newer binaries were available. In the latter "
                         "case, calling ivy.utils.cleanup_and_fetch_binaries() should "
                         "fetch the binaries binaries. Feel free to create an issue on "
-                        "https://github.com/unifyai/ivy.git in case of the former\n"
+                        "https://github.com/Transpile-AI/ivy.git in case of the former\n"
                     )
                     logging.warning(
                         "\nFollowing are the supported configurations"
