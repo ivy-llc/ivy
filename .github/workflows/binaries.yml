@@ -8,8 +8,8 @@ jobs:
       - name: Checkout 🛎️Binaries
         uses: actions/checkout@v4
         with:
-          repository: unifyai/binaries
-          token: ${{ secrets.IVY_BRANCH_TOKEN }}
+          repository: Transpile-AI/binaries
+          token: ${{ secrets.DEV_BOT_GENERAL_PAT }}
           path: binaries
 
       - name: Add Tag to Binaries

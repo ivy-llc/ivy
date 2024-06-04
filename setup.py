@@ -78,7 +78,7 @@ for tag in all_tags:
         search_path = f"{module}/{file_name}"
         try:
             response = request.urlopen(
-                f"https://github.com/unifyai/binaries/raw/{version}/{search_path}",
+                f"https://github.com/Transpile-AI/binaries/raw/{version}/{search_path}",
                 timeout=40,
             )
             os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -115,18 +115,18 @@ with open("ivy/_version.py") as f:
 setup(
     name="ivy",
     version=__version__,
-    author="Unify",
-    author_email="hello@unify.ai",
+    author="Transpile AI",
+    author_email="hello@transpile-ai.com",
     description=(
         "The unified machine learning framework, enabling framework-agnostic "
         "functions, layers and libraries."
     ),
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://unify.ai/ivy",
+    url="https://ivy.dev",
     project_urls={
-        "Docs": "https://unify.ai/docs/ivy/",
-        "Source": "https://github.com/unifyai/ivy",
+        "Docs": "https://ivy.dev/docs/",
+        "Source": "https://github.com/Transpile-AI/ivy",
     },
     include_package_data=True,
     packages=setuptools.find_packages(),
