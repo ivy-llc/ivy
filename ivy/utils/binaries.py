@@ -103,7 +103,7 @@ def cleanup_and_fetch_binaries(clean=True):
                     search_path = f"{module}/{file_name}"
                     try:
                         response = request.urlopen(
-                            "https://github.com/unifyai/binaries/raw/"
+                            "https://github.com/Transpile-AI/binaries/raw/"
                             f"{version}/{search_path}",
                             timeout=40,
                         )
