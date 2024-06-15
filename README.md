@@ -100,7 +100,6 @@ tutorials to do so are available!
 
 </details>
 
-<div style="margin-top: 30px;"></div>
 
 # Getting started
 
@@ -119,7 +118,6 @@ The most important notebooks are:
 
 Beyond that, based on the frameworks you want to convert code between, there are a few more [examples](#using-ivy) further down this page 👇 which contain a number of models and libraries transpiled between PyTorch, JAX, TensorFlow and NumPy.
 
-<div style="margin-top: 30px;"></div>
 
 # Using ivy
 
@@ -1136,7 +1134,6 @@ docs!](https://unify.ai/docs/ivy/overview/design/ivy_as_a_transpiler.html)
 
 </details>
 
-<div style="margin-top: 30px;"></div>
 
 # Documentation
 
@@ -1149,7 +1146,6 @@ You can find Ivy's documentation on the [Docs page](https://unify.ai/docs/ivy/),
 - [Design](https://unify.ai/docs/ivy/overview/design.html): A user-focused guide about the design decision behind the architecture and the main building blocks of Ivy.
 - [Deep Dive](https://unify.ai/docs/ivy/overview/deep_dive.html): Which delves deeper into the implementation details of Ivy and is oriented towards potential contributors to the code base.
 
-<div style="margin-top: 30px;"></div>
 
 # Contributing
 
@@ -1166,7 +1162,6 @@ in the docs! Or to immediately dive into a useful task, look for any failing tes
   <img class="dark-light" src="https://contrib.rocks/image?repo=unifyai/ivy&anon=0&columns=20&max=100&r=true" />
 </a>
 
-<div style="margin-top: 30px;"></div>
 
 # Community
 
@@ -1179,7 +1174,6 @@ fellow developers and the Ivy Team directly.
 
 See you there!
 
-<div style="margin-top: 30px;"></div>
 
 # Citation
 
