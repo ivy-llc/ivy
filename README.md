@@ -5,26 +5,28 @@
 ------------------------------------------------------------------------
 
 <div style="display: block;" align="center">
-<a href="https://unify.ai/ivy">
-    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/website_button.svg">
+<a href="https://ivy.dev">
+    Website
 </a>
 <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
-<a href="https://unify.ai/docs/ivy">
-    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/docs_button.svg">
+<a href="https://ivy.dev/docs">
+    Docs
 </a>
 <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
 <a href="https://unify.ai/demos">
-    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/examples_button.svg">
+    Examples
 </a>
 <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
 <a href="https://unify.ai/docs/ivy/overview/design.html">
-    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/design_button.svg">
+    Design
 </a>
 <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
-<a href="https://unify.ai/docs/ivy/overview/faq.html">
-    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/faq_button.svg">
+<a href="https://ivy.dev/docs/overview/faq.html">
+    FAQ
 </a>
 </div>
+
+------------------------------------------------------------------------
 
 <div style="margin-top: 30px; margin-bottom: 10px;" align="center">
     <a href="https://pypi.org/project/ivy">
