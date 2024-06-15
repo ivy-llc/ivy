@@ -26,6 +26,8 @@
 </a>
 </div>
 
+------------------------------------------------------------------------
+
 <div style="margin-top: 30px; margin-bottom: 10px;" align="center">
     <a href="https://pypi.org/project/ivy">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy.svg">
