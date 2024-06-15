@@ -4,30 +4,6 @@
 
 ------------------------------------------------------------------------
 
-<div style="display: block;" align="center">
-<a href="https://ivy.dev">
-    Website
-</a>
-<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
-<a href="https://ivy.dev/docs">
-    Docs
-</a>
-<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
-<a href="https://unify.ai/demos">
-    Examples
-</a>
-<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
-<a href="https://unify.ai/docs/ivy/overview/design.html">
-    Design
-</a>
-<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
-<a href="https://ivy.dev/docs/overview/faq.html">
-    FAQ
-</a>
-</div>
-
-------------------------------------------------------------------------
-
 <div style="margin-top: 30px; margin-bottom: 10px;" align="center">
     <a href="https://pypi.org/project/ivy">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy.svg">
@@ -127,6 +103,12 @@ tutorials to do so are available!
 <div style="margin-top: 30px;"></div>
 
 # Getting started
+
+- [Website](https://ivy.dev)
+- [Docs](https://ivy.dev/docs)
+- [Demos](https://ivy.dev/demos)
+- [Design](https://ivy.dev/docs/overview/design.html)
+- [FAQ](https://ivy.dev/docs/overview/faq.html)
 
 [Ivy's transpiler](https://ivy.dev/docs/overview/design/ivy_as_a_transpiler.html) allows you convert code between different ML frameworks. Have a look at our [Quickstart](https://ivy.dev/docs/demos/quickstart.html) notebook to get a brief idea of the features!
 
