@@ -1,5 +1,3 @@
-> **[Sign up on our console](https://console.unify.ai/)** for pilot access!
-
 <img class="only-dark" width="100%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logo_dark.png#gh-dark-mode-only"/>
 
 <img class="only-light" width="100%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logo.png?raw=true#gh-light-mode-only"/>
@@ -28,13 +26,18 @@
 </a>
 </div>
 
-------------------------------------------------------------------------
-
-# Status
-
-<div>
+<div style="margin-top: 30px; margin-bottom: 10px;" align="center">
+    <a href="https://pypi.org/project/ivy">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy.svg">
+    </a>
     <a href="https://github.com/unifyai/ivy/issues">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/issues/unifyai/ivy">
+    </a>
+    <a href="https://github.com/unifyai/ivy/issues">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/issues-pr/unifyai/ivy">
+    </a>
+    <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Adocs">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/ivy/actions/workflows/docs.yml/badge.svg">
     </a>
     <a href="https://github.com/unifyai/ivy/network/members">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/forks/unifyai/ivy">
@@ -42,27 +45,15 @@
     <a href="https://github.com/unifyai/ivy/stargazers">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/stars/unifyai/ivy">
     </a>
-    <a href="https://github.com/unifyai/ivy/pulls">
-        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
-    </a>
-    <a href="https://pypi.org/project/ivy">
-        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy.svg">
-    </a>
-    <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Adocs">
-        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/ivy/actions/workflows/docs.yml/badge.svg">
-    </a>
-    <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Atest-ivy">
-        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/ivy/actions/workflows/intelligent-tests.yml/badge.svg">
-    </a>
-    <a href="https://discord.gg/sXyFF8tDtm">
-        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/discord/799879767196958751?color=blue&label=%20&logo=discord&logoColor=white">
-    </a>
 </div>
 <br clear="all" />
 
-------------------------------------------------------------------------
+# Convert ML Models Between Frameworks
 
-# Unified AI
+Ivy is an open-source machine learning framework that enables you to:
+
+- Use your ML models and/or functions in any framework by converting any code from one framework to another using `ivy.transpile`
+- Convert your models between frameworks sourcecode-to-sourcecode using `ivy.source_to_source` *(currently in private beta)*
 
 <div style="display: block;" align="center">
     <div>
@@ -89,32 +80,7 @@
 
 <br clear="all" />
 
-------------------------------------------------------------------------
-
-Ivy is an open-source machine learning framework that
-enables you to:
-
-- 🔄 **Convert code into any framework**: Use and build on top of any model, library, or device by converting any code from one framework to another using `ivy.transpile`.
-- ⚒️ **Write framework-agnostic code**: Write your code once in `ivy` and then choose the most appropriate ML framework as the backend to leverage all the benefits and tools.
-
-[Join our growing community](https://discord.com/invite/sXyFF8tDtm) 🌍 to connect with people using Ivy. **Let\'s** [unify.ai](https://unify.ai) **together 🦾**
-
-------------------------------------------------------------------------
-
-# Getting started
-
-[Ivy's transpiler](https://unify.ai/docs/ivy/overview/design/ivy_as_a_transpiler.html) helps you convert code between different ML frameworks. To get pilot access to the transpiler, [sign up](https://console.unify.ai/) and generate an API key. The [Get Started](https://unify.ai/docs/ivy/overview/get_started.html) notebook should help you set up your API key and the [Quickstart](https://unify.ai/docs/ivy/demos/quickstart.html) notebook should give you a brief idea of the features!
-
-The most important notebooks are:
-
-- [How to convert your code between frameworks?](https://unify.ai/docs/ivy/demos/learn_the_basics/04_transpile_code.html)
-- [How to write framework-agnostic code?](https://unify.ai/docs/ivy/demos/learn_the_basics/01_write_ivy_code.html)
-
-Beyond that, based on the frameworks you want to convert code between, there are a few more [examples](#using-ivy) further down this page 👇 which contain a number of models and libraries transpiled between PyTorch, JAX, TensorFlow and NumPy.
-
-------------------------------------------------------------------------
-
-## Installing ivy
+# Installing ivy
 
 The easiest way to set up Ivy is to install it using **pip**:
 
@@ -130,8 +96,8 @@ users who would want to test `ivy` with multiple frameworks at once can use our 
 You can pull the images from:
 
 ``` bash
-docker pull unifyai/ivy:latest      # CPU
-docker pull unifyai/ivy:latest-gpu  # GPU
+docker pull transpileai/ivy:latest      # CPU
+docker pull transpileai/ivy:latest-gpu  # GPU
 ```
 
 </details>
@@ -144,7 +110,7 @@ the latest changes, but we can\'t ensure everything will work as
 expected 😅
 
 ``` bash
-git clone https://github.com/unifyai/ivy.git
+git clone https://github.com/ivy-dev/ivy.git
 cd ivy
 pip install --user -e .
 ```
@@ -156,7 +122,20 @@ tutorials to do so are available!
 
 </details>
 
-------------------------------------------------------------------------
+<div style="margin-top: 30px;"></div>
+
+# Getting started
+
+[Ivy's transpiler](https://ivy.dev/docs/overview/design/ivy_as_a_transpiler.html) allows you convert code between different ML frameworks. Have a look at our [Quickstart](https://ivy.dev/docs/demos/quickstart.html) notebook to get a brief idea of the features!
+
+The most important notebooks are:
+
+- [How to convert your code between frameworks?](https://unify.ai/docs/ivy/demos/learn_the_basics/04_transpile_code.html)
+- [How to write framework-agnostic code?](https://unify.ai/docs/ivy/demos/learn_the_basics/01_write_ivy_code.html)
+
+Beyond that, based on the frameworks you want to convert code between, there are a few more [examples](#using-ivy) further down this page 👇 which contain a number of models and libraries transpiled between PyTorch, JAX, TensorFlow and NumPy.
+
+<div style="margin-top: 30px;"></div>
 
 ## Using Ivy
 
@@ -1531,7 +1510,7 @@ docs!](https://unify.ai/docs/ivy/overview/design/ivy_as_a_framework.html)
 
 </details>
 
-------------------------------------------------------------------------
+<div style="margin-top: 30px;"></div>
 
 # Documentation
 
@@ -1544,45 +1523,37 @@ You can find Ivy's documentation on the [Docs page](https://unify.ai/docs/ivy/),
 - [Design](https://unify.ai/docs/ivy/overview/design.html): A user-focused guide about the design decision behind the architecture and the main building blocks of Ivy.
 - [Deep Dive](https://unify.ai/docs/ivy/overview/deep_dive.html): Which delves deeper into the implementation details of Ivy and is oriented towards potential contributors to the code base.
 
-------------------------------------------------------------------------
+<div style="margin-top: 30px;"></div>
 
 # Contributing
 
 
 We believe that everyone can contribute and make a difference. Whether
-it\'s writing code 💻, fixing bugs 🐛, or simply sharing feedback 💬,
+it\'s writing code, fixing bugs, or simply sharing feedback,
 your contributions are definitely welcome and appreciated 🙌
 
-Check out all of our [Open Tasks](https://unify.ai/docs/ivy/overview/contributing/open_tasks.html),
-and find out more info in our [Contributing guide](https://unify.ai/docs/ivy/overview/contributing.html)
-in the docs!
-
-Join our amazing community as a [contributor](https://unify.ai/docs/ivy/overview/contributing/volunteer_program.html), and help accelerate our journey to unify all ML frameworks!
+Check out all of our [Open Tasks](https://ivy.dev/docs/overview/contributing/open_tasks.html),
+and find out more info in our [Contributing guide](https://ivy.dev/docs/overview/contributing.html)
+in the docs! Or to immediately dive into a useful task, look for any failing tests on our [Test Dashboard](https://github.com/Transpile-AI/ivy-tests-dashboard/blob/main/DASHBOARD.md)!
 
 <a href="https://github.com/unifyai/ivy/graphs/contributors">
   <img class="dark-light" src="https://contrib.rocks/image?repo=unifyai/ivy&anon=0&columns=20&max=100&r=true" />
 </a>
 
-------------------------------------------------------------------------
+<div style="margin-top: 30px;"></div>
 
 # Community
 
 
-In order to achieve the ambitious goal of unifying AI, we definitely need
-as many hands as possible on it! Whether you are a seasoned developer or
-just starting out, you\'ll find a place here! Join the Ivy community on
-our [Discord](https://discord.gg/sXyFF8tDtm) 👾 server, which is the
+Join our growing community on a mission to make conversions between frameworks simple and accessible to all!
+Whether you are a seasoned developer or just starting out, you\'ll find a place here! Join the Ivy community on
+our [Discord](https://discord.gg/KpGuFJzv) 👾 server, which is the
 perfect place to ask questions, share ideas, and get help from both
-fellow developers and the Ivy Team directly!
+fellow developers and the Ivy Team directly.
 
-Also! Feel free to follow us on
-[Twitter](https://twitter.com/letsunifyai) 🐦 as well, we use it to
-share updates, sneak peeks, and all sorts of relevant news, certainly a
-great way to stay in the loop 😄
+See you there!
 
-Can\'t wait to see you there!
-
-------------------------------------------------------------------------
+<div style="margin-top: 30px;"></div>
 
 # Citation
 
