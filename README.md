@@ -5,24 +5,26 @@
 ------------------------------------------------------------------------
 
 <div style="display: block;" align="center">
-<a href="https://ivy.dev" style="margin-left: 30px; margin-right: 30px;">
+<a href="https://ivy.dev">
     Website
 </a>
-<a href="https://ivy.dev/docs" style="margin-left: 30px; margin-right: 30px;">
+<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
+<a href="https://ivy.dev/docs">
     Docs
 </a>
-<a href="https://unify.ai/demos" style="margin-left: 30px; margin-right: 30px;">
+<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
+<a href="https://unify.ai/demos">
     Examples
 </a>
-<a href="https://unify.ai/docs/ivy/overview/design.html" style="margin-left: 30px; margin-right: 30px;">
+<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
+<a href="https://unify.ai/docs/ivy/overview/design.html">
     Design
 </a>
-<a href="https://ivy.dev/docs/overview/faq.html" style="margin-left: 30px; margin-right: 30px;">
+<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
+<a href="https://ivy.dev/docs/overview/faq.html">
     FAQ
 </a>
 </div>
-
-------------------------------------------------------------------------
 
 <div style="margin-top: 30px; margin-bottom: 10px;" align="center">
     <a href="https://pypi.org/project/ivy">
