@@ -94,7 +94,7 @@ pip install --user -e .
 ```
 
 If you want to set up testing and various frameworks it\'s probably     best
-to check out the [Setting Up](https://unify.ai/docs/ivy/overview/contributing/setting_up.html)
+to check out the [Setting Up](https://ivy.dev/docs/overview/contributing/setting_up.html)
 page, where OS-specific and IDE-specific instructions and video
 tutorials to do so are available!
 
@@ -113,8 +113,8 @@ tutorials to do so are available!
 
 The most important notebooks are:
 
-- [How to convert your code between frameworks?](https://unify.ai/docs/ivy/demos/learn_the_basics/04_transpile_code.html)
-- [How to write framework-agnostic code?](https://unify.ai/docs/ivy/demos/learn_the_basics/01_write_ivy_code.html)
+- [How to convert your code between frameworks?](https://ivy.dev/docs/demos/learn_the_basics/04_transpile_code.html)
+- [How to write framework-agnostic code?](https://ivy.dev/docs/demos/learn_the_basics/01_write_ivy_code.html)
 
 Beyond that, based on the frameworks you want to convert code between, there are a few more [examples](#using-ivy) further down this page 👇 which contain a number of models and libraries transpiled between PyTorch, JAX, TensorFlow and NumPy.
 
@@ -169,7 +169,7 @@ After installing ivy, you can start using it straight away, for example:
 
 
 \
-The [Examples page](https://unify.ai/demos/) features a wide range of
+The [Examples page](https://ivy.dev/docs/demos/) features a wide range of
 demos and tutorials showcasing the functionalities of Ivy along with
 multiple use cases, but feel free to check out some shorter
 framework-specific examples here ⬇️
@@ -1049,21 +1049,17 @@ out = np_loss(p, t)
 For a more comprehensive overview, head over to the [Demos](https://ivy.dev/docs/demos/index.html) section with more on the [basics](https://ivy.dev/docs/demos/learn_the_basics.html), a few [guides](https://ivy.dev/docs/demos/guides.html) and a wide-ranging set of [examples](https://ivy.dev/docs/demos/examples_and_demos.html) that demonstrate the transpilation of various popular models. We continue to expand on that list, let us know what demos you'd like us to add next 🎯
 
 
-Let's take a look at how Ivy works both as a transpiler and a framework in a bit more detail to get an idea of why and where to use it.
-
-<details>
-<summary><b>Ivy as a transpiler</b></summary>
+Let's take a look at how Ivy works as a transpiler in more detail to get an idea of why and where to use it.
 
 <blockquote>
 <details>
-<summary>When should I use Ivy as a transpiler?</summary>
+<summary>When is Ivy's transpiler useful?</summary>
 
 If you want to use building blocks published in other frameworks (neural
 networks, layers, array computing libraries, training pipelines\...),
 you want to integrate code developed in various frameworks, or maybe
 straight up move code from one framework to another, the transpiler is
-definitely the tool 🔧 for the job! As the output of transpilation is
-native code in the target framework, you can use the converted code just
+definitely the tool for the job! You can use the converted code just
 as if it was code originally developed in that framework, applying
 framework-specific optimizations or tools, instantly exposing your
 project to all of the unique perks of a different framework.
@@ -1130,21 +1126,19 @@ ret = lazy_graph(x1)
 
 If you want to learn more, you can find more information in the [Ivy as
 a transpiler section of the
-docs!](https://unify.ai/docs/ivy/overview/design/ivy_as_a_transpiler.html)
-
-</details>
+docs!](https://ivy.dev/docs/overview/design/ivy_as_a_transpiler.html)
 
 
 # Documentation
 
-You can find Ivy's documentation on the [Docs page](https://unify.ai/docs/ivy/), which includes:
-- [Motivation](https://unify.ai/docs/ivy/overview/background.html): This contextualizes the problem Ivy is trying to solve by going over
-    - The current [ML Explosion](https://unify.ai/docs/ivy/overview/background/ml_explosion.html#ml-explosion).
-    - Explaining why it is important [to solve this problem](https://unify.ai/docs/ivy/overview/background/why_unify.html#why-unify).
-    - Explaining how we adhere to existing [standards](https://unify.ai/docs/ivy/overview/background/standardization.html#standardization) to make this happen.
-- [Related Work](https://unify.ai/docs/ivy/overview/related_work.html): Which paints a picture of the role Ivy plays in the ML stack, comparing it to other existing solutions in terms of functionalities and abstraction level.
-- [Design](https://unify.ai/docs/ivy/overview/design.html): A user-focused guide about the design decision behind the architecture and the main building blocks of Ivy.
-- [Deep Dive](https://unify.ai/docs/ivy/overview/deep_dive.html): Which delves deeper into the implementation details of Ivy and is oriented towards potential contributors to the code base.
+You can find Ivy's documentation on the [Docs page](https://ivy.dev/docs/), which includes:
+- [Motivation](https://ivy.dev/docs/overview/background.html): This contextualizes the problem Ivy is trying to solve by going over
+    - The current [ML Explosion](https://ivy.dev/docs/overview/background/ml_explosion.html#ml-explosion).
+    - Explaining why it is important [to solve this problem](https://ivy.dev/docs/overview/background/why_unify.html#why-unify).
+    - Explaining how we adhere to existing [standards](https://ivy.dev/docs/overview/background/standardization.html#standardization) to make this happen.
+- [Related Work](https://ivy.dev/docs/overview/related_work.html): Which paints a picture of the role Ivy plays in the ML stack, comparing it to other existing solutions in terms of functionalities and abstraction level.
+- [Design](https://ivy.dev/docs/overview/design.html): A user-focused guide about the design decision behind the architecture and the main building blocks of Ivy.
+- [Deep Dive](https://ivy.dev/docs/overview/deep_dive.html): Which delves deeper into the implementation details of Ivy and is oriented towards potential contributors to the code base.
 
 
 # Contributing
