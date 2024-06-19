@@ -540,10 +540,9 @@ def test_torch_cholesky(
     backend_fw,
 ):
     dtype, x = dtype_and_x
-    x = x[0]
-    x = (
-        np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
-    )  # make symmetric positive-definite
+    x = np.asarray(x[0], dtype=dtype[0])
+    x = np.matmul(np.conjugate(x.T), x) + np.identity(x.shape[0], dtype=dtype[0])
+    # make symmetric positive-definite
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
