@@ -12,10 +12,7 @@ from collections import namedtuple
     {"2.2 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
 )
 def cholesky(input, *, upper=False, out=None):
-    temp = ivy.cholesky(input, upper=upper, out=out)
-    if input.dtype == ivy.float32:
-        return temp.astype(ivy.float64)
-    return temp
+    return ivy.cholesky(input, upper=upper, out=out)
 
 
 @to_ivy_arrays_and_back
