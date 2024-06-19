@@ -91,7 +91,7 @@ def chain_matmul(*matrices, out=None):
 
 @to_ivy_arrays_and_back
 def cholesky(input, upper=False, *, out=None):
-    return ivy.cholesky(input, upper=upper, out=out)
+    return ivy.cholesky(input, upper=upper, out=out).astype(ivy.float64)
 
 
 @to_ivy_arrays_and_back
