@@ -326,8 +326,11 @@ def solve_ex(A, B, *, left=True, check_errors=False, out=None):
     {"2.2 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
 )
 def svd(A, /, *, full_matrices=True, driver=None, out=None):
-    # TODO: add handling for driver and out
-    return ivy.svd(A, compute_uv=True, full_matrices=full_matrices)
+    # TODO: add handling for driver
+    ret = ivy.svd(A, compute_uv=True, full_matrices=full_matrices)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @to_ivy_arrays_and_back

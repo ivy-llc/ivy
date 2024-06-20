@@ -2,6 +2,7 @@
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 import ivy.functional.frontends.torch as torch_frontend
+from collections import namedtuple
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
@@ -191,11 +192,16 @@ def slogdet(A, *, out=None):
 
 @to_ivy_arrays_and_back
 def svd(input, some=True, compute_uv=True, *, out=None):
-    # TODO: add compute_uv
-    if some:
-        ret = ivy.svd(input, full_matrices=False)
+    # TODO: add handling for driver
+    ret = ivy.svd(input, full_matrices=not some, compute_uv=compute_uv)
+    results = namedtuple("svd", ['U', 'S', 'V'])
+    if compute_uv:
+        ret = results(ret.U, ret.S, ret.Vh.mH)
     else:
-        ret = ivy.svd(input, full_matrices=True)
+        shape = input.shape
+        m = shape[-2]
+        n = shape[-1]
+        ret = results(ivy.zeros((m,m)), ret.S, ivy.zeros((n,n))) # TODO: keep the zeros on same device as input
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
