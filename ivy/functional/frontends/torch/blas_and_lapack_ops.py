@@ -201,7 +201,7 @@ def svd(input, some=True, compute_uv=True, *, out=None):
         shape = input.shape
         m = shape[-2]
         n = shape[-1]
-        ret = results(ivy.zeros((m,m)), ret.S, ivy.zeros((n,n))) # TODO: keep the zeros on same device as input
+        ret = results(ivy.zeros((m,m), device=input.device), ret.S, ivy.zeros((n,n), device=input.device))
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
