@@ -521,7 +521,7 @@ def svd(
 ) -> Union[paddle.Tensor, Tuple[paddle.Tensor, ...]]:
     ret = paddle.linalg.svd(x, full_matrices=full_matrices)
     if compute_uv:
-        results = namedtuple("svd", "U S Vh")
+        results = namedtuple("svd", ['U', 'S', 'Vh'])
         return results(*ret)
     else:
         results = namedtuple("svd", "S")

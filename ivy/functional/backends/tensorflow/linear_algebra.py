@@ -545,8 +545,7 @@ def svd(
     compute_uv: bool = True,
 ) -> Union[Union[tf.Tensor, tf.Variable], Tuple[Union[tf.Tensor, tf.Variable], ...]]:
     if compute_uv:
-        results = namedtuple("svd", "U S Vh")
-
+        results = namedtuple("svd", ['U', 'S', 'Vh'])
         batch_shape = tf.shape(x)[:-2]
         num_batch_dims = len(batch_shape)
         transpose_dims = list(range(num_batch_dims)) + [

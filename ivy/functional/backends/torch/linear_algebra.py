@@ -414,16 +414,13 @@ def svd(
     x: torch.Tensor, /, *, full_matrices: bool = True, compute_uv: bool = True
 ) -> Union[torch.Tensor, Tuple[torch.Tensor, ...]]:
     if compute_uv:
-        results = namedtuple("svd", "U S Vh")
-
+        results = namedtuple("svd", ['U', 'S', 'Vh'])
         U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices)
         return results(U, D, VT)
     else:
         results = namedtuple("svd", "S")
-        svd = torch.linalg.svd(x, full_matrices=full_matrices)
-        # torch.linalg.svd returns a tuple with U, S, and Vh
-        D = svd[1]
-        return results(D)
+        s = torch.linalg.svdvals(x)
+        return results(s)
 
 
 @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)

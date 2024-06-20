@@ -361,7 +361,7 @@ def svd(
     x: JaxArray, /, *, compute_uv: bool = True, full_matrices: bool = True
 ) -> Union[JaxArray, Tuple[JaxArray, ...]]:
     if compute_uv:
-        results = namedtuple("svd", "U S Vh")
+        results = namedtuple("svd", ['U', 'S', 'Vh'])
         U, D, VT = jnp.linalg.svd(x, full_matrices=full_matrices, compute_uv=compute_uv)
         return results(U, D, VT)
     else:

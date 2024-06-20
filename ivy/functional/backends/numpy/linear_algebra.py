@@ -291,7 +291,7 @@ def svd(
     x: np.ndarray, /, *, compute_uv: bool = True, full_matrices: bool = True
 ) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
     if compute_uv:
-        results = namedtuple("svd", "U S Vh")
+        results = namedtuple("svd", ['U', 'S', 'Vh'])
         U, D, VT = np.linalg.svd(x, full_matrices=full_matrices, compute_uv=compute_uv)
         return results(U, D, VT)
     else:

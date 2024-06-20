@@ -2130,15 +2130,12 @@ def svd(
         If ``True`` then left and right singular vectors will be computed and returned
         in ``U`` and ``Vh``, respectively. Otherwise, only the singular values will be
         computed, which can be significantly faster.
-    .. note::
-        with backend set as torch, svd with still compute left and right singular
-        vectors irrespective of the value of compute_uv, however Ivy will still
-        only return the singular values.
 
     Returns
     -------
     .. note::
         once complex numbers are supported, each square matrix must be Hermitian.
+        In addition, the return will be a namedtuple ``(S)`` when compute_uv is ``False``
 
     ret
         a namedtuple ``(U, S, Vh)`` whose
