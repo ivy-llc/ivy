@@ -2879,6 +2879,21 @@ def set_item(
     ivy.array([[ 0, -1, 20],
            [10, 10, 10]])
     """
+    if (
+        isinstance(query, (list, tuple)) and
+        any([
+            q is Ellipsis or (
+                isinstance(q, slice) and q.stop is None
+            ) for q in query
+        ])
+    ):
+        # use numpy for item setting when an ellipsis or unbounded slice is present,
+        # as they would otherwise cause static dim sizes to be traced into the graph
+        # NOTE: this does however cause tf.function to be incompatible
+        np_array = x.numpy()
+        np_array[query] = np.asarray(val)
+        return ivy.array(np_array)
+
     if copy:
         x = ivy.copy_array(x)
     if not ivy.is_array(val):
