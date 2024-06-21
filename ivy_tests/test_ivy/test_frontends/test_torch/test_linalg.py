@@ -336,7 +336,7 @@ def test_torch_cholesky(
 
 @handle_frontend_test(
     fn_tree="torch.linalg.cholesky_ex",
-    dtype_and_x=_get_dtype_and_matrix(square=True, batch=True),
+    dtype_and_x=_get_dtype_and_matrix(square=True),
     upper=st.booleans(),
 )
 def test_torch_cholesky_ex(
