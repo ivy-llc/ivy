@@ -78,7 +78,7 @@ for tag in all_tags:
         search_path = f"{module}/{file_name}"
         try:
             response = request.urlopen(
-                f"https://github.com/Transpile-AI/binaries/raw/{version}/{search_path}",
+                f"https://github.com/ivy-llc/binaries/raw/{version}/{search_path}",
                 timeout=40,
             )
             os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -126,7 +126,7 @@ setup(
     url="https://ivy.dev",
     project_urls={
         "Docs": "https://ivy.dev/docs/",
-        "Source": "https://github.com/Transpile-AI/ivy",
+        "Source": "https://github.com/ivy-llc/ivy",
     },
     include_package_data=True,
     packages=setuptools.find_packages(),

@@ -8,7 +8,7 @@ jobs:
       - name: Checkout 🛎️Binaries
         uses: actions/checkout@v4
         with:
-          repository: Transpile-AI/binaries
+          repository: ivy-llc/binaries
           token: ${{ secrets.DEV_BOT_GENERAL_PAT }}
           path: binaries
 
