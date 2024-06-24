@@ -20,7 +20,7 @@ on:
         docs-repo:
           description: 'Repo to hold the docs'
           required: false
-          default: Transpile-AI/docs
+          default: ivy-llc/docs
           type: string
 
 permissions:
@@ -40,7 +40,7 @@ jobs:
       - name: Checkout 🛎️ Doc-builder
         uses: actions/checkout@v4
         with:
-          repository: Transpile-AI/doc-builder
+          repository: ivy-llc/doc-builder
           path: .doc-builder
 
       - name: Install apt dependencies

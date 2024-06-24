@@ -35,8 +35,10 @@ exclude = [
 test_paths = []
 
 for file_path in set(modified_files):
-    suffix = file_path.rsplit("/", 1)[1].replace(".py", "")
-
+    try:
+        suffix = file_path.rsplit("/", 1)[1].replace(".py", "")
+    except IndexError:
+        continue
     if suffix in exclude:
         continue
 
