@@ -15,7 +15,7 @@ on:
         docs-repo:
           description: 'Repo to hold the docs'
           required: false
-          default: Transpile-AI/docs
+          default: ivy-llc/docs
           type: string
 
 permissions:
