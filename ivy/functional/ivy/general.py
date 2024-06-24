@@ -2879,6 +2879,8 @@ def set_item(
     ivy.array([[ 0, -1, 20],
            [10, 10, 10]])
     """
+
+    # TODO: we may be able to remove this logic by instead tracing _parse_query as a node in the graph??
     if (
         isinstance(query, (list, tuple)) and
         any([
