@@ -46,7 +46,7 @@ def check_for_binaries():
                         "system or that newer binaries were available. In the latter "
                         "case, calling ivy.utils.cleanup_and_fetch_binaries() should "
                         "fetch the binaries binaries. Feel free to create an issue on "
-                        "https://github.com/Transpile-AI/ivy.git in "
+                        "https://github.com/ivy-llc/ivy.git in "
                         "case of the former\n"
                     )
                     logging.warning(
@@ -103,7 +103,7 @@ def cleanup_and_fetch_binaries(clean=True):
                     search_path = f"{module}/{file_name}"
                     try:
                         response = request.urlopen(
-                            "https://github.com/Transpile-AI/binaries/raw/"
+                            "https://github.com/ivy-llc/binaries/raw/"
                             f"{version}/{search_path}",
                             timeout=40,
                         )
