@@ -8,20 +8,20 @@
     <a href="https://pypi.org/project/ivy">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy.svg">
     </a>
-    <a href="https://github.com/unifyai/ivy/issues">
-        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/issues/unifyai/ivy">
+    <a href="https://github.com/ivy-llc/ivy/issues">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/issues/ivy-llc/ivy">
     </a>
-    <a href="https://github.com/unifyai/ivy/issues">
-        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/issues-pr/unifyai/ivy">
+    <a href="https://github.com/ivy-llc/ivy/issues">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/issues-pr/ivy-llc/ivy">
     </a>
-    <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Adocs">
-        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/ivy/actions/workflows/docs.yml/badge.svg">
+    <a href="https://github.com/ivy-llc/ivy/actions?query=workflow%3Adocs">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/ivy-llc/ivy/actions/workflows/docs.yml/badge.svg">
     </a>
-    <a href="https://github.com/unifyai/ivy/network/members">
-        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/forks/unifyai/ivy">
+    <a href="https://github.com/ivy-llc/ivy/network/members">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/forks/ivy-llc/ivy">
     </a>
-    <a href="https://github.com/unifyai/ivy/stargazers">
-        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/stars/unifyai/ivy">
+    <a href="https://github.com/ivy-llc/ivy/stargazers">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/stars/ivy-llc/ivy">
     </a>
 </div>
 <br clear="all" />
@@ -31,7 +31,7 @@
 Ivy is an open-source machine learning framework that enables you to:
 
 - Use your ML models and/or functions in any framework by converting any code from one framework to another using `ivy.transpile`
-- Convert your models between frameworks sourcecode-to-sourcecode using `ivy.source_to_source` *(currently in private beta)*
+- Convert entire ML models and libraries between frameworks by generating identical source code in any frameworkusing `ivy.source_to_source` *(currently in private beta)*
 
 <div style="display: block;" align="center">
     <div>
@@ -88,7 +88,7 @@ the latest changes, but we can\'t ensure everything will work as
 expected 😅
 
 ``` bash
-git clone https://github.com/ivy-dev/ivy.git
+git clone https://github.com/ivy-llc/ivy.git
 cd ivy
 pip install --user -e .
 ```
@@ -1049,6 +1049,8 @@ out = np_loss(p, t)
 For a more comprehensive overview, head over to the [Demos](https://ivy.dev/docs/demos/index.html) section with more on the [basics](https://ivy.dev/docs/demos/learn_the_basics.html), a few [guides](https://ivy.dev/docs/demos/guides.html) and a wide-ranging set of [examples](https://ivy.dev/docs/demos/examples_and_demos.html) that demonstrate the transpilation of various popular models. We continue to expand on that list, let us know what demos you'd like us to add next 🎯
 
 
+# How ivy works?
+
 Let's take a look at how Ivy works as a transpiler in more detail to get an idea of why and where to use it.
 
 <blockquote>
@@ -1058,7 +1060,7 @@ Let's take a look at how Ivy works as a transpiler in more detail to get an idea
 If you want to use building blocks published in other frameworks (neural
 networks, layers, array computing libraries, training pipelines\...),
 you want to integrate code developed in various frameworks, or maybe
-straight up move code from one framework to another, the transpiler is
+straight up migrate code from one framework to another or even between versions of the same framework, the transpiler is
 definitely the tool for the job! You can use the converted code just
 as if it was code originally developed in that framework, applying
 framework-specific optimizations or tools, instantly exposing your
@@ -1066,11 +1068,11 @@ project to all of the unique perks of a different framework.
 </details>
 </blockquote>
 
+\
 Ivy\'s transpiler allows you to use code from any other framework (or
 from any other version of the same framework!) in your own code, by just
 adding one line of code. Under the hood, Ivy traces a computational
-graph and leverages the frontends and backends to link one framework to
-another.
+graph and leverages the frontends and backends to link one version of one framework to another version of another framework.
 
 This way, Ivy makes all ML-related projects available for you,
 independently of the framework you want to use to research, develop, or
@@ -1078,13 +1080,13 @@ deploy systems. Feel free to head over to the docs for the full API
 reference, but the functions you\'d most likely want to use are:
 
 ``` python
-# Traces an efficient fully-functional graph from a function, removing all wrapping and redundant code
+# Traces an efficient fully-functional graph from a function, removing all wrapping and redundant code. See usage in the documentation
 ivy.trace_graph()
 
-# Converts framework-specific code to a different framework
+# Converts framework-specific code to a target framework of choice. See usage in the documentation
 ivy.transpile()
 
-# Converts framework-specific code to Ivy
+# Converts framework-specific code to Ivy's framework-agnostic API. See usage in the documentation
 ivy.unify()
 ```
 
@@ -1132,10 +1134,10 @@ docs!](https://ivy.dev/docs/overview/design/ivy_as_a_transpiler.html)
 # Documentation
 
 You can find Ivy's documentation on the [Docs page](https://ivy.dev/docs/), which includes:
-- [Motivation](https://ivy.dev/docs/overview/background.html): This contextualizes the problem Ivy is trying to solve by going over
-    - The current [ML Explosion](https://ivy.dev/docs/overview/background/ml_explosion.html#ml-explosion).
-    - Explaining why it is important [to solve this problem](https://ivy.dev/docs/overview/background/why_unify.html#why-unify).
-    - Explaining how we adhere to existing [standards](https://ivy.dev/docs/overview/background/standardization.html#standardization) to make this happen.
+- [Motivation](https://ivy.dev/docs/overview/motivation.html): This contextualizes the problem Ivy is trying to solve by going over
+    - The current [ML Explosion](https://ivy.dev/docs/overview/motivation/ml_explosion.html#ml-explosion).
+    - Explaining why it is important [to solve this problem](https://ivy.dev/docs/overview/motivation/why_unify.html#why-unify).
+    - Explaining how we adhere to existing [standards](https://ivy.dev/docs/overview/motivation/standardization.html#standardization) to make this happen.
 - [Related Work](https://ivy.dev/docs/overview/related_work.html): Which paints a picture of the role Ivy plays in the ML stack, comparing it to other existing solutions in terms of functionalities and abstraction level.
 - [Design](https://ivy.dev/docs/overview/design.html): A user-focused guide about the design decision behind the architecture and the main building blocks of Ivy.
 - [Deep Dive](https://ivy.dev/docs/overview/deep_dive.html): Which delves deeper into the implementation details of Ivy and is oriented towards potential contributors to the code base.
@@ -1152,8 +1154,8 @@ Check out all of our [Open Tasks](https://ivy.dev/docs/overview/contributing/ope
 and find out more info in our [Contributing guide](https://ivy.dev/docs/overview/contributing.html)
 in the docs! Or to immediately dive into a useful task, look for any failing tests on our [Test Dashboard](https://github.com/Transpile-AI/ivy-tests-dashboard/blob/main/DASHBOARD.md)!
 
-<a href="https://github.com/unifyai/ivy/graphs/contributors">
-  <img class="dark-light" src="https://contrib.rocks/image?repo=unifyai/ivy&anon=0&columns=20&max=100&r=true" />
+<a href="https://github.com/ivy-llc/ivy/graphs/contributors">
+  <img class="dark-light" src="https://contrib.rocks/image?repo=ivy-llc/ivy&anon=0&columns=20&max=100&r=true" />
 </a>
 
 
@@ -1162,7 +1164,7 @@ in the docs! Or to immediately dive into a useful task, look for any failing tes
 
 Join our growing community on a mission to make conversions between frameworks simple and accessible to all!
 Whether you are a seasoned developer or just starting out, you\'ll find a place here! Join the Ivy community on
-our [Discord](https://discord.gg/KpGuFJzv) 👾 server, which is the
+our [Discord](https://discord.gg/mMnS8Egy) 👾 server, which is the
 perfect place to ask questions, share ideas, and get help from both
 fellow developers and the Ivy Team directly.
 
