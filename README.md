@@ -5,32 +5,30 @@
 ------------------------------------------------------------------------
 
 <div style="display: block;" align="center">
-<a href="https://ivy.dev/">
-    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/website_button.svg">
-</a>
-<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
-<a href="https://ivy.dev/docs/ivy">
-    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/docs_button.svg">
-</a>
-<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
-<a href="https://ivy.dev/docs/demos">
-    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/examples_button.svg">
-</a>
-<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
-<a href="https://ivy.dev/docs/ivy/overview/design.html">
-    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/design_button.svg">
-</a>
-<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
-<a href="https://ivy.dev/docs/ivy/overview/faq.html">
-    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/faq_button.svg">
-</a>
+    <a href="https://ivy.dev/">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/website_button.svg">
+    </a>
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
+    <a href="https://ivy.dev/docs/ivy">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/docs_button.svg">
+    </a>
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
+    <a href="https://ivy.dev/docs/demos">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/examples_button.svg">
+    </a>
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
+    <a href="https://ivy.dev/docs/ivy/overview/design.html">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/design_button.svg">
+    </a>
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
+    <a href="https://ivy.dev/docs/ivy/overview/faq.html">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/faq_button.svg">
+    </a>
 </div>
 
 <br>
 
-<br>
-
-<div style="display: block;" align="center">
+<div style="margin-top: 10px; margin-bottom: 10px; display: block;" align="center">
     <a href="https://github.com/ivy-llc/ivy/issues">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/issues/ivy-llc/ivy">
     </a>
