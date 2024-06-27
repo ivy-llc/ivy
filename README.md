@@ -4,18 +4,35 @@
 
 ------------------------------------------------------------------------
 
-<div style="margin-top: 30px; margin-bottom: 10px;" align="center">
-    <a href="https://pypi.org/project/ivy">
-        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy.svg">
-    </a>
+<div style="display: block;" align="center">
+<a href="https://ivy.dev/">
+    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/website_button.svg">
+</a>
+<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
+<a href="https://ivy.dev/docs/ivy">
+    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/docs_button.svg">
+</a>
+<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
+<a href="https://ivy.dev/docs/demos">
+    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/examples_button.svg">
+</a>
+<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
+<a href="https://ivy.dev/docs/ivy/overview/design.html">
+    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/design_button.svg">
+</a>
+<img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
+<a href="https://ivy.dev/docs/ivy/overview/faq.html">
+    <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/faq_button.svg">
+</a>
+</div>
+
+<br>
+
+<br>
+
+<div style="display: block;" align="center">
     <a href="https://github.com/ivy-llc/ivy/issues">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/issues/ivy-llc/ivy">
-    </a>
-    <a href="https://github.com/ivy-llc/ivy/issues">
-        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/issues-pr/ivy-llc/ivy">
-    </a>
-    <a href="https://github.com/ivy-llc/ivy/actions?query=workflow%3Adocs">
-        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/ivy-llc/ivy/actions/workflows/docs.yml/badge.svg">
     </a>
     <a href="https://github.com/ivy-llc/ivy/network/members">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/forks/ivy-llc/ivy">
@@ -23,8 +40,21 @@
     <a href="https://github.com/ivy-llc/ivy/stargazers">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/stars/ivy-llc/ivy">
     </a>
+    <a href="https://github.com/ivy-llc/ivy/pulls">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
+    </a>
+    <a href="https://pypi.org/project/ivy">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy.svg">
+    </a>
+    <a href="https://github.com/ivy-llc/ivy/actions?query=workflow%3Adocs">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/ivy-llc/ivy/actions/workflows/docs.yml/badge.svg">
+    </a>
+    <a href="https://discord.gg/sXyFF8tDtm">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/discord/799879767196958751?color=blue&label=%20&logo=discord&logoColor=white">
+    </a>
 </div>
 <br clear="all" />
+
 
 # Convert ML Models Between Frameworks
 
@@ -100,6 +130,7 @@ tutorials to do so are available!
 
 </details>
 
+<br>
 
 # Getting started
 
@@ -118,6 +149,7 @@ The most important notebooks are:
 
 Beyond that, based on the frameworks you want to convert code between, there are a few more [examples](#using-ivy) further down this page 👇 which contain a number of models and libraries transpiled between PyTorch, JAX, TensorFlow and NumPy.
 
+<br>
 
 # Using ivy
 
@@ -451,7 +483,7 @@ import jax
 import tensorflow as tf
 
 # Get a pretrained haiku model
-# https://unify.ai/demos/scripts/deepmind_perceiver_io.py
+# https://ivy.dev/demos/scripts/deepmind_perceiver_io.py
 from deepmind_perceiver_io import key, perceiver_backbone
 
 # Transpile it into a tf.keras.Model with the corresponding parameters
@@ -1048,6 +1080,7 @@ out = np_loss(p, t)
 \
 For a more comprehensive overview, head over to the [Demos](https://ivy.dev/docs/demos/index.html) section with more on the [basics](https://ivy.dev/docs/demos/learn_the_basics.html), a few [guides](https://ivy.dev/docs/demos/guides.html) and a wide-ranging set of [examples](https://ivy.dev/docs/demos/examples_and_demos.html) that demonstrate the transpilation of various popular models. We continue to expand on that list, let us know what demos you'd like us to add next 🎯
 
+<br>
 
 # How ivy works?
 
@@ -1131,6 +1164,8 @@ a transpiler section of the
 docs!](https://ivy.dev/docs/overview/design/ivy_as_a_transpiler.html)
 
 
+<br>
+
 # Documentation
 
 You can find Ivy's documentation on the [Docs page](https://ivy.dev/docs/), which includes:
@@ -1142,6 +1177,7 @@ You can find Ivy's documentation on the [Docs page](https://ivy.dev/docs/), whic
 - [Design](https://ivy.dev/docs/overview/design.html): A user-focused guide about the design decision behind the architecture and the main building blocks of Ivy.
 - [Deep Dive](https://ivy.dev/docs/overview/deep_dive.html): Which delves deeper into the implementation details of Ivy and is oriented towards potential contributors to the code base.
 
+<br>
 
 # Contributing
 
@@ -1152,12 +1188,13 @@ your contributions are definitely welcome and appreciated 🙌
 
 Check out all of our [Open Tasks](https://ivy.dev/docs/overview/contributing/open_tasks.html),
 and find out more info in our [Contributing guide](https://ivy.dev/docs/overview/contributing.html)
-in the docs! Or to immediately dive into a useful task, look for any failing tests on our [Test Dashboard](https://github.com/Transpile-AI/ivy-tests-dashboard/blob/main/DASHBOARD.md)!
+in the docs! Or to immediately dive into a useful task, look for any failing tests on our [Test Dashboard](https://github.com/ivy-llc/ivy-tests-dashboard/blob/main/DASHBOARD.md)!
 
 <a href="https://github.com/ivy-llc/ivy/graphs/contributors">
   <img class="dark-light" src="https://contrib.rocks/image?repo=ivy-llc/ivy&anon=0&columns=20&max=100&r=true" />
 </a>
 
+<br>
 
 # Community
 
@@ -1168,8 +1205,10 @@ our [Discord](https://discord.gg/mMnS8Egy) 👾 server, which is the
 perfect place to ask questions, share ideas, and get help from both
 fellow developers and the Ivy Team directly.
 
-See you there!
+<b> See you there! </b>
 
+
+<br>
 
 # Citation
 
