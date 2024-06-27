@@ -14,4 +14,4 @@ jobs:
     uses: ./.github/workflows/build-docs.yml
     secrets: inherit
     with:
-      repo-name: docs
+      repo-name: ''
