@@ -1,6 +1,10 @@
-<img class="only-dark" width="100%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logo_dark.png#gh-dark-mode-only"/>
+<div style="display: block;" align="center">
+    <img class="only-dark" width="50%" src="https://raw.githubusercontent.com/ivy-llc/ivy-llc.github.io/main/src/assets/ivy_logo_dark_long.png?token=GHSAT0AAAAAACTDGH7HAFOJIIGHTUO464WOZT5RKTQ#gh-dark-mode-only"/>
+</div>
 
-<img class="only-light" width="100%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logo.png?raw=true#gh-light-mode-only"/>
+<div style="display: block;" align="center">
+    <img class="only-light" width="50%" src="https://raw.githubusercontent.com/ivy-llc/ivy-llc.github.io/main/src/assets/ivy_logo_light_long.png?token=GHSAT0AAAAAACTDGH7G6W7OOG2ZGUJQ3VASZT5RL2A#gh-light-mode-only"/>
+</div>
 
 ------------------------------------------------------------------------
 
