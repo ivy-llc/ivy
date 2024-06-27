@@ -10,7 +10,7 @@ on:
         repo-name:
           description: 'Repo display name in the URL'
           required: false
-          default: ${{ github.event.repository.name }}
+          default: ''
           type: string
         docs-repo:
           description: 'Repo to hold the docs'
