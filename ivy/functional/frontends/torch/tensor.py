@@ -1071,6 +1071,11 @@ class Tensor:
         self.ivy_array = self.masked_fill(mask, value).ivy_array
         return self
 
+    def masked_select(self, mask):
+        x, mask = torch_frontend.broadcast_tensors(self, mask)
+        out = x.reshape(-1).index_select(0, mask.reshape(-1).nonzero().flatten())
+        return torch_frontend.tensor(out)
+
     @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
     def index_add_(self, dim, index, source, *, alpha=1):
         self.ivy_array = torch_frontend.index_add(
