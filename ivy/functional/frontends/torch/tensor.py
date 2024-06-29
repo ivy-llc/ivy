@@ -1896,7 +1896,9 @@ class Tensor:
         ).ivy_array
         return self
 
-    @with_unsupported_dtypes({"2.2 and below": ("bfloat16", "float16")}, "torch")
+    @with_supported_dtypes(
+        {"2.2 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+    )
     def cholesky(self, upper=False):
         return torch_frontend.cholesky(self, upper=upper)
 
