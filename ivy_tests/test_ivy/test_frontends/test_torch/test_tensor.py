@@ -9312,6 +9312,41 @@ def test_torch_masked_fill(
     )
 
 
+# masked_select
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="masked_select",
+    x_mask_val=_masked_fill_helper(),
+)
+def test_torch_masked_select(
+    x_mask_val,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    dtype, x, mask, _ = x_mask_val
+    helpers.test_frontend_method(
+        init_input_dtypes=[dtype],
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=["bool", dtype],
+        method_all_as_kwargs_np={
+            "mask": mask,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # matmul
 @handle_frontend_method(
     class_tree=CLASS_TREE,
