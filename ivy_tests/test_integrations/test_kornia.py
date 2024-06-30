@@ -8,19 +8,13 @@ import torch
 
 
 # TODO: remove
-def test_sharpness(target_framework, mode, backend_compile):
-    trace_args = (
-        torch.rand(1, 1, 5, 5),
-        0.5,
-    )
+def test_equalize(target_framework, mode, backend_compile):
+    trace_args = (torch.rand(1, 2, 3, 3),)
     trace_kwargs = {}
-    test_args = (
-        torch.rand(5, 1, 5, 5),
-        1.0,
-    )
+    test_args = (torch.rand(5, 2, 3, 3),)
     test_kwargs = {}
     _test_function(
-        kornia.enhance.sharpness,
+        kornia.enhance.equalize,
         trace_args,
         trace_kwargs,
         test_args,
