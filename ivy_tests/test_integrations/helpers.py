@@ -48,7 +48,8 @@ def _check_allclose(x, y, tolerance=1e-3):
                 for element_x, element_y in zip(x.values(), y.values())
             ]
         )
-        assert keys_same and values_same, "keys or values in dict differ"
+        assert keys_same, "keys in dict differ"
+        assert values_same, "values in dict differ"
         return
 
     if isinstance(x, float):
