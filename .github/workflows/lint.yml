@@ -1,16 +1,15 @@
 name: lint
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
   push:
-    branches: [main]
+    branches: [lint]
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  check-formatting:
+  lint-code:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️ ${{ github.event.repository.name }}
@@ -32,3 +31,19 @@ jobs:
         uses: pre-commit/action@v3.0.0
         with:
           extra_args: ${{ github.event_name == 'pull_request' && format('--files {0}', join(fromJSON(steps.changed-files.outputs.all), ' ')) || '--all-files' }}
+
+      - name: Check if there are changes 📝
+        id: check
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit changes 📝
+        if: steps.check.outputs.changes == 'true'
+        run: |
+          git config --local user.email "hello@transpile-ai.com"
+          git config --local user.name "ivy-dev-bot"
+          git add .
+          git commit -m "auto-lint code"
+          git push
