@@ -1,6 +1,4 @@
-"""
-Tests transpiling a subset of the kornia functional api.
-"""
+"""Tests transpiling a subset of the kornia functional api."""
 
 from helpers import _test_function
 import kornia
@@ -178,9 +176,7 @@ def test_sepia(target_framework, backend_compile):
         "rescale": True,
         "eps": 1e-6,
     }
-    test_args = (
-        torch.rand(5, 3, 4, 4),
-    )
+    test_args = (torch.rand(5, 3, 4, 4),)
     test_kwargs = {
         "rescale": True,
         "eps": 1e-6,
@@ -198,16 +194,12 @@ def test_sepia(target_framework, backend_compile):
 
 
 def test_extract_tensor_patches(target_framework, backend_compile):
-    trace_args = (
-        torch.arange(16).view(1, 1, 4, 4),
-    )
+    trace_args = (torch.arange(16).view(1, 1, 4, 4),)
     trace_kwargs = {
         "window_size": (2, 2),
         "stride": (2, 2),
     }
-    test_args = (
-        torch.flip(torch.arange(32), (0,)).view(2, 1, 4, 4),
-    )
+    test_args = (torch.flip(torch.arange(32), (0,)).view(2, 1, 4, 4),)
     test_kwargs = {
         "window_size": (2, 2),
         "stride": (2, 2),
@@ -383,9 +375,7 @@ def test_solarize(target_framework, backend_compile):
 
 
 def test_image_histogram2d(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 1, 10, 10),
-    )
+    trace_args = (torch.rand(1, 1, 10, 10),)
     trace_kwargs = {
         "min": 0.0,
         "max": 255.0,
@@ -394,11 +384,9 @@ def test_image_histogram2d(target_framework, backend_compile):
         "centers": None,
         "return_pdf": False,
         "kernel": "triangular",
-        "eps": 1e-10
+        "eps": 1e-10,
     }
-    test_args = (
-        torch.rand(5, 1, 10, 10),
-    )
+    test_args = (torch.rand(5, 1, 10, 10),)
     test_kwargs = {
         "min": 0.0,
         "max": 255.0,
@@ -407,7 +395,7 @@ def test_image_histogram2d(target_framework, backend_compile):
         "centers": None,
         "return_pdf": False,
         "kernel": "triangular",
-        "eps": 1e-10
+        "eps": 1e-10,
     }
     _test_function(
         "kornia.enhance.image_histogram2d",
@@ -422,17 +410,9 @@ def test_image_histogram2d(target_framework, backend_compile):
 
 
 def test_normalize_min_max(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 3, 4, 4),
-        0.0,
-        1.0
-    )
+    trace_args = (torch.rand(1, 3, 4, 4), 0.0, 1.0)
     trace_kwargs = {}
-    test_args = (
-        torch.rand(5, 3, 4, 4),
-        -1.0,
-        1.0
-    )
+    test_args = (torch.rand(5, 3, 4, 4), -1.0, 1.0)
     test_kwargs = {}
     _test_function(
         "kornia.enhance.normalize_min_max",
@@ -796,12 +776,12 @@ def test_confusion_matrix(target_framework, backend_compile):
 def test_mean_iou_bbox(target_framework, backend_compile):
     trace_args = (
         torch.tensor([[40, 40, 60, 60], [30, 40, 50, 60]]),
-        torch.tensor([[40, 50, 60, 70], [30, 40, 40, 50]])
+        torch.tensor([[40, 50, 60, 70], [30, 40, 40, 50]]),
     )
     trace_kwargs = {}
     test_args = (
         torch.tensor([[20, 20, 40, 40], [10, 30, 30, 50]]),
-        torch.tensor([[20, 30, 40, 50], [10, 20, 20, 30]])
+        torch.tensor([[20, 30, 40, 50], [10, 20, 20, 30]]),
     )
     test_kwargs = {}
     _test_function(
@@ -981,17 +961,37 @@ def test_bbox_generator3d(target_framework, backend_compile):
 
 def test_infer_bbox_shape3d(target_framework, backend_compile):
     trace_args = (
-        torch.tensor([[
-            [0, 1, 2], [10, 1, 2], [10, 21, 2], [0, 21, 2],
-            [0, 1, 32], [10, 1, 32], [10, 21, 32], [0, 21, 32]
-        ]]),
+        torch.tensor(
+            [
+                [
+                    [0, 1, 2],
+                    [10, 1, 2],
+                    [10, 21, 2],
+                    [0, 21, 2],
+                    [0, 1, 32],
+                    [10, 1, 32],
+                    [10, 21, 32],
+                    [0, 21, 32],
+                ]
+            ]
+        ),
     )
     trace_kwargs = {}
     test_args = (
-        torch.tensor([[
-            [3, 4, 5], [43, 4, 5], [43, 54, 5], [3, 54, 5],
-            [3, 4, 65], [43, 4, 65], [43, 54, 65], [3, 54, 65]
-        ]]),
+        torch.tensor(
+            [
+                [
+                    [3, 4, 5],
+                    [43, 4, 5],
+                    [43, 54, 5],
+                    [3, 54, 5],
+                    [3, 4, 65],
+                    [43, 4, 65],
+                    [43, 54, 65],
+                    [3, 54, 65],
+                ]
+            ]
+        ),
     )
     test_kwargs = {}
     _test_function(
@@ -1137,7 +1137,7 @@ def test_undistort_points_kannala_brandt(target_framework, backend_compile):
 
 
 def test_deg2rad(target_framework, backend_compile):
-    trace_args = (torch.tensor(180.),)
+    trace_args = (torch.tensor(180.0),)
     trace_kwargs = {}
     test_args = (torch.rand(5, 3, 3),)
     test_kwargs = {}
@@ -1385,9 +1385,9 @@ def test_rotation_matrix_to_axis_angle(target_framework, backend_compile):
 
 
 def test_axis_angle_to_rotation_matrix(target_framework, backend_compile):
-    trace_args = (torch.tensor([[0., 0., 0.], [1.5708, 0., 0.]]),)
+    trace_args = (torch.tensor([[0.0, 0.0, 0.0], [1.5708, 0.0, 0.0]]),)
     trace_kwargs = {}
-    test_args = (torch.tensor([[0., 0., 0.], [1.5708, 0., 0.]]),)
+    test_args = (torch.tensor([[0.0, 0.0, 0.0], [1.5708, 0.0, 0.0]]),)
     test_kwargs = {}
     _test_function(
         "kornia.geometry.conversions.axis_angle_to_rotation_matrix",
@@ -1403,15 +1403,15 @@ def test_axis_angle_to_rotation_matrix(target_framework, backend_compile):
 
 def test_quaternion_from_euler(target_framework, backend_compile):
     trace_args = (
-        torch.tensor(0.),
-        torch.tensor(0.),
-        torch.tensor(0.),
+        torch.tensor(0.0),
+        torch.tensor(0.0),
+        torch.tensor(0.0),
     )
     trace_kwargs = {}
     test_args = (
-        torch.tensor([0., 1., 2.]),
-        torch.tensor([2., 1., 0.]),
-        torch.tensor([1., 2., 0.]),
+        torch.tensor([0.0, 1.0, 2.0]),
+        torch.tensor([2.0, 1.0, 0.0]),
+        torch.tensor([1.0, 2.0, 0.0]),
     )
     test_kwargs = {}
     _test_function(
@@ -2028,13 +2028,23 @@ def test_remap(target_framework, backend_compile):
         torch.rand(1, 5, 5),
         torch.rand(1, 5, 5),
     )
-    trace_kwargs = {"mode": "bilinear", "padding_mode": "zeros", "align_corners": None, "normalized_coordinates": False}
+    trace_kwargs = {
+        "mode": "bilinear",
+        "padding_mode": "zeros",
+        "align_corners": None,
+        "normalized_coordinates": False,
+    }
     test_args = (
         torch.rand(1, 3, 10, 10),
         torch.rand(1, 10, 10),
         torch.rand(1, 10, 10),
     )
-    test_kwargs = {"mode": "bilinear", "padding_mode": "zeros", "align_corners": None, "normalized_coordinates": False}
+    test_kwargs = {
+        "mode": "bilinear",
+        "padding_mode": "zeros",
+        "align_corners": None,
+        "normalized_coordinates": False,
+    }
     _test_function(
         "kornia.geometry.transform.remap",
         trace_args,
@@ -2066,15 +2076,15 @@ def test_hflip(target_framework, backend_compile):
 
 def test_get_projective_transform(target_framework, backend_compile):
     trace_args = (
-        torch.tensor([[0., 0., 0.]]),
-        torch.tensor([[30., 45., 60.]]),
-        torch.tensor([[1., 1., 1.]])
+        torch.tensor([[0.0, 0.0, 0.0]]),
+        torch.tensor([[30.0, 45.0, 60.0]]),
+        torch.tensor([[1.0, 1.0, 1.0]]),
     )
     trace_kwargs = {}
     test_args = (
-        torch.tensor([[1., 1., 1.]]),
-        torch.tensor([[45., 60., 75.]]),
-        torch.tensor([[1.5, 1.5, 1.5]])
+        torch.tensor([[1.0, 1.0, 1.0]]),
+        torch.tensor([[45.0, 60.0, 75.0]]),
+        torch.tensor([[1.5, 1.5, 1.5]]),
     )
     test_kwargs = {}
     _test_function(
@@ -2090,17 +2100,9 @@ def test_get_projective_transform(target_framework, backend_compile):
 
 
 def test_get_rotation_matrix2d(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 2),
-        45. * torch.ones(1),
-        torch.rand(1, 2)
-    )
+    trace_args = (torch.rand(1, 2), 45.0 * torch.ones(1), torch.rand(1, 2))
     trace_kwargs = {}
-    test_args = (
-        torch.rand(1, 2),
-        90. * torch.ones(1),
-        2.0 * torch.ones(1, 2)
-    )
+    test_args = (torch.rand(1, 2), 90.0 * torch.ones(1), 2.0 * torch.ones(1, 2))
     test_kwargs = {}
     _test_function(
         "kornia.geometry.transform.get_rotation_matrix2d",
@@ -2115,17 +2117,9 @@ def test_get_rotation_matrix2d(target_framework, backend_compile):
 
 
 def test_get_shear_matrix2d(target_framework, backend_compile):
-    trace_args = (
-        torch.tensor([[0., 0.]]),
-        torch.tensor([1.0]),
-        torch.tensor([0.5])
-    )
+    trace_args = (torch.tensor([[0.0, 0.0]]), torch.tensor([1.0]), torch.tensor([0.5]))
     trace_kwargs = {}
-    test_args = (
-        torch.tensor([[1., 1.]]),
-        torch.tensor([1.5]),
-        torch.tensor([0.75])
-    )
+    test_args = (torch.tensor([[1.0, 1.0]]), torch.tensor([1.5]), torch.tensor([0.75]))
     test_kwargs = {}
     _test_function(
         "kornia.geometry.transform.get_shear_matrix2d",
@@ -2187,7 +2181,9 @@ def test_crop_by_indices(target_framework, backend_compile):
     trace_kwargs = {"size": (40, 40), "interpolation": "bilinear"}
     test_args = (
         torch.rand(5, 3, 64, 64),
-        torch.tensor([[[10, 10], [50, 10], [50, 50], [10, 50]]]*5, dtype=torch.float32),
+        torch.tensor(
+            [[[10, 10], [50, 10], [50, 50], [10, 50]]]*5, dtype=torch.float32
+        ),
     )
     test_kwargs = {"size": (40, 40), "interpolation": "bilinear"}
     _test_function(
