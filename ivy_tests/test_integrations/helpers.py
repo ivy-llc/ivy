@@ -17,13 +17,13 @@ tf_kornia = ivy.transpile(kornia, source="torch", to="tensorflow")
 # Helpers #
 # ------- #
 
+
 def _check_allclose(x, y, tolerance=1e-3):
     """Checks that all values are close.
 
     Any arrays must already be in numpy format, rather than native
     framework.
     """
-
     if type(x) != type(y):
         assert False, f"mistmatched types: {type(x), type(y)}"
 
@@ -84,7 +84,6 @@ def _array_to_new_backend(
     If the input is not a torch tensor, the input if returned without
     modification.
     """
-
     if isinstance(x, torch.Tensor):
         if target == "torch":
             return x
