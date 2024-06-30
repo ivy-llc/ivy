@@ -126,7 +126,16 @@ def _test_function(
     else:
         pytest.skip()
     transpiled_fn = eval(prefix + fn)
-    transpiled_fn(*trace_args, **trace_kwargs)
+
+    try:
+        transpiled_fn(*trace_args, **trace_kwargs)
+    except Exception as e:
+        # don't fail the test if unable to connect to the server
+        if "Unable to connect to ivy server." in str(e):
+            pytest.skip()
+        else:
+            raise e
+
     orig_fn = eval(fn)
 
     orig_out = orig_fn(*test_args, **test_kwargs)
