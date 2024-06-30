@@ -3,7 +3,7 @@ import pytest
 
 TARGET_FRAMEWORKS = ["numpy", "jax", "tensorflow"]
 BACKEND_COMPILE = False
-BACKEND = "all"
+TARGET = "all"
 
 
 @pytest.fixture(autouse=True)
@@ -15,13 +15,13 @@ def pytest_addoption(parser):
     parser.addoption(
         "--backend-compile",
         action="store_true",
-        help="",
+        help="Whether to backend compile the transpiled graph",
     )
     parser.addoption(
-        "--backend",
+        "--target",
         action="store",
         default="all",
-        help="",
+        help="Target for the transpilation tests",
     )
 
 
@@ -31,15 +31,15 @@ def pytest_configure(config):
     global BACKEND_COMPILE
     BACKEND_COMPILE = getopt("--backend-compile")
 
-    global BACKEND
-    BACKEND = getopt("--backend")
+    global TARGET
+    TARGET = getopt("--target")
 
 
 def pytest_generate_tests(metafunc):
     configs = list()
-    if BACKEND not in ["jax", "numpy", "tensorflow", "torch"]:
+    if TARGET not in ["jax", "numpy", "tensorflow", "torch"]:
         for target in TARGET_FRAMEWORKS:
             configs.append((target, BACKEND_COMPILE))
     else:
-        configs.append((BACKEND, BACKEND_COMPILE))
+        configs.append((TARGET, BACKEND_COMPILE))
     metafunc.parametrize("target_framework,backend_compile", configs)

@@ -34,7 +34,7 @@ jobs:
         run: |
           pip3 install kornia
           cd ivy
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis transpileai/ivy:latest pytest ivy_tests/test_integrations/test_kornia.py -p no:warnings --backend ${{ matrix.target }}
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis transpileai/ivy:latest scripts/shell/run_integration_tests.sh kornia ${{ matrix.target }}
         continue-on-error: true
 
       - name: Check on failures
