@@ -21,7 +21,7 @@ def cholesky(input, *, upper=False, out=None):
 )
 def cholesky_ex(input, *, upper=False, check_errors=False, out=None):
     try:
-        results = namedtuple("cholesky_ex", ['L', 'info'])
+        results = namedtuple("cholesky_ex", ["L", "info"])
         matrix = ivy.cholesky(input, upper=upper, out=out)
         info = ivy.zeros(input.shape[:-2], dtype=ivy.int32)
         return results(matrix, info)
@@ -29,7 +29,7 @@ def cholesky_ex(input, *, upper=False, check_errors=False, out=None):
         if check_errors:
             raise RuntimeError(e) from e
         else:
-            results = namedtuple("cholesky_ex", ['L', 'info'])
+            results = namedtuple("cholesky_ex", ["L", "info"])
             matrix = input * math.nan
             info = ivy.ones(input.shape[:-2], dtype=ivy.int32)
             return results(matrix, info)
