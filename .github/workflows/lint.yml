@@ -1,9 +1,9 @@
 name: lint
 
 on:
-  push:
-    branches: [lint]
   workflow_dispatch:
+  push:
+    branches: [main]
 
 permissions:
   contents: write
@@ -33,7 +33,7 @@ jobs:
         with:
           extra_args: ${{ github.event_name == 'pull_request' && format('--files {0}', join(fromJSON(steps.changed-files.outputs.all), ' ')) || '--all-files' }}
 
-      - name: Check if there are changes 📝
+      - name: Check if there are changes
         id: check
         run: |
           if [[ -n "$(git status --porcelain)" ]]; then
