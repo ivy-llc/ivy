@@ -2,8 +2,8 @@ name: lint
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
+  schedule:
+    - cron: "0 4 * * *"
 
 permissions:
   contents: write
