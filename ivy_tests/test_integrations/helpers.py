@@ -1,14 +1,14 @@
 import ivy
 import jax
 import jax.numpy as jnp
+import kornia
 import numpy as np
 import pytest
 import tensorflow as tf
 import torch
 
-jax.config.update('jax_enable_x64', True)
+jax.config.update("jax_enable_x64", True)
 
-import kornia
 jax_kornia = ivy.transpile(kornia, source="torch", to="jax")
 np_kornia = ivy.transpile(kornia, source="torch", to="numpy")
 tf_kornia = ivy.transpile(kornia, source="torch", to="tensorflow")
@@ -19,7 +19,7 @@ tf_kornia = ivy.transpile(kornia, source="torch", to="tensorflow")
 
 def _check_allclose(x, y, tolerance=1e-3):
     """Checks that all values are close.
-    
+
     Any arrays must already be in numpy format, rather than native
     framework.
     """
@@ -80,7 +80,7 @@ def _array_to_new_backend(
     target,
 ):
     """Converts a torch tensor to an array/tensor in a different framework.
-    
+
     If the input is not a torch tensor, the input if returned without
     modification.
     """
@@ -114,8 +114,8 @@ def _test_function(
     test_args,
     test_kwargs,
     target,
-    backend_compile = False,
-    tolerance = 1e-3,
+    backend_compile=False,
+    tolerance=1e-3,
 ):
     if target == "jax":
         prefix = "jax_"

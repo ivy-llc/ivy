@@ -1243,7 +1243,6 @@ def test_denormalize_pixel_coordinates(target_framework, backend_compile):
         target_framework,
         backend_compile=backend_compile,
         tolerance=1e-4,
-        
     )
 
 
@@ -2182,7 +2181,7 @@ def test_crop_by_indices(target_framework, backend_compile):
     test_args = (
         torch.rand(5, 3, 64, 64),
         torch.tensor(
-            [[[10, 10], [50, 10], [50, 50], [10, 50]]]*5, dtype=torch.float32
+            [[[10, 10], [50, 10], [50, 50], [10, 50]]] * 5, dtype=torch.float32
         ),
     )
     test_kwargs = {"size": (40, 40), "interpolation": "bilinear"}
