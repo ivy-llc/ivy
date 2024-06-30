@@ -27,13 +27,9 @@ def test_equalize(target_framework, mode, backend_compile):
 
 
 def test_rgb_to_grayscale(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 3, 4, 4),
-    )
+    trace_args = (torch.rand(1, 3, 4, 4),)
     trace_kwargs = {}
-    test_args = (
-        torch.rand(5, 3, 4, 4),
-    )
+    test_args = (torch.rand(5, 3, 4, 4),)
     test_kwargs = {}
     _test_function(
         "kornia.color.rgb_to_grayscale",
@@ -88,14 +84,10 @@ def test_bgr_to_rgba(target_framework, backend_compile):
 
 
 def test_rgb_to_hsv(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 3, 5, 5),
-    )
-    trace_kwargs = {'eps': 1e-8}
-    test_args = (
-        torch.rand(5, 3, 5, 5),
-    )
-    test_kwargs = {'eps': 1e-2}
+    trace_args = (torch.rand(1, 3, 5, 5),)
+    trace_kwargs = {"eps": 1e-8}
+    test_args = (torch.rand(5, 3, 5, 5),)
+    test_kwargs = {"eps": 1e-2}
     _test_function(
         "kornia.color.rgb_to_hsv",
         trace_args,
@@ -109,14 +101,10 @@ def test_rgb_to_hsv(target_framework, backend_compile):
 
 
 def test_luv_to_rgb(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 3, 5, 5),
-    )
-    trace_kwargs = {'eps': 1e-12}
-    test_args = (
-        torch.rand(5, 3, 5, 5),
-    )
-    test_kwargs = {'eps': 1e-12}
+    trace_args = (torch.rand(1, 3, 5, 5),)
+    trace_kwargs = {"eps": 1e-12}
+    test_args = (torch.rand(5, 3, 5, 5),)
+    test_kwargs = {"eps": 1e-12}
     _test_function(
         "kornia.color.luv_to_rgb",
         trace_args,
@@ -130,13 +118,9 @@ def test_luv_to_rgb(target_framework, backend_compile):
 
 
 def test_ycbcr_to_rgb(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 3, 5, 5),
-    )
+    trace_args = (torch.rand(1, 3, 5, 5),)
     trace_kwargs = {}
-    test_args = (
-        torch.rand(5, 3, 5, 5),
-    )
+    test_args = (torch.rand(5, 3, 5, 5),)
     test_kwargs = {}
     _test_function(
         "kornia.color.ycbcr_to_rgb",
@@ -151,13 +135,9 @@ def test_ycbcr_to_rgb(target_framework, backend_compile):
 
 
 def test_rgb_to_yuv(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 3, 5, 5),
-    )
+    trace_args = (torch.rand(1, 3, 5, 5),)
     trace_kwargs = {}
-    test_args = (
-        torch.rand(5, 3, 5, 5),
-    )
+    test_args = (torch.rand(5, 3, 5, 5),)
     test_kwargs = {}
     _test_function(
         "kornia.color.rgb_to_yuv",
@@ -172,13 +152,9 @@ def test_rgb_to_yuv(target_framework, backend_compile):
 
 
 def test_xyz_to_rgb(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 3, 5, 5),
-    )
+    trace_args = (torch.rand(1, 3, 5, 5),)
     trace_kwargs = {}
-    test_args = (
-        torch.rand(5, 3, 5, 5),
-    )
+    test_args = (torch.rand(5, 3, 5, 5),)
     test_kwargs = {}
     _test_function(
         "kornia.color.xyz_to_rgb",
@@ -216,19 +192,17 @@ def test_raw_to_rgb_2x2_downscaled(target_framework, backend_compile):
 
 
 def test_sepia(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 3, 4, 4),
-    )
+    trace_args = (torch.rand(1, 3, 4, 4),)
     trace_kwargs = {
-        'rescale': True,
-        'eps': 1e-6,
+        "rescale": True,
+        "eps": 1e-6,
     }
     test_args = (
         torch.rand(5, 3, 4, 4),
     )
     test_kwargs = {
-        'rescale': True,
-        'eps': 1e-6,
+        "rescale": True,
+        "eps": 1e-6,
     }
     _test_function(
         "kornia.color.sepia",
@@ -247,15 +221,15 @@ def test_extract_tensor_patches(target_framework, backend_compile):
         torch.arange(16).view(1, 1, 4, 4),
     )
     trace_kwargs = {
-        'window_size': (2, 2),
-        'stride': (2, 2),
+        "window_size": (2, 2),
+        "stride": (2, 2),
     }
     test_args = (
         torch.flip(torch.arange(32), (0,)).view(2, 1, 4, 4),
     )
     test_kwargs = {
-        'window_size': (2, 2),
-        'stride': (2, 2),
+        "window_size": (2, 2),
+        "stride": (2, 2),
     }
     _test_function(
         "kornia.contrib.extract_tensor_patches",
@@ -278,9 +252,9 @@ def test_combine_tensor_patches(target_framework, backend_compile):
         ),
     )
     trace_kwargs = {
-        'original_size': (4, 4),
-        'window_size': (2, 2),
-        'stride': (2, 2),
+        "original_size": (4, 4),
+        "window_size": (2, 2),
+        "stride": (2, 2),
     }
     test_args = (
         kornia.contrib.extract_tensor_patches(
@@ -290,9 +264,9 @@ def test_combine_tensor_patches(target_framework, backend_compile):
         ),
     )
     test_kwargs = {
-        'original_size': (4, 4),
-        'window_size': (2, 2),
-        'stride': (2, 2),
+        "original_size": (4, 4),
+        "window_size": (2, 2),
+        "stride": (2, 2),
     }
     _test_function(
         "kornia.contrib.combine_tensor_patches",
@@ -432,27 +406,27 @@ def test_image_histogram2d(target_framework, backend_compile):
         torch.rand(1, 1, 10, 10),
     )
     trace_kwargs = {
-        'min': 0.0,
-        'max': 255.0,
-        'n_bins': 256,
-        'bandwidth': None,
-        'centers': None,
-        'return_pdf': False,
-        'kernel': 'triangular',
-        'eps': 1e-10
+        "min": 0.0,
+        "max": 255.0,
+        "n_bins": 256,
+        "bandwidth": None,
+        "centers": None,
+        "return_pdf": False,
+        "kernel": "triangular",
+        "eps": 1e-10
     }
     test_args = (
         torch.rand(5, 1, 10, 10),
     )
     test_kwargs = {
-        'min': 0.0,
-        'max': 255.0,
-        'n_bins': 256,
-        'bandwidth': None,
-        'centers': None,
-        'return_pdf': False,
-        'kernel': 'triangular',
-        'eps': 1e-10
+        "min": 0.0,
+        "max": 255.0,
+        "n_bins": 256,
+        "bandwidth": None,
+        "centers": None,
+        "return_pdf": False,
+        "kernel": "triangular",
+        "eps": 1e-10
     }
     _test_function(
         "kornia.enhance.image_histogram2d",
@@ -492,13 +466,9 @@ def test_normalize_min_max(target_framework, backend_compile):
 
 
 def test_dog_response(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 1, 5, 5, 5),
-    )
+    trace_args = (torch.rand(1, 1, 5, 5, 5),)
     trace_kwargs = {}
-    test_args = (
-        torch.rand(5, 1, 5, 5, 5),
-    )
+    test_args = (torch.rand(5, 1, 5, 5, 5),)
     test_kwargs = {}
     _test_function(
         "kornia.feature.dog_response",
@@ -517,12 +487,12 @@ def test_match_smnn(target_framework, backend_compile):
         torch.rand(1, 128),
         torch.rand(1, 128),
     )
-    trace_kwargs = {'th': 0.95}
+    trace_kwargs = {"th": 0.95}
     test_args = (
         torch.rand(5, 128),
         torch.rand(5, 128),
     )
-    test_kwargs = {'th': 0.95}
+    test_kwargs = {"th": 0.95}
     _test_function(
         "kornia.feature.match_smnn",
         trace_args,
@@ -559,14 +529,10 @@ def test_normalize_laf(target_framework, backend_compile):
 
 
 def test_laf_to_boundary_points(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 5, 2, 3),
-    )
-    trace_kwargs = {'n_pts': 50}
-    test_args = (
-        torch.rand(2, 5, 2, 3),
-    )
-    test_kwargs = {'n_pts': 100}
+    trace_args = (torch.rand(1, 5, 2, 3),)
+    trace_kwargs = {"n_pts": 50}
+    test_args = (torch.rand(2, 5, 2, 3),)
+    test_kwargs = {"n_pts": 100}
     _test_function(
         "kornia.feature.laf_to_boundary_points",
         trace_args,
@@ -580,13 +546,9 @@ def test_laf_to_boundary_points(target_framework, backend_compile):
 
 
 def test_ellipse_to_laf(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 10, 5),
-    )
+    trace_args = (torch.rand(1, 10, 5),)
     trace_kwargs = {}
-    test_args = (
-        torch.rand(2, 10, 5),
-    )
+    test_args = (torch.rand(2, 10, 5),)
     test_kwargs = {}
     _test_function(
         "kornia.feature.ellipse_to_laf",
@@ -601,14 +563,10 @@ def test_ellipse_to_laf(target_framework, backend_compile):
 
 
 def test_make_upright(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 5, 2, 3),
-    )
-    trace_kwargs = {'eps': 1e-9}
-    test_args = (
-        torch.rand(2, 5, 2, 3),
-    )
-    test_kwargs = {'eps': 1e-6}
+    trace_args = (torch.rand(1, 5, 2, 3),)
+    trace_kwargs = {"eps": 1e-9}
+    test_args = (torch.rand(2, 5, 2, 3),)
+    test_kwargs = {"eps": 1e-6}
     _test_function(
         "kornia.feature.make_upright",
         trace_args,
@@ -670,13 +628,9 @@ def test_laf_from_center_scale_ori(target_framework, backend_compile):
 
 
 def test_laf_to_three_points(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 5, 2, 3),
-    )
+    trace_args = (torch.rand(1, 5, 2, 3),)
     trace_kwargs = {}
-    test_args = (
-        torch.rand(2, 10, 2, 3),
-    )
+    test_args = (torch.rand(2, 10, 2, 3),)
     test_kwargs = {}
     _test_function(
         "kornia.feature.laf_to_three_points",
@@ -746,12 +700,12 @@ def test_charbonnier_loss(target_framework, backend_compile):
         torch.rand(1, 3, 32, 32),
         torch.rand(1, 3, 32, 32),
     )
-    trace_kwargs = {'reduction': 'none'}
+    trace_kwargs = {"reduction": "none"}
     test_args = (
         torch.rand(5, 3, 32, 32),
         torch.rand(5, 3, 32, 32),
     )
-    test_kwargs = {'reduction': 'none'}
+    test_kwargs = {"reduction": "none"}
     _test_function(
         "kornia.losses.charbonnier_loss",
         trace_args,
@@ -769,12 +723,12 @@ def test_welsch_loss(target_framework, backend_compile):
         torch.rand(1, 3, 32, 32),
         torch.rand(1, 3, 32, 32),
     )
-    trace_kwargs = {'reduction': 'none'}
+    trace_kwargs = {"reduction": "none"}
     test_args = (
         torch.rand(5, 3, 32, 32),
         torch.rand(5, 3, 32, 32),
     )
-    test_kwargs = {'reduction': 'none'}
+    test_kwargs = {"reduction": "none"}
     _test_function(
         "kornia.losses.welsch_loss",
         trace_args,
@@ -792,12 +746,12 @@ def test_cauchy_loss(target_framework, backend_compile):
         torch.rand(1, 3, 32, 32),
         torch.rand(1, 3, 32, 32),
     )
-    trace_kwargs = {'reduction': 'none'}
+    trace_kwargs = {"reduction": "none"}
     test_args = (
         torch.rand(5, 3, 32, 32),
         torch.rand(5, 3, 32, 32),
     )
-    test_kwargs = {'reduction': 'none'}
+    test_kwargs = {"reduction": "none"}
     _test_function(
         "kornia.losses.cauchy_loss",
         trace_args,
@@ -815,12 +769,12 @@ def test_geman_mcclure_loss(target_framework, backend_compile):
         torch.rand(1, 3, 32, 32),
         torch.rand(1, 3, 32, 32),
     )
-    trace_kwargs = {'reduction': 'none'}
+    trace_kwargs = {"reduction": "none"}
     test_args = (
         torch.rand(5, 3, 32, 32),
         torch.rand(5, 3, 32, 32),
     )
-    test_kwargs = {'reduction': 'none'}
+    test_kwargs = {"reduction": "none"}
     _test_function(
         "kornia.losses.geman_mcclure_loss",
         trace_args,
@@ -1126,12 +1080,12 @@ def test_tilt_projection(target_framework, backend_compile):
         torch.tensor(0.1),
         torch.tensor(0.2),
     )
-    trace_kwargs = {'return_inverse': False}
+    trace_kwargs = {"return_inverse": False}
     test_args = (
         torch.tensor(0.3),
         torch.tensor(0.4),
     )
-    test_kwargs = {'return_inverse': False}
+    test_kwargs = {"return_inverse": False}
     _test_function(
         "kornia.geometry.calibration.tilt_projection",
         trace_args,
@@ -1145,13 +1099,9 @@ def test_tilt_projection(target_framework, backend_compile):
 
 
 def test_project_points_z1(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(2, 3),
-    )
+    trace_args = (torch.rand(2, 3),)
     trace_kwargs = {}
-    test_args = (
-        torch.rand(5, 3),
-    )
+    test_args = (torch.rand(5, 3),)
     test_kwargs = {}
     _test_function(
         "kornia.geometry.camera.project_points_z1",
@@ -1166,13 +1116,9 @@ def test_project_points_z1(target_framework, backend_compile):
 
 
 def test_project_points_orthographic(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(2, 3),
-    )
+    trace_args = (torch.rand(2, 3),)
     trace_kwargs = {}
-    test_args = (
-        torch.rand(5, 3),
-    )
+    test_args = (torch.rand(5, 3),)
     test_kwargs = {}
     _test_function(
         "kornia.geometry.camera.project_points_orthographic",
@@ -1228,9 +1174,9 @@ def test_deg2rad(target_framework, backend_compile):
 
 def test_cart2pol(target_framework, backend_compile):
     trace_args = (torch.rand(1, 3, 3), torch.rand(1, 3, 3))
-    trace_kwargs = {'eps': 1.0e-8}
+    trace_kwargs = {"eps": 1.0e-8}
     test_args = (torch.rand(5, 3, 3), torch.rand(5, 3, 3))
-    test_kwargs = {'eps': 1.0e-8}
+    test_kwargs = {"eps": 1.0e-8}
     _test_function(
         "kornia.geometry.conversions.cart2pol",
         trace_args,
@@ -1261,13 +1207,9 @@ def test_angle_to_rotation_matrix(target_framework, backend_compile):
 
 
 def test_convert_points_from_homogeneous(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 3),
-    )
+    trace_args = (torch.rand(1, 3),)
     trace_kwargs = {}
-    test_args = (
-        torch.rand(5, 3),
-    )
+    test_args = (torch.rand(5, 3),)
     test_kwargs = {}
     _test_function(
         "kornia.geometry.conversions.convert_points_from_homogeneous",
@@ -1282,13 +1224,9 @@ def test_convert_points_from_homogeneous(target_framework, backend_compile):
 
 
 def test_convert_affinematrix_to_homography(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 2, 3),
-    )
+    trace_args = (torch.rand(1, 2, 3),)
     trace_kwargs = {}
-    test_args = (
-        torch.rand(5, 2, 3),
-    )
+    test_args = (torch.rand(5, 2, 3),)
     test_kwargs = {}
     _test_function(
         "kornia.geometry.conversions.convert_affinematrix_to_homography",
@@ -1381,13 +1319,9 @@ def test_normalize_homography3d(target_framework, backend_compile):
 
 
 def test_quaternion_to_axis_angle(target_framework, backend_compile):
-    trace_args = (
-        torch.randn(1, 4),
-    )
+    trace_args = (torch.randn(1, 4),)
     trace_kwargs = {}
-    test_args = (
-        torch.randn(5, 4),
-    )
+    test_args = (torch.randn(5, 4),)
     test_kwargs = {}
     _test_function(
         "kornia.geometry.conversions.quaternion_to_axis_angle",
@@ -1402,13 +1336,9 @@ def test_quaternion_to_axis_angle(target_framework, backend_compile):
 
 
 def test_quaternion_to_rotation_matrix(target_framework, backend_compile):
-    trace_args = (
-        torch.randn(1, 4),
-    )
+    trace_args = (torch.randn(1, 4),)
     trace_kwargs = {}
-    test_args = (
-        torch.randn(5, 4),
-    )
+    test_args = (torch.randn(5, 4),)
     test_kwargs = {}
     _test_function(
         "kornia.geometry.conversions.quaternion_to_rotation_matrix",
@@ -1423,14 +1353,10 @@ def test_quaternion_to_rotation_matrix(target_framework, backend_compile):
 
 
 def test_quaternion_log_to_exp(target_framework, backend_compile):
-    trace_args = (
-        torch.randn(1, 3),
-    )
-    trace_kwargs = {'eps': 1.0e-12}
-    test_args = (
-        torch.randn(5, 3),
-    )
-    test_kwargs = {'eps': 1.0e-12}
+    trace_args = (torch.randn(1, 3),)
+    trace_kwargs = {"eps": 1.0e-12}
+    test_args = (torch.randn(5, 3),)
+    test_kwargs = {"eps": 1.0e-12}
     _test_function(
         "kornia.geometry.conversions.quaternion_log_to_exp",
         trace_args,
@@ -1444,13 +1370,9 @@ def test_quaternion_log_to_exp(target_framework, backend_compile):
 
 
 def test_vector_to_skew_symmetric_matrix(target_framework, backend_compile):
-    trace_args = (
-        torch.tensor([1.0, 2.0, 3.0]),
-    )
+    trace_args = (torch.tensor([1.0, 2.0, 3.0]),)
     trace_kwargs = {}
-    test_args = (
-        torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]),
-    )
+    test_args = (torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]]),)
     test_kwargs = {}
     _test_function(
         "kornia.geometry.conversions.vector_to_skew_symmetric_matrix",
@@ -1465,13 +1387,9 @@ def test_vector_to_skew_symmetric_matrix(target_framework, backend_compile):
 
 
 def test_rotation_matrix_to_axis_angle(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 3, 3),
-    )
+    trace_args = (torch.rand(1, 3, 3),)
     trace_kwargs = {}
-    test_args = (
-        torch.rand(5, 3, 3),
-    )
+    test_args = (torch.rand(5, 3, 3),)
     test_kwargs = {}
     _test_function(
         "kornia.geometry.conversions.rotation_matrix_to_axis_angle",
@@ -1486,13 +1404,9 @@ def test_rotation_matrix_to_axis_angle(target_framework, backend_compile):
 
 
 def test_axis_angle_to_rotation_matrix(target_framework, backend_compile):
-    trace_args = (
-        torch.tensor([[0., 0., 0.], [1.5708, 0., 0.]]),
-    )
+    trace_args = (torch.tensor([[0., 0., 0.], [1.5708, 0., 0.]]),)
     trace_kwargs = {}
-    test_args = (
-        torch.tensor([[0., 0., 0.], [1.5708, 0., 0.]]),
-    )
+    test_args = (torch.tensor([[0., 0., 0.], [1.5708, 0., 0.]]),)
     test_kwargs = {}
     _test_function(
         "kornia.geometry.conversions.axis_angle_to_rotation_matrix",
@@ -1631,13 +1545,13 @@ def test_unproject_meshgrid(target_framework, backend_compile):
         4,
         torch.eye(3),
     )
-    trace_kwargs = {'normalize_points': False, 'device': 'cpu', 'dtype': torch.float32}
+    trace_kwargs = {"normalize_points": False, "device": "cpu", "dtype": torch.float32}
     test_args = (
         5,
         5,
         torch.eye(3),
     )
-    test_kwargs = {'normalize_points': False, 'device': 'cpu', 'dtype': torch.float32}
+    test_kwargs = {"normalize_points": False, "device": "cpu", "dtype": torch.float32}
     _test_function(
         "kornia.geometry.depth.unproject_meshgrid",
         trace_args,
@@ -1657,14 +1571,14 @@ def test_warp_frame_depth(target_framework, backend_compile):
         torch.eye(4)[None],
         torch.eye(3)[None],
     )
-    trace_kwargs = {'normalize_points': False}
+    trace_kwargs = {"normalize_points": False}
     test_args = (
         torch.rand(5, 3, 5, 5),
         torch.rand(5, 1, 5, 5),
         torch.eye(4)[None].repeat(5, 1, 1),
         torch.eye(3)[None].repeat(5, 1, 1),
     )
-    test_kwargs = {'normalize_points': False}
+    test_kwargs = {"normalize_points": False}
     _test_function(
         "kornia.geometry.depth.warp_frame_depth",
         trace_args,
@@ -1703,13 +1617,9 @@ def test_essential_from_fundamental(target_framework, backend_compile):
 
 
 def test_decompose_essential_matrix(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(3, 3),
-    )
+    trace_args = (torch.rand(3, 3),)
     trace_kwargs = {}
-    test_args = (
-        torch.rand(3, 3),
-    )
+    test_args = (torch.rand(3, 3),)
     test_kwargs = {}
     _test_function(
         "kornia.geometry.epipolar.decompose_essential_matrix",
@@ -1802,13 +1712,13 @@ def test_sampson_epipolar_distance(target_framework, backend_compile):
         torch.rand(1, 4, 2),
         torch.rand(1, 3, 3),
     )
-    trace_kwargs = {'squared': True, 'eps': 1e-8}
+    trace_kwargs = {"squared": True, "eps": 1e-8}
     test_args = (
         torch.rand(5, 4, 2),
         torch.rand(5, 4, 2),
         torch.rand(5, 3, 3),
     )
-    test_kwargs = {'squared': True, 'eps': 1e-8}
+    test_kwargs = {"squared": True, "eps": 1e-8}
     _test_function(
         "kornia.geometry.epipolar.sampson_epipolar_distance",
         trace_args,
@@ -1906,13 +1816,9 @@ def test_cross_product_matrix(target_framework, backend_compile):
 
 
 def test_inverse_transformation(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 4, 4),
-    )
+    trace_args = (torch.rand(1, 4, 4),)
     trace_kwargs = {}
-    test_args = (
-        torch.rand(5, 4, 4),
-    )
+    test_args = (torch.rand(5, 4, 4),)
     test_kwargs = {}
     _test_function(
         "kornia.geometry.linalg.inverse_transformation",
@@ -1927,14 +1833,10 @@ def test_inverse_transformation(target_framework, backend_compile):
 
 
 def test_squared_norm(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(5),
-    )
-    trace_kwargs = {'keepdim': False}
-    test_args = (
-        torch.rand(10, 5),
-    )
-    test_kwargs = {'keepdim': False}
+    trace_args = (torch.rand(5),)
+    trace_kwargs = {"keepdim": False}
+    test_args = (torch.rand(10, 5),)
+    test_kwargs = {"keepdim": False}
     _test_function(
         "kornia.geometry.linalg.squared_norm",
         trace_args,
@@ -1952,12 +1854,12 @@ def test_batched_dot_product(target_framework, backend_compile):
         torch.rand(3, 5),
         torch.rand(3, 5),
     )
-    trace_kwargs = {'keepdim': False}
+    trace_kwargs = {"keepdim": False}
     test_args = (
         torch.rand(5, 3, 5),
         torch.rand(5, 3, 5),
     )
-    test_kwargs = {'keepdim': False}
+    test_kwargs = {"keepdim": False}
     _test_function(
         "kornia.geometry.linalg.batched_dot_product",
         trace_args,
@@ -1975,12 +1877,12 @@ def test_euclidean_distance(target_framework, backend_compile):
         torch.rand(3, 5),
         torch.rand(3, 5),
     )
-    trace_kwargs = {'keepdim': False, 'eps': 1e-6}
+    trace_kwargs = {"keepdim": False, "eps": 1e-6}
     test_args = (
         torch.rand(5, 3, 5),
         torch.rand(5, 3, 5),
     )
-    test_kwargs = {'keepdim': False, 'eps': 1e-6}
+    test_kwargs = {"keepdim": False, "eps": 1e-6}
     _test_function(
         "kornia.geometry.linalg.euclidean_distance",
         trace_args,
@@ -2034,19 +1936,15 @@ def test_determinant_to_polynomial(target_framework, backend_compile):
 
 
 def test_spatial_soft_argmax2d(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 1, 5, 5),
-    )
+    trace_args = (torch.rand(1, 1, 5, 5),)
     trace_kwargs = {
-        'temperature': torch.tensor(1.0),
-        'normalized_coordinates': True,
+        "temperature": torch.tensor(1.0),
+        "normalized_coordinates": True,
     }
-    test_args = (
-        torch.rand(10, 1, 5, 5),
-    )
+    test_args = (torch.rand(10, 1, 5, 5),)
     test_kwargs = {
-        'temperature': torch.tensor(0.5),
-        'normalized_coordinates': True,
+        "temperature": torch.tensor(0.5),
+        "normalized_coordinates": True,
     }
     _test_function(
         "kornia.geometry.subpix.spatial_soft_argmax2d",
@@ -2067,7 +1965,7 @@ def test_render_gaussian2d(target_framework, backend_compile):
         (5, 5),
     )
     trace_kwargs = {
-        'normalized_coordinates': False,
+        "normalized_coordinates": False,
     }
     test_args = (
         torch.tensor([[2.0, 2.0]]),
@@ -2075,7 +1973,7 @@ def test_render_gaussian2d(target_framework, backend_compile):
         (10, 10),
     )
     test_kwargs = {
-        'normalized_coordinates': False,
+        "normalized_coordinates": False,
     }
     _test_function(
         "kornia.geometry.subpix.render_gaussian2d",
@@ -2095,14 +1993,14 @@ def test_nms3d(target_framework, backend_compile):
         (3, 3, 3),
     )
     trace_kwargs = {
-        'mask_only': False,
+        "mask_only": False,
     }
     test_args = (
         torch.rand(10, 1, 5, 5, 5),
         (3, 3, 3),
     )
     test_kwargs = {
-        'mask_only': False,
+        "mask_only": False,
     }
     _test_function(
         "kornia.geometry.subpix.nms3d",
@@ -2149,13 +2047,13 @@ def test_remap(target_framework, backend_compile):
         torch.rand(1, 5, 5),
         torch.rand(1, 5, 5),
     )
-    trace_kwargs = {'mode': 'bilinear', 'padding_mode': 'zeros', 'align_corners': None, 'normalized_coordinates': False}
+    trace_kwargs = {"mode": "bilinear", "padding_mode": "zeros", "align_corners": None, "normalized_coordinates": False}
     test_args = (
         torch.rand(1, 3, 10, 10),
         torch.rand(1, 10, 10),
         torch.rand(1, 10, 10),
     )
-    test_kwargs = {'mode': 'bilinear', 'padding_mode': 'zeros', 'align_corners': None, 'normalized_coordinates': False}
+    test_kwargs = {"mode": "bilinear", "padding_mode": "zeros", "align_corners": None, "normalized_coordinates": False}
     _test_function(
         "kornia.geometry.transform.remap",
         trace_args,
@@ -2169,13 +2067,9 @@ def test_remap(target_framework, backend_compile):
 
 
 def test_hflip(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 3, 4, 4),
-    )
+    trace_args = (torch.rand(1, 3, 4, 4),)
     trace_kwargs = {}
-    test_args = (
-        torch.rand(5, 3, 4, 4),
-    )
+    test_args = (torch.rand(5, 3, 4, 4),)
     test_kwargs = {}
     _test_function(
         "kornia.geometry.transform.hflip",
@@ -2265,13 +2159,9 @@ def test_get_shear_matrix2d(target_framework, backend_compile):
 
 
 def test_invert_affine_transform(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 2, 3),
-    )
+    trace_args = (torch.rand(1, 2, 3),)
     trace_kwargs = {}
-    test_args = (
-        torch.rand(5, 2, 3),
-    )
+    test_args = (torch.rand(5, 2, 3),)
     test_kwargs = {}
     _test_function(
         "kornia.geometry.transform.invert_affine_transform",
@@ -2313,12 +2203,12 @@ def test_crop_by_indices(target_framework, backend_compile):
         torch.rand(1, 3, 64, 64),
         torch.tensor([[[10, 10], [50, 10], [50, 50], [10, 50]]], dtype=torch.float32),
     )
-    trace_kwargs = {'size': (40, 40), 'interpolation': 'bilinear'}
+    trace_kwargs = {"size": (40, 40), "interpolation": "bilinear"}
     test_args = (
         torch.rand(5, 3, 64, 64),
         torch.tensor([[[10, 10], [50, 10], [50, 50], [10, 50]]]*5, dtype=torch.float32),
     )
-    test_kwargs = {'size': (40, 40), 'interpolation': 'bilinear'}
+    test_kwargs = {"size": (40, 40), "interpolation": "bilinear"}
     _test_function(
         "kornia.geometry.transform.crop_by_indices",
         trace_args,
