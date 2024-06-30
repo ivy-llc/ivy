@@ -7,25 +7,6 @@ import kornia
 import torch
 
 
-# TODO: remove
-def test_equalize(target_framework, mode, backend_compile):
-    trace_args = (torch.rand(1, 2, 3, 3),)
-    trace_kwargs = {}
-    test_args = (torch.rand(5, 2, 3, 3),)
-    test_kwargs = {}
-    _test_function(
-        kornia.enhance.equalize,
-        trace_args,
-        trace_kwargs,
-        test_args,
-        test_kwargs,
-        target_framework, 
-        backend_compile,
-        tolerance=1e-4,
-        mode=mode,
-    )
-
-
 def test_rgb_to_grayscale(target_framework, backend_compile):
     trace_args = (torch.rand(1, 3, 4, 4),)
     trace_kwargs = {}
