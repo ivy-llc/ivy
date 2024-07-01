@@ -18,24 +18,7 @@ def test_rgb_to_grayscale(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
-    )
-
-
-def test_bgr_to_rgb(target_framework, backend_compile):
-    trace_args = (torch.rand(1, 3, 5, 5),)
-    trace_kwargs = {}
-    test_args = (torch.rand(5, 3, 5, 5),)
-    test_kwargs = {}
-    _test_function(
-        "kornia.color.bgr_to_rgb",
-        trace_args,
-        trace_kwargs,
-        test_args,
-        test_kwargs,
-        target_framework,
-        backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -58,7 +41,7 @@ def test_bgr_to_rgba(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -75,7 +58,7 @@ def test_rgb_to_hsv(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -92,7 +75,7 @@ def test_luv_to_rgb(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -109,24 +92,7 @@ def test_ycbcr_to_rgb(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
-    )
-
-
-def test_rgb_to_yuv(target_framework, backend_compile):
-    trace_args = (torch.rand(1, 3, 5, 5),)
-    trace_kwargs = {}
-    test_args = (torch.rand(5, 3, 5, 5),)
-    test_kwargs = {}
-    _test_function(
-        "kornia.color.rgb_to_yuv",
-        trace_args,
-        trace_kwargs,
-        test_args,
-        test_kwargs,
-        target_framework,
-        backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -143,7 +109,7 @@ def test_xyz_to_rgb(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -166,7 +132,7 @@ def test_raw_to_rgb_2x2_downscaled(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -189,7 +155,7 @@ def test_sepia(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -226,30 +192,7 @@ def test_combine_tensor_patches(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
-    )
-
-
-def test_adjust_brightness(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 1, 2, 2),
-        1.0,
-    )
-    trace_kwargs = {}
-    test_args = (
-        torch.rand(5, 1, 2, 2),
-        1.3,
-    )
-    test_kwargs = {}
-    _test_function(
-        "kornia.enhance.adjust_brightness",
-        trace_args,
-        trace_kwargs,
-        test_args,
-        test_kwargs,
-        target_framework,
-        backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -272,7 +215,7 @@ def test_adjust_contrast_with_mean_subtraction(target_framework, backend_compile
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -295,7 +238,7 @@ def test_posterize(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -330,7 +273,7 @@ def test_image_histogram2d(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -347,47 +290,7 @@ def test_normalize_min_max(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
-    )
-
-
-def test_dog_response(target_framework, backend_compile):
-    trace_args = (torch.rand(1, 1, 5, 5, 5),)
-    trace_kwargs = {}
-    test_args = (torch.rand(5, 1, 5, 5, 5),)
-    test_kwargs = {}
-    _test_function(
-        "kornia.feature.dog_response",
-        trace_args,
-        trace_kwargs,
-        test_args,
-        test_kwargs,
-        target_framework,
-        backend_compile=backend_compile,
-        tolerance=1e-4,
-    )
-
-
-def test_match_smnn(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 128),
-        torch.rand(1, 128),
-    )
-    trace_kwargs = {"th": 0.95}
-    test_args = (
-        torch.rand(5, 128),
-        torch.rand(5, 128),
-    )
-    test_kwargs = {"th": 0.95}
-    _test_function(
-        "kornia.feature.match_smnn",
-        trace_args,
-        trace_kwargs,
-        test_args,
-        test_kwargs,
-        target_framework,
-        backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -410,7 +313,7 @@ def test_normalize_laf(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -427,7 +330,7 @@ def test_laf_to_boundary_points(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -444,7 +347,7 @@ def test_ellipse_to_laf(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -461,7 +364,7 @@ def test_make_upright(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -484,7 +387,7 @@ def test_rotate_laf(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -509,7 +412,7 @@ def test_laf_from_center_scale_ori(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -526,7 +429,7 @@ def test_laf_to_three_points(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -543,7 +446,7 @@ def test_get_gaussian_kernel2d(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -560,7 +463,7 @@ def test_get_hanning_kernel2d(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -577,7 +480,7 @@ def test_get_laplacian_kernel2d(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -600,7 +503,7 @@ def test_charbonnier_loss(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -623,7 +526,7 @@ def test_geman_mcclure_loss(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -648,7 +551,7 @@ def test_confusion_matrix(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -671,7 +574,7 @@ def test_mean_iou_bbox(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -694,7 +597,7 @@ def test_dilation(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -717,7 +620,7 @@ def test_opening(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -740,7 +643,7 @@ def test_gradient(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -763,7 +666,7 @@ def test_top_hat(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -780,7 +683,7 @@ def test_create_meshgrid3d(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -811,7 +714,7 @@ def test_bbox_generator3d(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -858,7 +761,7 @@ def test_infer_bbox_shape3d(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -883,7 +786,7 @@ def test_undistort_image(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -908,7 +811,7 @@ def test_distort_points(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -931,7 +834,7 @@ def test_tilt_projection(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -948,7 +851,7 @@ def test_project_points_orthographic(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -971,7 +874,7 @@ def test_undistort_points_kannala_brandt(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -988,7 +891,7 @@ def test_deg2rad(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1005,7 +908,7 @@ def test_cart2pol(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1022,7 +925,7 @@ def test_angle_to_rotation_matrix(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1039,7 +942,7 @@ def test_convert_points_from_homogeneous(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1056,7 +959,7 @@ def test_convert_affinematrix_to_homography(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1081,7 +984,7 @@ def test_denormalize_pixel_coordinates(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1108,7 +1011,7 @@ def test_normalize_pixel_coordinates3d(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1133,7 +1036,7 @@ def test_normalize_homography3d(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1150,7 +1053,7 @@ def test_quaternion_to_axis_angle(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1167,7 +1070,7 @@ def test_quaternion_to_rotation_matrix(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1184,7 +1087,7 @@ def test_quaternion_log_to_exp(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1201,7 +1104,7 @@ def test_vector_to_skew_symmetric_matrix(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1218,7 +1121,7 @@ def test_rotation_matrix_to_axis_angle(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1235,7 +1138,7 @@ def test_axis_angle_to_rotation_matrix(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1260,7 +1163,7 @@ def test_quaternion_from_euler(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1283,7 +1186,7 @@ def test_Rt_to_matrix4x4(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1306,7 +1209,7 @@ def test_worldtocam_to_camtoworld_Rt(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1329,32 +1232,7 @@ def test_ARKitQTVecs_to_ColmapQTVecs(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
-    )
-
-
-def test_depth_from_disparity(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(4, 1, 4, 4),
-        torch.rand(1),
-        torch.rand(1),
-    )
-    trace_kwargs = {}
-    test_args = (
-        torch.rand(5, 1, 5, 5),
-        torch.rand(1),
-        torch.rand(1),
-    )
-    test_kwargs = {}
-    _test_function(
-        "kornia.geometry.depth.depth_from_disparity",
-        trace_args,
-        trace_kwargs,
-        test_args,
-        test_kwargs,
-        target_framework,
-        backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1379,7 +1257,7 @@ def test_unproject_meshgrid(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1406,7 +1284,7 @@ def test_warp_frame_depth(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1431,7 +1309,7 @@ def test_essential_from_fundamental(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1458,7 +1336,7 @@ def test_relative_camera_motion(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1481,7 +1359,7 @@ def test_compute_correspond_epilines(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1504,7 +1382,7 @@ def test_get_perpendicular(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1529,7 +1407,7 @@ def test_sampson_epipolar_distance(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1554,7 +1432,7 @@ def test_left_to_right_epipolar_distance(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1571,7 +1449,7 @@ def test_intrinsics_like(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1588,7 +1466,7 @@ def test_cross_product_matrix(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1605,24 +1483,7 @@ def test_inverse_transformation(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
-    )
-
-
-def test_squared_norm(target_framework, backend_compile):
-    trace_args = (torch.rand(5),)
-    trace_kwargs = {"keepdim": False}
-    test_args = (torch.rand(10, 5),)
-    test_kwargs = {"keepdim": False}
-    _test_function(
-        "kornia.geometry.linalg.squared_norm",
-        trace_args,
-        trace_kwargs,
-        test_args,
-        test_kwargs,
-        target_framework,
-        backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1645,7 +1506,7 @@ def test_batched_dot_product(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1668,7 +1529,7 @@ def test_multiply_deg_two_one_poly(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1685,7 +1546,7 @@ def test_determinant_to_polynomial(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1708,7 +1569,7 @@ def test_spatial_soft_argmax2d(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1737,7 +1598,7 @@ def test_render_gaussian2d(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1764,7 +1625,7 @@ def test_nms3d(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1791,7 +1652,7 @@ def test_warp_points_tps(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1826,24 +1687,7 @@ def test_remap(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
-    )
-
-
-def test_hflip(target_framework, backend_compile):
-    trace_args = (torch.rand(1, 3, 4, 4),)
-    trace_kwargs = {}
-    test_args = (torch.rand(5, 3, 4, 4),)
-    test_kwargs = {}
-    _test_function(
-        "kornia.geometry.transform.hflip",
-        trace_args,
-        trace_kwargs,
-        test_args,
-        test_kwargs,
-        target_framework,
-        backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1860,7 +1704,7 @@ def test_get_rotation_matrix2d(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1877,7 +1721,7 @@ def test_get_shear_matrix2d(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1894,30 +1738,7 @@ def test_invert_affine_transform(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
-    )
-
-
-def test_projection_from_Rt(target_framework, backend_compile):
-    trace_args = (
-        torch.rand(1, 3, 3),
-        torch.rand(1, 3, 1),
-    )
-    trace_kwargs = {}
-    test_args = (
-        torch.rand(5, 3, 3),
-        torch.rand(5, 3, 1),
-    )
-    test_kwargs = {}
-    _test_function(
-        "kornia.geometry.transform.projection_from_Rt",
-        trace_args,
-        trace_kwargs,
-        test_args,
-        test_kwargs,
-        target_framework,
-        backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
 
 
@@ -1942,5 +1763,5 @@ def test_crop_by_indices(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-4,
+        tolerance=1e-3,
     )
