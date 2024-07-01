@@ -1071,6 +1071,9 @@ class Tensor:
         self.ivy_array = self.masked_fill(mask, value).ivy_array
         return self
 
+    def masked_select(self, mask):
+        return torch_frontend.masked_select(self, mask)
+
     @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
     def index_add_(self, dim, index, source, *, alpha=1):
         self.ivy_array = torch_frontend.index_add(
@@ -1891,7 +1894,9 @@ class Tensor:
         ).ivy_array
         return self
 
-    @with_unsupported_dtypes({"2.2 and below": ("bfloat16", "float16")}, "torch")
+    @with_supported_dtypes(
+        {"2.2 and below": ("float32", "float64", "complex32", "complex64", "complex128")}, "torch"
+    )
     def cholesky(self, upper=False):
         return torch_frontend.cholesky(self, upper=upper)
 

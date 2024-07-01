@@ -9,7 +9,7 @@ from collections import namedtuple
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.2 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+    {"2.2 and below": ("float32", "float64", "complex32", "complex64", "complex128")}, "torch"
 )
 def cholesky(input, *, upper=False, out=None):
     return ivy.cholesky(input, upper=upper, out=out)
