@@ -1895,7 +1895,16 @@ class Tensor:
         return self
 
     @with_supported_dtypes(
-        {"2.2 and below": ("float32", "float64", "complex32", "complex64", "complex128")}, "torch"
+        {
+            "2.2 and below": (
+                "float32",
+                "float64",
+                "complex32",
+                "complex64",
+                "complex128",
+            )
+        },
+        "torch",
     )
     def cholesky(self, upper=False):
         return torch_frontend.cholesky(self, upper=upper)
