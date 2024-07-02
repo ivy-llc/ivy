@@ -9354,7 +9354,7 @@ def test_torch_masked_select(
     method_name="masked_scatter",
     x_mask_val=_masked_fill_helper(),
 )
-def test_torch_masked_fill(
+def test_torch_masked_scatter(
     x_mask_val,
     frontend_method_data,
     init_flags,
@@ -9373,7 +9373,7 @@ def test_torch_masked_fill(
         method_input_dtypes=["bool", dtype],
         method_all_as_kwargs_np={
             "mask": mask,
-            "tensor": val,
+            "source": val,
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
