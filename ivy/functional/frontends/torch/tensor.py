@@ -1074,6 +1074,16 @@ class Tensor:
     def masked_select(self, mask):
         return torch_frontend.masked_select(self, mask)
 
+    def masked_scatter(self, mask, tensor):
+        ret = self.clone()
+        ret.index_put(torch_frontend.nonzero(mask, as_tuple=True), tensor)
+        return ret
+
+
+    def masked_scatter_(self, mask, source):
+        self.index_put(torch_frontend.nonzero(mask, as_tuple=True), source)
+        return self
+
     @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
     def index_add_(self, dim, index, source, *, alpha=1):
         self.ivy_array = torch_frontend.index_add(
@@ -2314,10 +2324,16 @@ class Tensor:
 
     def index_put(self, indices, values, accumulate=False):
         ret = self.clone()
+        def _set_add(index):
+            ret[index] += values
+
+        def _set(index):
+            ret[index] = values
+
         if accumulate:
-            ret[indices[0]] += values
+            ivy.map(fn=_set_add, unique={"index": indices})
         else:
-            ret[indices[0]] = values
+            ivy.map(fn=_set, unique={"index": indices})
         return ret
 
     def index_put_(self, indices, values, accumulate=False):
