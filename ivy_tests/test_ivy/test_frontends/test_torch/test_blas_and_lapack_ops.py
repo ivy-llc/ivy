@@ -4,6 +4,7 @@ import numpy as np
 from hypothesis import strategies as st, assume
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
@@ -854,42 +855,34 @@ def test_torch_qr(
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
     some=st.booleans(),
-    compute=st.booleans(),
+    compute_uv=st.booleans(),
 )
 def test_torch_svd(
     dtype_and_x,
     some,
     compute_uv,
     frontend,
+    test_flags,
+    fn_tree,
     backend_fw,
-    frontend_method_data,
-    init_flags,
-    method_flags,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=input_dtype[0])
-
-    ret, frontend_ret = helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x,
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={
-            "some": some,
-            "compute_uv": compute_uv,
-        },
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
+    # make symmetric positive definite beforehand
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=input_dtype,
         backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
+        some=some,
+        compute_uv=compute_uv,
     )
-    with helpers.update_backend(backend_fw) as ivy_backend:
-        ret = [ivy_backend.to_numpy(x) for x in ret]
+    ret = [ivy.to_numpy(x) for x in ret]
     frontend_ret = [np.asarray(x) for x in frontend_ret]
 
     u, s, v = ret
