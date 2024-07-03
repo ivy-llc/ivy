@@ -202,7 +202,7 @@ def svd(input, some=True, compute_uv=True, *, out=None):
         shape2 = shape
         shape1[-2] = shape[-1]
         shape2[-1] = shape[-2]
-        ret = results(ivy.zeros(shape1, device=input.device, dtype=input.dtype), retu[0], ivy.zeros(shape2, device=input.device, dtype=input.dtype))
+        ret = results(ivy.zeros(shape1, device=input.device, dtype=input.dtype), ivy.astype(retu[0], input.dtype), ivy.zeros(shape2, device=input.device, dtype=input.dtype))
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret

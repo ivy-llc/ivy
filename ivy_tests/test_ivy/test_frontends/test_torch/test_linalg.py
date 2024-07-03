@@ -1270,7 +1270,7 @@ def test_torch_svd(
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
-    # make symmetric positive definite beforehand
+    # make symmetric positive definite
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -1283,22 +1283,22 @@ def test_torch_svd(
         A=x,
         full_matrices=full_matrices,
     )
-    ret = [ivy.to_numpy(x) for x in ret]
+    ret = [np.asarray(x) for x in ret]
     frontend_ret = [np.asarray(x) for x in frontend_ret]
     u, s, vh = ret
     frontend_u, frontend_s, frontend_vh = frontend_ret
     if full_matrices:
         helpers.assert_all_close(
-            ret_np=frontend_u[...,:frontend_s.shape[0]] @ np.diag(frontend_s) @ frontend_vh.T,
-            ret_from_gt_np=u[...,:s.shape[0]] @ np.diag(s) @ vh.T,
+            ret_np=np.asarray(frontend_u[...,:frontend_s.shape[0]] @ np.diag(frontend_s) @ frontend_vh, dtype=np.float32),
+            ret_from_gt_np=np.asarray(u[...,:s.shape[0]] @ np.diag(s) @ vh, dtype=np.float32),
             atol=1e-04,
             backend=backend_fw,
             ground_truth_backend=frontend,
         )
     else:
         helpers.assert_all_close(
-            ret_np=frontend_u @ np.diag(frontend_s) @ frontend_vh.T,
-            ret_from_gt_np=u @ np.diag(s) @ vh.T,
+            ret_np=np.asarray(frontend_u @ np.diag(frontend_s) @ frontend_vh, dtype=np.float32),
+            ret_from_gt_np=np.asarray(u @ np.diag(s) @ vh, dtype=np.float32),
             atol=1e-04,
             backend=backend_fw,
             ground_truth_backend=frontend,
