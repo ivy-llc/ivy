@@ -848,11 +848,10 @@ def test_torch_qr(
 @handle_frontend_test(
     fn_tree="torch.svd",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", index=1),
-        min_num_dims=3,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=5,
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
     some=st.booleans(),
     compute=st.booleans(),
@@ -860,25 +859,58 @@ def test_torch_qr(
 def test_torch_svd(
     dtype_and_x,
     some,
-    compute,
-    on_device,
-    fn_tree,
+    compute_uv,
     frontend,
-    test_flags,
     backend_fw,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
 ):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
+    input_dtype, x = dtype_and_x
+    x = np.asarray(x[0], dtype=input_dtype[0])
+
+    ret, frontend_ret = helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "some": some,
+            "compute_uv": compute_uv,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
         frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
+        backend_to_test=backend_fw,
         on_device=on_device,
-        input=x[0],
-        some=some,
-        compute_uv=compute,
+        test_values=False,
     )
+    with helpers.update_backend(backend_fw) as ivy_backend:
+        ret = [ivy_backend.to_numpy(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
+
+    u, s, v = ret
+    frontend_u, frontend_s, frontend_v = frontend_ret
+
+    if compute_uv:
+        helpers.assert_all_close(
+            ret_np=frontend_u @ np.diag(frontend_s) @ frontend_v.T,
+            ret_from_gt_np=u @ np.diag(s) @ v.T,
+            atol=1e-04,
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+        )
+    else:
+        helpers.assert_all_close(
+            ret_np=frontend_s,
+            ret_from_gt_np=s,
+            atol=1e-04,
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+        )
 
 
 @handle_frontend_test(

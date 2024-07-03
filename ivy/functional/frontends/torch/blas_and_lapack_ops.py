@@ -192,7 +192,6 @@ def slogdet(A, *, out=None):
 
 @to_ivy_arrays_and_back
 def svd(input, some=True, compute_uv=True, *, out=None):
-    # TODO: add handling for driver
     retu = ivy.svd(input, full_matrices=not some, compute_uv=compute_uv)
     results = namedtuple("svd", ['U', 'S', 'V'])
     if compute_uv:
