@@ -879,6 +879,7 @@ def test_torch_svd(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
+        input = x,
         some=some,
         compute_uv=compute_uv,
     )
