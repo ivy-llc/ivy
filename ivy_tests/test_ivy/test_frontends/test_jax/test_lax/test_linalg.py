@@ -161,19 +161,18 @@ def test_jax_qr(
 # svd
 @handle_frontend_test(
     fn_tree="jax.lax.linalg.svd",
-    dtype_and_x=helpers.dtype_and_values(
+    dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
-    ).filter(
-        lambda x: "float16" not in x[0]
-        and "bfloat16" not in x[0]
-        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
-        and np.linalg.det(np.asarray(x[1][0])) != 0
+        min_num_dims=2,
+        max_num_dims=5,
     ),
     full_matrices=st.booleans(),
     compute_uv=st.booleans(),
+    index=st.one_of(
+        st.none(), st.tuples(st.integers(min_value=0, max_value=3), st.integers(min_value=3, max_value=5))
+    ),
     test_with_out=st.just(False),
 )
 def test_jax_svd(
@@ -181,6 +180,7 @@ def test_jax_svd(
     dtype_and_x,
     full_matrices,
     compute_uv,
+    index,
     on_device,
     fn_tree,
     frontend,
@@ -203,6 +203,7 @@ def test_jax_svd(
         x=x,
         full_matrices=full_matrices,
         compute_uv=compute_uv,
+        subset_by_index=index,
     )
 
     if compute_uv:

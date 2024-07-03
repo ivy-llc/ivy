@@ -852,7 +852,8 @@ def test_torch_qr(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
+        min_num_dims = 2,
+        max_num_dims = 5,
     ),
     some=st.booleans(),
     compute_uv=st.booleans(),
@@ -883,7 +884,7 @@ def test_torch_svd(
         some=some,
         compute_uv=compute_uv,
     )
-    ret = [ivy.to_numpy(x) for x in ret]
+    ret = [np.asarray(x) for x in ret]
     frontend_ret = [np.asarray(x) for x in frontend_ret]
 
     u, s, v = ret
