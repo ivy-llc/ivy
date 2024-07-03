@@ -1247,7 +1247,15 @@ def test_torch_solve_ex(
 # svd
 @handle_frontend_test(
     fn_tree="torch.linalg.svd",
-    dtype_and_x=_get_dtype_and_matrix(square=True),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
     full_matrices=st.booleans(),
 )
 def test_torch_svd(
@@ -1272,25 +1280,30 @@ def test_torch_svd(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
-        atol=1e-03,
-        rtol=1e-05,
         A=x,
         full_matrices=full_matrices,
     )
     ret = [ivy.to_numpy(x) for x in ret]
     frontend_ret = [np.asarray(x) for x in frontend_ret]
-
     u, s, vh = ret
     frontend_u, frontend_s, frontend_vh = frontend_ret
+    if full_matrices:
+        helpers.assert_all_close(
+            ret_np=frontend_u[...,:frontend_s.shape[0]] @ np.diag(frontend_s) @ frontend_vh.T,
+            ret_from_gt_np=u[...,:s.shape[0]] @ np.diag(s) @ vh.T,
+            atol=1e-04,
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+        )
+    else:
+        helpers.assert_all_close(
+            ret_np=frontend_u @ np.diag(frontend_s) @ frontend_vh.T,
+            ret_from_gt_np=u @ np.diag(s) @ vh.T,
+            atol=1e-04,
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+        )
 
-    assert_all_close(
-        ret_np=u @ np.diag(s) @ vh,
-        ret_from_gt_np=frontend_u @ np.diag(frontend_s) @ frontend_vh,
-        rtol=1e-2,
-        atol=1e-2,
-        ground_truth_backend=frontend,
-        backend=backend_fw,
-    )
 
 
 # svdvals
