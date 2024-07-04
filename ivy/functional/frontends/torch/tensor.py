@@ -1074,14 +1074,20 @@ class Tensor:
     def masked_select(self, mask):
         return torch_frontend.masked_select(self, mask)
 
-    def masked_scatter(self, mask, tensor):
+    def masked_scatter(self, mask, source):
         ret = self.clone()
-        ret.index_put(torch_frontend.nonzero(mask, as_tuple=True), tensor)
+        if torch_frontend.count_nonzero(mask) == 0:
+            return ret
+        conv = torch_frontend.nonzero(mask, as_tuple=True)
+        ret.index_put(conv, source)
         return ret
 
 
     def masked_scatter_(self, mask, source):
-        self.index_put(torch_frontend.nonzero(mask, as_tuple=True), source)
+        if torch_frontend.count_nonzero(mask) == 0:
+            return self
+        conv = torch_frontend.nonzero(mask, as_tuple=True)
+        self.index_put(conv, source)
         return self
 
     @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")

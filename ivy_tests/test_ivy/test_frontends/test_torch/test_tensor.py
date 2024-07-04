@@ -321,17 +321,32 @@ def _get_dtype_input_and_vectors(draw, with_input=False, same_size=False):
 
 
 @st.composite
-def _masked_fill_helper(draw, scatter=False):
+def _masked_fill_helper(draw):
     cond, xs, dtypes = draw(_broadcastable_trio())
-    if scatter:
-        fill_value = draw(helpers.array_values(dtype=dtypes[0], shape=cond.shape, min_value=0, max_value=5))
-    elif ivy.is_uint_dtype(dtypes[0]):
+    if ivy.is_uint_dtype(dtypes[0]):
         fill_value = draw(helpers.ints(min_value=0, max_value=5))
     elif ivy.is_int_dtype(dtypes[0]):
         fill_value = draw(helpers.ints(min_value=-5, max_value=5))
     else:
         fill_value = draw(helpers.floats(min_value=-5, max_value=5))
     return dtypes[0], xs[0], cond, fill_value
+
+
+def _masked_scatter_helper(draw):
+    shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
+    dtypes, xs = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            num_arrays=2,
+            shape=shape,
+            shared_dtype=True,
+            large_abs_safety_factor=16,
+            small_abs_safety_factor=16,
+            safety_factor_scale="log",
+        )
+    )
+    mask = draw(helpers.array_values(dtype=["bool"], shape=shape))
+    return dtypes[0], xs[0], mask, xs[1]
 
 
 @st.composite
@@ -9352,10 +9367,10 @@ def test_torch_masked_select(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="masked_scatter",
-    x_mask_val=_masked_fill_helper(),
+    dtype_x_mask_val=_masked_scatter_helper(),
 )
 def test_torch_masked_scatter(
-    x_mask_val,
+    dtype_x_mask_val,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -9363,7 +9378,7 @@ def test_torch_masked_scatter(
     on_device,
     backend_fw,
 ):
-    dtype, x, mask, val = x_mask_val
+    dtype, x, mask, val = dtype_x_mask_val
     helpers.test_frontend_method(
         init_input_dtypes=[dtype],
         backend_to_test=backend_fw,
