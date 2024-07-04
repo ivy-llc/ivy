@@ -159,6 +159,7 @@ def test_jax_qr(
 
 
 # svd
+# TODO: implement proper drawing of index parameter
 @handle_frontend_test(
     fn_tree="jax.lax.linalg.svd",
     dtype_x=helpers.dtype_and_values(
@@ -189,7 +190,7 @@ def test_jax_svd(
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
-    # make symmetric positive-definite beforehand
+    # make symmetric positive-definite
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
 
     ret, frontend_ret = helpers.test_frontend_function(
@@ -205,18 +206,15 @@ def test_jax_svd(
         compute_uv=compute_uv,
         subset_by_index=index,
     )
-
+    ret = [np.asarray(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
     if compute_uv:
-        with BackendHandler.update_backend(backend_fw) as ivy_backend:
-            ret = [ivy_backend.to_numpy(x) for x in ret]
-        frontend_ret = [np.asarray(x) for x in frontend_ret]
-
-        u, s, vh = ret
-        frontend_u, frontend_s, frontend_vh = frontend_ret
+        u, s, v = ret
+        frontend_u, frontend_s, frontend_v = frontend_ret
 
         assert_all_close(
-            ret_np=u @ np.diag(s) @ vh,
-            ret_from_gt_np=frontend_u @ np.diag(frontend_s) @ frontend_vh,
+            ret_np=u @ np.diag(s) @ v.T,
+            ret_from_gt_np=frontend_u @ np.diag(frontend_s) @ frontend_v.T,
             rtol=1e-2,
             atol=1e-2,
             backend=backend_fw,

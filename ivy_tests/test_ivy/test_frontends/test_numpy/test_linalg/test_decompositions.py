@@ -105,9 +105,8 @@ def test_numpy_svd(
 ):
     dtype, x = dtype_and_x
     x = x[0]
-    x = (
-        np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
-    )  # make symmetric positive-definite
+    # make symmetric positive-definite
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     ret, ret_gt = helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,

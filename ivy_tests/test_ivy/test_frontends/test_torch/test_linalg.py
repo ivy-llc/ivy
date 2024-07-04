@@ -1251,10 +1251,7 @@ def test_torch_solve_ex(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        min_num_dims=2,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
     full_matrices=st.booleans(),
 )

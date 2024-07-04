@@ -881,9 +881,8 @@ def test_jax_svd(
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
-    # make symmetric positive-definite beforehand
+    # make symmetric positive-definite
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
-
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,

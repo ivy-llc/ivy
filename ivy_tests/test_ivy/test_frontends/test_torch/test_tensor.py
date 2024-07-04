@@ -12866,6 +12866,7 @@ def test_torch_sum(
     )
 
 
+# svd
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
@@ -12892,7 +12893,8 @@ def test_torch_svd(
 ):
     input_dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=input_dtype[0])
-
+    # make symmetric positive-definite
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     ret, frontend_ret = helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
@@ -12911,8 +12913,7 @@ def test_torch_svd(
         on_device=on_device,
         test_values=False,
     )
-    with helpers.update_backend(backend_fw) as ivy_backend:
-        ret = [ivy_backend.to_numpy(x) for x in ret]
+    ret = [np.asarray(x) for x in ret]
     frontend_ret = [np.asarray(x) for x in frontend_ret]
 
     u, s, vh = ret
