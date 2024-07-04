@@ -594,7 +594,8 @@ def put_along_axis(
     mode: Literal["sum", "min", "max", "mul", "replace"] = "replace",
     out: Optional[np.ndarray] = None,
 ):
-    ret = np.put_along_axis(arr.copy(), indices, values, axis)
+    ret = arr.copy()
+    np.put_along_axis(ret, indices, values, axis)
     return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
 
 
