@@ -332,6 +332,7 @@ def _masked_fill_helper(draw):
     return dtypes[0], xs[0], cond, fill_value
 
 
+@st.composite
 def _masked_scatter_helper(draw):
     shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
     dtypes, xs = draw(
