@@ -346,7 +346,7 @@ def _masked_scatter_helper(draw):
             safety_factor_scale="log",
         )
     )
-    mask = draw(helpers.array_values(dtype=["bool"], shape=shape))
+    mask = draw(helpers.array_values(dtype=helpers.get_dtypes("bool"), shape=shape))
     return dtypes[0], xs[0], mask, xs[1]
 
 
