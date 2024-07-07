@@ -463,7 +463,7 @@ def put_along_axis(
     }
     mode = mode_mappings.get(mode, mode)
     indices = indices.to(torch.int64)
-    if not isinstance(values, torch.tensor):
+    if not isinstance(values, torch.Tensor):
         values = torch.tensor(values)
     if mode == "replace":
         return torch.scatter(arr, axis, indices, values, out=out)
