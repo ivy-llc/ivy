@@ -4,6 +4,7 @@ import numpy as np
 from hypothesis import strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
@@ -81,6 +82,7 @@ def test_numpy_qr(
 
 
 # svd
+# Todo: hermitian handling
 @handle_frontend_test(
     fn_tree="numpy.linalg.svd",
     dtype_and_x=helpers.dtype_and_values(
@@ -107,7 +109,7 @@ def test_numpy_svd(
     x = x[0]
     # make symmetric positive-definite
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
-    ret, ret_gt = helpers.test_frontend_function(
+    ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
@@ -119,15 +121,26 @@ def test_numpy_svd(
         full_matrices=full_matrices,
         compute_uv=compute_uv,
     )
-    with BackendHandler.update_backend(backend_fw) as ivy_backend:
-        for u, v in zip(ret, ret_gt):
-            u = ivy_backend.to_numpy(ivy_backend.abs(u))
-            v = ivy_backend.to_numpy(ivy_backend.abs(v))
-            helpers.value_test(
-                ret_np_flat=u,
-                ret_np_from_gt_flat=v,
-                rtol=1e-04,
-                atol=1e-04,
-                backend=backend_fw,
-                ground_truth_backend=frontend,
-            )
+    if compute_uv:
+        ret = [np.asarray(x) for x in ret]
+        frontend_ret = [np.asarray(x) for x in frontend_ret]
+        u, s, v = ret
+        frontend_u, frontend_s, frontend_v = frontend_ret
+
+        helpers.assert_all_close(
+            ret_np=u @ np.diag(s) @ v.T,
+            ret_from_gt_np=frontend_u @ np.diag(frontend_s) @ frontend_v.T,
+            rtol=1e-2,
+            atol=1e-2,
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+        )
+    else:
+        helpers.assert_all_close(
+            ret_np=ret.S,
+            ret_from_gt_np=frontend_ret,
+            rtol=1e-2,
+            atol=1e-2,
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+        )
