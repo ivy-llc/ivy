@@ -1842,9 +1842,6 @@ class Tensor:
         {"2.2 and below": ("float32", "float64", "int32", "int64")}, "torch"
     )
     def scatter_(self, dim, index, src, *, reduce=None):
-        if not isinstance(src, torch_frontend.Tensor):
-            src = torch_frontend.tensor(src, dtype=self.dtype)
-
         if reduce is None:
             reduce = "replace"
         else:

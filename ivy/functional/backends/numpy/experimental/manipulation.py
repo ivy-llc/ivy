@@ -595,6 +595,7 @@ def put_along_axis(
     out: Optional[np.ndarray] = None,
 ):
     ret = arr.copy()
+    values = np.asarray(values)
     np.put_along_axis(ret, indices, values, axis)
     return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
 
