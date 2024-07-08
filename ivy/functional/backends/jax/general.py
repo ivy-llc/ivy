@@ -280,7 +280,7 @@ def inplace_update(
                     val_native.flatten()
                 )
 
-                base.data = base_flat.reshape(base.shape)
+                base.data = jnp.reshape(base_flat, base.shape)
 
                 for ref in base._view_refs:
                     view = ref()
