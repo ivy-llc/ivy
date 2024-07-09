@@ -454,6 +454,8 @@ def put_along_axis(
     mode: Literal["sum", "min", "max", "mul", "replace"] = "replace",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    arr, values = ivy.promote_types_of_inputs(arr, values)
+
     mode_mappings = {
         "sum": "sum",
         "min": "amin",
