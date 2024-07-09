@@ -1,4 +1,4 @@
-name: Auto Assign PR
+name: assign-pr
 
 on:
   pull_request:
@@ -12,7 +12,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Assign PR to 'myusername'
+    - name: Assign PR
       env:
         GITHUB_TOKEN: ${{ secrets.DEV_BOT_GENERAL_PAT }}
       run: |
