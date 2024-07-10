@@ -1085,16 +1085,14 @@ class Tensor:
         flat_self.scatter_(0, indices, flat_source[:indices.shape[0]])
         return flat_self.reshape(self.shape)
 
-
     def masked_scatter_(self, mask, source):
         flat_self = torch_frontend.flatten(self.clone())
         flat_mask = torch_frontend.flatten(mask)
         flat_source = torch_frontend.flatten(source)
         indices = torch_frontend.squeeze(torch_frontend.nonzero(flat_mask), -1)
         flat_self.scatter_(0, indices, flat_source[:indices.shape[0]])
-        self = flat_self.reshape(self.shape)
+        self.ivy_array = flat_self.reshape(self.shape).ivy_array
         return self
-
 
     @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
     def index_add_(self, dim, index, source, *, alpha=1):
