@@ -1150,7 +1150,7 @@ def test_jax_packbits(
 @handle_frontend_test(
     fn_tree="jax.numpy.unpackbits",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         min_dim_size=1,
         valid_axis=True,

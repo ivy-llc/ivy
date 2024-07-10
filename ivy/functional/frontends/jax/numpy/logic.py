@@ -7,7 +7,10 @@ from ivy.functional.frontends.jax.numpy import (
     promote_types_of_jax_inputs as promote_jax_arrays,
 )
 from ivy.utils.exceptions import IvyNotImplementedException
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import (
+    with_supported_device_and_dtypes,
+    with_unsupported_dtypes,
+)
 
 
 # --- Helpers --- #
@@ -311,9 +314,17 @@ def setxor1d(ar1, ar2, assume_unique=False):
 
 
 @to_ivy_arrays_and_back
+@with_supported_device_and_dtypes(
+    {
+        "0.4.30 and below": {
+            "cpu": ("uint8",),
+        },
+    },
+    "jax",
+)
 def unpackbits(x, /, *, axis=None, count=None, bitorder="big"):
     x = ivy.asarray(x)
-    bits = ivy.arange(8, dtype="uint8")
+    bits = ivy.asarray(1) << ivy.arange(8, dtype=ivy.uint8)
     if bitorder == "big":
         bits = bits[::-1]
     if axis is None:
@@ -323,8 +334,9 @@ def unpackbits(x, /, *, axis=None, count=None, bitorder="big"):
 
     unpacked = (
         (x[..., None] & ivy.expand_dims(bits, axis=tuple(range(x.ndim)))) > 0
-    ).astype("uint8")
-    unpacked = ivy.reshape(unpacked, list(unpacked.shape[:-2] + (-1,)))
+    ).astype(ivy.uint8)
+    remaining_dim_size = int(unpacked.shape.numel() / unpacked.shape[:-2].numel())
+    unpacked = ivy.reshape(unpacked, tuple(unpacked.shape[:-2] + (remaining_dim_size,)))
     if count is not None:
         if count > unpacked.shape[-1]:
             unpacked = ivy.pad(
