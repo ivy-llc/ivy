@@ -346,7 +346,7 @@ def _masked_scatter_helper(draw):
             safety_factor_scale="log",
         )
     )
-    mask = draw(helpers.array_values(dtype=helpers.get_dtypes("bool"), shape=shape))
+    mask = draw(helpers.array_values(dtype="bool", shape=shape))
     return dtypes[0], xs[0], mask, xs[1]
 
 
@@ -9371,6 +9371,41 @@ def test_torch_masked_select(
     dtype_x_mask_val=_masked_scatter_helper(),
 )
 def test_torch_masked_scatter(
+    dtype_x_mask_val,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    dtype, x, mask, val = dtype_x_mask_val
+    helpers.test_frontend_method(
+        init_input_dtypes=[dtype],
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=["bool", dtype],
+        method_all_as_kwargs_np={
+            "mask": mask,
+            "source": val,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+# masked_scatter_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="masked_scatter_",
+    dtype_x_mask_val=_masked_scatter_helper(),
+)
+def test_torch_masked_scatter_(
     dtype_x_mask_val,
     frontend_method_data,
     init_flags,
