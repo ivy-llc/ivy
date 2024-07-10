@@ -1075,12 +1075,12 @@ class Tensor:
         return torch_frontend.masked_select(self, mask)
 
     def masked_scatter(self, mask, source):
-        ret = self.clone()
-        if torch_frontend.count_nonzero(mask) == 0:
-            return ret
-        conv = torch_frontend.nonzero(mask, as_tuple=True)
-        ret.index_put(conv, source)
-        return ret
+        flat_self = torch_frontend.flatten(self.clone())
+        flat_mask = torch_frontend.flatten(mask)
+        flat_source = torch_frontend.flatten(source)
+        indices = torch_frontend.squeeze(torch_frontend.nonzero(flat_mask), -1)
+        flat_self.scatter_(0, indices, flat_source[:indices.shape[0]])
+        return flat_self.reshape(self.shape)
 
 
     def masked_scatter_(self, mask, source):
