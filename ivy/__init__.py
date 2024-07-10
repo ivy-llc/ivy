@@ -493,9 +493,10 @@ class Shape(Sequence):
             raise ivy.utils.exceptions.IvyException(
                 "Cannot calculate the number of elements in a partially known Shape"
             )
-        if len(self._shape) > 0:
-            return ivy.prod(self._shape, dtype=ivy.int64).to_scalar()
-        return 1
+        res = 1
+        for dim in self._shape:
+            res *= dim
+        return res
 
     def __concat__(self, other):
         return self.concatenate(other)
