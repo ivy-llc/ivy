@@ -105,6 +105,42 @@ def test_jax_argmax(
     )
 
 
+# argmin
+@handle_frontend_test(
+    fn_tree="jax.numpy.argmin",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        force_int_axis=True,
+        min_num_dims=1,
+        valid_axis=True,
+    ),
+    keepdims=st.booleans(),
+)
+def test_jax_argmin(
+    *,
+    dtype_and_x,
+    keepdims,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        out=None,
+        keepdims=keepdims,
+    )
+
+
 # argsort
 @handle_frontend_test(
     fn_tree="jax.numpy.argsort",
@@ -166,6 +202,42 @@ def test_jax_argwhere(
         a=x[0],
         size=None,
         fill_value=None,
+    )
+
+
+# count_nonzero
+@handle_frontend_test(
+    fn_tree="jax.numpy.count_nonzero",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        force_int_axis=True,
+        valid_axis=True,
+        allow_neg_axes=True,
+    ),
+    keepdims=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_jax_count_nonzero(
+    dtype_input_axis,
+    keepdims,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        keepdims=keepdims,
     )
 
 

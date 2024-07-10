@@ -5,6 +5,7 @@ import os
 import copy
 import importlib
 import warnings
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -57,7 +58,10 @@ class _AvoidGPUPreallocation:
 def _move_to_device(args=None, kwargs=None, device="cpu"):
     args_idxs = ivy.nested_argwhere(args, ivy.is_array)
     kwargs_idxs = ivy.nested_argwhere(kwargs, ivy.is_array)
-    func = lambda x: ivy.to_device(x, device, out=x)
+
+    def func(x):
+        return ivy.to_device(x, device, out=x)
+
     if args is not None:
         args = ivy.map_nest_at_indices(args, args_idxs, func)
     if kwargs is not None:
@@ -84,7 +88,7 @@ def _read_or_create_csv(output_path="./report.csv"):
 
 
 def _write_to_csv(df, row_list, output_path="./report.csv"):
-    row = {k: v for k, v in zip(COLUMNS, row_list)}
+    row = dict(zip(COLUMNS, row_list))
     df = df.append(row, ignore_index=True)
     df.to_csv(output_path, index=False)
 
@@ -100,9 +104,8 @@ def eager_benchmark(
     kwargs: Optional[Dict[str, Any]] = None,
     output_path="./report.csv",
 ):
-    """
-    Benchmark the function or module passed in input on the required backends and
-    devices.
+    """Benchmark the function or module passed in input on the required
+    backends and devices.
 
     Parameters
     ----------
@@ -206,16 +209,16 @@ def eager_benchmark(
     devices = ivy.default(devices, [])
     output_path = ivy.default(output_path, "./report.csv")
     print("\nBenchmarking backends : " + " ".join(backends))
-    print("Number of experiments : {}".format(num_experiments) + "\n")
+    print(f"Number of experiments : {num_experiments}" + "\n")
     for i in range(num_experiments):
         if num_experiments > 1:
             print("====================")
-            print("Experiment {}".format(i + 1))
+            print(f"Experiment {i + 1}")
             print("====================\n")
         for backend in backends:
             with _AvoidGPUPreallocation(backend) as _:
                 print("------------------------------------------------\n")
-                print("backend : {}".format(backend))
+                print(f"backend : {backend}")
                 ivy.set_backend(backend, dynamic=True)
                 valid_devices = [
                     device
@@ -223,7 +226,7 @@ def eager_benchmark(
                     if device.split(":")[0] not in ivy.invalid_devices
                 ]
                 for device in valid_devices:
-                    print("device : {}".format(device))
+                    print(f"device : {device}")
                 obj_call = obj
                 if functional_api:
                     obj_call = ivy.__dict__[obj]
@@ -233,17 +236,17 @@ def eager_benchmark(
                     )
                     if isinstance(obj_call, ivy.Module):
                         obj_call_copy = copy.deepcopy(obj_call)
-                        obj_call_copy.compile(args=args, kwargs=kwargs)
-                        compiled_fn = obj_call_copy
+                        obj_call_copy.trace(args=args, kwargs=kwargs)
+                        traced_fn = obj_call_copy
                     else:
-                        compiled_fn = ivy.compile(obj_call, args=args, kwargs=kwargs)
+                        traced_fn = ivy.trace(obj_call, args=args, kwargs=kwargs)
                     kwargs = ivy.default(kwargs, {})
                     args = ivy.default(args, ())
-                    uncompiled_time = _compute_time(obj_call)(*args, **kwargs)
-                    compiled_time = _compute_time(compiled_fn)(*args, **kwargs)
+                    untraced_time = _compute_time(obj_call)(*args, **kwargs)
+                    traced_time = _compute_time(traced_fn)(*args, **kwargs)
                     label = obj_call.__name__ if label is None else label
                     percent_speed_up = round(
-                        abs(uncompiled_time - compiled_time) / uncompiled_time * 100, 6
+                        abs(untraced_time - traced_time) / untraced_time * 100, 6
                     )
                     df = _read_or_create_csv(output_path)
                     _write_to_csv(
@@ -253,8 +256,8 @@ def eager_benchmark(
                             label,
                             backend,
                             device,
-                            uncompiled_time,
-                            compiled_time,
+                            untraced_time,
+                            traced_time,
                             percent_speed_up,
                         ],
                         output_path,
@@ -264,20 +267,19 @@ def eager_benchmark(
                     )
                     ivy.clear_cached_mem_on_dev(device)
                     print(LINE_UP * (len(valid_devices) - i), end=LINE_CLEAR)
-                    print("device : {}\t --> done\n".format(device))
+                    print(f"device : {device}\t --> done\n")
                 ivy.unset_backend()
-    print("Results written to {} ...".format(output_path))
+    print(f"Results written to {output_path} ...")
 
 
 def visualize_speed_up(
-    file_path: str = None,
-    output_path: str = None,
+    file_path: Optional[str] = None,
+    output_path: Optional[str] = None,
     devices: Union[List[str], str] = "all",
     backends: Union[List[str], str] = "all",
-    labels: Union[List[str], str] = None,
+    labels: Optional[Union[List[str], str]] = None,
 ):
-    """
-    Visualize the speed up results stored in the csv.
+    """Visualize the speed up results stored in the csv.
 
     Parameters
     ----------
@@ -325,7 +327,7 @@ def visualize_speed_up(
     fig.set_figwidth(30)
     fig.set_figheight(12)
     fig.tight_layout(pad=10.0)
-    axes = np.asarray([axes]) if not isinstance(axes, np.ndarray) else axes
+    axes = axes if isinstance(axes, np.ndarray) else np.asarray([axes])
     while len(axes.shape) < 2:
         if len(devices) > len(backends):
             axes = np.expand_dims(axes, len(axes.shape))
@@ -333,7 +335,7 @@ def visualize_speed_up(
             axes = np.expand_dims(axes, 0)
     for device, axis in zip(devices, axes):
         for backend, ax in zip(backends, axis):
-            ax.set_title("{} : {}".format(backend, device), {"fontsize": 18})
+            ax.set_title(f"{backend} : {device}", {"fontsize": 18})
             ax.set_ylabel("Percent Speed up on compiling", {"fontsize": 18})
             ax.tick_params(axis="both", labelsize=15)
             query = df.query("backend == @backend and device == @device")
@@ -341,8 +343,8 @@ def visualize_speed_up(
                 ax.violinplot(query["percent_speed_up"])
             else:
                 warnings.warn(
-                    "No records matching the filters passed"
-                    "backend={} and device={}".format(backend, device)
+                    f"No records matching the filters passedbackend={backend} and"
+                    f" device={device}"
                 )
     plt.savefig(output_path)
-    print("plot saved to {} ...".format(output_path))
+    print(f"plot saved to {output_path} ...")

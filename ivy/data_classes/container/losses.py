@@ -15,17 +15,16 @@ class _ContainerWithLosses(ContainerBase):
         *,
         axis: Union[int, ivy.Container] = -1,
         epsilon: Union[float, ivy.Container] = 1e-7,
-        reduction: Union[str, ivy.Container] = "sum",
+        reduction: Union[str, ivy.Container] = "mean",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.cross_entropy. This method simply
-        wraps the function, and so the docstring for ivy.cross_entropy also applies to
-        this method with minimal changes.
+        """ivy.Container static method variant of ivy.cross_entropy. This
+        method simply wraps the function, and so the docstring for
+        ivy.cross_entropy also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -106,17 +105,16 @@ class _ContainerWithLosses(ContainerBase):
         *,
         axis: Union[int, ivy.Container] = -1,
         epsilon: Union[float, ivy.Container] = 1e-7,
-        reduction: Union[str, ivy.Container] = "sum",
+        reduction: Union[str, ivy.Container] = "mean",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.cross_entropy. This method simply
-        wraps the function, and so the docstring for ivy.cross_entropy also applies to
-        this method with minimal changes.
+        """ivy.Container instance method variant of ivy.cross_entropy. This
+        method simply wraps the function, and so the docstring for
+        ivy.cross_entropy also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -159,8 +157,8 @@ class _ContainerWithLosses(ContainerBase):
         >>> z = x.cross_entropy(y)
         >>> print(z)
         {
-            a:ivy.array(0.5108256),
-            b:ivy.array(1.609438)
+            a: ivy.array(0.17027519),
+            b: ivy.array(0.53647931)
         }
         """
         return self._static_cross_entropy(
@@ -184,7 +182,7 @@ class _ContainerWithLosses(ContainerBase):
         *,
         from_logits: Union[bool, ivy.Container] = False,
         epsilon: Union[float, ivy.Container] = 0.0,
-        reduction: Union[str, ivy.Container] = "none",
+        reduction: Union[str, ivy.Container] = "mean",
         pos_weight: Optional[Union[ivy.Container, ivy.Array, ivy.NativeArray]] = None,
         axis: Optional[Union[int, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -193,10 +191,10 @@ class _ContainerWithLosses(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.binary_cross_entropy. This method
-        simply wraps the function, and so the docstring for ivy.binary_cross_entropy
-        also applies to this method with minimal changes.
+        """ivy.Container static method variant of ivy.binary_cross_entropy.
+        This method simply wraps the function, and so the docstring for
+        ivy.binary_cross_entropy also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -286,7 +284,7 @@ class _ContainerWithLosses(ContainerBase):
         *,
         from_logits: Union[bool, ivy.Container] = False,
         epsilon: Union[float, ivy.Container] = 0.0,
-        reduction: Union[str, ivy.Container] = "none",
+        reduction: Union[str, ivy.Container] = "mean",
         pos_weight: Optional[Union[ivy.Container, ivy.Array, ivy.NativeArray]] = None,
         axis: Optional[Union[int, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -295,10 +293,10 @@ class _ContainerWithLosses(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.binary_cross_entropy. This method
-        simply wraps the function, and so the docstring for ivy.binary_cross_entropy
-        also applies to this method with minimal changes.
+        """ivy.Container instance method variant of ivy.binary_cross_entropy.
+        This method simply wraps the function, and so the docstring for
+        ivy.binary_cross_entropy also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -350,8 +348,8 @@ class _ContainerWithLosses(ContainerBase):
         >>> z = x.binary_cross_entropy(y)
         >>> print(z)
         {
-            a: ivy.array([0.511, 0.223, 0.357]),
-            b: ivy.array([1.61, 0.223, 1.61])
+            a: ivy.array(0.36354783),
+            b: ivy.array(1.14733934)
         }
         """
         return self._static_binary_cross_entropy(
@@ -377,17 +375,17 @@ class _ContainerWithLosses(ContainerBase):
         *,
         axis: Union[int, ivy.Container] = -1,
         epsilon: Union[float, ivy.Container] = 1e-7,
-        reduction: Union[str, ivy.Container] = "sum",
+        reduction: Union[str, ivy.Container] = "mean",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.sparse_cross_entropy. This method
-        simply wraps the function, and so the docstring for ivy.sparse_cross_entropy
-        also applies to this method with minimal changes.
+        """ivy.Container static method variant of ivy.sparse_cross_entropy.
+        This method simply wraps the function, and so the docstring for
+        ivy.sparse_cross_entropy also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -467,17 +465,17 @@ class _ContainerWithLosses(ContainerBase):
         *,
         axis: Union[int, ivy.Container] = -1,
         epsilon: Union[float, ivy.Container] = 1e-7,
-        reduction: Union[str, ivy.Container] = "sum",
+        reduction: Union[str, ivy.Container] = "mean",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.sparse_cross_entropy. This method
-        simply wraps the function, and so the docstring for ivy.sparse_cross_entropy
-        also applies to this method with minimal changes.
+        """ivy.Container instance method variant of ivy.sparse_cross_entropy.
+        This method simply wraps the function, and so the docstring for
+        ivy.sparse_cross_entropy also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -519,8 +517,8 @@ class _ContainerWithLosses(ContainerBase):
         >>> z = x.sparse_cross_entropy(y)
         >>> print(z)
         {
-            a: ivy.array([1.61, 0.511, 0.511]),
-            b: ivy.array([0.223, 0.223, 1.61])
+            a: ivy.array([0.53647929, 0.1702752, 0.1702752]),
+            b: ivy.array([0.07438118, 0.07438118, 0.53647929])
         }
         """
         return self._static_sparse_cross_entropy(

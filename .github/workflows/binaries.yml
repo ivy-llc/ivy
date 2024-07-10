@@ -1,0 +1,19 @@
+name: release-binaries
+on:
+  workflow_call:
+jobs:
+  release-binaries:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️Binaries
+        uses: actions/checkout@v4
+        with:
+          repository: ivy-llc/binaries
+          token: ${{ secrets.DEV_BOT_GENERAL_PAT }}
+          path: binaries
+
+      - name: Add Tag to Binaries
+        run: |
+          cd binaries
+          git tag ${{ github.ref_name }}
+          git push origin ${{ github.ref_name }}

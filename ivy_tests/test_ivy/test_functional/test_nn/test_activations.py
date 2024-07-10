@@ -48,15 +48,17 @@ def test_gelu(
 @handle_test(
     fn_tree="functional.ivy.hardswish",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
+    complex_mode=st.sampled_from(["jax", "split", "magnitude"]),
 )
 def test_hardswish(
     *,
     dtype_and_x,
+    complex_mode,
     test_flags,
     backend_fw,
     fn_name,
@@ -70,6 +72,7 @@ def test_hardswish(
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
+        complex_mode=complex_mode,
     )
 
 
@@ -109,13 +112,14 @@ def test_leaky_relu(
 @handle_test(
     fn_tree="functional.ivy.log_softmax",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        min_num_dims=2,
+        large_abs_safety_factor=12,
+        small_abs_safety_factor=12,
         safety_factor_scale="log",
+        min_value=-2,
     ),
-    axis=st.one_of(helpers.ints(min_value=-1, max_value=0), st.none()),
+    axis=helpers.ints(min_value=-1, max_value=0),
 )
 def test_log_softmax(*, dtype_and_x, axis, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
@@ -136,11 +140,13 @@ def test_log_softmax(*, dtype_and_x, axis, test_flags, backend_fw, fn_name, on_d
 @handle_test(
     fn_tree="functional.ivy.mish",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        large_abs_safety_factor=25,
+        small_abs_safety_factor=25,
+        min_dim_size=2,
         safety_factor_scale="log",
     ),
+    ground_truth_backend="jax",
 )
 def test_mish(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
@@ -160,7 +166,7 @@ def test_mish(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.relu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
@@ -184,13 +190,17 @@ def test_relu(*, dtype_and_x, complex_mode, test_flags, backend_fw, fn_name, on_
 @handle_test(
     fn_tree="functional.ivy.sigmoid",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
+    complex_mode=st.sampled_from(["jax", "split", "magnitude"]),
+    ground_truth_backend="jax",
 )
-def test_sigmoid(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+def test_sigmoid(
+    *, dtype_and_x, complex_mode, test_flags, backend_fw, fn_name, on_device
+):
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
@@ -198,9 +208,10 @@ def test_sigmoid(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
-        rtol_=1e-2,
-        atol_=1e-2,
+        atol_=1e-02,
+        rtol_=1e-02,
         x=x[0],
+        complex_mode=complex_mode,
     )
 
 
@@ -208,10 +219,10 @@ def test_sigmoid(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.softmax",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_num_dims=1,
         large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
+        small_abs_safety_factor=4,
         safety_factor_scale="log",
     ),
     axis=st.one_of(

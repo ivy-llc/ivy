@@ -104,7 +104,7 @@ def _rgb_to_hsv(img):
 # ------------ #
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def adjust_brightness(img, brightness_factor):
     assert brightness_factor >= 0, "brightness_factor should be non-negative."
@@ -117,7 +117,7 @@ def adjust_brightness(img, brightness_factor):
     return _blend_images(img, extreme_target, brightness_factor)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64", "uint8")}, "paddle")
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64", "uint8")}, "paddle")
 @to_ivy_arrays_and_back
 def adjust_hue(img, hue_factor):
     assert -0.5 <= hue_factor <= 0.5, "hue_factor should be in range [-0.5, 0.5]"
@@ -145,7 +145,7 @@ def adjust_hue(img, hue_factor):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def hflip(img):
@@ -154,7 +154,7 @@ def hflip(img):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 def normalize(img, mean, std, data_format="CHW", to_rgb=False):
     if ivy.is_array(img):
@@ -171,7 +171,37 @@ def normalize(img, mean, std, data_format="CHW", to_rgb=False):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def pad(img, padding, fill=0, padding_mode="constant"):
+    dim_size = img.ndim
+    if not hasattr(padding, "__len__"):
+        if dim_size == 2:
+            trans_padding = ((padding, padding), (padding, padding))
+        elif dim_size == 3:
+            trans_padding = ((0, 0), (padding, padding), (padding, padding))
+    elif len(padding) == 2:
+        if dim_size == 2:
+            trans_padding = ((padding[1], padding[1]), (padding[0], padding[0]))
+        elif dim_size == 3:
+            trans_padding = ((0, 0), (padding[1], padding[1]), (padding[0], padding[0]))
+    elif len(padding) == 4:
+        if dim_size == 2:
+            trans_padding = ((padding[1], padding[3]), (padding[0], padding[2]))
+        elif dim_size == 3:
+            trans_padding = ((0, 0), (padding[1], padding[3]), (padding[0], padding[2]))
+    else:
+        raise ValueError("padding can only be 1D with size 1, 2, 4 only")
+
+    if padding_mode in ["constant", "edge", "reflect", "symmetric"]:
+        return ivy.pad(img, trans_padding, mode=padding_mode, constant_values=fill)
+    else:
+        raise ValueError("Unsupported padding_mode")
+
+
+@with_supported_dtypes(
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def to_tensor(pic, data_format="CHW"):
@@ -181,7 +211,7 @@ def to_tensor(pic, data_format="CHW"):
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.1 and below": {
+        "2.6.0 and below": {
             "cpu": ("int8", "uint8", "int16", "float16", "bfloat16", "bool")
         }
     },

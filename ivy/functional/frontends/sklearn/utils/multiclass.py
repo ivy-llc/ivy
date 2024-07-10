@@ -1,7 +1,7 @@
 import ivy
 
 
-# reapeated utility function
+# repeated utility function
 def type_of_target(y, input_name="y"):
     # purely utility function
     unique_vals = len(ivy.unique_values(y))

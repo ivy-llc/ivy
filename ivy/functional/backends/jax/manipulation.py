@@ -1,7 +1,8 @@
 # global
 import math
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence, Iterable
+from typing import Iterable, List, Optional, Sequence, Tuple, Union
+
 import jax.numpy as jnp
 import numpy as np
 
@@ -9,6 +10,7 @@ import numpy as np
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
+
 from . import backend_version
 
 
@@ -39,7 +41,7 @@ def concat(
     try:
         return jnp.concatenate(xs, axis)
     except ValueError as error:
-        raise ivy.utils.exceptions.IvyIndexError(error)
+        raise ivy.utils.exceptions.IvyIndexError(error) from error
 
 
 def expand_dims(
@@ -54,7 +56,7 @@ def expand_dims(
         ret = jnp.expand_dims(x, axis)
         return ret
     except ValueError as error:
-        raise ivy.utils.exceptions.IvyIndexError(error)
+        raise ivy.utils.exceptions.IvyIndexError(error) from error
 
 
 def flip(
@@ -76,6 +78,9 @@ def permute_dims(
     copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if copy:
+        newarr = jnp.copy(x)
+        return jnp.transpose(newarr, axes)
     return jnp.transpose(x, axes)
 
 
@@ -122,11 +127,13 @@ def squeeze(
     copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if copy:
+        x = jnp.copy(x)
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
             return x
         raise ivy.utils.exceptions.IvyException(
-            "tried to squeeze a zero-dimensional input by axis {}".format(axis)
+            f"tried to squeeze a zero-dimensional input by axis {axis}"
         )
     else:
         ret = jnp.squeeze(x, axis=axis)
@@ -143,7 +150,7 @@ def stack(
     try:
         return jnp.stack(arrays, axis=axis)
     except ValueError as error:
-        raise ivy.utils.exceptions.IvyIndexError(error)
+        raise ivy.utils.exceptions.IvyIndexError(error) from error
 
 
 # Extra #
@@ -162,9 +169,8 @@ def split(
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise ivy.utils.exceptions.IvyException(
-                "input array had no shape, but num_sections specified was {}".format(
-                    num_or_size_splits
-                )
+                "input array had no shape, but num_sections specified was"
+                f" {num_or_size_splits}"
             )
         return [x]
     if isinstance(num_or_size_splits, jnp.ndarray):
@@ -203,9 +209,9 @@ def tile(
 
 def clip(
     x: JaxArray,
+    /,
     x_min: Optional[Union[Number, JaxArray]] = None,
     x_max: Optional[Union[Number, JaxArray]] = None,
-    /,
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -227,7 +233,7 @@ def clip(
     return x
 
 
-@with_unsupported_dtypes({"0.4.14 and below": ("uint64",)}, backend_version)
+@with_unsupported_dtypes({"0.4.24 and below": ("uint64",)}, backend_version)
 def constant_pad(
     x: JaxArray,
     /,

@@ -427,18 +427,18 @@ The implementation is as follows:
 
         def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999,
                      epsilon=1e-07, inplace=None,
-                     stop_gradients=True, compile_on_next_step=False,
+                     stop_gradients=True, trace_on_next_step=False,
                      dev=None):
             ivy.Optimizer.__init__(
                 self, lr, inplace, stop_gradients, True,
-                compile_on_next_step, dev)
+                trace_on_next_step, dev)
             self._beta1 = beta1
             self._beta2 = beta2
             self._epsilon = epsilon
             self._mw = None
             self._vw = None
             self._first_pass = True
-            self._should_compile = False
+            self._should_trace = False
 
         # Custom Step
 

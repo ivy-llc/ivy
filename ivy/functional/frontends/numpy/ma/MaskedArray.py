@@ -2,6 +2,8 @@ import ivy
 import ivy.functional.frontends.numpy as np_frontend
 import numpy as np
 
+
+masked = True
 masked_print_options = "--"
 nomask = False
 
@@ -194,7 +196,6 @@ def _is_masked_array(x):
     return isinstance(x, (np.ma.MaskedArray, np_frontend.ma.MaskedArray))
 
 
-masked = True
 # Instance Methods #
 # ---------------- #
 

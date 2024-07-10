@@ -14,3 +14,4 @@ tensorflow-metal
 tensorflow-probability  # mod_name=tensorflow_probability
 torch
 paddlepaddle  # unpinned , mod_name=paddle
+torchvision

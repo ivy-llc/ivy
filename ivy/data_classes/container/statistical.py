@@ -9,22 +9,24 @@ from ivy.data_classes.container.base import ContainerBase
 
 
 class _ContainerWithStatistical(ContainerBase):
-    def min(
-        self: ivy.Container,
+    @staticmethod
+    def _static_min(
+        x: ivy.Container,
         /,
         *,
         axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
         keepdims: Union[bool, ivy.Container] = False,
+        initial: Optional[Union[int, float, complex, ivy.Container]] = None,
+        where: Optional[Union[ivy.Array, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.min. This method simply wraps the
-        function, and so the docstring for ivy.min also applies to this method with
-        minimal changes.
+    ):
+        """ivy.Container static method variant of ivy.min. This method simply
+        wraps the function, and so the docstring for ivy.min also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -43,6 +45,97 @@ class _ContainerWithStatistical(ContainerBase):
             (see :ref:`broadcasting`). Otherwise, if ``False``, the
             reduced axes (dimensions) must not be included in the
             result. Default: ``False``.
+        initial
+            The maximum value of an output element.
+            Must be present to allow computation on empty slice.
+        where
+            Elements to compare for minimum
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            if the minimum value was computed over the entire array,
+            a zero-dimensional array containing the minimum value;
+            otherwise, a non-zero-dimensional array containing the
+            minimum values. The returned array must have the same data type
+            as ``x``.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+        >> > x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                               b=ivy.array([2, 3, 4]))
+        >> > z = x.min()
+        >> > print(z)
+        {
+            a: ivy.array(1),
+            b: ivy.array(2)
+        }
+        >>> x = ivy.Container(a=ivy.array([[1, 2, 3],[-1,0,2]]),
+        ...                   b=ivy.array([[2, 3, 4], [0, 1, 2]]))
+        >>> z = x.min(axis=1)
+        >>> print(z)
+        {
+            a:ivy.array([1,-1]),
+            b:ivy.array([2,0])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "min",
+            x,
+            axis=axis,
+            keepdims=keepdims,
+            initial=initial,
+            where=where,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def min(
+        self: ivy.Container,
+        /,
+        *,
+        axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        initial: Optional[Union[int, float, complex, ivy.Container]] = None,
+        where: Optional[Union[ivy.Array, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.min. This method simply
+        wraps the function, and so the docstring for ivy.min also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container. Should have a real-valued data type.
+        axis
+            axis or axes along which minimum values must be computed.
+            By default, the minimum value must be computed over the
+            entire array. If a tuple of integers, minimum values must
+            be computed over multiple axes. Default: ``None``.
+        keepdims
+            optional boolean, if ``True``, the reduced axes
+            (dimensions) must be included in the result as
+            singleton dimensions, and, accordingly, the result
+            must be compatible with the input array
+            (see :ref:`broadcasting`). Otherwise, if ``False``, the
+            reduced axes (dimensions) must not be included in the
+            result. Default: ``False``.
+        initial
+            The maximum value of an output element.
+            Must be present to allow computation on empty slice.
+        where
+            Elements to compare for minimum
         out
             optional output array, for writing the result to.
 
@@ -77,18 +170,16 @@ class _ContainerWithStatistical(ContainerBase):
             b:ivy.array([2,0])
         }
         """
-        return self.cont_handle_inplace(
-            self.cont_map(
-                lambda x_, _: (
-                    ivy.min(x_, axis=axis, keepdims=keepdims)
-                    if ivy.is_array(x_)
-                    else x_
-                ),
-                key_chains=key_chains,
-                to_apply=to_apply,
-                prune_unapplied=prune_unapplied,
-                map_sequences=map_sequences,
-            ),
+        return self._static_min(
+            self,
+            axis=axis,
+            keepdims=keepdims,
+            initial=initial,
+            where=where,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -104,10 +195,9 @@ class _ContainerWithStatistical(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.max. This method simply wraps the
-        function, and so the docstring for ivy.max also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.max. This method simply
+        wraps the function, and so the docstring for ivy.max also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -175,19 +265,19 @@ class _ContainerWithStatistical(ContainerBase):
     def mean(
         self: ivy.Container,
         /,
-        *,
         axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
         keepdims: Union[bool, ivy.Container] = False,
+        *,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.mean. This method simply wraps the
-        function, and so the docstring for ivy.mean also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.mean. This method
+        simply wraps the function, and so the docstring for ivy.mean also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -204,6 +294,10 @@ class _ContainerWithStatistical(ContainerBase):
             compatible with the input array (see :ref:`broadcasting`). Otherwise,
             if ``False``, the reduced axes (dimensions) must not be included in
             the result. Default: ``False``.
+        dtype
+            the desired data type of returned tensor. If specified, the input tensor
+            is casted to dtype before the operation is performed. This is useful for
+            preventing data type overflows. Default: None.
         key_chains
             The key-chains to apply or not apply the method to.
             Default is ``None``.
@@ -294,7 +388,7 @@ class _ContainerWithStatistical(ContainerBase):
         return self.cont_handle_inplace(
             self.cont_map(
                 lambda x_, _: (
-                    ivy.mean(x_, axis=axis, keepdims=keepdims)
+                    ivy.mean(x_, axis=axis, keepdims=keepdims, dtype=dtype)
                     if ivy.is_array(x_)
                     else x_
                 ),
@@ -319,10 +413,9 @@ class _ContainerWithStatistical(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.var. This method simply wraps the
-        function, and so the docstring for ivy.var also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.var. This method simply
+        wraps the function, and so the docstring for ivy.var also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -371,7 +464,7 @@ class _ContainerWithStatistical(ContainerBase):
         Returns
         -------
         ret
-            a container contianing different arrays depends on parameters. see below
+            a container containing different arrays depends on parameters. see below
             for the types of arrays in the returned container if the variance was
             computed over the entire array, a zero-dimensional array containing the
             variance; otherwise, a non-zero-dimensional array containing the variances.
@@ -437,10 +530,9 @@ class _ContainerWithStatistical(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.var. This method simply wraps the
-        function, and so the docstring for ivy.var also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.var. This method simply
+        wraps the function, and so the docstring for ivy.var also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -509,10 +601,9 @@ class _ContainerWithStatistical(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ):
-        """
-        ivy.Container static method variant of ivy.prod. This method simply wraps the
-        function, and so the docstring for ivy.prod also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.prod. This method simply
+        wraps the function, and so the docstring for ivy.prod also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -648,10 +739,9 @@ class _ContainerWithStatistical(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.prod. This method simply wraps the
-        function, and so the docstring for ivy.prod also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.prod. This method
+        simply wraps the function, and so the docstring for ivy.prod also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -840,10 +930,9 @@ class _ContainerWithStatistical(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.std. This method simply wraps the
-        function, and so the docstring for ivy.std also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.std. This method simply
+        wraps the function, and so the docstring for ivy.std also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -990,10 +1079,9 @@ class _ContainerWithStatistical(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.cumsum. This method simply wraps the
-        function, and so the docstring for ivy.cumsum also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.cumsum. This method
+        simply wraps the function, and so the docstring for ivy.cumsum also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1132,10 +1220,9 @@ class _ContainerWithStatistical(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.cumsum. This method simply wraps
-        the function, and so the docstring for ivy.cumsum also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.cumsum. This method
+        simply wraps the function, and so the docstring for ivy.cumsum also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1289,10 +1376,9 @@ class _ContainerWithStatistical(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.cumprod. This method simply wraps the
-        function, and so the docstring for ivy.cumprod also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.cumprod. This method
+        simply wraps the function, and so the docstring for ivy.cumprod also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1381,10 +1467,9 @@ class _ContainerWithStatistical(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.cumprod. This method simply wraps
-        the function, and so the docstring for ivy.cumprod also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.cumprod. This method
+        simply wraps the function, and so the docstring for ivy.cumprod also
+        applies to this method with minimal changes.
 
         Parameters
         ----------

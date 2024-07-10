@@ -6,8 +6,23 @@ Building the Docs Pipeline
 .. _autosummary: https://www.sphinx-doc.org/en/master/usage/extensions/autosummary.html
 .. _doc-builder repository: https://github.com/unifyai/doc-builder
 
+.. warning::
+
+    Be aware that the doc-builder was developed originally for Linux, although, in theory, you can run
+    it on any platform (supporting either docker or windows), it's only tested it on
+    Linux. If you find any windows related issues, feel free to open an issue for that to review it.
+
+.. note::
+
+    Recommendation:
+    You can use the convenience script if you build the docs regularly,
+    as it will not re-download the dependencies.
+
+    If you have a slow internet connection, you can use GitHub Codespaces since it will help you to build the
+    docs faster since our script downloads large dependency files.
+
 To build our docs, we use `Sphinx`_. Sphinx is an extendable documentation generator
-for Python. As our building pipeline is complex, we heavily customize Sphinx using 
+for Python. As our building pipeline is complex, we heavily customize Sphinx using
 custom and third party extensions. As well as having a convenience script to build
 the docs.
 
@@ -43,7 +58,7 @@ document. The project should have the following characteristics:
 
 5. It can contain an optional ``docs/partial_conf.py`` which is a partial `Sphinx
    configuration file`_.
-   This file will be imported with the default ``conf.py`` file located in the 
+   This file will be imported with the default ``conf.py`` file located in the
    ``doc-builder`` repo.
 
 Running the script:
@@ -52,7 +67,7 @@ Running the script:
 
     ./make_docs_without_docker.sh /path/to/project
 
-will result in the creation of documentation for the project in the directory 
+will result in the creation of documentation for the project in the directory
 ``docs/build``.
 
 Options
@@ -62,7 +77,7 @@ Options
 -C, --no-cleanup                 Disable the backup/cleanup procedure
 -g, --git-add                    Stage changed files before generating the docs
 -s, --skip-dependencies-install  Skip installing dependencies using pip
--j, --jobs N                     Build in parallel with N processes where possible 
+-j, --jobs N                     Build in parallel with N processes where possible
                                  (special value ``auto`` will set N to cpu-count)
 -D setting                       Override a setting in ``conf.py``
 
@@ -71,7 +86,7 @@ The Docker image
 
 The Docker image `unifyai/doc-builder <https://hub.docker.com/r/unifyai/doc-builder>`_
 works as a wrapper around the ``make_docs_without_docker.sh`` script. It runs the script
-on the ``/project`` directory, located in the container `as shown here 
+on the ``/project`` directory, located in the container `as shown here
 <https://github.com/unifyai/doc-builder/blob/main/Dockerfile#L21>`_:
 
 .. code-block:: bash
@@ -87,7 +102,7 @@ To build the docs through docker you use this command:
 You can also add options described in the :ref:`overview/deep_dive/building_the_docs_pipeline:The convenience script` section.
 
 .. code-block:: bash
-    
+
     docker run -v /path/to/project:/project unifyai/doc-builder --no-cleanup
 
 How Ivy's docs is structured
@@ -160,7 +175,7 @@ the files that should be included in the table of contents. Which in recursively
 to every page in this documentation, for example this page is included in the
 ``toctree`` of ``overview/deep_dive.rst``, which is included in the ``toctree`` of
 ``index.rst``. You can read more about the ``toctree`` directive in `sphinx docs
-<https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-toctree>`_, from 
+<https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-toctree>`_, from
 now on we'll only explain the directives that are custom to Ivy's doc-builder.
 
 The last directive is ``autosummary``, which is used to automatically generate a table
@@ -172,10 +187,10 @@ extension. We will explain in detail how did we change it, in :ref:`overview/dee
 ``partial_conf.py``
 ~~~~~~~~~~~~~~~~~~~
 
-This is a partial `Sphinx configuration file`_. Which is being imported in the 
+This is a partial `Sphinx configuration file`_. Which is being imported in the
 `conf.py <https://github.com/unifyai/doc-builder/blob/main/docs/conf.py#L150>`_,
 it's used to customize options that are specific to the project being documented.
-While importing common configurations such as the theme, the extensions, etc in the 
+While importing common configurations such as the theme, the extensions, etc in the
 original ``conf.py``.
 
 This is a part of ``partial_conf.py``:
@@ -190,18 +205,18 @@ This is a part of ``partial_conf.py``:
         "ivy_tests.test_ivy.helpers": "Testing",
     }
 
-Here we are overriding the ``ivy_toctree_caption_map`` configuration, which is used to 
-customize the title of the table of contents for each module. 
+Here we are overriding the ``ivy_toctree_caption_map`` configuration, which is used to
+customize the title of the table of contents for each module.
 ``ivy_toctree_caption_map`` is one of the configuration options we have in our
-``custom_autosummary`` extension, which will be covered extensively in 
+``custom_autosummary`` extension, which will be covered extensively in
 :ref:`overview/deep_dive/building_the_docs_pipeline:Custom Extensions`.
 
 ``prebuild.sh``
 ~~~~~~~~~~~~~~~
 
 This is an optional file, which is executed before the docs are built. This is useful
-if you need to install some dependencies for the docs to build. In Ivy's case, we 
-install ``torch`` then ``torch-scatter`` sequentially to avoid a bug in 
+if you need to install some dependencies for the docs to build. In Ivy's case, we
+install ``torch`` then ``torch-scatter`` sequentially to avoid a bug in
 ``torch-scatter``'s setup. And if we want to make any changes to the docker container
 before building the docs.
 
@@ -250,7 +265,7 @@ The directive is included like this:
     .. discussion-links:: module.foo
 
 
-First it will look for the ``discussion_channel_map`` configuration, in Ivy it looks like 
+First it will look for the ``discussion_channel_map`` configuration, in Ivy it looks like
 this:
 
 .. code-block:: python
@@ -263,15 +278,15 @@ this:
     }
 
 The key is the module name, if it's not found the ``discussion-link`` directive will
-render an empty node. The first and only value in the list is the channel id of the 
+render an empty node. The first and only value in the list is the channel id of the
 module, it is in a list as we used to have forums as well but they are removed now.
 
 The output string is generated by a series of replaces on template strings, which are
 customizable using the config. To understand how it works, let's look at the default
 configurations and their values:
 
-- ``discussion_paragraph``: ``"This should have hopefully given you an overview of the 
-  {{submodule}} submodule, if you have any questions, please feel free to reach out on 
+- ``discussion_paragraph``: ``"This should have hopefully given you an overview of the
+  {{submodule}} submodule, if you have any questions, please feel free to reach out on
   our [discord]({{discord_link}}) in the [{{submodule}} channel]({{channel_link}})!"``
 - ``discord_link``: ``"https://discord.gg/ZVQdvbzNQJ"``
 - ``channel_link``: ``"https://discord.com/channels/799879767196958751/{{channel_id}}"``
@@ -283,39 +298,39 @@ Here is an example of how it works for ``ivy.functional.ivy.creation``:
 
    The result will be like this:
 
-    This should have hopefully given you an overview of the 
-    **creation** submodule, if you have any questions, please feel free to reach out on 
+    This should have hopefully given you an overview of the
+    **creation** submodule, if you have any questions, please feel free to reach out on
     our [discord]({{discord_link}}) in the [**creation** channel]({{channel_link}})!
 
 2. Then we resolve the ``{{discord_link}}`` template string.
 
    The result will be like this:
-    
-    This should have hopefully given you an overview of the 
-    creation submodule, if you have any questions, please feel free to reach out on 
+
+    This should have hopefully given you an overview of the
+    creation submodule, if you have any questions, please feel free to reach out on
     our [discord](**https://discord.gg/ZVQdvbzNQJ**) in the [creation channel]({{channel_link}})!
 
 3. Then we resolve the ``{{channel_link}}`` template string.
 
    The result will be like this:
-    
-    This should have hopefully given you an overview of the 
-    creation submodule, if you have any questions, please feel free to reach out on 
+
+    This should have hopefully given you an overview of the
+    creation submodule, if you have any questions, please feel free to reach out on
     our [discord](\https://discord.gg/ZVQdvbzNQJ) in the [creation channel](**https://discord.com/channels/799879767196958751/{{channel_id}}**)!
 
 4. We finally resolve ``{{channel_id}}`` template strings.
 
    The result will be like this:
-    
-    This should have hopefully given you an overview of the 
-    creation submodule, if you have any questions, please feel free to reach out on 
+
+    This should have hopefully given you an overview of the
+    creation submodule, if you have any questions, please feel free to reach out on
     our [discord](\https://discord.gg/ZVQdvbzNQJ) in the [creation channel](\https://discord.com/channels/799879767196958751/**1000043690254946374**)!
 
 5. After that we render the node paragraph as if it's a Markdown text resulting this:
 
-    This should have hopefully given you an overview of the 
-    creation submodule, if you have any questions, please feel free to reach out on 
-    our `discord <https://discord.gg/ZVQdvbzNQJ>`_ in the `creation channel 
+    This should have hopefully given you an overview of the
+    creation submodule, if you have any questions, please feel free to reach out on
+    our `discord <https://discord.gg/ZVQdvbzNQJ>`_ in the `creation channel
     <https://discord.com/channels/799879767196958751/1000043690254946374>`_!
 
 All of the above template strings can be customized using the configuration, so feel free
@@ -324,7 +339,7 @@ to change them to your liking.
 ``skippable_function``
 ~~~~~~~~~~~~~~~~~~~~~~
 
-This extension provides a custom auto documenter ``autoskippablemethod`` that skip 
+This extension provides a custom auto documenter ``autoskippablemethod`` that skip
 functions that match values in ``skippable_method_attributes`` configuration.
 
 This is an example of ``skippable_method_attributes`` configuration in
@@ -338,21 +353,21 @@ This is an example of ``skippable_method_attributes`` configuration in
         }
     ]
 
-This will remove any function that has ``__qualname__`` attribute equal to 
+This will remove any function that has ``__qualname__`` attribute equal to
 ``_wrap_function.<locals>.new_function``.
 
 ``ivy_data``
 ~~~~~~~~~~~~
 
 This is a custom documenter for ``autodoc`` that documents Ivy data attributes that live
-in ``ivy.functional.ivy``, it will replace the module to ``ivy.`` instead of 
+in ``ivy.functional.ivy``, it will replace the module to ``ivy.`` instead of
 ``ivy.functional.ivy.<submodule>``.
 
-It's used instead of simply using ``ivy.<data atribute>`` because data attributes have
-no ``__doc__`` atribute, instead docs are discovered by parsing the source code itself.
+It's used instead of simply using ``ivy.<data attribute>`` because data attributes have
+no ``__doc__`` attribute, instead docs are discovered by parsing the source code itself.
 So for Sphinx to find the required docs, it needs to be supplied the full module name,
 then using the ``autoivydata`` directive will replace the module name to ``ivy.``.
 
-Please refer to the `auto documenter guide in sphinx documentation 
+Please refer to the `auto documenter guide in sphinx documentation
 <https://www.sphinx-doc.org/en/master/development/tutorials/autodoc_ext.html>`_ for more
 info.

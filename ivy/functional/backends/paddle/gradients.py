@@ -1,4 +1,5 @@
-"""Collection of Paddle gradient functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Paddle gradient functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 
@@ -21,8 +22,6 @@ from ivy.functional.ivy.gradients import (
 
 
 def variable(x, /):
-    if ivy.is_int_dtype(x.dtype):
-        x = x.astype(ivy.default_float_dtype())
     if not x.is_leaf:
         ret = x.detach()
         ret.stop_gradient = False
@@ -44,8 +43,8 @@ def _grad_func(y, xs, retain_grads):
     """Gradient calculation function."""
     # Creating a zero gradient nest for the case where no gradients are computed
     grads_ = ivy.nested_map(
-        xs,
         lambda x: (paddle.to_tensor([0.0]) if x is None else paddle.zeros_like(x)),
+        xs,
         include_derived=True,
         shallow=False,
     )
@@ -78,7 +77,7 @@ def _grad_func(y, xs, retain_grads):
         # Returning zeros if no gradients are computed for consistent results
         if isinstance(grads, ivy.Container):
             grads = ivy.nested_map(
-                grads, lambda x: 0 if x is None else x, include_derived=True
+                lambda x: 0 if x is None else x, grads, include_derived=True
             )
             grads = ivy.add(grads, grads_)
         else:
@@ -96,7 +95,7 @@ def _grad_func(y, xs, retain_grads):
             )[0]
             return grad if grad is not None else paddle.zeros_like(x)
 
-        grads = ivy.nested_map(xs, grad_, include_derived=True, shallow=False)
+        grads = ivy.nested_map(grad_, xs, include_derived=True, shallow=False)
         grads = ivy.nested_multi_map(
             lambda x, _: (paddle_backend.add(x[0], x[1])), [grads, grads_]
         )
@@ -104,10 +103,10 @@ def _grad_func(y, xs, retain_grads):
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.6.0 and below": {"cpu": ("float16",)}}, backend_version
 )
 def execute_with_gradients(
-    func, xs, /, *, retain_grads=False, xs_grad_idxs=[[0]], ret_grad_idxs=[[0]]
+    func, xs, /, *, retain_grads=False, xs_grad_idxs=((0,),), ret_grad_idxs=((0,),)
 ):
     # Conversion of required arrays to float variables and duplicate index chains
     xs, xs_grad_idxs, xs1, required_duplicate_index_chains, _ = (
@@ -160,7 +159,8 @@ def execute_with_gradients(
 
 
 def value_and_grad(func):
-    grad_fn = lambda xs: ivy.to_native(func(xs))
+    def grad_fn(xs):
+        return ivy.to_native(func(xs))
 
     def callback_fn(xs):
         y = grad_fn(xs)
@@ -172,7 +172,7 @@ def value_and_grad(func):
             grad = ivy.to_ivy(grad)
             return grad
 
-        grads = ivy.nested_map(xs, autograd_fn, include_derived=True, shallow=False)
+        grads = ivy.nested_map(autograd_fn, xs, include_derived=True, shallow=False)
         y = ivy.to_ivy(y)
         return y, grads
 
@@ -215,7 +215,6 @@ def _get_one_out_fn(grad_fn, xs, fn_ret):
         out_shape = ivy.index_nest(grad_fn(xs), out_idx).shape
         one_arg_fn = _get_jac_one_arg_fn(grad_fn, xs, out_idx)
         jacobian = ivy.nested_map(
-            xs,
             lambda x: jacobian_to_ivy(
                 paddle.incubate.autograd.Jacobian(
                     one_arg_fn, ivy.to_native(x.expand_dims())
@@ -223,6 +222,7 @@ def _get_one_out_fn(grad_fn, xs, fn_ret):
                 x.shape,
                 out_shape,
             ),
+            xs,
             shallow=False,
         )
         return jacobian
@@ -238,16 +238,15 @@ def jacobian_to_ivy(jacobian, in_shape, out_shape):
 
 
 def jac(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(
-        func(ivy.to_ivy(x_in, nested=True)),
-        nested=True,
-        include_derived=True,
-    )
+    def grad_fn(x_in):
+        return ivy.to_native(
+            func(ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
+        )
 
     def callback_fn(xs):
         fn_ret = grad_fn(xs)
         one_out_fn = _get_one_out_fn(grad_fn, xs, fn_ret)
-        jacobian = ivy.nested_map(fn_ret, one_out_fn)
+        jacobian = ivy.nested_map(one_out_fn, fn_ret)
         return jacobian
 
     return callback_fn

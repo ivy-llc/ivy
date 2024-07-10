@@ -16,7 +16,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -64,7 +64,7 @@ def test_jax_cholesky(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]
@@ -119,6 +119,45 @@ def test_jax_eigh(
     )
 
 
+# qr
+@handle_frontend_test(
+    fn_tree="jax.lax.linalg.qr",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", index=1),
+        min_num_dims=3,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+        min_value=2,
+        max_value=5,
+    ),
+    mode=st.sampled_from((True, False)),
+    test_with_out=st.just(False),
+)
+def test_jax_qr(
+    *,
+    dtype_and_x,
+    mode,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, x = dtype_and_x
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_values=False,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=np.asarray(x[0], dtype[0]),
+        full_matrices=mode,
+    )
+
+
 # svd
 @handle_frontend_test(
     fn_tree="jax.lax.linalg.svd",
@@ -126,7 +165,7 @@ def test_jax_eigh(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ).filter(
         lambda x: "float16" not in x[0]
         and "bfloat16" not in x[0]

@@ -12,3 +12,5 @@ tensorflow-macos  # mod_name=tensorflow_macos
 tensorflow-probability  # mod_name=tensorflow_probability
 torch
 paddlepaddle  # unpinned , mod_name=paddle
+torchvision
+cryptography

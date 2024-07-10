@@ -8,6 +8,10 @@ from ivy.func_wrapper import _dtype_from_version
 
 backend_version = {"version": torch.__version__.split("+")[0]}
 
+# Registering ivy.Array as trackable submodule
+if hasattr(torch, "_dynamo"):
+    torch._dynamo.config.traceable_tensor_subclasses = (ivy.Array,)
+
 # noinspection PyUnresolvedReferences
 if not ivy.is_local():
     _module_in_memory = sys.modules[__name__]
@@ -50,7 +54,7 @@ native_bool = torch.bool
 
 # update these to add new dtypes
 valid_dtypes = {
-    "2.0.1 and below": (
+    "2.2 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -68,7 +72,7 @@ valid_dtypes = {
 
 
 valid_numeric_dtypes = {
-    "2.0.1 and below": (
+    "2.2 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -84,13 +88,13 @@ valid_numeric_dtypes = {
 }
 
 valid_int_dtypes = {
-    "2.0.1 and below": (ivy.int8, ivy.int16, ivy.int32, ivy.int64, ivy.uint8)
+    "2.2 and below": (ivy.int8, ivy.int16, ivy.int32, ivy.int64, ivy.uint8)
 }
 valid_float_dtypes = {
-    "2.0.1 and below": (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
+    "2.2 and below": (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
 }
-valid_uint_dtypes = {"2.0.1 and below": (ivy.uint8,)}
-valid_complex_dtypes = {"2.0.1 and below": (ivy.complex64, ivy.complex128)}
+valid_uint_dtypes = {"2.2 and below": (ivy.uint8,)}
+valid_complex_dtypes = {"2.2 and below": (ivy.complex64, ivy.complex128)}
 
 # leave these untouched
 valid_dtypes = _dtype_from_version(valid_dtypes, backend_version)
@@ -103,17 +107,17 @@ valid_complex_dtypes = _dtype_from_version(valid_complex_dtypes, backend_version
 # invalid data types
 # update these to add new dtypes
 invalid_dtypes = {
-    "2.0.1 and below": (
+    "2.2 and below": (
         ivy.uint16,
         ivy.uint32,
         ivy.uint64,
     )
 }
-invalid_numeric_dtypes = {"2.0.1 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
-invalid_int_dtypes = {"2.0.1 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
-invalid_float_dtypes = {"2.0.1 and below": ()}
-invalid_uint_dtypes = {"2.0.1 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
-invalid_complex_dtypes = {"2.0.1 and below": ()}
+invalid_numeric_dtypes = {"2.2 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
+invalid_int_dtypes = {"2.2 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
+invalid_float_dtypes = {"2.2 and below": ()}
+invalid_uint_dtypes = {"2.2 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
+invalid_complex_dtypes = {"2.2 and below": ()}
 invalid_dtypes = _dtype_from_version(invalid_dtypes, backend_version)
 
 # leave these untouched
@@ -191,8 +195,13 @@ from . import control_flow_ops
 from .control_flow_ops import *
 from . import norms
 from .norms import *
+from . import module
+from .module import *
 
 
 # sub-backends
 from . import sub_backends
 from .sub_backends import *
+
+
+NativeModule = torch.nn.Module

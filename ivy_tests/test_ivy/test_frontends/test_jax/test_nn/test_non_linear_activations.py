@@ -34,7 +34,7 @@ def _dtype_indices_classes_axis(draw):
 @handle_frontend_test(
     fn_tree="jax.nn.celu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_integer"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_value=-5,
         max_value=5,
         safety_factor_scale="linear",
@@ -245,7 +245,7 @@ def test_jax_hard_silu(
 @handle_frontend_test(
     fn_tree="jax.nn.hard_swish",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_value=-10,
         max_value=10,
         safety_factor_scale="linear",
@@ -348,7 +348,7 @@ def test_jax_leaky_relu(
 @handle_frontend_test(
     fn_tree="jax.nn.log_sigmoid",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_value=-100,
         max_value=100,
         large_abs_safety_factor=8,
@@ -383,12 +383,13 @@ def test_jax_log_sigmoid(
 @handle_frontend_test(
     fn_tree="jax.nn.log_softmax",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
-        safety_factor_scale="linear",
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+        safety_factor_scale="log",
         min_value=-2,
         min_num_dims=1,
+        min_dim_size=2,
     ),
     axis=helpers.ints(min_value=-1, max_value=0),
     test_with_out=st.just(False),
@@ -578,7 +579,7 @@ def test_jax_relu(
 @handle_frontend_test(
     fn_tree="jax.nn.relu6",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_integer"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="linear",
@@ -642,7 +643,7 @@ def test_jax_selu(
 @handle_frontend_test(
     fn_tree="jax.nn.sigmoid",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="linear",
@@ -735,9 +736,9 @@ def test_jax_soft_sign(
 @handle_frontend_test(
     fn_tree="jax.nn.softmax",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_num_dims=2,
-        max_axes_size=1,
+        max_axes_size=2,
         force_int_axis=True,
         valid_axis=True,
     ),

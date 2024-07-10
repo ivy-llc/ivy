@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+title: >-
+  Ivy: Templated deep learning for inter-framework
+  portability
+message: >-
+  If you are using Ivy, we would really appreciate it if you
+  cite it in your work!
+authors:
+  - given-names: Daniel
+    family-names: Lenton
+  - given-names: Fabio
+    family-names: Pardo
+  - given-names: Fabian
+    family-names: Falck
+  - given-names: Stephen
+    family-names: James
+  - given-names: Ronald
+    family-names: Clark
+identifiers:
+  - type: doi
+    value: 10.48550/arXiv.2102.02886
+    description: 'arXiv preprint '
+repository-code: 'https://github.com/ivy-llc/ivy'
+url: 'https://unify.ai/'
+repository: 'https://github.com/unifyai/'
+abstract: 'We introduce Ivy, a templated Deep Learning (DL) framework which abstracts existing DL frameworks. Ivy unifies the core functions of these frameworks to exhibit consistent call signatures, syntax and input-output behaviour. New high-level framework-agnostic functions and classes, which are usable alongside framework-specific code, can then be implemented as compositions of the unified low-level Ivy functions. Ivy currently supports TensorFlow, PyTorch, MXNet, Jax and NumPy. We also release four pure-Ivy libraries for mechanics, 3D vision, robotics, and differentiable environments. Through our evaluations, we show that Ivy can significantly reduce lines of code with a runtime overhead of less than 1% in most cases. We welcome developers to join the Ivy community by writing their own functions, layers and libraries in Ivy, maximizing their audience and helping to accelerate DL research through inter-framework codebases.'
+license: Apache-2.0
+preferred-citation:
+  type: article
+  authors:
+  - given-names: Daniel
+    family-names: Lenton
+  - given-names: Fabio
+    family-names: Pardo
+  - given-names: Fabian
+    family-names: Falck
+  - given-names: Stephen
+    family-names: James
+  - given-names: Ronald
+    family-names: Clark
+  doi: 10.48550/arXiv.2102.02886
+  title: "Ivy: Templated deep learning for inter-framework portability"

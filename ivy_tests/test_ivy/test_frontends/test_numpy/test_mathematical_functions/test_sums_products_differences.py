@@ -19,7 +19,7 @@ def _either_x_dx(draw):
     if rand == 0:
         either_x_dx = draw(
             helpers.dtype_and_values(
-                avaliable_dtypes=st.shared(
+                available_dtypes=st.shared(
                     helpers.get_dtypes("float"), key="trapz_dtype"
                 ),
                 min_value=-100,

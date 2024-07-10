@@ -1,18 +1,17 @@
 from typing import Union, Optional, Tuple, List, Sequence
 import tensorflow as tf
 from functools import reduce as _reduce
-
+from collections import namedtuple
 import ivy
 
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
-from ivy.utils.exceptions import IvyNotImplementedException
 from .. import backend_version
 
 
 @with_unsupported_dtypes(
-    {"2.13.0 and below": ("int", "float16", "bfloat16")}, backend_version
+    {"2.15.0 and below": ("int", "float16", "bfloat16")}, backend_version
 )
 def eigh_tridiagonal(
     alpha: Union[tf.Tensor, tf.Variable],
@@ -94,23 +93,39 @@ def matrix_exp(
     return tf.linalg.expm(x)
 
 
+@with_supported_dtypes(
+    {
+        "2.15.0 and below": (
+            "complex",
+            "float32",
+            "float64",
+        )
+    },
+    backend_version,
+)
 def eig(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tuple[tf.Tensor]:
-    if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):
-        return tf.linalg.eig(tf.cast(x, tf.float64))
     return tf.linalg.eig(x)
 
 
+@with_supported_dtypes(
+    {
+        "2.15.0 and below": (
+            "complex",
+            "float32",
+            "float64",
+        )
+    },
+    backend_version,
+)
 def eigvals(
     x: Union[tf.Tensor, tf.Variable],
     /,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):
-        return tf.linalg.eigvals(tf.cast(x, tf.float64))
     return tf.linalg.eigvals(x)
 
 
@@ -124,9 +139,29 @@ def adjoint(
     return tf.linalg.adjoint(x)
 
 
+@with_unsupported_dtypes(
+    {"2.13.0 and below": ("int", "float16", "bfloat16", "float64")}, backend_version
+)
+def solve_triangular(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    upper: bool = True,
+    adjoint: bool = False,
+    unit_diagonal: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    # Multiplying with a mask matrix can stop gradients on the diagonal.
+    if unit_diagonal:
+        w = tf.constant(tf.eye(x1.shape[-2], batch_shape=x1.shape[:-2], dtype=x1.dtype))
+        x1 = w + (1 - w) * x1
+    return tf.linalg.triangular_solve(x1, x2, lower=not upper, adjoint=adjoint)
+
+
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "bfloat16",
             "float16",
             "float32",
@@ -151,7 +186,7 @@ def multi_dot(
     return dot_out
 
 
-@with_unsupported_dtypes({"1.25.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, backend_version)
 def cond(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -193,19 +228,35 @@ def cond(
     return k
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("integer", "float16", "bfloat16")}, backend_version
+)
 def lu_factor(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     pivot: Optional[bool] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Tuple[tf.Tensor]:
-    raise IvyNotImplementedException()
+) -> Tuple[tf.Tensor, tf.Tensor]:
+    ret = tf.linalg.lu(x)
+    ret_tuple = namedtuple("lu_factor", ["LU", "p"])
+    return ret_tuple(ret.lu, ret.p)
+
+
+def lu_solve(
+    lu: Union[tf.Tensor, tf.Variable],
+    p: Union[tf.Tensor, tf.Variable],
+    b: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.linalg.lu_solve(lu, p, b)
 
 
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "bfloat16",
             "float16",
             "float32",

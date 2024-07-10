@@ -7,6 +7,13 @@ packaging
 nvidia-ml-py # mod_name=pynvml
 diskcache
 google-auth # mod_name=google.auth
+urllib3<2.0 # for version conflict with google-auth
 requests
 pyvis
 dill
+astunparse
+ml-dtypes # mod_name=ml_dtypes
+cloudpickle
+gast
+tqdm
+cryptography

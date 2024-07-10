@@ -4,7 +4,7 @@ from ivy_tests.test_ivy.helpers import globals as test_globals
 
 
 @pytest.fixture(autouse=True)
-def run_around_tests(request, on_device, backend_fw, frontend, compile_graph, implicit):
+def run_around_tests(request, on_device, backend_fw, frontend, trace_graph, implicit):
     try:
         test_globals.setup_frontend_test(
             frontend,

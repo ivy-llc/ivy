@@ -19,7 +19,7 @@ def is_native_sparse_array(x: paddle.Tensor) -> bool:
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("int8",)}}, backend_version
+    {"2.6.0 and below": {"cpu": ("int8",)}}, backend_version
 )
 def native_sparse_array(
     data=None,

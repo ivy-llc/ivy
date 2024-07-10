@@ -70,7 +70,7 @@ def test_numpy_ptp(
     fn_tree,
     keep_dims,
 ):
-    input_dtypes, values, axis = dtype_values_axis
+    input_dtypes, values, axis, _, _ = dtype_values_axis
     if isinstance(axis, tuple):
         axis = axis[0]
 

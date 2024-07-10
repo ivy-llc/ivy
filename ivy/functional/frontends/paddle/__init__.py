@@ -156,8 +156,8 @@ def promote_types_paddle(
     type2: Union[ivy.Dtype, ivy.NativeDtype],
     /,
 ) -> ivy.Dtype:
-    """
-    Promote the datatypes type1 and type2, returning the data type they promote to.
+    """Promote the datatypes type1 and type2, returning the data type they
+    promote to.
 
     Parameters
     ----------
@@ -173,8 +173,10 @@ def promote_types_paddle(
     """
     try:
         ret = paddle_promotion_table[(ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))]
-    except KeyError:
-        raise ivy.utils.exceptions.IvyException("these dtypes are not type promotable")
+    except KeyError as e:
+        raise ivy.utils.exceptions.IvyException(
+            "these dtypes are not type promotable"
+        ) from e
     return ret
 
 
@@ -184,9 +186,8 @@ def promote_types_of_paddle_inputs(
     x2: Union[ivy.Array, Number, Iterable[Number]],
     /,
 ) -> Tuple[ivy.Array, ivy.Array]:
-    """
-    Promote the dtype of the given native array inputs to a common dtype based on type
-    promotion rules.
+    """Promote the dtype of the given native array inputs to a common dtype
+    based on type promotion rules.
 
     While passing float or integer values or any other non-array input
     to this function, it should be noted that the return will be an
@@ -215,25 +216,20 @@ def promote_types_of_paddle_inputs(
     return x1, x2
 
 
-from . import vision
 from . import nn
-from .nn.functional.activation import tanh
-from . import linalg
-from . import fft
-from . import signal
-
-from .tensor.attribute import *
-from .tensor.creation import *
-from .tensor.linalg import *
-from .tensor.logic import *
-from .tensor.manipulation import *
-from .tensor.math import *
-from .tensor.random import *
-from .tensor.search import *
-from .tensor.einsum import *
-from .tensor.stat import *
-
+from . import tensor
 from .tensor.tensor import Tensor
+from . import vision
+from .attribute import *
+from .creation import *
+from .fft import *
+from .linalg import *
+from .logic import *
+from .manipulation import *
+from .math import *
+from .random import *
+from .search import *
+from .stat import *
 
 
 _frontend_array = Tensor
@@ -246,4 +242,4 @@ if ivy.is_local():
 else:
     module = sys.modules[__name__]
 
-set_frontend_to_specific_version(module)
+__version__ = set_frontend_to_specific_version(module)

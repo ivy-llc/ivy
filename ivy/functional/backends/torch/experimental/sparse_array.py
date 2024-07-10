@@ -102,13 +102,13 @@ def native_sparse_array_to_indices_values_and_shape(x):
     if x.layout == torch.sparse_coo:
         x = x.coalesce()
         return {"coo_indices": x.indices()}, x.values(), x.size()
-    elif x.layout == torch.sparse_csr or x.layout == torch.sparse_bsr:
+    elif x.layout in [torch.sparse_csr, torch.sparse_bsr]:
         return (
             {"crow_indices": x.crow_indices(), "col_indices": x.col_indices()},
             x.values(),
             x.size(),
         )
-    elif x.layout == torch.sparse_bsc or x.layout == torch.sparse_csc:
+    elif x.layout in [torch.sparse_bsc, torch.sparse_csc]:
         return (
             {"ccol_indices": x.crow_indices(), "row_indices": x.col_indices()},
             x.values(),

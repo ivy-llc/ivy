@@ -32,7 +32,7 @@ def average(a, axis=None, weights=None, returned=False, keepdims=False):
         ret = ivy.mean(a, axis=axis, keepdims=keepdims)
         if axis is None:
             fill_value = int(a.size) if ivy.is_int_dtype(ret) else float(a.size)
-            weights_sum = ivy.full(shape=(), fill_value=fill_value, dtype=ret.dtype)
+            weights_sum = ivy.full((), fill_value, dtype=ret.dtype)
         else:
             if isinstance(axis, tuple):
                 # prod with axis has dtype Sequence[int]
@@ -102,7 +102,7 @@ def corrcoef(x, y=None, rowvar=True):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.4.14 and below": ("float16", "bfloat16")}, "jax")
+@with_unsupported_dtypes({"0.4.24 and below": ("float16", "bfloat16")}, "jax")
 def correlate(a, v, mode="valid", precision=None):
     if ivy.get_num_dims(a) != 1 or ivy.get_num_dims(v) != 1:
         raise ValueError("correlate() only support 1-dimensional inputs.")
@@ -359,6 +359,170 @@ def nanmin(
     return res.astype(ivy.dtype(a))
 
 
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"0.4.14 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
+    "jax",
+)
+def nanpercentile(
+    a, q, axis=None, out=None, overwrite_input=False, method="linear", keepdims=None
+):
+    def _remove_nan_1d(arr1d, overwrite_input=False):
+        if arr1d.dtype == object:
+            c = ivy.not_equal(arr1d, arr1d)
+        else:
+            c = ivy.isnan(arr1d)
+        s = ivy.nonzero(c)[0]
+        if s.size == arr1d.size:
+            return arr1d[:0], True
+        elif s.size == 0:
+            return arr1d, overwrite_input
+        else:
+            if not overwrite_input:
+                arr1d = arr1d.copy()
+
+                enonan = arr1d[-s.size :][~c[-s.size :]]
+                arr1d[s[: enonan.size]] = enonan
+
+                return arr1d[: -s.size], True
+
+    def _nanquantile_1d(arr1d, q, overwrite_input=False, method="linear"):
+        arr1d, overwrite_input = _remove_nan_1d(arr1d, overwrite_input=overwrite_input)
+        if arr1d.size == 0:
+            return ivy.full(q.shape, ivy.nan)
+        return ivy.quantile(arr1d, q, interpolation=method)
+
+    def apply_along_axis(func1d, axis, arr, *args, **kwargs):
+        ndim = ivy.get_num_dims(arr)
+        if axis is None:
+            raise ValueError("Axis must be an integer.")
+        if not -ndim <= axis < ndim:
+            raise ValueError(
+                f"axis {axis} is out of bounds for array of dimension {ndim}"
+            )
+        if axis < 0:
+            axis = axis + ndim
+
+        def func(elem):
+            return func1d(elem, *args, **kwargs)
+
+        for i in range(1, ndim - axis):
+            func = ivy.vmap(func, in_axes=i, out_axes=-1)
+        for i in range(axis):
+            func = ivy.vmap(func, in_axes=0, out_axes=0)
+
+        return ivy.asarray(func(arr))
+
+    def _nanquantile_ureduce_func(
+        a, q, axis=None, out=None, overwrite_input=False, method="linear"
+    ):
+        if axis is None or a.ndim == 1:
+            part = a.ravel()
+            result = _nanquantile_1d(
+                part, q, overwrite_input=overwrite_input, method=method
+            )
+        else:
+            result = apply_along_axis(
+                _nanquantile_1d, axis, a, q, overwrite_input, method
+            )
+
+            if q.ndim != 0:
+                result = ivy.moveaxis(result, axis, 0)
+
+        if out is not None:
+            out[...] = result
+
+        return result
+
+    def _ureduce(a, func, keepdims=False, **kwargs):
+        axis = kwargs.get("axis", None)
+        out = kwargs.get("out", None)
+
+        if keepdims is None:
+            keepdims = False
+
+        nd = a.ndim
+        if axis is not None:
+            axis = ivy._normalize_axis_tuple(axis, nd)
+
+            if keepdims:
+                if out is not None:
+                    index_out = tuple(
+                        0 if i in axis else slice(None) for i in range(nd)
+                    )
+                    kwargs["out"] = out[(Ellipsis,) + index_out]
+
+            if len(axis) == 1:
+                kwargs["axis"] = axis[0]
+            else:
+                keep = set(range(nd)) - set(axis)
+                nkeep = len(keep)
+                # swap axis that should not be reduced to front
+                for i, s in enumerate(sorted(keep)):
+                    a = a.swapaxes(i, s)
+                # merge reduced axis
+                a = a.reshape(a.shape[:nkeep] + (-1,))
+                kwargs["axis"] = -1
+        else:
+            if keepdims:
+                if out is not None:
+                    index_out = (0,) * nd
+                    kwargs["out"] = out[(Ellipsis,) + index_out]
+
+        r = func(a, **kwargs)
+
+        if out is not None:
+            return out
+
+        if keepdims:
+            if axis is None:
+                index_r = (ivy.newaxis,) * nd
+            else:
+                index_r = tuple(
+                    ivy.newaxis if i in axis else slice(None) for i in range(nd)
+                )
+            r = r[(Ellipsis,) + index_r]
+
+        return r
+
+    def _nanquantile_unchecked(
+        a,
+        q,
+        axis=None,
+        out=None,
+        overwrite_input=False,
+        method="linear",
+        keepdims=None,
+    ):
+        """Assumes that q is in [0, 1], and is an ndarray."""
+        if a.size == 0:
+            return ivy.nanmean(a, axis=axis, out=out, keepdims=keepdims)
+        return _ureduce(
+            a,
+            func=_nanquantile_ureduce_func,
+            q=q,
+            keepdims=keepdims,
+            axis=axis,
+            out=out,
+            overwrite_input=overwrite_input,
+            method=method,
+        )
+
+    a = ivy.array(a)
+    q = ivy.divide(q, 100.0)
+    q = ivy.array(q)
+    if q.ndim == 1 and q.size < 10:
+        for i in range(q.size):
+            if not (0.0 <= q[i] <= 1.0):
+                ivy.logging.warning("percentile s must be in the range [0, 100]")
+                return []
+    else:
+        if not (ivy.all(q >= 0) and ivy.all(q <= 1)):
+            ivy.logging.warning("percentile s must be in the range [0, 100]")
+            return []
+    return _nanquantile_unchecked(a, q, axis, out, overwrite_input, method, keepdims)
+
+
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def nanstd(
@@ -409,7 +573,7 @@ def ptp(a, axis=None, out=None, keepdims=False):
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
+    {"0.4.24 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
     "jax",
 )
 def quantile(
@@ -434,7 +598,7 @@ def quantile(
 
 
 @handle_jax_dtype
-@with_unsupported_dtypes({"0.4.14 and below": ("bfloat16",)}, "jax")
+@with_unsupported_dtypes({"0.4.24 and below": ("bfloat16",)}, "jax")
 @to_ivy_arrays_and_back
 def std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
     axis = tuple(axis) if isinstance(axis, list) else axis

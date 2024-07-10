@@ -16,6 +16,7 @@ from ivy_tests.test_ivy.helpers import handle_test, BackendHandler
     ),
     seed=helpers.ints(min_value=0, max_value=100),
     test_gradients=st.just(False),
+    ground_truth_backend="torch",
 )
 def test_bernoulli(
     *, dtype_and_probs, seed, test_flags, backend_fw, fn_name, on_device
@@ -25,18 +26,20 @@ def test_bernoulli(
     assume(
         not ("torch" in str(backend_fw) and "float16" in dtype and on_device == "cpu")
     )
-    helpers.test_function(
+    ret_np_flat_from_target, ret_np_from_gt_flat = helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
         backend_to_test=backend_fw,
         fn_name=fn_name,
         test_values=False,
+        return_flat_np_arrays=True,
         probs=probs[0],
         logits=None,
         shape=None,
         seed=seed,
     )
+    helpers.assert_same_type_and_shape([ret_np_flat_from_target, ret_np_from_gt_flat])
 
 
 # beta
@@ -84,8 +87,10 @@ def test_beta(
     )
     with BackendHandler.update_backend(backend_fw) as ivy_backend:
         for u, v in zip(ret, ret_gt):
-            assert ivy_backend.all(u >= 0) and ivy_backend.all(u <= 1)
-            assert ivy_backend.all(v >= 0) and ivy_backend.all(v <= 1)
+            assert ivy_backend.all(u >= 0)
+            assert ivy_backend.all(u <= 1)
+            assert ivy_backend.all(v >= 0)
+            assert ivy_backend.all(v <= 1)
 
 
 # dirichlet
@@ -139,8 +144,10 @@ def test_dirichlet(
             assert ivy_backend.all(
                 ivy_backend.sum(u, axis=-1) == ivy_backend.sum(v, axis=-1)
             )
-            assert ivy_backend.all(u >= 0) and ivy_backend.all(u <= 1)
-            assert ivy_backend.all(v >= 0) and ivy_backend.all(v <= 1)
+            assert ivy_backend.all(u >= 0)
+            assert ivy_backend.all(u <= 1)
+            assert ivy_backend.all(v >= 0)
+            assert ivy_backend.all(v <= 1)
 
 
 # gamma

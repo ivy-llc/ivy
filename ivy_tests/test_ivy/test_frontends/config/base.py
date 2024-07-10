@@ -25,9 +25,6 @@ class SupportedDtypes:
     valid_uint_dtypes: List[str]
     invalid_uint_dtypes: List[str]
 
-    valid_uint_dtypes: List[str]
-    invalid_uint_dtypes: List[str]
-
     valid_float_dtypes: List[str]
     invalid_float_dtypes: List[str]
 
@@ -128,7 +125,7 @@ class FrontendConfigWithBackend(FrontendConfig):
         return self.backend.as_native_dtype(dtype)
 
     def as_native_device(self, device: str):
-        return self.backend_as_native_dev(device)
+        return self.backend.as_native_dev(device)
 
     def isscalar(self, x):
         return self.backend.isscalar(x)

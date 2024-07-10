@@ -2,12 +2,14 @@ import math
 from typing import Optional, Tuple, Sequence, Union
 import jax.numpy as jnp
 import jax.scipy.linalg as jla
+from collections import namedtuple
+from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.backends.jax import JaxArray
 
 import ivy
 
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
-from ivy.utils.exceptions import IvyNotImplementedException
+from . import backend_version
 
 
 def diagflat(
@@ -114,9 +116,10 @@ def eig(
     return jnp.linalg.eig(x)
 
 
+@with_supported_dtypes(
+    {"0.4.14 and below": ("complex", "float32", "float64")}, backend_version
+)
 def eigvals(x: JaxArray, /) -> JaxArray:
-    if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):
-        x = x.astype(jnp.float64)
     return jnp.linalg.eigvals(x)
 
 
@@ -130,6 +133,25 @@ def adjoint(
     axes = list(range(len(x.shape)))
     axes[-1], axes[-2] = axes[-2], axes[-1]
     return jnp.conjugate(jnp.transpose(x, axes=axes))
+
+
+def solve_triangular(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    upper: bool = True,
+    adjoint: bool = False,
+    unit_diagonal: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jla.solve_triangular(
+        x1,
+        x2,
+        lower=not upper,
+        trans="C" if adjoint else "N",
+        unit_diagonal=unit_diagonal,
+    )
 
 
 def multi_dot(
@@ -157,8 +179,22 @@ def lu_factor(
     *,
     pivot: Optional[bool] = True,
     out: Optional[JaxArray] = None,
-) -> Tuple[JaxArray]:
-    raise IvyNotImplementedException()
+) -> Tuple[JaxArray, JaxArray]:
+    ret = jla.lu(x)
+    ret_tuple = namedtuple("lu_factor", ["LU", "p"])
+    ret_1 = ret[1]
+    return ret_tuple((ret_1 - jnp.eye(*ret_1.shape)) + ret[2], ret[0])
+
+
+def lu_solve(
+    lu: Tuple[JaxArray, JaxArray],
+    p: JaxArray,
+    b: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jla.lu_solve((lu, p), b)
 
 
 def dot(

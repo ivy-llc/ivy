@@ -1,8 +1,50 @@
 name: lint
 
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * *"
+
+permissions:
+  contents: write
 
 jobs:
-  check-formatting:
-    name: Check formatting
-    uses: unifyai/workflows/.github/workflows/lint.yml@main
+  lint-code:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ${{ github.event.repository.name }}
+        uses: actions/checkout@v4
+
+      - name: Get changed files
+        if: github.event_name == 'pull_request'
+        id: changed-files
+        uses: lots0logs/gh-action-get-changed-files@2.1.4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10.14
+
+      - name: Run pre-commit
+        continue-on-error: true
+        uses: pre-commit/action@v3.0.0
+        with:
+          extra_args: ${{ github.event_name == 'pull_request' && format('--files {0}', join(fromJSON(steps.changed-files.outputs.all), ' ')) || '--all-files' }}
+
+      - name: Check if there are changes
+        id: check
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit changes
+        if: steps.check.outputs.changes == 'true'
+        run: |
+          git config --local user.email "hello@transpile-ai.com"
+          git config --local user.name "ivy-dev-bot"
+          git add .
+          git commit -m "auto-lint code"
+          git push

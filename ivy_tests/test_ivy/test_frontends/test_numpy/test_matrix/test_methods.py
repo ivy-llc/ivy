@@ -65,7 +65,7 @@ def _to_string_matrix(num_matrix):
 )
 def test_numpy_A(matrices, backend_fw):
     data, data_gt = matrices
-    ret = np.ravel(data.A)
+    ret = ivy_np.ravel(data.A)
     ret_gt = np.ravel(data_gt.A)
     helpers.value_test(
         ret_np_flat=ret,
@@ -99,7 +99,7 @@ def test_numpy_I(matrices, backend_fw):
         np.linalg.cond(data.A.data) < 1 / sys.float_info.epsilon
         and data.shape[0] == data.shape[1]
     )
-    ret = np.ravel(data.I)
+    ret = ivy_np.ravel(data.I)
     ret_gt = np.ravel(data_gt.I)
     helpers.value_test(
         ret_np_flat=ret,
@@ -115,7 +115,7 @@ def test_numpy_I(matrices, backend_fw):
 )
 def test_numpy_T(matrices, backend_fw):
     data, data_gt = matrices
-    ret = np.ravel(data.T)
+    ret = ivy_np.ravel(data.T)
     ret_gt = np.ravel(data_gt.T)
     helpers.value_test(
         ret_np_flat=ret,
