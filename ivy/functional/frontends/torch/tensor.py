@@ -770,7 +770,10 @@ class Tensor:
         new_shape = list(self.shape)
         num_slices = (self.shape[dimension] - size) // step + 1
         new_shape[dimension] = num_slices
-        new_shape.insert(dimension + 1, size)
+        if dimension == -1:
+            new_shape.insert(dimension, size)
+        else:
+            new_shape.insert(dimension + 1, size)
         reshaped = stacked.reshape(new_shape)
         dims = list(range(len(stacked.shape)))
         dims[-2], dims[-1] = dims[-1], dims[-2]
