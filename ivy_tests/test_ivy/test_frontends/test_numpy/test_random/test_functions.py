@@ -972,6 +972,33 @@ def test_numpy_standard_cauchy(
 
 
 @handle_frontend_test(
+    fn_tree="numpy.random.standard_exponential",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_standard_exponential(
+    input_dtypes,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+    size,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        size=size,
+    )
+
+
+@handle_frontend_test(
     fn_tree="numpy.random.standard_gamma",
     shape_dtypes=helpers.get_dtypes("float", full=False),
     shape=st.floats(

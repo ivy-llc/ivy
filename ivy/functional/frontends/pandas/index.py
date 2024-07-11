@@ -30,7 +30,7 @@ class Index:
 
     @staticmethod
     def _tokenize_1d(x: Iterable):
-        return ivy.array(list(v for v, _ in enumerate(x)))
+        return ivy.array([v for v, _ in enumerate(x)])
 
     def __repr__(self):
         if self.tokens_exist:

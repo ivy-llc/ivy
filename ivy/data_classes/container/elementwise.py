@@ -9,7 +9,7 @@ from ivy.data_classes.container.base import ContainerBase
 class _ContainerWithElementwise(ContainerBase):
     @staticmethod
     def _static_abs(
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray, ivy.Container],
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -58,7 +58,6 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([4.5, 5.3, 0, 2.3])
         }
         """
-
         return ContainerBase.cont_multi_map_in_function(
             "abs",
             x,

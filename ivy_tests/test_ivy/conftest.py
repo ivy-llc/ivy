@@ -28,7 +28,7 @@ UNSET_TEST_CONFIG = {"list": [], "flag": []}
 UNSET_TEST_API_CONFIG = {"list": [], "flag": []}
 
 TEST_PARAMS_CONFIG = []
-SKIP_GROUND_TRUTH = True
+SKIP_GROUND_TRUTH = False
 UNSUPPORTED_FRAEMWORK_DEVICES = {"numpy": ["gpu", "tpu"]}
 if "ARRAY_API_TESTS_MODULE" not in os.environ:
     os.environ["ARRAY_API_TESTS_MODULE"] = "ivy.functional.backends.numpy"
@@ -191,7 +191,7 @@ def pytest_configure(config):
             if "/" in backend_str:
                 backend_str = backend_str.split("/")[0]
             if (
-                backend_str in UNSUPPORTED_FRAEMWORK_DEVICES.keys()
+                backend_str in UNSUPPORTED_FRAEMWORK_DEVICES
                 and device.partition(":")[0]
                 in UNSUPPORTED_FRAEMWORK_DEVICES[backend_str]
             ):
@@ -290,15 +290,23 @@ def process_cl_flags(config) -> Dict[str, bool]:
             getopt("--skip-trace-testing"),
             getopt("--with-trace-testing"),
         ),
+        "test_trace_each": (
+            getopt("--skip-trace-testing-each"),
+            getopt("--with-trace-testing-each"),
+        ),
         "transpile": (
             False,
             getopt("--with-transpile"),
         ),
+        "test_cython_wrapper": (
+            getopt("--skip-cython-wrapper-testing"),
+            getopt("--with-cython-wrapper-testing"),
+        ),
     }
 
     # whether to skip gt testing or not
-    global SKIP_GROUND_TRUTH
-    SKIP_GROUND_TRUTH = not tmp_config["transpile"][1]
+    # global SKIP_GROUND_TRUTH
+    # SKIP_GROUND_TRUTH = not tmp_config["transpile"][1]
 
     # final mapping for hypothesis value generation
     for k, v in tmp_config.items():
@@ -344,6 +352,7 @@ def pytest_addoption(parser):
     parser.addoption("--skip-instance-method-testing", action="store_true")
     parser.addoption("--skip-gradient-testing", action="store_true")
     parser.addoption("--skip-trace-testing", action="store_true")
+    parser.addoption("--skip-trace-testing-each", action="store_true")
 
     parser.addoption("--with-variable-testing", action="store_true")
     parser.addoption("--with-native-array-testing", action="store_true")
@@ -352,6 +361,7 @@ def pytest_addoption(parser):
     parser.addoption("--with-instance-method-testing", action="store_true")
     parser.addoption("--with-gradient-testing", action="store_true")
     parser.addoption("--with-trace-testing", action="store_true")
+    parser.addoption("--with-trace-testing-each", action="store_true")
     parser.addoption("--with-transpile", action="store_true")
     parser.addoption("--no-extra-testing", action="store_true")
     parser.addoption(
@@ -360,6 +370,8 @@ def pytest_addoption(parser):
         default=None,
         help="Print test items in my custom format",
     )
+    parser.addoption("--skip-cython-wrapper-testing", action="store_true")
+    parser.addoption("--with-cython-wrapper-testing", action="store_true")
 
 
 def pytest_collection_finish(session):

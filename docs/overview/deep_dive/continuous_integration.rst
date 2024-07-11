@@ -1,7 +1,7 @@
 Continuous Integration
 ======================
 
-.. _`continuous integration channel`: https://discord.com/channels/799879767196958751/1028268051776413759
+.. _`continuous integration channel`: https://discord.com/channels/799879767196958751/1189908611208597544
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 
 We follow the practice of Continuous Integration (CI), in order to regularly build and test code at Ivy.
@@ -152,7 +152,7 @@ Once the Mapping has been updated, the “Determine & Run Tests” Logic works a
        tests_to_run = determine_tests_line(tests_file, line, tests_to_run)
 
 4. Further, All the new tests added in a commit are collected (up to a max limit of 10, any more tests added are taken up in subsequent commits).
-5. Finally, All the collected tests are triggered by the run_tests.py script, and the corresponding entry in the MongoDB Database is updated with the Test Result (Details on this in the Dashboard Section below).
+5. Finally, All the collected tests are triggered by the scripts/run_tests/run_tests.py script, and the corresponding entry in the MongoDB Database is updated with the Test Result (Details on this in the Dashboard Section below).
 
 Storing (and retrieving) the Mapping
 ------------------------------------
@@ -174,7 +174,7 @@ For Push triggered testing (intelligent-tests.yml Workflow), we use the SSH Clon
 
 .. code-block::
 
-    source ./ivy/clone_mapping.sh master
+    source ./ivy/scripts/shell/clone_mapping.sh master
     Determine and Run Tests, and Update the Mapping ...
     git add .
     git commit -m "Update Mapping"
@@ -186,8 +186,8 @@ Now, that the SSH key of the Runner has permissions to push and clone the Mappin
 
 .. code-block::
 
-    USER_EMAIL="rashul.chutani@gmail.com"
-    USER_NAME="Rashul Chutani"
+    USER_EMAIL="ivy.branch@lets-unify.ai"
+    USER_NAME="ivy-branch"
     TARGET_BRANCH=$1
     GITHUB_SERVER="github.com"
     mkdir --parents "$HOME/.ssh"
@@ -314,8 +314,7 @@ follow the following steps:
 Manual Tests are also available for PRs.
 You can also run the Manual Tests Workflow on a Fork Repository (while reviewing PRs), as follows:
 
-1. Visit https://github.com/RashulChutani/ivy/actions/workflows/manual-tests-pr.yml by going to the
-“Actions” Tab on the Fork, and selecting the manual-tests-pr workflow from the left pane.
+1. Visit the “Actions” Tab on the Fork, and selecting the manual-tests-pr workflow from the left pane.
 2. Trigger the Workflow by following Steps 2-4 described above.
 
 This might take some time to run as the Fork may have limited runners.
@@ -398,7 +397,7 @@ You can filter tests by selecting choices from the various dropdowns. The link c
 
 This should have hopefully given you a good feel for how Continuous Integration works in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `continuous integration channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `continuous integration thread`_!
 
 **Video**
 

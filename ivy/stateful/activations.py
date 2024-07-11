@@ -46,6 +46,9 @@ class GELU(Module):
             complex_mode=self._complex_mode,
         )
 
+    def _extra_repr(self) -> str:
+        return f"approximate={self._approximate}, complex_mode={self._complex_mode}"
+
 
 class GEGLU(Module):
     def __init__(self):
@@ -100,6 +103,9 @@ class ReLU(Module):
         """
         return ivy.relu(x, complex_mode=self._complex_mode)
 
+    def _extra_repr(self) -> str:
+        return f"complex_mode={self._complex_mode}"
+
 
 class LeakyReLU(Module):
     def __init__(
@@ -140,6 +146,9 @@ class LeakyReLU(Module):
             complex_mode=self._complex_mode,
         )
 
+    def _extra_repr(self) -> str:
+        return f"alpha={self._alpha}, complex_mode={self._complex_mode}"
+
 
 class LogSoftmax(Module):
     def __init__(
@@ -175,6 +184,9 @@ class LogSoftmax(Module):
             The outputs following the LOG SOFTMAX activation *[batch_shape, d]*
         """
         return ivy.log_softmax(x, axis=self._axis, complex_mode=self._complex_mode)
+
+    def _extra_repr(self) -> str:
+        return f"axis={self._axis}, complex_mode={self._complex_mode}"
 
 
 class Softmax(Module):
@@ -215,6 +227,9 @@ class Softmax(Module):
         """
         return ivy.softmax(x, axis=self._axis, complex_mode=self._complex_mode)
 
+    def _extra_repr(self) -> str:
+        return f"axis={self._axis}, complex_mode={self._complex_mode}"
+
 
 class Softplus(Module):
     def __init__(self, beta=1.0, threshold=None):
@@ -243,6 +258,9 @@ class Softplus(Module):
 
         """
         return ivy.softplus(x, beta=self._beta, threshold=self._threshold)
+
+    def _extra_repr(self) -> str:
+        return f"beta={self._beta}, threshold={self._threshold}"
 
 
 class Mish(Module):
@@ -315,6 +333,9 @@ class Sigmoid(Module):
         """
         return ivy.sigmoid(x, complex_mode=self._complex_mode)
 
+    def _extra_repr(self) -> str:
+        return f"complex_mode={self._complex_mode}"
+
 
 class Tanh(Module):
     def __init__(self, complex_mode: Literal["split", "magnitude", "jax"] = "jax"):
@@ -343,6 +364,9 @@ class Tanh(Module):
             The outputs following the TANH activation *[batch_shape, d]*
         """
         return ivy.tanh(x, complex_mode=self._complex_mode)
+
+    def _extra_repr(self) -> str:
+        return f"complex_mode={self._complex_mode}"
 
 
 class ReLU6(Module):
@@ -373,6 +397,9 @@ class ReLU6(Module):
         """
         return ivy.relu6(x, complex_mode=self._complex_mode)
 
+    def _extra_repr(self) -> str:
+        return f"complex_mode={self._complex_mode}"
+
 
 class Hardswish(Module):
     def __init__(self, complex_mode: Literal["split", "magnitude", "jax"] = "jax"):
@@ -401,6 +428,9 @@ class Hardswish(Module):
             The outputs following the HARDSWISH activation *[batch_shape, d]*
         """
         return ivy.hardswish(x, complex_mode=self._complex_mode)
+
+    def _extra_repr(self) -> str:
+        return f"complex_mode={self._complex_mode}"
 
 
 class Logit(Module):
@@ -442,6 +472,9 @@ class Logit(Module):
             complex_mode=self._complex_mode,
         )
 
+    def _extra_repr(self) -> str:
+        return f"eps={self._eps}, complex_mode={self._complex_mode}"
+
 
 class PReLU(Module):
     def __init__(self, slope):
@@ -465,6 +498,9 @@ class PReLU(Module):
             The outputs following the PRELU activation *[batch_shape, d]*
         """
         return ivy.prelu(x, self._slope)
+
+    def _extra_repr(self) -> str:
+        return f"slope={self._slope}"
 
 
 class SeLU(Module):
@@ -502,12 +538,16 @@ class ELU(Module):
             Inputs to process *[batch_shape, d]*.
         alpha
             scaler for controlling the slope of the function for x <= 0 Default: 1.0
+
         Returns
         -------
         ret
             The outputs following the ELU activation *[batch_shape, d]*
         """
         return ivy.elu(x, alpha=self._alpha)
+
+    def _extra_repr(self) -> str:
+        return f"alpha={self._alpha}"
 
 
 class LogSigmoid(Module):
@@ -537,3 +577,6 @@ class LogSigmoid(Module):
             The outputs following the LogSigmoid activation *[batch_shape, d]*
         """
         return ivy.logsigmoid(x, complex_mode=self._complex_mode)
+
+    def _extra_repr(self) -> str:
+        return f"complex_mode={self._complex_mode}"

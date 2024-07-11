@@ -178,7 +178,7 @@ def convert_subscripts(old_sub: List[Any], symbol_map: Dict[Any, Any]) -> str:
 
 
 def convert_interleaved_input(
-    operands: Union[List[Any], Tuple[Any]]
+    operands: Union[List[Any], Tuple[Any]],
 ) -> Tuple[str, List[Any]]:
     """Convert 'interleaved' input to standard einsum input."""
     tmp_operands = list(operands)
@@ -233,6 +233,7 @@ def legalise_einsum_expr(*operands: Any) -> str:
     -------
     einsum_eqn : str
         Legalised einsum equation
+
     Examples
     --------
     The operand list is simplified to reduce printing:

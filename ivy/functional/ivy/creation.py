@@ -153,6 +153,7 @@ def _asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
             dtype = ivy.default_dtype(dtype=dtype, as_native=True)
         return to_ivy(fn(*new_args, dtype=dtype, **kwargs))
 
+    _asarray_to_native_arrays_and_back_wrapper._asarray_to_native_arrays_and_back = True
     return _asarray_to_native_arrays_and_back_wrapper
 
 
@@ -283,6 +284,7 @@ class NestedSequence(Protocol[_T_co]):
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
+@to_native_arrays_and_back
 @outputs_to_ivy_arrays
 @handle_array_function
 @handle_device
@@ -1723,12 +1725,12 @@ def from_dlpack(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Return a new array containing the data from another (array) object with
-    a ``__dlpack__`` method.
+    a ``__dlpack__`` method or PyCapsule Object.
 
     Parameters
     ----------
     x  object
-        input (array) object.
+        input (array) object with a ``__dlpack__`` method or PyCapsule Object.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2021,7 +2023,7 @@ def one_hot(
     }
 
     >>> x = ivy.Container(a=ivy.array([2]), \
-        b=ivy.array([]), c=ivy.native_array([4]))
+        b=ivy.array([], dtype=ivy.int32), c=ivy.native_array([4]))
     >>> y = 7
     >>> z = x.one_hot(y)
     >>> print(z)

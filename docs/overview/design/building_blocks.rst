@@ -11,7 +11,7 @@ These are the 4 parts labelled as (a) in the image below:
 Backend Functional APIs ✅
 --------------------------
 
-The first important point to make is that, Ivy does not implement it’s own C++ or CUDA backend.
+The first important point to make is that, Ivy does not implement its own C++ or CUDA backend.
 Instead, Ivy **wraps** the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment.
 Let’s take the function :func:`ivy.stack` as an example.
 

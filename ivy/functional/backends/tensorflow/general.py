@@ -5,6 +5,8 @@ and signature.
 """
 
 # global
+import functools
+from operator import mul
 from typing import Optional, Union, Sequence, Callable, Tuple
 import numpy as np
 import multiprocessing as _multiprocessing
@@ -23,7 +25,7 @@ _round = round
 
 
 def is_native_array(x, /, *, exclusive=False):
-    if isinstance(x, (tf.Tensor, tf.Variable)):
+    if isinstance(x, (tf.Tensor, tf.Variable, tf.TensorArray)):
         if exclusive and isinstance(x, tf.Variable):
             return False
         return True
@@ -47,27 +49,16 @@ def current_backend_str() -> str:
     return "tensorflow"
 
 
-def _check_query(query):
-    return not isinstance(query, list) and (
-        not (ivy.is_array(query) and ivy.is_bool_dtype(query) ^ bool(query.ndim > 0))
-    )
-
-
 def get_item(
     x: Union[tf.Tensor, tf.Variable],
     /,
     query: Union[tf.Tensor, tf.Variable, Tuple],
     *,
-    copy: bool = None,
+    copy: Optional[bool] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return x.__getitem__(query)
-
-
-get_item.partial_mixed_handler = lambda x, query, **kwargs: (
-    all(_check_query(i) for i in query)
-    if isinstance(query, tuple)
-    else _check_query(query)
-)
+    if ivy.is_array(query) and ivy.is_bool_dtype(query) and not len(query.shape):
+        return tf.expand_dims(x, 0)
+    return x[query]
 
 
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
@@ -189,6 +180,10 @@ def get_num_dims(x, /, *, as_array=False):
         if as_array
         else int(tf.shape(tf.shape(x)))
     )
+
+
+def size(x: tf.Tensor, /) -> int:
+    return functools.reduce(mul, x.shape) if len(x.shape) > 0 else 1
 
 
 def inplace_arrays_supported():
@@ -343,7 +338,7 @@ def scatter_flat(
 scatter_flat.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16", "complex")}, backend_version)
 def scatter_nd(
     indices: Union[tf.Tensor, tf.Variable],
     updates: Union[tf.Tensor, tf.Variable],
@@ -362,9 +357,9 @@ def scatter_nd(
     )
 
     expected_shape = (
-        list(indices.shape[:-1]) + list(out.shape[indices.shape[-1] :])
+        list(tf.shape(indices)[:-1]) + list(out.shape[tf.shape(indices)[-1] :])
         if ivy.exists(out)
-        else list(indices.shape[:-1]) + list(shape[indices.shape[-1] :])
+        else list(tf.shape(indices)[:-1]) + list(shape[tf.shape(indices)[-1] :])
     )
     updates = _broadcast_to(updates, expected_shape)._data
     if len(updates.shape) == 0:
@@ -503,7 +498,7 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16", "complex")}, backend_version)
 def isin(
     elements: tf.Tensor,
     test_elements: tf.Tensor,

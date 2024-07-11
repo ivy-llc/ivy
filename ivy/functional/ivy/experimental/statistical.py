@@ -478,7 +478,7 @@ def corrcoef(
     rowvar: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    return ivy.current_backend().corrcoef(x, y=y, rowvar=rowvar, out=out)
+    return ivy.current_backend(x).corrcoef(x, y=y, rowvar=rowvar, out=out)
 
 
 @handle_exceptions
