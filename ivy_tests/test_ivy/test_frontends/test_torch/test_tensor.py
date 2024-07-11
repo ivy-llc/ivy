@@ -6919,8 +6919,7 @@ def test_torch_fill_(
         max_num_dims=2,
     ),
     val=helpers.floats(min_value=-10, max_value=10),
-    wrap=helpers.get_dtypes("valid"),
-    test_with_out=st.just(False),
+    wrap=st.booleans(),
 )
 def test_torch_fill_diagonal_(
     dtype_x_axis,
@@ -6940,8 +6939,8 @@ def test_torch_fill_diagonal_(
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
+            "fill_value": val,
             "wrap": wrap,
-            "val": val,
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
