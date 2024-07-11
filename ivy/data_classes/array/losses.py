@@ -50,7 +50,7 @@ class _ArrayWithLosses(abc.ABC):
         >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
         >>> z = x.cross_entropy(y)
         >>> print(z)
-        ivy.array(1.3862944)
+        ivy.array(0.34657359)
         """
         return ivy.cross_entropy(
             self._data, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
@@ -110,7 +110,7 @@ class _ArrayWithLosses(abc.ABC):
         >>> y = ivy.array([0.7, 0.8, 0.2])
         >>> z = x.binary_cross_entropy(y)
         >>> print(z)
-        ivy.array([0.357, 0.223, 0.223])
+        ivy.array(0.26765382)
         """
         return ivy.binary_cross_entropy(
             self._data,
@@ -170,7 +170,7 @@ class _ArrayWithLosses(abc.ABC):
         >>> y = ivy.array([0.7, 0.8, 0.2])
         >>> z = x.sparse_cross_entropy(y)
         >>> print(z)
-        ivy.array([0.223, 0.223, 0.357])
+        ivy.array([0.07438118, 0.07438118, 0.11889165])
         """
         return ivy.sparse_cross_entropy(
             self._data, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out

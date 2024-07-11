@@ -18,7 +18,7 @@ Inplace Updates
 .. _`ivy.asarray`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/creation.py#L114
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`inplace updates channel`: https://discord.com/channels/799879767196958751/1028681763947552778
+.. _`inplace updates thread`: https://discord.com/channels/799879767196958751/1189906590166437938
 .. _`example`: https://github.com/unifyai/ivy/blob/0ef2888cbabeaa8f61ce8aaea4f1175071f7c396/ivy/functional/ivy/layers.py#L169-L176
 
 
@@ -511,7 +511,7 @@ Here's a brief description of what happens during an inplace operation with a Py
 
 This should have hopefully given you a good feel for inplace updates, and how these are handled in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `inplace updates channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `inplace updates thread`_!
 
 
 **Video**

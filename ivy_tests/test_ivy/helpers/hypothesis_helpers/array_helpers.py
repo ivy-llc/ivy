@@ -802,6 +802,12 @@ def array_indices_axis(
     *,
     array_dtypes,
     indices_dtypes=get_dtypes("valid"),
+    abs_smallest_val=None,
+    min_value=None,
+    max_value=None,
+    large_abs_safety_factor=1.1,
+    small_abs_safety_factor=1.1,
+    safety_factor_scale="linear",
     disable_random_axis=False,
     axis_zero=False,
     allow_inf=False,
@@ -826,6 +832,37 @@ def array_indices_axis(
         list of data type to draw the array dtype from.
     indices_dtypes
         list of data type to draw the indices dtype from.
+    abs_smallest_val
+        sets the absolute smallest value to be generated for float data types,
+        this has no effect on integer data types. If none, the default data type
+        absolute smallest value is used.
+    min_value
+        minimum value of elements in the array.
+    max_value
+        maximum value of elements in the array.
+    large_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+
+        when a "linear" safety factor scaler is used, a safety factor of 2 means
+        that only 50% of the range is included, a safety factor of 3 means that
+        only 33% of the range is included etc.
+
+        when a "log" safety factor scaler is used, a data type with maximum
+        value of 2^32 and a safety factor of 2 transforms the maximum to 2^16.
+    small_abs_safety_factor
+        A safety factor of 1 means that all values are included without limitation,
+        this has no effect on integer data types.
+
+        when a "linear" safety factor scaler is used, a data type with minimum
+        representable number of 0.0001 and a safety factor of 2 transforms the
+        minimum to 0.0002, a safety factor of 3 transforms the minimum to 0.0003 etc.
+
+        when a "log" safety factor scaler is used, a data type with minimum
+        representable number of 0.5 * 2^-16 and a safety factor of 2 transforms the
+        minimum to 0.5 * 2^-8, a safety factor of 3 transforms the minimum to 0.5 * 2^-4
+    safety_factor_scale
+        The operation to use for the safety factor scaling. Can be "linear" or "log".
+        Default value = "linear".
     disable_random_axis
         axis is randomly generated with hypothesis if False. If True, axis is set
         to 0 if axis_zero is True, -1 otherwise.
@@ -961,6 +998,12 @@ def array_indices_axis(
             max_num_dims=max_num_dims,
             min_dim_size=min_dim_size,
             max_dim_size=max_dim_size,
+            abs_smallest_val=abs_smallest_val,
+            min_value=min_value,
+            max_value=max_value,
+            large_abs_safety_factor=large_abs_safety_factor,
+            small_abs_safety_factor=small_abs_safety_factor,
+            safety_factor_scale=safety_factor_scale,
         )
     )
     x_dtype = x_dtype[0]
@@ -1783,30 +1826,30 @@ def arrays_for_pooling(
         )
     if array_dim == 3:
         kernel = draw(st.tuples(st.integers(1, in_shape[1])))
-    new_kernel = kernel
     if return_dilation:
-        new_kernel = []
         dilations = []
         for i in range(len(kernel)):
             if kernel[i] > 1:
                 max_dilation = (in_shape[i + 1] - kernel[i]) // (kernel[i] - 1) + 1
                 dilations.append(draw(st.integers(1, max_dilation)))
-                new_kernel.append(kernel[i] + (kernel[i] - 1) * (dilations[i] - 1))
             else:
                 dilations.append(1)
-                new_kernel.append(kernel[i])
     if explicit_or_str_padding or only_explicit_padding:
-        padding = []
-        for i in range(array_dim - 2):
-            max_pad = new_kernel[i] // 2
-            padding.append(
-                draw(
-                    st.tuples(
-                        st.integers(0, max_pad),
-                        st.integers(0, max_pad),
+        if draw(st.booleans()):
+            max_pad = min(kernel[i] // 2 for i in range(array_dim - 2))
+            padding = draw(st.integers(0, max_pad))
+        else:
+            padding = []
+            for i in range(array_dim - 2):
+                max_pad = kernel[i] // 2
+                padding.append(
+                    draw(
+                        st.tuples(
+                            st.integers(0, max_pad),
+                            st.integers(0, max_pad),
+                        )
                     )
                 )
-            )
         if explicit_or_str_padding:
             padding = draw(
                 st.one_of(st.just(padding), st.sampled_from(["VALID", "SAME"]))
@@ -1871,6 +1914,7 @@ def dtype_array_query(
             shape=shape,
             large_abs_safety_factor=2,
             small_abs_safety_factor=2,
+            safety_factor_scale="log",
         )
     )
     if allow_mask and draw(st.booleans()):
@@ -1892,6 +1936,7 @@ def dtype_array_query(
     )
     index_types = [v if shape[i] > 0 else "slice" for i, v in enumerate(index_types)]
     index = []
+    empty_array = prod(shape) == 0
     for s, index_type in zip(shape, index_types):
         if index_type == "int":
             new_index = draw(st.integers(min_value=-s + 1, max_value=s - 1))
@@ -1899,8 +1944,8 @@ def dtype_array_query(
             new_index = draw(
                 st.lists(
                     st.integers(min_value=-s + 1, max_value=s - 1),
-                    min_size=1,
-                    max_size=20,
+                    min_size=1 if not empty_array else 0,
+                    max_size=20 if not empty_array else 0,
                 )
             )
         elif index_type == "array":
@@ -1910,6 +1955,8 @@ def dtype_array_query(
                     max_value=s - 1,
                     dtype=["int64"],
                     max_num_dims=4,
+                    min_dim_size=1 if not empty_array else 0,
+                    max_dim_size=10 if not empty_array else 0,
                 )
             )
             new_index = new_index[0]
@@ -1989,6 +2036,7 @@ def dtype_array_query_val(
             shape=val_shape,
             large_abs_safety_factor=2,
             small_abs_safety_factor=2,
+            safety_factor_scale="log",
         )
     )
     val_dtype = draw(
@@ -2015,7 +2063,7 @@ def create_nested_input(draw, dimensions, leaf_values):
 def cond_data_gen_helper(draw):
     dtype_x = helpers.dtype_and_values(
         available_dtypes=["float32", "float64"],
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
         max_value=10,
         min_value=-10,
         allow_nan=False,
@@ -2049,7 +2097,7 @@ def get_first_solve_matrix(draw, adjoint=True):
     matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=tuple([shared_size, shared_size]),
+            shape=(shared_size, shared_size),
             min_value=2,
             max_value=5,
         ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
@@ -2079,7 +2127,7 @@ def get_second_solve_matrix(draw):
     )
     return input_dtype, draw(
         helpers.array_values(
-            dtype=input_dtype, shape=tuple([shared_size, 1]), min_value=2, max_value=5
+            dtype=input_dtype, shape=(shared_size, 1), min_value=2, max_value=5
         )
     )
 

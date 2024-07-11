@@ -7,8 +7,8 @@ Array API Tests
 .. _`for each backend`: https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/.github/workflows
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`array api tests channel`: https://discord.com/channels/799879767196958751/982738404611592256
-.. _`test_array_api.sh`: https://github.com/unifyai/ivy/blob/d76f0f5ab02d608864eb2c4012af2404da5806c2/test_array_api.sh
+.. _`array api tests thread`: https://discord.com/channels/799879767196958751/1189907361494741073
+.. _`scripts/shell/test_array_api.sh`: https://github.com/unifyai/ivy/blob/bcddc79978afe447958dfa3ea660716845c85846/scripts/shell/test_array_api.sh
 .. _`array-api test repository`: https://github.com/data-apis/array-api/tree/main
 .. _`issue`: https://github.com/numpy/numpy/issues/21213
 .. _`ivy_tests/array_api_testing/test_array_api/array_api_tests/test_special_cases.py`: https://github.com/data-apis/array-api-tests/blob/ddd3b7a278cd0c0b68c0e4666b2c9f4e67b7b284/array_api_tests/test_special_cases.py
@@ -62,12 +62,12 @@ There are two ways to do this: using the terminal or using your IDE.
 Using Terminal
 **************
 
-Using the terminal, you can run all array-api tests in a given file for a certain backend using the bash file `test_array_api.sh`_:
+Using the terminal, you can run all array-api tests in a given file for a certain backend using the bash file `scripts/shell/test_array_api.sh`_:
 
 .. code-block:: none
 
         # /ivy
-        /bin/bash -e ./run_tests_CLI/test_array_api.sh jax test_linalg
+        /bin/bash -e ./scripts/shell/scripts/shell/test_array_api.sh jax test_linalg
 
 You can change the argument with any of our supported frameworks - tensorflow, numpy, torch, or jax - and the individual test function categories in :code:`ivy/ivy_tests/array_api_testing/test_array_api/array_api_tests`, e.g. *test_set_functions*, *test_signatures* etc.
 
@@ -204,7 +204,7 @@ The fact that the skip instruction itself contains the exact input conditions th
 
 This should have hopefully given you a good understanding of how the Array API test suite is used for testing Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `array api tests channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `array api tests thread`_!
 
 **Video**
 

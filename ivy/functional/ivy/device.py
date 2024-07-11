@@ -1,6 +1,5 @@
 """Collection of device Ivy functions."""
 
-
 # global
 import os
 import gc
@@ -34,6 +33,7 @@ import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
+    inputs_to_native_arrays,
     handle_nestable,
     handle_array_like_without_promotion,
     handle_backend_invalid,
@@ -162,7 +162,7 @@ def _shift_native_arrays_on_default_device(*args, **kwargs):
             ),
             [args, kwargs],
         )
-    return args, kwargs, default_device
+    return args, kwargs, ivy.as_native_dev(default_device)
 
 
 # Device Queries #
@@ -297,6 +297,7 @@ def set_soft_device_mode(mode: bool) -> None:
     ---------
     mode
         boolean whether to move input arrays
+
     Examples
     --------
     >>> ivy.set_soft_device_mode(False)
@@ -339,7 +340,7 @@ def unset_soft_device_mode() -> None:
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
-@to_native_arrays_and_back
+@inputs_to_native_arrays
 def dev(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_native: bool = False
 ) -> Union[ivy.Device, ivy.NativeDevice]:
@@ -742,7 +743,7 @@ def tpu_is_available() -> bool:
     --------
     >>> ivy.set_backend("torch")
     >>> print(ivy.tpu_is_available())
-    True
+    False
     """
     return ivy.current_backend().tpu_is_available()
 
@@ -757,7 +758,7 @@ def default_device(
     /,
     *,
     item: Optional[Union[list, tuple, dict, ivy.Array, ivy.NativeArray]] = None,
-    as_native: bool = None,
+    as_native: Optional[bool] = None,
 ) -> Union[ivy.Device, ivy.NativeDevice]:
     """Return the input device or the default device. If the as_native flag is
     set, the device will be converted to a native device. If the item is
@@ -825,30 +826,47 @@ def default_device(
 
 @handle_exceptions
 def set_default_device(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
-    """Set the default device to given device instance.
+    """Sets the default device to the argument provided in the function.
 
     Parameters
     ----------
     device
-        The device to set as the default device
+        The device to be set as the default device.
+
+    Returns
+    -------
+    ret
+        The new default device.
 
     Examples
     --------
-    >>> ivy.set_default_device("cpu")
     >>> ivy.default_device()
     'cpu'
 
-    >>> ivy.set_backend("torch")
-    >>> ivy.set_default_device("gpu:0")
-    >>> ivy.default_device(as_native=True)
-    device(type='cuda', index=0)
+    >>> ivy.set_backend('jax')
+    >>> ivy.set_default_device('gpu:0')
+    >>> ivy.default_device()
+    'gpu:0'
 
-    >>> import torch
-    >>> ivy.set_backend("torch")
-    >>> device = torch.device("cuda")
-    >>> ivy.set_default_device(device)
-    >>> ivy.default_device(as_native=True)
-    device(type='cuda')
+    >>> ivy.set_backend('torch')
+    >>> ivy.set_default_device('gpu:1')
+    >>> ivy.default_device()
+    'gpu:1
+
+    >>> ivy.set_backend('tensorflow')
+    >>> ivy.set_default_device('tpu:0)
+    >>> ivy.default_device()
+    'tpu:0
+
+    >>> ivy.set_backend('paddle')
+    >>> ivy.set_default_device('cpu)
+    >>> ivy.default_device()
+    'cpu'
+
+    >>> ivy.set_backend('mxnet')
+    >>> ivy.set_default_device('cpu')
+    >>> ivy.default_device()
+    'cpu'
     """
     global default_device_stack
     default_device_stack.append(device)
@@ -1168,7 +1186,7 @@ def _get_devices(fn: Callable, complement: bool = True) -> Tuple:
 
     is_backend_fn = "backend" in fn.__module__
     is_frontend_fn = "frontend" in fn.__module__
-    is_einops_fn = "einops" in fn.__name__
+    is_einops_fn = hasattr(fn, "__name__") and "einops" in fn.__name__
     if not is_backend_fn and not is_frontend_fn and not is_einops_fn:
         if complement:
             supported = set(all_devices).difference(supported)
@@ -1220,7 +1238,13 @@ def function_supported_devices(
     Examples
     --------
     >>> import ivy
+    >>> ivy.set_backend('numpy')
     >>> print(ivy.function_supported_devices(ivy.ones))
+    ('cpu',)
+
+    >>> ivy.set_backend('torch')
+    >>> x = ivy.function_supported_devices(ivy.ones)
+    >>> x = sorted(x)
     ('cpu', 'gpu')
     """
     ivy.utils.assertions.check_true(

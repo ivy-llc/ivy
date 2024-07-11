@@ -1,16 +1,54 @@
 name: Pre-release Testing Workflow
 on:
   workflow_dispatch:
+    inputs:
+      tracer:
+        description: 'Tracer Testing :'
+        default: false
+        required: false
+
+      tracer_each:
+        description: 'Tracer Testing Each :'
+        default: false
+        required: false
 
 permissions:
   actions: read
 jobs:
+  display_test_results:
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    needs:
+      - run_tests
+
+    steps:
+      - name: Download all test results
+        uses: actions/download-artifact@v3
+
+      - name: Combined Test Results
+        run: |
+          find . -name "test_results_*.txt" -exec cat {} + > combined_test_results.txt
+          echo "Test results summary:"
+          cat combined_test_results.txt
+
   run_tests:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        file: [ivy.txt, torch.txt]
+        branch: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+                  11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+                  21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+                  31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+                  41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
+                  51, 52, 53, 54, 55, 56, 57, 58, 59, 60,
+                  61, 62, 63, 64, 65, 66, 67, 68, 69, 70,
+                  71, 72, 73, 74, 75, 76, 77, 78, 79, 80,
+                  81, 82, 83, 84, 85, 86, 87, 88, 89, 90,
+                  91, 92, 93, 94, 95, 96, 97, 98, 99, 100,
+                  101, 102, 103, 104, 105, 106, 107, 108, 109, 110,
+                  111, 112, 113, 114, 115, 116, 117, 118, 119, 120,
+                  121, 122, 123, 124, 125, 126, 127, 128 ]
     steps:
       - name: Checkout Ivy 🛎
         uses: actions/checkout@v3
@@ -27,12 +65,29 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           job_name: ${{ github.job }}
 
-      - name: Run Tests
+      - name: Setup Tests
         run: |
           pip3 install pymongo
           cd ivy
+          sudo pip3 install -e .
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          python run_tests_CLI/setup_priority_tests.py priority_tests/${{ matrix.file }}
-          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} 'true' ${{ steps.jobs.outputs.html_url }}
+          python scripts/setup_tests/setup_priority_tests.py ${{ matrix.branch }}
+          cd ..
+
+      - name: Run CPU Tests
+        run: |
+          cd ivy
+          python scripts/run_tests/run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} 'true' ${{ github.event.inputs.tracer }} ${{ github.event.inputs.tracer_each }} ${{ steps.jobs.outputs.html_url }} | tee test_results_${{ matrix.branch }}.txt
+        continue-on-error: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test_results_${{ matrix.branch }}
+          path: ivy/test_results_${{ matrix.branch }}.txt
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1

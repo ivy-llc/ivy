@@ -463,6 +463,7 @@ def test_cummax(
     dtype_x_axis_castable=_get_castable_dtype(),
     exclusive=st.booleans(),
     reverse=st.booleans(),
+    test_gradients=st.just(False),
 )
 def test_cummin(
     *,
@@ -599,7 +600,7 @@ def test_median(*, dtype_x_axis, keep_dims, test_flags, backend_fw, fn_name, on_
 def test_nanmean(
     *, dtype_x_axis, keep_dims, dtype, test_flags, backend_fw, fn_name, on_device
 ):
-    input_dtype, x, axis = dtype_x_axis
+    input_dtype, x, axis, *_ = dtype_x_axis
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,

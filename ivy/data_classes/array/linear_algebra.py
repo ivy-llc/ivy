@@ -1,4 +1,5 @@
 # global
+
 import abc
 from typing import Union, Optional, Literal, Tuple, List, Sequence
 
@@ -452,6 +453,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
         axis: Tuple[int, int] = (-2, -1),
         keepdims: bool = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.matrix_norm. This method
@@ -471,6 +473,10 @@ class _ArrayWithLinearAlgebra(abc.ABC):
             If this is set to True, the axes which are normed over are left in
             the result as dimensions with size one. With this option the result will
             broadcast correctly against the original x. Default is False.
+        dtype
+            If specified, the input tensor is cast to dtype before
+            performingthe operation, and the returned tensor's type
+            will be dtype. Default: None
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -494,7 +500,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
                 [[11.4 ]]])
         """
         return ivy.matrix_norm(
-            self._data, ord=ord, axis=axis, keepdims=keepdims, out=out
+            self._data, ord=ord, axis=axis, keepdims=keepdims, dtype=dtype, out=out
         )
 
     def matrix_power(
@@ -919,6 +925,14 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         offset
             Offset of the diagonal from the main diagonal. Can be both positive and
             negative. Defaults to 0.
+        axis1
+            axis to be used as the first axis of the 2-D sub-arrays from which the
+            diagonals should be taken.
+            Defaults to ``0.`` .
+        axis2
+            axis to be used as the second axis of the 2-D sub-arrays from which the
+            diagonals should be taken.
+            Defaults to ``1.`` .
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.

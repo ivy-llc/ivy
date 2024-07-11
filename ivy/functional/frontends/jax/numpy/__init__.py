@@ -399,6 +399,7 @@ def promote_types_jax(
         the first of the two types to promote
     type2
         the second of the two types to promote
+
     Returns
     -------
     ret
@@ -406,8 +407,10 @@ def promote_types_jax(
     """
     try:
         ret = jax_promotion_table[(ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))]
-    except KeyError:
-        raise ivy.utils.exceptions.IvyException("these dtypes are not type promotable")
+    except KeyError as e:
+        raise ivy.utils.exceptions.IvyException(
+            "these dtypes are not type promotable"
+        ) from e
     return ret
 
 

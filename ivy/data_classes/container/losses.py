@@ -157,8 +157,8 @@ class _ContainerWithLosses(ContainerBase):
         >>> z = x.cross_entropy(y)
         >>> print(z)
         {
-            a:ivy.array(0.5108256),
-            b:ivy.array(1.609438)
+            a: ivy.array(0.17027519),
+            b: ivy.array(0.53647931)
         }
         """
         return self._static_cross_entropy(
@@ -348,8 +348,8 @@ class _ContainerWithLosses(ContainerBase):
         >>> z = x.binary_cross_entropy(y)
         >>> print(z)
         {
-            a: ivy.array([0.511, 0.223, 0.357]),
-            b: ivy.array([1.61, 0.223, 1.61])
+            a: ivy.array(0.36354783),
+            b: ivy.array(1.14733934)
         }
         """
         return self._static_binary_cross_entropy(
@@ -517,8 +517,8 @@ class _ContainerWithLosses(ContainerBase):
         >>> z = x.sparse_cross_entropy(y)
         >>> print(z)
         {
-            a: ivy.array([1.61, 0.511, 0.511]),
-            b: ivy.array([0.223, 0.223, 1.61])
+            a: ivy.array([0.53647929, 0.1702752, 0.1702752]),
+            b: ivy.array([0.07438118, 0.07438118, 0.53647929])
         }
         """
         return self._static_sparse_cross_entropy(

@@ -150,19 +150,19 @@ class ContainerBase(dict, abc.ABC):
                 "dict_in and **kwargs cannot both be specified for ivy.Container "
                 "constructor, please specify one or the other, not both."
             )
-        self._config_in = dict(
-            print_limit=print_limit,
-            print_indent=print_indent,
-            key_length_limit=key_length_limit,
-            print_line_spacing=print_line_spacing,
-            ivyh=ivyh,
-            default_key_color=default_key_color,
-            keyword_color_dict=keyword_color_dict,
-            rebuild_child_containers=rebuild_child_containers,
-            build_callable=build_callable,
-            types_to_iteratively_nest=types_to_iteratively_nest,
-            alphabetical_keys=alphabetical_keys,
-        )
+        self._config_in = {
+            "print_limit": print_limit,
+            "print_indent": print_indent,
+            "key_length_limit": key_length_limit,
+            "print_line_spacing": print_line_spacing,
+            "ivyh": ivyh,
+            "default_key_color": default_key_color,
+            "keyword_color_dict": keyword_color_dict,
+            "rebuild_child_containers": rebuild_child_containers,
+            "build_callable": build_callable,
+            "types_to_iteratively_nest": types_to_iteratively_nest,
+            "alphabetical_keys": alphabetical_keys,
+        }
         self._config = {}
         self.cont_inplace_update(dict_in, **self._config_in)
 
@@ -837,6 +837,7 @@ class ContainerBase(dict, abc.ABC):
         assert_and_assign
             if true, then the container being compared with is updated with the value
             in the container being compared to given that the structures are congruent
+
         Returns
         -------
         Boolean
@@ -996,6 +997,7 @@ class ContainerBase(dict, abc.ABC):
         assert_and_assign
             if true, then the container being compared with is updated with the value in
             the container being compared to given that the structures are congruent
+
         Returns
         -------
             Boolean
@@ -1153,7 +1155,7 @@ class ContainerBase(dict, abc.ABC):
             ),
         )
         container_dict = {}
-        if type(h5_obj_or_filepath) is str:
+        if isinstance(h5_obj_or_filepath, str):
             h5_obj = h5py.File(h5_obj_or_filepath, "r")
         else:
             h5_obj = h5_obj_or_filepath
@@ -1236,14 +1238,14 @@ class ContainerBase(dict, abc.ABC):
                 "the size of hdf5 files."
             ),
         )
-        if type(h5_obj_or_filepath) is str:
+        if isinstance(h5_obj_or_filepath, str):
             h5_obj = h5py.File(h5_obj_or_filepath, "r")
         else:
             h5_obj = h5_obj_or_filepath
 
         size = 0
         batch_size = 0
-        for key, value in h5_obj.items():
+        for value in h5_obj.values():
             if isinstance(value, h5py.Group):
                 size_to_add, batch_size = ivy.Container.h5_file_size(value)
                 size += size_to_add
@@ -1278,12 +1280,12 @@ class ContainerBase(dict, abc.ABC):
         )
         if seed_value is None:
             seed_value = random.randint(0, 1000)
-        if type(h5_obj_or_filepath) is str:
+        if isinstance(h5_obj_or_filepath, str):
             h5_obj = h5py.File(h5_obj_or_filepath, "a")
         else:
             h5_obj = h5_obj_or_filepath
 
-        for key, value in h5_obj.items():
+        for value in h5_obj.values():
             if isinstance(value, h5py.Group):
                 ivy.Container.shuffle_h5_file(value, seed_value)
             elif isinstance(value, h5py.Dataset):
@@ -1580,7 +1582,7 @@ class ContainerBase(dict, abc.ABC):
     # ---------------#
 
     def cont_duplicate_array_keychains(self):
-        duplciates = ()
+        duplicates = ()
         key_chains = self.cont_all_key_chains()
         skips = set()
         for i in range(len(key_chains)):
@@ -1596,9 +1598,9 @@ class ContainerBase(dict, abc.ABC):
                     if key_chains[j] not in temp_duplicates:
                         temp_duplicates += (key_chains[j],)
             if len(temp_duplicates) > 0:
-                duplciates += (temp_duplicates,)
-            skips = chain.from_iterable(duplciates)
-        return duplciates
+                duplicates += (temp_duplicates,)
+            skips = chain.from_iterable(duplicates)
+        return duplicates
 
     def cont_update_config(self, **config):
         new_config = {}
@@ -2005,7 +2007,7 @@ class ContainerBase(dict, abc.ABC):
                 "containers to disk as hdf5 files."
             ),
         )
-        if type(h5_obj_or_filepath) is str:
+        if isinstance(h5_obj_or_filepath, str):
             h5_obj = h5py.File(h5_obj_or_filepath, mode)
         else:
             h5_obj = h5_obj_or_filepath
@@ -2023,9 +2025,9 @@ class ContainerBase(dict, abc.ABC):
                 value_shape = value_as_np.shape
                 this_batch_size = value_shape[0]
                 max_bs = (
-                    starting_index + this_batch_size
-                    if not max_batch_size
-                    else max_batch_size
+                    max_batch_size
+                    if max_batch_size
+                    else starting_index + this_batch_size
                 )
                 if key not in h5_obj.keys():
                     dataset_shape = [max_bs] + list(value_shape[1:])
@@ -2100,16 +2102,14 @@ class ContainerBase(dict, abc.ABC):
              Container data in its raw form.
         """
         return_item = {}
-        for i, (key, value) in enumerate(self.items()):
+        for key, value in self.items():
             if isinstance(value, ivy.Container):
                 return_item[key] = value.cont_to_raw()
             elif key[0:3] == "it_" and tuple(self._types_to_iteratively_nest):
-                return_item = list(
-                    [
-                        v.cont_to_raw() if isinstance(v, ivy.Container) else v
-                        for v in self.values()
-                    ]
-                )
+                return_item = [
+                    v.cont_to_raw() if isinstance(v, ivy.Container) else v
+                    for v in self.values()
+                ]
                 break
             else:
                 return_item[key] = value
@@ -2170,7 +2170,7 @@ class ContainerBase(dict, abc.ABC):
             Iterator for the container values.
 
         """
-        for key, value in self.items():
+        for value in self.values():
             if isinstance(value, ivy.Container) and (not include_empty or value):
                 # noinspection PyCompatibility
                 yield from value.cont_to_iterator_values(include_empty)
@@ -2217,7 +2217,7 @@ class ContainerBase(dict, abc.ABC):
         ret
             Container as flat list.
         """
-        return list([item for key, item in self.cont_to_iterator()])
+        return [item for key, item in self.cont_to_iterator()]
 
     def cont_from_flat_list(self, flat_list):
         """Return new container object with the same hierarchy, but with values
@@ -3730,7 +3730,7 @@ class ContainerBase(dict, abc.ABC):
                             s[0].isnumeric()
                             or s[0] == "-"
                             or s[0:3] == "..."
-                            or max([ss in s[0:6] for ss in ["nan, ", "inf, "]])
+                            or max(ss in s[0:6] for ss in ["nan, ", "inf, "])
                         )
                         else (
                             indent_str + indented_key_str + s
@@ -3924,7 +3924,7 @@ class ContainerBase(dict, abc.ABC):
         return new_dict
 
     def __dir__(self):
-        return list(super.__dir__(self)) + list(self.keys())
+        return list(super().__dir__()) + list(self.keys())
 
     # noinspection PyProtectedMember
     def __getattr__(self, item, *args, **kwargs):
@@ -3951,7 +3951,7 @@ class ContainerBase(dict, abc.ABC):
         if name[0] != "_":
             self[name] = value
         else:
-            super.__setattr__(self, name, value)
+            super().__setattr__(name, value)
 
     def _get_queue_item(self, query):
         if isinstance(query, int):
@@ -4025,7 +4025,7 @@ class ContainerBase(dict, abc.ABC):
                 return_dict[key] = value[query]
             else:
                 # noinspection PyBroadException
-                if isinstance(value, list) or isinstance(value, tuple):
+                if isinstance(value, (list, tuple)):
                     if len(value) == 0:
                         return_dict[key] = value
                     else:
@@ -4199,7 +4199,7 @@ class ContainerBase(dict, abc.ABC):
         kcs = [kc for kc in self.cont_to_iterator_keys(include_empty=True)]
         if not kcs:
             return 0
-        return max([len(kc.split("/")) for kc in kcs])
+        return max(len(kc.split("/")) for kc in kcs)
 
     @property
     def dynamic_backend(self):

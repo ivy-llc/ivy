@@ -1082,7 +1082,7 @@ def repeat(
     /,
     repeats: Union[int, Iterable[int]],
     *,
-    axis: int = None,
+    axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Repeat values along a given dimension.
@@ -1214,9 +1214,17 @@ def split(
     >>> x = ivy.Container(a=ivy.array([10, 45, 2]))
     >>> y = ivy.split(x)
     >>> print(y)
-    {
-        a:(list[3],<classivy.array.Array>shape=[1])
-    }
+    [
+        {
+            a: ivy.array([10])
+        },
+        {
+            a: ivy.array([45])
+        },
+        {
+            a: ivy.array([2])
+        }
+    ]
     """
     return current_backend(x).split(
         x,

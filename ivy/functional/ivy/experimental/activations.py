@@ -559,15 +559,14 @@ def hardtanh(
     >>> ivy.hardtanh(x, out=y)
     >>> print(y)
     ivy.array([ 1., 0.7, -1.])
-    >>> x = ivy.array([[1.1, 2.2, 3.3],
-    ...                [-0.4, 0.5, -6.6]])
+    >>> x = ivy.array([[1.1, 2.2, 3.3],[-0.4, 0.5, -6.6]])
     >>> ivy.hardtanh(x, out=x)
     >>> print(x)
-    ivy.array([[ 1.,  1., 1.],
-           [-0.4, 0.5, -1.]])
+    ivy.array([[ 1.,  1., 1.],[-0.4, 0.5, -1.]])
+
     With :class:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([0.0, -1.2]), b=ivy.array([0.4, -0.2]))
-    >>> x = ivy.hardtanhx, out=x)
+    >>> x = ivy.hardtanh(x, out=x)
     >>> print(x)
     {
         a: ivy.array([0., -1.]),
@@ -626,6 +625,60 @@ def tanhshrink(
     return current_backend(x).tanhshrink(x, out=out)
 
 
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+def softshrink(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    lambd: float = 0.5,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Apply the softshrink function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array.
+    lambd
+        the value of the lower bound of the linear region range.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+         an array containing the softshrink activation of each element in ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = ivy.softshrink(x)
+    >>> print(y)
+    ivy.array([-0.5,  0.5,  1.5])
+
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = x.softshrink()
+    >>> print(y)
+    ivy.array([-0.5,  0.5,  1.5])
+
+
+    >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
+    >>> y = ivy.softshrink(x)
+    >>> print(y)
+    ivy.array([[-0.79999995,  3.29999995,  1.59999991],
+       [ 1.20000005,  3.69999981, -6.0999999 ]])
+    """
+    return current_backend(x).softshrink(x, lambd=lambd, out=out)
+
+
 def _celu_jax_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -664,6 +717,63 @@ def _celu_jax_like(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device
+def threshold(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    threshold: float,
+    value: float,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Apply the threshold function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array.
+    threshold
+        The value to threshold at.
+    value
+        The value to replace with.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the threshold activation of each element in ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = ivy.threshold(x,value=0.0, threshold=1.5)
+    >>> print(y)
+    ivy.array([0., 0., 2.])
+
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> x.threshold(value=0.0, threshold=1.5)
+    >>> print(y)
+    ivy.array([0., 0., 2.])
+
+
+    >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
+    >>> y = ivy.threshold(x, value=0.0, threshold=1.5)
+    >>> print(y)
+    ivy.array([[0.        , 3.79999995, 2.0999999 ],
+            [1.70000005, 4.19999981, 0.        ]])
+    """
+    return current_backend(x).threshold(x, threshold=threshold, value=value, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 @handle_array_function
 @handle_device
 @handle_complex_input
@@ -675,7 +785,7 @@ def celu(
     complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Apply the Continously Differentiable Exponential Linear Unit (CELU)
+    """Apply the Continuously Differentiable Exponential Linear Unit (CELU)
     activation function to each element of the input.
 
     Parameters
@@ -799,3 +909,106 @@ def scaled_tanh(
 
 
 stanh = scaled_tanh
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+def hardshrink(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    lambd: float = 0.5,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Apply the hardshrink function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array.
+    lambd
+        the value for the Hardshrink formulation.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+         an array containing the hardshrink activation of each element in ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = ivy.hardshrink(x)
+    >>> print(y)
+    ivy.array([-1.,  1.,  2.])
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = x.hardshrink()
+    >>> print(y)
+    ivy.array([-1.,  1.,  2.])
+    >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
+    >>> y = ivy.hardshrink(x)
+    >>> print(y)
+    ivy.array([[-1.29999995,  3.79999995,  2.0999999 ],
+       [ 1.70000005,  4.19999981, -6.5999999 ]])
+    """
+    return current_backend(x).hardshrink(x, lambd=lambd, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device
+def hardsilu(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """Apply the hardsilu/hardswish function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+        an array containing the output of the hardsilu/hardswish function applied
+        to each element in ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1., 2., 3.])
+    >>> y = ivy.hardsilu(x)
+    >>> print(y)
+    ivy.array([0.66666669, 1.66666663, 3.        ])
+    >>> x = ivy.array([-2.1241, 1.4897, 4.4090])
+    >>> y = ivy.zeros(3)
+    >>> ivy.hardsilu(x, out=y)
+    >>> print(y)
+    ivy.array([-0.31008321,  1.1147176 ,  4.40899992])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-0.5, -1, 0]), b=ivy.array([0.5, 1., 2]))
+    >>> y = ivy.hardsilu(x)
+    >>> print(y)
+    {
+        a: ivy.array([-0.20833333, -0.33333334, 0.]),
+        b: ivy.array([0.29166666, 0.66666669, 1.66666663])
+    }
+    """
+    return current_backend(x).hardsilu(x, out=out)
