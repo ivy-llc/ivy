@@ -317,7 +317,7 @@ def scatter_flat(
         ivy.utils.assertions.check_equal(len(target.shape), 1, as_array=False)
         ivy.utils.assertions.check_equal(target.shape[0], size, as_array=False)
     if target_given:
-        target, updates = ivy.promote_types_of_inputs(target, updates)
+        updates = ivy.astype(updates, target.dtype)
     if not target_given:
         target = tf.zeros([size], dtype=updates.dtype)
         res = tf.tensor_scatter_nd_update(target, tf.expand_dims(indices, -1), updates)
