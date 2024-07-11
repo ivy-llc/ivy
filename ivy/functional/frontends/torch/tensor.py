@@ -551,7 +551,7 @@ class Tensor:
         "torch",
     )
     def erfc_(self, *, out=None):
-        self.ivy_array = self.erfc(self, out=out).ivy_array
+        self.ivy_array = self.erfc(out=out).ivy_array
         return self
 
     def new_zeros(
