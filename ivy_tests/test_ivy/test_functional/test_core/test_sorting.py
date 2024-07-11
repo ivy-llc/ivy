@@ -104,6 +104,7 @@ def test_argsort(
         max_value=100,
     ),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_msort(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
@@ -173,6 +174,7 @@ def test_searchsorted(
     descending=st.booleans(),
     stable=st.booleans(),
     test_gradients=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_sort(
     *, dtype_x_axis, descending, stable, test_flags, backend_fw, fn_name, on_device

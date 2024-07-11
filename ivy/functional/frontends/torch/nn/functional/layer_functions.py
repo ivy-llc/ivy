@@ -1,10 +1,90 @@
 import ivy
-from ivy import with_supported_dtypes
+from ivy.func_wrapper import with_supported_device_and_dtypes, with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+def _extract_states(states, batch_sizes):
+    h = []
+    for i in range(states.shape[1]):
+        h.append(states[int(batch_sizes[i] - 1), i])
+    h = ivy.expand_dims(ivy.stack(h, axis=0), axis=0)
+    return h
+
+
+def _lstm_full(
+    input,
+    hx,
+    params,
+    has_biases,
+    num_layers,
+    dropout,
+    train,
+    bidirectional,
+    batch_first,
+):
+    ret = ivy.lstm(
+        input,
+        hx,
+        params,
+        num_layers,
+        dropout,
+        train,
+        bidirectional,
+        batch_first=batch_first,
+        has_ih_bias=has_biases,
+        has_hh_bias=has_biases,
+    )
+    return ret[1], ret[2][0], ret[2][1]
+
+
+def _lstm_packed(
+    data,
+    batch_sizes,
+    hx,
+    params,
+    has_biases,
+    num_layers,
+    dropout,
+    train,
+    bidirectional,
+):
+    ret = ivy.lstm(
+        data,
+        hx,
+        params,
+        num_layers,
+        dropout,
+        train,
+        bidirectional,
+        batch_sizes=batch_sizes,
+        has_ih_bias=has_biases,
+        has_hh_bias=has_biases,
+    )
+    return ret[1], ret[2][0], ret[2][1]
+
+
+# --- Main --- #
+# ------------ #
+
+
+@with_supported_device_and_dtypes(
+    {"2.2 and below": {"cpu": ("float32", "float64")}},
+    "torch",
+)
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.1.0 and below": ("float32", "float64")}, "torch")
+def lstm(*args, **kwargs):
+    if "batch_sizes" in kwargs or (len(args) >= 4 and not isinstance(args[3], bool)):
+        return _lstm_packed(*args, **kwargs)
+    else:
+        return _lstm_full(*args, **kwargs)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.2 and below": ("float32", "float64")}, "torch")
 def multi_head_attention_forward(
     query,
     key,

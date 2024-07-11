@@ -8,6 +8,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
+    test_with_copy=st.just(True),
 )
 def test_sklearn_as_float_array(
     dtype_and_x,

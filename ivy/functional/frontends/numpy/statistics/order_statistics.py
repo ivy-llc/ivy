@@ -1,5 +1,6 @@
 # global
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_out,
@@ -11,8 +12,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 
 
 def _cpercentile(N, percent, key=lambda x: x):
-    """
-    Find the percentile   of a list of values.
+    """Find the percentile   of a list of values.
 
     @parameter N - is a list of values. Note N MUST BE already sorted.
     @parameter percent - a float value from 0.0 to 1.0.
@@ -38,7 +38,7 @@ def _quantile_is_valid(q):
             if not (0.0 <= q[i] <= 1.0):
                 return False
     else:
-        if not (ivy.all(0 <= q) and ivy.all(q <= 1)):
+        if not (ivy.all(q >= 0) and ivy.all(q <= 1)):
             return False
     return True
 
@@ -120,6 +120,7 @@ def nanpercentile(
 
 @to_ivy_arrays_and_back
 @handle_numpy_out
+@with_unsupported_dtypes({"1.26.4 and below": ("bool",)}, "numpy")
 def ptp(a, axis=None, out=None, keepdims=False):
     x = ivy.max(a, axis=axis, keepdims=keepdims)
     y = ivy.min(a, axis=axis, keepdims=keepdims)

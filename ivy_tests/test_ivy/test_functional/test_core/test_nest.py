@@ -259,7 +259,7 @@ def test_nested_any(x, fn):
     map_nested_dicts(x_copy, fn)
 
     def is_true_any(ob):
-        for k, v in ob.items():
+        for v in ob.values():
             if isinstance(v, dict):
                 is_true_any(v)
             if isinstance(v, list):

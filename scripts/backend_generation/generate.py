@@ -94,7 +94,7 @@ def _get_user_input(fn, *args, **kwargs):
                 break
         except KeyboardInterrupt:
             print("Aborted.")
-            exit()
+            sys.exit()
 
 
 def _update_native_config_value(key):
@@ -167,8 +167,7 @@ def _should_install_backend(package_name):
             ) from e
     elif ret.lower() == "n":
         print(
-            Fore.YELLOW
-            + "Will continue without backend installed, "
+            Fore.YELLOW + "Will continue without backend installed, "
             "type checking won't be available.\n"
         )
     else:
@@ -268,9 +267,9 @@ def _update_valid_config_value(key):
     ret = ret.strip("")
     if ret == "":
         return True
-    indicies = ret.split(" ")
-    indicies = [int(item.strip(" ")) for item in indicies]
-    for i in sorted(indicies, reverse=True):
+    indices = ret.split(" ")
+    indices = [int(item.strip(" ")) for item in indices]
+    for i in sorted(indices, reverse=True):
         del config_valids[key][i]
     return True
 

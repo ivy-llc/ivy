@@ -11,11 +11,12 @@ class BackendHandlerMode(Enum):
 
 
 class WithBackendContext:
-    def __init__(self, backend) -> None:
+    def __init__(self, backend, cached=True) -> None:
         self.backend = backend
+        self.cached = cached
 
     def __enter__(self):
-        return ivy.with_backend(self.backend)
+        return ivy.with_backend(self.backend, cached=self.cached)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         return

@@ -42,7 +42,7 @@ def test_numpy_copyto(
     frontend,
 ):
     _, xs, casting, where = copyto_args
-    if isinstance(where, list) or isinstance(where, tuple):
+    if isinstance(where, (list, tuple)):
         where = where[0]
 
     with BackendHandler.update_backend(backend_fw) as ivy_backend:
