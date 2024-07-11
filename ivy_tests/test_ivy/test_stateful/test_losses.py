@@ -58,6 +58,7 @@ def test_binary_cross_entropy_loss(
     dtype_and_true,
     dtype_and_pred,
     dtype_and_pos,
+    backend_fw,
     from_logits,
     reduction,
     axis,
@@ -75,6 +76,7 @@ def test_binary_cross_entropy_loss(
 
     if from_logits:
         helpers.test_method(
+            backend_to_test=backend_fw,
             ground_truth_backend=ground_truth_backend,
             init_flags=init_flags,
             method_flags=method_flags,
@@ -98,6 +100,7 @@ def test_binary_cross_entropy_loss(
         )
     else:
         helpers.test_method(
+            backend_to_test=backend_fw,
             ground_truth_backend=ground_truth_backend,
             init_flags=init_flags,
             method_flags=method_flags,
@@ -158,6 +161,7 @@ def test_cross_entropy_loss(
     axis,
     reduction,
     class_name,
+    backend_fw,
     method_name,
     ground_truth_backend,
     init_flags,
@@ -167,6 +171,7 @@ def test_cross_entropy_loss(
     targets_dtype, targets = dtype_and_targets
     log_input_dtype, log_input = dtype_and_log_input
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -224,6 +229,7 @@ def test_log_poisson_loss(
     axis,
     reduction,
     class_name,
+    backend_fw,
     method_name,
     ground_truth_backend,
     init_flags,
@@ -233,6 +239,7 @@ def test_log_poisson_loss(
     targets_dtype, targets = dtype_and_targets
     log_input_dtype, log_input = dtype_and_log_input
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,

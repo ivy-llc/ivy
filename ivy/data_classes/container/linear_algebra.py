@@ -1,4 +1,5 @@
 # global
+
 from typing import Union, Optional, Tuple, Literal, List, Dict, Sequence
 
 # local
@@ -1384,6 +1385,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"], ivy.Container] = "fro",
         axis: Tuple[int, int, ivy.Container] = (-2, -1),
         keepdims: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -1407,6 +1409,10 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             If this is set to True, the axes which are normed over are left in the
             result as dimensions with size one. With this option the result will
             broadcast correctly against the original x. Default is ``False``.
+        dtype
+            If specified, the input tensor is cast to dtype before performing
+            the operation, and the returned tensor's type will be dtype.
+            Default: None
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1457,6 +1463,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             ord=ord,
             axis=axis,
             keepdims=keepdims,
+            dtype=dtype,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1471,6 +1478,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"], ivy.Container] = "fro",
         axis: Tuple[int, int, ivy.Container] = (-2, -1),
         keepdims: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -1494,6 +1502,10 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             If this is set to True, the axes which are normed over are left in the
             result as dimensions with size one. With this option the result will
             broadcast correctly against the original x. Default is ``False``.
+        dtype
+            If specified, the input tensor is cast to dtype before performing
+            the operation, and the returned tensor's type will be dtype.
+            Default: None
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1544,6 +1556,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             ord=ord,
             axis=axis,
             keepdims=keepdims,
+            dtype=dtype,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2728,6 +2741,14 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         offset
             Offset of the diagonal from the main diagonal. Can be both positive and
             negative. Defaults to 0.
+        axis1
+            axis to be used as the first axis of the 2-D sub-arrays from which the
+            diagonals should be taken.
+            Defaults to ``0.`` .
+        axis2
+            axis to be used as the second axis of the 2-D sub-arrays from which the
+            diagonals should be taken.
+            Defaults to ``1.`` .
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -2813,6 +2834,14 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         offset
             Offset of the diagonal from the main diagonal. Can be both positive and
             negative. Defaults to 0.
+        axis1
+            axis to be used as the first axis of the 2-D sub-arrays from which the
+            diagonals should be taken.
+            Defaults to ``0.`` .
+        axis2
+            axis to be used as the second axis of the 2-D sub-arrays from which the
+            diagonals should be taken.
+            Defaults to ``1.`` .
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply

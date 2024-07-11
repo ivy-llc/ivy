@@ -29,7 +29,7 @@ def kaiser_bessel_derived_window(
 
 
 @with_supported_dtypes(
-    {"2.14.0 and below": ("float32", "float64", "float16", "bfloat16")},
+    {"2.15.0 and below": ("float32", "float64", "float16", "bfloat16")},
     "tensorflow",
 )
 @handle_tf_dtype
@@ -62,7 +62,7 @@ def stft(
 
 
 @with_supported_dtypes(
-    {"2.14.0 and below": ("float16", "float32", "float64", "bfloat16")},
+    {"2.15.0 and below": ("float16", "float32", "float64", "bfloat16")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back

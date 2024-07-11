@@ -46,7 +46,7 @@ FN_DECORATORS = [
 casting_modes_dict = {
     "uint": lambda: ivy.valid_uint_dtypes,
     "int": lambda: sorted(
-        tuple(set(ivy.valid_int_dtypes).difference(set(ivy.valid_uint_dtypes)))
+        set(ivy.valid_int_dtypes).difference(set(ivy.valid_uint_dtypes))
     ),
     "float": lambda: ivy.valid_float_dtypes,
     "complex": lambda: ivy.valid_complex_dtypes,
@@ -91,91 +91,41 @@ def caster(dtype, intersect):
                 return ret_dtype
 
 
+def cast_helper(arg, dtype, intersect, is_upcast=True):
+    step = 1 if is_upcast else -1
+    index = casting_modes_dict[arg]().index(dtype) + step
+    result = ""
+    while 0 <= index < len(casting_modes_dict[arg]()):
+        if casting_modes_dict[arg]()[index] not in intersect:
+            result = casting_modes_dict[arg]()[index]
+            break
+        index += step
+
+    return result
+
+
 def upcaster(dtype, intersect):
     # upcasting is enabled, we upcast to the highest
     if "uint" in str(dtype):
-        index = casting_modes_dict["uint"]().index(dtype) + 1
-        result = ""
-        while index < len(casting_modes_dict["uint"]()):
-            if casting_modes_dict["uint"]()[index] not in intersect:
-                result = casting_modes_dict["uint"]()[index]
-                break
-            index += 1
-        return result
-
+        return cast_helper("uint", dtype, intersect, is_upcast=True)
     if "int" in dtype:
-        index = casting_modes_dict["int"]().index(dtype) + 1
-        result = ""
-        while index < len(casting_modes_dict["int"]()):
-            if casting_modes_dict["int"]()[index] not in intersect:
-                result = casting_modes_dict["int"]()[index]
-                break
-            index += 1
-        return result
-
+        return cast_helper("int", dtype, intersect, is_upcast=True)
     if "float" in dtype:
-        index = casting_modes_dict["float"]().index(dtype) + 1
-        result = ""
-        while index < len(casting_modes_dict["float"]()):
-            if casting_modes_dict["float"]()[index] not in intersect:
-                result = casting_modes_dict["float"]()[index]
-                break
-            index += 1
-        return result
-
+        return cast_helper("float", dtype, intersect, is_upcast=True)
     if "complex" in dtype:
-        index = casting_modes_dict["complex"]().index(dtype) + 1
-        result = ""
-        while index < len(casting_modes_dict["complex"]()):
-            if casting_modes_dict["complex"]()[index] not in intersect:
-                result = casting_modes_dict["complex"]()[index]
-                break
-            index += 1
-        return result
+        return cast_helper("complex", dtype, intersect, is_upcast=True)
 
 
 def downcaster(dtype, intersect):
     # downcasting is enabled, we upcast to the highest
     if "uint" in str(dtype):
-        index = casting_modes_dict["uint"]().index(dtype) - 1
-        result = ""
-        while index >= 0:
-            if casting_modes_dict["int"]()[index] not in intersect:
-                result = casting_modes_dict["uint"]()[index]
-                break
-            index -= 1
-        return result
-
+        return cast_helper("uint", dtype, intersect, is_upcast=False)
     if "int" in dtype:
-        index = casting_modes_dict["int"]().index(dtype) - 1
-        result = ""
-        while index >= 0:
-            if casting_modes_dict["int"]()[index] not in intersect:
-                result = casting_modes_dict["int"]()[index]
-                break
-            index -= 1
-        return result
-
+        return cast_helper("int", dtype, intersect, is_upcast=False)
     if "float" in dtype:
-        index = casting_modes_dict["float"]().index(dtype) - 1
-
-        result = ""
-        while index >= 0:
-            if casting_modes_dict["float"]()[index] not in intersect:
-                result = casting_modes_dict["float"]()[index]
-                break
-            index -= 1
-        return result
-
+        return cast_helper("float", dtype, intersect, is_upcast=False)
     if "complex" in dtype:
-        index = casting_modes_dict["complex"]().index(dtype) - 1
-        result = ""
-        while index >= 0:
-            if casting_modes_dict["complex"]()[index] not in intersect:
-                result = casting_modes_dict["complex"]()[index]
-                break
-            index -= 1
-        return result
+        return cast_helper("complex", dtype, intersect, is_upcast=False)
 
 
 def cross_caster(intersect):
@@ -187,11 +137,12 @@ def cross_caster(intersect):
     dtype = ""
     valid_float = sorted(ivy.valid_float_dtypes)
     valid_int = sorted(ivy.valid_int_dtypes)
+    valid_bool = [ivy.bool]
     intersect = sorted(intersect)
     if set(valid_int).issubset(intersect):
         # make dtype equal to default float
         dtype = ivy.default_float_dtype()
-    elif set(valid_float).issubset(intersect):
+    elif set(valid_float).issubset(intersect) or set(valid_bool).issubset(intersect):
         # make dtype equal to default int
         dtype = ivy.default_int_dtype()
 
@@ -224,7 +175,14 @@ def try_array_function_override(func, overloaded_args, types, args, kwargs):
 
 def _get_first_array(*args, **kwargs):
     # ToDo: make this more efficient, with function ivy.nested_nth_index_where
-    array_fn = ivy.is_array if "array_fn" not in kwargs else kwargs["array_fn"]
+    def array_fn(x):
+        return (
+            ivy.is_array(x)
+            if not hasattr(x, "_ivy_array")
+            else ivy.is_array(x.ivy_array)
+        )
+
+    array_fn = array_fn if "array_fn" not in kwargs else kwargs["array_fn"]
     arr = None
     if args:
         arr_idxs = ivy.nested_argwhere(args, array_fn, stop_after_n_found=1)
@@ -788,7 +746,7 @@ def handle_device(fn: Callable) -> Callable:
             with ivy.DefaultDevice(ivy.default_device(dev)):
                 return ivy.handle_soft_device_variable(*args, fn=fn, **kwargs)
         inputs = args + tuple(kwargs.values())
-        devices = tuple(ivy.dev(x) for x in inputs if ivy.is_native_array(x))
+        devices = tuple(ivy.dev(x) for x in inputs if ivy.is_array(x))
         unique_devices = set(devices)
         # check if arrays are on the same device
         if len(unique_devices) <= 1:
@@ -1045,6 +1003,29 @@ def temp_asarray_wrapper(fn: Callable) -> Callable:
     return _temp_asarray_wrapper
 
 
+# Download compiled cython wrapper wrapper
+
+
+def download_cython_wrapper_wrapper(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _download_cython_wrapper_wrapper(*args, **kwargs):
+        """Wrap the function to download compiled cython wrapper for the
+        function and re- wraps it with the downloaded wrapper.
+
+        Download the compiled cython wrapper by calling
+        ivy.wrappers.get_wrapper(func_name: str) and then wrap the
+        function with the downloaded wrapper.
+        """
+        ivy.wrappers.download_cython_wrapper(fn.__name__)
+        ivy.wrappers.load_one_wrapper(fn.__name__)
+        ivy.functional.__dict__[fn.__name__] = getattr(
+            ivy.wrappers, fn.__name__ + "_wrapper"
+        )(fn)
+        return ivy.functional.__dict__[fn.__name__](*args, **kwargs)
+
+    return _download_cython_wrapper_wrapper
+
+
 # Functions #
 
 
@@ -1089,6 +1070,12 @@ def _wrap_function(
                 )
         return to_wrap
     if isinstance(to_wrap, FunctionType):
+        if ivy.cython_wrappers_mode and ivy.wrappers.wrapper_exists(to_wrap.__name__):
+            if to_wrap.__name__ + "_wrapper" in ivy.wrappers.__all__:
+                to_wrap = getattr(ivy.wrappers, to_wrap.__name__ + "_wrapper")(to_wrap)
+                return to_wrap
+            else:
+                return download_cython_wrapper_wrapper(to_wrap)
         # set attributes
         for attr in original.__dict__.keys():
             # private attribute or decorator
@@ -1227,7 +1214,7 @@ def _dtype_from_version(dic, version):
 
     # If version dict is empty, then there is an error
     if not dic:
-        raise Exception("No version found in the dictionary")
+        raise ValueError("No version found in the dictionary")
 
     # If key is already in the dictionary, return the value
     if version in dic:
@@ -1250,8 +1237,8 @@ def _dtype_from_version(dic, version):
         if "to" in key and k1 <= version_tuple <= tuple(map(int, kl[2].split("."))):
             return dic[key]
 
-    # if no version is found, we return empty tuple
-    return ()
+    # if no version is found, return the last version
+    return dic[list(dic.keys())[-1]]
 
 
 def _versioned_attribute_factory(attribute_function, base):
@@ -1813,9 +1800,7 @@ class with_unsupported_device_and_dtypes(contextlib.ContextDecorator):
                         dicti[key]["all"]
                     )
                 else:
-                    nested_dic[nested_key] = dicti[key].get(nested_key, ()) + tuple(
-                        dicti[key][nested_key]
-                    )
+                    nested_dic[nested_key] = tuple(dicti[key][nested_key])
             dicti[key] = nested_dic
         args = (dicti, args[1])
 
@@ -1873,9 +1858,7 @@ class with_supported_device_and_dtypes(contextlib.ContextDecorator):
                         dicti[key]["all"]
                     )
                 else:
-                    nested_dic[nested_key] = dicti[key].get(nested_key, ()) + tuple(
-                        dicti[key][nested_key]
-                    )
+                    nested_dic[nested_key] = tuple(dicti[key][nested_key])
             dicti[key] = nested_dic
         args = (dicti, args[1])
 

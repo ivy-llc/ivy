@@ -108,7 +108,7 @@ class TTTensor(FactorizedTensor):
     def tt_to_tensor(factors):
         """Return the full tensor whose TT decomposition is given by 'factors'.
 
-        Re-assembles 'factors', which represent a tensor in TT/Matrix-Product-State format # noqa: E501
+        Re-assembles 'factors', which represent a tensor in TT/Matrix-Product-State format
         into the corresponding full tensor
 
         Parameters
@@ -120,7 +120,7 @@ class TTTensor(FactorizedTensor):
         -------
         output_tensor
             tensor whose TT/MPS decomposition was given by 'factors'
-        """
+        """  # noqa: E501
         if isinstance(factors, (float, int)):
             return factors
 
@@ -213,8 +213,8 @@ class TTTensor(FactorizedTensor):
             shape of the tensor to decompose
         rank
             way to determine the rank, by default 'same'
-            if 'same': rank is computed to keep the number of parameters (at most) the same # noqa: E501
-            if float, computes a rank so as to keep rank percent of the original number of parameters # noqa: E501
+            if 'same': rank is computed to keep the number of parameters (at most) the same
+            if float, computes a rank so as to keep rank percent of the original number of parameters
             if int or tuple, just returns rank
         constant_rank
             if True, the *same* rank will be chosen for each modes
@@ -233,7 +233,7 @@ class TTTensor(FactorizedTensor):
         -------
         rank
             rank of the decomposition
-        """
+        """  # noqa: E501
         if rounding == "ceil":
             rounding_fn = ivy.ceil
         elif rounding == "floor":

@@ -1,5 +1,5 @@
 import torch
-from torchvision.ops import roi_align as torch_roi_align, nms as torch_nms
+import torchvision
 from ivy.func_wrapper import to_native_arrays_and_back
 
 
@@ -7,7 +7,7 @@ from ivy.func_wrapper import to_native_arrays_and_back
 def roi_align(
     input, boxes, output_size, spatial_scale=1.0, sampling_ratio=-1, aligned=False
 ):
-    ret = torch_roi_align(
+    ret = torchvision.ops.roi_align(
         input, boxes, output_size, spatial_scale, sampling_ratio, aligned
     )
     return ret
@@ -40,7 +40,7 @@ def nms(
         else:
             ret = torch.tensor([], dtype=torch.int64)
     else:
-        ret = torch_nms(boxes, scores, iou_threshold)
+        ret = torchvision.ops.nms(boxes, scores, iou_threshold)
 
     if change_id and len(ret) > 0:
         ret = torch.tensor(nonzero[ret], dtype=torch.int64).flatten()

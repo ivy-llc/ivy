@@ -58,6 +58,8 @@ def assert_all_close(
         f" the results from backend {backend} "
         f"and ground truth framework {ground_truth_backend} "
         f"do not match\n {ret_np}!={ret_from_gt_np} \n\n"
+        "The mismatching elements are at `False` indices:\n\n"
+        f"{ret_np == ret_from_gt_np} \n\n"
     )
 
 
@@ -209,6 +211,7 @@ def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
                 break
         if (
             "dtype" in all_as_kwargs_np
+            and all_as_kwargs_np["dtype"] is not None
             and all_as_kwargs_np["dtype"] in unsupported_dtypes_fn
         ):
             test_unsupported = True
@@ -219,6 +222,7 @@ def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
                 break
         if (
             "dtype" in all_as_kwargs_np
+            and all_as_kwargs_np["dtype"] is not None
             and all_as_kwargs_np["dtype"] not in supported_dtypes_fn
         ):
             test_unsupported = True

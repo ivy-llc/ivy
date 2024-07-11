@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st, assume
+from hypothesis.extra.numpy import arrays
 import numpy as np
 from tensorflow import errors as tf_errors
 
@@ -270,6 +271,40 @@ def _reshape_helper(draw):
     return x, dtype, reshape_shape
 
 
+# sequence_mask
+@st.composite
+def _sequence_mask_helper(draw):
+    max_val = draw(st.integers(min_value=1, max_value=100000))
+    in_dtype, lens = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            num_arrays=1,
+            min_value=-max_val,
+            max_value=max_val,
+        )
+    )
+
+    max_len = draw(st.integers(min_value=max_val, max_value=max_val))
+    dtype = draw(
+        st.sampled_from(
+            [
+                "float16",
+                "uint8",
+                "complex128",
+                "bool",
+                "float64",
+                "int8",
+                "int16",
+                "complex64",
+                "float32",
+                "int32",
+                "int64",
+            ]
+        )
+    )
+    return in_dtype, lens, max_len, dtype
+
+
 @st.composite
 def _slice_helper(draw):
     dtype, x, shape = draw(
@@ -331,6 +366,96 @@ def _strided_slice_helper(draw):
             )
             break
     return dtype, x, np.array(begin), np.array(end), np.array(strides), masks
+
+
+@st.composite
+def _values_and_ndindices(
+    draw,
+    *,
+    indices_dtypes=helpers.get_dtypes("valid"),
+    array_dtypes=helpers.get_dtypes("numeric"),
+    allow_inf=False,
+    x_min_value=None,
+    x_max_value=None,
+    min_num_dims=2,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=10,
+):
+    # Generate the dtype and values for x
+    x_dtype, x, x_shape = draw(
+        helpers.dtype_and_values(
+            allow_inf=allow_inf,
+            ret_shape=True,
+            min_value=x_min_value,
+            max_value=x_max_value,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+    x_dtype = x_dtype[0] if isinstance(x_dtype, list) else x_dtype
+    x = x[0] if isinstance(x, list) else x
+
+    # Determine the number of index dimensions
+    indices_dims = draw(
+        helpers.ints(
+            min_value=1,
+            max_value=len(x_shape),
+        )
+    )
+
+    dtype_str = draw(st.sampled_from(indices_dtypes))
+    if dtype_str == "int16":
+        dtype = np.int16
+    elif dtype_str == "int32":
+        dtype = np.int32
+    else:
+        dtype = np.int64
+
+    # Generate the shape of the output tensor
+    output_shape = draw(
+        arrays(
+            dtype=dtype,
+            shape=(indices_dims,),
+            elements=st.integers(min_value=1, max_value=max_dim_size)
+        )
+    )
+
+    # Ensure output_shape is at least as large as x_shape up to indices_dims
+    for i in range(indices_dims):
+        output_shape[i] = max(output_shape[i], x_shape[i])
+
+    # Generate the number of indices
+    num_indices = draw(
+        helpers.ints(
+            min_value=1,
+            max_value=10
+        )
+    )
+
+    # Generate the indices
+    indices = []
+    for _ in range(num_indices):
+        index = [draw(st.integers(min_value=0, max_value=output_shape[j] - 1)) for j in range(indices_dims)]
+        indices.append(index)
+    indices = np.array(indices, dtype=dtype)
+
+    # Generate the dtype and values for updates
+    updates_shape = list(indices.shape[:-1]) + list(output_shape[indices.shape[-1]:])
+    updates_dtype, updates = draw(
+        helpers.dtype_and_values(
+            available_dtypes=array_dtypes,
+            allow_inf=allow_inf,
+            shape=updates_shape,
+            shared_dtype=True,
+        )
+    )
+    updates_dtype = updates_dtype[0] if isinstance(updates_dtype, list) else updates_dtype
+    updates = updates[0] if isinstance(updates, list) else updates
+
+    return [x_dtype, indices.dtype, updates_dtype], x, indices, updates, output_shape
 
 
 @st.composite
@@ -1050,6 +1175,7 @@ def test_tensorflow_gather_nd(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_tensorflow_identity(
     dtype_and_x,
@@ -1078,6 +1204,7 @@ def test_tensorflow_identity(
         available_dtypes=helpers.get_dtypes("valid"), max_num_dims=5
     ),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_tensorflow_identity_n(
     dtype_and_x,
@@ -1444,7 +1571,7 @@ def test_tensorflow_rank(
     frontend,
     test_flags,
 ):
-    dtype, x, _ = dtype_and_x
+    dtype, x, *_ = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -1663,6 +1790,41 @@ def test_tensorflow_scan(
     )
 
 
+# scatter_nd
+@handle_frontend_test(
+    fn_tree="tensorflow.scatter_nd",
+    x=_values_and_ndindices(
+        indices_dtypes=["int32", "int64"],
+        array_dtypes=helpers.get_dtypes("numeric"),
+        x_min_value=0,
+        x_max_value=0,
+        min_num_dims=2,
+        allow_inf=False,
+    ),
+)
+def test_tensorflow_scatter_nd(
+    *,
+    x,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    frontend,
+    on_device,
+):
+    (_, ind_dtype, update_dtype), _, ind, updates, shape = x
+    helpers.test_frontend_function(
+        input_dtypes=[update_dtype, ind_dtype],
+        frontend=frontend,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        indices=ind,
+        updates=updates,
+        shape=shape,
+    )
+
+
 # searchsorted
 @handle_frontend_test(
     fn_tree="tensorflow.searchsorted",
@@ -1698,6 +1860,34 @@ def test_tensorflow_searchsorted(
         values=xs[1],
         side=side,
         out_type=out_type,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.sequence_mask",
+    dtype_lens_maxlen=_sequence_mask_helper(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_sequence_mask(
+    *,
+    dtype_lens_maxlen,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    input_dtype, lens, max_len, dtype = dtype_lens_maxlen
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        lengths=lens[0],
+        maxlen=max_len,
+        dtype=dtype,
     )
 
 
@@ -2520,9 +2710,9 @@ def test_tensorflow_while_loop(
     input=helpers.get_shape(
         allow_none=False,
         min_num_dims=0,
-        max_num_dims=10,
+        max_num_dims=9,
         min_dim_size=0,
-        max_dim_size=10,
+        max_dim_size=9,
     ),
     dtype=helpers.get_dtypes("valid", full=False),
 )
@@ -2551,7 +2741,7 @@ def test_tensorflow_zeros(
 @handle_frontend_test(
     fn_tree="tensorflow.zeros_like",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
     test_with_out=st.just(False),

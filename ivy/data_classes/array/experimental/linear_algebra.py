@@ -323,8 +323,8 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
             If True, the matrices or vectors in in the list are transposed.
             For complex tensors, the conjugate transpose is used.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            result can broadcast to.
+            optional output array, for writing the result to.
+            It must have a shape that the result can broadcast to.
 
         Returns
         -------
@@ -334,8 +334,8 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         Notes
         -----
         If no modes are specified, just assumes there is one matrix or vector per mode and returns:
-        :math:`\\text{x  }\\times_0 \\text{ matrix or vec list[0] }\\times_1 \\cdots \\times_n \\text{ matrix or vec list[n] }` # noqa
-        """
+        :math:`\\text{x  }\\times_0 \\text{ matrix or vec list[0] }\\times_1 \\cdots \\times_n \\text{ matrix or vec list[n] }`
+        """  # noqa: E501
         return ivy.multi_mode_dot(
             self._data, mat_or_vec_list, modes, skip, transpose, out=out
         )
@@ -832,7 +832,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
 
         >>> a = ivy.array([1, 2, 3])
         >>> b = ivy.array([4, 5, 6])
-        >>> result = a.general_inner_product(b, n_modes=1)
+        >>> result = a.general_inner_product(b, 1)
         >>> print(result)
         ivy.array(32)
 
@@ -844,7 +844,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
 
         >>> a = ivy.array([[1, 1], [1, 1]])
         >>> b = ivy.array([[1, 2, 3, 4],[1, 1, 1, 1]])
-        >>> result = a.general_inner_product(b, n_modes=1)
+        >>> result = a.general_inner_product(b, 1)
         >>> print(result)
         ivy.array([[2, 3, 4, 5],
             [2, 3, 4, 5]])

@@ -2287,13 +2287,13 @@ class _ContainerWithManipulation(ContainerBase):
 
     def clip(
         self: ivy.Container,
+        /,
         x_min: Optional[
             Union[Number, ivy.Array, ivy.NativeArray, ivy.Container]
         ] = None,
         x_max: Optional[
             Union[Number, ivy.Array, ivy.NativeArray, ivy.Container]
         ] = None,
-        /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,

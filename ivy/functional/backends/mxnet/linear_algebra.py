@@ -228,8 +228,10 @@ def svdvals(
     x: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
+    driver: Optional[str] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
+    # TODO: handling the driver argument
     raise IvyNotImplementedException()
 
 

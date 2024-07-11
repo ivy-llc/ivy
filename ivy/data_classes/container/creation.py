@@ -1641,7 +1641,6 @@ class _ContainerWithCreation(ContainerBase):
         out: Optional[Union[Tuple[ivy.Array], ivy.Container]] = None,
     ) -> ivy.Container:
         return self.static_triu_indices(
-            self,
             n_rows,
             n_cols,
             k,

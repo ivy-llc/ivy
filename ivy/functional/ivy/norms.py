@@ -1,6 +1,5 @@
 """Collection of Ivy normalization functions."""
 
-
 # local
 from typing import List, Union, Optional
 import ivy

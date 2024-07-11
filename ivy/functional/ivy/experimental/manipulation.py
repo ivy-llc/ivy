@@ -42,14 +42,21 @@ def _to_tf_padding(pad_width, ndim):
     if isinstance(pad_width, Number):
         pad_width = [[pad_width] * 2] * ndim
     elif len(pad_width) == 2 and isinstance(pad_width[0], Number):
+        pad_width = [pad_width] * ndim
+    elif (
+        isinstance(pad_width, (list, tuple))
+        and isinstance(pad_width[0], (list, tuple))
+        and len(pad_width) < ndim
+    ):
         pad_width = pad_width * ndim
     return pad_width
 
 
 def _check_paddle_pad(
-    mode, reflect_type, pad_width, input_shape, constant_values, ndim_limit
+    mode, reflect_type, pad_width, input_shape, constant_values, ndim_limit, extend=True
 ):
-    pad_width = _to_tf_padding(pad_width, len(input_shape))
+    if extend:
+        pad_width = _to_tf_padding(pad_width, len(input_shape))
     return isinstance(constant_values, Number) and (
         mode == "constant"
         or (
@@ -74,7 +81,7 @@ def _to_paddle_padding(pad_width, ndim):
         pad_width = [pad_width] * (2 * ndim)
     else:
         if len(pad_width) == 2 and isinstance(pad_width[0], Number) and ndim != 1:
-            pad_width = pad_width * ndim
+            pad_width = [pad_width] * ndim
         pad_width = [item for sublist in pad_width for item in sublist[::-1]][::-1]
     return pad_width
 
@@ -91,9 +98,9 @@ def flatten(
     /,
     *,
     copy: Optional[bool] = None,
-    start_dim: Optional[int] = 0,
-    end_dim: Optional[int] = -1,
-    order: Optional[str] = "C",
+    start_dim: int = 0,
+    end_dim: int = -1,
+    order: str = "C",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Flattens input by reshaping it into a one-dimensional tensor. If
@@ -888,29 +895,30 @@ def _set_wrap_both(padded, axis, width_pair):
     return padded
 
 
-def _pad_simple(array, pad_width, fill_value=None):
+def _init_pad(array, pad_width, fill_value=None):
     new_shape = tuple(
         left + size + right for size, (left, right) in zip(array.shape, pad_width)
     )
-    padded = ivy.zeros(new_shape, dtype=array.dtype)
     if fill_value is not None:
-        padded = ivy.ones_like(padded) * fill_value
+        padded = ivy.ones(new_shape, dtype=array.dtype) * fill_value
+    else:
+        padded = ivy.zeros(new_shape, dtype=array.dtype)
     original_area_slice = tuple(
         slice(left, left + size) for size, (left, right) in zip(array.shape, pad_width)
     )
     padded[original_area_slice] = array
-    return padded, original_area_slice
+    return padded
 
 
-def _to_pairs(x, n):
+def _to_pairs(x, n, m=2):
     if ivy.isscalar(x):
-        return ((x, x),) * n
-    elif len(x) == 2 and ivy.isscalar(x[0]):
-        return ((x[0], x[1]),) * n
+        return ((x,) * m,) * n
+    elif len(x) == m and ivy.isscalar(x[0]):
+        return ((*x[:m],),) * n
     elif len(x) != n:
         ivy.utils.assertions.check_equal(
             ivy.asarray(list(x)).shape,
-            (n, 2),
+            (n, m),
             message=(
                 "tuple argument should contain "
                 "ndim pairs where ndim is the number of "
@@ -921,47 +929,40 @@ def _to_pairs(x, n):
     return x
 
 
-def _to_dilated(x, n):
-    if ivy.isscalar(x):
-        return ((x, x, x),) * n
-    elif len(x) == 3 and ivy.isscalar(x[0]):
-        return ((x[0], x[1], x[2]),) * n
-    elif len(x) != n:
-        ivy.utils.assertions.check_equal(
-            ivy.asarray(list(x)).shape,
-            (n, 3),
-            message=(
-                "tuple argument should contain "
-                "ndim groups where ndim is the number of "
-                "the input's dimensions"
-            ),
-            as_array=False,
+def check_scalar(x, force_integer, force_positive):
+    return (
+        ivy.isscalar(x)
+        and (ivy.is_int_dtype(x) if force_integer else True)
+        and (x >= 0 if force_positive else True)
+    )
+
+
+def _check_tuple_arg(arg, arg_name, force_integer=False, force_positive=False):
+    if not (
+        check_scalar(arg, force_integer, force_positive)
+        or (
+            isinstance(arg, (tuple, list))
+            and (
+                all(check_scalar(elem, force_integer, force_positive) for elem in arg)
+                or (
+                    isinstance(elem, (tuple, list))
+                    and all(
+                        check_scalar(sub_elem, force_integer, force_positive)
+                        for sub_elem in elem
+                    )
+                )
+                for elem in arg
+            )
         )
-    return x
-
-
-def _check_tuple_arg(arg, name, force_integer=True):
-    is_scalar = ivy.is_int_dtype if force_integer else ivy.isscalar
-    flag_assert = False
-    if isinstance(arg, (tuple, list)):
-        for nested in arg:
-            if isinstance(nested, (tuple, list)):
-                for sub_nested in nested:
-                    if not is_scalar(sub_nested):
-                        flag_assert = True
-                        break
-            elif not is_scalar(nested):
-                flag_assert = True
-    elif not is_scalar(arg):
-        flag_assert = True
-    if flag_assert:
+    ):
         if force_integer:
             raise ivy.utils.exceptions.IvyException(
-                f"{name} should be int, tuple of ints or tuple of int tuples"
+                f"{arg_name} should be int, tuple of ints or tuple of int tuples"
             )
         else:
             raise ivy.utils.exceptions.IvyException(
-                f"{name} should be scalar, tuple of scalars or tuple of scalar tuples"
+                f"{arg_name} should be scalar, tuple of scalars or tuple of scalar"
+                " tuples"
             )
 
 
@@ -973,45 +974,42 @@ def _check_arguments(
     end_values,
     reflect_type,
 ):
+    supported_modes = [
+        "constant",
+        "dilated",
+        "edge",
+        "linear_ramp",
+        "maximum",
+        "mean",
+        "median",
+        "minimum",
+        "reflect",
+        "symmetric",
+        "wrap",
+        "empty",
+    ]
     ivy.utils.assertions.check_true(
-        callable(mode)
-        or mode
-        in [
-            "constant",
-            "dilated",
-            "edge",
-            "linear_ramp",
-            "maximum",
-            "mean",
-            "median",
-            "minimum",
-            "reflect",
-            "symmetric",
-            "wrap",
-            "empty",
-        ],
-        message="the provided mode is not supported",
+        callable(mode) or mode in supported_modes,
+        message=f"Only modes {supported_modes} are supported. Got {mode}.",
     )
-    _check_tuple_arg(pad_width, "pad_width")
-    if mode not in ["dilated"]:
-        ivy.utils.assertions.check_true(
-            all(element[1] >= 0 for element in ivy.ndenumerate(pad_width)),
-            message="the pad_widths must be greater or equal to zero",
-        )
+    _check_tuple_arg(
+        pad_width, "pad_width", force_positive=mode != "dilated", force_integer=True
+    )
     if mode in ["maximum", "mean", "median", "minimum"]:
-        _check_tuple_arg(stat_length, "stat_length")
-        ivy.utils.assertions.check_true(
-            all(element[1] > 0 for element in ivy.ndenumerate(stat_length)),
-            message="the stat lengths must be greater than zero",
+        _check_tuple_arg(
+            stat_length, "stat_length", force_positive=True, force_integer=True
         )
-    elif mode == "constant":
-        _check_tuple_arg(constant_values, "constant_values", force_integer=False)
+    elif mode in ["constant", "dilated"]:
+        _check_tuple_arg(constant_values, "constant_values")
     elif mode == "linear_ramp":
-        _check_tuple_arg(end_values, "end_values", force_integer=False)
-    ivy.utils.assertions.check_true(
-        reflect_type in ["even", "odd"],
-        message="the provided reflect_type is not supported",
-    )
+        _check_tuple_arg(end_values, "end_values")
+    elif mode in ["reflect", "symmetric"]:
+        ivy.utils.assertions.check_true(
+            reflect_type in ["even", "odd"],
+            message=(
+                f"Only reflect types ['even', 'odd'] are supported. Got {reflect_type}."
+            ),
+        )
 
 
 @handle_exceptions
@@ -1196,23 +1194,23 @@ def pad(
         end_values,
         reflect_type,
     )
+    ndim = input.ndim
     if mode == "dilated":
-        pad_width = _to_dilated(pad_width, input.ndim)
+        pad_width = _to_pairs(pad_width, ndim, m=3)
         if not ivy.is_array(constant_values) or constant_values.dtype != input.dtype:
             constant_values = ivy.asarray(constant_values, dtype=input.dtype)
         return _interior_pad(input, constant_values, pad_width)
     pad_width = _to_pairs(pad_width, len(input.shape))
     if callable(mode):
         func = mode
-        padded, _ = _pad_simple(input, pad_width, fill_value=0)
-        for axis in range(padded.ndim):
+        padded = _init_pad(input, pad_width, fill_value=0)
+        for axis in range(ndim):
             padded = ivy.moveaxis(padded, axis, -1)
             inds = ivy.ndindex(padded.shape[:-1])
             for ind in inds:
                 padded[ind] = func(padded[ind], pad_width[axis], axis, kwargs)
         return padded
-    padded, original_area_slice = _pad_simple(input, pad_width)
-    axes = range(padded.ndim)
+    padded = _init_pad(input, pad_width)
     stat_functions = {
         "maximum": ivy.max,
         "minimum": ivy.min,
@@ -1220,35 +1218,31 @@ def pad(
         "median": ivy.median,
     }
     if mode == "constant":
-        constant_values = _to_pairs(constant_values, padded.ndim)
-        constant_values = tuple(tuple(map(ivy.array, pair)) for pair in constant_values)
-        for axis, width_pair, value_pair in zip(axes, pad_width, constant_values):
+        constant_values = _to_pairs(constant_values, ndim)
+        for axis, (width_pair, value_pair) in enumerate(
+            zip(pad_width, constant_values)
+        ):
             padded = _set_pad_area(padded, axis, width_pair, value_pair)
     elif mode == "empty":
         pass
     elif mode == "edge":
-        for axis, width_pair in zip(axes, pad_width):
+        for axis, width_pair in enumerate(pad_width):
             edge_pair = _get_edges(padded, axis, width_pair)
             padded = _set_pad_area(padded, axis, width_pair, edge_pair)
     elif mode == "linear_ramp":
-        end_values = _to_pairs(end_values, padded.ndim)
-        for axis, width_pair, value_pair in zip(axes, pad_width, end_values):
+        end_values = _to_pairs(end_values, ndim)
+        for axis, (width_pair, value_pair) in enumerate(zip(pad_width, end_values)):
             ramp_pair = _get_linear_ramps(padded, axis, width_pair, value_pair)
             padded = _set_pad_area(padded, axis, width_pair, ramp_pair)
     elif mode in stat_functions:
         func = stat_functions[mode]
-        stat_length = _to_pairs(stat_length, padded.ndim)
-        if mode == "median":
-            ivy.utils.assertions.check_true(
-                ivy.is_float_dtype(input),
-                message="median interpolation is only supported for floats",
-            )
-        for axis, width_pair, length_pair in zip(axes, pad_width, stat_length):
+        stat_length = _to_pairs(stat_length, ndim)
+        for axis, (width_pair, length_pair) in enumerate(zip(pad_width, stat_length)):
             stat_pair = _get_stats(padded, axis, width_pair, length_pair, func)
             padded = _set_pad_area(padded, axis, width_pair, stat_pair)
     elif mode in {"reflect", "symmetric"}:
         include_edge = True if mode == "symmetric" else False
-        for axis, (left_index, right_index) in zip(axes, pad_width):
+        for axis, (left_index, right_index) in enumerate(pad_width):
             if input.shape[axis] == 1 and (left_index > 0 or right_index > 0):
                 edge_pair = _get_edges(padded, axis, (left_index, right_index))
                 padded = _set_pad_area(
@@ -1260,7 +1254,7 @@ def pad(
                     padded, axis, (left_index, right_index), reflect_type, include_edge
                 )
     elif mode == "wrap":
-        for axis, (left_index, right_index) in zip(axes, pad_width):
+        for axis, (left_index, right_index) in enumerate(pad_width):
             padded = _set_wrap_both(padded, axis, (left_index, right_index))
     return padded
 
@@ -1803,11 +1797,12 @@ def put_along_axis(
     >>> axis = 1
     >>> indices = ivy.argmax(arr, axis=axis, keepdims=True)
     >>> value = 100
-    >>> ivy.put_along_axis(arr, indices, value, axis, mode='add')
+    >>> ivy.put_along_axis(arr, indices, value, axis, mode='sum')
     >>> print(arr)
-    ivy.array([[ 10, 130, 20],
-               [ 160, 40, 50]])
+    ivy.array([[10, 30, 20],
+              [60, 40, 50]])
     """
+    arr, values = ivy.promote_types_of_inputs(arr, values)
     arr_shape = arr.shape
 
     # array containing all flat indices
@@ -2237,7 +2232,7 @@ fill_diagonal.mixed_backend_wrappers = {
 def unfold(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    mode: Optional[int] = 0,
+    mode: int = 0,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -2309,10 +2304,10 @@ def fold(
 def partial_unfold(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    mode: Optional[int] = 0,
-    skip_begin: Optional[int] = 1,
-    skip_end: Optional[int] = 0,
-    ravel_tensors: Optional[bool] = False,
+    mode: int = 0,
+    skip_begin: int = 1,
+    skip_end: int = 0,
+    ravel_tensors: bool = False,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -2369,7 +2364,7 @@ def partial_fold(
     /,
     mode: int,
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
-    skip_begin: Optional[int] = 1,
+    skip_begin: int = 1,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -2410,8 +2405,8 @@ def partial_fold(
 def partial_tensor_to_vec(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    skip_begin: Optional[int] = 1,
-    skip_end: Optional[int] = 0,
+    skip_begin: int = 1,
+    skip_end: int = 0,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -2455,7 +2450,7 @@ def partial_vec_to_tensor(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
-    skip_begin: Optional[int] = 1,
+    skip_begin: int = 1,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -2633,17 +2628,17 @@ def choose(
     Examples
     --------
     >>> choices = ivy.array([[0, 1, 2, 3], [10, 11, 12, 13],
-                        [20, 21, 22, 23], [30, 31, 32, 33]])
-    >>> print(choose(ivy.array([2, 3, 1, 0]), choices))
+    ...                     [20, 21, 22, 23],[30, 31, 32, 33]])
+    >>> print(ivy.choose(choices, ivy.array([2, 3, 1, 0]))
     ivy.array([20, 31, 12, 3])
     >>> arr = ivy.array([2, 4, 1, 0])
-    >>> print(choose(arr, choices, mode='clip')) # 4 goes to 3 (4-1)
+    >>> print(ivy.choose(choices, arr, mode='clip')) # 4 goes to 3 (4-1)
     ivy.array([20, 31, 12, 3])
     >>> arr = ivy.array([2, 4, 1, 0])
-    >>> print(choose(arr, choices, mode='wrap')) # 4 goes to (4 mod 4)
+    >>> print(ivy.choose(choices, arr, mode='wrap')) # 4 goes to (4 mod 4)
     ivy.array([20, 1, 12, 3])
     """
-    return ivy.current_backend(arr).choose(arr, choices, out=out, mode=mode)
+    return ivy.current_backend().choose(arr, choices, out=out, mode=mode)
 
 
 @handle_array_function
@@ -2712,6 +2707,121 @@ column_stack.mixed_backend_wrappers = {
 }
 
 
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device
+def take(
+    x: Union[int, ivy.Array, ivy.NativeArray],
+    indices: Union[int, ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[int] = None,
+    mode: str = "fill",
+    fill_value: Optional[Number] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Return elements of an array along an axis.
+
+    .. note::
+        Conceptually, take(x, indices, axis=3) is equivalent to x[:,:,:,indices,...];
+        however, explicit indexing via arrays of indices is not currently supported
+        in this specification due to concerns regarding __setitem__
+        and array mutation semantics.
+
+    Parameters
+    ----------
+    x
+        input array
+    indices
+        array indices. Must have an integer data type.
+    axis
+        axis over which to select values. If `axis` is negative,
+        the function must determine the axis along which to select values
+        by counting from the last dimension.
+        By default, the flattened input array is used.
+    mode
+        specifies how out-of-bounds `indices` will behave.
+        -   ‘raise’ – raise an error
+        -   ‘wrap’ – wrap around
+        -   ‘clip’ – clip to the range (all indices that are too large are
+        replaced by the index that addresses the last element along that axis.
+        Note that this disables indexing with negative numbers.)
+        -   'fill' (default) = returns invalid values (e.g. NaN)
+        for out-of bounds indices (see also fill_value below)
+    fill_value
+        fill value to return for out-of-bounds slices
+        (Defaults to NaN for inexact types,
+        the largest negative value for signed types,
+        the largest positive value for unsigned types, and True for booleans.)
+    out
+        optional output array, for writing the result to. It must
+        have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+        ret
+            an array having the same data type as `x`.
+            The output array must have the same rank (i.e., number of dimensions) as `x`
+            and must have the same shape as `x`, except for the axis specified by `axis`
+            whose size must equal the number of elements in `indices`.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.max.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With `ivy.Array` input:
+
+    >>> x = ivy.array([4,5,6])
+    >>> indices = ivy.array([2,1,0])
+    >>> y = ivy.take(x, indices)
+    >>> print(y)
+    ivy.array([6, 5, 4])
+
+    >>> x = ivy.array([4.7,5.2,6.5])
+    >>> indices = ivy.array([[0,1]])
+    >>> y = ivy.zeros_like(indices, dtype=x.dtype)
+    >>> ivy.take(x, indices, out=y)
+    >>> print(y)
+    ivy.array([[4.7, 5.2]])
+
+    >>> x = ivy.array([False, False, True])
+    >>> indices = ivy.array([[4,3,2]])
+    >>> y = ivy.zeros_like(indices, dtype=x.dtype)
+    >>> ivy.take(x, indices, out=y, mode="wrap")
+    >>> print(y)
+    ivy.array([[False, False, True]])
+
+    With `ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([True,False,False]),
+    ...                     b=ivy.array([2.3,4.5,6.7]),
+    ...                     c=ivy.array([1,2,3]))
+    >>> indices = ivy.array([[1,9,2]])
+    >>> y = ivy.take(x, indices)
+    >>> print(y)
+    {
+        a: ivy.array([[False, True, False]]),
+        b: ivy.array([[4.5, nan, 6.69999981]]),
+        c: ivy.array([[2, -2147483648, 3]])
+    }
+    """
+    return ivy.current_backend().take(
+        x, indices, axis=axis, mode=mode, fill_value=fill_value, out=out
+    )
+
+
 @inputs_to_ivy_arrays
 @handle_exceptions
 @handle_device
@@ -2719,7 +2829,7 @@ def trim_zeros(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    trim: Optional[str] = "fb",
+    trim: str = "fb",
 ) -> ivy.Array:
     """ivy.Container instance method variant of ivy.trim_zeros. This method
     simply wraps the function, and so the docstring for ivy.trim_zeros also
@@ -2761,3 +2871,64 @@ trim_zeros.mixed_backend_wrappers = {
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_view
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device
+def unflatten(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    dim: int,
+    shape: Tuple[int],
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Expand a dimension of the input tensor over multiple dimensions.
+
+    Parameters
+    ----------
+    x
+        input tensor.
+    dim
+        dimension to be unflattened, specified as an index into input.shape.
+    shape
+        new shape of the unflattened dimension. One of its elements can be -1 in
+        which case the corresponding output dimension is inferred. Otherwise,
+        the product of sizes must equal input.shape[dim].
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        view of input with the specified dimension unflattened.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.permute_dims.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    >>> ivy.unflatten(torch.randn(3, 4, 1), dim=1, shape=(2, 2)).shape
+    torch.Size([3, 2, 2, 1])
+    >>> ivy.unflatten(torch.randn(3, 4, 1), dim=1, shape=(-1, 2)).shape
+    torch.Size([3, 2, 2, 1])
+    >>> ivy.unflatten(torch.randn(5, 12, 3), dim=-2, shape=(2, 2, 3, 1, 1)).shape
+    torch.Size([5, 2, 2, 3, 1, 1, 3])
+    """
+    return ivy.current_backend(x).unflatten(x, dim=dim, shape=shape, out=out)

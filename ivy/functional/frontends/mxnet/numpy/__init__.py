@@ -121,8 +121,10 @@ def promote_types_mxnet(
     """
     try:
         ret = mxnet_promotion_table[(ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))]
-    except KeyError:
-        raise ivy.utils.exceptions.IvyException("these dtypes are not type promotable")
+    except KeyError as e:
+        raise ivy.utils.exceptions.IvyException(
+            "these dtypes are not type promotable"
+        ) from e
     return ret
 
 
