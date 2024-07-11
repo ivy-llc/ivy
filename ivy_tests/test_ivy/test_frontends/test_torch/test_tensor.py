@@ -221,6 +221,34 @@ def _fill_value_and_size(
     return dtype, [array, size, fill_value]
 
 
+# float_power_helper
+@st.composite
+def _float_power_helper(draw, *, available_dtypes=None):
+    if available_dtypes is None:
+        available_dtypes = helpers.get_dtypes("numeric")
+    dtype1, x1 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=available_dtypes,
+            small_abs_safety_factor=16,
+            large_abs_safety_factor=16,
+            safety_factor_scale="log",
+        )
+    )
+    dtype2 = draw(helpers.get_dtypes("numeric"))
+    if ivy.is_int_dtype(dtype2[0]):
+        min_value = 0
+    else:
+        min_value = -10
+    dtype2, x2 = draw(
+        helpers.dtype_and_values(
+            min_value=min_value,
+            max_value=10,
+            dtype=dtype2,
+        )
+    )
+    return (dtype1[0], dtype2[0]), (x1[0], x2[0])
+
+
 @st.composite
 def _get_clamp_inputs(draw):
     shape = draw(
@@ -1482,6 +1510,41 @@ def test_torch___truediv__(
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# float_power
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="float_power",
+    dtype_and_x=_float_power_helper(),
+)
+def test_torch_instance_float_power(
+    dtype_and_x,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    # Making sure zero to the power of negative doesn't occur
+    assume(not np.any(np.isclose(x[0], 0)))
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "exponent": x[1],
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
