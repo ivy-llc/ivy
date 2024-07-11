@@ -934,7 +934,7 @@ def test_dct(
     method_tree="IDct.__call__",
     dtype_x_and_args=_valid_dct(),
 )
-def test_dct(
+def test_idct(
     *,
     dtype_x_and_args,
     test_gradients,
