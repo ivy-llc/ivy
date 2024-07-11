@@ -1,4 +1,5 @@
-"""Collection of Paddle network layers, wrapped to fit Ivy syntax and signature."""
+"""Collection of Paddle network layers, wrapped to fit Ivy syntax and
+signature."""
 
 from typing import Optional, Tuple, Union, Sequence
 
@@ -29,10 +30,11 @@ def _convert_to_list(value, n, name="padding", _type=int):
     else:
         try:
             value_list = list(value)
-        except TypeError:
-            raise ValueError(
-                f"The input {name}'s type must be list or tuple. Received: {value}"
-            )
+        except TypeError as e:
+            raise TypeError(
+                f"The input {value}'s type must be list or tuple. Received:"
+                f" {type(value)}"
+            ) from e
         else:
             return value_list
 
@@ -70,7 +72,7 @@ def _pad_before_conv(x, filters, strides, padding, dims, dilations, data_format)
         else:
             raise ValueError(f"Invalid padding format: {padding}")
 
-    if not all([p >= 0 for p in padding]):
+    if not all(p >= 0 for p in padding):
         raise ValueError(
             "Invalid padding, all values should be larger than"
             f"or equal to 0, but received: {padding}."
@@ -147,8 +149,8 @@ def conv1d(
     /,
     *,
     data_format: str = "NWC",
-    filter_format: Optional[str] = "channel_last",
-    x_dilations: Optional[Union[int, Tuple[int]]] = 1,
+    filter_format: str = "channel_last",
+    x_dilations: Union[int, Tuple[int]] = 1,
     dilations: Union[int, Tuple[int]] = 1,
     bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
@@ -157,7 +159,7 @@ def conv1d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16", "bfloat16")}},
+    {"2.6.0 and below": {"cpu": ("float16", "bfloat16")}},
     backend_version,
 )
 def conv1d_transpose(
@@ -168,6 +170,7 @@ def conv1d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
     bias: Optional[paddle.Tensor] = None,
@@ -177,7 +180,8 @@ def conv1d_transpose(
         x = x.transpose([0, 2, 1])
     strides = [strides] if isinstance(strides, int) else strides
     dilations = [dilations] if isinstance(dilations, int) else dilations
-    filters = filters.transpose([1, 2, 0])
+    if filter_format == "channel_last":
+        filters = filters.transpose([2, 1, 0])
     not_valid_pad, padding_list, output_padding = _pad_before_conv_tranpose(
         x, filters, strides, padding, 1, dilations, output_shape, filters.shape[2:]
     )
@@ -206,8 +210,8 @@ def conv2d(
     /,
     *,
     data_format: str = "NHWC",
-    filter_format: Optional[str] = "channel_last",
-    x_dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+    filter_format: str = "channel_last",
+    x_dilations: Union[int, Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int, int]] = 1,
     bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
@@ -216,7 +220,7 @@ def conv2d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}},
+    {"2.6.0 and below": {"cpu": ("float16", "bfloat16")}},
     backend_version,
 )
 def conv2d_transpose(
@@ -227,8 +231,9 @@ def conv2d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    data_format: Optional[str] = "NHWC",
-    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+    filter_format: str = "channel_last",
+    data_format: str = "NHWC",
+    dilations: Union[int, Tuple[int, int]] = 1,
     bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
 ):
@@ -236,7 +241,8 @@ def conv2d_transpose(
         x = x.transpose([0, 3, 1, 2])
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
-    filters = filters.transpose([2, 3, 0, 1])
+    if filter_format == "channel_last":
+        filters = filters.transpose([3, 2, 0, 1])
     not_valid_pad, padding_list, output_padding = _pad_before_conv_tranpose(
         x, filters, strides, padding, 2, dilations, output_shape, filters.shape[2:]
     )
@@ -267,15 +273,15 @@ def depthwise_conv2d(
     padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
-    data_format: Optional[str] = "NHWC",
-    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+    data_format: str = "NHWC",
+    dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}},
+    {"2.6.0 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def conv3d(
@@ -285,10 +291,10 @@ def conv3d(
     padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
-    data_format: Optional[str] = "NDHWC",
-    filter_format: Optional[str] = "channel_last",
-    x_dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
-    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
+    data_format: str = "NDHWC",
+    filter_format: str = "channel_last",
+    x_dilations: Union[int, Tuple[int, int, int]] = 1,
+    dilations: Union[int, Tuple[int, int, int]] = 1,
     bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
 ):
@@ -325,8 +331,9 @@ def conv3d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    data_format: Optional[str] = "NDHWC",
-    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
+    filter_format: str = "channel_last",
+    data_format: str = "NDHWC",
+    dilations: Union[int, Tuple[int, int, int]] = 1,
     bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
@@ -334,7 +341,7 @@ def conv3d_transpose(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}},
+    {"2.6.0 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def conv_general_dilated(
@@ -344,16 +351,12 @@ def conv_general_dilated(
     padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
-    dims: Optional[int] = 2,
-    data_format: Optional[str] = "channel_last",
-    filter_format: Optional[str] = "channel_last",
-    feature_group_count: Optional[int] = 1,
-    x_dilations: Optional[
-        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
-    ] = 1,
-    dilations: Optional[
-        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
-    ] = 1,
+    dims: int = 2,
+    data_format: str = "channel_last",
+    filter_format: str = "channel_last",
+    feature_group_count: int = 1,
+    x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
 ):
@@ -425,21 +428,21 @@ def conv_general_transpose(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    dims: Optional[int] = 2,
+    dims: int = 2,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    data_format: Optional[str] = "NDHWC",
-    dilations: Optional[
-        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
-    ] = 1,
-    feature_group_count: Optional[int] = 1,
+    filter_format: str = "channel_last",
+    data_format: str = "NDHWC",
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    feature_group_count: int = 1,
     bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
 ):
     if data_format == "channel_last":
-        x = x.transpose(x, (0, dims + 1, *range(1, dims + 1)))
+        x = x.transpose([0, dims + 1, *range(1, dims + 1)])
+    if filter_format == "channel_last":
+        filters = filters.transpose([dims + 1, dims, *range(dims)])
     strides = [strides] * dims if isinstance(strides, int) else strides
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
-    filters = filters.transpose(dims, dims + 1, *range(dims))
     not_valid_pad, padding_list, output_padding = _pad_before_conv_tranpose(
         x, filters, strides, padding, dims, dilations, output_shape, filters.shape[2:]
     )
@@ -492,5 +495,5 @@ def conv_general_transpose(
         if not_valid_pad[2]:
             res = res[:, :, :, 0:-1]
     if data_format == "channel_last":
-        res = res.transpose(0, *range(2, dims + 2), 1)
+        res = res.transpose([0, *range(2, dims + 2), 1])
     return res

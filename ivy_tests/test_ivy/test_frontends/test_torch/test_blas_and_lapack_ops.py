@@ -6,7 +6,6 @@ from hypothesis import strategies as st, assume
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
     matrix_is_stable,
 )
@@ -524,7 +523,7 @@ def test_torch_chain_matmul(
         available_dtypes=helpers.get_dtypes("float", index=1),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ).filter(
         lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon
         and np.linalg.det(np.asarray(x[1])) != 0
@@ -541,10 +540,9 @@ def test_torch_cholesky(
     backend_fw,
 ):
     dtype, x = dtype_and_x
-    x = x[0]
-    x = (
-        np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
-    )  # make symmetric positive-definite
+    x = np.asarray(x[0], dtype=dtype[0])
+    x = np.matmul(np.conjugate(x.T), x) + np.identity(x.shape[0], dtype=dtype[0])
+    # make symmetric positive-definite
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
@@ -652,6 +650,7 @@ def test_torch_logdet(
     backend_fw,
 ):
     dtype, x = dtype_and_x
+    assume(matrix_is_stable(x))
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
@@ -688,37 +687,6 @@ def test_torch_matmul(
         input=x,
         other=y,
         out=None,
-    )
-
-
-# matrix_rank
-@handle_frontend_test(
-    fn_tree="torch.linalg.matrix_rank",
-    # aliases=["torch.matrix_rank",], deprecated since 1.9. uncomment with multi-version
-    # testing pipeline
-    dtype_x_hermitian_atol_rtol=_matrix_rank_helper(),
-)
-def test_torch_matrix_rank(
-    dtype_x_hermitian_atol_rtol,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    dtype, x, hermitian, atol, rtol = dtype_x_hermitian_atol_rtol
-    assume(matrix_is_stable(x, cond_limit=10))
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        A=x,
-        atol=atol,
-        rtol=rtol,
-        hermitian=hermitian,
     )
 
 

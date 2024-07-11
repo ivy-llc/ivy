@@ -16,8 +16,24 @@ This standard can be considered as “higher level” than the ML frameworks the
 The Array API Standard takes the lowest common denominator approach, whereby each function in the standard represents the minimum behaviors of the function without restricting extensions to the function.
 This means that two very different libraries can adhere to the same standard, despite having very different extended behaviors for some of the functions in the standard.
 The standard is also not exhaustive.
-For example, there are <insert_number> functions defined in the standard, whereas the functions defined in each framework are as follows:
+For example, there are 64 functions defined in the standard, whereas the functions defined in each framework are as follows:
 
-<insert_table>
+Table:
+__________________________________________________________________________________
+|             |                                                                  |
+| Framework   | Functions                                                        |
+|-------------|------------------------------------------------------------------|
+| NumPy       | all, any, argmax, argmin, around, clip, cumprod, cumsum, max,    |
+|             | mean, min, prod, round, std, sum, var                            |
+|-------------|------------------------------------------------------------------|
+| Pandas      | append, diff, fillna, head, isin, loc, mean, min, pct_change,    |
+|             | prod, quantile, rolling, shift, tail, to_numpy                   |
+|-------------|------------------------------------------------------------------|
+| TensorFlow  | cast, clip_by_value, equal, greater, greater_equal, less,        |
+|             | less_equal, maximum, minimum, not_equal, ones_like, reshape,     |
+|             | sum                                                              |
+|-------------|------------------------------------------------------------------|
+| PyTorch     | abs, add, mean, max, min, pow, sum                               |
+|_____________|__________________________________________________________________|
 
 Therefore, two frameworks which adhere to the standard will still have major differences by virtue of the extra functions they support which are not present in the standard.

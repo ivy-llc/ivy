@@ -21,7 +21,7 @@ import ivy.functional.frontends.torch as torch_frontend
 def _fn(*args, dtype=None, check_default=False, inplace=False):
     if (
         check_default
-        and all([not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args])
+        and all(not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args)
         and not ivy.exists(dtype)
     ):
         ivy.utils.assertions.check_equal(

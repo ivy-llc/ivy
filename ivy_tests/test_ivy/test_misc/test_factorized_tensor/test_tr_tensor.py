@@ -5,7 +5,7 @@ import pytest
 
 
 @pytest.mark.parametrize(
-    "shape1, shape2, shape3",
+    ("shape1", "shape2", "shape3"),
     [
         (
             (2, 4, 3),
@@ -30,7 +30,7 @@ def test_tr_to_tensor(shape1, shape2, shape3):
 
 
 @pytest.mark.parametrize(
-    "rank1, rank2",
+    ("rank1", "rank2"),
     [((2, 3, 4, 2), (2, 3, 4, 2, 3))],
 )
 def test_validate_tr_rank(rank1, rank2):
@@ -60,7 +60,7 @@ def test_validate_tr_rank(rank1, rank2):
 
 
 @pytest.mark.parametrize(
-    "true_shape, true_rank",
+    ("true_shape", "true_rank"),
     [
         (
             (6, 4, 5),

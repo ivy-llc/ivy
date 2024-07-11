@@ -79,7 +79,7 @@ def _conv_transpose(
 # ------------ #
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def conv1d(
     x,
@@ -95,7 +95,7 @@ def conv1d(
     return _conv(x, weight, bias, stride, padding, dilation, groups, data_format)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def conv1d_transpose(
     x,
@@ -115,7 +115,7 @@ def conv1d_transpose(
     )
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def conv2d(
     x,
@@ -131,7 +131,7 @@ def conv2d(
     return _conv(x, weight, bias, stride, padding, dilation, groups, data_format)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def conv2d_transpose(
     x,
@@ -151,7 +151,7 @@ def conv2d_transpose(
     )
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def conv3d(
     x,
@@ -167,7 +167,7 @@ def conv3d(
     return _conv(x, weight, bias, stride, padding, dilation, groups, data_format)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def conv3d_transpose(
     x,

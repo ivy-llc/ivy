@@ -30,7 +30,7 @@ def func(e):
 
 @pytest.mark.parametrize(
     "e",
-    (
+    [
         IvyError,
         IvyNotImplementedException,
         IvyBroadcastShapeError,
@@ -43,7 +43,7 @@ def func(e):
         IvyDeviceError,
         IvyInvalidBackendException,
         IvyDtypePromotionError,
-    ),
+    ],
 )
 def test_ivy_errors_raising(e):
     with pytest.raises(e):
@@ -55,7 +55,7 @@ def test_no_exception():
 
 
 @pytest.mark.parametrize(
-    "e, to_be_raised",
+    ("e", "to_be_raised"),
     _non_ivy_exceptions_mapping.items(),
 )
 def test_non_ivy_errors_mapping(e, to_be_raised):

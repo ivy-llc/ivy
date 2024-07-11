@@ -5,7 +5,7 @@ from ivy.functional.frontends.sklearn.utils.multiclass import type_of_target
 
 # not suitable for usual frontend testing
 @pytest.mark.parametrize(
-    "y, label",
+    ("y", "label"),
     [
         ([1.2], "continuous"),
         ([1], "binary"),

@@ -7,20 +7,25 @@ import torch
 # local
 import ivy
 from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+)
 from . import backend_version
 
 # Array API Standard #
 # -------------------#
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("complex",)}, backend_version)
 def min(
     x: torch.Tensor,
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis == ():
@@ -28,9 +33,22 @@ def min(
             return ivy.inplace_update(out, x)
         else:
             return x
+    if where is not None:
+        max_val = (
+            ivy.iinfo(x.dtype).max
+            if ivy.is_int_dtype(x.dtype)
+            else ivy.finfo(x.dtype).max
+        )
+        val = torch.ones_like(x) * max_val
+        val = val.type(x.dtype)
+        x = torch.where(where, x, val)
     if not keepdims and not axis and axis != 0:
-        return torch.amin(input=x, out=out)
-    return torch.amin(input=x, dim=axis, keepdim=keepdims, out=out)
+        result = torch.amin(input=x, out=out)
+    result = torch.amin(input=x, dim=axis, keepdim=keepdims, out=out)
+    if initial is not None:
+        initial = torch.tensor(initial, dtype=x.dtype)
+        result = torch.minimum(result, initial)
+    return result
 
 
 min.support_native_out = True
@@ -66,24 +84,27 @@ def max(
 max.support_native_out = True
 
 
-@with_supported_dtypes({"2.1.0 and below": ("float", "complex")}, backend_version)
+@with_supported_dtypes({"2.2 and below": ("float", "complex")}, backend_version)
 def mean(
     x: torch.Tensor,
     /,
-    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
+    *,
+    dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if dtype is not None:
+        dtype = ivy.as_native_dtype(dtype)
     if axis is None:
         num_dims = len(x.shape)
         axis = list(range(num_dims))
-    if axis == () or axis == []:
+    if axis in [(), []]:
         if ivy.exists(out):
             return ivy.inplace_update(out, x)
         else:
             return x
-    return torch.mean(x, dim=axis, keepdim=keepdims, out=out)
+    return torch.mean(x, dim=axis, dtype=dtype, keepdim=keepdims, out=out)
 
 
 mean.support_native_out = True
@@ -101,7 +122,7 @@ def _infer_dtype(dtype: torch.dtype) -> torch.dtype:
 # the function to break the upcasting rule defined in the Array API Standard
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": ("uint8", "float16", "bfloat16"),
+        "2.2 and below": ("uint8", "float16", "bfloat16"),
     },
     backend_version,
 )
@@ -129,7 +150,7 @@ def prod(
 
 
 @with_unsupported_dtypes(
-    {"2.1.0 and below": ("int8", "int16", "int32", "int64", "float16")},
+    {"2.2 and below": ("int8", "int16", "int32", "int64", "float16")},
     backend_version,
 )
 def std(
@@ -166,7 +187,9 @@ def std(
 
 # Function does support uint8, but allowing support for unsigned will cause
 # the function to break the upcasting rule defined in the Array API Standard
-@with_unsupported_dtypes({"2.1.0 and below": ("uint8",)}, backend_version)
+@with_unsupported_dtypes(
+    {"2.2 and below": ("uint8", "float16", "bfloat16")}, backend_version
+)
 def sum(
     x: torch.Tensor,
     /,
@@ -228,7 +251,7 @@ def var(
 # TODO: bfloat16 support is added in PyTorch 1.12.1
 @with_unsupported_dtypes(
     {
-        "2.1.0 and below": ("uint8", "float16", "bfloat16"),
+        "2.2 and below": ("uint8", "float16", "bfloat16", "bool"),
     },
     backend_version,
 )
@@ -275,8 +298,8 @@ cumprod.support_native_out = True
 # TODO: bfloat16 support is added in PyTorch 1.12.1
 @with_unsupported_dtypes(
     {
-        "1.12.1 and below": ("uint8", "float16", "bfloat16"),
-        "1.12.1 and above": ("uint8", "float16"),
+        "1.12.1 and below": ("uint8", "bool", "float16", "bfloat16"),
+        "1.12.1 and above": ("uint8", "bool", "float16"),
     },
     backend_version,
 )
@@ -319,7 +342,7 @@ cumsum.support_native_out = True
 
 
 @with_unsupported_dtypes(
-    {"2.1.0 and below": ("float16",)},
+    {"2.2 and below": ("float16",)},
     backend_version,
 )
 def einsum(

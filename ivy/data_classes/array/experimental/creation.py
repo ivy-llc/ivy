@@ -16,10 +16,9 @@ class _ArrayWithCreationExperimental(abc.ABC):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.eye_like. This method simply wraps the
-        function, and so the docstring for ivy.eye_like also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.eye_like. This method
+        simply wraps the function, and so the docstring for ivy.eye_like also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -60,10 +59,10 @@ class _ArrayWithCreationExperimental(abc.ABC):
         segment_ids: ivy.Array,
         num_segments: Union[int, ivy.Array],
     ) -> ivy.Array:
-        r"""
-        ivy.Array instance method variant of ivy.unsorted_segment_min. This method
-        simply wraps the function, and so the docstring for ivy.unsorted_segment_min
-        also applies to this method with minimal changes.
+        r"""ivy.Array instance method variant of ivy.unsorted_segment_min. This
+        method simply wraps the function, and so the docstring for
+        ivy.unsorted_segment_min also applies to this method with minimal
+        changes.
 
         Note
         ----
@@ -97,10 +96,10 @@ class _ArrayWithCreationExperimental(abc.ABC):
         segment_ids: ivy.Array,
         num_segments: Union[int, ivy.Array],
     ) -> ivy.Array:
-        r"""
-        ivy.Array instance method variant of ivy.unsorted_segment_sum. This method
-        simply wraps the function, and so the docstring for ivy.unsorted_segment_sum
-        also applies to this method with minimal changes.
+        r"""ivy.Array instance method variant of ivy.unsorted_segment_sum. This
+        method simply wraps the function, and so the docstring for
+        ivy.unsorted_segment_sum also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -133,10 +132,9 @@ class _ArrayWithCreationExperimental(abc.ABC):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.blackman_window. This method simply
-        wraps the function, and so the docstring for ivy.blackman_window also applies to
-        this method with minimal changes.
+        """ivy.Array instance method variant of ivy.blackman_window. This
+        method simply wraps the function, and so the docstring for
+        ivy.blackman_window also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -169,9 +167,7 @@ class _ArrayWithCreationExperimental(abc.ABC):
         ivy.array([-1.38777878e-17,  1.30000000e-01,  6.30000000e-01,  1.00000000e+00,
         6.30000000e-01,  1.30000000e-01, -1.38777878e-17])
         """
-        return ivy.blackman_window(
-            self._data, periodic=periodic, dtype=dtype, device=device, out=out
-        )
+        return ivy.blackman_window(self._data, periodic=periodic, dtype=dtype, out=out)
 
     def trilu(
         self: ivy.Array,
@@ -181,10 +177,9 @@ class _ArrayWithCreationExperimental(abc.ABC):
         upper: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.trilu. This method simply wraps the
-        function, and so the docstring for ivy.trilu also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.trilu. This method simply
+        wraps the function, and so the docstring for ivy.trilu also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -220,10 +215,10 @@ class _ArrayWithCreationExperimental(abc.ABC):
         lower_edge_hertz: Optional[Union[float, ivy.Array]] = 0.0,
         upper_edge_hertz: Optional[Union[float, ivy.Array]] = 3000.0,
     ):
-        """
-        Generate a MelWeightMatrix that can be used to re-weight a Tensor containing a
-        linearly sampled frequency spectra (from DFT or STFT) into num_mel_bins
-        frequency information based on the [lower_edge_hertz, upper_edge_hertz]
+        """Generate a MelWeightMatrix that can be used to re-weight a Tensor
+        containing a linearly sampled frequency spectra (from DFT or STFT) into
+        num_mel_bins frequency information based on the [lower_edge_hertz,
+        upper_edge_hertz]
 
         range on the mel scale. This function defines the mel scale
         in terms of a frequency in hertz according to the following
@@ -265,6 +260,50 @@ class _ArrayWithCreationExperimental(abc.ABC):
             upper_edge_hertz,
         )
 
+    def unsorted_segment_mean(
+        self: ivy.Array,
+        segment_ids: ivy.Array,
+        num_segments: Union[int, ivy.Array],
+    ) -> ivy.Array:
+        """Compute the mean of values in the array 'self' based on segment
+        identifiers.
+
+        Parameters
+        ----------
+        self : ivy.Array
+            The array from which to gather values.
+        segment_ids : ivy.Array
+            Must be in the same size with the first dimension of `self`. Has to be
+            of integer data type. The index-th element of `segment_ids` array is
+            the segment identifier for the index-th element of `self`.
+        num_segments : Union[int, ivy.Array]
+            An integer or array representing the total number of distinct segment IDs.
+
+        Returns
+        -------
+        ret : ivy.Array
+            The output array, representing the result of a segmented mean operation.
+            For each segment, it computes the mean of values in `self` where
+            `segment_ids` equals to segment ID.
+
+        Examples
+        --------
+        >>> data = ivy.array([1.0, 2.0, 3.0, 4.0])
+        >>> segment_ids = ivy.array([0, 0, 0, 0])
+        >>> num_segments = 1
+        >>> result = ivy.unsorted_segment_mean(data, segment_ids, num_segments)
+        >>> result
+        ivy.array([2.5])
+
+        >>> data = ivy.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
+        >>> segment_ids = ivy.array([0, 0, 1, 1, 2, 2])
+        >>> num_segments = 3
+        >>> result = ivy.unsorted_segment_mean(data, segment_ids, num_segments)
+        >>> result
+        ivy.array([[1.5, 3.5, 5.5],[1.5, 3.5, 5.5],[1.5, 3.5, 5.5]])
+        """
+        return ivy.unsorted_segment_mean(self._data, segment_ids, num_segments)
+
 
 def polyval(
     coeffs=ivy.Array,
@@ -274,9 +313,9 @@ def polyval(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> ivy.Array:
-    """
-    ivy.Array instance method of polyval. This method simply wraps the function, and so
-    the docstring for ivy.polyval also applies to this method with minimal changes.
+    """ivy.Array instance method of polyval. This method simply wraps the
+    function, and so the docstring for ivy.polyval also applies to this method
+    with minimal changes.
 
     Evaluate and return a polynomial at specific given values.
 
@@ -291,7 +330,7 @@ def polyval(
     Returns
     -------
     ret
-        Simplified result of substituing x in the coefficients - final value of
+        Simplified result of substituting x in the coefficients - final value of
         polynomial.
 
     Examples
@@ -303,6 +342,4 @@ def polyval(
     return ivy.polyval(
         coeffs,
         x,
-        dtype=dtype,
-        device=device,
     )

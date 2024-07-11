@@ -1,6 +1,6 @@
 class NativeClass:
-    """
-    An empty class to represent a class that only exist in a specific framework.
+    """An empty class to represent a class that only exist in a specific
+    framework.
 
     Attributes
     ----------
@@ -9,8 +9,7 @@ class NativeClass:
     """
 
     def __init__(self, native_class):
-        """
-        Construct the native class object.
+        """Construct the native class object.
 
         Parameters
         ----------
