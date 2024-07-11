@@ -16,7 +16,8 @@ def while_loop(test_fn, body_fn, vars):
     def test_fn_wrapper(loop_vars):
         return test_fn(*loop_vars)
 
-    vars = list(vars.values())
+    if isinstance(vars, dict):
+        vars = list(vars.values())
     with jax.disable_jit():
         final_loop_vars = jax.lax.while_loop(test_fn_wrapper, body_fn_wrapper, vars)
     return final_loop_vars

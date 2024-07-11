@@ -1,15 +1,15 @@
 # global
-from hypothesis import strategies as st
+from hypothesis import assume, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy.functional.ivy.layers import _deconv_length
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _statistical_dtype_values,
 )
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
     _assume_tf_dilation_gt_1,
+    _output_shape,
 )
 
 
@@ -136,9 +136,13 @@ def _dropout_helper(draw):
 
 
 @st.composite
-def _generate_bias_data(draw):
+def _generate_bias_data(draw, keras_backend_fn=False):
     data_format = draw(st.sampled_from(["NC...", "N...C", None]))
     channel_dim = 1 if data_format == "NC..." else -1
+    if keras_backend_fn:
+        data_format = {"NC...": "channels_first", "N...C": "channels_last", None: None}[
+            data_format
+        ]
     dtype, value, shape = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),
@@ -226,7 +230,7 @@ def _x_and_filters(
     draw,
     dtypes,
     data_format,
-    padding,
+    padding=None,
     stride_min=1,
     stride_max=4,
     dilation_min=1,
@@ -237,7 +241,6 @@ def _x_and_filters(
 ):
     data_format = draw(data_format)
     dtype = draw(dtypes)
-    padding = draw(padding)
     if type is not None:
         if "1" in type:
             dim = 1
@@ -249,18 +252,19 @@ def _x_and_filters(
             dim = 2
     else:
         dim = len(data_format) - 2
-    if padding == "EXPLICIT":
-        padding = draw(
-            helpers.lists(
-                x=st.integers(min_value=0, max_value=2),
-                min_size=dim * 2,
-                max_size=dim * 2,
-            )
+    if padding is None:
+        padding = st.one_of(
+            st.lists(
+                st.tuples(
+                    st.integers(min_value=0, max_value=3),
+                    st.integers(min_value=0, max_value=3),
+                ),
+                min_size=dim,
+                max_size=dim,
+            ),
+            st.sampled_from(["SAME", "VALID"]),
         )
-        if data_format.find("C") == 1:
-            padding = [1, 1, 1, 1] + padding
-        else:
-            padding = [0, 0] + padding + [0, 0]
+    padding = draw(padding)
     if atrous:
         dilations = draw(st.integers(dilation_min, dilation_max))
     else:
@@ -324,7 +328,6 @@ def _x_and_filters(
                     helpers.ints(min_value=d_in, max_value=d_in),
                 )
             )
-            x_w = x_shape[1]
         else:
             x_shape = draw(
                 st.tuples(
@@ -333,15 +336,6 @@ def _x_and_filters(
                     helpers.ints(min_value=min_x_width, max_value=100),
                 )
             )
-            x_w = x_shape[2]
-        if transpose:
-            output_shape = [
-                x_shape[0],
-                _deconv_length(
-                    x_w, fstride[0], filter_shape[0], padding, fdilations[0]
-                ),
-                filter_shape[1],
-            ]
     elif dim == 2:
         min_x_height = 1
         min_x_width = 1
@@ -369,8 +363,6 @@ def _x_and_filters(
                     helpers.ints(min_value=d_in, max_value=d_in),
                 )
             )
-            x_h = x_shape[1]
-            x_w = x_shape[2]
         else:
             x_shape = draw(
                 st.tuples(
@@ -380,16 +372,6 @@ def _x_and_filters(
                     helpers.ints(min_value=min_x_width, max_value=100),
                 )
             )
-            x_h = x_shape[2]
-            x_w = x_shape[3]
-        if transpose:
-            output_shape_h = _deconv_length(
-                x_h, fstride[0], filter_shape[0], padding, fdilations[0]
-            )
-            output_shape_w = _deconv_length(
-                x_w, fstride[1], filter_shape[1], padding, fdilations[1]
-            )
-            output_shape = [x_shape[0], output_shape_h, output_shape_w, filter_shape[2]]
     elif dim == 3:
         filter_shape = draw(
             st.tuples(
@@ -422,9 +404,6 @@ def _x_and_filters(
                     helpers.ints(min_value=d_in, max_value=d_in),
                 )
             )
-            x_d = x_shape[1]
-            x_h = x_shape[2]
-            x_w = x_shape[3]
         else:
             x_shape = draw(
                 st.tuples(
@@ -435,26 +414,30 @@ def _x_and_filters(
                     helpers.ints(min_value=min_x_width, max_value=100),
                 )
             )
-            x_d = x_shape[2]
-            x_h = x_shape[3]
-            x_w = x_shape[4]
-        if transpose:
-            output_shape_d = _deconv_length(
-                x_d, fstride[0], filter_shape[0], padding, fdilations[0]
+    if data_format[-1] == "C":
+        x_dims = x_shape[1:-1]
+    else:
+        x_dims = x_shape[2:]
+    if transpose:
+        output_shape = _output_shape(
+            dim, fdilations, fstride, padding, x_dims, filter_shape
+        )
+        assume(all(s > 0 for s in output_shape))
+        if data_format[1] == "C":
+            output_shape = [x_shape[0], filter_shape[dim], *output_shape]
+        else:
+            output_shape = [x_shape[0], *output_shape, filter_shape[dim]]
+    if not isinstance(padding, str):
+        assume(
+            all(
+                max(pad) - min(pad) < min(stride, dilation)
+                for pad, stride, dilation in zip(padding, fstride, fdilations)
             )
-            output_shape_h = _deconv_length(
-                x_h, fstride[1], filter_shape[1], padding, fdilations[1]
-            )
-            output_shape_w = _deconv_length(
-                x_w, fstride[2], filter_shape[2], padding, fdilations[2]
-            )
-            output_shape = [
-                x_shape[0],
-                output_shape_d,
-                output_shape_h,
-                output_shape_w,
-                filter_shape[3],
-            ]
+        )
+        if data_format[1] == "C":
+            padding = [(0, 0), (0, 0), *padding]
+        else:
+            padding = [(0, 0), *padding, (0, 0)]
     x = draw(
         helpers.array_values(dtype=dtype[0], shape=x_shape, min_value=0, max_value=1)
     )
@@ -677,6 +660,39 @@ def test_tensorflow_avg_pool1d(
 
 
 @handle_frontend_test(
+    fn_tree="tensorflow.nn.avg_pool2d",
+    x_k_s_p_df=helpers.arrays_for_pooling(
+        min_dims=4, max_dims=4, min_side=1, max_side=4
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_avg_pool2d(
+    *,
+    x_k_s_p_df,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x, ksize, strides, padding = x_k_s_p_df
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        ksize=ksize,
+        strides=strides,
+        padding=padding,
+        rtol=1e-2,
+        atol=1e-2,
+    )
+
+
+@handle_frontend_test(
     fn_tree="tensorflow.nn.avg_pool3d",
     x_k_s_p_df=helpers.arrays_for_pooling(
         min_dims=5, max_dims=5, min_side=1, max_side=4
@@ -775,8 +791,6 @@ def test_tensorflow_bias_add(
         dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NWC"]),
         padding=st.sampled_from(["VALID", "SAME"]),
-        stride_min=3,
-        stride_max=4,
         type="1d",
     ),
     test_with_out=st.just(False),
@@ -813,9 +827,6 @@ def test_tensorflow_conv1d(
         dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NWC"]),
         padding=st.sampled_from(["VALID", "SAME"]),
-        stride_min=3,
-        stride_max=4,
-        dilation_max=1,
         type="1d",
         transpose=True,
     ),
@@ -863,7 +874,6 @@ def test_tensorflow_conv1d_transpose(
     x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NHWC"]),
-        padding=st.sampled_from(["VALID", "SAME"]),
         type="2d",
     ),
 )
@@ -898,7 +908,6 @@ def test_tensorflow_conv2d(
     x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NHWC"]),
-        padding=st.sampled_from(["VALID", "SAME"]),
         type="2d",
         transpose=True,
     ),
@@ -923,6 +932,7 @@ def test_tensorflow_conv2d_transpose(
         padding,
         output_shape,
     ) = x_f_d_df
+    assume(isinstance(padding, str) or backend_fw in ["torch", "tensorflow"])
     _assume_tf_dilation_gt_1("tensorflow", on_device, dilation)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -948,7 +958,6 @@ def test_tensorflow_conv2d_transpose(
         data_format=st.sampled_from(["NDHWC"]),
         padding=st.sampled_from(["SAME"]),
         type="3d",
-        dilation_max=1,
     ),
     test_with_out=st.just(False),
 )
@@ -962,6 +971,7 @@ def test_tensorflow_conv3d(
     on_device,
 ):
     input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    _assume_tf_dilation_gt_1("tensorflow", on_device, dilation)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -983,7 +993,7 @@ def test_tensorflow_conv3d(
     x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NDHWC"]),
-        padding=st.sampled_from(["SAME"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
         type="3d",
         transpose=True,
     ),
@@ -1183,24 +1193,37 @@ def test_tensorflow_dropout(
     on_device,
 ):
     (x_dtype, x), noise_shape, seed, rate = dtype_x_noiseshape
-    ret, frontend_ret = helpers.test_frontend_function(
-        input_dtypes=x_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=False,
-        x=x[0],
-        rate=rate,
-        noise_shape=noise_shape,
-        seed=seed,
-    )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    frontend_ret = helpers.flatten_and_to_np(ret=frontend_ret)
-    for u, v, w in zip(ret, frontend_ret, x):
-        # cardinality test
-        assert u.shape == v.shape == w.shape
+    if rate == 0:
+        helpers.test_frontend_function(
+            input_dtypes=x_dtype,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            x=x[0],
+            rate=rate,
+            noise_shape=noise_shape,
+            seed=seed,
+        )
+    else:
+        ret = helpers.test_frontend_function(
+            input_dtypes=x_dtype,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            x=x[0],
+            rate=rate,
+            noise_shape=noise_shape,
+            seed=seed,
+        )
+        ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+        for u in ret:
+            # cardinality test
+            assert u.shape == x[0].shape
 
 
 # embedding_lookup
@@ -1312,14 +1335,13 @@ def test_tensorflow_leaky_relu(
 @handle_frontend_test(
     fn_tree="tensorflow.nn.local_response_normalization",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-20,
-        max_value=20,
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=4,
         max_num_dims=4,
         min_dim_size=1,
-        large_abs_safety_factor=25,
-        small_abs_safety_factor=25,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     depth_radius=st.integers(min_value=1, max_value=5),
     bias=st.floats(min_value=0.1, max_value=1.5),
@@ -1348,8 +1370,7 @@ def test_tensorflow_local_response_normalization(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-1,
-        atol=1e-1,
+        atol=1e-2,
         input=x[0],
         depth_radius=depth_radius,
         bias=bias,
@@ -1440,6 +1461,40 @@ def test_tensorflow_max_pool1d(
     test_with_out=st.just(False),
 )
 def test_tensorflow_max_pool2d(
+    *,
+    x_k_s_p,
+    data_format,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x, ksize, strides, padding = x_k_s_p
+    data_format = data_format
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        ksize=ksize,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
+    )
+
+
+# max_pool3d
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.max_pool3d",
+    data_format=st.just("NDHWC"),  # Pooling3DOp only supports NDHWC on device type CPU
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_max_pool3d(
     *,
     x_k_s_p,
     data_format,

@@ -70,7 +70,7 @@ Let’s dive straight in and check out what the :class:`ivy.Array` constructor l
             self._dev_str = ivy.as_ivy_dev(self._device)
             self._pre_repr = "ivy."
             if "gpu" in self._dev_str:
-                self._post_repr = ", dev={})".format(self._dev_str)
+                self._post_repr = f", dev={self._dev_str})"
             else:
                 self._post_repr = ")"
             self.framework_str = ivy.current_backend_str()

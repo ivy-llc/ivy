@@ -12,10 +12,9 @@ class _ArrayWithDevice(abc.ABC):
     def dev(
         self: ivy.Array, *, as_native: bool = False
     ) -> Union[ivy.Device, ivy.NativeDevice]:
-        """
-        ivy.Array instance method variant of ivy.dev. This method simply wraps the
-        function, and so the docstring for ivy.dev also applies to this method with
-        minimal changes.
+        """ivy.Array instance method variant of ivy.dev. This method simply
+        wraps the function, and so the docstring for ivy.dev also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -40,10 +39,9 @@ class _ArrayWithDevice(abc.ABC):
         stream: Optional[Union[int, Any]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.to_device. This method simply wraps the
-        function, and so the docstring for ivy.to_device also applies to this method
-        with minimal changes.
+        """ivy.Array instance method variant of ivy.to_device. This method
+        simply wraps the function, and so the docstring for ivy.to_device also
+        applies to this method with minimal changes.
 
         Parameters
         ----------

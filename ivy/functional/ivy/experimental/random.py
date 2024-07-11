@@ -7,8 +7,7 @@ from ivy.func_wrapper import (
     inputs_to_native_shapes,
     handle_nestable,
     infer_dtype,
-    infer_device,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -20,7 +19,7 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def dirichlet(
     alpha: Union[ivy.Array, ivy.NativeArray, float, Sequence[float]],
     /,
@@ -30,11 +29,10 @@ def dirichlet(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Draw size samples of dimension k from a Dirichlet distribution. A Dirichlet-
-    distributed random variable can be seen as a multivariate generalization of a Beta
-    distribution. The Dirichlet distribution is a conjugate prior of a multinomial
-    distribution in Bayesian inference.
+    """Draw size samples of dimension k from a Dirichlet distribution. A
+    Dirichlet- distributed random variable can be seen as a multivariate
+    generalization of a Beta distribution. The Dirichlet distribution is a
+    conjugate prior of a multinomial distribution in Bayesian inference.
 
     Parameters
     ----------
@@ -88,7 +86,7 @@ def dirichlet(
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def beta(
     a: Union[float, ivy.NativeArray, ivy.Array],
     b: Union[float, ivy.NativeArray, ivy.Array],
@@ -100,8 +98,8 @@ def beta(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return an array filled with random values sampled from a beta distribution.
+    """Return an array filled with random values sampled from a beta
+    distribution.
 
     Parameters
     ----------
@@ -143,7 +141,7 @@ def beta(
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def gamma(
     alpha: Union[float, ivy.NativeArray, ivy.Array],
     beta: Union[float, ivy.NativeArray, ivy.Array],
@@ -155,8 +153,8 @@ def gamma(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return an array filled with random values sampled from a gamma distribution.
+    """Return an array filled with random values sampled from a gamma
+    distribution.
 
     Parameters
     ----------
@@ -195,8 +193,7 @@ def gamma(
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @infer_dtype
-@handle_device_shifting
-@infer_device
+@handle_device
 def poisson(
     lam: Union[float, ivy.Array, ivy.NativeArray],
     *,
@@ -207,8 +204,7 @@ def poisson(
     fill_value: Optional[Union[int, float]] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Draws samples from a poisson distribution.
+    """Draws samples from a poisson distribution.
 
     Parameters
     ----------
@@ -249,7 +245,7 @@ def poisson(
     ivy.array([[0., 2., 2.],
                [1., 2., 3.]])
     """
-    return ivy.current_backend().poisson(
+    return ivy.current_backend(lam).poisson(
         lam,
         shape=shape,
         device=device,
@@ -267,8 +263,7 @@ def poisson(
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @infer_dtype
-@handle_device_shifting
-@infer_device
+@handle_device
 def bernoulli(
     probs: Union[float, ivy.Array, ivy.NativeArray],
     *,
@@ -279,9 +274,8 @@ def bernoulli(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Draws samples from Bernoulli distrubution paramterized by probs or logits (but not
-    both)
+    """Draws samples from Bernoulli distribution parameterized by probs or
+    logits (but not both)
 
     Parameters
     ----------

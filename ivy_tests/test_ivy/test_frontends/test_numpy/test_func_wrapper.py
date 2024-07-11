@@ -46,7 +46,7 @@ def _dtype_helper(draw):
 def _fn(*args, check_default=False, dtype=None):
     if (
         check_default
-        and any([not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args])
+        and any(not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args)
         and not ivy.exists(dtype)
     ):
         ivy.utils.assertions.check_equal(

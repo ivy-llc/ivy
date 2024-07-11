@@ -13,7 +13,7 @@ from ivy.functional.ivy.random import (
 
 
 # dirichlet
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
 def dirichlet(
     alpha: Union[torch.tensor, float, Sequence[float]],
     /,
@@ -32,7 +32,7 @@ def dirichlet(
     )
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, backend_version)
 def beta(
     alpha: Union[float, torch.Tensor],
     beta: Union[float, torch.Tensor],
@@ -53,7 +53,7 @@ def beta(
     return ret
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, backend_version)
 def gamma(
     alpha: Union[float, torch.Tensor],
     beta: Union[float, torch.Tensor],
@@ -88,7 +88,7 @@ def poisson(
     lam: Union[float, torch.Tensor],
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: torch.device,
+    device: torch.device = None,
     dtype: torch.dtype,
     seed: Optional[int] = None,
     fill_value: Optional[Union[float, int]] = 0,
@@ -111,21 +111,19 @@ def bernoulli(
     *,
     logits: Union[float, torch.Tensor] = None,
     shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
-    device: torch.device,
+    device: torch.device = None,
     dtype: torch.dtype,
     seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    dtype = dtype if dtype is not None else probs.dtype
     if seed:
         torch.manual_seed(seed)
     if logits is not None:
-        if not _check_shapes_broadcastable(shape, logits.shape):
-            shape = logits.shape
-    elif probs is not None:
-        if not _check_shapes_broadcastable(shape, probs.shape):
-            shape = probs.shape
-    return (
-        torch.distributions.bernoulli.Bernoulli(probs=probs, logits=logits)
-        .sample(shape)
-        .to(device, dtype)
-    )
+        probs = torch.nn.functional.softmax(logits, -1)
+    if not _check_shapes_broadcastable(shape, probs.shape):
+        shape = probs.shape
+    return torch.bernoulli(probs, out=out).to(device, dtype).broadcast_to(shape)
+
+
+bernoulli.support_native_out = True

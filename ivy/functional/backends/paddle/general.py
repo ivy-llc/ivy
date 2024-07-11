@@ -1,6 +1,10 @@
-"""Collection of Paddle general functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Paddle general functions, wrapped to fit Ivy syntax and
+signature."""
+
 # global
+import functools
 from numbers import Number
+from operator import mul
 from typing import Optional, Union, Sequence, Callable, List, Tuple
 import paddle
 import numpy as np
@@ -9,8 +13,10 @@ import multiprocessing as _multiprocessing
 # local
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_unsupported_dtypes
 from ivy.functional.ivy.general import _broadcast_to
 from ivy.utils.exceptions import _check_inplace_update_support
+from . import backend_version
 
 
 def is_native_array(x, /, *, exclusive=False):
@@ -34,35 +40,148 @@ def current_backend_str() -> str:
 
 
 def _check_query(query):
-    return (
-        query.ndim > 1
-        if ivy.is_array(query)
-        else (
-            all(ivy.is_array(query) and i.ndim <= 1 for i in query)
-            if isinstance(query, tuple)
-            else False if isinstance(query, int) else True
+    if isinstance(query, Sequence):
+        return not any(isinstance(item, (Sequence, paddle.Tensor)) for item in query)
+    else:
+        return True
+
+
+def _squeeze_helper(query, x_ndim):
+    # as of paddle v2.5, paddle returns 1d tensors instead of scalars
+    return_scalar = (
+        (isinstance(query, Number) and x_ndim == 1)
+        or (
+            isinstance(query, tuple)
+            and all(isinstance(index, int) for index in query)
+            and len(query) == x_ndim
+        )
+        or (isinstance(query, paddle.Tensor) and query.ndim == x_ndim)
+    )
+
+    # checks if any slice has step > 1, this keeps all the dimensions
+    # in the paddle array which is not desirable
+    if not isinstance(query, Sequence):
+        query = [query]
+    slice_squeeze = list(
+        map(
+            lambda idx: isinstance(idx, slice)
+            and idx.step is not None
+            and idx.step != 1,
+            query,
         )
     )
 
+    if any(slice_squeeze):
+        squeeze_indices = tuple(
+            [
+                idx
+                for idx, val in enumerate(slice_squeeze)
+                if (val is False and query[idx] is not None)
+            ]
+        )
+    elif return_scalar:
+        squeeze_indices = ()
+    else:
+        squeeze_indices = None
 
+    return squeeze_indices
+
+
+def _make_non_negative(query, x):
+    """Converts negative values inside the tensors in the query to their
+    positive form.
+
+    Returns ``query`` unmodified if it is not a ``list``, ``tuple``
+    or ``paddle.Tensor``.
+
+    This function leaves non-tensor values in ``query`` as is.
+    """
+    if isinstance(query, paddle.Tensor):
+        query[query < 0] = x.shape[0] + query[query < 0]
+        return query
+
+    if not isinstance(query, (list, tuple)):
+        return query
+
+    found_ellipsis = False
+    shape_i = 0
+    for q in query:
+        if q is None:
+            continue
+
+        if not isinstance(q, paddle.Tensor):
+            shape_i += 1
+            continue
+
+        if q is Ellipsis:
+            found_ellipsis = True
+            break
+
+        q[q < 0] = x.shape[shape_i] + q[q < 0]
+        shape_i += 1
+
+    if not found_ellipsis:
+        return query
+
+    shape_i = x.ndim - 1
+    for q in reversed(query):
+        if q is None:
+            continue
+
+        if not isinstance(q, paddle.Tensor):
+            shape_i -= 1
+            continue
+
+        if q is Ellipsis:
+            return query
+
+        q[q < 0] = x.shape[shape_i] + q[q < 0]
+        shape_i -= 1
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.6.0 and below": {
+            "cpu": ("int8", "int16", "float16", "complex64", "complex128")
+        }
+    },
+    backend_version,
+)
 def get_item(
     x: paddle.Tensor,
     /,
     query: Union[paddle.Tensor, Tuple],
     *,
-    copy: bool = None,
+    copy: Optional[bool] = None,
 ) -> paddle.Tensor:
-    dtype = x.dtype
-    if dtype in [paddle.int8, paddle.int16, paddle.float16, paddle.bfloat16]:
-        ret = x.cast("float32").__getitem__(query).cast(dtype)
-    elif dtype in [paddle.complex64, paddle.complex128]:
-        ret = paddle.complex(
-            x.real().__getitem__(query),
-            x.imag().__getitem__(query),
-        )
-    else:
-        ret = x.__getitem__(query)
-    return ret
+    if copy:
+        x = paddle.clone(x)
+    if (
+        isinstance(query, paddle.Tensor)
+        and query.dtype == paddle.bool
+        and query.ndim == 0
+    ) or isinstance(query, bool):
+        # special case to handle scalar boolean indices
+        if isinstance(query, paddle.Tensor):
+            query = query.item()
+
+        if query:
+            return x[None]
+        else:
+            return paddle.zeros(shape=[0] + x.shape, dtype=x.dtype)
+
+    if isinstance(query, paddle.Tensor) and query.dtype == paddle.bool:
+        # # masked queries x[bool_1,bool_2,...,bool_i]
+        return paddle.gather_nd(x, paddle.nonzero(query))
+    if isinstance(query, paddle.Tensor):
+        query = query.cast("int64")
+
+    squeeze_indices = _squeeze_helper(query, x.ndim)
+    # regular queries x[idx_1,idx_2,...,idx_i]
+    # array queries idx = Tensor(idx_1,idx_2,...,idx_i), x[idx]
+    query = _make_non_negative(query, x)
+    ret = x.__getitem__(query)
+    return ret.squeeze(squeeze_indices) if squeeze_indices else ret
 
 
 get_item.partial_mixed_handler = (
@@ -81,10 +200,13 @@ def to_numpy(
         else:
             return x
     elif paddle.is_tensor(x):
+        dtype = ivy.as_ivy_dtype(x.dtype)
+        if dtype == "bfloat16":
+            x = x.astype("float32")
         if copy:
-            return np.array(x)
+            return np.array(x).astype(dtype)
         else:
-            return np.asarray(x)
+            return np.asarray(x).astype(dtype)
     elif isinstance(x, list):
         return [ivy.to_numpy(u) for u in x]
     raise ivy.utils.exceptions.IvyException("Expected a Paddle Tensor.")
@@ -164,6 +286,10 @@ def gather(
     return _gather(params)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.6.0 and below": {"cpu": ("bfloat16", "float16")}},
+    backend_version,
+)
 def gather_nd(
     params: paddle.Tensor,
     indices: paddle.Tensor,
@@ -206,6 +332,8 @@ def gather_nd(
     indices_shape = indices.shape
     batch_shape = params_shape[:batch_dims]
     batch_size = paddle.prod(batch_shape, [0]).numpy().tolist()
+    if isinstance(batch_size, int):
+        batch_size = [batch_size]
     index_internal_ndims = indices.ndim - batch_dims - 1
     indices_internal_shape = indices_shape[batch_dims:-1]
 
@@ -291,6 +419,10 @@ def get_num_dims(
     x: paddle.Tensor, /, *, as_array: bool = False
 ) -> Union[paddle.Tensor, int]:
     return paddle.to_tensor(x.ndim).squeeze() if as_array else x.ndim
+
+
+def size(x: paddle.Tensor, /) -> int:
+    return functools.reduce(mul, x.shape) if len(x.shape) > 0 else 1
 
 
 def inplace_arrays_supported():
@@ -381,6 +513,9 @@ def scatter_flat(
     )
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("uint8", "int8", "int16", "float16")}, backend_version
+)
 def scatter_nd(
     indices: paddle.Tensor,
     updates: paddle.Tensor,
@@ -446,8 +581,8 @@ def scatter_nd(
         )
     if reduction not in ["sum", "replace", "min", "max"]:
         raise ivy.utils.exceptions.IvyException(
-            "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            f'reduction is {reduction}, but it must be one of "sum", "min", "max" or'
+            ' "replace"'
         )
     if reduction == "min":
         updates = ivy.minimum(ivy.gather_nd(target, indices), updates).data
@@ -455,9 +590,6 @@ def scatter_nd(
         updates = ivy.maximum(ivy.gather_nd(target, indices), updates).data
     elif reduction == "sum":
         updates = ivy.add(ivy.gather_nd(target, indices), updates).data
-    if indices.ndim <= 1:
-        indices = ivy.expand_dims(indices, axis=0).data
-        updates = ivy.expand_dims(updates, axis=0).data
     updates_ = _broadcast_to(ivy.gather_nd(target, indices), expected_shape).data
     target_dtype = target.dtype
     if target_dtype in [
@@ -564,7 +696,7 @@ def vmap(
 
         # Handling None in in_axes by broadcasting the axis_size
         if isinstance(in_axes, (tuple, list)) and None in in_axes:
-            none_axis_index = list()
+            none_axis_index = []
             for index, axis in enumerate(in_axes):
                 if axis is None:
                     none_axis_index.append(index)
@@ -584,7 +716,11 @@ def vmap(
 
         # vectorisation - applying map_fn if only one arg provided as reduce requires
         # two elements to begin with.
-        arr_results = [func(*arrays) for arrays in zip(*args)]
+        arr_results = []
+        for arrays in zip(*args):
+            arrays = [a if a.shape != [] else a.unsqueeze(0) for a in arrays]
+            arr_results.append(func(*arrays))
+
         res = paddle_backend.concat(arr_results)
 
         if out_axes:

@@ -85,13 +85,19 @@ def unique_counts(
 def unique_inverse(
     x: JaxArray,
     /,
+    *,
+    axis: Optional[int] = None,
 ) -> Tuple[JaxArray, JaxArray]:
     Results = namedtuple("Results", ["values", "inverse_indices"])
-    values, inverse_indices = jnp.unique(x, return_inverse=True)
+    values, inverse_indices = jnp.unique(x, return_inverse=True, axis=axis)
+
     nan_count = jnp.count_nonzero(jnp.isnan(x))
     if nan_count > 1:
-        values = jnp.append(values, jnp.full(nan_count - 1, jnp.nan)).astype(x.dtype)
+        values = jnp.append(values, jnp.full(nan_count - 1, jnp.nan), axis=0).astype(
+            x.dtype
+        )
     inverse_indices = jnp.reshape(inverse_indices, x.shape)
+
     return Results(values, inverse_indices)
 
 

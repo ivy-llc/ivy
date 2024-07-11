@@ -115,3 +115,4 @@ We're excited for you to get involved! 🦾
    deep_dive/gradients.rst
    deep_dive/operating_modes.rst
    deep_dive/building_the_docs_pipeline.rst
+   deep_dive/fix_failing_tests.rst

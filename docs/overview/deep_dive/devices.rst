@@ -25,7 +25,7 @@ Devices
 .. _`ivy.unset_default_device()`: https://github.com/unifyai/ivy/blob/2f90ce7b6a4c8ddb7227348d58363cd2a3968602/ivy/functional/ivy/device.py#L869
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`devices channel`: https://discord.com/channels/799879767196958751/982738108166602752
+.. _`devices thread`: https://discord.com/channels/799879767196958751/1189906353653817354
 
 The devices currently supported by Ivy are as follows:
 
@@ -214,7 +214,7 @@ This is the exception you will get while running the code above:
     File "/content/ivy/ivy/func_wrapper.py", line 863, in _handle_device_shifting
         raise ivy.utils.exceptions.IvyException(
     During the handling of the above exception, another exception occurred:
-    Expected all input arrays to be on the same device, but found atleast two devices - ('cpu', 'gpu:0'),
+    Expected all input arrays to be on the same device, but found at least two devices - ('cpu', 'gpu:0'),
     set `ivy.set_soft_device_mode(True)` to handle this problem.
 
 b. If all the input arrays are on the same device, the operation is executed without raising any device exceptions.
@@ -270,7 +270,7 @@ There are some functions(mostly creation function) which accept a :code:`device`
 
 This should have hopefully given you a good feel for devices, and how these are handled in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `devices channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `devices thread`_!
 
 
 **Video**

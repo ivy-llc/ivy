@@ -21,6 +21,7 @@ CLASS_TREE = "ivy.functional.frontends.pandas.Series"
 def test_pandas_series_abs(
     dtype_x,
     frontend,
+    backend_fw,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -38,6 +39,7 @@ def test_pandas_series_abs(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        backend_to_test=backend_fw,
         on_device=on_device,
     )
 

@@ -53,27 +53,30 @@ class Variable:
 
     def assign(self, value, use_locking=None, name=None, read_value=True):
         ivy.utils.assertions.check_equal(
-            value.shape if hasattr(value, "ivy_array") else ivy.shape(value),
+            value.ivy_array.shape if hasattr(value, "ivy_array") else ivy.shape(value),
             self.shape,
             as_array=False,
         )
         self._ivy_array = value._ivy_array
+        return self
 
     def assign_add(self, delta, use_locking=None, name=None, read_value=True):
         ivy.utils.assertions.check_equal(
-            delta.shape if hasattr(delta, "ivy_array") else ivy.shape(delta),
+            delta.ivy_array.shape if hasattr(delta, "ivy_array") else ivy.shape(delta),
             self.shape,
             as_array=False,
         )
-        self._ivy_array = tf_frontend.math.add(self._ivy_array, delta._ivy_array)
+        self._ivy_array = ivy.add(self._ivy_array, delta._ivy_array)
+        return self
 
     def assign_sub(self, delta, use_locking=None, name=None, read_value=True):
         ivy.utils.assertions.check_equal(
-            delta.shape if hasattr(delta, "ivy_array") else ivy.shape(delta),
+            delta.ivy_array.shape if hasattr(delta, "ivy_array") else ivy.shape(delta),
             self.shape,
             as_array=False,
         )
-        self._ivy_array = tf_frontend.math.subtract(self._ivy_array, delta._ivy_array)
+        self._ivy_array = ivy.subtract(self._ivy_array, delta._ivy_array)
+        return self
 
     def batch_scatter_update(
         self, sparse_delta, use_locking=None, name=None, read_value=True
@@ -188,7 +191,7 @@ class Variable:
         return tf_frontend.math.multiply(x, self._ivy_array, name=name)
 
     def __mod__(self, x, name="mod"):
-        return ivy.remainder(x, self._ivy_array, name=name)
+        return tf_frontend.math.mod(x, self._ivy_array, name=name)
 
     def __ne__(self, other):
         return tf_frontend.raw_ops.NotEqual(
@@ -277,12 +280,14 @@ class IndexedSlices:
 
     @property
     def dense_shape(self):
-        """A 1-D `Tensor` containing the shape of the corresponding dense tensor."""
+        """A 1-D `Tensor` containing the shape of the corresponding dense
+        tensor."""
         return self._dense_shape
 
     @property
     def device(self):
-        """The name of the device on which `values` will be produced, or `None`."""
+        """The name of the device on which `values` will be produced, or
+        `None`."""
         return self.values.device
 
     @property
@@ -295,7 +300,7 @@ class IndexedSlices:
             self._indices,
             self._values,
             (
-                ", dense_shape=%s" % (self._dense_shape,)
+                f", dense_shape={self._dense_shape}"
                 if self._dense_shape is not None
                 else ""
             ),

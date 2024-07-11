@@ -56,6 +56,33 @@ def dtypes_x_reshape(draw):
     return dtypes, x, shape
 
 
+# asanyarray
+@handle_frontend_test(
+    fn_tree="numpy.asanyarray",
+    dtype_and_a=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_numpy_asanyarray(
+    *,
+    dtype_and_a,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, a = dtype_and_a
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=a[0],
+    )
+
+
 # asarray_chkfinite
 @handle_frontend_test(
     fn_tree="numpy.asarray_chkfinite",

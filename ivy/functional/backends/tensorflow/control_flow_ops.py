@@ -5,11 +5,14 @@ def if_else(cond, body_fn, orelse_fn, vars):
     # back-compatibility
     if isinstance(cond, bool):
         v = cond
-        cond = lambda *_: v
+
+        def cond(*_):
+            return v
+
     cond = bool(cond(**vars))
     return tf.cond(cond, lambda: body_fn(**vars), lambda: orelse_fn(**vars))
 
-    # use pythonic placeholder until the graph compiler supports callable arguments
+    # use pythonic placeholder until the tracer supports callable arguments
 
 
 def while_loop(test_fn, body_fn, vars):
@@ -21,7 +24,7 @@ def while_loop(test_fn, body_fn, vars):
 
     if not vars:
         vars = (0,)
-    else:
+    elif isinstance(vars, dict):
         vars = list(vars.values())
     return tf.while_loop(test_fn_wrapper, body_fn_wrapper, loop_vars=vars)
 
@@ -62,4 +65,4 @@ def _tuple_to_dict(t):
 
 
 def _dict_to_tuple(d):
-    return tuple([d[k] for k in d])
+    return tuple(d[k] for k in d)

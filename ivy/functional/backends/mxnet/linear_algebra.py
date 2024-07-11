@@ -1,6 +1,11 @@
-import mxnet as mx
-from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
+# global
 
+import mxnet as mx
+from typing import Union, Optional, Tuple, Literal, List, Sequence
+from collections import namedtuple
+
+
+# local
 from ivy import inf
 from ivy.utils.exceptions import IvyNotImplementedException
 
@@ -184,8 +189,10 @@ def qr(
     out: Optional[
         Tuple[(Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)])]
     ] = None,
-) -> NamedTuple:
-    raise IvyNotImplementedException()
+) -> Tuple[(Union[(None, mx.ndarray.NDArray)], Union[(None, mx.ndarray.NDArray)])]:
+    res = namedtuple("qr", ["Q", "R"])
+    q, r = mx.np.linalg.qr(x, mode=mode)
+    return res(q, r)
 
 
 def slogdet(
@@ -221,8 +228,10 @@ def svdvals(
     x: Union[(None, mx.ndarray.NDArray)],
     /,
     *,
+    driver: Optional[str] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
+    # TODO: handling the driver argument
     raise IvyNotImplementedException()
 
 

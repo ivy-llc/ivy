@@ -1,4 +1,5 @@
-"""Collection of PyTorch gradient functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of PyTorch gradient functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 import torch
@@ -98,8 +99,8 @@ def execute_with_gradients(
     /,
     *,
     retain_grads: bool = False,
-    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
-    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
+    xs_grad_idxs: Sequence[Sequence[Union[str, int]]] = ((0,),),
+    ret_grad_idxs: Sequence[Sequence[Union[str, int]]] = ((0,),),
 ):
     # Conversion of required arrays to float variables and duplicate index chains
     xs, xs_grad_idxs, xs1, required_duplicate_index_chains, _ = (
@@ -141,7 +142,8 @@ def execute_with_gradients(
 
 
 def value_and_grad(func):
-    grad_fn = lambda xs: ivy.to_native(func(xs))
+    def grad_fn(xs):
+        return ivy.to_native(func(xs))
 
     def callback_fn(xs):
         y = grad_fn(xs)
@@ -182,16 +184,18 @@ def stop_gradient(
 
 
 def jac(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(
-        func(ivy.to_ivy(x_in, nested=True)),
-        nested=True,
-        include_derived=True,
-    )
-    callback_fn = lambda x_in: ivy.to_ivy(
-        torch.func.jacfwd(grad_fn)((ivy.to_native(x_in, nested=True))),
-        nested=True,
-        include_derived=True,
-    )
+    def grad_fn(x_in):
+        return ivy.to_native(
+            func(ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
+        )
+
+    def callback_fn(x_in):
+        return ivy.to_ivy(
+            torch.func.jacfwd(grad_fn)(ivy.to_native(x_in, nested=True)),
+            nested=True,
+            include_derived=True,
+        )
+
     return callback_fn
 
 
@@ -236,7 +240,7 @@ def grad(f, argnums=0):
 
                 # Avoid zero gradients setting requires_grads as False
                 if isinstance(y, tuple):
-                    y_ones = tuple([torch.ones_like(y_) for y_ in y])
+                    y_ones = tuple(torch.ones_like(y_) for y_ in y)
                     [y_.requires_grad_() for y_ in y if y_.requires_grad is False]
                 elif y.requires_grad is False:
                     y.requires_grad_()

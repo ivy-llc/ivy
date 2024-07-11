@@ -1,4 +1,5 @@
-"""Collection of Paddle general functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Paddle general functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 import os
@@ -32,10 +33,16 @@ def to_device(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     device = as_native_dev(device)
-    if device.is_cpu_place():
+    if device.is_cpu_place() and not x.place.is_cpu_place():
         return x.cpu()
-    elif device.is_gpu_place():
+    elif (device.is_gpu_place() and not x.place.is_gpu_place()) or (
+        x.place.is_gpu_place()
+        and device.is_gpu_place()
+        and x.place.gpu_device_id() != device.gpu_device_id()
+    ):
         return x.cuda(device.gpu_device_id())
+    else:
+        return x
 
 
 def as_ivy_dev(device: core.Place, /):
@@ -48,7 +55,7 @@ def as_ivy_dev(device: core.Place, /):
         return ivy.Device("cpu")
     elif device.is_gpu_place():
         dev_idx = device.gpu_device_id()
-        return ivy.Device("gpu:" + str(dev_idx))
+        return ivy.Device(f"gpu:{str(dev_idx)}")
 
 
 def as_native_dev(
@@ -115,7 +122,7 @@ def handle_soft_device_variable(*args, fn, **kwargs):
 class Profiler(BaseProfiler):
     def __init__(self, save_dir: str):
         # ToDO: add proper Paddle profiler
-        super(Profiler, self).__init__(save_dir)
+        super().__init__(save_dir)
         os.makedirs(save_dir, exist_ok=True)
         self._start_time = None
 
@@ -125,7 +132,7 @@ class Profiler(BaseProfiler):
     def stop(self):
         time_taken = time.perf_counter() - self._start_time
         with open(os.path.join(self._save_dir, "profile.log"), "w+") as f:
-            f.write("took {} seconds to complete".format(time_taken))
+            f.write(f"took {time_taken} seconds to complete")
 
     def __enter__(self):
         self.start()
