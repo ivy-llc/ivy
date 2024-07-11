@@ -405,9 +405,12 @@ def scan(
     return ivy.associative_scan(elems, fn, reverse=reverse)
 
 
+@with_supported_dtypes(
+    {"2.17.0 and below": ("int32", "int64")}, "tensorflow"
+)
 @to_ivy_arrays_and_back
-def scatter_nd(indices, updates, shape=None, reduction="sum", out=None, name=None):
-    return ivy.scatter_nd(indices, updates, shape=shape, reduction=reduction, out=out)
+def scatter_nd(indices, updates, shape, name=None):
+    return ivy.astype(ivy.scatter_nd(indices, updates, shape=shape), updates.dtype)
 
 
 @to_ivy_arrays_and_back
