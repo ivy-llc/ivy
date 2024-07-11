@@ -1082,7 +1082,7 @@ class Tensor:
         flat_mask = torch_frontend.flatten(mask)
         flat_source = torch_frontend.flatten(source)
         indices = torch_frontend.squeeze(torch_frontend.nonzero(flat_mask), -1)
-        flat_self.scatter_(0, indices, flat_source[:indices.shape[0]])
+        flat_self.scatter_(0, indices, flat_source[: indices.shape[0]])
         return flat_self.reshape(self.shape)
 
     def masked_scatter_(self, mask, source):
@@ -1090,7 +1090,7 @@ class Tensor:
         flat_mask = torch_frontend.flatten(mask)
         flat_source = torch_frontend.flatten(source)
         indices = torch_frontend.squeeze(torch_frontend.nonzero(flat_mask), -1)
-        flat_self.scatter_(0, indices, flat_source[:indices.shape[0]])
+        flat_self.scatter_(0, indices, flat_source[: indices.shape[0]])
         self.ivy_array = flat_self.reshape(self.shape).ivy_array
         return self
 
