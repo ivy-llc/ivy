@@ -231,8 +231,8 @@ class Tensor:
         self.ivy_array = self.asin().ivy_array
         return self
 
-     def float_power(self, exponent, out=None):
-       return torch_frontend.float_power(self,exponent, out=out)
+    def float_power(self, exponent):
+        return torch_frontend.float_power(self, exponent)
 
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
