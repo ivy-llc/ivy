@@ -1103,9 +1103,9 @@ def test_jax_einsum_path(
         **kw,
         optimize=optimize,
     )
-    len(ret[0]) == len(ret_gt[0])
-    all(x == y for x, y in zip(ret[0], ret_gt[0]))
-    ret[1] == str(ret_gt[1])
+    assert len(ret[0]) == len(ret_gt[0])
+    assert all(x == y for x, y in zip(ret[0], ret_gt[0]))
+    assert ret[1] == str(ret_gt[1])
 
 
 # exp
@@ -3314,11 +3314,11 @@ def test_jax_trace(
 
 
 @handle_frontend_test(
-    fn_tree="jax.numpy.trapz",
+    fn_tree="jax.numpy.trapezoid",
     dtype_x_axis_rand_either=_either_x_dx(),
     test_with_out=st.just(False),
 )
-def test_jax_trapz(
+def test_jax_trapezoid(
     *,
     dtype_x_axis_rand_either,
     on_device,

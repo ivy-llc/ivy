@@ -118,6 +118,10 @@ def astype(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     dtype = ivy.as_native_dtype(dtype)
+
+    if copy and 0 in x.shape:
+        return paddle.empty(x.shape, dtype=dtype)
+
     if x.dtype == dtype:
         return x.clone() if copy else x
     return x.clone().cast(dtype) if copy else x.cast(dtype)
@@ -143,7 +147,7 @@ def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
 
 @with_unsupported_dtypes(
     {
-        "2.5.1 and below": (
+        "2.6.0 and below": (
             "uint8",
             "int8",
             "int16",
@@ -231,7 +235,7 @@ def as_ivy_dtype(dtype_in: Union[paddle.dtype, str, bool, int, float], /) -> ivy
 
 
 def as_native_dtype(
-    dtype_in: Union[paddle.dtype, str, bool, int, float]
+    dtype_in: Union[paddle.dtype, str, bool, int, float],
 ) -> paddle.dtype:
     if dtype_in is int:
         return ivy.default_int_dtype(as_native=True)
@@ -274,7 +278,4 @@ def dtype_bits(dtype_in: Union[paddle.dtype, str], /) -> int:
 def is_native_dtype(dtype_in: Union[paddle.dtype, str], /) -> bool:
     if not ivy.is_hashable_dtype(dtype_in):
         return False
-    if dtype_in in ivy_dtype_dict:
-        return True
-    else:
-        return False
+    return dtype_in in ivy_dtype_dict

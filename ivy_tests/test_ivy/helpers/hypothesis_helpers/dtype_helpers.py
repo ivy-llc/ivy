@@ -113,10 +113,10 @@ def get_dtypes(
     key=None,
     prune_function=True,
 ):
-    """
-    Draws a valid dtypes for the test function. For frontend tests, it draws the data
-    types from the intersection between backend framework data types and frontend
-    framework dtypes, otherwise, draws it from backend framework data types.
+    """Draws a valid dtypes for the test function. For frontend tests, it draws
+    the data types from the intersection between backend framework data types
+    and frontend framework dtypes, otherwise, draws it from backend framework
+    data types.
 
     Parameters
     ----------
@@ -262,8 +262,7 @@ def array_dtypes(
     shared_dtype=False,
     array_api_dtypes=False,
 ):
-    """
-    Draws a list of data types.
+    """Draws a list of data types.
 
     Parameters
     ----------
@@ -363,8 +362,7 @@ def array_dtypes(
 
 @st.composite
 def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = None):
-    """
-    Draws castable dtypes for the given dtype based on the current backend.
+    """Draws castable dtypes for the given dtype based on the current backend.
 
     Parameters
     ----------

@@ -1,0 +1,96 @@
+run-name: Publish ${{ inputs.version }} docs
+on:
+  workflow_call:
+      inputs:
+        version:
+          description: 'Version of the docs'
+          required: false
+          default: 'dev'
+          type: string
+        package-dependencies:
+          description: 'Apt package dependencies'
+          required: false
+          default: ''
+          type: string
+        repo-name:
+          description: 'Repo display name in the URL'
+          required: false
+          default: ${{ github.event.repository.name }}
+          type: string
+        docs-repo:
+          description: 'Repo to hold the docs'
+          required: false
+          default: ivy-llc/docs
+          type: string
+
+permissions:
+  contents: write
+
+jobs:
+  publish-docs:
+    runs-on: ubuntu-latest
+    name: Publish ${{ inputs.version }} docs
+    steps:
+      - name: Checkout 🛎️ ${{ inputs.repo-name }}
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Checkout 🛎️ Doc-builder
+        uses: actions/checkout@v4
+        with:
+          repository: ivy-llc/doc-builder
+          path: .doc-builder
+
+      - name: Install apt dependencies
+        if: inputs.package-dependencies != ''
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ${{ inputs.package-dependencies }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        id: setup-python
+        with:
+          python-version: '3.10'
+
+      - name: Get cache week key
+        id: get-cache-week-key
+        run: |
+          echo "week-key=$(date +'%Y-%V')" >> $GITHUB_OUTPUT
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        id: cache
+        with:
+          path: ./.venv
+          key: ${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-pip-${{ steps.get-cache-week-key.outputs.week-key }}
+          restore-keys: |
+            ${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-pip-
+
+      - name: Create virtual environment
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          python -m venv .venv
+
+      - name: Build docs
+        run: |
+          source .venv/bin/activate
+          pip install --upgrade pip
+          pip install wheel setuptools
+          cd .doc-builder
+          export IVY_VERSION=${{ inputs.version }}
+          ./make_docs_without_docker.sh ..
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.6.1
+        with:
+          folder: docs/build
+          target-folder: "${{ inputs.version != 'dev' && format('{0}/', inputs.version) || '' }}${{ inputs.repo-name }}"
+          ssh-key: ${{ secrets.DOCS_DEPLOY_KEY }}
+          branch: main
+          git-config-name: ivy-dev-bot
+          git-config-email: hello@transpile-ai.com
+          repository-name: ${{ inputs.docs-repo }}
+          clean: true

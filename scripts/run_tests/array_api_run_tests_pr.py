@@ -26,7 +26,7 @@ def main():
             for line in f:
                 test, backend = line.split(",")
                 backend = backend.strip("\n")
-                command = f'docker run --rm --env IVY_BACKEND={backend} --env ARRAY_API_TESTS_MODULE="ivy" -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest timeout 30m python3 -m pytest {test} -k "{k_flag[backend]}" --tb=short -vv'  # noqa
+                command = f'docker run --rm --env IVY_BACKEND={backend} --env ARRAY_API_TESTS_MODULE="ivy" -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis transpileai/ivy:latest timeout 30m python3 -m pytest {test} -k "{k_flag[backend]}" --tb=short -vv'  # noqa
                 print(f"\n{'*' * 100}")
                 print(f"{line[:-1]}")
                 print(f"{'*' * 100}\n")

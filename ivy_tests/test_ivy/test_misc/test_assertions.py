@@ -838,7 +838,6 @@ def test_check_true(expression):
         (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), 2.0),
         (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), 0),
         (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), -2),
-        (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), 0),
         (ivy.array([1, 2, 3]), ivy.array([0.0, 1.0, 0.0], dtype=ivy.float16), 0),
         (ivy.array([1, 2]), ivy.array([0, 1, 0], dtype=ivy.int32), 0),
         (ivy.array([1, 2, 3]), ivy.array([0, 1], dtype=ivy.int32), 0),

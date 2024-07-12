@@ -98,7 +98,6 @@ def test_parafac2_to_tensor(weights, factors, projections, true_res):
     projections = [ivy.array(p) for p in projections]
     true_res = ivy.array(true_res)
     res = ivy.Parafac2Tensor.parafac2_to_tensor((weights, factors, projections))
-    (true_res, res)
     assert np.allclose(res, true_res)
 
 

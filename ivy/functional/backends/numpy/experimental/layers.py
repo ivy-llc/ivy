@@ -369,6 +369,8 @@ def _get_padded_values(x_shape, kernel, strides, padding, ceil_mode, dim):
             for i in range(dim)
         ]
     else:
+        if isinstance(padding, int):
+            padding = [(padding,) * 2] * dim
         pad_specific = [sum(padding[i]) for i in range(dim)]
 
     c = []
@@ -392,6 +394,7 @@ def avg_pool1d(
     data_format: str = "NWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(kernel, int):
@@ -726,7 +729,7 @@ def fft(
     return np.fft.fft(x, n, dim, norm).astype(out_dtype)
 
 
-@with_supported_dtypes({"1.26.1 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"1.26.3 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: np.ndarray,
     /,
@@ -948,7 +951,7 @@ def ifft(
 def fft2(
     x: np.ndarray,
     *,
-    s: Sequence[int] = None,
+    s: Optional[Sequence[int]] = None,
     dim: Sequence[int] = (-2, -1),
     norm: str = "backward",
     out: Optional[np.ndarray] = None,
@@ -991,7 +994,7 @@ def ifftn(
     return np.fft.ifftn(x, s, axes, norm).astype(x.dtype)
 
 
-@with_unsupported_dtypes({"1.26.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": ("complex",)}, backend_version)
 def embedding(
     weights: np.ndarray,
     indices: np.ndarray,
@@ -1038,8 +1041,8 @@ def rfft(
 
 def rfftn(
     x: np.ndarray,
-    s: Sequence[int] = None,
-    axes: Sequence[int] = None,
+    s: Optional[Sequence[int]] = None,
+    axes: Optional[Sequence[int]] = None,
     *,
     norm: str = "backward",
     out: Optional[np.ndarray] = None,
