@@ -419,7 +419,7 @@ def _values_and_ndindices(
         arrays(
             dtype=dtype,
             shape=(indices_dims,),
-            elements=st.integers(min_value=1, max_value=max_dim_size)
+            elements=st.integers(min_value=1, max_value=max_dim_size),
         )
     )
 
@@ -428,22 +428,20 @@ def _values_and_ndindices(
         output_shape[i] = max(output_shape[i], x_shape[i])
 
     # Generate the number of indices
-    num_indices = draw(
-        helpers.ints(
-            min_value=1,
-            max_value=10
-        )
-    )
+    num_indices = draw(helpers.ints(min_value=1, max_value=10))
 
     # Generate the indices
     indices = []
     for _ in range(num_indices):
-        index = [draw(st.integers(min_value=0, max_value=output_shape[j] - 1)) for j in range(indices_dims)]
+        index = [
+            draw(st.integers(min_value=0, max_value=output_shape[j] - 1))
+            for j in range(indices_dims)
+        ]
         indices.append(index)
     indices = np.array(indices, dtype=dtype)
 
     # Generate the dtype and values for updates
-    updates_shape = list(indices.shape[:-1]) + list(output_shape[indices.shape[-1]:])
+    updates_shape = list(indices.shape[:-1]) + list(output_shape[indices.shape[-1] :])
     updates_dtype, updates = draw(
         helpers.dtype_and_values(
             available_dtypes=array_dtypes,
@@ -452,7 +450,9 @@ def _values_and_ndindices(
             shared_dtype=True,
         )
     )
-    updates_dtype = updates_dtype[0] if isinstance(updates_dtype, list) else updates_dtype
+    updates_dtype = (
+        updates_dtype[0] if isinstance(updates_dtype, list) else updates_dtype
+    )
     updates = updates[0] if isinstance(updates, list) else updates
 
     return [x_dtype, indices.dtype, updates_dtype], x, indices, updates, output_shape

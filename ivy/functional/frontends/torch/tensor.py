@@ -1,7 +1,6 @@
 # global
 from typing import Iterable
 import math
-from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 # local
 import ivy

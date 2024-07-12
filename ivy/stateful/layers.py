@@ -2283,8 +2283,8 @@ class IDct(Module):
         device=None,
         dtype=None,
     ):
-        """
-        Class for applying the Discrete Cosine Transform over mini-batch of inputs.
+        """Class for applying the Discrete Cosine Transform over mini-batch of
+        inputs.
 
         Parameters
         ----------
@@ -2309,8 +2309,7 @@ class IDct(Module):
         Module.__init__(self, device=device, dtype=dtype)
 
     def _forward(self, x):
-        """
-        Forward pass of the layer.
+        """Forward pass of the layer.
 
         Parameters
         ----------
