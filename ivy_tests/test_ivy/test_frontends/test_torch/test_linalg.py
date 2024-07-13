@@ -319,8 +319,8 @@ def test_torch_cholesky(
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
-    x = np.matmul(x.T, x) + np.identity(x.shape[0])  # make symmetric positive-definite
-
+    x = np.matmul(np.conjugate(x.T), x) + np.identity(x.shape[0], dtype=dtype[0])
+    # make symmetric positive-definite
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
@@ -336,7 +336,7 @@ def test_torch_cholesky(
 
 @handle_frontend_test(
     fn_tree="torch.linalg.cholesky_ex",
-    dtype_and_x=_get_dtype_and_matrix(square=True, batch=True),
+    dtype_and_x=_get_dtype_and_matrix(square=True),
     upper=st.booleans(),
 )
 def test_torch_cholesky_ex(
@@ -350,8 +350,9 @@ def test_torch_cholesky_ex(
     backend_fw,
 ):
     dtype, x = dtype_and_x
-    x = np.matmul(x.T, x) + np.identity(x.shape[0])  # make symmetric positive-definite
-
+    x = np.asarray(x[0], dtype=dtype[0])
+    x = np.matmul(np.conjugate(x.T), x) + np.identity(x.shape[0], dtype=dtype[0])
+    # make symmetric positive-definite
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
@@ -899,7 +900,7 @@ def test_torch_matrix_exp(
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_norm",
     dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
         min_axes_size=2,
         max_axes_size=2,
@@ -911,7 +912,7 @@ def test_torch_matrix_exp(
     ),
     ord=st.sampled_from(["fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
     keepdim=st.booleans(),
-    dtypes=helpers.get_dtypes("float_and_complex", none=True, full=False),
+    dtypes=st.sampled_from((None, "16", "32", "64")),
 )
 def test_torch_matrix_norm(
     *,
@@ -926,10 +927,12 @@ def test_torch_matrix_norm(
     on_device,
 ):
     input_dtype, x, axis = dtype_values_axis
-    if dtypes[0] is not None and "complex128" in input_dtype[0]:
-        dtypes[0] = input_dtype[0]
-    if dtypes[0] is not None:
-        dtypes[0] = input_dtype[0][:-2] + max([input_dtype[0][-2:], dtypes[0][-2:]])
+    if dtypes is not None:
+        # torch backend does not allow down-casting.
+        if input_dtype[0] == "complex128":
+            dtypes = input_dtype[0]
+        else:
+            dtypes = input_dtype[0][0:-2] + max([input_dtype[0][-2:], dtypes])
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -944,7 +947,7 @@ def test_torch_matrix_norm(
         ord=ord,
         dim=axis,
         keepdim=keepdim,
-        dtype=dtypes[0],
+        dtype=dtypes,
     )
 
 

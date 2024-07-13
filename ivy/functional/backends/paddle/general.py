@@ -87,6 +87,58 @@ def _squeeze_helper(query, x_ndim):
     return squeeze_indices
 
 
+def _make_non_negative(query, x):
+    """Converts negative values inside the tensors in the query to their
+    positive form.
+
+    Returns ``query`` unmodified if it is not a ``list``, ``tuple``
+    or ``paddle.Tensor``.
+
+    This function leaves non-tensor values in ``query`` as is.
+    """
+    if isinstance(query, paddle.Tensor):
+        query[query < 0] = x.shape[0] + query[query < 0]
+        return query
+
+    if not isinstance(query, (list, tuple)):
+        return query
+
+    found_ellipsis = False
+    shape_i = 0
+    for q in query:
+        if q is None:
+            continue
+
+        if not isinstance(q, paddle.Tensor):
+            shape_i += 1
+            continue
+
+        if q is Ellipsis:
+            found_ellipsis = True
+            break
+
+        q[q < 0] = x.shape[shape_i] + q[q < 0]
+        shape_i += 1
+
+    if not found_ellipsis:
+        return query
+
+    shape_i = x.ndim - 1
+    for q in reversed(query):
+        if q is None:
+            continue
+
+        if not isinstance(q, paddle.Tensor):
+            shape_i -= 1
+            continue
+
+        if q is Ellipsis:
+            return query
+
+        q[q < 0] = x.shape[shape_i] + q[q < 0]
+        shape_i -= 1
+
+
 @with_unsupported_device_and_dtypes(
     {
         "2.6.0 and below": {
@@ -104,14 +156,16 @@ def get_item(
 ) -> paddle.Tensor:
     if copy:
         x = paddle.clone(x)
-
     if (
         isinstance(query, paddle.Tensor)
         and query.dtype == paddle.bool
         and query.ndim == 0
     ) or isinstance(query, bool):
         # special case to handle scalar boolean indices
-        if query is True:
+        if isinstance(query, paddle.Tensor):
+            query = query.item()
+
+        if query:
             return x[None]
         else:
             return paddle.zeros(shape=[0] + x.shape, dtype=x.dtype)
@@ -125,6 +179,7 @@ def get_item(
     squeeze_indices = _squeeze_helper(query, x.ndim)
     # regular queries x[idx_1,idx_2,...,idx_i]
     # array queries idx = Tensor(idx_1,idx_2,...,idx_i), x[idx]
+    query = _make_non_negative(query, x)
     ret = x.__getitem__(query)
     return ret.squeeze(squeeze_indices) if squeeze_indices else ret
 

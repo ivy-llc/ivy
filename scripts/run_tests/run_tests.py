@@ -62,7 +62,7 @@ if __name__ == "__main__":
 
     # pull gpu image for gpu testing
     if device == "gpu":
-        os.system("docker pull unifyai/ivy:latest-gpu")
+        os.system("docker pull transpileai/ivy:latest-gpu")
 
     # read the tests to be run
     with open("tests_to_run", "r") as f:
@@ -119,7 +119,7 @@ if __name__ == "__main__":
                     image = "unifyai/ivy:latest-gpu"
                     device_str = " --device=gpu:0"
                     device_access_str = " --gpus all"
-                    os.system("docker pull unifyai/ivy:latest-gpu")
+                    os.system("docker pull transpileai/ivy:latest-gpu")
 
                 os.system(
                     f"docker run{device_access_str} --name test-container -v "

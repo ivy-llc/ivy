@@ -1,20 +1,36 @@
-name: test-ivy-tracer-cron
+name: tests
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: '15 * * * *'
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
 permissions:
   actions: read
 jobs:
-  run-nightly-tests:
+  relevant-tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout 🛎️Ivy
-        uses: actions/checkout@v2
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v3
         with:
           path: ivy
           persist-credentials: false
-          submodules: "recursive"
+          fetch-depth: 100
+
+      - name: Fetch Commit Changes
+        id: fetch_changes
+        run: |
+          cd ivy
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            git fetch origin main
+            git diff origin/main HEAD --output="commit-diff.txt"
+          else
+            git diff HEAD^ HEAD --output="commit-diff.txt"
+          fi
+
 
       - name: Install ivy and fetch binaries
         run: |
@@ -35,10 +51,9 @@ jobs:
       - name: Run Tests
         id: tests
         run: |
-          cd ivy
           pip3 install pymongo
-          python scripts/setup_tests/cron_tests.py ${{ github.run_number }} false true
-          python scripts/run_tests/run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} 'false' 'true' 'false' ${{ steps.jobs.outputs.html_url }}
+          cd ivy
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis transpileai/ivy:latest python3 scripts/run_tests_from_diff.py
         continue-on-error: true
 
       - name: Check on failures

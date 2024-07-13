@@ -361,6 +361,17 @@ class Shape(Sequence):
     def __dir__(self):
         return self._shape.__dir__()
 
+    def __getnewargs__(self):
+        if self._shape is None:
+            raise ivy.utils.exceptions.IvyException(
+                "Cannot calculate the number of elements in a partially known Shape"
+            )
+        return (
+            builtins.tuple(
+                self._shape,
+            ),
+        )
+
     @property
     def shape(self):
         return self._shape
@@ -476,6 +487,25 @@ class Shape(Sequence):
                 "Cannot convert a partially known Shape to a list"
             )
         return list(self._shape)
+
+    def numel(self):
+        if self._shape is None:
+            raise ivy.utils.exceptions.IvyException(
+                "Cannot calculate the number of elements in a partially known Shape"
+            )
+        return ivy.prod(self.as_list(), dtype=ivy.int64).to_scalar()
+
+    def __concat__(self, other):
+        return self.concatenate(other)
+
+    def flatten(self):
+        # check https://github.com/tensorflow/tensorflow/blob/0d2d8a66fca1cbcdd6dd4e0cd6971792782e6844/tensorflow/python/framework/tensor_shape.py#L1299 # noqa: E501
+        return []
+
+    def to_tensors(self, value):
+        # check https://github.com/tensorflow/tensorflow/blob/0d2d8a66fca1cbcdd6dd4e0cd6971792782e6844/tensorflow/python/framework/tensor_shape.py#L1294 # noqa: E501
+        del value
+        return []
 
 
 class IntDtype(Dtype):
@@ -774,7 +804,7 @@ try:
 except:  # noqa: E722
     pass
 try:
-    from .compiler.compiler import transpile, trace_graph, unify
+    from .compiler.compiler import source_to_source, transpile, trace_graph, unify
 except:  # noqa: E722
     pass  # Added for the finally statement
 try:

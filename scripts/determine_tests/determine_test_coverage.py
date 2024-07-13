@@ -38,7 +38,7 @@ if __name__ == "__main__":
     for test_backend in tqdm(test_names[start:end]):
         test_name, backend = test_backend.split(",")
         command = (
-            f'docker run -v "$(pwd)":/ivy unifyai/ivy:latest timeout 30m /bin/bash -c "coverage run --source=ivy,'  # noqa
+            f'docker run -v "$(pwd)":/ivy transpileai/ivy:latest timeout 30m /bin/bash -c "coverage run --source=ivy,'  # noqa
             f"ivy_tests -m pytest {test_name}  --num-examples 5 --backend {backend} --disable-warnings > coverage_output;coverage "  # noqa
             f'annotate > coverage_output" '
         )

@@ -464,6 +464,9 @@ def greater(x, y, name=None):
     return ivy.greater(x, y)
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("complex64", "complex128")}, "tensorflow"
+)
 @to_ivy_arrays_and_back
 def greater_equal(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
@@ -753,10 +756,12 @@ def reduce_max(input_tensor, axis=None, keepdims=False, name="reduce_max"):
 
 
 @to_ivy_arrays_and_back
-def reduce_mean(input_tensor, axis=None, keepdims=False, name="reduce_mean"):
+def reduce_mean(
+    input_tensor, axis=None, keepdims=False, dtype=None, name="reduce_mean"
+):
     if ivy.exists(axis):
         axis = ivy.to_list(axis)
-    return ivy.mean(input_tensor, axis=axis, keepdims=keepdims)
+    return ivy.mean(input_tensor, axis=axis, keepdims=keepdims, dtype=dtype)
 
 
 @to_ivy_arrays_and_back

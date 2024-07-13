@@ -2,6 +2,7 @@
 import ivy
 from collections import OrderedDict
 from typing import Any, Dict, Iterator, List, Optional, Set, Tuple, Callable
+import threading
 
 # local
 from ivy.functional.frontends.torch.nn.parameter import Parameter
@@ -129,7 +130,10 @@ class Module(ivy.Module):
 
     def apply(self, fn: Callable[["Module"], None]):
         for module in self.children():
-            module.apply(fn)
+            if hasattr(module, "apply"):
+                module.apply(fn)
+            else:
+                fn(module)
         fn(self)
         return self
 
@@ -182,7 +186,7 @@ class Module(ivy.Module):
         for module_prefix, module in modules:
             members = get_members_fn(module)
             for k, v in members:
-                if v is None or id(v) in memo or not isinstance(v, Parameter):
+                if v is None or id(v) in memo:
                     continue
                 if remove_duplicate:
                     memo.add(id(v))
@@ -262,9 +266,12 @@ class Module(ivy.Module):
                 if module is None:
                     continue
                 submodule_prefix = prefix + ("." if prefix else "") + name
-                yield from module.named_modules(
-                    memo, submodule_prefix, remove_duplicate
-                )
+                if not hasattr(module, "named_modules"):
+                    yield submodule_prefix, self
+                else:
+                    yield from module.named_modules(
+                        memo, submodule_prefix, remove_duplicate
+                    )
 
     def requires_grad_(self, requires_grad: bool = True):
         for p in self.parameters():
@@ -362,7 +369,11 @@ class Module(ivy.Module):
     def __getstate__(self):
         state = self.__dict__.copy()
         state.pop("_compiled_call_impl", None)
+        state.pop("_thread_local", None)
+        state.pop("_metrics_lock", None)
         return state
 
     def __setstate__(self, state):
+        state["_thread_local"] = threading.local()
+        state["_metrics_lock"] = threading.Lock()
         self.__dict__.update(state)

@@ -763,7 +763,7 @@ def adam_step(
         b: ivy.array([0.216, 0.384, 0.6])
     })
     """
-    step = float(step)
+    step = ivy.to_scalar(step)
     mw = ivy.add(beta1 * mw, (1 - beta1) * dcdw)
     dcdw_sqrd = dcdw**2
     vw = ivy.add(ivy.multiply(beta2, vw), (1 - beta2) * dcdw_sqrd)

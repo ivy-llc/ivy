@@ -1,4 +1,3 @@
-torch-scatter # torch_scatter requires a prior existing installation of torch, hence 2 optional files
 scipy
 dm-haiku  # mod_name=haiku
 flax

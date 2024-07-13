@@ -127,13 +127,14 @@ def equal(x, y, /, *, name=None):
             "float16",
             "complex64",
             "complex128",
+            "bfloat16",
         )
     },
     "paddle",
 )
 @to_ivy_arrays_and_back
 def equal_all(x, y, /, *, name=None):
-    return paddle.to_tensor([ivy.array_equal(x, y)])
+    return ivy.all_equal(x, y)
 
 
 @with_unsupported_dtypes(
@@ -155,12 +156,26 @@ def greater_than(x, y, /, *, name=None):
 
 
 @with_unsupported_dtypes(
-    {"2.6.0 and below": ("uint8", "int8", "int16", "complex64", "complex128")},
+    {
+        "2.6.0 and below": (
+            "uint8",
+            "int8",
+            "int16",
+            "complex64",
+            "complex128",
+            "bool",
+            "float16",
+            "bfloat16",
+        )
+    },
     "paddle",
 )
 @to_ivy_arrays_and_back
 def is_empty(x, name=None):
-    return ivy.is_empty(x)
+    if 0 in ivy.shape(x):
+        return ivy.array(True)
+    else:
+        return ivy.array(False)
 
 
 @to_ivy_arrays_and_back

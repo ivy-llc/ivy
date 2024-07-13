@@ -118,6 +118,10 @@ def astype(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     dtype = ivy.as_native_dtype(dtype)
+
+    if copy and 0 in x.shape:
+        return paddle.empty(x.shape, dtype=dtype)
+
     if x.dtype == dtype:
         return x.clone() if copy else x
     return x.clone().cast(dtype) if copy else x.cast(dtype)

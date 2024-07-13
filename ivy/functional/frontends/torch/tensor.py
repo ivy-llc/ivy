@@ -231,6 +231,9 @@ class Tensor:
         self.ivy_array = self.asin().ivy_array
         return self
 
+    def float_power(self, exponent):
+        return torch_frontend.float_power(self, exponent)
+
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
     def sum(self, dim=None, keepdim=False, *, dtype=None):
@@ -543,8 +546,16 @@ class Tensor:
         {"2.2 and below": {"cpu": ("float32", "float64")}},
         "torch",
     )
-    def erfc_(self, *, out=None):
+    def erfc(self, *, out=None):
         return torch_frontend.erfc(self, out=out)
+
+    @with_supported_device_and_dtypes(
+        {"2.2 and below": {"cpu": ("float32", "float64")}},
+        "torch",
+    )
+    def erfc_(self, *, out=None):
+        self.ivy_array = self.erfc(out=out).ivy_array
+        return self
 
     def new_zeros(
         self,
@@ -770,7 +781,10 @@ class Tensor:
         new_shape = list(self.shape)
         num_slices = (self.shape[dimension] - size) // step + 1
         new_shape[dimension] = num_slices
-        new_shape.insert(dimension + 1, size)
+        if dimension == -1:
+            new_shape.insert(dimension, size)
+        else:
+            new_shape.insert(dimension + 1, size)
         reshaped = stacked.reshape(new_shape)
         dims = list(range(len(stacked.shape)))
         dims[-2], dims[-1] = dims[-1], dims[-2]
@@ -1062,12 +1076,33 @@ class Tensor:
         return torch_frontend.acosh(self)
 
     def masked_fill(self, mask, value):
+        dtype = ivy.as_native_dtype(self.dtype)
         return torch_frontend.tensor(
-            torch_frontend.where(mask, value, self), dtype=self.dtype
+            ivy.astype(torch_frontend.where(mask, value, self), dtype)
         )
 
     def masked_fill_(self, mask, value):
         self.ivy_array = self.masked_fill(mask, value).ivy_array
+        return self
+
+    def masked_select(self, mask):
+        return torch_frontend.masked_select(self, mask)
+
+    def masked_scatter(self, mask, source):
+        flat_self = torch_frontend.flatten(self.clone())
+        flat_mask = torch_frontend.flatten(mask)
+        flat_source = torch_frontend.flatten(source)
+        indices = torch_frontend.squeeze(torch_frontend.nonzero(flat_mask), -1)
+        flat_self.scatter_(0, indices, flat_source[: indices.shape[0]])
+        return flat_self.reshape(self.shape)
+
+    def masked_scatter_(self, mask, source):
+        flat_self = torch_frontend.flatten(self.clone())
+        flat_mask = torch_frontend.flatten(mask)
+        flat_source = torch_frontend.flatten(source)
+        indices = torch_frontend.squeeze(torch_frontend.nonzero(flat_mask), -1)
+        flat_self.scatter_(0, indices, flat_source[: indices.shape[0]])
+        self.ivy_array = flat_self.reshape(self.shape).ivy_array
         return self
 
     @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
@@ -1431,7 +1466,12 @@ class Tensor:
 
     def item(self):
         if all(dim == 1 for dim in self.shape):
-            return self.ivy_array.to_scalar()
+            if ivy.current_backend_str() == "tensorflow":
+                import tensorflow as tf
+
+                return tf.squeeze(self.ivy_array.data)
+            else:
+                return self.ivy_array.to_scalar()
         else:
             raise ValueError(
                 "only one element tensors can be converted to Python scalars"
@@ -1885,7 +1925,18 @@ class Tensor:
         ).ivy_array
         return self
 
-    @with_unsupported_dtypes({"2.2 and below": ("bfloat16", "float16")}, "torch")
+    @with_supported_dtypes(
+        {
+            "2.2 and below": (
+                "float32",
+                "float64",
+                "complex32",
+                "complex64",
+                "complex128",
+            )
+        },
+        "torch",
+    )
     def cholesky(self, upper=False):
         return torch_frontend.cholesky(self, upper=upper)
 
@@ -2284,6 +2335,10 @@ class Tensor:
 
     def rad2deg(self, *, out=None):
         return torch_frontend.rad2deg(self, out=out)
+
+    def fill_diagonal_(self, fill_value, wrap=False):
+        self._ivy_array = ivy.fill_diagonal(self._ivy_array, fill_value, wrap=wrap)
+        return self
 
     @with_supported_dtypes(
         {"2.2 and below": "valid"},

@@ -9,25 +9,31 @@ from collections import namedtuple
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.2 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+    {"2.2 and below": ("float32", "float64", "complex32", "complex64", "complex128")},
+    "torch",
 )
 def cholesky(input, *, upper=False, out=None):
     return ivy.cholesky(input, upper=upper, out=out)
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.2 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def cholesky_ex(input, *, upper=False, check_errors=False, out=None):
     try:
+        results = namedtuple("cholesky_ex", ["L", "info"])
         matrix = ivy.cholesky(input, upper=upper, out=out)
         info = ivy.zeros(input.shape[:-2], dtype=ivy.int32)
-        return matrix, info
+        return results(matrix, info)
     except RuntimeError as e:
         if check_errors:
             raise RuntimeError(e) from e
         else:
+            results = namedtuple("cholesky_ex", ["L", "info"])
             matrix = input * math.nan
             info = ivy.ones(input.shape[:-2], dtype=ivy.int32)
-            return matrix, info
+            return results(matrix, info)
 
 
 @to_ivy_arrays_and_back
@@ -173,9 +179,9 @@ def matrix_exp(A):
     {"2.2 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
 )
 def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, out=None):
-    if dtype is not None:
-        input = ivy.astype(input, dtype)
-    return ivy.matrix_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
+    return ivy.matrix_norm(
+        input, ord=ord, axis=dim, keepdims=keepdim, dtype=dtype, out=out
+    )
 
 
 @to_ivy_arrays_and_back
