@@ -29,7 +29,7 @@ def _validate_weights(w, dtype="float64"):
 # euclidean
 @to_ivy_arrays_and_back
 def euclidean(u, v, /, *, w=None):
-    return minkowski(u, v, p=2, w=w)
+    return minkowski(u, v, 2, w=w)
 
 
 # Functions #

@@ -5,6 +5,7 @@ from hypothesis import assume
 import numpy as np
 import pytest
 import itertools
+import sys
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -162,15 +163,15 @@ def _generate_diag_args(draw):
 
 # dot
 @st.composite
-def _generate_dot_dtype_and_arrays(draw):
+def _generate_dot_dtype_and_arrays(draw, min_num_dims=0):
     shape_a = draw(
         helpers.get_shape(
-            min_dim_size=2, max_dim_size=5, min_num_dims=0, max_num_dims=5
+            min_dim_size=2, max_dim_size=5, min_num_dims=min_num_dims, max_num_dims=5
         )
     )
     shape_b = draw(
         helpers.get_shape(
-            min_dim_size=2, max_dim_size=5, min_num_dims=0, max_num_dims=5
+            min_dim_size=2, max_dim_size=5, min_num_dims=min_num_dims, max_num_dims=5
         )
     )
 
@@ -859,7 +860,6 @@ def _tucker_data(draw):
     fn_tree="functional.ivy.experimental.adjoint",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=(
-            ivy.float16,
             ivy.float32,
             ivy.float64,
             ivy.complex64,
@@ -875,7 +875,7 @@ def _tucker_data(draw):
         shared_dtype=True,
     ),
 )
-def test_adjoint(dtype_x, test_flags, backend_fw, fn_name):
+def test_adjoint(dtype_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
     helpers.test_function(
         input_dtypes=dtype,
@@ -883,6 +883,7 @@ def test_adjoint(dtype_x, test_flags, backend_fw, fn_name):
         backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
+        on_device=on_device,
     )
 
 
@@ -1292,7 +1293,7 @@ def test_khatri_rao(*, data, test_flags, backend_fw, fn_name, on_device):
 
 # The following two tests have been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/tests/test_khatri_rao.py
-@pytest.mark.parametrize("columns, rows", [(4, [3, 4, 2])])
+@pytest.mark.parametrize(("columns", "rows"), [(4, [3, 4, 2])])
 def test_khatri_rao_tensorly_1(columns, rows):
     columns = columns
     rows = rows
@@ -1306,7 +1307,7 @@ def test_khatri_rao_tensorly_1(columns, rows):
 
 
 @pytest.mark.parametrize(
-    "t1, t2, true_res",
+    ("t1", "t2", "true_res"),
     [
         (
             [[1, 2, 3], [4, 5, 6], [7, 8, 9]],
@@ -1378,6 +1379,82 @@ def test_kronecker(*, data, test_flags, backend_fw, fn_name, on_device):
         skip_matrix=skip_matrix,
         reverse=reverse,
     )
+
+
+# lu_factor
+@handle_test(
+    fn_tree="functional.ivy.experimental.lu_factor",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=5,
+    ).filter(
+        lambda x: np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
+    ),
+    test_gradients=st.just(False),
+)
+def test_lu_factor(dtype_x, test_flags, backend_fw, fn_name, on_device):
+    dtype, x = dtype_x
+    ret = helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+        test_values=False,
+    )
+    # check decomp is correct manually by getting the values from test_function above
+    # this is because the decomposition is not unique and test_values will not work
+    ret_f, ret_gt = ret
+
+    # check that the decomposition is correct for current fw at least
+    LU, p = ret_f.LU, ret_f.p
+    L = np.tril(LU, -1) + np.eye(LU.shape[0])
+    U = np.triu(LU)
+    P = np.eye(LU.shape[0])[p]
+    assert np.allclose(L @ U, P @ x[0])
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.lu_solve",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=helpers.get_shape(
+            min_num_dims=2, max_num_dims=2, min_dim_size=2, max_dim_size=2
+        ),
+        num_arrays=2,
+        shared_dtype=True,
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
+    ),
+    test_gradients=st.just(False),
+)
+def test_lu_solve(dtype_x, test_flags, backend_fw, fn_name, on_device):
+    dtype, arr = dtype_x
+    A, B = arr[0], arr[1]
+    ivy.set_backend(backend_fw)
+    lu_ = ivy.lu_factor(A)
+    lu, p = lu_.LU, lu_.p
+    X, X_gt = helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        lu=lu,
+        p=p,
+        b=B,
+        test_values=False,
+    )
+
+    assert np.allclose(A @ X, B)
 
 
 @handle_test(
@@ -1477,7 +1554,7 @@ def test_mode_dot(*, data, test_flags, backend_fw, fn_name, on_device):
 
 
 @pytest.mark.parametrize(
-    "X, U, true_res",
+    ("X", "U", "true_res"),
     [
         (
             [
@@ -1545,7 +1622,7 @@ def test_multi_mode_dot(*, data, test_flags, backend_fw, fn_name, on_device):
 # The following 2 tests have been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/tests/test_n_mode_product.py#L81
 @pytest.mark.parametrize(
-    "X, U, true_res",
+    ("X", "U", "true_res"),
     [
         ([[1, 2], [0, -1]], [[2, 1], [-1, 1]], [1]),
     ],
@@ -1556,7 +1633,12 @@ def test_multi_mode_dot_tensorly_1(X, U, true_res):
     assert np.allclose(true_res, res)
 
 
-@pytest.mark.parametrize("shape", ((3, 5, 4, 2),))
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (3, 5, 4, 2),
+    ],
+)
 def test_multi_mode_dot_tensorly_2(shape):
     print(shape)
     X = ivy.ones(shape)
@@ -1624,7 +1706,7 @@ def test_partial_tucker(*, data, test_flags, backend_fw, fn_name, on_device):
 # test adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/tests/test_tucker.py#L24
 @pytest.mark.parametrize(
-    "tol_norm_2, tol_max_abs, modes, shape",
+    ("tol_norm_2", "tol_max_abs", "modes", "shape"),
     [
         (
             10e-3,
@@ -1775,7 +1857,9 @@ def test_tensor_train(*, data, svd, test_flags, backend_fw, fn_name, on_device):
 
 # The following 3 tests have been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/tests/test_tt_decomposition.py
-@pytest.mark.parametrize("shape, rank", [((3, 4, 5, 6, 2, 10), (1, 3, 3, 4, 2, 2, 1))])
+@pytest.mark.parametrize(
+    ("shape", "rank"), [((3, 4, 5, 6, 2, 10), (1, 3, 3, 4, 2, 2, 1))]
+)
 def test_tensor_train_tensorly_1(shape, rank):
     tensor = ivy.random_uniform(shape=shape)
     tensor_shape = tensor.shape
@@ -1800,7 +1884,9 @@ def test_tensor_train_tensorly_1(shape, rank):
         r_prev_iteration = r_k
 
 
-@pytest.mark.parametrize("shape, rank", [((3, 4, 5, 6, 2, 10), (1, 5, 4, 3, 8, 10, 1))])
+@pytest.mark.parametrize(
+    ("shape", "rank"), [((3, 4, 5, 6, 2, 10), (1, 5, 4, 3, 8, 10, 1))]
+)
 def test_tensor_train_tensorly_2(shape, rank):
     tensor = ivy.random_uniform(shape=shape)
     factors = ivy.tensor_train(tensor, rank)
@@ -1821,7 +1907,7 @@ def test_tensor_train_tensorly_2(shape, rank):
         assert r_k <= rank[k + 1], first_error_message
 
 
-@pytest.mark.parametrize("shape, rank, tol", [((3, 3, 3), (1, 3, 3, 1), (10e-5))])
+@pytest.mark.parametrize(("shape", "rank", "tol"), [((3, 3, 3), (1, 3, 3, 1), (10e-5))])
 def test_tensor_train_tensorly_3(shape, rank, tol):
     tensor = ivy.random_uniform(shape=shape)
     factors = ivy.tensor_train(tensor, rank)
@@ -1989,7 +2075,8 @@ def test_tucker(*, data, test_flags, backend_fw, fn_name, on_device):
 # test adapted from tensorly
 # https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/tests/test_tucker.py#L71
 @pytest.mark.parametrize(
-    "tol_norm_2, tol_max_abs, shape, ranks", [(10e-3, 10e-1, (3, 4, 3), [2, 3, 1])]
+    ("tol_norm_2", "tol_max_abs", "shape", "ranks"),
+    [(10e-3, 10e-1, (3, 4, 3), [2, 3, 1])],
 )
 def test_tucker_tensorly(tol_norm_2, tol_max_abs, shape, ranks):
     tensor = ivy.random_uniform(shape=shape)

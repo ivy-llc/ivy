@@ -1,4 +1,5 @@
-"""Collection of Numpy activation functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Numpy activation functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 from typing import Optional, Union, Literal
@@ -7,8 +8,20 @@ import numpy as np
 # local
 import ivy
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+from ivy.func_wrapper import with_supported_dtypes
+from . import backend_version
 
 
+@with_supported_dtypes(
+    {
+        "1.26.3 and below": (
+            "float",
+            "int",
+            "complex",
+        )
+    },
+    backend_version,
+)
 @_scalar_output_to_0d_array
 def relu(
     x: np.ndarray, /, *, complex_mode="jax", out: Optional[np.ndarray] = None

@@ -5,6 +5,11 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
 @to_ivy_arrays_and_back
+def broadcast_tensors(*tensors):
+    return ivy.broadcast_arrays(*tensors)
+
+
+@to_ivy_arrays_and_back
 def is_complex(input):
     return ivy.is_complex_dtype(input)
 
@@ -31,7 +36,7 @@ def numel(input):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.1.0 and below": ("float32", "float64", "int32", "int64")}, "torch"
+    {"2.2 and below": ("float32", "float64", "int32", "int64")}, "torch"
 )
 def scatter(input, dim, index, src):
     return ivy.put_along_axis(input, index, src, dim, mode="replace")
@@ -39,7 +44,7 @@ def scatter(input, dim, index, src):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.1.0 and below": ("float32", "float64", "int32", "int64")}, "torch"
+    {"2.2 and below": ("float32", "float64", "int32", "int64")}, "torch"
 )
 def scatter_add(input, dim, index, src):
     return ivy.put_along_axis(input, index, src, dim, mode="sum")
@@ -47,7 +52,7 @@ def scatter_add(input, dim, index, src):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.1.0 and below": ("float32", "float64", "int32", "int64")}, "torch"
+    {"2.2 and below": ("float32", "float64", "int32", "int64")}, "torch"
 )
 def scatter_reduce(input, dim, index, src, reduce, *, include_self=True):
     mode_mappings = {

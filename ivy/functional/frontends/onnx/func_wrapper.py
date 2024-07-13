@@ -49,8 +49,7 @@ def _to_ivy_array(x):
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_ivy_arrays_onnx(*args, **kwargs):
-        """
-        Convert `Tensor` into `ivy.Array` instances.
+        """Convert `Tensor` into `ivy.Array` instances.
 
         Convert all `Tensor` instances in both the positional and
         keyword arguments into `ivy.Array` instances, and then calls the
@@ -71,8 +70,7 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _outputs_to_frontend_arrays_onnx(*args, **kwargs):
-        """
-        Convert `ivy.Array` into `Tensor` instances.
+        """Convert `ivy.Array` into `Tensor` instances.
 
         Call the function, and then converts all `ivy.Array` instances
         returned by the function into `Tensor` instances.
@@ -89,8 +87,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
-    """
-    Wrap `fn` so it receives and returns `ivy.Array` instances.
+    """Wrap `fn` so it receives and returns `ivy.Array` instances.
 
     Wrap `fn` so that input arrays are all converted to `ivy.Array`
     instances and return arrays are all converted to `ndarray.NDArray`

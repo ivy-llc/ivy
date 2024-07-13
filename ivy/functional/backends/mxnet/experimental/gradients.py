@@ -46,7 +46,7 @@ def vjp(func: Callable, *primals):
         )
 
         return _rebuild_flattened_containers(
-            ivy.to_ivy(grads, nested=True, include_derived=True)
+            ivy.to_ivy(grads, nested=True, include_derived=True), ret_idxs
         )
 
     return (ivy.to_ivy(primals_out, nested=True, include_derived=True), vjpfun)

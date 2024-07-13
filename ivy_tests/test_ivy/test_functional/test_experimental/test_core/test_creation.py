@@ -388,7 +388,8 @@ def test_ndenumerate(dtype_and_x):
     for (index1, x1), (index2, x2) in zip(
         np.ndenumerate(values), ivy.ndenumerate(values)
     ):
-        assert index1 == index2 and x1 == x2.to_numpy()
+        assert index1 == index2
+        assert x1 == x2.to_numpy()
 
 
 # ndindex
@@ -404,6 +405,38 @@ def test_ndindex(dtype_x_shape):
     shape = dtype_x_shape[2]
     for index1, index2 in zip(np.ndindex(shape), ivy.ndindex(shape)):
         assert index1 == index2
+
+
+# polyval
+@handle_test(
+    fn_tree="functional.ivy.experimental.polyval",
+    dtype_and_coeffs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+    ),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=0,
+    ),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+    test_instance_method=st.just(False),
+)
+def test_polyval(
+    *, dtype_and_coeffs, dtype_and_x, test_flags, backend_fw, fn_name, on_device
+):
+    coeffs_dtype, coeffs = dtype_and_coeffs
+    x_dtype, x = dtype_and_x
+
+    helpers.test_function(
+        input_dtypes=coeffs_dtype + x_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        coeffs=coeffs,
+        x=x,
+    )
 
 
 @handle_test(
@@ -764,6 +797,33 @@ def test_trilu(*, dtype_and_x, k, upper, test_flags, backend_fw, fn_name, on_dev
         x=x[0],
         upper=upper,
         k=k,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.unsorted_segment_mean",
+    d_x_n_s=valid_unsorted_segment_min_inputs(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_unsorted_segment_mean(
+    *,
+    d_x_n_s,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtypes, data, num_segments, segment_ids = d_x_n_s
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        data=data,
+        segment_ids=segment_ids,
+        num_segments=num_segments,
     )
 
 

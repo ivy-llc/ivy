@@ -25,12 +25,12 @@ class RaggedTensor:
 
         if values.shape[0] != row_splits[-1] or row_splits[0] != 0:
             if values.shape[0] != row_splits[-1]:
-                ivy.utils.exceptions.IvyException(
+                raise ivy.utils.exceptions.IvyException(
                     "first dimension of shape of values should be equal to the"
                     " last dimension of row_splits"
                 )
             else:
-                ivy.utils.exceptions.IvyException(
+                raise ivy.utils.exceptions.IvyException(
                     "first value of row_splits should be equal to zero."
                 )
         data = [
@@ -49,7 +49,7 @@ class RaggedTensor:
     ):
         # TODO : modify this, if necessary, to accept raggedTensor inputs too
         if sum(row_lengths) != values.shape[0]:
-            ivy.utils.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "first dimension of values should be equal to sum(row_lengths) "
             )
         data = []

@@ -25,7 +25,7 @@ Devices
 .. _`ivy.unset_default_device()`: https://github.com/unifyai/ivy/blob/2f90ce7b6a4c8ddb7227348d58363cd2a3968602/ivy/functional/ivy/device.py#L869
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`devices channel`: https://discord.com/channels/799879767196958751/982738108166602752
+.. _`devices thread`: https://discord.com/channels/799879767196958751/1189906353653817354
 
 The devices currently supported by Ivy are as follows:
 
@@ -270,7 +270,7 @@ There are some functions(mostly creation function) which accept a :code:`device`
 
 This should have hopefully given you a good feel for devices, and how these are handled in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `devices channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `devices thread`_!
 
 
 **Video**

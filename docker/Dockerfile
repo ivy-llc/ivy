@@ -15,7 +15,7 @@ RUN apt clean && \
     apt-get install -y wget  \
     git -y && \
     wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
-     /bin/bash ~/miniconda.sh -b -p /opt/miniconda
+    /bin/bash ~/miniconda.sh -b -p /opt/miniconda
 
 
 ENV PATH=$CONDA_DIR/bin:$PATH
@@ -39,7 +39,7 @@ RUN apt-get update && \
 
 
 # Install Ivy Upstream
-RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --depth 1 && \
+RUN git clone --progress --recurse-submodules https://github.com/ivy-llc/ivy --depth 1 && \
     cd ivy && \
     cd ivy_tests/array_api_testing/test_array_api && \
     pip3 install --no-cache-dir -r requirements.txt
@@ -48,13 +48,6 @@ RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --d
 # Install local optional
 COPY requirements/optional.txt .
 COPY requirements/requirements.txt .
-#setting torch path early on because torch-scatter needs it
-ENV PYTHONPATH "/opt/fw/torch:/opt/miniconda/envs/multienv/bin"
-
-#torch and torch scatter separate installation because they cause issues
-RUN pip3 install --no-cache-dir torch --target '/opt/fw/torch' --extra-index-url https://download.pytorch.org/whl/cpu
-RUN export ver=$(pip show torch --path '/opt/fw/torch' | grep Version | cut -d ' ' -f2) && \
-    pip3 install --target '/opt/fw/torch' --no-cache-dir --upgrade torch-scatter -f https://data.pyg.org/whl/torch-$ver.html
 
 # requirement mappings directs which dependency to be installed and where
 COPY /docker/requirement_mappings.json .
