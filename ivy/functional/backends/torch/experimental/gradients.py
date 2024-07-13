@@ -34,10 +34,12 @@ def bind_custom_gradient_function(func, custom_grad_fn):
 
 def vjp(func: Callable, *primals):
     flattened_primals, ret_idxs = _flatten_containers(primals)
-    unique_keys = list({
-        ivy.index_nest(ret_idxs, i)
-        for i in ivy.nested_argwhere(ret_idxs, lambda x: isinstance(x, str))
-    })
+    unique_keys = list(
+        {
+            ivy.index_nest(ret_idxs, i)
+            for i in ivy.nested_argwhere(ret_idxs, lambda x: isinstance(x, str))
+        }
+    )
 
     def grad_fn(*x_in):
         ret, idxs = _flatten_containers(
@@ -93,10 +95,12 @@ def vjp(func: Callable, *primals):
 def jvp(func: Callable, primals, tangents):
     flattened_primals, ret_idxs = _flatten_containers(primals)
     flattened_tangents, _ = _flatten_containers(tangents)
-    unique_keys = list({
-        ivy.index_nest(ret_idxs, i)
-        for i in ivy.nested_argwhere(ret_idxs, lambda x: isinstance(x, str))
-    })
+    unique_keys = list(
+        {
+            ivy.index_nest(ret_idxs, i)
+            for i in ivy.nested_argwhere(ret_idxs, lambda x: isinstance(x, str))
+        }
+    )
 
     def grad_fn(*x_in):
         ret, idxs = _flatten_containers(

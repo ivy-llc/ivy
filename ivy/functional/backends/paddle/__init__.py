@@ -175,7 +175,7 @@ valid_numeric_dtypes = {
     ),
 }
 valid_int_dtypes = {
-    "2.5.2 and below": (
+    "2.6.0 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -187,8 +187,8 @@ valid_float_dtypes = {
     "2.4.2 and below": (ivy.float16, ivy.float32, ivy.float64),
     "2.5.0 and above": (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64),
 }
-valid_uint_dtypes = {"2.5.2 and below": (ivy.uint8,)}
-valid_complex_dtypes = {"2.5.2 and below": (ivy.complex64, ivy.complex128)}
+valid_uint_dtypes = {"2.6.0 and below": (ivy.uint8,)}
+valid_complex_dtypes = {"2.6.0 and below": (ivy.complex64, ivy.complex128)}
 
 # leave these untouched
 valid_dtypes = _dtype_from_version(valid_dtypes, backend_version)
@@ -228,10 +228,10 @@ invalid_numeric_dtypes = {
     ),
 }
 
-invalid_int_dtypes = {"2.5.2 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
+invalid_int_dtypes = {"2.6.0 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
 invalid_float_dtypes = {"2.4.2 and below": (ivy.bfloat16,), "2.5.0 and above": ()}
-invalid_uint_dtypes = {"2.5.2 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
-invalid_complex_dtypes = {"2.5.2 and below": ()}
+invalid_uint_dtypes = {"2.6.0 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
+invalid_complex_dtypes = {"2.6.0 and below": ()}
 
 # leave these untouched
 invalid_dtypes = _dtype_from_version(invalid_dtypes, backend_version)
@@ -297,8 +297,14 @@ from . import experimental
 from .experimental import *
 from . import control_flow_ops
 from .control_flow_ops import *
+from . import module
+from .module import *
+
 
 # sub-backends
 
 from . import sub_backends
 from .sub_backends import *
+
+
+NativeModule = paddle.nn.Layer

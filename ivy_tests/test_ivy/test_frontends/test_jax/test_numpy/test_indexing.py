@@ -53,18 +53,6 @@ def _get_dtype_square_x(draw):
     return dtype_x
 
 
-# diagonal
-@st.composite
-def dims_and_offset(draw, shape):
-    shape_actual = draw(shape)
-    dim1 = draw(helpers.get_axis(shape=shape, force_int=True))
-    dim2 = draw(helpers.get_axis(shape=shape, force_int=True))
-    offset = draw(
-        st.integers(min_value=-shape_actual[dim1], max_value=shape_actual[dim1])
-    )
-    return dim1, dim2, offset
-
-
 # unravel_index
 @st.composite
 def max_value_as_shape_prod(draw):
@@ -113,9 +101,9 @@ def test_jax_choose(
     on_device,
 ):
     dtypes, x, indices, axis, _ = dtype_x_indices_axis
-    choices = ivy.array([
-        np.random.randint(0, 10, size=x.shape) for _ in range(len(dtypes))
-    ])
+    choices = ivy.array(
+        [np.random.randint(0, 10, size=x.shape) for _ in range(len(dtypes))]
+    )
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         backend_to_test=backend_fw,
@@ -217,7 +205,7 @@ def test_jax_diag_indices_from(
         available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ),
-    dims_and_offset=dims_and_offset(
+    dims_and_offset=helpers.dims_and_offset(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape")
     ),
 )

@@ -7,6 +7,7 @@ import builtins
 import numpy as np
 import sys
 import inspect
+import importlib
 import os
 from collections.abc import Sequence
 
@@ -66,6 +67,10 @@ class NativeDtype:
 
 
 class NativeShape:
+    pass
+
+
+class NativeModule:
     pass
 
 
@@ -282,66 +287,39 @@ class Shape(Sequence):
         return self
 
     def __mul__(self, other):
-        self._shape = self._shape * other
+        if ivy.current_backend_str() == "tensorflow":
+            shape_tup = builtins.tuple(self._shape) * other
+            self._shape = ivy.to_native_shape(shape_tup)
+        else:
+            self._shape = self._shape * other
         return self
 
     def __rmul__(self, other):
-        self._shape = other * self._shape
+        # handle tensorflow case as tf.TensorShape doesn't support multiplications
+        if ivy.current_backend_str() == "tensorflow":
+            shape_tup = other * builtins.tuple(self._shape)
+            self._shape = ivy.to_native_shape(shape_tup)
+        else:
+            self._shape = other * self._shape
         return self
 
     def __bool__(self):
-        return self._shape.__bool__()
-
-    def __div__(self, other):
-        return self._shape // other
-
-    def __floordiv__(self, other):
-        return self._shape // other
-
-    def __mod__(self, other):
-        return self._shape % other
-
-    def __rdiv__(self, other):
-        return other // self._shape
-
-    def __rmod__(self, other):
-        return other % self._shape
+        if ivy.current_backend_str() == "tensorflow":
+            return builtins.bool(builtins.tuple(self._shape))
+        return builtins.bool(self._shape)
 
     def __reduce__(self):
-        return (self._shape,)
+        return (self.__class__, (self._shape,))
 
     def as_dimension(self, other):
         if isinstance(other, self._shape):
-            return other
+            return to_ivy(other)
         else:
             return self._shape
-
-    def __sub__(self, other):
-        try:
-            self._shape = self._shape - other
-        except TypeError:
-            self._shape = self._shape - list(other)
-        return self
-
-    def __rsub__(self, other):
-        try:
-            self._shape = other - self._shape
-        except TypeError:
-            self._shape = list(other) - self._shape
-        return self
 
     def __eq__(self, other):
         self._shape = Shape._shape_casting_helper(self._shape, other)
         return self._shape == other
-
-    def __int__(self):
-        if hasattr(self._shape, "__int__"):
-            res = self._shape.__int__()
-        else:
-            res = int(self._shape)
-        if res is NotImplemented:
-            return res
-        return to_ivy(res)
 
     def __ge__(self, other):
         self._shape = Shape._shape_casting_helper(self._shape, other)
@@ -364,7 +342,7 @@ class Shape(Sequence):
 
     def __getitem__(self, key):
         try:
-            return self._shape[key]
+            return to_ivy(self._shape[key])
         except (TypeError, IndexError):
             return None
 
@@ -382,6 +360,17 @@ class Shape(Sequence):
 
     def __dir__(self):
         return self._shape.__dir__()
+
+    def __getnewargs__(self):
+        if self._shape is None:
+            raise ivy.utils.exceptions.IvyException(
+                "Cannot calculate the number of elements in a partially known Shape"
+            )
+        return (
+            builtins.tuple(
+                self._shape,
+            ),
+        )
 
     @property
     def shape(self):
@@ -402,11 +391,11 @@ class Shape(Sequence):
         if self._shape.rank is None:
             return Shape(None)
         else:
-            return self._shape[index]
+            return to_ivy(self._shape[index])
 
     def as_dimension(self):
         if isinstance(self._shape, Shape):
-            return self._shape
+            return to_ivy(self._shape)
         else:
             return Shape(self._shape)
 
@@ -429,6 +418,7 @@ class Shape(Sequence):
         if self.rank not in (None, rank):
             raise ValueError(f"Shape {self} must have rank {rank}")
 
+    @staticmethod
     def unknown_shape(rank=None, **kwargs):
         if rank is None and "ndims" in kwargs:
             rank = kwargs.pop("ndims")
@@ -442,8 +432,8 @@ class Shape(Sequence):
     def with_rank(self, rank):
         try:
             return self.merge_with(self.unknown_shape(rank=rank))
-        except ValueError:
-            raise ValueError(f"Shape {self} must have rank {rank}")
+        except ValueError as e:
+            raise ValueError(f"Shape {self} must have rank {rank}") from e
 
     def with_rank_at_least(self, rank):
         if self.rank is not None and self.rank < rank:
@@ -457,6 +447,7 @@ class Shape(Sequence):
         else:
             return self
 
+    @staticmethod
     def as_shape(shape):
         if isinstance(shape, Shape):
             return shape
@@ -496,6 +487,25 @@ class Shape(Sequence):
                 "Cannot convert a partially known Shape to a list"
             )
         return list(self._shape)
+
+    def numel(self):
+        if self._shape is None:
+            raise ivy.utils.exceptions.IvyException(
+                "Cannot calculate the number of elements in a partially known Shape"
+            )
+        return ivy.prod(self.as_list(), dtype=ivy.int64).to_scalar()
+
+    def __concat__(self, other):
+        return self.concatenate(other)
+
+    def flatten(self):
+        # check https://github.com/tensorflow/tensorflow/blob/0d2d8a66fca1cbcdd6dd4e0cd6971792782e6844/tensorflow/python/framework/tensor_shape.py#L1299 # noqa: E501
+        return []
+
+    def to_tensors(self, value):
+        # check https://github.com/tensorflow/tensorflow/blob/0d2d8a66fca1cbcdd6dd4e0cd6971792782e6844/tensorflow/python/framework/tensor_shape.py#L1294 # noqa: E501
+        del value
+        return []
 
 
 class IntDtype(Dtype):
@@ -589,7 +599,7 @@ warning_level_stack = []
 nan_policy_stack = []
 dynamic_backend_stack = []
 warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
-
+cython_wrappers_stack = []
 
 # local
 import threading
@@ -739,7 +749,7 @@ invalid_complex_dtypes = ()
 
 locks = {"backend_setter": threading.Lock()}
 
-
+from .wrappers import *
 from .func_wrapper import *
 from .data_classes.array import Array, add_ivy_array_instance_methods
 from .data_classes.array.conversions import *
@@ -774,6 +784,7 @@ from ivy.utils.backend import (
     choose_random_backend,
     unset_backend,
 )
+from . import wrappers
 from . import func_wrapper
 from .utils import assertions, exceptions, verbosity
 from .utils.backend import handler
@@ -793,9 +804,13 @@ try:
 except:  # noqa: E722
     pass
 try:
-    from .compiler.compiler import transpile, trace_graph, unify
+    from .compiler.compiler import source_to_source, transpile, trace_graph, unify
 except:  # noqa: E722
     pass  # Added for the finally statement
+try:
+    from .compiler.replace_with import replace_with, transform_function
+except:  # noqa: E722
+    pass
 finally:
     # Skip framework imports done by Ivy compiler for now
     for backend_framework in _not_imported_backends.copy():
@@ -918,44 +933,47 @@ class GlobalsDict(dict):
 
 
 # defines ivy.globals attribute
-globals_vars = GlobalsDict({
-    "backend_stack": backend_stack,
-    "default_device_stack": device.default_device_stack,
-    "valid_dtypes": valid_dtypes,
-    "valid_numeric_dtypes": valid_numeric_dtypes,
-    "valid_int_dtypes": valid_int_dtypes,
-    "valid_uint_dtypes": valid_uint_dtypes,
-    "valid_complex_dtypes": valid_complex_dtypes,
-    "valid_devices": valid_devices,
-    "invalid_dtypes": invalid_dtypes,
-    "invalid_numeric_dtypes": invalid_numeric_dtypes,
-    "invalid_int_dtypes": invalid_int_dtypes,
-    "invalid_float_dtypes": invalid_float_dtypes,
-    "invalid_uint_dtypes": invalid_uint_dtypes,
-    "invalid_complex_dtypes": invalid_complex_dtypes,
-    "invalid_devices": invalid_devices,
-    "array_significant_figures_stack": array_significant_figures_stack,
-    "array_decimal_values_stack": array_decimal_values_stack,
-    "warning_level_stack": warning_level_stack,
-    "queue_timeout_stack": general.queue_timeout_stack,
-    "array_mode_stack": general.array_mode_stack,
-    "inplace_mode_stack": general.inplace_mode_stack,
-    "soft_device_mode_stack": device.soft_device_mode_stack,
-    "shape_array_mode_stack": general.shape_array_mode_stack,
-    "show_func_wrapper_trace_mode_stack": general.show_func_wrapper_trace_mode_stack,
-    "min_denominator_stack": general.min_denominator_stack,
-    "min_base_stack": general.min_base_stack,
-    "tmp_dir_stack": general.tmp_dir_stack,
-    "precise_mode_stack": general.precise_mode_stack,
-    "nestable_mode_stack": general.nestable_mode_stack,
-    "exception_trace_mode_stack": general.exception_trace_mode_stack,
-    "default_dtype_stack": data_type.default_dtype_stack,
-    "default_float_dtype_stack": data_type.default_float_dtype_stack,
-    "default_int_dtype_stack": data_type.default_int_dtype_stack,
-    "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
-    "nan_policy_stack": nan_policy_stack,
-    "dynamic_backend_stack": dynamic_backend_stack,
-})
+globals_vars = GlobalsDict(
+    {
+        "backend_stack": backend_stack,
+        "default_device_stack": device.default_device_stack,
+        "valid_dtypes": valid_dtypes,
+        "valid_numeric_dtypes": valid_numeric_dtypes,
+        "valid_int_dtypes": valid_int_dtypes,
+        "valid_uint_dtypes": valid_uint_dtypes,
+        "valid_complex_dtypes": valid_complex_dtypes,
+        "valid_devices": valid_devices,
+        "invalid_dtypes": invalid_dtypes,
+        "invalid_numeric_dtypes": invalid_numeric_dtypes,
+        "invalid_int_dtypes": invalid_int_dtypes,
+        "invalid_float_dtypes": invalid_float_dtypes,
+        "invalid_uint_dtypes": invalid_uint_dtypes,
+        "invalid_complex_dtypes": invalid_complex_dtypes,
+        "invalid_devices": invalid_devices,
+        "array_significant_figures_stack": array_significant_figures_stack,
+        "array_decimal_values_stack": array_decimal_values_stack,
+        "warning_level_stack": warning_level_stack,
+        "queue_timeout_stack": general.queue_timeout_stack,
+        "array_mode_stack": general.array_mode_stack,
+        "inplace_mode_stack": general.inplace_mode_stack,
+        "soft_device_mode_stack": device.soft_device_mode_stack,
+        "shape_array_mode_stack": general.shape_array_mode_stack,
+        "show_func_wrapper_trace_mode_stack": general.show_func_wrapper_trace_mode_stack,
+        "min_denominator_stack": general.min_denominator_stack,
+        "min_base_stack": general.min_base_stack,
+        "tmp_dir_stack": general.tmp_dir_stack,
+        "precise_mode_stack": general.precise_mode_stack,
+        "nestable_mode_stack": general.nestable_mode_stack,
+        "exception_trace_mode_stack": general.exception_trace_mode_stack,
+        "default_dtype_stack": data_type.default_dtype_stack,
+        "default_float_dtype_stack": data_type.default_float_dtype_stack,
+        "default_int_dtype_stack": data_type.default_int_dtype_stack,
+        "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
+        "nan_policy_stack": nan_policy_stack,
+        "dynamic_backend_stack": dynamic_backend_stack,
+        "cython_wrappers_stack": cython_wrappers_stack,
+    }
+)
 
 _default_globals = copy.deepcopy(globals_vars)
 
@@ -1008,8 +1026,7 @@ ivy.array_significant_figures = (
 
 
 def set_array_significant_figures(sig_figs):
-    """
-    Summary.
+    """Summary.
 
     Parameters
     ----------
@@ -1049,8 +1066,7 @@ ivy.array_decimal_values = (
 
 
 def set_array_decimal_values(dec_vals):
-    """
-    Summary.
+    """Summary.
 
     Parameters
     ----------
@@ -1076,8 +1092,7 @@ ivy.warning_level = warning_level_stack[-1] if warning_level_stack else "ivy_onl
 
 
 def set_warning_level(warn_level):
-    """
-    Summary.
+    """Summary.
 
     Parameters
     ----------
@@ -1109,8 +1124,7 @@ ivy.nan_policy = nan_policy_stack[-1] if nan_policy_stack else "nothing"
 
 
 def set_nan_policy(warn_level):
-    """
-    Summary.
+    """Summary.
 
     Parameters
     ----------
@@ -1142,8 +1156,9 @@ def unset_nan_policy():
 ivy.dynamic_backend = dynamic_backend_stack[-1] if dynamic_backend_stack else True
 
 
-def set_dynamic_backend(flag):
-    """Set the global dynamic backend setting to the provided flag (True or False)"""
+def set_dynamic_backend(flag):  # noqa: D209
+    """Set the global dynamic backend setting to the provided flag (True or
+    False)"""
     global dynamic_backend_stack
     if flag not in [True, False]:
         raise ValueError("dynamic_backend must be a boolean value (True or False)")
@@ -1152,8 +1167,7 @@ def set_dynamic_backend(flag):
 
 
 def unset_dynamic_backend():
-    """
-    Remove the current dynamic backend setting.
+    """Remove the current dynamic backend setting.
 
     Also restore the previous setting (if any)
     """
@@ -1162,6 +1176,37 @@ def unset_dynamic_backend():
         dynamic_backend_stack.pop()
         flag = dynamic_backend_stack[-1] if dynamic_backend_stack else True
         ivy.__setattr__("dynamic_backend", flag, True)
+
+
+# Cython wrappers
+
+ivy.cython_wrappers_mode = cython_wrappers_stack[-1] if cython_wrappers_stack else False
+
+
+@handle_exceptions
+def set_cython_wrappers_mode(flag: bool = True) -> None:
+    """Set the mode of whether to use cython wrappers for functions.
+
+    Parameter
+    ---------
+    flag
+        boolean whether to use cython wrappers for functions
+
+    Examples
+    --------
+    >>> ivy.set_cython_wrappers_mode(False)
+    >>> ivy.cython_wrappers_mode
+    False
+
+    >>> ivy.set_cython_wrappers_mode(True)
+    >>> ivy.cython_wrappers_mode
+    True
+    """
+    global cython_wrappers_stack
+    if flag not in [True, False]:
+        raise ValueError("cython_wrappers_mode must be a boolean value (True or False)")
+    cython_wrappers_stack.append(flag)
+    ivy.__setattr__("cython_wrappers_mode", flag, True)
 
 
 # Context Managers
@@ -1211,7 +1256,10 @@ current_sub_backends = []
 downcast_dtypes = False
 upcast_dtypes = False
 crosscast_dtypes = False
-cast_dtypes = lambda: downcast_dtypes and upcast_dtypes and crosscast_dtypes
+
+
+def cast_dtypes():
+    return downcast_dtypes and upcast_dtypes and crosscast_dtypes
 
 
 def downcast_data_types(val=True):
@@ -1433,6 +1481,7 @@ GLOBAL_PROPS = [
     "default_int_dtype",
     "default_complex_dtype",
     "default_uint_dtype",
+    "cython_wrappers_mode",
 ]
 
 
@@ -1462,8 +1511,7 @@ class LoggingMode:
         self.logging_mode_stack.append(logging.WARNING)
 
     def set_logging_mode(self, mode):
-        """
-        Set the current logging mode for Ivy.
+        """Set the current logging mode for Ivy.
 
         Possible modes are 'DEBUG', 'INFO', 'WARNING', 'ERROR'.
         """
@@ -1475,8 +1523,9 @@ class LoggingMode:
         logging.getLogger().setLevel(mode)
         self.logging_mode_stack.append(mode)
 
-    def unset_logging_mode(self):
-        """Remove the most recently set logging mode, returning to the previous one."""
+    def unset_logging_mode(self):  # noqa: D209
+        """Remove the most recently set logging mode, returning to the previous
+        one."""
         if len(self.logging_mode_stack) > 1:
             # Remove the current mode
             self.logging_mode_stack.pop()
@@ -1496,6 +1545,14 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
                 " for setting its value!"
             )
         self.__dict__[name] = value
+
+    def __reduce__(self):
+        def _get_module_and_replace_name(module_name: str):
+            module = importlib.import_module(module_name)
+            module.__class__ = self.__class__
+            return module
+
+        return (_get_module_and_replace_name, (self.__name__,))
 
 
 if (

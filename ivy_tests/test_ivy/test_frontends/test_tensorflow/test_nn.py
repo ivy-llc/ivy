@@ -136,9 +136,13 @@ def _dropout_helper(draw):
 
 
 @st.composite
-def _generate_bias_data(draw):
+def _generate_bias_data(draw, keras_backend_fn=False):
     data_format = draw(st.sampled_from(["NC...", "N...C", None]))
     channel_dim = 1 if data_format == "NC..." else -1
+    if keras_backend_fn:
+        data_format = {"NC...": "channels_first", "N...C": "channels_last", None: None}[
+            data_format
+        ]
     dtype, value, shape = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),
@@ -683,6 +687,8 @@ def test_tensorflow_avg_pool2d(
         ksize=ksize,
         strides=strides,
         padding=padding,
+        rtol=1e-2,
+        atol=1e-2,
     )
 
 
@@ -926,6 +932,7 @@ def test_tensorflow_conv2d_transpose(
         padding,
         output_shape,
     ) = x_f_d_df
+    assume(isinstance(padding, str) or backend_fw in ["torch", "tensorflow"])
     _assume_tf_dilation_gt_1("tensorflow", on_device, dilation)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,

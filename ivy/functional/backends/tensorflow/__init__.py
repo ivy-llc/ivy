@@ -18,6 +18,8 @@ from tensorflow.python.types.core import Tensor
 import ivy
 from ivy.func_wrapper import _dtype_from_version
 
+tf.experimental.numpy.experimental_enable_numpy_behavior(prefer_float32=True)
+
 backend_version = {"version": tf.__version__}
 
 # noinspection PyUnresolvedReferences
@@ -265,3 +267,9 @@ from .control_flow_ops import *
 # sub-backends
 from . import sub_backends
 from .sub_backends import *
+
+from . import module
+from .module import Model
+
+
+NativeModule = Model

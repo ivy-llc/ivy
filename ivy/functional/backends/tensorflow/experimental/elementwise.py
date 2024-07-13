@@ -538,13 +538,16 @@ def frexp(
     return m, e
 
 
+@with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
 def modf(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.modf(x)
+) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
+    integer_part = tf.math.floor(x)
+    fractional_part = x - integer_part
+    return fractional_part, integer_part
 
 
 def digamma(
@@ -563,3 +566,13 @@ def erfc(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.erfc(x)
+
+
+@with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
+def erfinv(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.erfinv(x)

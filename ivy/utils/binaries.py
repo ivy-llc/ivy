@@ -9,8 +9,9 @@ from tqdm import tqdm
 def _get_paths_from_binaries(binaries, root_dir=""):
     """Get all the paths from the binaries.json into a list."""
     paths = []
+    ext = "pyd" if os.name == "nt" else "so"
     if isinstance(binaries, str):
-        return [os.path.join(root_dir, binaries)]
+        return [os.path.join(root_dir, binaries + "." + ext)]
     elif isinstance(binaries, dict):
         for k, v in binaries.items():
             paths += _get_paths_from_binaries(v, os.path.join(root_dir, k))
@@ -33,17 +34,20 @@ def check_for_binaries():
         for path in binaries_paths:
             if not os.path.exists(path):
                 if initial:
-                    config_str = "\n".join([
-                        f"{module} : {', '.join(configs)}"
-                        for module, configs in available_configs.items()
-                    ])
+                    config_str = "\n".join(
+                        [
+                            f"{module} : {', '.join(configs)}"
+                            for module, configs in available_configs.items()
+                        ]
+                    )
                     logging.warning(
                         "\tSome binaries seem to be missing in your system. This could "
                         "be either because we don't have compatible binaries for your "
                         "system or that newer binaries were available. In the latter "
                         "case, calling ivy.utils.cleanup_and_fetch_binaries() should "
                         "fetch the binaries binaries. Feel free to create an issue on "
-                        "https://github.com/unifyai/ivy.git in case of the former\n"
+                        "https://github.com/ivy-llc/ivy.git in "
+                        "case of the former\n"
                     )
                     logging.warning(
                         "\nFollowing are the supported configurations"
@@ -76,6 +80,7 @@ def cleanup_and_fetch_binaries(clean=True):
 
         print("Downloading new binaries...")
         all_tags = list(tags.sys_tags())
+
         version = os.environ["VERSION"] if "VERSION" in os.environ else "main"
         terminate = False
 
@@ -93,11 +98,12 @@ def cleanup_and_fetch_binaries(clean=True):
                         continue
                     folders = path.split(os.sep)
                     _, file_path = os.sep.join(folders[:-1]), folders[-1]
-                    file_name = f"{file_path[:-3]}_{tag}.so"
+                    ext = "pyd" if os.name == "nt" else "so"
+                    file_name = f"{file_path[:-(len(ext)+1)]}_{tag}.{ext}"
                     search_path = f"{module}/{file_name}"
                     try:
                         response = request.urlopen(
-                            "https://github.com/unifyai/binaries/raw/"
+                            "https://github.com/ivy-llc/binaries/raw/"
                             f"{version}/{search_path}",
                             timeout=40,
                         )

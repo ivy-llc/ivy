@@ -161,17 +161,19 @@ def test_numpy_dot(
 @handle_frontend_test(
     fn_tree="numpy.linalg.matrix_and_vector_products.einsum",
     gt_fn_tree="numpy.einsum",
-    args=st.sampled_from([
-        (
-            "ii",
-            np.arange(25).reshape(5, 5),
-        ),
-        (
-            "ii->i",
-            np.arange(25).reshape(5, 5),
-        ),
-        ("ij,j", np.arange(25).reshape(5, 5), np.arange(5)),
-    ]),
+    args=st.sampled_from(
+        [
+            (
+                "ii",
+                np.arange(25).reshape(5, 5),
+            ),
+            (
+                "ii->i",
+                np.arange(25).reshape(5, 5),
+            ),
+            ("ij,j", np.arange(25).reshape(5, 5), np.arange(5)),
+        ]
+    ),
     dtype=helpers.get_dtypes("float", full=False),
 )
 def test_numpy_einsum(
@@ -322,7 +324,7 @@ def test_numpy_matmul(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=50,
-        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: (x, x)),
     ),
     n=helpers.ints(min_value=1, max_value=8),
     test_with_out=st.just(False),

@@ -1,0 +1,75 @@
+name: Update docs
+on:
+  workflow_call:
+      inputs:
+        package-dependencies:
+            description: 'Apt package dependencies'
+            required: false
+            default: ''
+            type: string
+        repo-name:
+          description: 'Repo display name in the URL'
+          required: false
+          default: ''
+          type: string
+        docs-repo:
+          description: 'Repo to hold the docs'
+          required: false
+          default: ivy-llc/docs
+          type: string
+
+permissions:
+  contents: write
+
+jobs:
+  publish-dev-docs:
+    name: Publish dev docs
+    uses: ./.github/workflows/publish-docs.yml
+    secrets: inherit
+    concurrency:
+      group: dev-docs
+      cancel-in-progress: true
+    with:
+      package-dependencies: ${{ inputs.package-dependencies }}
+      repo-name: ${{ inputs.repo-name }}
+      docs-repo: ${{ inputs.docs-repo }}
+
+  publish-release-docs:
+    name: Publish release docs
+    needs: publish-dev-docs
+    uses: ./.github/workflows/publish-docs.yml
+    if: always() && startsWith(github.ref, 'refs/tags')
+    secrets: inherit
+    with:
+      version: ${{ github.ref_name }}
+      package-dependencies: ${{ inputs.package-dependencies }}
+      repo-name: ${{ inputs.repo-name }}
+      docs-repo: ${{ inputs.docs-repo }}
+
+  update-versions:
+    name: Update versions.json
+    needs: publish-release-docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️ Docs
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.docs-repo }}
+          token: ${{ secrets.DEV_BOT_PAT }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Add version to ${{ inputs.repo-name }}.json
+        run: |
+          python versions/add_version.py ${{ inputs.repo-name }} ${{ github.ref_name }}
+
+      - name: Commit and push
+        run: |
+          git config --global user.email "hello@transpile-ai.com"
+          git config --global user.name "ivy-dev-bot"
+          git add versions/
+          git commit -m "Add ${{ github.ref_name }} to ${{ inputs.repo-name }}.json"
+          git push

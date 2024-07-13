@@ -1,6 +1,6 @@
 # This shell script is required by the doc-builder. Moving it might break
 # the doc-building pipeline
-
+pip install -e .
 pip install -r requirements/requirements.txt
 if [[ $(arch) == 'arm64' ]]; then
       brew install pandoc

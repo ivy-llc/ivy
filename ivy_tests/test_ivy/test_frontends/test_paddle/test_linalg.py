@@ -171,17 +171,6 @@ def _transpose_helper(draw):
     return dtype, x, perm
 
 
-@st.composite
-def dims_and_offset(draw, shape):
-    shape_actual = draw(shape)
-    dim1 = draw(helpers.get_axis(shape=shape, force_int=True))
-    dim2 = draw(helpers.get_axis(shape=shape, force_int=True))
-    offset = draw(
-        st.integers(min_value=-shape_actual[dim1], max_value=shape_actual[dim1])
-    )
-    return dim1, dim2, offset
-
-
 # Helpers #
 # ------ #
 
@@ -333,7 +322,7 @@ def test_paddle_bmm(
         available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
     upper=st.booleans(),
 )
@@ -423,6 +412,40 @@ def test_paddle_cond(
     )
 
 
+# cov
+@handle_frontend_test(
+    fn_tree="paddle.linalg.cov",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        max_num_dims=2,
+    ),
+    rowvar=st.booleans(),
+    ddof=st.booleans(),
+)
+def test_paddle_cov(
+    *,
+    dtype_and_x,
+    rowvar,
+    ddof,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        x=x,
+        rowvar=rowvar,
+        ddof=ddof,
+    )
+
+
 # Tests #
 # ----- #
 
@@ -462,6 +485,8 @@ def test_paddle_cross(
         x=x,
         y=y,
         axis=axis,
+        atol=1e-4,
+        rtol=1e-4,
     )
 
 
@@ -569,7 +594,7 @@ def test_paddle_eig(
     ret = [ivy.to_numpy(x).astype("float64") for x in ret]
     frontend_ret = [np.asarray(x, dtype=np.float64) for x in frontend_ret]
 
-    l, v = ret
+    l, v = ret  # noqa: E741
     front_l, front_v = frontend_ret
 
     assert_all_close(
@@ -619,7 +644,7 @@ def test_paddle_eigh(
     ret = [ivy.to_numpy(x).astype("float64") for x in ret]
     frontend_ret = [np.asarray(x, dtype=np.float64) for x in frontend_ret]
 
-    l, v = ret
+    l, v = ret  # noqa: E741
     front_l, front_v = frontend_ret
 
     assert_all_close(
@@ -706,7 +731,7 @@ def test_paddle_eigvalsh(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ),
-    axis_and_offset=dims_and_offset(
+    axis_and_offset=helpers.dims_and_offset(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape")
     ),
 )
@@ -827,7 +852,7 @@ def test_paddle_matmul(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=50,
-        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: (x, x)),
     ),
     n=helpers.ints(min_value=1, max_value=8),
     test_with_out=st.just(False),

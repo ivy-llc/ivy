@@ -1103,9 +1103,9 @@ def test_jax_einsum_path(
         **kw,
         optimize=optimize,
     )
-    len(ret[0]) == len(ret_gt[0])
-    all(x == y for x, y in zip(ret[0], ret_gt[0]))
-    ret[1] == str(ret_gt[1])
+    assert len(ret[0]) == len(ret_gt[0])
+    assert all(x == y for x, y in zip(ret[0], ret_gt[0]))
+    assert ret[1] == str(ret_gt[1])
 
 
 # exp
@@ -3314,11 +3314,11 @@ def test_jax_trace(
 
 
 @handle_frontend_test(
-    fn_tree="jax.numpy.trapz",
+    fn_tree="jax.numpy.trapezoid",
     dtype_x_axis_rand_either=_either_x_dx(),
     test_with_out=st.just(False),
 )
-def test_jax_trapz(
+def test_jax_trapezoid(
     *,
     dtype_x_axis_rand_either,
     on_device,
@@ -3376,6 +3376,49 @@ def test_jax_trunc(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.unwrap",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=10,
+        min_value=-ivy.pi,
+        max_value=ivy.pi,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    discont=st.floats(min_value=0, max_value=3.0),
+    period=st.floats(min_value=2 * np.pi, max_value=10.0),
+    test_with_out=st.just(False),
+)
+def test_jax_unwrap(
+    *,
+    dtype_x_axis,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+    discont,
+    period,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        p=x[0],
+        discont=discont,
+        axis=axis,
+        period=period,
     )
 
 

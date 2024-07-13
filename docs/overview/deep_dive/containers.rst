@@ -31,7 +31,7 @@ Containers
 .. _`__truediv__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L399
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`containers channel`: https://discord.com/channels/799879767196958751/982738042886422598
+.. _`containers thread`: https://discord.com/channels/799879767196958751/1189906066549506048
 
 
 The `ivy.Container`_ inherits from `dict`_, and is useful for storing nested data.
@@ -334,7 +334,7 @@ This is for three reasons, (a) the key chain :code:`g` is not shared by any cont
 
 This should have hopefully given you a good feel for containers, and how these are handled in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `containers channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `containers thread`_!
 
 
 **Video**

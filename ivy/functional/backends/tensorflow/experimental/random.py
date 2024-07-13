@@ -90,15 +90,20 @@ def poisson(
     return ret
 
 
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, backend_version)
 def bernoulli(
     probs: Union[float, tf.Tensor, tf.Variable],
     *,
     logits: Union[float, tf.Tensor, tf.Variable] = None,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: Optional[str] = None,
-    dtype: DType,
+    dtype: Optional[str] = None,
     seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    pass
-    # TODO: Implement purely in tensorflow
+    dtype = dtype if dtype is not None else probs.dtype
+    if logits is not None:
+        probs = tf.nn.softmax(logits, -1)
+    if not _check_shapes_broadcastable(shape, probs.shape):
+        shape = probs.shape
+    return tf.keras.backend.random_bernoulli(shape, probs, dtype, seed)

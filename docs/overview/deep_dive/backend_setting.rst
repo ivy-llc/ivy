@@ -8,7 +8,7 @@ Backend Setting
 .. _`wrap the functions`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`backend setting channel`: https://discord.com/channels/799879767196958751/982737886963187772
+.. _`backend setting thread`: https://discord.com/channels/799879767196958751/1189905734645850254
 
 The backend framework can either be set by calling :code:`ivy.set_backend(backend_name)` or it can inferred from the arguments.
 For the latter, a global variable `implicit_backend`_ is located in the file which is initialized as numpy, and is always used to infer the backend in cases where: (a) no backend has been set using the :code:`set_backend` function and (b) the backend cannot be inferred from the inputs.
@@ -129,7 +129,7 @@ If the user's system doesn't have the backend framework installed, we default to
 
 This should have hopefully given you a good feel for how the backend framework is set.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `backend setting channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `backend setting thread`_!
 
 
 **Video**

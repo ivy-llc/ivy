@@ -5,6 +5,8 @@ import tensorflow as tf
 
 # local
 from ivy.func_wrapper import (
+    inputs_to_ivy_arrays,
+    output_to_native_arrays,
     with_unsupported_dtypes,
     with_supported_dtypes,
     with_supported_device_and_dtypes,
@@ -174,9 +176,18 @@ def max_pool2d(
             )
         else:
             padding = "VALID"
-    res = tf.nn.pool(
-        x, kernel, "MAX", strides, padding, dilations=dilation, data_format=data_format
-    )
+    if any(d > 1 for d in dilation):
+        res = tf.nn.pool(
+            x,
+            kernel,
+            "MAX",
+            strides,
+            padding,
+            dilations=dilation,
+            data_format=data_format,
+        )
+    else:  # faster
+        res = tf.nn.max_pool2d(x, kernel, strides, padding, data_format=data_format)
 
     if depth_pooling:
         res = tf.transpose(res, (0, 2, 3, 1))
@@ -1197,11 +1208,13 @@ def shape_initialization(shape, axes, x):
 
 def rank_initialization(axes):
     rank = tf.size(axes)
-    with tf.control_dependencies([
-        tf.debugging.assert_less_equal(
-            rank, 3, message="N-D FFT supported only up to 3-D."
-        )
-    ]):
+    with tf.control_dependencies(
+        [
+            tf.debugging.assert_less_equal(
+                rank, 3, message="N-D FFT supported only up to 3-D."
+            )
+        ]
+    ):
         rank = tf.identity(rank)
 
     return rank
@@ -1293,9 +1306,9 @@ def static_output_shape(input_shape, shape, axes):
 def _right_pad_or_crop(tensor, shape):
     input_shape = tf.shape(tensor)
     shape = tf.convert_to_tensor(shape, dtype=tf.dtypes.int32)
-    with tf.control_dependencies([
-        tf.debugging.assert_less_equal(tf.size(shape), tf.size(input_shape))
-    ]):
+    with tf.control_dependencies(
+        [tf.debugging.assert_less_equal(tf.size(shape), tf.size(input_shape))]
+    ):
         shape = tf.identity(shape)
     shape = tf.concat([input_shape[: tf.size(input_shape) - tf.size(shape)], shape], 0)
 
@@ -1392,8 +1405,8 @@ def rfft_operations(x, rank, norm_factor):
             },
         )
     norm_factor = tf.cast(norm_factor, tf.complex128)
-    x = x / norm_factor
     x = tf.cast(x, tf.complex128)
+    x = x / norm_factor
     return x
 
 
@@ -1531,7 +1544,7 @@ def rfftn(
     s: Optional[Union[int, Tuple[int]]] = None,
     axes: Optional[Union[int, Tuple[int]]] = None,
     *,
-    norm: Optional[str] = [("forward", "ortho", "backward")],
+    norm: str = "backward",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     result = _rfftn_helper(x, s, axes, norm)
@@ -1665,4 +1678,35 @@ def sliding_window(
 
     return tf.image.extract_patches(
         images=input, sizes=kernel_size, strides=stride, rates=dilation, padding=padding
+    )
+
+
+def rnn(
+    step_function,
+    inputs,
+    initial_states,
+    /,
+    *,
+    go_backwards: bool = False,
+    mask: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    constants: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    unroll: bool = False,
+    input_length: Optional[int] = None,
+    time_major: bool = False,
+    zero_output_for_mask: bool = False,
+    return_all_outputs: bool = True,
+):
+    step_function = inputs_to_ivy_arrays(output_to_native_arrays(step_function))
+    return tf.keras.backend.rnn(
+        step_function,
+        inputs,
+        initial_states,
+        go_backwards=go_backwards,
+        mask=mask,
+        constants=constants,
+        unroll=unroll,
+        input_length=input_length,
+        time_major=time_major,
+        zero_output_for_mask=zero_output_for_mask,
+        return_all_outputs=return_all_outputs,
     )

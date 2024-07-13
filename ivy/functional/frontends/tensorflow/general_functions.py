@@ -20,7 +20,7 @@ import functools
 
 
 def _num_to_bit_list(value, num_dims):
-    return list(map(int, "{:0{size}b}".format(value, size=num_dims)))[::-1]
+    return list(map(int, f"{value:0{num_dims}b}"))[::-1]
 
 
 # --- Main --- #
@@ -86,16 +86,17 @@ def clip_by_norm(t, clip_norm, axes=None):
     l2sum_safe = ivy.where(pred, l2sum, ivy.ones_like(l2sum))
     l2norm = ivy.where(pred, ivy.sqrt(l2sum_safe), l2sum)
     intermediate = t * clip_norm
-    assert t.shape == intermediate.shape, "Dimensions %s and %s are not compatible" % (
-        t.shape,
-        intermediate.shape,
-    )
+    assert (
+        t.shape == intermediate.shape
+    ), f"Dimensions {t.shape} and {intermediate.shape} are not compatible"
     t_clip = intermediate / ivy.maximum(l2norm, clip_norm)
     return t_clip
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.15.0 and below": ("float16",)}, "tensorflow")
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("complex64", "complex128")}, "tensorflow"
+)
 def clip_by_value(t, clip_value_min, clip_value_max):
     ivy.utils.assertions.check_all_or_any_fn(
         clip_value_min,
@@ -213,7 +214,7 @@ def foldl(
     return result
 
 
-@with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.6.0 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def foldr(
     fn,
@@ -307,6 +308,9 @@ def norm(tensor, ord="euclidean", axis=None, keepdims=None, name=None):
     )
 
 
+@with_supported_dtypes(
+    {"2.15.0 and below": ("uint8", "int8", "int32", "int64")}, "tensorflow"
+)
 @to_ivy_arrays_and_back
 def one_hot(
     indices: ivy.Array,
@@ -399,6 +403,12 @@ def scan(
 ):
     elems = ivy.asarray(elems)
     return ivy.associative_scan(elems, fn, reverse=reverse)
+
+
+@with_supported_dtypes({"2.17.0 and below": ("int32", "int64")}, "tensorflow")
+@to_ivy_arrays_and_back
+def scatter_nd(indices, updates, shape, name=None):
+    return ivy.astype(ivy.scatter_nd(indices, updates, shape=shape), updates.dtype)
 
 
 @to_ivy_arrays_and_back

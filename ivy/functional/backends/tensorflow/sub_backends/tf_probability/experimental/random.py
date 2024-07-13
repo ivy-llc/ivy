@@ -63,6 +63,7 @@ def bernoulli(
     seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    dtype = dtype if dtype is not None else probs.dtype
     if seed is not None:
         tf.random.set_seed(seed)
     if logits is not None:

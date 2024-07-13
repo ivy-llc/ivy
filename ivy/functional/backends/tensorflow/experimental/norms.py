@@ -107,7 +107,14 @@ def batch_norm(
         runningvariance = (1 - momentum) * runningvariance + momentum * variance * n / (
             n - 1
         )
-    xnormalized = tf.nn.batch_normalization(x, mean, variance, offset, scale, eps)
+
+    inv = 1.0 / tf.math.sqrt(variance + eps)
+    offset = 0 if offset is None else offset
+    if scale is not None:
+        inv = tf.math.multiply(inv, scale)
+    xnormalized = tf.math.add(tf.math.multiply(x, inv), offset)
+    xnormalized = tf.math.subtract(xnormalized, tf.math.multiply(mean, inv))
+    # the above approach is faster than tf.nn.batch_normalization
 
     if data_format == "NCS":
         xnormalized = tf.transpose(
