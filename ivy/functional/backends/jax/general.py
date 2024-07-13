@@ -25,13 +25,14 @@ from . import backend_version
 
 
 def container_types() -> List[Type]:
-    """
-    Gets list of container types supported.
+    """Gets list of container types supported.
 
-    Returns:
+    Returns
+    -------
         List[Type]: List containing the FlatMapping container type.
 
-    Examples:
+    Examples
+    --------
         >>> container_types()
         [FlatMapping]
     """

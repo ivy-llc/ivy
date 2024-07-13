@@ -297,7 +297,9 @@ def test_wasserstein_loss_discriminator(
         min_dim_size=2,
     ),
 )
-def test_wasserstein_loss_generator(dtype_and_pred_fake, test_flags, backend_fw, fn_name, on_device):
+def test_wasserstein_loss_generator(
+    dtype_and_pred_fake, test_flags, backend_fw, fn_name, on_device
+):
     dtype_pred_fake, pred_fake = dtype_and_pred_fake
 
     helpers.test_function(

@@ -415,8 +415,8 @@ def ssim_loss(
     ivy.array(0.99989986)
     """
     # Constants for stability
-    C1 = 0.01 ** 2
-    C2 = 0.03 ** 2
+    C1 = 0.01**2
+    C2 = 0.03**2
 
     # Calculate the mean of the two images
     mu_x = ivy.avg_pool2d(pred, (3, 3), (1, 1), "SAME")
@@ -429,7 +429,7 @@ def ssim_loss(
 
     # Calculate SSIM
     ssim = ((2 * mu_x * mu_y + C1) * (2 * sigma_xy + C2)) / (
-        (mu_x ** 2 + mu_y ** 2 + C1) * (sigma_x2 + sigma_y2 + C2)
+        (mu_x**2 + mu_y**2 + C1) * (sigma_x2 + sigma_y2 + C2)
     )
 
     # Convert SSIM to loss
