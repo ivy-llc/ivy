@@ -52,7 +52,7 @@ def cond(x, p=None, name=None):
 
 # cov
 @with_supported_dtypes(
-    {"2.5.1 and below": ("complex64", "complex128", "float32", "float64")}, "paddle"
+    {"2.6.1 and below": ("complex64", "complex128", "float32", "float64")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def cov(x, rowvar=True, ddof=True, fweights=None, aweights=None, name=None):

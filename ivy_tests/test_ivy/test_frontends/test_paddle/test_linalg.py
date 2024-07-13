@@ -414,14 +414,18 @@ def test_paddle_cond(
 
 # cov
 @handle_frontend_test(
-    fn_tree="paddle.tensor.linalg.cov",
+    fn_tree="paddle.linalg.cov",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"), num_arrays=1
     ),
+    rowvar=st.booleans(),
+    ddof=st.booleans(),
 )
 def test_paddle_cov(
     *,
     dtype_and_x,
+    rowvar,
+    ddof,
     frontend,
     test_flags,
     fn_tree,
@@ -435,6 +439,8 @@ def test_paddle_cov(
         backend_to_test=backend_fw,
         fn_tree=fn_tree,
         x=x,
+        rowvar=rowvar,
+        ddof=ddof,
     )
 
 
