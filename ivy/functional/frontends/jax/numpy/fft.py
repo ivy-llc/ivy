@@ -70,13 +70,9 @@ def ifft2(a, s=None, axes=(-2, -1), norm=None):
     return ivy.array(ivy.ifft2(a, s=s, dim=axes, norm=norm), dtype=ivy.dtype(a))
 
 
-@with_supported_dtypes(
-    {"2.5.2 and below": ("complex64", "complex128")},
-    "paddle",
-)
 @to_ivy_arrays_and_back
-def irfftn(x=None, s=None, axes=None, norm=None):
-    x = ivy.array(x)
+def irfftn(a, s=None, axes=None, norm=None):
+    x = ivy.asarray(a)
 
     if axes is None:
         axes = list(range(len(x.shape)))
@@ -114,9 +110,12 @@ def irfftn(x=None, s=None, axes=None, norm=None):
         real_result = ivy.moveaxis(real_result, -1, axis)
 
     if ivy.is_complex_dtype(x.dtype):
-        output_dtype = "float32" if x.dtype == "complex64" else "float64"
+        output_dtype = ivy.float32 if x.dtype == ivy.complex64 else ivy.float64
     else:
-        output_dtype = "float32"
+        if str(x.dtype) in ["float64", "int64", "uint64"]:
+            output_dtype = ivy.float64
+        else:
+            output_dtype = ivy.float32
 
     result_t = ivy.astype(real_result, output_dtype)
     return result_t

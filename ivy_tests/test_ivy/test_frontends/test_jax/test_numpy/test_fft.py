@@ -249,19 +249,18 @@ def test_jax_numpy_ifft2(
 @handle_frontend_test(
     fn_tree="jax.numpy.fft.irfftn",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("complex"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_value=-10,
         max_value=10,
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=2,
-        max_dim_size=3,
+        max_dim_size=10,
         valid_axis=True,
         force_int_axis=True,
-        allow_inf=False,
         num_arrays=1,
     ),
-    norm=st.sampled_from(["backward"]),
+    norm=st.sampled_from(["backward", "ortho", "forward"]),
 )
 def test_jax_numpy_irfftn(
     dtype_x_axis,
@@ -271,15 +270,16 @@ def test_jax_numpy_irfftn(
     fn_tree,
     backend_fw,
 ):
-    input_dtypes, x, axis = dtype_x_axis
+    input_dtypes, x, _ = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        x=x[0],
-        s=None,
+        atol=1e-3,
+        a=x[0],
+        s=None,  # TODO: also test cases where `s` and `axes` are not None
         axes=None,
         norm=norm,
     )
