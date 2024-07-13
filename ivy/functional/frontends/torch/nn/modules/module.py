@@ -2,6 +2,7 @@
 import ivy
 from collections import OrderedDict
 from typing import Any, Dict, Iterator, List, Optional, Set, Tuple, Callable
+import threading
 
 # local
 from ivy.functional.frontends.torch.nn.parameter import Parameter
@@ -21,7 +22,7 @@ class Module(ivy.Module):
             device=device,
             devices=devices,
             training=True,
-            build_mode="on_init",
+            build_mode="explicit",
             dynamic_backend=True,
             **kwargs,
         )
@@ -129,7 +130,10 @@ class Module(ivy.Module):
 
     def apply(self, fn: Callable[["Module"], None]):
         for module in self.children():
-            module.apply(fn)
+            if hasattr(module, "apply"):
+                module.apply(fn)
+            else:
+                fn(module)
         fn(self)
         return self
 
@@ -182,7 +186,7 @@ class Module(ivy.Module):
         for module_prefix, module in modules:
             members = get_members_fn(module)
             for k, v in members:
-                if v is None or id(v) in memo or not isinstance(v, (Tensor, Parameter)):
+                if v is None or id(v) in memo:
                     continue
                 if remove_duplicate:
                     memo.add(id(v))
@@ -262,9 +266,12 @@ class Module(ivy.Module):
                 if module is None:
                     continue
                 submodule_prefix = prefix + ("." if prefix else "") + name
-                yield from module.named_modules(
-                    memo, submodule_prefix, remove_duplicate
-                )
+                if not hasattr(module, "named_modules"):
+                    yield submodule_prefix, self
+                else:
+                    yield from module.named_modules(
+                        memo, submodule_prefix, remove_duplicate
+                    )
 
     def requires_grad_(self, requires_grad: bool = True):
         for p in self.parameters():
@@ -287,35 +294,14 @@ class Module(ivy.Module):
             modules = self.__dict__["_module_dict"]
             if name in modules:
                 return modules[name]
-        else:
-            try:
-                modules = super().__getattribute__("_module_dict")
-                if name in modules:
-                    return modules[name]
-            except Exception:
-                pass
         if "_buffers" in self.__dict__:
             buffers = self.__dict__["_buffers"]
             if name in buffers:
                 return buffers[name]
-        else:
-            try:
-                buffers = super().__getattribute__("_buffers")
-                if name in buffers:
-                    return buffers[name]
-            except Exception:
-                pass
         if "_v" in self.__dict__:
             v = self.__dict__["_v"]
             if name in v:
                 return v[name]
-        else:
-            try:
-                v = super().__getattribute__("_v")
-                if name in v:
-                    return v[name]
-            except Exception:
-                pass
         # Adding this attribute mapping s.t if someone tries
         # to retrieve self._modules/self._parameters, we
         # can handle that here
@@ -323,20 +309,6 @@ class Module(ivy.Module):
             mapping = self.__dict__["_attr_mapping"]
             if name in mapping:
                 return super().__getattribute__(mapping[name])
-        else:
-            try:
-                mapping = super().__getattribute__("_attr_mapping")
-                if name in mapping:
-                    return mapping[name]
-            except Exception:
-                pass
-        # Adding this for cases where self._modules e.g. is accessed before the
-        # super.__init__(...) in translated models
-        if name in ("_parameters", "_modules") and "_attr_mapping" not in self.__dict__:
-            if name == "_parameters":
-                return super().__getattribute__("v")
-            if name == "_modules":
-                return super().__getattribute__("module_dict")
         return super().__getattribute__(name)
 
     def __setattr__(self, name, value) -> None:
@@ -348,7 +320,7 @@ class Module(ivy.Module):
                     else:
                         d.discard(name)
 
-        params = self.__dict__.get("_v") or getattr(self, "_v", None)
+        params = self.__dict__.get("_v")
         if params is not None and name in params and isinstance(value, Parameter):
             remove_from(self.__dict__, self._buffers, self._module_dict)
             self.register_parameter(name, value)
@@ -397,7 +369,11 @@ class Module(ivy.Module):
     def __getstate__(self):
         state = self.__dict__.copy()
         state.pop("_compiled_call_impl", None)
+        state.pop("_thread_local", None)
+        state.pop("_metrics_lock", None)
         return state
 
     def __setstate__(self, state):
+        state["_thread_local"] = threading.local()
+        state["_metrics_lock"] = threading.Lock()
         self.__dict__.update(state)

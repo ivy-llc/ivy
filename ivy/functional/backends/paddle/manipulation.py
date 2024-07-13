@@ -470,6 +470,10 @@ def swapaxes(
     return paddle_backend.permute_dims(x, axes)
 
 
+@with_supported_dtypes(
+    {"2.6.0 and below": ("int32", "int64", "float32", "float64")},
+    backend_version,
+)
 def clip(
     x: paddle.Tensor,
     /,

@@ -27,9 +27,6 @@ Top Contributors
    * - sarvesh kesharwani
      - `Sarvesh-Kesharwani <https://github.com/Sarvesh-Kesharwani>`_
      - Ivy Inspector Bronze, OG Gold
-   * - Arunima Santhosh Kumar
-     - `niixxaaa <https://github.com/niixxaaa>`_
-     - OG Gold
    * - Krishna Boppana
      - `krishna-boppana <https://github.com/krishna-boppana>`_
      - OG Gold
@@ -99,6 +96,9 @@ Core Contributors
    * - Mwape Bunda
      - `teckno <https://github.com/teckno>`_
      - OG Bronze
+   * - Ramya Manasa Amancherla
+     - `ramyamanasa <https://github.com/ramyamanasa>`_
+     - Merging Master Bronze, Ivy Inspector
    * - Rohit Kumar Salla
      - `rohitsalla <https://github.com/rohitsalla>`_
      - Merging Master Bronze, Ivy Inspector Bronze
@@ -110,6 +110,9 @@ Core Contributors
      - Merging Master Bronze, Ivy Inspector
    * - Chaitanya Lakhchaura
      - `ZenithFlux <https://github.com/ZenithFlux>`_
+     - Merging Master Bronze
+   * - Kacper Kożdoń
+     - `Kacper-W-Kozdon <https://github.com/Kacper-W-Kozdon>`_
      - Merging Master Bronze
    * - R E Zera Marveen Lyngkhoi
      - `fleventy-5 <https://github.com/fleventy-5>`_
@@ -141,9 +144,6 @@ Contributors
    * - Rahul Prem
      - `rp097 <https://github.com/rp097>`_
      - Merging Master, Ivy Inspector
-   * - Ramya Manasa Amancherla
-     - `ramyamanasa <https://github.com/ramyamanasa>`_
-     - Merging Master, Ivy Inspector
    * - Vaishnavi Mudaliar
      - `VaishnaviMudaliar <https://github.com/VaishnaviMudaliar>`_
      - Merging Master, Ivy Inspector
@@ -155,9 +155,6 @@ Contributors
      - Merging Master
    * - Dhruv Sharma
      - `druvdub <https://github.com/druvdub>`_
-     - Merging Master
-   * - Kacper Kożdoń
-     - `Kacper-W-Kozdon <https://github.com/Kacper-W-Kozdon>`_
      - Merging Master
    * - Mehmet Bilgehan Bezcioglu
      - `BilgehanMehmet <https://github.com/BilgehanMehmet>`_

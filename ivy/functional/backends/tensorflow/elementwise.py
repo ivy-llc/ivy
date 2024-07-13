@@ -4,8 +4,9 @@ import tensorflow as tf
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy import promote_types_of_inputs
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.utils.exceptions import IvyNotImplementedException
 from . import backend_version
 
 
@@ -771,8 +772,8 @@ def trapz(
     axis: int = -1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    pass
     # TODO: Implement purely in tensorflow
+    raise IvyNotImplementedException()
 
 
 @with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, backend_version)
@@ -875,7 +876,10 @@ def deg2rad(
     return radians
 
 
-@with_supported_dtypes({"2.15.0 and below": ("float",)}, backend_version)
+@with_supported_dtypes(
+    {"2.15.0 and below": ("float16", "float32", "float64")},
+    backend_version,
+)
 def rad2deg(
     x: Union[tf.Tensor, tf.Variable],
     /,

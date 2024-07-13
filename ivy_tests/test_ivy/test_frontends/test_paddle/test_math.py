@@ -2495,8 +2495,20 @@ def test_paddle_square(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    scale_a=st.floats(1e-5, 1e5),
-    scale_b=st.floats(1e-5, 1e5),
+    scale_a=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+    scale_b=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
 )
 def test_paddle_stanh(
     *,

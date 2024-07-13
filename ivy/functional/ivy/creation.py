@@ -284,6 +284,7 @@ class NestedSequence(Protocol[_T_co]):
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
+@to_native_arrays_and_back
 @outputs_to_ivy_arrays
 @handle_array_function
 @handle_device

@@ -388,6 +388,66 @@ def sparse_cross_entropy(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+def ssim_loss(
+    true: Union[ivy.Array, ivy.NativeArray],
+    pred: Union[ivy.Array, ivy.NativeArray],
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Calculate the Structural Similarity Index (SSIM) loss between two
+    images.
+
+    Parameters
+    ----------
+        true: A 4D image array of shape (batch_size, channels, height, width).
+        pred: A 4D image array of shape (batch_size, channels, height, width).
+
+    Returns
+    -------
+        ivy.Array: The SSIM loss measure similarity between the two images.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> import ivy
+    >>> x = ivy.ones((5, 3, 28, 28))
+    >>> y = ivy.zeros((5, 3, 28, 28))
+    >>> ivy.ssim_loss(x, y)
+    ivy.array(0.99989986)
+    """
+    # Constants for stability
+    C1 = 0.01 ** 2
+    C2 = 0.03 ** 2
+
+    # Calculate the mean of the two images
+    mu_x = ivy.avg_pool2d(pred, (3, 3), (1, 1), "SAME")
+    mu_y = ivy.avg_pool2d(true, (3, 3), (1, 1), "SAME")
+
+    # Calculate variance and covariance
+    sigma_x2 = ivy.avg_pool2d(pred * pred, (3, 3), (1, 1), "SAME") - mu_x * mu_x
+    sigma_y2 = ivy.avg_pool2d(true * true, (3, 3), (1, 1), "SAME") - mu_y * mu_y
+    sigma_xy = ivy.avg_pool2d(pred * true, (3, 3), (1, 1), "SAME") - mu_x * mu_y
+
+    # Calculate SSIM
+    ssim = ((2 * mu_x * mu_y + C1) * (2 * sigma_xy + C2)) / (
+        (mu_x ** 2 + mu_y ** 2 + C1) * (sigma_x2 + sigma_y2 + C2)
+    )
+
+    # Convert SSIM to loss
+    ssim_loss_value = 1 - ssim
+
+    # Return mean SSIM loss
+    ret = ivy.mean(ssim_loss_value)
+
+    if ivy.exists(out):
+        ret = ivy.inplace_update(out, ret)
+    return ret
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
 def disc_wl(
     p_real: Union[ivy.Array, ivy.NativeArray], p_fake: Union[ivy.Array, ivy.NativeArray]
 ) -> ivy.Array:
@@ -405,22 +465,3 @@ def disc_wl(
     r_loss = ivy.mean(p_real)
     f_loss = ivy.mean(p_fake)
     return f_loss - r_loss
-
-
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
-def gan_wl(pred_fake: Union[ivy.Array, ivy.NativeArray]) -> ivy.Array:
-    """Compute the Wasserstein loss for the generator.
-
-    Parameters
-    ----------
-        pred_fake `(ivy.Array)`: Predictions for fake data.
-
-    Returns
-    -------
-        `ivy.Array`: Wasserstein loss for the generator.
-    """
-    return -1 * ivy.mean(pred_fake)
