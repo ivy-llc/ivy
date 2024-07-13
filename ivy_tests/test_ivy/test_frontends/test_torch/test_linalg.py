@@ -319,8 +319,8 @@ def test_torch_cholesky(
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
-    x = np.matmul(x.T, x) + np.identity(x.shape[0])  # make symmetric positive-definite
-
+    x = np.matmul(np.conjugate(x.T), x) + np.identity(x.shape[0], dtype=dtype[0])
+    # make symmetric positive-definite
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
@@ -336,7 +336,7 @@ def test_torch_cholesky(
 
 @handle_frontend_test(
     fn_tree="torch.linalg.cholesky_ex",
-    dtype_and_x=_get_dtype_and_matrix(square=True, batch=True),
+    dtype_and_x=_get_dtype_and_matrix(square=True),
     upper=st.booleans(),
 )
 def test_torch_cholesky_ex(
@@ -350,8 +350,9 @@ def test_torch_cholesky_ex(
     backend_fw,
 ):
     dtype, x = dtype_and_x
-    x = np.matmul(x.T, x) + np.identity(x.shape[0])  # make symmetric positive-definite
-
+    x = np.asarray(x[0], dtype=dtype[0])
+    x = np.matmul(np.conjugate(x.T), x) + np.identity(x.shape[0], dtype=dtype[0])
+    # make symmetric positive-definite
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,

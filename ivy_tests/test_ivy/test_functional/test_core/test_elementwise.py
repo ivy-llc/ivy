@@ -1980,6 +1980,7 @@ def test_tanh(*, dtype_and_x, complex_mode, test_flags, backend_fw, fn_name, on_
     ),
     rand_either=_either_x_dx(),
     test_gradients=st.just(False),
+    ground_truth_backend="numpy",
 )
 def test_trapz(
     dtype_values_axis, rand_either, test_flags, backend_fw, fn_name, on_device

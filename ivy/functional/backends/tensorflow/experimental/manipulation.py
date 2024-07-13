@@ -398,7 +398,7 @@ def unique_consecutive(
     x_shape = None
     if axis is None:
         x_shape = x.shape
-        x = tf.reshape(x, -1)
+        x = tf.reshape(x, tf.constant([-1]))
         axis = -1
     ndim = len(x.shape)
     if axis < 0:

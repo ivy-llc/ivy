@@ -1,6 +1,41 @@
 from typing import Callable, Optional, List, Union, Iterable, Sequence, Mapping
 
 
+def source_to_source(
+    object,
+    source: str = "torch",
+    target: str = "torch_frontend",
+    profiling: bool = False,
+):
+    """Converts a given object (class/function) from one framework to another.
+
+    This function performs source-to-source translation of a given object from the source framework
+    to the target framework.
+
+    The object can be translated between two frameworks or in-between the Ivy IR
+    as well e.g. (source="torch_frontend", target="ivy") or (source="torch_frontend", target="tensorflow") etc.
+
+    Args:
+    ----
+        object: The object (class/function) to be translated.
+        source (str, optional): The source framework. Defaults to 'torch'.
+        target (str, optional): The target framework. Defaults to 'torch_frontend'.
+        profiling: Whether to add performance profiling.
+
+    Returns:
+    -------
+    The translated object.
+    """
+    from ._compiler import source_to_source as _source_to_source
+
+    return _source_to_source(
+        object=object,
+        source=source,
+        target=target,
+        profiling=profiling,
+    )
+
+
 def trace_graph(
     *objs: Callable,
     stateful: Optional[List] = None,
@@ -15,7 +50,7 @@ def trace_graph(
     static_argnums: Optional[Union[int, Iterable[int]]] = None,
     static_argnames: Optional[Union[str, Iterable[str]]] = None,
     compile_mode: Optional[str] = None,
-    graph_caching: bool = False,
+    graph_caching: bool = True,
     args: Optional[Sequence] = None,
     kwargs: Optional[Mapping] = None,
     params_v=None,
@@ -127,7 +162,7 @@ def transpile(
     static_argnums: Optional[Union[int, Iterable[int]]] = None,
     static_argnames: Optional[Union[str, Iterable[str]]] = None,
     compile_mode: Optional[str] = None,
-    graph_caching: bool = False,
+    graph_caching: bool = True,
     graph_optimizations: bool = True,
     modes_to_trace: str = "all",
     stateful: Optional[List] = None,
@@ -186,7 +221,7 @@ def transpile(
 def unify(
     *objs: Callable,
     source: Optional[str] = None,
-    graph_caching: bool = False,
+    graph_caching: bool = True,
     graph_optimizations: bool = True,
     args: Optional[Sequence] = None,
     kwargs: Optional[Mapping] = None,

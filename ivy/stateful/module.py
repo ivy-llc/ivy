@@ -777,7 +777,10 @@ class _KerasIvyModule(Module):
     def _build(self, *args, **kwargs):
         self._native_params = ivy.Container(
             OrderedDict(
-                sorted([(param.name, param) for param in self._native_module.variables])
+                sorted(
+                    [(param.name, param) for param in self._native_module.variables],
+                    key=lambda kv: kv[0],
+                )
             ),
             dynamic_backend=False,
         )

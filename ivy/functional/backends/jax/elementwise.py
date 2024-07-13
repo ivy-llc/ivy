@@ -516,7 +516,7 @@ def trapz(
     axis: int = -1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.trapz(y, x=x, dx=dx, axis=axis)
+    return jnp.trapezoid(y, x=x, dx=dx, axis=axis)
 
 
 @with_unsupported_dtypes(

@@ -248,6 +248,13 @@ class Tensor:
         return int(self._ivy_array)
 
     @with_unsupported_dtypes(
+        {"2.6.1 and below": ("bool", "unsigned", "int8", "float16", "bfloat16")},
+        "paddle",
+    )
+    def __div__(self, y, name=None):
+        return paddle_frontend.divide(self, y, name=name)
+
+    @with_unsupported_dtypes(
         {
             "2.6.0 and below": (
                 "bool",

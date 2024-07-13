@@ -127,13 +127,14 @@ def equal(x, y, /, *, name=None):
             "float16",
             "complex64",
             "complex128",
+            "bfloat16",
         )
     },
     "paddle",
 )
 @to_ivy_arrays_and_back
 def equal_all(x, y, /, *, name=None):
-    return paddle.to_tensor([ivy.array_equal(x, y)])
+    return ivy.all_equal(x, y)
 
 
 @with_unsupported_dtypes(

@@ -55,11 +55,11 @@ def arange(
 
     # convert builtin types to tf scalars, as is expected by tf.range
     if isinstance(start, (float, int)):
-        start = tf.constant(start)
+        start = tf.convert_to_tensor(start)
     if isinstance(stop, (float, int)):
-        stop = tf.constant(stop)
+        stop = tf.convert_to_tensor(stop)
     if isinstance(step, (float, int)):
-        step = tf.constant(step)
+        step = tf.convert_to_tensor(step)
 
     if dtype is None:
         if isinstance(start, int) and isinstance(stop, int) and isinstance(step, int):

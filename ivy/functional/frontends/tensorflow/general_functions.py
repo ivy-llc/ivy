@@ -94,7 +94,9 @@ def clip_by_norm(t, clip_norm, axes=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.15.0 and below": ("float16",)}, "tensorflow")
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("complex64", "complex128")}, "tensorflow"
+)
 def clip_by_value(t, clip_value_min, clip_value_max):
     ivy.utils.assertions.check_all_or_any_fn(
         clip_value_min,
@@ -401,6 +403,12 @@ def scan(
 ):
     elems = ivy.asarray(elems)
     return ivy.associative_scan(elems, fn, reverse=reverse)
+
+
+@with_supported_dtypes({"2.17.0 and below": ("int32", "int64")}, "tensorflow")
+@to_ivy_arrays_and_back
+def scatter_nd(indices, updates, shape, name=None):
+    return ivy.astype(ivy.scatter_nd(indices, updates, shape=shape), updates.dtype)
 
 
 @to_ivy_arrays_and_back
