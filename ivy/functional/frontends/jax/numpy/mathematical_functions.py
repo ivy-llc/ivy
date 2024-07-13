@@ -918,7 +918,7 @@ def trunc(x):
 
 
 @with_supported_dtypes(
-    {"0.4.14 and below": ("float32", "float64", "int32", "int64")}, "jax"
+    {"0.4.30 and below": ("float32", "float64", "int32", "int64")}, "jax"
 )
 @to_ivy_arrays_and_back
 def unwrap(p, discont=None, axis=-1, period=2 * ivy.pi):
