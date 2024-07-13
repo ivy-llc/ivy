@@ -448,8 +448,10 @@ def ssim_loss(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-def disc_wl(
-    p_real: Union[ivy.Array, ivy.NativeArray], p_fake: Union[ivy.Array, ivy.NativeArray]
+def wasserstein_loss_discriminator(
+    p_real: Union[ivy.Array, ivy.NativeArray],
+    p_fake: Union[ivy.Array, ivy.NativeArray],
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Compute the Wasserstein loss for the discriminator (critic).
 
@@ -464,4 +466,34 @@ def disc_wl(
     """
     r_loss = ivy.mean(p_real)
     f_loss = ivy.mean(p_fake)
-    return f_loss - r_loss
+    ret = f_loss - r_loss
+
+    if ivy.exists(out):
+        ret = ivy.inplace_update(out, ret)
+    return ret
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def wasserstein_loss_generator(
+    pred_fake: Union[ivy.Array, ivy.NativeArray],
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Compute the Wasserstein loss for the generator.
+
+    Parameters
+    ----------
+        pred_fake (ivy.Array): Predictions for fake data.
+
+    Returns
+    -------
+        ivy.Array: Wasserstein loss for the generator.
+    """
+    ret = -1 * ivy.mean(pred_fake)
+
+    if ivy.exists(out):
+        ret = ivy.inplace_update(out, ret)
+    return ret
