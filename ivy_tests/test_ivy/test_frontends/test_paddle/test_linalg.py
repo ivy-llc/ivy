@@ -416,7 +416,9 @@ def test_paddle_cond(
 @handle_frontend_test(
     fn_tree="paddle.linalg.cov",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=1
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        max_num_dims=2,
     ),
     rowvar=st.booleans(),
     ddof=st.booleans(),
