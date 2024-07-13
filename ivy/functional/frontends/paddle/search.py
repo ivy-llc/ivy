@@ -7,7 +7,7 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
+    {"2.6.0 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -16,7 +16,7 @@ def argmax(x, /, *, axis=None, keepdim=False, dtype="int64", name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
+    {"2.6.0 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -25,7 +25,7 @@ def argmin(x, /, *, axis=None, keepdim=False, dtype="int64", name=None):
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
+    {"2.4.2 and below": ("float32", "float64", "int32", "int64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -33,9 +33,20 @@ def argsort(x, /, *, axis=-1, descending=False, name=None):
     return ivy.argsort(x, axis=axis, descending=descending)
 
 
+@with_supported_dtypes(
+    {"2.6.0 and below": ("int32", "int64", "float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def index_sample(x, index):
+    index_dtype = index.dtype
+    arange_tensor = ivy.arange(x.shape[0], dtype=index_dtype)[:, None]
+    return x[arange_tensor, index]
+
+
 # kthvalue
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def kthvalue(x, k, axis=None, keepdim=False, name=None):
@@ -56,7 +67,7 @@ def kthvalue(x, k, axis=None, keepdim=False, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -77,7 +88,7 @@ def nonzero(input, /, *, as_tuple=False):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -93,7 +104,7 @@ def searchsorted(sorted_sequence, values, out_int32=False, right=False, name=Non
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -102,7 +113,7 @@ def sort(x, /, *, axis=-1, descending=False, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -112,7 +123,7 @@ def topk(x, k, axis=None, largest=True, sorted=True, name=None):
 
 # where
 @with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")},
     "paddle",
 )
 @to_ivy_arrays_and_back

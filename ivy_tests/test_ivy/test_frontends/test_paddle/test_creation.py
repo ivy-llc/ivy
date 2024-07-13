@@ -99,6 +99,7 @@ def test_paddle_assign(
 @handle_frontend_test(
     fn_tree="paddle.clone",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    test_with_copy=st.just(True),
 )
 def test_paddle_clone(
     *,
@@ -480,7 +481,7 @@ def test_paddle_meshgrid(
     args = {}
     i = 0
     for x_ in arrays:
-        args["x{}".format(i)] = x_
+        args[f"x{i}"] = x_
         i += 1
     test_flags.num_positional_args = len(arrays)
     helpers.test_frontend_function(

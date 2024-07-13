@@ -12,6 +12,7 @@ import jaxlib.xla_extension
 import ivy
 from ivy import as_native_dtype
 from ivy.functional.backends.jax import JaxArray
+from ivy.functional.backends.jax.device import dev
 from ivy.functional.ivy.creation import (
     _asarray_to_native_arrays_and_back,
     _asarray_infer_device,
@@ -73,10 +74,13 @@ def asarray(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     ivy.utils.assertions._check_jax_x64_flag(dtype)
-    if copy is True:
-        return jnp.array(obj, dtype=dtype, copy=True)
-    else:
-        return jnp.asarray(obj, dtype=dtype)
+    ret = jnp.asarray(obj, dtype=dtype)
+    # jnp.copy is used to ensure correct device placement
+    # it's slower than jax.device_put before JIT, but it's necessary to use since
+    # jax device objects aren't serializable and prevent saving transpiled graphs
+    # this workaround only works because we are inside jax.default_device context
+    # invoked in @handle_device decorator
+    return jnp.copy(ret) if (dev(ret, as_native=True) != device or copy) else ret
 
 
 def empty(

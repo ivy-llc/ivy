@@ -1,8 +1,8 @@
 name: Determine Test Coverage
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "30 20 * * 6"
+#   schedule:
+#     - cron: "30 20 * * 6"
 
 permissions:
   actions: read
@@ -38,7 +38,7 @@ jobs:
         run: |
           pip install pydriller tqdm
           cd ivy
-          python determine_test_coverage.py ${{ matrix.branch }}
+          python scripts/determine_tests/determine_test_coverage.py ${{ matrix.branch }}
           cd ..
           mkdir tests
           cp ivy/tests.pbz2 tests/
@@ -51,6 +51,6 @@ jobs:
           source-directory: tests/
           destination-github-username: 'unifyai'
           destination-repository-name: 'Mapping'
-          user-email: rashul.chutani@gmail.com
+          user-email: ivy.branch@lets-unify.ai
           commit-message: Update Mapping
           target-branch: master${{ matrix.branch }}

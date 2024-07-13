@@ -80,7 +80,7 @@ def get_mean_cov_vector(draw):
     dtype_mean = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=tuple([shared_size]),
+            shape=(shared_size,),
             min_value=2,
             max_value=5,
         )
@@ -90,7 +90,7 @@ def get_mean_cov_vector(draw):
     dtype_cov = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=tuple([shared_size, shared_size]),
+            shape=(shared_size, shared_size),
             min_value=2,
             max_value=5,
         ).filter(lambda x: np.linalg.cond(x.tolist()) < 1 / sys.float_info.epsilon)
@@ -1027,7 +1027,7 @@ def test_jax_multivariate_normal(
     spd = np.matmul(cov.T, cov) + np.identity(cov.shape[0])
 
     def call():
-        helpers.test_frontend_function(
+        return helpers.test_frontend_function(
             input_dtypes=input_dtype + [shared_dtype],
             frontend=frontend,
             test_flags=test_flags,

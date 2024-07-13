@@ -113,10 +113,10 @@ def get_dtypes(
     key=None,
     prune_function=True,
 ):
-    """
-    Draws a valid dtypes for the test function. For frontend tests, it draws the data
-    types from the intersection between backend framework data types and frontend
-    framework dtypes, otherwise, draws it from backend framework data types.
+    """Draws a valid dtypes for the test function. For frontend tests, it draws
+    the data types from the intersection between backend framework data types
+    and frontend framework dtypes, otherwise, draws it from backend framework
+    data types.
 
     Parameters
     ----------
@@ -127,7 +127,7 @@ def get_dtypes(
         Supported types are integer, float, valid, numeric, signed_integer, complex,
         real_and_complex, float_and_complex, bool, and unsigned
     index
-        list indexing incase a test needs to be skipped for a particular dtype(s)
+        list indexing in case a test needs to be skipped for a particular dtype(s)
     mixed_fn_compos
         boolean if True, the function will return the dtypes of the compositional
         implementation for mixed partial functions and if False, it will return
@@ -262,8 +262,7 @@ def array_dtypes(
     shared_dtype=False,
     array_api_dtypes=False,
 ):
-    """
-    Draws a list of data types.
+    """Draws a list of data types.
 
     Parameters
     ----------
@@ -351,9 +350,9 @@ def array_dtypes(
         else:
             pairs = ivy.promotion_table.keys()
         # added to avoid complex dtypes from being sampled if they are not available.
-        pairs = [pair for pair in pairs if all([d in available_dtypes for d in pair])]
+        [pair for pair in pairs if all(d in available_dtypes for d in pair)]
         available_dtypes = [
-            pair for pair in pairs if not any([d in pair for d in unwanted_types])
+            pair for pair in pairs if not any(d in pair for d in unwanted_types)
         ]
         dtypes = list(draw(st.sampled_from(available_dtypes)))
         if num_arrays > 2:
@@ -363,8 +362,7 @@ def array_dtypes(
 
 @st.composite
 def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = None):
-    """
-    Draws castable dtypes for the given dtype based on the current backend.
+    """Draws castable dtypes for the given dtype based on the current backend.
 
     Parameters
     ----------
@@ -406,11 +404,13 @@ def cast_filter(d, dtype, x):
 
 def cast_filter_helper(d, dtype, x, current_backend):
     with BackendHandler.update_backend(current_backend) as ivy_backend:
-        bound_dtype_bits = lambda d: (
-            ivy_backend.dtype_bits(d) / 2
-            if ivy_backend.is_complex_dtype(d)
-            else ivy_backend.dtype_bits(d)
-        )
+
+        def bound_dtype_bits(d):
+            return (
+                ivy_backend.dtype_bits(d) / 2
+                if ivy_backend.is_complex_dtype(d)
+                else ivy_backend.dtype_bits(d)
+            )
 
         if ivy_backend.is_int_dtype(d):
             max_val = ivy_backend.iinfo(d).max

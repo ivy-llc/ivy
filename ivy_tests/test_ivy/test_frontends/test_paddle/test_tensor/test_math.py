@@ -1,6 +1,34 @@
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from hypothesis import strategies as st
+
+
+# --- Helpers --- #
+# --------------- #
+
+
+@st.composite
+def _get_clip_inputs_(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=1, max_dim_size=10
+        )
+    )
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=shape,
+            min_value=0,
+            max_value=50,
+        )
+    )
+
+    return x_dtype, x
+
+
+# --- Main --- #
+# ------------ #
 
 
 # add_
@@ -63,6 +91,39 @@ def test_paddle_ceil_(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+# clip_
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.clip_",
+    input_and_ranges=_get_clip_inputs_(),
+    min=st.integers(min_value=0, max_value=5),
+    max=st.integers(min_value=5, max_value=10),
+)
+def test_paddle_clip_(
+    *,
+    input_and_ranges,
+    min,
+    max,
+    frontend,
+    fn_tree,
+    test_flags,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x = input_and_ranges
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        min=min,
+        max=max,
     )
 
 

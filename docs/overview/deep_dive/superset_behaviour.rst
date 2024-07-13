@@ -3,7 +3,7 @@ Superset Behaviour
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`superset behavior channel`: https://discord.com/channels/799879767196958751/1018954266322419732
+.. _`superset behavior thread`: https://discord.com/channels/799879767196958751/1189905520686014514
 .. _`partial_mixed_handler`: https://github.com/unifyai/ivy/blob/a07919ebf64181852a3564c4d994bc1c25bd9a6f/ivy/functional/backends/tensorflow/experimental/layers.py#L817
 .. _`handle_partial_mixed_function`: https://github.com/unifyai/ivy/blob/a07919ebf64181852a3564c4d994bc1c25bd9a6f/ivy/func_wrapper.py#L981
 
@@ -47,7 +47,7 @@ We've already explained that we should not duplicate arguments in the Ivy functi
 Does this mean, provided that the proposed argument is not a duplicate, that we should always add this backend-specific argument to the Ivy function?
 The answer is **no**.
 When determining the superset, we are only concerned with the pure **mathematics** of the function, and nothing else.
-For example, the :code:`name` argument is common to many TensorFlow functions, such as `tf.concat <https://www.tensorflow.org/api_docs/python/tf/concat>`_, and is used for uniquely identifying parts of the compiled computation graph during logging and debugging.
+For example, the :code:`name` argument is common to many TensorFlow functions, such as `tf.concat <https://www.tensorflow.org/api_docs/python/tf/concat>`_, and is used for uniquely identifying parts of the traced computation graph during logging and debugging.
 This has nothing to do with the mathematics of the function, and so is *not* included in the superset considerations when implementing Ivy functions.
 Similarly, in NumPy the argument :code:`subok` controls whether subclasses of the :class:`numpy.ndarray` class should be permitted, which is included in many functions, such as `numpy.ndarray.astype <https://numpy.org/doc/stable/reference/generated/numpy.ndarray.astype.html>`_.
 Finally, in JAX the argument :code:`precision` is quite common, which controls the precision of the return values, as used in `jax.lax.conv <https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.conv.html>`_ for example.
@@ -129,8 +129,8 @@ The following would be a much better solution:
         return res
 
 You will notice that this implementation involves more lines of code, but this should not be confused with added complexity.
-All Ivy code should be graph compiled for efficiency, and in this case all the :code:`if` and :code:`else` statements are removed, and all that remains is the backend functions which were executed.
-This new implementation will be compiled to a graph of either one, three, four, or six functions depending on the values of :code:`beta` and :code:`threshold`, while the previous implementation would *always* compile to six functions.
+All Ivy code should be traced for efficiency, and in this case all the :code:`if` and :code:`else` statements are removed, and all that remains is the backend functions which were executed.
+This new implementation will be traced to a graph of either one, three, four, or six functions depending on the values of :code:`beta` and :code:`threshold`, while the previous implementation would *always* traces to six functions.
 
 This does mean we do not adopt the default values used by PyTorch, but that's okay.
 Implementing the superset does not mean adopting the same default values for arguments, it simply means equipping the Ivy function with the capabilities to execute the superset of behaviours.
@@ -167,7 +167,7 @@ With regards to both of these points, Ivy provides the generalized superset impl
 
 However, as discussed above, :func:`np.logical_and` also supports the :code:`where` argument, which we opt to **not** support in Ivy.
 This is because the behaviour can easily be created as a composition like so :code:`ivy.where(mask, ivy.logical_and(x, y), ivy.zeros_like(mask))`, and we prioritize the simplicity, clarity, and function uniqueness in Ivy's API in this case, which comes at the cost of reduced runtime efficiency for some functions when using a NumPy backend.
-However, in future releases our automatic graph compilation and graph simplification processes will alleviate these minor inefficiencies entirely from the final computation graph, by fusing multiple operations into one at the API level where possible.
+However, in future releases our automatic graph tracing and graph simplification processes will alleviate these minor inefficiencies entirely from the final computation graph, by fusing multiple operations into one at the API level where possible.
 
 Maximizing Usage of Native Functionality
 ----------------------------------------
@@ -241,7 +241,7 @@ Ivy allows this using the `partial_mixed_handler`_ attribute on the backend-spec
 
     interpolate.partial_mixed_handler = lambda *args, mode="linear", **kwargs: mode not in [
         "tf_area",
-        "bicubic_tensorflow",
+        "tf_bicubic",
         "mitchellcubic",
         "lanczos3",
         "lanczos5",
@@ -266,7 +266,7 @@ This should have hopefully given you a good feel of what should and should not b
 In many cases, there is not a clear right and wrong answer, and we arrive at the final decision via open discussion.
 If you find yourself proposing the addition of a new function in Ivy, then we will most likely have this discussion on your Pull Request!
 
-If you have any questions, please feel free to reach out on `discord`_ in the `superset behavior channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `superset behavior thread`_!
 
 
 **Video**

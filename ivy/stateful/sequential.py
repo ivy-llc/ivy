@@ -16,9 +16,8 @@ class Sequential(Module):
         v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     ):
-        """
-        Initialize a sequential container. Modules will be added to it in the order they
-        are passed in the constructor.
+        """Initialize a sequential container. Modules will be added to it in
+        the order they are passed in the constructor.
 
         Parameters
         ----------
@@ -35,13 +34,13 @@ class Sequential(Module):
             for i, submod in enumerate(sub_modules):
                 try:
                     submod.v = v["submodules"][f"v{str(i)}"]
-                except KeyError:
+                except KeyError as e:
                     if submod.v:
                         raise ivy.utils.exceptions.IvyException(
                             "variables v passed to Sequential class must have key "
                             "chains in the form of "
                             '"submodules/v{}", where {} is an idx'
-                        )
+                        ) from e
         self._submodules = list(sub_modules)
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
@@ -49,8 +48,7 @@ class Sequential(Module):
         return iter(self._submodules)
 
     def _forward(self, inputs):
-        """
-        Perform forward pass of the Sequential container.
+        """Perform forward pass of the Sequential container.
 
         Parameters
         ----------
@@ -66,12 +64,18 @@ class Sequential(Module):
         for i, submod in enumerate(self._submodules):
             try:
                 x = submod(x, v=self.v.submodules[f"v{str(i)}"])
-            except KeyError:
+            except KeyError as e:
                 if submod.v:
                     raise ivy.utils.exceptions.IvyException(
                         "variables v passed to Sequential class must have key chains "
                         "in the form of "
                         '"submodules/v{}", where {} is an idx'
-                    )
+                    ) from e
                 x = submod(x)
         return x
+
+    def _extra_repr(self):
+        submods = []
+        for i, submod in enumerate(self._submodules):
+            submods.append(f"v{i}={submod}")
+        return ", ".join(submods)

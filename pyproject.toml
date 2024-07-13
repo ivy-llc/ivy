@@ -1,0 +1,78 @@
+[build-system]
+requires = [
+    "setuptools>=42",
+    "wheel",
+    "pip"
+]
+build-backend = "setuptools.build_meta"
+
+
+[tool.docformatter]
+wrap-summaries = 88
+pre-summary-newline = true
+
+
+[tool.autoflake]
+in-place = true
+remove-all-unused-imports = true
+ignore-init-module-imports = true
+remove-duplicate-keys = true
+remove-unused-variables = true
+quiet = true
+ignore-pass-after-docstring = true
+exclude = ["__init__.py"]
+
+
+[tool.ruff]
+line-length = 88
+target-version = "py38"
+
+[tool.ruff.lint]
+select = [
+    # pyflakes
+    "F",
+    # pycodestyle
+    "E", "W",
+    # pydocstyle
+    "D",
+    "I002",     # Missing required import.
+    "UP008",    # Checks for super calls that pass redundant arguments.
+    "G010",     # deprecated-log-warn.
+    "PLR1722",  # Use sys.exit() instead of exit() and quit().
+    "TRY004",   # Prefer TypeError exception for invalid type.
+    "PT014",    # pytest-duplicate-parametrize-test-cases.
+    "PT006",    # Checks for the type of parameter names passed to pytest.mark.parametrize.
+    "PT007",    # Checks for the type of parameter values passed to pytest.mark.parametrize.
+    "PT018",    # Checks for assertions that combine multiple independent conditions.
+]
+
+
+ignore = [
+    "E203",	# Whitespace-before-punctuation.
+    "E402", # Module-import-not-at-top-of-file.
+    "E731", # Do not assign a lambda expression, use a def.
+    "D100", # Missing docstring in public module.
+    "D101", # Missing docstring in public class.
+    "D102", # Missing docstring in public method.
+    "D103", # Missing docstring in public function.
+    "D104", # Missing docstring in public package.
+    "D105", # Missing docstring in magic method.
+    "D106", # Missing docstring in public nested class.
+    "D107", # Missing docstring in `__init__`.
+    "D203", # 1 blank line required before class docstring.
+    "D205", # 1 blank line required between summary line and description.
+    "D212", # Multi-line docstring summary should start at the first line.
+    "D213", # Multi-line docstring summary should start at the second line.
+    "D209", # Multi-line docstring closing quotes should be on a separate line.
+    "D400", # First line should end with a period.
+    "D413", # Missing blank line after last section of docstrings.
+    "D401", # First line of docstring should be in imperative mood.
+    "D415", # First line should end with a period, question mark, or exclamation point.
+    "D416", # Section name should end with a colon ("Attributes").
+    "D417", # Missing argument description in the docstring for argument "X".
+]
+
+[tool.ruff.lint.per-file-ignores]
+'ivy/functional/(frontends|backends)/(?!.*/func_wrapper\.py$).*(?!__init__\.py$)' = ["D"]
+"**/__init__.py" = ["F401","F403","F405","F811","F821", "E501"]
+"ivy/functional/frontends/paddle/**" = ["F401", "F403", "F405"]

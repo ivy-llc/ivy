@@ -33,7 +33,7 @@ def embedding(
     return ret
 
 
-@with_supported_dtypes({"2.0.1 and below": ("int64",)}, "torch")
+@with_supported_dtypes({"2.2 and below": ("int64",)}, "torch")
 @to_ivy_arrays_and_back
 def one_hot(tensor, num_classes=-1):
     return ivy.astype(ivy.one_hot(tensor, num_classes), tensor.dtype)

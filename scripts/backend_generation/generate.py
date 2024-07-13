@@ -94,7 +94,7 @@ def _get_user_input(fn, *args, **kwargs):
                 break
         except KeyboardInterrupt:
             print("Aborted.")
-            exit()
+            sys.exit()
 
 
 def _update_native_config_value(key):
@@ -102,14 +102,14 @@ def _update_native_config_value(key):
     ret = input(
         "\nPress ENTER to skip, use full namespace\n"
         f"Enter a value for {Style.BRIGHT + key + Style.NORMAL} "
-        "(case sensistive) "
+        "(case sensitive) "
         f"default: '{Style.BRIGHT}{config_natives[key]['name']}{Style.NORMAL}': "
     )
     if ret != "" and _imported_backend is not None:
         parsed = ret.strip().rpartition(".")
         try:
             if parsed[1] == "":
-                # Primitve type
+                # primitive type
                 try:
                     obj = __builtins__.__dict__[parsed[-1]]
                 except KeyError:
@@ -167,8 +167,7 @@ def _should_install_backend(package_name):
             ) from e
     elif ret.lower() == "n":
         print(
-            Fore.YELLOW
-            + "Will continue without backend installed, "
+            Fore.YELLOW + "Will continue without backend installed, "
             "type checking won't be available.\n"
         )
     else:
@@ -264,13 +263,13 @@ def _update_valid_config_value(key):
     print(f"Select items to remove from list {Style.BRIGHT}{key}:\n")
     for i, item in enumerate(config_valids[key]):
         print(f"{i}. {item}")
-    ret = input("\nPress ENTER to skip. Enter numbers (space seperated): ")
+    ret = input("\nPress ENTER to skip. Enter numbers (space separated): ")
     ret = ret.strip("")
     if ret == "":
         return True
-    indicies = ret.split(" ")
-    indicies = [int(item.strip(" ")) for item in indicies]
-    for i in sorted(indicies, reverse=True):
+    indices = ret.split(" ")
+    indices = [int(item.strip(" ")) for item in indices]
+    for i in sorted(indices, reverse=True):
         del config_valids[key][i]
     return True
 
@@ -344,11 +343,10 @@ if __name__ == "__main__":
     pprint.pprint(config_natives, sort_dicts=False)
 
     # Print valids
-    for key in config_valids.keys():
-        if key.startswith("in"):
-            continue
-        valid_items = config_valids[key]
-        invalid_items = config_valids[f"in{key}"]
+    for key, valid_itesm in config_valids.items():
+        if not key.startswith("in"):
+            valid_items = config_valids[key]
+            invalid_items = config_valids[f"in{key}"]
         print("\n:: " + key.partition("_")[-1])
         print(f"{Fore.GREEN}valid > {valid_items.__str__()}")
         print(f"{Fore.RED}invalid > {invalid_items.__str__()}")

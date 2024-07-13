@@ -38,17 +38,17 @@ TensorFlow and PyTorch do allow dynamic sizes, but only on certain backends.
 Dynamic sizes require a dynamic memory manager, which CPUs/GPUs have, but XLA currently doesn't.
 How does Ivy deal with all of this?
 
-**A:** Ivy assumes dynamic shapes are supported, but an error will be thrown if/when the function is compiled with dynamic shapes enabled, but the backend does not support dynamic shapes in the compiled graph.
-For now, fully framework-agnostic compiled graphs are only possible for static graphs.
+**A:** Ivy assumes dynamic shapes are supported, but an error will be thrown if/when the function is traced with dynamic shapes enabled, but the backend does not support dynamic shapes in the traced graph.
+For now, fully framework-agnostic traced graphs are only possible for static graphs.
 
 Type and Shape Checking
 -----------------------
 
 **Q:** What kind of type system does Ivy use?  Does it do shape-checking of tensors? If so, how does it handle dynamic sizes? The gold standard here is a fully dependent type system, but this is very rare, with the exception of `dex`_.
 
-**A:**  The checks performed during graph compilation will remain backend-specific.
-The function :func:`ivy.compile` wraps the backend compilation functions, for example :func:`jax.jit`, :func:`tf.function`, :func:`torch.jit.script` and :func:`torch.jit.trace`.
-For some backends, shape-checking will be performed during the compilation phase and for others it will not.
+**A:**  The checks performed during compiling will remain backend-specific.
+The function :func:`ivy.compile` wraps the backend tracing functions, for example :func:`jax.jit`, :func:`tf.function`, :func:`torch.jit.script` and :func:`torch.jit.trace`.
+For some backends, shape-checking will be performed during the tracing phase and for others it will not.
 
 GPU handling
 ------------
@@ -62,7 +62,7 @@ Model Deployment
 **Q:** Does Ivy support model deployment?
 
 **A:** Yes, Ivy will support efficient model deployment.
-However, currently this feature is not yet supported as the graph compiler module is still under development, and will be released soon with ivy version 1.2.0.
+However, currently this feature is not yet supported as the tracer module is still under development, and will be released soon with ivy version 1.2.0.
 
 
 Dynamic Control Flow
@@ -78,9 +78,9 @@ How will Ivy handle dynamic control flow?
 Will Ivy parse python ASTs?
 
 **A:** For now, Ivy will not support dynamic control flow by parsing ASTs.
-The dynamism of :code:`for` loops and :code:`while` loops will be ignored during compilation, and just the static trace which chains the array operations performed during the forward pass at compile time will be preserved.
+The dynamism of :code:`for` loops and :code:`while` loops will be ignored during tracing, and just the static trace which chains the array operations performed during the forward pass at tracing time will be preserved.
 
-However, Ivy will support the compilation of looping and branching methods such as :code:`lax.scan`, :code:`lax.while`, :code:`tf.while`, :code:`tf.cond` etc.
+However, Ivy will support the tracing of looping and branching methods such as :code:`lax.scan`, :code:`lax.while`, :code:`tf.while`, :code:`tf.cond` etc.
 In cases where there is not an associated compilable method in other backends, we will strive to implement this as a composition of existing compilable operations.
 If such a composition is not possible, then we will instead convert these to compositions of pure Python :code:`for`, :code:`while` and :code:`if` statements (when using a PyTorch backend for example).
 
@@ -121,7 +121,7 @@ We’re very happy in either case!
 Support for Functions
 ---------------------
 
-**Q:** Is it possible to compile tensor code into a reusable and differentiable function?  If you can't, then it will be difficult to apply any fancy kernel fusion algorithms, and you can expect to lose a lot of performance.
+**Q:** Is it possible to trace tensor code into a reusable and differentiable function?  If you can't, then it will be difficult to apply any fancy kernel fusion algorithms, and you can expect to lose a lot of performance.
 What about higher-order operations, like :code:`jax.vmap` and :code:`jax.pmap`?
 
 **A:** Most functions in Ivy are *primary* functions, which are generally implemented as light wrapping around a near-identical backend-specific function, which itself will likely map to an efficient kernel.
@@ -137,7 +137,7 @@ Alternative Data Structures
 **Q:** Will Ivy support data structures such as tuples, dictionaries, lists etc.? For example, JAX code is full of them.
 
 **A:** We will of course support these structures in pure python code, but we will not support backend-specific alternative compilable data structures.
-While Ivy will not provide an interface to these data structures directly, Ivy code can easily supplement JAX code which does contain these data structures, and both can be compiled together without issue.
+While Ivy will not provide an interface to these data structures directly, Ivy code can easily supplement JAX code which does contain these data structures, and both can be traced together without issue.
 Ivy can act as a supplementary framework if/when some of the more unique backend-specific data structures are required.
 
 Custom Operations

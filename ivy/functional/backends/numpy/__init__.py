@@ -16,38 +16,6 @@ else:
 
 use = ivy.utils.backend.ContextManager(_module_in_memory)
 
-# wrap __array_ufunc__ method of ivy.Array to prioritize Ivy array methods when using numpu backend
-
-
-def wrap__array_ufunc__(func):
-    def rep_method(self, ufunc, method, *inputs, **kwargs):
-        methods = {
-            "not_equal": "not_equal",
-            "greater": "greater",
-            "less": "less",
-            "greater_equal": "greater_equal",
-            "less_equal": "less_equal",
-            "multiply": "multiply",
-            "divide": "divide",
-            "remainder": "remainder",
-            "equal": "equal",
-            "bitwise_and": "bitwise_and",
-            "matmul": "matmul",
-            "power": "pow",
-            "divide": "divide",
-            "subtract": "subtract",
-            "add": "add",
-            "not_equal": "not_equal",
-        }
-        if ufunc.__name__ in methods.keys():
-            return eval("ivy." + methods[ufunc.__name__] + "(*inputs, **kwargs)")
-        return func(self, ufunc, method, *inputs, **kwargs)
-
-    return rep_method
-
-
-ivy.Array.__array_ufunc__ = wrap__array_ufunc__(ivy.Array.__array_ufunc__)
-
 NativeArray = np.ndarray
 NativeDevice = str
 NativeDtype = np.dtype
@@ -83,7 +51,7 @@ native_bool = np.dtype("bool")
 
 # update these to add new dtypes
 valid_dtypes = {
-    "1.26.0 and below": (
+    "1.26.3 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -101,7 +69,7 @@ valid_dtypes = {
     )
 }
 valid_numeric_dtypes = {
-    "1.26.0 and below": (
+    "1.26.3 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -118,7 +86,7 @@ valid_numeric_dtypes = {
     )
 }
 valid_int_dtypes = {
-    "1.26.0 and below": (
+    "1.26.3 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -129,11 +97,11 @@ valid_int_dtypes = {
         ivy.uint64,
     )
 }
-valid_float_dtypes = {"1.26.0 and below": (ivy.float16, ivy.float32, ivy.float64)}
+valid_float_dtypes = {"1.26.3 and below": (ivy.float16, ivy.float32, ivy.float64)}
 valid_uint_dtypes = {
-    "1.26.0 and below": (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
+    "1.26.3 and below": (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
 }
-valid_complex_dtypes = {"1.26.0 and below": (ivy.complex64, ivy.complex128)}
+valid_complex_dtypes = {"1.26.3 and below": (ivy.complex64, ivy.complex128)}
 
 # leave these untouched
 valid_dtypes = _dtype_from_version(valid_dtypes, backend_version)
@@ -145,12 +113,12 @@ valid_complex_dtypes = _dtype_from_version(valid_complex_dtypes, backend_version
 
 # invalid data types
 # update these to add new dtypes
-invalid_dtypes = {"1.26.0 and below": (ivy.bfloat16,)}
-invalid_numeric_dtypes = {"1.26.0 and below": (ivy.bfloat16,)}
-invalid_int_dtypes = {"1.26.0 and below": ()}
-invalid_float_dtypes = {"1.26.0 and below": (ivy.bfloat16,)}
-invalid_uint_dtypes = {"1.26.0 and below": ()}
-invalid_complex_dtypes = {"1.26.0 and below": ()}
+invalid_dtypes = {"1.26.3 and below": (ivy.bfloat16,)}
+invalid_numeric_dtypes = {"1.26.3 and below": (ivy.bfloat16,)}
+invalid_int_dtypes = {"1.26.3 and below": ()}
+invalid_float_dtypes = {"1.26.3 and below": (ivy.bfloat16,)}
+invalid_uint_dtypes = {"1.26.3 and below": ()}
+invalid_complex_dtypes = {"1.26.3 and below": ()}
 
 
 # leave these untouched
@@ -215,9 +183,14 @@ from . import experimental
 from .experimental import *
 from . import control_flow_ops
 from .control_flow_ops import *
+from . import module
+from .module import *
 
 
 # sub-backends
 
 from . import sub_backends
 from .sub_backends import *
+
+
+NativeModule = None

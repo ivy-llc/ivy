@@ -69,7 +69,7 @@ def _pad_generator(draw, shape, mode):
         pad = pad + draw(
             st.tuples(
                 st.integers(min_value=0, max_value=max(0, max_pad_value)),
-                st.integers(min_value=0, max_value=max(0, max_pad_value)),
+                st.integers(min_value=-3, max_value=max(0, max_pad_value)),
             )
         )
     return pad
@@ -99,14 +99,14 @@ def _pad_helper(draw):
             ret_shape=True,
             min_num_dims=min_v,
             max_num_dims=max_v,
-            min_dim_size=2,
+            min_dim_size=5,
             min_value=-1e05,
             max_value=1e05,
         )
     )
     padding = draw(_pad_generator(shape, mode))
     if mode == "constant":
-        value = draw(helpers.ints(min_value=0, max_value=4))
+        value = draw(helpers.ints(min_value=0, max_value=4) | st.none())
     else:
         value = 0.0
     return dtype, input[0], padding, value, mode
@@ -238,7 +238,7 @@ def test_torch_grid_sample(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.interpolate",
     dtype_and_input_and_other=_interp_args(
-        mode_list=["linear", "bilinear", "trilinear", "nearest", "area"],
+        mode_list="torch",
     ),
     number_positional_args=st.just(2),
 )
@@ -260,6 +260,8 @@ def test_torch_interpolate(
         scale_factor,
         recompute_scale_factor,
     ) = dtype_and_input_and_other
+    if mode not in ["linear", "bilinear", "bicubic", "trilinear"]:
+        align_corners = None
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -267,8 +269,7 @@ def test_torch_interpolate(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-01,
-        atol=1e-01,
+        atol=1e-03,
         input=x[0],
         size=size,
         scale_factor=scale_factor,
