@@ -546,17 +546,19 @@ def test_jax_cumsum(
 # einsum
 @handle_frontend_test(
     fn_tree="jax.numpy.einsum",
-    eq_n_op=st.sampled_from([
-        (
-            "ii",
-            np.arange(25).reshape(5, 5),
-        ),
-        (
-            "ii->i",
-            np.arange(25).reshape(5, 5),
-        ),
-        ("ij,j", np.arange(25).reshape(5, 5), np.arange(5)),
-    ]),
+    eq_n_op=st.sampled_from(
+        [
+            (
+                "ii",
+                np.arange(25).reshape(5, 5),
+            ),
+            (
+                "ii->i",
+                np.arange(25).reshape(5, 5),
+            ),
+            ("ij,j", np.arange(25).reshape(5, 5), np.arange(5)),
+        ]
+    ),
     dtype=helpers.get_dtypes("float", full=False),
 )
 def test_jax_einsum(
@@ -1006,6 +1008,32 @@ def test_jax_nanmin(
     )
 
 
+# nanpercentile
+@handle_frontend_test(
+    fn_tree="jax.numpy.nanpercentile",
+    dtype_and_x=_percentile_helper(),
+    keep_dims=st.booleans(),
+    test_gradients=st.just(False),
+    test_with_out=st.just(False),
+)
+def test_jax_nanpercentile(
+    *, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_device
+):
+    input_dtype, x, axis, interpolation, q = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        a=x[0],
+        q=q,
+        axis=axis,
+        interpolation=interpolation[0],
+        keepdims=keep_dims,
+    )
+
+
 # nanstd
 @handle_frontend_test(
     fn_tree="jax.numpy.nanstd",
@@ -1317,29 +1345,4 @@ def test_jax_var(
         where=where,
         atol=1e-3,
         rtol=1e-3,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.numpy.nanpercentile",
-    dtype_and_x=_percentile_helper(),
-    keep_dims=st.booleans(),
-    test_gradients=st.just(False),
-    test_with_out=st.just(False),
-)
-def test_nanpercentile(
-    *, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_device
-):
-    input_dtype, x, axis, interpolation, q = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        a=x[0],
-        q=q,
-        axis=axis,
-        interpolation=interpolation[0],
-        keepdims=keep_dims,
     )

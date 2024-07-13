@@ -68,8 +68,8 @@ def _pad_generator(draw, shape, mode):
             max_pad_value = shape[i] - 1
         pad = pad + draw(
             st.tuples(
-                st.integers(min_value=0, max_value=max(0, max_pad_value)),
-                st.integers(min_value=0, max_value=max(0, max_pad_value)),
+                st.integers(min_value=-3, max_value=max(0, max_pad_value)),
+                st.integers(min_value=-3, max_value=max(0, max_pad_value)),
             )
         )
     return pad
@@ -78,12 +78,14 @@ def _pad_generator(draw, shape, mode):
 @st.composite
 def _pad_helper(draw):
     mode = draw(
-        st.sampled_from([
-            "constant",
-            "reflect",
-            "replicate",
-            "circular",
-        ])
+        st.sampled_from(
+            [
+                "constant",
+                "reflect",
+                "replicate",
+                "circular",
+            ]
+        )
     )
     min_v = 1
     max_v = 5
@@ -97,14 +99,14 @@ def _pad_helper(draw):
             ret_shape=True,
             min_num_dims=min_v,
             max_num_dims=max_v,
-            min_dim_size=2,
+            min_dim_size=5,
             min_value=-1e05,
             max_value=1e05,
         )
     )
     padding = draw(_pad_generator(shape, mode))
     if mode == "constant":
-        value = draw(helpers.ints(min_value=0, max_value=4))
+        value = draw(helpers.ints(min_value=0, max_value=4) | st.none())
     else:
         value = 0.0
     return dtype, input[0], padding, value, mode

@@ -115,17 +115,19 @@ def broadcast_arrays(
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     if len(arrays) > 1:
         try:
-            desired_shape = tf.broadcast_dynamic_shape(arrays[0].shape, arrays[1].shape)
+            desired_shape = tf.broadcast_dynamic_shape(
+                tf.shape(arrays[0]), tf.shape(arrays[1])
+            )
         except tf.errors.InvalidArgumentError as e:
-            raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
+            raise ivy.utils.exceptions.IvyBroadcastShapeError(e) from e
         if len(arrays) > 2:
             for i in range(2, len(arrays)):
                 try:
                     desired_shape = tf.broadcast_dynamic_shape(
-                        desired_shape, arrays[i].shape
+                        desired_shape, tf.shape(arrays[i])
                     )
                 except tf.errors.InvalidArgumentError as e:
-                    raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
+                    raise ivy.utils.exceptions.IvyBroadcastShapeError(e) from e
     else:
         return [arrays[0]]
     result = []
@@ -164,7 +166,7 @@ def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable, np.ndarray], /) -> np.
     return tf.experimental.numpy.iinfo(ivy.as_ivy_dtype(type))
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, backend_version)
 def result_type(
     *arrays_and_dtypes: Union[tf.Tensor, tf.Variable, tf.DType],
 ) -> ivy.Dtype:
@@ -273,10 +275,7 @@ def dtype_bits(dtype_in: Union[tf.DType, str, np.dtype], /) -> int:
 def is_native_dtype(dtype_in: Union[tf.DType, str], /) -> bool:
     if not ivy.is_hashable_dtype(dtype_in):
         return False
-    if dtype_in in ivy_dtype_dict and isinstance(dtype_in, tf.dtypes.DType):
-        return True
-    else:
-        return False
+    return bool(dtype_in in ivy_dtype_dict and isinstance(dtype_in, tf.dtypes.DType))
 
 
 # ToDo:

@@ -19,19 +19,19 @@ def fft2(a, s=None, axes=(-2, -1), norm=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.5.2 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.6.0 and below": ("float16", "bfloat16")}, "paddle")
 def fftfreq(n, d=1.0, *, dtype=None):
     if not isinstance(
         n, (int, type(ivy.int8), type(ivy.int16), type(ivy.int32), type(ivy.int64))
     ):
-        raise ValueError("n should be an integer")
+        raise TypeError("n should be an integer")
 
     dtype = ivy.float64 if dtype is None else ivy.as_ivy_dtype(dtype)
 
     N = (n - 1) // 2 + 1
     val = 1.0 / (n * d)
 
-    results = ivy.zeros(tuple([n]), dtype=dtype)
+    results = ivy.zeros((n,), dtype=dtype)
     results[:N] = ivy.arange(0, N, dtype=dtype)
     results[N:] = ivy.arange(-(n // 2), 0, dtype=dtype)
 
@@ -120,6 +120,38 @@ def irfftn(x=None, s=None, axes=None, norm=None):
 
     result_t = ivy.astype(real_result, output_dtype)
     return result_t
+
+
+@with_unsupported_dtypes({"1.24.3 and below": ("complex64", "bfloat16")}, "numpy")
+@to_ivy_arrays_and_back
+def ifftn(a, s=None, axes=None, norm=None):
+    a = ivy.asarray(a, dtype=ivy.complex128)
+    a = ivy.ifftn(a, s=s, axes=axes, norm=norm)
+    return a
+
+
+@to_ivy_arrays_and_back
+def ifftshift(x, axes=None):
+    if not ivy.is_array(x):
+        raise ValueError("Input 'x' must be an array")
+
+    # Get the shape of x
+    shape = ivy.shape(x)
+
+    # If axes is None, shift all axes
+    if axes is None:
+        axes = tuple(range(x.ndim))
+
+    # Convert axes to a list if it's not already
+    axes = [axes] if isinstance(axes, int) else list(axes)
+
+    # Perform the shift for each axis
+    for axis in axes:
+        axis_size = shape[axis]
+        shift = -ivy.floor(axis_size / 2).astype(ivy.int32)
+        result = ivy.roll(x, shift, axis=axis)
+
+    return result
 
 
 @to_ivy_arrays_and_back

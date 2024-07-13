@@ -67,15 +67,17 @@ def test_non_ivy_errors_mapping(e, to_be_raised):
 
 
 @given(
-    e=st.sampled_from([
-        Exception,
-        ZeroDivisionError,
-        BufferError,
-        AssertionError,
-        ImportError,
-        KeyError,
-        LookupError,
-    ])
+    e=st.sampled_from(
+        [
+            Exception,
+            ZeroDivisionError,
+            BufferError,
+            AssertionError,
+            ImportError,
+            KeyError,
+            LookupError,
+        ]
+    )
 )
 def test_non_ivy_errors_raising(e):
     with pytest.raises(IvyBackendException):

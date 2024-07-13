@@ -17,7 +17,11 @@ import torch
 
 
 # local
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+    handle_out_argument,
+)
 from .. import backend_version
 import ivy
 from ivy.functional.ivy.experimental.manipulation import (
@@ -60,7 +64,7 @@ heaviside.support_native_out = True
 
 
 @with_supported_dtypes(
-    {"2.1.0 and below": ("float32", "float64", "complex64", "complex128")},
+    {"2.2 and below": ("float32", "float64", "complex64", "complex128")},
     backend_version,
 )
 def pad(
@@ -238,7 +242,7 @@ def fliplr(
 fliplr.support_native_out = False
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, backend_version)
 def i0(
     x: torch.Tensor,
     /,
@@ -331,7 +335,7 @@ def atleast_3d(
     return transformed
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def take_along_axis(
     arr: torch.Tensor,
     indices: torch.Tensor,
@@ -409,7 +413,7 @@ def expand(
 expand.support_native_out = False
 
 
-@with_unsupported_dtypes({"2.1.0 and below": ("complex", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("complex", "float16")}, backend_version)
 def unique_consecutive(
     x: torch.Tensor,
     /,
@@ -437,42 +441,6 @@ def column_stack(
     arrays: Sequence[torch.Tensor], /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.column_stack(arrays)
-
-
-@with_supported_dtypes({"2.1.0 and below": ("float32", "float64")}, backend_version)
-def put_along_axis(
-    arr: torch.Tensor,
-    indices: torch.Tensor,
-    values: Union[int, torch.Tensor],
-    axis: int,
-    /,
-    *,
-    mode: Literal["sum", "min", "max", "mul", "replace"] = "replace",
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    mode_mappings = {
-        "sum": "sum",
-        "min": "amin",
-        "max": "amax",
-        "mul": "prod",
-        "replace": "replace",
-    }
-    mode = mode_mappings.get(mode, mode)
-    indices = indices.to(torch.int64)
-    if mode == "replace":
-        return torch.scatter(arr, axis, indices, values, out=out)
-    else:
-        return torch.scatter_reduce(arr, axis, indices, values, reduce=mode, out=out)
-
-
-put_along_axis.partial_mixed_handler = lambda *args, mode=None, **kwargs: mode in [
-    "replace",
-    "sum",
-    "mul",
-    "mean",
-    "max",
-    "min",
-]
 
 
 def concat_from_sequence(
@@ -550,13 +518,13 @@ def take(
         if ivy.exists(axis):
             try:
                 x_shape = x.shape[axis]
-            except Exception:
+            except Exception as e:
                 rank = len(x.shape)
                 raise IndexError(
                     "IndexError: Dimension out of range"
                     f"(expected to be in range of[-{rank}, {rank-1}]"
                     f", but got {axis})"
-                )
+                ) from e
         else:
             x_shape = torch.prod(torch.tensor(x.shape))
 
@@ -639,3 +607,16 @@ def trim_zeros(a: torch.Tensor, /, *, trim: Optional[str] = "bf") -> torch.Tenso
             else:
                 last = last - 1
     return a[first:last]
+
+
+@handle_out_argument
+def unflatten(
+    x: torch.Tensor,
+    /,
+    shape: Tuple[int] = None,
+    dim: Optional[int] = 0,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    res = torch.unflatten(x, dim, shape)
+    return res

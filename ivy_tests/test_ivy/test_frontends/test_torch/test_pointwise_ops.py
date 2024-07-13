@@ -9,7 +9,6 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
     two_broadcastable_shapes,
 )
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import pow_helper
 
 
 # --- Helpers --- #
@@ -1182,7 +1181,8 @@ def test_torch_erf(
 
 # erfc
 @handle_frontend_test(
-    fn_tree="torch.erfc",
+    fn_tree="torch.special.erfc",
+    aliases=["torch.erfc"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -1212,7 +1212,7 @@ def test_torch_erfc(
 @handle_frontend_test(
     fn_tree="torch.exp",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_torch_exp(
@@ -2325,7 +2325,13 @@ def test_torch_positive(
 
 @handle_frontend_test(
     fn_tree="torch.pow",
-    dtype_and_x=pow_helper(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        min_value=1,
+        max_value=7,
+        shared_dtype=True,
+    ),
 )
 def test_torch_pow(
     dtype_and_x,

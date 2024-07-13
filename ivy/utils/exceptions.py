@@ -120,9 +120,9 @@ def _get_traces(curr_obj, area, local_dict, target_name):
             curr_obj[3] = rooted_src_list[i]
             curr_obj[1] += i
             break
-        elif builtins.any([
-            name in rooted_src_list[i] for name in non_lib_objs_name_list
-        ]):
+        elif builtins.any(
+            [name in rooted_src_list[i] for name in non_lib_objs_name_list]
+        ):
             found = False
             for name in non_lib_objs_name_list:
                 if name in rooted_src_list[i]:
@@ -141,8 +141,7 @@ def _get_traces(curr_obj, area, local_dict, target_name):
 
 
 def _check_if_path_found(path, full_path):
-    """
-    Check if the path is found in the full path.
+    """Check if the path is found in the full path.
 
     Parameters
     ----------
@@ -156,15 +155,11 @@ def _check_if_path_found(path, full_path):
     ret
         True if the path is found, False otherwise
     """
-    if path in full_path:
-        return True
-    else:
-        return False
+    return path in full_path
 
 
 def _configure_stack_trace(traceback):
-    """
-    Configure the stack trace to be displayed in the console.
+    """Configure the stack trace to be displayed in the console.
 
     Parameters
     ----------
@@ -179,7 +174,7 @@ def _configure_stack_trace(traceback):
     frontend_path = os.path.join("ivy", "functional", "frontends")
     wrapper_path = os.path.join("ivy", "func_wrapper.py")
 
-    while 1 and tb.tb_next:
+    while tb.tb_next:
         frame = tb.tb_next.tb_frame
         file_path = frame.f_code.co_filename
         if trace_mode == "ivy":
@@ -204,8 +199,7 @@ def _configure_stack_trace(traceback):
 
 
 def _add_native_error(default):
-    """
-    Append the native error to the message if it exists.
+    """Append the native error to the message if it exists.
 
     Parameters
     ----------
@@ -338,8 +332,7 @@ _non_ivy_exceptions_mapping = {
 def handle_exceptions(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _handle_exceptions(*args, **kwargs):
-        """
-        Catch all exceptions and raise them in IvyException.
+        """Catch all exceptions and raise them in IvyException.
 
         Parameters
         ----------

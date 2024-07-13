@@ -60,25 +60,27 @@ def _interp_args(draw, mode=None, mode_list=None):
             mode = draw(st.sampled_from(jax_modes))
         else:
             mode = draw(
-                st.sampled_from([
-                    "linear",
-                    "bilinear",
-                    "trilinear",
-                    "nearest",
-                    "nearest-exact",
-                    "area",
-                    "tf_area",
-                    "tf_bicubic",
-                    "lanczos3",
-                    "lanczos5",
-                    "mitchellcubic",
-                    "gaussian",
-                ])
+                st.sampled_from(
+                    [
+                        "linear",
+                        "bilinear",
+                        "trilinear",
+                        "nearest",
+                        "nearest-exact",
+                        "area",
+                        "tf_area",
+                        "tf_bicubic",
+                        "lanczos3",
+                        "lanczos5",
+                        "mitchellcubic",
+                        "gaussian",
+                    ]
+                )
             )
     elif mode_list:
         mode = draw(st.sampled_from(mode_list))
     align_corners = draw(st.booleans())
-    if (curr_backend == "tensorflow" or curr_backend == "jax") and not mixed_fn_compos:
+    if curr_backend in ["tensorflow", "jax"] and not mixed_fn_compos:
         align_corners = False
     if mode == "linear":
         num_dims = 3
@@ -155,7 +157,7 @@ def _interp_args(draw, mode=None, mode_list=None):
         )
         recompute_scale_factor = False
         scale_factor = None
-    if (curr_backend == "tensorflow" or curr_backend == "jax") and not mixed_fn_compos:
+    if curr_backend in ["tensorflow", "jax"] and not mixed_fn_compos:
         if not recompute_scale_factor:
             recompute_scale_factor = True
 

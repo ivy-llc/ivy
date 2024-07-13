@@ -26,7 +26,7 @@ from . import backend_version
 
 @with_unsupported_dtypes(
     {
-        "2.14.0 and below": (
+        "2.15.0 and below": (
             "float16",
             "bfloat16",
             "complex",
@@ -52,6 +52,15 @@ def arange(
             stop = float(start)
         else:
             stop = start
+
+    # convert builtin types to tf scalars, as is expected by tf.range
+    if isinstance(start, (float, int)):
+        start = tf.convert_to_tensor(start)
+    if isinstance(stop, (float, int)):
+        stop = tf.convert_to_tensor(stop)
+    if isinstance(step, (float, int)):
+        step = tf.convert_to_tensor(step)
+
     if dtype is None:
         if isinstance(start, int) and isinstance(stop, int) and isinstance(step, int):
             return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), tf.int32)
@@ -93,6 +102,13 @@ def asarray(
     with tf.device(device):
         if tf.is_tensor(obj):
             ret = tf.cast(obj, dtype) if obj.dtype != dtype else obj
+        elif (
+            dtype is not None
+            and dtype.is_integer
+            and np.issubdtype(np.array(obj).dtype, np.floating)
+        ):
+            obj_np = np.array(obj)
+            ret = tf.convert_to_tensor(obj_np, dtype)
         else:
             ret = tf.convert_to_tensor(obj, dtype)
         return tf.identity(ret) if (copy or ret.device != device) else ret
@@ -119,7 +135,7 @@ def empty_like(
     return tf.experimental.numpy.empty_like(x, dtype=dtype)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("uint16",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("uint16",)}, backend_version)
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -253,7 +269,7 @@ def linspace(
     return tf.cast(ans, dtype)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bool",)}, backend_version)
 def meshgrid(
     *arrays: Union[tf.Tensor, tf.Variable],
     sparse: bool = False,
@@ -297,7 +313,7 @@ def ones_like(
     return tf.ones_like(x, dtype=dtype)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bool",)}, backend_version)
 def tril(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -310,7 +326,7 @@ def tril(
     return tf.experimental.numpy.tril(x, k)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bool",)}, backend_version)
 def triu(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -383,12 +399,12 @@ def one_hot(
     )
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("uint32", "uint64")}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("uint32", "uint64")}, backend_version)
 def frombuffer(
     buffer: bytes,
-    dtype: Optional[tf.DType] = float,
-    count: Optional[int] = -1,
-    offset: Optional[int] = 0,
+    dtype: tf.DType = float,
+    count: int = -1,
+    offset: int = 0,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(buffer, bytearray):
         buffer = bytes(buffer)

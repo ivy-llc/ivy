@@ -20,11 +20,11 @@ Useful when working on almost any section in the Deep Dive.
 **Co-Pilot**
 
 GitHub Co-Pilot can be used to write any bit of code in Ivy.
-They are often very useful when developing code and also helps gets things done faster.
+They are often very useful when developing code and also help get things done faster.
 
 **GitHub - Reference**
 
-Git docs is the first place you must head to when you are stuck which any issue related to git.
+`Git docs <https://git-scm.com/doc>`_ is the first place you must head to when you are stuck with any issue related to git.
 
 **IDE extension for spell checking**
 
@@ -36,4 +36,4 @@ Though this may sound odd, a spell-checking extension is very useful to people c
 
 **Github Actions**
 
-GitHub Actions can be the best place to understand Continuous Integration and how testing is done to keep our repo error free.
+`GitHub Actions <https://docs.github.com/en/actions>`_ can be the best place to understand Continuous Integration and how testing is done to keep our repo error free.

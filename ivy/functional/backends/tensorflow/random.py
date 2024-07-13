@@ -1,5 +1,4 @@
-"""
-TensorFlow random functions.
+"""TensorFlow random functions.
 
 Collection of TensorFlow random functions, wrapped to fit Ivy syntax and
 signature.
@@ -27,7 +26,7 @@ from . import backend_version
 
 
 @with_supported_dtypes(
-    {"2.14.0 and below": ("float", "int32", "int64")}, backend_version
+    {"2.15.0 and below": ("float", "int32", "int64")}, backend_version
 )
 def random_uniform(
     *,
@@ -66,7 +65,7 @@ def random_normal(
     return tf.random.normal(shape, mean, std, dtype=dtype, seed=seed)
 
 
-@with_unsupported_dtypes({"2.14.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -145,7 +144,7 @@ def randint(
     return tf.cast(tf.random.uniform(shape, low, high, "float32", seed=seed), dtype)
 
 
-def seed(*, seed_value: int = 0) -> None:
+def seed(*, seed_value: int = 0):
     tf.random.set_seed(seed_value)
     return
 

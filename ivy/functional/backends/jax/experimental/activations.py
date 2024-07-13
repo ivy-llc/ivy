@@ -73,6 +73,7 @@ def silu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return ret
 
 
+@with_unsupported_dtypes({"0.4.14 and below": ("float16", "bfloat16")}, backend_version)
 def elu(
     x: JaxArray, /, *, alpha: float = 1.0, out: Optional[JaxArray] = None
 ) -> JaxArray:
@@ -156,6 +157,14 @@ def hardshrink(
     x: JaxArray, /, *, lambd: float = 0.5, out: Optional[JaxArray] = None
 ) -> JaxArray:
     ret = jnp.where(x > lambd, x, jnp.where(x < -lambd, x, 0))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret
+
+
+@with_unsupported_dtypes({"0.4.16 and below": ("float16", "bfloat16")}, backend_version)
+def hardsilu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    ret = jax.nn.hard_silu(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ret

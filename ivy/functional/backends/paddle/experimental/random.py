@@ -16,7 +16,7 @@ from ivy import with_supported_device_and_dtypes
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -91,8 +91,8 @@ def poisson(
     lam: Union[float, paddle.Tensor],
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: core.Place,
-    dtype: paddle.dtype,
+    device: core.Place = None,
+    dtype: paddle.dtype = None,
     seed: Optional[int] = None,
     fill_value: Optional[Union[float, int]] = 0,
     out: Optional[paddle.Tensor] = None,
@@ -127,6 +127,7 @@ def bernoulli(
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    dtype = dtype if dtype is not None else probs.dtype
     if seed is not None:
         paddle.seed(seed)
     if probs is not None:
@@ -134,7 +135,9 @@ def bernoulli(
     elif logits is not None:
         probs = ivy.softmax(logits)
     probs = paddle.cast(probs, dtype)
-    probs = paddle.unsqueeze(probs, 0) if len(probs.shape) == 0 else probs
+    squeeze = len(probs.shape) == 0
+    probs = paddle.unsqueeze(probs, 0) if squeeze else probs
     probs = paddle.maximum(probs, paddle.full_like(probs, 1e-6))
     sample = paddle.bernoulli(probs)
+    sample = paddle.squeeze(sample, 0) if squeeze else sample
     return sample

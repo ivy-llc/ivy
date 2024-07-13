@@ -120,11 +120,11 @@ def local_response_norm(
     data_format: Optional[Literal["NHWC", "NCHW"]] = "NHWC",
     out: Optional[Tuple[ivy.Array, ivy.Array, ivy.Array]] = None,
 ) -> ivy.Array:
-    """
-    Apply local response normalization across the channels of a 4D input array. The 4-D
-    array is treated as a 3-D array of 1-D vectors (along the channel dimension), and
-    each vector is normalized independently. Within a given vector, each component is
-    divided by the squared sum of the neighbouring components.
+    """Apply local response normalization across the channels of a 4D input
+    array. The 4-D array is treated as a 3-D array of 1-D vectors (along the
+    channel dimension), and each vector is normalized independently. Within a
+    given vector, each component is divided by the squared sum of the
+    neighbouring components.
 
     Parameters
     ----------
@@ -453,8 +453,8 @@ def group_norm(
     data_format: Optional[str] = "NSC",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply group normalization to the input array and returns the normalized input.
+    """Apply group normalization to the input array and returns the normalized
+    input.
 
     Parameters
     ----------
@@ -489,7 +489,7 @@ def group_norm(
         x = ivy.permute_dims(x, axes=(0, xdims - 1, *range(1, xdims - 1)))
     N = x.shape[0]
     C = x.shape[1]
-    S = ivy.to_scalar(ivy.prod(x.shape[2:])) if xdims > 2 else 1
+    S = int(ivy.to_scalar(ivy.prod(x.shape[2:])) if xdims > 2 else 1)
     assert C % num_groups == 0
     x_ = ivy.reshape(x, [N, num_groups, C // num_groups, S])
     mean = ivy.mean(x_, axis=(2, 3), keepdims=True)

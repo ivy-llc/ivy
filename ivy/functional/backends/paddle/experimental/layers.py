@@ -30,7 +30,7 @@ def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -97,7 +97,7 @@ def max_pool1d(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -168,7 +168,7 @@ def max_pool2d(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -301,7 +301,7 @@ def dct(
 
 
 @with_unsupported_dtypes(
-    {"2.5.2 and below": ("bfloat16", "bool", "float16")}, backend_version
+    {"2.6.0 and below": ("bfloat16", "bool", "float16")}, backend_version
 )
 def fft(
     x: paddle.Tensor,
@@ -345,7 +345,7 @@ def fft(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": ("bfloat16", "float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -367,7 +367,7 @@ def dropout1d(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": ("bfloat16", "float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -389,7 +389,7 @@ def dropout2d(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": ("bfloat16", "float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -422,7 +422,7 @@ def ifft(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.2 and below": {
+        "2.6.0 and below": {
             "cpu": ("int8", "float32", "float64"),
             "gpu": ("int8", "bfloat16", "float16", "float32", "float64"),
         },
@@ -469,7 +469,35 @@ def interpolate(
     antialias: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ):
-    raise IvyNotImplementedException()
+    if mode not in ["linear", "bilinear", "bicubic", "trilinear"]:
+        align_corners = None
+    return paddle.nn.functional.interpolate(
+        x,
+        size=size,
+        scale_factor=scale_factor,
+        mode=mode,
+        align_corners=align_corners,
+    )
+
+
+interpolate.partial_mixed_handler = (
+    lambda *args, **kwargs: kwargs.get("mode", "linear")
+    not in [
+        "tf_area",
+        "nd",
+        "tf_bicubic",
+        "mitchellcubic",
+        "lanczos3",
+        "lanczos5",
+        "gaussian",
+    ]
+    and (
+        kwargs.get("mode", "linear") in ["linear", "bilinear", "bicubic", "trilinear"]
+        or not kwargs.get("align_corners", False)
+    )
+    and not kwargs.get("antialias", False)
+    and not kwargs.get("recompute_scale_factor", False)
+)
 
 
 def adaptive_max_pool2d(
@@ -514,7 +542,7 @@ def rfft(
 
 
 @with_unsupported_dtypes(
-    {"2.5.2 and below": ("bfloat16", "float16", "complex64", "complex128", "bool")},
+    {"2.6.0 and below": ("bfloat16", "float16", "complex64", "complex128", "bool")},
     backend_version,
 )
 def rfftn(
@@ -531,7 +559,7 @@ def rfftn(
 
 @with_supported_dtypes(
     {
-        "2.5.2 and below": (
+        "2.6.0 and below": (
             "complex64",
             "complex128",
         )
@@ -553,7 +581,7 @@ def fft2(
 # stft
 @with_supported_dtypes(
     {
-        "2.5.2 and below": (
+        "2.6.0 and below": (
             "complex64",
             "complex128",
         )

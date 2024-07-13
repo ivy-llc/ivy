@@ -96,7 +96,7 @@ def unique_inverse(
         values = jnp.append(values, jnp.full(nan_count - 1, jnp.nan), axis=0).astype(
             x.dtype
         )
-    inverse_indices = jnp.reshape(inverse_indices, x.shape, axis=0)
+    inverse_indices = jnp.reshape(inverse_indices, x.shape)
 
     return Results(values, inverse_indices)
 
