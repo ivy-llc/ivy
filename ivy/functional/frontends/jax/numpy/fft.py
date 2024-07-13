@@ -70,6 +70,38 @@ def ifft2(a, s=None, axes=(-2, -1), norm=None):
     return ivy.array(ivy.ifft2(a, s=s, dim=axes, norm=norm), dtype=ivy.dtype(a))
 
 
+@with_unsupported_dtypes({"1.24.3 and below": ("complex64", "bfloat16")}, "numpy")
+@to_ivy_arrays_and_back
+def ifftn(a, s=None, axes=None, norm=None):
+    a = ivy.asarray(a, dtype=ivy.complex128)
+    a = ivy.ifftn(a, s=s, axes=axes, norm=norm)
+    return a
+
+
+@to_ivy_arrays_and_back
+def ifftshift(x, axes=None):
+    if not ivy.is_array(x):
+        raise ValueError("Input 'x' must be an array")
+
+    # Get the shape of x
+    shape = ivy.shape(x)
+
+    # If axes is None, shift all axes
+    if axes is None:
+        axes = tuple(range(x.ndim))
+
+    # Convert axes to a list if it's not already
+    axes = [axes] if isinstance(axes, int) else list(axes)
+
+    # Perform the shift for each axis
+    for axis in axes:
+        axis_size = shape[axis]
+        shift = -ivy.floor(axis_size / 2).astype(ivy.int32)
+        result = ivy.roll(x, shift, axis=axis)
+
+    return result
+
+
 @to_ivy_arrays_and_back
 def irfftn(a, s=None, axes=None, norm=None):
     x = ivy.asarray(a)
@@ -119,38 +151,6 @@ def irfftn(a, s=None, axes=None, norm=None):
 
     result_t = ivy.astype(real_result, output_dtype)
     return result_t
-
-
-@with_unsupported_dtypes({"1.24.3 and below": ("complex64", "bfloat16")}, "numpy")
-@to_ivy_arrays_and_back
-def ifftn(a, s=None, axes=None, norm=None):
-    a = ivy.asarray(a, dtype=ivy.complex128)
-    a = ivy.ifftn(a, s=s, axes=axes, norm=norm)
-    return a
-
-
-@to_ivy_arrays_and_back
-def ifftshift(x, axes=None):
-    if not ivy.is_array(x):
-        raise ValueError("Input 'x' must be an array")
-
-    # Get the shape of x
-    shape = ivy.shape(x)
-
-    # If axes is None, shift all axes
-    if axes is None:
-        axes = tuple(range(x.ndim))
-
-    # Convert axes to a list if it's not already
-    axes = [axes] if isinstance(axes, int) else list(axes)
-
-    # Perform the shift for each axis
-    for axis in axes:
-        axis_size = shape[axis]
-        shift = -ivy.floor(axis_size / 2).astype(ivy.int32)
-        result = ivy.roll(x, shift, axis=axis)
-
-    return result
 
 
 @to_ivy_arrays_and_back

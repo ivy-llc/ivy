@@ -1,13 +1,12 @@
 # global
 from __future__ import annotations
 import re
-import os
 import jax
 from flax import linen as nn
 import jax.tree_util as tree
 import jax.numpy as jnp
 import functools
-from typing import NamedTuple, Callable, Any, Tuple, List, Dict, Type, Union
+from typing import NamedTuple, Callable, Any, Tuple, List, Dict, Type
 import inspect
 from collections import OrderedDict
 
@@ -451,9 +450,7 @@ class Layer(nn.Module, ModelHelpers):
     def train(self, mode: bool = True):
         self._training = mode
         for module in self.children():
-            if isinstance(module, nn.Module) and not hasattr(
-                module, "train"
-            ):
+            if isinstance(module, nn.Module) and not hasattr(module, "train"):
                 module.trainable = mode
                 continue
             module.train(mode)
@@ -845,9 +842,7 @@ class Model(nn.Module, ModelHelpers):
     def train(self, mode: bool = True):
         self._training = mode
         for module in self.children():
-            if isinstance(module, nn.Module) and not hasattr(
-                module, "train"
-            ):
+            if isinstance(module, nn.Module) and not hasattr(module, "train"):
                 module.trainable = mode
                 continue
             module.train(mode)
