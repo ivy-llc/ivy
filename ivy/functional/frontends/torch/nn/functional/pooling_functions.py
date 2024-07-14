@@ -8,6 +8,7 @@ from ivy import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import (
     to_ivy_arrays_and_back,
 )
+from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
 
 
 @with_unsupported_dtypes(
@@ -291,6 +292,29 @@ def max_pool2d(
         if isinstance(stride, (list, tuple)) and len(stride) == 1:
             stride = stride[0]
 
+        dims = 2
+        x_shape = list(input.shape[2:])
+        new_kernel = [
+            kernel_size[i] + (kernel_size[i] - 1) * (dilation[i] - 1) for i in range(2)
+        ]
+
+        if isinstance(padding, int):
+            padding = [(padding,) * 2] * dims
+        elif isinstance(padding, (list, tuple)) and len(padding) == dims:
+            padding = [(padding[i],) * 2 for i in range(dims)]
+
+        if isinstance(stride, int):
+            stride = (stride,) * dims
+
+        if ceil_mode:
+            for i in range(dims):
+                padding[i] = _padding_ceil_mode(
+                    x_shape[i], new_kernel[i], padding[i], stride[i]
+                )
+        # torch pad takes width padding first, then height padding
+        padding = (padding[1], padding[0])
+        pad_list = [item for sublist in padding for item in sublist]
+
         in_shape = input.shape
         H = in_shape[-2]
         W = in_shape[-1]
@@ -300,20 +324,28 @@ def max_pool2d(
         # for each position in the sliding window
         input_indices = torch_frontend.arange(0, n_indices, dtype=torch_frontend.int64)
         input_indices = input_indices.reshape((1, 1, H, W))
-        unfolded_indices = torch_frontend.nn.functional.unfold(
-            input_indices,
-            kernel_size=kernel_size,
-            padding=padding,
-            dilation=dilation,
-            stride=stride,
-        ).permute((0, 2, 1))[0]
 
         # find the indices of the max value for each position of the sliding window
         input = torch_frontend.nn.functional.pad(
             input,
-            [padding] * 4 if isinstance(padding, int) else padding * 2,
+            pad_list,
             value=float("-inf"),
         )
+
+        input_indices = torch_frontend.nn.functional.pad(
+            input_indices,
+            pad_list,
+            value=int(0),
+        )
+
+        unfolded_indices = torch_frontend.nn.functional.unfold(
+            input_indices,
+            kernel_size=kernel_size,
+            padding=0,
+            dilation=dilation,
+            stride=stride,
+        ).permute((0, 2, 1))[0]
+
         unfolded_values = torch_frontend.nn.functional.unfold(
             input, kernel_size=kernel_size, padding=0, dilation=dilation, stride=stride
         )
