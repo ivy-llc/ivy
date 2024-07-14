@@ -2017,7 +2017,6 @@ def _output_ceil_shape(w, f, p, s):
 
 
 def _padding_ceil_mode(w, f, p, s, return_added_padding=False):
-    # remaining_pixels = (w - f + p[0]) % s
     remaining_pixels = (w - f + sum(p)) % s
     added_padding = 0
     # if the additional pixels potentially captured thanks to ceil mode
