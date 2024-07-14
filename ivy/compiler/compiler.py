@@ -1,6 +1,41 @@
 from typing import Callable, Optional, List, Union, Iterable, Sequence, Mapping
 
 
+def source_to_source(
+    object,
+    source: str = "torch",
+    target: str = "torch_frontend",
+    profiling: bool = False,
+):
+    """Converts a given object (class/function) from one framework to another.
+
+    This function performs source-to-source translation of a given object from the source framework
+    to the target framework.
+
+    The object can be translated between two frameworks or in-between the Ivy IR
+    as well e.g. (source="torch_frontend", target="ivy") or (source="torch_frontend", target="tensorflow") etc.
+
+    Args:
+    ----
+        object: The object (class/function) to be translated.
+        source (str, optional): The source framework. Defaults to 'torch'.
+        target (str, optional): The target framework. Defaults to 'torch_frontend'.
+        profiling: Whether to add performance profiling.
+
+    Returns:
+    -------
+    The translated object.
+    """
+    from ._compiler import source_to_source as _source_to_source
+
+    return _source_to_source(
+        object=object,
+        source=source,
+        target=target,
+        profiling=profiling,
+    )
+
+
 def trace_graph(
     *objs: Callable,
     stateful: Optional[List] = None,
@@ -21,7 +56,8 @@ def trace_graph(
     params_v=None,
     v=None
 ):
-    """Takes `fn` and traces it into a more efficient composition of backend operations.
+    """Takes `fn` and traces it into a more efficient composition of backend
+    operations.
 
     Parameters
     ----------
@@ -91,8 +127,8 @@ def trace_graph(
     >>> start = time.time()
     >>> graph(x)
     >>> print(time.time() - start)
-    0.0001785755157470703"""
-
+    0.0001785755157470703
+    """
     from ._compiler import trace_graph as _trace_graph
 
     return _trace_graph(
@@ -156,8 +192,8 @@ def transpile(
 
     Returns
     -------
-    Either a transpiled Graph or a non-initialized LazyGraph."""
-
+    Either a transpiled Graph or a non-initialized LazyGraph.
+    """
     from ._compiler import transpile as _transpile
 
     return _transpile(

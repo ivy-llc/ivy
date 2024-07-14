@@ -50,6 +50,15 @@ def cond(x, p=None, name=None):
     return ret
 
 
+# cov
+@with_supported_dtypes(
+    {"2.6.1 and below": ("complex64", "complex128", "float32", "float64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def cov(x, rowvar=True, ddof=True, fweights=None, aweights=None, name=None):
+    return ivy.cov(x, rowVar=rowvar, ddof=ddof, fweights=fweights, aweights=aweights)
+
+
 @with_supported_dtypes(
     {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )

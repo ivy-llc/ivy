@@ -13,3 +13,5 @@ jobs:
     name: Update docs
     uses: ./.github/workflows/build-docs.yml
     secrets: inherit
+    with:
+      repo-name: ''

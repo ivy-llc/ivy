@@ -33,7 +33,7 @@ repos:
     rev: v1.7.5
     hooks:
       - id: docformatter
-  - repo: https://github.com/Transpile-AI/lint-hook
+  - repo: https://github.com/ivy-llc/lint-hook
     rev: a72ffb17562d919311653d7f593cb537d1245c19
     hooks:
       - id: ivy-lint

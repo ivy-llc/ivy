@@ -10,12 +10,12 @@ on:
         repo-name:
           description: 'Repo display name in the URL'
           required: false
-          default: ${{ github.event.repository.name }}
+          default: ''
           type: string
         docs-repo:
           description: 'Repo to hold the docs'
           required: false
-          default: Transpile-AI/docs
+          default: ivy-llc/docs
           type: string
 
 permissions:

@@ -493,10 +493,7 @@ class Shape(Sequence):
             raise ivy.utils.exceptions.IvyException(
                 "Cannot calculate the number of elements in a partially known Shape"
             )
-        res = 1
-        for dim in self._shape:
-            res *= dim
-        return res
+        return ivy.prod(self.as_list(), dtype=ivy.int64).to_scalar()
 
     def __concat__(self, other):
         return self.concatenate(other)
@@ -807,7 +804,7 @@ try:
 except:  # noqa: E722
     pass
 try:
-    from .compiler.compiler import transpile, trace_graph, unify
+    from .compiler.compiler import source_to_source, transpile, trace_graph, unify
 except:  # noqa: E722
     pass  # Added for the finally statement
 try:
