@@ -231,6 +231,9 @@ class Tensor:
         self.ivy_array = self.asin().ivy_array
         return self
 
+    def float_power(self, exponent):
+        return torch_frontend.float_power(self, exponent)
+
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
     def sum(self, dim=None, keepdim=False, *, dtype=None):
@@ -543,8 +546,16 @@ class Tensor:
         {"2.2 and below": {"cpu": ("float32", "float64")}},
         "torch",
     )
-    def erfc_(self, *, out=None):
+    def erfc(self, *, out=None):
         return torch_frontend.erfc(self, out=out)
+
+    @with_supported_device_and_dtypes(
+        {"2.2 and below": {"cpu": ("float32", "float64")}},
+        "torch",
+    )
+    def erfc_(self, *, out=None):
+        self.ivy_array = self.erfc(out=out).ivy_array
+        return self
 
     def new_zeros(
         self,
@@ -1076,6 +1087,23 @@ class Tensor:
 
     def masked_select(self, mask):
         return torch_frontend.masked_select(self, mask)
+
+    def masked_scatter(self, mask, source):
+        flat_self = torch_frontend.flatten(self.clone())
+        flat_mask = torch_frontend.flatten(mask)
+        flat_source = torch_frontend.flatten(source)
+        indices = torch_frontend.squeeze(torch_frontend.nonzero(flat_mask), -1)
+        flat_self.scatter_(0, indices, flat_source[: indices.shape[0]])
+        return flat_self.reshape(self.shape)
+
+    def masked_scatter_(self, mask, source):
+        flat_self = torch_frontend.flatten(self.clone())
+        flat_mask = torch_frontend.flatten(mask)
+        flat_source = torch_frontend.flatten(source)
+        indices = torch_frontend.squeeze(torch_frontend.nonzero(flat_mask), -1)
+        flat_self.scatter_(0, indices, flat_source[: indices.shape[0]])
+        self.ivy_array = flat_self.reshape(self.shape).ivy_array
+        return self
 
     @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
     def index_add_(self, dim, index, source, *, alpha=1):
@@ -1842,9 +1870,6 @@ class Tensor:
         {"2.2 and below": ("float32", "float64", "int32", "int64")}, "torch"
     )
     def scatter_(self, dim, index, src, *, reduce=None):
-        if not isinstance(src, torch_frontend.Tensor):
-            src = torch_frontend.tensor(src, dtype=self.dtype)
-
         if reduce is None:
             reduce = "replace"
         else:
@@ -2310,6 +2335,10 @@ class Tensor:
 
     def rad2deg(self, *, out=None):
         return torch_frontend.rad2deg(self, out=out)
+
+    def fill_diagonal_(self, fill_value, wrap=False):
+        self._ivy_array = ivy.fill_diagonal(self._ivy_array, fill_value, wrap=wrap)
+        return self
 
     @with_supported_dtypes(
         {"2.2 and below": "valid"},

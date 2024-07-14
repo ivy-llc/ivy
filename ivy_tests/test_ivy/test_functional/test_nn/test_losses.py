@@ -203,3 +203,112 @@ def test_sparse_cross_entropy(
         epsilon=epsilon,
         reduction=reduction,
     )
+
+
+@handle_test(
+    fn_tree="functional.ivy.ssim_loss",
+    dtype_and_true=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1,
+        max_value=1,
+        min_num_dims=4,
+        max_num_dims=4,
+        min_dim_size=2,
+    ),
+    dtype_and_pred=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1,
+        max_value=1,
+        min_num_dims=4,
+        max_num_dims=4,
+        min_dim_size=2,
+    ),
+)
+def test_ssim_loss(
+    dtype_and_true, dtype_and_pred, test_flags, backend_fw, fn_name, on_device
+):
+    true_dtype, true = dtype_and_true
+    pred_dtype, pred = dtype_and_pred
+
+    helpers.test_function(
+        input_dtypes=pred_dtype + true_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        true=true[0],
+        pred=pred[0],
+        rtol_=1e-02,
+        atol_=1e-02,
+    )
+
+
+# wasserstein_loss_discriminator
+@handle_test(
+    fn_tree="functional.ivy.wasserstein_loss_discriminator",
+    dtype_and_p_real=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1,
+        max_value=1,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+    ),
+    dtype_and_p_fake=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1,
+        max_value=1,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+    ),
+)
+def test_wasserstein_loss_discriminator(
+    dtype_and_p_real, dtype_and_p_fake, test_flags, backend_fw, fn_name, on_device
+):
+    dtype_p_real, p_real = dtype_and_p_real
+    dtype_p_fake, p_fake = dtype_and_p_fake
+
+    helpers.test_function(
+        input_dtypes=dtype_p_real + dtype_p_fake,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        p_real=p_real[0],
+        p_fake=p_fake[0],
+        rtol_=1e-02,
+        atol_=1e-02,
+    )
+
+
+# wasserstein_loss_generator
+@handle_test(
+    fn_tree="functional.ivy.wasserstein_loss_generator",
+    dtype_and_pred_fake=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1,
+        max_value=1,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+    ),
+)
+def test_wasserstein_loss_generator(
+    dtype_and_pred_fake, test_flags, backend_fw, fn_name, on_device
+):
+    dtype_pred_fake, pred_fake = dtype_and_pred_fake
+
+    helpers.test_function(
+        input_dtypes=dtype_pred_fake,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        pred_fake=pred_fake[0],
+        rtol_=1e-02,
+        atol_=1e-02,
+    )

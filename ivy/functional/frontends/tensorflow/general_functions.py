@@ -405,6 +405,12 @@ def scan(
     return ivy.associative_scan(elems, fn, reverse=reverse)
 
 
+@with_supported_dtypes({"2.17.0 and below": ("int32", "int64")}, "tensorflow")
+@to_ivy_arrays_and_back
+def scatter_nd(indices, updates, shape, name=None):
+    return ivy.astype(ivy.scatter_nd(indices, updates, shape=shape), updates.dtype)
+
+
 @to_ivy_arrays_and_back
 def searchsorted(sorted_sequence, values, side="left", out_type="int32"):
     out_type = to_ivy_dtype(out_type)

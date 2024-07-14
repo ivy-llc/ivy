@@ -1802,6 +1802,7 @@ def put_along_axis(
     ivy.array([[10, 30, 20],
               [60, 40, 50]])
     """
+    arr, values = ivy.promote_types_of_inputs(arr, values)
     arr_shape = arr.shape
 
     # array containing all flat indices
