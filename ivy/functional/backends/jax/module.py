@@ -391,7 +391,7 @@ class Layer(nn.Module, ModelHelpers):
     _dtype = None
     _previous_frame_info = None
 
-    def __init__(
+    def setup(
         self,
         /,
         *args,
@@ -423,7 +423,7 @@ class Layer(nn.Module, ModelHelpers):
         self._training = training
         self._dynamic_backend = dynamic_backend
         self._device = device or "cpu"
-        self._dtype = dtype or jax.float32
+        self._dtype = dtype or jnp.float32
         if build_mode != "on_init":
             return
         self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
@@ -815,7 +815,7 @@ class Model(nn.Module, ModelHelpers):
         self._training = training
         self._dynamic_backend = dynamic_backend
         self._device = device or "cpu"
-        self._dtype = dtype or jax.float32
+        self._dtype = dtype or jnp.float32
         if build_mode != "on_init":
             return
         self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
