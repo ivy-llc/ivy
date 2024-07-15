@@ -2045,7 +2045,6 @@ def _padding_ceil_mode(
         added_padding (optional)
             The amount of padding added to the original right/bottom padding to ensure correct output size when `return_added_padding` is True
     """
-
     remaining_pixels = (w - f + sum(p)) % s
     added_padding = 0
     # if the additional pixels potentially captured thanks to ceil mode

@@ -888,4 +888,3 @@ class _TorchIvyModule(Module):
         ret = self._native_module(*a, **kw)
         nested = isinstance(ret, tuple)
         return ivy.to_native(ret, nested=nested)
-        

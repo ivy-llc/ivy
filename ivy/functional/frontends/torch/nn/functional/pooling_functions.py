@@ -295,7 +295,8 @@ def max_pool2d(
         DIMS = 2
         x_shape = list(input.shape[2:])
         new_kernel = [
-            kernel_size[i] + (kernel_size[i] - 1) * (dilation[i] - 1) for i in range(DIMS)
+            kernel_size[i] + (kernel_size[i] - 1) * (dilation[i] - 1)
+            for i in range(DIMS)
         ]
 
         if isinstance(padding, int):
