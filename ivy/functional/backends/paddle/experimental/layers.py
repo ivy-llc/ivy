@@ -1,6 +1,8 @@
 # global
+import math
 from typing import Optional, Union, Tuple, List, Literal, Sequence, Callable
 import paddle
+from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
 from ivy.functional.ivy.layers import (
     _handle_padding,
     _depth_max_pooling_helper,
@@ -150,14 +152,37 @@ def max_pool2d(
             " backend"
         )
 
-    padding = (
-        [item for sublist in padding for item in sublist]
-        if not isinstance(padding, str)
-        else padding
-    )  # paddle's expected format
-    res = paddle.nn.functional.max_pool2d(
-        x, kernel, strides, padding=padding, ceil_mode=ceil_mode
-    )
+    x_shape = list(x.shape[2:])
+    if not depth_pooling:
+        new_kernel = [
+            kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(dims)
+        ]
+        if isinstance(padding, str):
+            pad_h = _handle_padding(x_shape[0], strides[0], new_kernel[0], padding)
+            pad_w = _handle_padding(x_shape[1], strides[1], new_kernel[1], padding)
+            padding = [
+                (pad_h // 2, pad_h - pad_h // 2),
+                (pad_w // 2, pad_w - pad_w // 2),
+            ]
+
+        if ceil_mode:
+            for i in range(dims):
+                padding[i] = _padding_ceil_mode(
+                    x_shape[i], new_kernel[i], padding[i], strides[i]
+                )
+        # paddle pad takes width padding first, then height padding
+        padding = (padding[1], padding[0])
+        pad_list = [item for sublist in padding for item in sublist]
+        x = paddle.nn.functional.pad(x, pad_list, value=-math.inf)
+    else:
+        if isinstance(padding, list) and any(
+            [item != 0 for sublist in padding for item in sublist]
+        ):
+            raise NotImplementedError(
+                "Nonzero explicit padding is not supported for depthwise max pooling"
+            )
+
+    res = paddle.nn.functional.max_pool2d(x, kernel, strides, padding="VALID")
 
     if depth_pooling:
         res = paddle.transpose(res, perm=[0, 2, 1, 3])

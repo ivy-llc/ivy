@@ -2017,15 +2017,19 @@ def _output_ceil_shape(w, f, p, s):
 
 
 def _padding_ceil_mode(w, f, p, s, return_added_padding=False):
-    remaining_pixels = (w - f + p[0]) % s
+    remaining_pixels = (w - f + sum(p)) % s
     added_padding = 0
+    # if the additional pixels potentially captured thanks to ceil mode
+    # are all in the padding then no padding is added
+    if remaining_pixels <= p[1] and s + p[1] - remaining_pixels >= f:
+        return (p, added_padding) if return_added_padding else p
     if s > 1 and remaining_pixels != 0 and f > 1:
         input_size = w + sum(p)
         # making sure that the remaining pixels are supposed
         # to be covered by the window
         # they won't be covered if stride is big enough to skip them
         if input_size - remaining_pixels - (f - 1) + s > input_size:
-            return p
+            return (p, added_padding) if return_added_padding else p
         output_shape = _output_ceil_shape(
             w,
             f,
