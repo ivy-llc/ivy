@@ -358,7 +358,12 @@ def solve(matrix, rhs, /, *, adjoint=False, name=None):
 
 @to_ivy_arrays_and_back
 def svd(a, /, *, full_matrices=False, compute_uv=True, name=None):
-    return ivy.svd(a, compute_uv=compute_uv, full_matrices=full_matrices)
+    if compute_uv:
+        svd = ivy.svd(a, compute_uv=compute_uv, full_matrices=full_matrices)
+        return tuple([ivy.astype(svd.S, ivy.float64), ivy.astype(svd.U, ivy.float64), ivy.astype(svd.Vh.T, ivy.float64)])
+    else:
+        svd = ivy.svd(a, compute_uv=compute_uv, full_matrices=full_matrices)
+        return ivy.astype(svd.S, ivy.float64)
 
 
 @to_ivy_arrays_and_back

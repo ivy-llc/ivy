@@ -1080,7 +1080,7 @@ def test_tensorflow_solve(
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
     full_matrices=st.booleans(),
-    compute_uv=st.just(True),
+    compute_uv=st.booleans(),
 )
 def test_tensorflow_svd(
     *,
@@ -1105,8 +1105,6 @@ def test_tensorflow_svd(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
-        atol=1e-03,
-        rtol=1e-05,
         a=x,
         full_matrices=full_matrices,
         compute_uv=compute_uv,
@@ -1129,8 +1127,8 @@ def test_tensorflow_svd(
         )
     else:
         assert_all_close(
-            ret_np=ret,
-            ret_from_gt_np=frontend_ret,
+            ret_np=np.asarray(ret),
+            ret_from_gt_np=np.asarray(frontend_ret),
             rtol=1e-2,
             atol=1e-2,
             backend=backend_fw,
