@@ -292,28 +292,28 @@ def max_pool2d(
         if isinstance(stride, (list, tuple)) and len(stride) == 1:
             stride = stride[0]
 
-        dims = 2
+        DIMS = 2
         x_shape = list(input.shape[2:])
         new_kernel = [
-            kernel_size[i] + (kernel_size[i] - 1) * (dilation[i] - 1) for i in range(2)
+            kernel_size[i] + (kernel_size[i] - 1) * (dilation[i] - 1) for i in range(DIMS)
         ]
 
         if isinstance(padding, int):
-            padding = [(padding,) * 2] * dims
-        elif isinstance(padding, (list, tuple)) and len(padding) == dims:
-            padding = [(padding[i],) * 2 for i in range(dims)]
+            padding = [(padding,) * 2] * DIMS
+        elif isinstance(padding, (list, tuple)) and len(padding) == DIMS:
+            padding = [(padding[i],) * 2 for i in range(DIMS)]
 
         if isinstance(stride, int):
-            stride = (stride,) * dims
+            stride = (stride,) * DIMS
 
         if ceil_mode:
-            for i in range(dims):
+            for i in range(DIMS):
                 padding[i] = _padding_ceil_mode(
                     x_shape[i], new_kernel[i], padding[i], stride[i]
                 )
         # torch pad takes width padding first, then height padding
         padding = (padding[1], padding[0])
-        pad_list = [item for sublist in padding for item in sublist]
+        pad_array = ivy.flatten(padding)
 
         in_shape = input.shape
         H = in_shape[-2]
@@ -328,14 +328,14 @@ def max_pool2d(
         # find the indices of the max value for each position of the sliding window
         input = torch_frontend.nn.functional.pad(
             input,
-            pad_list,
+            pad_array,
             value=float("-inf"),
         )
 
         input_indices = torch_frontend.nn.functional.pad(
             input_indices,
-            pad_list,
-            value=int(0),
+            pad_array,
+            value=0,
         )
 
         unfolded_indices = torch_frontend.nn.functional.unfold(
