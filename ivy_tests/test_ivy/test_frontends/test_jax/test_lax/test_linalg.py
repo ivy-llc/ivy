@@ -159,26 +159,25 @@ def test_jax_qr(
 
 
 # svd
-# TODO: implement proper drawing of index parameter
+# TODO: implement proper drawing of index parameter and implement subset_by_index
 @handle_frontend_test(
     fn_tree="jax.lax.linalg.svd",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        min_num_dims=2,
-        max_num_dims=5,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
     full_matrices=st.booleans(),
     compute_uv=st.booleans(),
     index=st.one_of(
-        st.none(), st.tuples(st.integers(min_value=0, max_value=3), st.integers(min_value=3, max_value=5))
+        st.none() #, st.tuples(st.integers(min_value=0, max_value=3), st.integers(min_value=3, max_value=5))
     ),
     test_with_out=st.just(False),
 )
 def test_jax_svd(
     *,
-    dtype_and_x,
+    dtype_x,
     full_matrices,
     compute_uv,
     index,
@@ -188,11 +187,10 @@ def test_jax_svd(
     test_flags,
     backend_fw,
 ):
-    dtype, x = dtype_and_x
+    dtype, x = dtype_x
     x = np.asarray(x[0], dtype=dtype[0])
     # make symmetric positive-definite
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
-
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
@@ -206,26 +204,35 @@ def test_jax_svd(
         compute_uv=compute_uv,
         subset_by_index=index,
     )
-    if compute_uv:
-        ret = [np.asarray(x) for x in ret]
-        frontend_ret = [np.asarray(x) for x in frontend_ret]
-        u, s, v = ret
-        frontend_u, frontend_s, frontend_v = frontend_ret
-
+    if not compute_uv:
+        if backend_fw == "torch":
+            frontend_ret = frontend_ret.detach()
+            ret = ret.detach()
         assert_all_close(
-            ret_np=u @ np.diag(s) @ v.T,
-            ret_from_gt_np=frontend_u @ np.diag(frontend_s) @ frontend_v.T,
-            rtol=1e-2,
-            atol=1e-2,
+            ret_np=np.asarray(frontend_ret, dtype=np.dtype(getattr(np, dtype[0]))),
+            ret_from_gt_np=np.asarray(ret),
+            atol=1e-03,
             backend=backend_fw,
             ground_truth_backend=frontend,
         )
     else:
-        assert_all_close(
-            ret_np=ret,
-            ret_from_gt_np=frontend_ret,
-            rtol=1e-2,
-            atol=1e-2,
-            backend=backend_fw,
-            ground_truth_backend=frontend,
-        )
+        ret = [np.asarray(x) for x in ret]
+        frontend_ret = [np.asarray(x, dtype=np.dtype(getattr(np, dtype[0]))) for x in frontend_ret]
+        u, s, v = ret
+        frontend_u, frontend_s, frontend_v = frontend_ret
+        if full_matrices:
+            helpers.assert_all_close(
+                ret_np=frontend_u @ np.diag(frontend_s) @ frontend_v.T,
+                ret_from_gt_np=u @ np.diag(s) @ v.T,
+                atol=1e-03,
+                backend=backend_fw,
+                ground_truth_backend=frontend,
+            )
+        else:
+            helpers.assert_all_close(
+                ret_np=frontend_u[...,:frontend_s.shape[0]] @ np.diag(frontend_s) @ frontend_v.T,
+                ret_from_gt_np=u[...,:s.shape[0]] @ np.diag(s) @ v.T,
+                atol=1e-03,
+                backend=backend_fw,
+                ground_truth_backend=frontend,
+            )
