@@ -1281,6 +1281,13 @@ def test_torch_svd(
         A=x,
         full_matrices=full_matrices,
     )
+    if backend_fw == "torch":
+        frontend_ret = [x.detach() for x in frontend_ret]
+        ret = [x.detach() for x in frontend_ret]
+        ret = [np.asarray(x, dtype=np.dtype(getattr(np, dtype[0]))) for x in ret]
+    else:
+        ret = [np.asarray(x) for x in ret]
+    frontend_ret = [np.asarray(x, dtype=np.dtype(getattr(np, dtype[0]))) for x in frontend_ret]
     u, s, vh = ret
     frontend_u, frontend_s, frontend_vh = frontend_ret
     if full_matrices:
