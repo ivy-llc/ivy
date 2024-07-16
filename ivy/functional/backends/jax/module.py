@@ -623,10 +623,7 @@ class Layer(nn.Module, ModelHelpers):
         buffers=None,
         **kwargs,
     ):
-        # TODO: Temp workaround to avoid `call`` from being transformed by AutoGraph
-        if not hasattr(self.__class__.call, "autograph_info__"):
-            setattr(self.__class__.call, "autograph_info__", True)
-        ret = self._call(*args, v=v, buffers=buffers, **kwargs)
+        ret = self.apply(v=v, *args, method=self._forward, **kwargs)
         return ret
 
     def __getattr__(self, name):
@@ -783,7 +780,7 @@ class Model(nn.Module, ModelHelpers):
     _dtype = None
     _previous_frame_info = None
 
-    def setup(
+    def __init__(
         self,
         /,
         *args,
@@ -1015,7 +1012,7 @@ class Model(nn.Module, ModelHelpers):
         buffers=None,
         **kwargs,
     ):
-        ret = self._call(*args, v=v, buffers=buffers, **kwargs)
+        ret = self.apply(v=v, *args, method=self.__class__._forward, **kwargs)
         return ret
 
     def __getattr__(self, name):
@@ -1023,6 +1020,8 @@ class Model(nn.Module, ModelHelpers):
             if not super().__getattribute__("_v") and not getattr(  # noqa: E501
                 self, "_built", False
             ):
+                print("self._kwargs", self._kwargs)
+                print("_build_and_return_v")
                 return self._build_and_return_v(
                     *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
                 )
@@ -1035,6 +1034,20 @@ class Model(nn.Module, ModelHelpers):
             return _dict["_v"][name]
 
         return super().__getattribute__(name)
+
+    def _compute_module_dict(self):
+        self._module_dict = dict()
+        for key, value in self.__dict__.items():
+            if isinstance(value, (Layer, Model, nn.Module)):
+                if (
+                    "stateful" in value.__module__
+                    or hasattr(value, "_frontend_module")
+                    or not hasattr(value, "_module_dict")
+                ):
+                    self._module_dict[key] = value
+                else:
+                    self._module_dict[key] = value._module_dict
+
 
     def __setattr__(self, name, value):
         if name in ["v", "buffers"]:
@@ -1120,6 +1133,208 @@ class Model(nn.Module, ModelHelpers):
                 self._module_dict[name] = value
 
             return super().__setattr__(name, value)
+
+    def _find_variables(
+        self,
+        /,
+        *,
+        obj=None,
+        without_initialisation=False,
+        _visited=None,
+        trainable=True,
+    ):
+        _visited = _visited or {}
+        vs = dict()
+        if id(obj) in _visited:
+            return vs
+        _visited[id(obj)] = True
+        if isinstance(obj, (Layer, Model)) and obj is not self:
+            fn = "_build_and_return_v" if trainable else "_build_and_return_buffers"
+            if not obj._built and without_initialisation:
+                return lambda: getattr(obj, fn)(
+                    *obj._args, dynamic_backend=self._dynamic_backend, **obj._kwargs
+                )
+            print(type(obj))
+            print(obj)
+            print(obj._kwargs)
+            return getattr(obj, fn)(
+                *obj._args, dynamic_backend=obj._dynamic_backend, **obj._kwargs
+            )
+        elif isinstance(obj, nn.Module) and obj is not self:
+            return obj.v if trainable else obj.buffers
+
+        elif isinstance(obj, (list, tuple)):
+            for i, v in enumerate(obj):
+                ret = self._find_variables(
+                    obj=v,
+                    without_initialisation=without_initialisation,
+                    _visited=_visited,
+                    trainable=trainable,
+                )
+                if ret:
+                    vs[f"v{str(i)}"] = ret
+            return vs
+        elif isinstance(obj, dict):
+            for k, v in obj.items():
+                ret = self._find_variables(
+                    obj=v,
+                    without_initialisation=without_initialisation,
+                    _visited=_visited,
+                    trainable=trainable,
+                )
+                if ret:
+                    vs[k[1:] if k[0] == "_" else k] = ret
+            return vs
+        elif not hasattr(obj, "__dict__"):
+            return vs
+        for k, v in obj.__dict__.items():
+            if (
+                v is not None
+                and k[0:2] != "__"
+                and not k.startswith(
+                    (
+                        "_module_dict",
+                        "_self_",
+                        "_args",
+                        "_kwargs",
+                    )
+                )
+            ):
+                ret = self._find_variables(
+                    obj=v,
+                    without_initialisation=without_initialisation,
+                    _visited=_visited,
+                    trainable=trainable,
+                )
+                if ret:
+                    vs[k[1:] if k[0] == "_" else k] = ret
+        return vs
+
+
+    def _find_buffers(self):
+        if hasattr(self, "_module_dict"):
+            for key, sub_module in self._module_dict.items():
+                if len(sub_module._buffers) > 0:
+                    self._buffers[key] = sub_module._buffers
+
+    def _build_and_return_v(self, *args, **kwargs):
+        if not self._built:
+            self.build(*args, **kwargs)
+        return self.v
+
+    def _build_and_return_buffers(self, *args, **kwargs):
+        if not self._built:
+            self.build(*args, **kwargs)
+        return self.buffers
+
+    def _wrap_call_methods(
+        self, keychain_mappings, /, *, key="", obj=None, _visited=None
+    ):
+        _visited = _visited or {}
+        if id(obj) in _visited or not isinstance(key, str):
+            return
+        _visited[id(obj)] = True
+        if isinstance(obj, (Layer, Model)) and obj is not self:
+            orig_key_chain = key[1:] if key[0] == "_" else key
+
+            obj.__call__ = self._fn_with_var_arg(
+                obj.__call__, self._extract_v, keychain_mappings, orig_key_chain
+            )
+            return
+        elif isinstance(obj, (list, tuple)):
+            for i, val in enumerate(obj):
+                self._wrap_call_methods(
+                    keychain_mappings,
+                    key=f"{key}/v{str(i)}",
+                    obj=val,
+                    _visited=_visited,
+                )
+            return
+        elif isinstance(obj, dict):
+            for k, val in obj.items():
+                k = f"{key}/{k}" if key != "" and isinstance(k, str) else k
+                self._wrap_call_methods(
+                    keychain_mappings, key=k, obj=val, _visited=_visited
+                )
+            return
+        for k, val in obj.module_dict.items():
+            if k.startswith(("__", "_self_")):
+                continue
+            k = f"{key}/{k}" if key != "" else k
+            if val is not None:
+                self._wrap_call_methods(
+                    keychain_mappings, key=k, obj=val, _visited=_visited
+                )
+        return
+
+    def _fn_with_var_arg_wrapper(
+        self, *a, fn, v_fn, keychain_mappings, orig_key_chain, **kw
+    ):
+        if "v" in kw:
+            del kw["v"]
+        v = v_fn(self.v, keychain_mappings, orig_key_chain)
+        return fn(*a, **kw, v=v)
+
+    def _fn_with_var_arg(self, fn, v_fn, /, keychain_mappings, orig_key_chain):
+        _fn_with_var_arg_wrapper = functools.partial(
+            self._fn_with_var_arg_wrapper,
+            fn=fn,
+            v_fn=v_fn,
+            keychain_mappings=keychain_mappings,
+            orig_key_chain=orig_key_chain,
+        )
+        _fn_with_var_arg_wrapper.wrapped = True
+        return _fn_with_var_arg_wrapper
+
+    def _call(self, *args, v=None, buffers=None, **kwargs):
+        if not self._built or not self.built:
+            if not self._built:
+                first_arr = self._get_first_array(*args, **kwargs)
+                self.build(
+                    *args,
+                    **kwargs,
+                    from_call=True,
+                    dtype=first_arr.dtype if first_arr is not None else tf.float32,
+                )
+
+            if not self.built:
+                # Don't use `keras` build method
+                if os.environ.get("USE_KERAS_BUILD", "False").lower() == "false":
+                    self.inputs = tf.nest.flatten(args)
+                else:
+                    input_shapes = self._get_input_shapes(*args)
+                    if len(input_shapes) == 0:
+                        input_shapes = tf.TensorShape(None)
+                    elif len(input_shapes) == 1:
+                        input_shapes = input_shapes[0]
+
+                super(Model, self).build(tf.TensorShape(None))  # noqa: UP008
+
+        # If `v` was provided, replace with the module's v
+        replace_v = False
+        if v is not None:
+            v_orig = self.v
+            self._v = v
+            replace_v = True
+
+        # If `buffers` were provided, replace with the module's buffers
+        replace_buffers = False
+        if buffers is not None:
+            buffers_orig = self.buffers
+            self._buffers = buffers
+            replace_buffers = True
+
+        if replace_v or replace_buffers:
+            # Call the forward pass
+            ret = super(Model, self).__call__(*args, **kwargs)  # noqa: UP008
+            # Replace v, buffers if needed
+            self._v = v_orig if replace_v else self._v
+            self._buffers = buffers_orig if replace_buffers else self._buffers
+            return ret
+        elif hasattr(self.__call__, "wrapped"):
+            return self.__call__(*args, **kwargs)
+        return super(Model, self).__call__(*args, **kwargs)  # noqa: UP008
+
 
     def __delattr__(self, name):
         if hasattr(self, name):
