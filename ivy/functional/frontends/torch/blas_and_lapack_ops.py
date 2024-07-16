@@ -193,7 +193,7 @@ def slogdet(A, *, out=None):
 @to_ivy_arrays_and_back
 def svd(input, some=True, compute_uv=True, *, out=None):
     retu = ivy.svd(input, full_matrices=not some, compute_uv=compute_uv)
-    results = namedtuple("svd", ['U', 'S', 'V'])
+    results = namedtuple("svd", 'U S V')
     if compute_uv:
         ret = results(retu[0], retu[1], ivy.adjoint(retu[2]))
     else:

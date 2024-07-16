@@ -414,7 +414,7 @@ def svd(
     x: torch.Tensor, /, *, full_matrices: bool = True, compute_uv: bool = True
 ) -> Union[torch.Tensor, Tuple[torch.Tensor, ...]]:
     if compute_uv:
-        results = namedtuple("svd", ['U', 'S', 'Vh'])
+        results = namedtuple("svd", 'U S Vh')
         U, D, VT = torch.linalg.svd(x, full_matrices=full_matrices)
         return results(U, D, VT)
     else:
