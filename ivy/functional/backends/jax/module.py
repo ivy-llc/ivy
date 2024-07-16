@@ -1048,7 +1048,6 @@ class Model(nn.Module, ModelHelpers):
                 else:
                     self._module_dict[key] = value._module_dict
 
-
     def __setattr__(self, name, value):
         if name in ["v", "buffers"]:
             name = "_" + name
@@ -1210,7 +1209,6 @@ class Model(nn.Module, ModelHelpers):
                     vs[k[1:] if k[0] == "_" else k] = ret
         return vs
 
-
     def _find_buffers(self):
         if hasattr(self, "_module_dict"):
             for key, sub_module in self._module_dict.items():
@@ -1334,7 +1332,6 @@ class Model(nn.Module, ModelHelpers):
         elif hasattr(self.__call__, "wrapped"):
             return self.__call__(*args, **kwargs)
         return super(Model, self).__call__(*args, **kwargs)  # noqa: UP008
-
 
     def __delattr__(self, name):
         if hasattr(self, name):
