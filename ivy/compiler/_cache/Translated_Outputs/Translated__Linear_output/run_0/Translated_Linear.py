@@ -2,8 +2,8 @@ import ivy.functional.frontends.torch as torch
 import ivy.functional.frontends.torch.nn as nn
 import ivy.functional.frontends.torch.nn.functional as F
 
-import typing
 import math
+import typing
 
 from .helpers import Translated__calculate_fan_in_and_fan_out
 from .helpers import Translated_kaiming_uniform_

@@ -1,5 +1,5 @@
-from typing import Protocol
 from typing import TypeVar
+from typing import Protocol
 
 _T_co = TypeVar("_T_co", covariant=True)
 
