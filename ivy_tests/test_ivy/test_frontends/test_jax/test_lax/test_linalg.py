@@ -206,7 +206,6 @@ def test_jax_svd(
     )
     if not compute_uv:
         if backend_fw == "torch":
-            frontend_ret = frontend_ret.detach()
             ret = ret.detach()
         assert_all_close(
             ret_np=np.asarray(frontend_ret, dtype=np.dtype(getattr(np, dtype[0]))),
@@ -216,6 +215,8 @@ def test_jax_svd(
             ground_truth_backend=frontend,
         )
     else:
+        if backend_fw == "torch":
+            ret = [x.detach() for x in ret]
         ret = [np.asarray(x) for x in ret]
         frontend_ret = [np.asarray(x, dtype=np.dtype(getattr(np, dtype[0]))) for x in frontend_ret]
         u, s, v = ret
@@ -224,7 +225,7 @@ def test_jax_svd(
             helpers.assert_all_close(
                 ret_np=frontend_u @ np.diag(frontend_s) @ frontend_v.T,
                 ret_from_gt_np=u @ np.diag(s) @ v.T,
-                atol=1e-03,
+                atol=1e-3,
                 backend=backend_fw,
                 ground_truth_backend=frontend,
             )
@@ -232,7 +233,7 @@ def test_jax_svd(
             helpers.assert_all_close(
                 ret_np=frontend_u[...,:frontend_s.shape[0]] @ np.diag(frontend_s) @ frontend_v.T,
                 ret_from_gt_np=u[...,:s.shape[0]] @ np.diag(s) @ v.T,
-                atol=1e-03,
+                atol=1e-3,
                 backend=backend_fw,
                 ground_truth_backend=frontend,
             )

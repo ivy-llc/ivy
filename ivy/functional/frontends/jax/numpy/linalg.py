@@ -123,7 +123,11 @@ def solve(a, b):
 def svd(a, /, *, full_matrices=True, compute_uv=True, hermitian=None):
     # TODO: handle hermitian
     ret = ivy.svd(a, full_matrices=full_matrices, compute_uv=compute_uv)
-    return tuple([ x.astype(ivy.float64) for x in ret])
+    if compute_uv:
+        return tuple(ret)
+    else:
+        return ivy.svdvals(a)
+
 
 
 @to_ivy_arrays_and_back

@@ -895,28 +895,34 @@ def test_jax_svd(
         full_matrices=full_matrices,
         compute_uv=compute_uv,
     )
-
     if compute_uv:
         ret = [np.asarray(x) for x in ret]
-        frontend_ret = [np.asarray(x) for x in frontend_ret]
-
+        frontend_ret = [np.asarray(x, dtype=np.dtype(getattr(np, dtype[0]))) for x in frontend_ret]
         u, s, vh = ret
         frontend_u, frontend_s, frontend_vh = frontend_ret
-
-        assert_all_close(
-            ret_np=u @ np.diag(s) @ vh,
-            ret_from_gt_np=frontend_u @ np.diag(frontend_s) @ frontend_vh,
-            rtol=1e-2,
-            atol=1e-2,
-            backend=backend_fw,
-            ground_truth_backend=frontend,
-        )
+        if full_matrices:
+            helpers.assert_all_close(
+                ret_np=frontend_u @ np.diag(frontend_s) @ frontend_vh,
+                ret_from_gt_np=u @ np.diag(s) @ vh,
+                atol=1e-3,
+                backend=backend_fw,
+                ground_truth_backend=frontend,
+            )
+        else:
+            helpers.assert_all_close(
+                ret_np=frontend_u[...,:frontend_s.shape[0]] @ np.diag(frontend_s) @ frontend_vh,
+                ret_from_gt_np=u[...,:s.shape[0]] @ np.diag(s) @ vh,
+                atol=1e-3,
+                backend=backend_fw,
+                ground_truth_backend=frontend,
+            )
     else:
+        if backend_fw == "torch":
+            ret = ret.detach()
         assert_all_close(
-            ret_np=ret,
-            ret_from_gt_np=frontend_ret,
-            rtol=1e-2,
-            atol=1e-2,
+            ret_np=np.asarray(frontend_ret, dtype=np.dtype(getattr(np, dtype[0]))),
+            ret_from_gt_np=np.asarray(ret),
+            atol=1e-3,
             backend=backend_fw,
             ground_truth_backend=frontend,
         )
