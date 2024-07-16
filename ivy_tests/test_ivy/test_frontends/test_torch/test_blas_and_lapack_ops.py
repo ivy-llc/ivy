@@ -883,24 +883,28 @@ def test_torch_svd(
         some=some,
         compute_uv=compute_uv,
     )
-    ret = [np.asarray(x) for x in ret]
-    frontend_ret = [np.asarray(x) for x in frontend_ret]
-
     u, s, v = ret
     frontend_u, frontend_s, frontend_v = frontend_ret
-
-    if not some:
+    if not compute_uv:
         helpers.assert_all_close(
-            ret_np=np.asarray(frontend_u @ np.diag(frontend_s) @ frontend_v.T, dtype=np.float32),
-            ret_from_gt_np=np.asarray(u @ np.diag(s) @ v.T, dtype=np.float32),
+            ret_np=frontend_s.numpy(),
+            ret_from_gt_np=s,
+            atol=1e-04,
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+        )
+    elif not some:
+        helpers.assert_all_close(
+            ret_np=np.asarray(frontend_u @ np.diag(frontend_s) @ frontend_v.T, dtype=np.float64),
+            ret_from_gt_np=np.asarray(u @ np.diag(s) @ v.T, dtype=np.float64),
             atol=1e-04,
             backend=backend_fw,
             ground_truth_backend=frontend,
         )
     else:
         helpers.assert_all_close(
-            ret_np=np.asarray(frontend_u[...,:frontend_s.shape[0]] @ np.diag(frontend_s) @ frontend_v.T, dtype=np.float32),
-            ret_from_gt_np=np.asarray(u[...,:s.shape[0]] @ np.diag(s) @ v.T, dtype=np.float32),
+            ret_np=np.asarray(frontend_u[...,:frontend_s.shape[0]] @ np.diag(frontend_s) @ frontend_v.T, dtype=np.float64),
+            ret_from_gt_np=np.asarray(u[...,:s.shape[0]] @ np.diag(s) @ v.T, dtype=np.float64),
             atol=1e-04,
             backend=backend_fw,
             ground_truth_backend=frontend,

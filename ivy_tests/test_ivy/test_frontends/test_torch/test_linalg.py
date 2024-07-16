@@ -1281,22 +1281,20 @@ def test_torch_svd(
         A=x,
         full_matrices=full_matrices,
     )
-    ret = [np.asarray(x) for x in ret]
-    frontend_ret = [np.asarray(x) for x in frontend_ret]
     u, s, vh = ret
     frontend_u, frontend_s, frontend_vh = frontend_ret
     if full_matrices:
         helpers.assert_all_close(
-            ret_np=np.asarray(frontend_u[...,:frontend_s.shape[0]] @ np.diag(frontend_s) @ frontend_vh, dtype=np.float32),
-            ret_from_gt_np=np.asarray(u[...,:s.shape[0]] @ np.diag(s) @ vh, dtype=np.float32),
+            ret_np=frontend_u[...,:frontend_s.shape[0]] @ np.diag(frontend_s) @ frontend_vh,
+            ret_from_gt_np=u[...,:s.shape[0]] @ np.diag(s) @ vh,
             atol=1e-04,
             backend=backend_fw,
             ground_truth_backend=frontend,
         )
     else:
         helpers.assert_all_close(
-            ret_np=np.asarray(frontend_u @ np.diag(frontend_s) @ frontend_vh, dtype=np.float32),
-            ret_from_gt_np=np.asarray(u @ np.diag(s) @ vh, dtype=np.float32),
+            ret_np=frontend_u @ np.diag(frontend_s) @ frontend_vh,
+            ret_from_gt_np=u @ np.diag(s) @ vh,
             atol=1e-04,
             backend=backend_fw,
             ground_truth_backend=frontend,
