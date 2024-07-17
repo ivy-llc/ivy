@@ -125,7 +125,9 @@ def gather(input, dim, index, *, sparse_grad=False, out=None):
 
     dim = dim % len(input.shape)
     all_indices = ivy.argwhere(ivy.full(index.shape, True))
-    gather_locations = ivy.reshape(index, [ivy.prod(ivy.array(index.shape), dtype=torch_frontend.int64)])
+    gather_locations = ivy.reshape(
+        index, [ivy.prod(ivy.array(index.shape), dtype=torch_frontend.int64)]
+    )
 
     gather_indices = []
     for axis in range(len(index.shape)):
