@@ -46,9 +46,11 @@ def tensorflow_default_uint_dtype(
 
             if tensorflow_nested_argwhere(
                 input,
-                lambda x: tensorflow_dtype(x) == "uint64"
-                if is_native(x)
-                else x > 9223372036854775807 and x != math.inf,
+                lambda x: (
+                    tensorflow_dtype(x) == "uint64"
+                    if is_native(x)
+                    else x > 9223372036854775807 and x != math.inf
+                ),
                 stop_after_n_found=1,
             ):
                 ret = tf.uint64

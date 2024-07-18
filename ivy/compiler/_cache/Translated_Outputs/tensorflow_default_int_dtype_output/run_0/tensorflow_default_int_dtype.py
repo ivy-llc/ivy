@@ -44,17 +44,21 @@ def tensorflow_default_int_dtype(
         elif isinstance(input, (list, tuple, dict)):
             if tensorflow_nested_argwhere(
                 input,
-                lambda x: tensorflow_dtype(x) == "uint64"
-                if tensorflow_is_array(x)
-                else x > 9223372036854775807 and x != math.inf,
+                lambda x: (
+                    tensorflow_dtype(x) == "uint64"
+                    if tensorflow_is_array(x)
+                    else x > 9223372036854775807 and x != math.inf
+                ),
                 stop_after_n_found=1,
             ):
                 ret = tf.uint64
             elif tensorflow_nested_argwhere(
                 input,
-                lambda x: tensorflow_dtype(x) == "int64"
-                if tensorflow_is_array(x)
-                else x > 2147483647 and x != math.inf,
+                lambda x: (
+                    tensorflow_dtype(x) == "int64"
+                    if tensorflow_is_array(x)
+                    else x > 2147483647 and x != math.inf
+                ),
                 stop_after_n_found=1,
             ):
                 ret = tf.int64

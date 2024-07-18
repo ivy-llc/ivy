@@ -133,10 +133,13 @@ class tensorflow__NormBase(tensorflow_keras_Layer):
                     state_dict = tensorflow_set_item(
                         state_dict,
                         num_batches_tracked_key,
-                        self.num_batches_tracked
-                        if self.num_batches_tracked is not None
-                        and self.num_batches_tracked.device != tensorflow_device("meta")
-                        else tensorflow_tensor(0, dtype=tf.int64),
+                        (
+                            self.num_batches_tracked
+                            if self.num_batches_tracked is not None
+                            and self.num_batches_tracked.device
+                            != tensorflow_device("meta")
+                            else tensorflow_tensor(0, dtype=tf.int64)
+                        ),
                     )
         super()._load_from_state_dict(
             state_dict,

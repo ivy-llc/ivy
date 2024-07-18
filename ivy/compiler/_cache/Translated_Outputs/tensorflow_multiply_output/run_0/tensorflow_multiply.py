@@ -21,9 +21,7 @@ def tensorflow_multiply(
         dtype = (
             x1.dtype
             if hasattr(x1, "dtype")
-            else x2.dtype
-            if hasattr(x2, "dtype")
-            else tensorflow_default_dtype()
+            else x2.dtype if hasattr(x2, "dtype") else tensorflow_default_dtype()
         )
         if not tensorflow_is_array(x1):
             x1 = tensorflow_asarray(x1, dtype=dtype)

@@ -43,21 +43,27 @@ def tensorflow_nested_map(
         to_ignore = to_ignore + (class_instance,)
     tuple_check_fn = tensorflow_default(
         _tuple_check_fn,
-        (lambda x_, t_: isinstance(x_, t_))
-        if include_derived["tuple"]
-        else lambda x_, t_: type(x_) is t_,
+        (
+            (lambda x_, t_: isinstance(x_, t_))
+            if include_derived["tuple"]
+            else lambda x_, t_: type(x_) is t_
+        ),
     )
     list_check_fn = tensorflow_default(
         _list_check_fn,
-        (lambda x_, t_: isinstance(x_, t_))
-        if include_derived["list"]
-        else lambda x_, t_: type(x_) is t_,
+        (
+            (lambda x_, t_: isinstance(x_, t_))
+            if include_derived["list"]
+            else lambda x_, t_: type(x_) is t_
+        ),
     )
     dict_check_fn = tensorflow_default(
         _dict_check_fn,
-        (lambda x_, t_: isinstance(x_, t_))
-        if include_derived["dict"]
-        else lambda x_, t_: type(x_) is t_,
+        (
+            (lambda x_, t_: isinstance(x_, t_))
+            if include_derived["dict"]
+            else lambda x_, t_: type(x_) is t_
+        ),
     )
     if tuple_check_fn(x, tuple) and not isinstance(x, to_ignore):
         ret_list = [

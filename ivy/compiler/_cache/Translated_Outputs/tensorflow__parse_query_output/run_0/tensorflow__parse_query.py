@@ -160,9 +160,7 @@ def tensorflow__parse_query(query, x_shape, scatter=False):
             (
                 tensorflow_reshape_1(arr, (-1,))
                 if len(arr.shape) > 1
-                else tensorflow_expand_dims(arr)
-                if not len(arr.shape)
-                else arr
+                else tensorflow_expand_dims(arr) if not len(arr.shape) else arr
             )
             for arr in array_queries
         ]

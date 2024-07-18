@@ -31,7 +31,5 @@ def tensorflow_default(
     return (
         x
         if tensorflow_exists(x)
-        else default_val()
-        if default_callable
-        else default_val
+        else default_val() if default_callable else default_val
     )
