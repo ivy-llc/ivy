@@ -2,7 +2,7 @@
 from __future__ import annotations
 import re
 import jax
-from flax import nnx as nn
+from flax.experimental import nnx as nn
 import jax.tree_util as tree
 import jax.numpy as jnp
 import functools
