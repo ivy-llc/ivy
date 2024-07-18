@@ -2016,16 +2016,48 @@ def _output_ceil_shape(w, f, p, s):
     return math.ceil((w - f + p) / s) + 1
 
 
-def _padding_ceil_mode(w, f, p, s, return_added_padding=False):
-    remaining_pixels = (w - f + p[0]) % s
+def _padding_ceil_mode(
+    w: int,
+    f: int,
+    p: Tuple[int],
+    s: int,
+    return_added_padding: Optional[bool] = False,
+) -> Union[Tuple[int], Tuple[Tuple[int], int]]:
+    """Adjust padding to ensure the output size is computed using ceiling mode.
+
+    Parameters
+    ----------
+        w
+            The width or height (i.e., spatial dimension) of the array
+        f
+            The size of the kernel/filter
+        p
+            A tuple of two integers representing the padding before (left or top) and after (right or bottom) the input array
+        s
+            The stride
+        return_added_padding
+            If True, the function also returns the amount of padding added to the original padding
+
+    Returns
+    -------
+        p
+            The adjusted padding values as a tuple (left/top padding, right/bottom padding)
+        added_padding (optional)
+            The amount of padding added to the original right/bottom padding to ensure correct output size when `return_added_padding` is True
+    """
+    remaining_pixels = (w - f + sum(p)) % s
     added_padding = 0
+    # if the additional pixels potentially captured thanks to ceil mode
+    # are all in the padding then no padding is added
+    if remaining_pixels <= p[1] and s + p[1] - remaining_pixels >= f:
+        return (p, added_padding) if return_added_padding else p
     if s > 1 and remaining_pixels != 0 and f > 1:
         input_size = w + sum(p)
         # making sure that the remaining pixels are supposed
         # to be covered by the window
         # they won't be covered if stride is big enough to skip them
         if input_size - remaining_pixels - (f - 1) + s > input_size:
-            return p
+            return (p, added_padding) if return_added_padding else p
         output_shape = _output_ceil_shape(
             w,
             f,

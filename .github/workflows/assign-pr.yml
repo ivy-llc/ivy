@@ -14,7 +14,7 @@ jobs:
 
     - name: Assign PR
       env:
-        GITHUB_TOKEN: ${{ secrets.DEV_BOT_GENERAL_PAT }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
         curl -s -X POST \

@@ -1,5 +1,5 @@
 # global
-from hypothesis import strategies as st
+from hypothesis import assume, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -495,6 +495,8 @@ def test_torch_max_pool2d(
     dtype, x, kernel, stride, padding, dilation = x_k_s_p
     if not isinstance(padding, int):
         padding = [pad[0] for pad in padding]
+    # TODO: Remove this once the paddle backend supports dilation
+    assume(not (backend_fw == "paddle" and max(list(dilation)) > 1))
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
