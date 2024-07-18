@@ -124,23 +124,29 @@ def test_numpy_svd(
     if compute_uv:
         ret = [np.asarray(x) for x in ret]
         frontend_ret = [np.asarray(x) for x in frontend_ret]
-        u, s, v = ret
-        frontend_u, frontend_s, frontend_v = frontend_ret
-
-        helpers.assert_all_close(
-            ret_np=u @ np.diag(s) @ v.T,
-            ret_from_gt_np=frontend_u @ np.diag(frontend_s) @ frontend_v.T,
-            rtol=1e-2,
-            atol=1e-2,
-            backend=backend_fw,
-            ground_truth_backend=frontend,
-        )
+        u, s, vh = ret
+        frontend_u, frontend_s, frontend_vh = frontend_ret
+        if not full_matrices:
+            helpers.assert_all_close(
+                ret_np=frontend_u @ np.diag(frontend_s) @ frontend_vh,
+                ret_from_gt_np=u @ np.diag(s) @ vh,
+                atol=1e-3,
+                backend=backend_fw,
+                ground_truth_backend=frontend,
+            )
+        else:
+            helpers.assert_all_close(
+                ret_np=frontend_u[...,:frontend_s.shape[0]] @ np.diag(frontend_s) @ frontend_vh,
+                ret_from_gt_np=u[...,:s.shape[0]] @ np.diag(s) @ vh,
+                atol=1e-3,
+                backend=backend_fw,
+                ground_truth_backend=frontend,
+            )
     else:
         helpers.assert_all_close(
-            ret_np=ret.S,
-            ret_from_gt_np=frontend_ret,
-            rtol=1e-2,
-            atol=1e-2,
+            ret_np=frontend_ret,
+            ret_from_gt_np=ret,
+            atol=1e-3,
             backend=backend_fw,
             ground_truth_backend=frontend,
         )

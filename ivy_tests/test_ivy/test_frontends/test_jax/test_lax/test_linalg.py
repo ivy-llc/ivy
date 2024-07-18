@@ -221,7 +221,7 @@ def test_jax_svd(
         frontend_ret = [np.asarray(x, dtype=np.dtype(getattr(np, dtype[0]))) for x in frontend_ret]
         u, s, v = ret
         frontend_u, frontend_s, frontend_v = frontend_ret
-        if full_matrices:
+        if not full_matrices:
             helpers.assert_all_close(
                 ret_np=frontend_u @ np.diag(frontend_s) @ frontend_v.T,
                 ret_from_gt_np=u @ np.diag(s) @ v.T,
