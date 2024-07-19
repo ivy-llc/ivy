@@ -11,7 +11,7 @@ def ivy__reverse_repeat_tuple(t, n):
     return tuple(x for x in reversed(t) for _ in range(n))
 
 
-def ivy_empty(
+def ivy_empty_frnt(
     *args,
     size=None,
     out=None,
@@ -35,11 +35,11 @@ def ivy_empty(
     return ivy.empty(shape=size, dtype=dtype, device=device, out=out)
 
 
-def ivy_dim(arr):
+def ivy_dim_frnt_(arr):
     return arr.ndim
 
 
-def ivy_size(arr, dim=None):
+def ivy_size_frnt_(arr, dim=None):
     shape = arr.shape
     if dim is None:
         return shape
@@ -52,15 +52,15 @@ def ivy_size(arr, dim=None):
 
 
 def ivy__calculate_fan_in_and_fan_out(tensor):
-    dimensions = ivy_dim(tensor)
+    dimensions = ivy_dim_frnt_(tensor)
     if dimensions < 2:
         raise ValueError(
             "Fan in and fan out can not be computed for tensor with fewer than 2 dimensions"
         )
-    num_input_fmaps = ivy_size(tensor, 1)
-    num_output_fmaps = ivy_size(tensor, 0)
+    num_input_fmaps = ivy_size_frnt_(tensor, 1)
+    num_output_fmaps = ivy_size_frnt_(tensor, 0)
     receptive_field_size = 1
-    if ivy_dim(tensor) > 2:
+    if ivy_dim_frnt_(tensor) > 2:
         for s in tensor.shape[2:]:
             receptive_field_size *= s
     fan_in = num_input_fmaps * receptive_field_size
@@ -111,7 +111,7 @@ def ivy_calculate_gain(nonlinearity, param=None):
         raise ValueError(f"Unsupported nonlinearity {nonlinearity}")
 
 
-def ivy_uniform_(arr, from_=0, to=1, *, generator=None):
+def ivy_uniform__frnt_(arr, from_=0, to=1, *, generator=None):
     ret = ivy.random_uniform(
         low=from_, high=to, shape=arr.shape, dtype=arr.dtype, seed=generator
     )
@@ -129,14 +129,14 @@ def ivy_kaiming_uniform_(
     gain = ivy_calculate_gain(nonlinearity, a)
     std = gain / math.sqrt(fan)
     bound = math.sqrt(3.0) * std
-    return ivy_uniform_(tensor, -bound, bound, generator=generator)
+    return ivy_uniform__frnt_(tensor, -bound, bound, generator=generator)
 
 
 def ivy__no_grad_uniform_(tensor, a, b, generator=None):
-    return ivy_uniform_(tensor, a, b, generator=generator)
+    return ivy_uniform__frnt_(tensor, a, b, generator=generator)
 
 
-def ivy_uniform__1(tensor, a=0.0, b=1.0, generator=None):
+def ivy_uniform_(tensor, a=0.0, b=1.0, generator=None):
     return ivy__no_grad_uniform_(tensor, a, b, generator)
 
 
@@ -159,7 +159,7 @@ def ivy_handle_methods(fn):
 
 
 @ivy_handle_methods
-def ivy_split_1(tensor, split_size_or_sections, dim=0):
+def ivy_split_frnt(tensor, split_size_or_sections, dim=0):
     if isinstance(split_size_or_sections, int):
         split_size = split_size_or_sections
         split_size_or_sections = [split_size] * (tensor.shape[dim] // split_size)
@@ -176,18 +176,18 @@ def ivy_split_1(tensor, split_size_or_sections, dim=0):
 
 
 @ivy_handle_methods
-def ivy_split(arr, split_size, dim=0):
-    return ivy_split_1(arr, split_size, dim)
+def ivy_split_frnt_(arr, split_size, dim=0):
+    return ivy_split_frnt(arr, split_size, dim)
 
 
 @ivy_handle_methods
-def ivy_add_1(input, other, *, alpha=1, out=None):
+def ivy_add_frnt(input, other, *, alpha=1, out=None):
     return ivy.add(input, other, alpha=alpha, out=out)
 
 
 @ivy_handle_methods
-def ivy_add(arr, other, *, alpha=1):
-    return ivy_add_1(arr, other, alpha=alpha)
+def ivy_add_frnt_(arr, other, *, alpha=1):
+    return ivy_add_frnt(arr, other, alpha=alpha)
 
 
 def ivy_parse(x):
@@ -197,7 +197,7 @@ def ivy_parse(x):
     return tuple(repeat(x, n))
 
 
-def ivy__conv(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
+def ivy__conv_frnt(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     dims = len(input.shape) - 2
     if isinstance(padding, str):
         padding = padding.upper()
@@ -220,8 +220,10 @@ def ivy__conv(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=
     return ret
 
 
-def ivy_conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
-    return ivy__conv(
+def ivy_conv2d_frnt(
+    input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1
+):
+    return ivy__conv_frnt(
         input,
         weight,
         bias=bias,
@@ -232,7 +234,7 @@ def ivy_conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups
     )
 
 
-def ivy__handle_padding_shape(padding, n, mode):
+def ivy__handle_padding_shape_frnt(padding, n, mode):
     padding = tuple(
         [
             (padding[i * 2], padding[i * 2 + 1])
@@ -248,7 +250,7 @@ def ivy__handle_padding_shape(padding, n, mode):
     return padding
 
 
-def ivy_pad(input, pad, mode="constant", value=0):
+def ivy_pad_frnt(input, pad, mode="constant", value=0):
     if any([(pad_value < 0) for pad_value in pad]):
         pad = list(pad)
         slices = []
@@ -277,5 +279,5 @@ def ivy_pad(input, pad, mode="constant", value=0):
     }
     if mode not in mode_dict:
         raise ValueError(f"Unsupported padding mode: {mode}")
-    pad = ivy__handle_padding_shape(pad, len(input.shape), mode)
+    pad = ivy__handle_padding_shape_frnt(pad, len(input.shape), mode)
     return ivy.pad(input, pad, mode=mode_dict[mode], constant_values=value)

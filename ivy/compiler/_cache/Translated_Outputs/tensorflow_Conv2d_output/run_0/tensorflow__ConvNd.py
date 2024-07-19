@@ -7,16 +7,16 @@ from typing import Optional
 
 from .tensorflow__stateful import Layer as tensorflow_keras_Layer
 from .tensorflow__helpers import tensorflow__calculate_fan_in_and_fan_out
-from .tensorflow__helpers import tensorflow__is_variable
+from .tensorflow__helpers import tensorflow__is_variable_bknd
 from .tensorflow__helpers import tensorflow__reverse_repeat_tuple
-from .tensorflow__helpers import tensorflow_add
-from .tensorflow__helpers import tensorflow_default
-from .tensorflow__helpers import tensorflow_empty_1
+from .tensorflow__helpers import tensorflow_add_frnt_
+from .tensorflow__helpers import tensorflow_default_bknd
+from .tensorflow__helpers import tensorflow_empty_frnt
 from .tensorflow__helpers import tensorflow_kaiming_uniform_
-from .tensorflow__helpers import tensorflow_set_item
-from .tensorflow__helpers import tensorflow_split_2
+from .tensorflow__helpers import tensorflow_set_item_bknd
+from .tensorflow__helpers import tensorflow_split_frnt_
 from .tensorflow__helpers import tensorflow_store_config_info
-from .tensorflow__helpers import tensorflow_uniform__1
+from .tensorflow__helpers import tensorflow_uniform_
 
 
 class tensorflow__ConvNd(tensorflow_keras_Layer):
@@ -125,14 +125,18 @@ class tensorflow__ConvNd(tensorflow_keras_Layer):
                     total_padding = d * (k - 1)
                     left_pad = total_padding // 2
                     with tensorflow.name_scope("_reversed_padding_repeated_twice"):
-                        self._reversed_padding_repeated_twice = tensorflow_set_item(
-                            self._reversed_padding_repeated_twice, 2 * i, left_pad
+                        self._reversed_padding_repeated_twice = (
+                            tensorflow_set_item_bknd(
+                                self._reversed_padding_repeated_twice, 2 * i, left_pad
+                            )
                         )
                     with tensorflow.name_scope("_reversed_padding_repeated_twice"):
-                        self._reversed_padding_repeated_twice = tensorflow_set_item(
-                            self._reversed_padding_repeated_twice,
-                            2 * i + 1,
-                            total_padding - left_pad,
+                        self._reversed_padding_repeated_twice = (
+                            tensorflow_set_item_bknd(
+                                self._reversed_padding_repeated_twice,
+                                2 * i + 1,
+                                total_padding - left_pad,
+                            )
                         )
         else:
             with tensorflow.name_scope("_reversed_padding_repeated_twice"):
@@ -141,23 +145,23 @@ class tensorflow__ConvNd(tensorflow_keras_Layer):
                 )
         if transposed:
             self.weight = tensorflow.Variable(
-                tensorflow_empty_1(
-                    (*kernel_size, out_channels // groups, in_channels),
+                tensorflow_empty_frnt(
+                    (in_channels, out_channels // groups, *kernel_size),
                     **factory_kwargs,
                 ),
                 name="weight",
             )
         else:
             self.weight = tensorflow.Variable(
-                tensorflow_empty_1(
-                    (*kernel_size, in_channels // groups, out_channels),
+                tensorflow_empty_frnt(
+                    (out_channels, in_channels // groups, *kernel_size),
                     **factory_kwargs,
                 ),
                 name="weight",
             )
         if bias:
             self.bias = tensorflow.Variable(
-                tensorflow_empty_1(out_channels, **factory_kwargs), name="bias"
+                tensorflow_empty_frnt(out_channels, **factory_kwargs), name="bias"
             )
         else:
             self.register_parameter("bias", None)
@@ -170,7 +174,7 @@ class tensorflow__ConvNd(tensorflow_keras_Layer):
                 fan_in, _ = tensorflow__calculate_fan_in_and_fan_out(self.weight)
             if fan_in != 0:
                 bound = 1 / math.sqrt(fan_in)
-                tensorflow_uniform__1(self.bias, -bound, bound)
+                tensorflow_uniform_(self.bias, -bound, bound)
 
     def extra_repr(self):
         s = "{in_channels}, {out_channels}, kernel_size={kernel_size}, stride={stride}"
@@ -257,7 +261,7 @@ class tensorflow__ConvNd(tensorflow_keras_Layer):
         extra_repr = self._extra_repr()
         if extra_repr:
             with tensorflow.name_scope("extra_lines"):
-                extra_lines = tensorflow_split_2(extra_repr, "\n")
+                extra_lines = tensorflow_split_frnt_(extra_repr, "\n")
         child_lines = []
         for key, module in self._module_dict.items():
             mod_str = repr(module)
@@ -360,19 +364,19 @@ class tensorflow__ConvNd(tensorflow_keras_Layer):
                 if v is None or id(v) in memo:
                     continue
                 if remove_duplicate:
-                    tensorflow_add(memo, id(v))
+                    tensorflow_add_frnt_(memo, id(v))
                 name = module_prefix + ("." if module_prefix else "") + k
                 yield name, v
 
     def _replace_update_v(self, new_v, native=None):
         with tensorflow.name_scope("native"):
-            native = tensorflow_default(native, self)
+            native = tensorflow_default_bknd(native, self)
         for k, v in new_v.items():
             if isinstance(v, dict):
                 native.module_dict[k] = self._replace_update_v(v, native.module_dict[k])
             elif isinstance(v, tensorflow.Variable):
                 native.__setattr__(k, v)
-            elif tensorflow__is_variable(v):
+            elif tensorflow__is_variable_bknd(v):
                 native.__setattr__(k, tensorflow.Variable(v))
             elif isinstance(v, tensorflow.Variable):
                 native.__setattr__(k, tensorflow.Variable(v))
@@ -384,13 +388,13 @@ class tensorflow__ConvNd(tensorflow_keras_Layer):
 
     def _update_v(self, new_v, native=None):
         with tensorflow.name_scope("native"):
-            native = tensorflow_default(native, self)
+            native = tensorflow_default_bknd(native, self)
         for k, v in new_v.items():
             if isinstance(v, dict):
                 native.module_dict[k] = self._replace_update_v(v, native.module_dict[k])
             elif isinstance(v, tensorflow.Variable):
                 native.__setattr__(k, v)
-            elif tensorflow__is_variable(v):
+            elif tensorflow__is_variable_bknd(v):
                 native.__setattr__(k, tensorflow.Variable(v))
             elif isinstance(v, tensorflow.Variable):
                 native.__setattr__(k, tensorflow.Variable(v))
@@ -444,7 +448,7 @@ class tensorflow__ConvNd(tensorflow_keras_Layer):
     def get_submodule(self, target):
         if target == "":
             return self
-        atoms: typing.Any = tensorflow_split_2(target, ".")
+        atoms: typing.Any = tensorflow_split_frnt_(target, ".")
         mod: typing.Any = self
         for item in atoms:
             if not hasattr(mod, item):
@@ -481,7 +485,7 @@ class tensorflow__ConvNd(tensorflow_keras_Layer):
         memo = set()
         for name, module in self._module_dict.items():
             if module is not None and id(module) not in memo:
-                tensorflow_add(memo, id(module))
+                tensorflow_add_frnt_(memo, id(module))
                 yield name, module
 
     def named_modules(self, memo=None, prefix="", remove_duplicate=True):
@@ -493,7 +497,7 @@ class tensorflow__ConvNd(tensorflow_keras_Layer):
             memo = set()
         if id(self) not in memo:
             if remove_duplicate:
-                tensorflow_add(memo, id(self))
+                tensorflow_add_frnt_(memo, id(self))
             yield prefix, self
             for name, module in self._module_dict.items():
                 if module is None:

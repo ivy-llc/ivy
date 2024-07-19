@@ -47,11 +47,9 @@ class Translated__BatchNorm(Translated__NormBase):
         """
         return F.batch_norm(
             input,
-            (
-                self.running_mean
-                if not self.training or self.track_running_stats
-                else None
-            ),
+            self.running_mean
+            if not self.training or self.track_running_stats
+            else None,
             self.running_var if not self.training or self.track_running_stats else None,
             self.weight,
             self.bias,

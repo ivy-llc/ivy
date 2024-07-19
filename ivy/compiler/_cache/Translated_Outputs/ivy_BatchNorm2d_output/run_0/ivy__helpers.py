@@ -3,7 +3,7 @@ import ivy
 import re
 
 
-def ivy_empty(
+def ivy_empty_frnt(
     *args,
     size=None,
     out=None,
@@ -27,7 +27,9 @@ def ivy_empty(
     return ivy.empty(shape=size, dtype=dtype, device=device, out=out)
 
 
-def ivy_zeros(*args, size=None, out=None, dtype=None, device=None, requires_grad=False):
+def ivy_zeros_frnt(
+    *args, size=None, out=None, dtype=None, device=None, requires_grad=False
+):
     if args and size:
         raise TypeError("zeros() got multiple values for argument 'shape'")
     if size is None:
@@ -39,7 +41,9 @@ def ivy_zeros(*args, size=None, out=None, dtype=None, device=None, requires_grad
     return ivy.zeros(shape=size, dtype=dtype, device=device, out=out)
 
 
-def ivy_ones(*args, size=None, out=None, dtype=None, device=None, requires_grad=False):
+def ivy_ones_frnt(
+    *args, size=None, out=None, dtype=None, device=None, requires_grad=False
+):
     if args and size:
         raise TypeError("ones() got multiple values for argument 'shape'")
     if size is None:
@@ -51,11 +55,13 @@ def ivy_ones(*args, size=None, out=None, dtype=None, device=None, requires_grad=
     return ivy.ones(shape=size, dtype=dtype, device=device, out=out)
 
 
-def ivy_tensor(data, *, dtype=None, device=None, requires_grad=False, pin_memory=False):
+def ivy_tensor_frnt(
+    data, *, dtype=None, device=None, requires_grad=False, pin_memory=False
+):
     return ivy.array(data, dtype=dtype, device=device)
 
 
-def ivy_zeros_like(
+def ivy_zeros_like_frnt(
     input,
     *,
     dtype=None,
@@ -68,13 +74,13 @@ def ivy_zeros_like(
     return ret
 
 
-def ivy_zero_(arr):
-    ret = ivy_zeros_like(arr)
+def ivy_zero__frnt_(arr):
+    ret = ivy_zeros_like_frnt(arr)
     arr = ivy.inplace_update(arr, ret).data
     return arr
 
 
-def ivy_full_like(
+def ivy_full_like_frnt(
     input,
     fill_value,
     *,
@@ -88,14 +94,14 @@ def ivy_full_like(
     return ivy.full_like(input, fill_value, dtype=dtype, device=device)
 
 
-def ivy_fill_(arr, value):
-    ret = ivy_full_like(arr, value, dtype=arr.dtype, device=arr.device)
+def ivy_fill__frnt_(arr, value):
+    ret = ivy_full_like_frnt(arr, value, dtype=arr.dtype, device=arr.device)
     arr = ivy.inplace_update(arr, ret).data
     return arr
 
 
 def ivy__no_grad_fill_(tensor, val):
-    return ivy_fill_(tensor, val)
+    return ivy_fill__frnt_(tensor, val)
 
 
 def ivy_ones_(tensor):
@@ -103,14 +109,14 @@ def ivy_ones_(tensor):
 
 
 def ivy__no_grad_zero_(tensor):
-    return ivy_zero_(tensor)
+    return ivy_zero__frnt_(tensor)
 
 
 def ivy_zeros_(tensor):
     return ivy__no_grad_zero_(tensor)
 
 
-def ivy_device(dev):
+def ivy_device_frnt(dev):
     return ivy.default_device(dev)
 
 
@@ -133,7 +139,7 @@ def ivy_handle_methods(fn):
 
 
 @ivy_handle_methods
-def ivy_split_1(tensor, split_size_or_sections, dim=0):
+def ivy_split_frnt(tensor, split_size_or_sections, dim=0):
     if isinstance(split_size_or_sections, int):
         split_size = split_size_or_sections
         split_size_or_sections = [split_size] * (tensor.shape[dim] // split_size)
@@ -150,26 +156,26 @@ def ivy_split_1(tensor, split_size_or_sections, dim=0):
 
 
 @ivy_handle_methods
-def ivy_split(arr, split_size, dim=0):
-    return ivy_split_1(arr, split_size, dim)
+def ivy_split_frnt_(arr, split_size, dim=0):
+    return ivy_split_frnt(arr, split_size, dim)
 
 
 @ivy_handle_methods
-def ivy_add_1(input, other, *, alpha=1, out=None):
+def ivy_add_frnt(input, other, *, alpha=1, out=None):
     return ivy.add(input, other, alpha=alpha, out=out)
 
 
 @ivy_handle_methods
-def ivy_add(arr, other, *, alpha=1):
-    return ivy_add_1(arr, other, alpha=alpha)
+def ivy_add_frnt_(arr, other, *, alpha=1):
+    return ivy_add_frnt(arr, other, alpha=alpha)
 
 
-def ivy_add_(arr, other, *, alpha=1):
-    arr = ivy_add(arr, other, alpha=alpha)
+def ivy_add__frnt_(arr, other, *, alpha=1):
+    arr = ivy_add_frnt_(arr, other, alpha=alpha)
     return arr
 
 
-def ivy_batch_norm(
+def ivy_batch_norm_frnt(
     input,
     running_mean,
     running_var,
@@ -190,8 +196,11 @@ def ivy_batch_norm(
         momentum=momentum,
         data_format="NSC",
     )
-    return normalized, mean, var
+    if training:
+        ivy.inplace_update(running_mean, mean).data
+        ivy.inplace_update(running_var, var).data
+    return normalized
 
 
-def ivy_dim(arr):
+def ivy_dim_frnt_(arr):
     return arr.ndim

@@ -1,17 +1,21 @@
+import tensorflow
 import tensorflow as tf
 
-from .tensorflow__helpers import tensorflow_ones_1
+from typing import Optional
+from typing import Union
+from typing import Sequence
+
+from .tensorflow__helpers import tensorflow_handle_array_like_without_promotion
+from .tensorflow__helpers import tensorflow_infer_dtype
 
 
+@tensorflow_infer_dtype
+@tensorflow_handle_array_like_without_promotion
 def tensorflow_ones(
-    *args, size=None, out=None, dtype=None, device=None, requires_grad=False
+    shape: Union[tf.TensorShape, Sequence[int]],
+    *,
+    dtype: tensorflow.DType,
+    device: Optional[str] = None,
+    out: Optional[Union[tensorflow.Tensor, tensorflow.Variable]] = None,
 ):
-    if args and size:
-        raise TypeError("ones() got multiple values for argument 'shape'")
-    if size is None:
-        size = (
-            args[0]
-            if isinstance(args[0], (tuple, list, tuple, tf.TensorShape))
-            else args
-        )
-    return tensorflow_ones_1(shape=size, dtype=dtype, device=device, out=out)
+    return tensorflow.ones(shape, dtype=tensorflow.float32)

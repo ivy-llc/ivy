@@ -1,14 +1,20 @@
-from .tensorflow__helpers import tensorflow_zeros_like_1
+import tensorflow
+
+from typing import Union
+from typing import Optional
+
+from .tensorflow__helpers import tensorflow_handle_array_like_without_promotion
+from .tensorflow__helpers import tensorflow_infer_dtype
 
 
+@tensorflow_infer_dtype
+@tensorflow_handle_array_like_without_promotion
 def tensorflow_zeros_like(
-    input,
+    x: Union[tensorflow.Tensor, tensorflow.Variable],
+    /,
     *,
-    dtype=None,
-    layout=None,
-    device=None,
-    requires_grad=False,
-    memory_format=None,
+    dtype: tensorflow.DType,
+    device: Optional[str] = None,
+    out: Optional[Union[tensorflow.Tensor, tensorflow.Variable]] = None,
 ):
-    ret = tensorflow_zeros_like_1(input, dtype=dtype, device=device)
-    return ret
+    return tensorflow.zeros_like(x, dtype=dtype)

@@ -6,12 +6,12 @@ import typing
 import math
 
 from .ivy__helpers import ivy__calculate_fan_in_and_fan_out
-from .ivy__helpers import ivy_add
-from .ivy__helpers import ivy_empty
+from .ivy__helpers import ivy_add_frnt_
+from .ivy__helpers import ivy_empty_frnt
 from .ivy__helpers import ivy_kaiming_uniform_
-from .ivy__helpers import ivy_linear
-from .ivy__helpers import ivy_split
-from .ivy__helpers import ivy_uniform__1
+from .ivy__helpers import ivy_linear_frnt
+from .ivy__helpers import ivy_split_frnt_
+from .ivy__helpers import ivy_uniform_
 
 
 class ivy_Linear(ivy.Module):
@@ -35,10 +35,10 @@ class ivy_Linear(ivy.Module):
         self.in_features = in_features
         self.out_features = out_features
         self.weight = ivy.Array(
-            ivy_empty((out_features, in_features), **factory_kwargs)
+            ivy_empty_frnt((out_features, in_features), **factory_kwargs)
         )
         if bias:
-            self.bias = ivy.Array(ivy_empty(out_features, **factory_kwargs))
+            self.bias = ivy.Array(ivy_empty_frnt(out_features, **factory_kwargs))
         else:
             self.register_parameter("bias", None)
         self.reset_parameters()
@@ -48,10 +48,10 @@ class ivy_Linear(ivy.Module):
         if self.bias is not None:
             fan_in, _ = ivy__calculate_fan_in_and_fan_out(self.weight)
             bound = 1 / math.sqrt(fan_in) if fan_in > 0 else 0
-            ivy_uniform__1(self.bias, -bound, bound)
+            ivy_uniform_(self.bias, -bound, bound)
 
     def forward(self, input):
-        return ivy_linear(input, self.weight, self.bias)
+        return ivy_linear_frnt(input, self.weight, self.bias)
 
     def extra_repr(self):
         return f"in_features={self.in_features}, out_features={self.out_features}, bias={self.bias is not None}"
@@ -114,7 +114,7 @@ class ivy_Linear(ivy.Module):
         extra_lines = []
         extra_repr = self._extra_repr()
         if extra_repr:
-            extra_lines = ivy_split(extra_repr, "\n")
+            extra_lines = ivy_split_frnt_(extra_repr, "\n")
         child_lines = []
         for key, module in self._module_dict.items():
             mod_str = repr(module)
@@ -219,7 +219,7 @@ class ivy_Linear(ivy.Module):
                 if v is None or id(v) in memo:
                     continue
                 if remove_duplicate:
-                    ivy_add(memo, id(v))
+                    ivy_add_frnt_(memo, id(v))
                 name = module_prefix + ("." if module_prefix else "") + k
                 yield name, v
 
@@ -295,7 +295,7 @@ class ivy_Linear(ivy.Module):
     def get_submodule(self, target):
         if target == "":
             return self
-        atoms: typing.Any = ivy_split(target, ".")
+        atoms: typing.Any = ivy_split_frnt_(target, ".")
         mod: typing.Any = self
         for item in atoms:
             if not hasattr(mod, item):
@@ -332,7 +332,7 @@ class ivy_Linear(ivy.Module):
         memo = set()
         for name, module in self._module_dict.items():
             if module is not None and id(module) not in memo:
-                ivy_add(memo, id(module))
+                ivy_add_frnt_(memo, id(module))
                 yield name, module
 
     def named_modules(self, memo=None, prefix="", remove_duplicate=True):
@@ -344,7 +344,7 @@ class ivy_Linear(ivy.Module):
             memo = set()
         if id(self) not in memo:
             if remove_duplicate:
-                ivy_add(memo, id(self))
+                ivy_add_frnt_(memo, id(self))
             yield prefix, self
             for name, module in self._module_dict.items():
                 if module is None:

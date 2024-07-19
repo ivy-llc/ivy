@@ -1,8 +1,8 @@
 import tensorflow
 
 from .tensorflow__NormBase import tensorflow__NormBase
-from .tensorflow__helpers import tensorflow_add_
-from .tensorflow__helpers import tensorflow_batch_norm
+from .tensorflow__helpers import tensorflow_add__frnt_
+from .tensorflow__helpers import tensorflow_batch_norm_frnt
 from .tensorflow__helpers import tensorflow_handle_transpose_in_input_and_output
 from .tensorflow__helpers import tensorflow_store_config_info
 
@@ -33,10 +33,7 @@ class tensorflow__BatchNorm(tensorflow__NormBase):
             exponential_average_factor = self.momentum
         if self.training and self.track_running_stats:
             if self.num_batches_tracked is not None:
-                with tensorflow.name_scope("num_batches_tracked"):
-                    self.num_batches_tracked = tensorflow_add_(
-                        self.num_batches_tracked, 1
-                    )
+                tensorflow_add__frnt_(self.num_batches_tracked, 1)
                 if self.momentum is None:
                     exponential_average_factor = 1.0 / float(self.num_batches_tracked)
                 else:
@@ -55,22 +52,20 @@ class tensorflow__BatchNorm(tensorflow__NormBase):
         used for normalization (i.e. in eval mode when buffers are not None).
         """
         with tensorflow.name_scope("running_mean, selfrunning_var)"):
-            normalized, self.running_mean, self.running_var = tensorflow_batch_norm(
-                input,
-                (
+            normalized, self.running_mean, self.running_var = (
+                tensorflow_batch_norm_frnt(
+                    input,
                     self.running_mean
                     if not self.training or self.track_running_stats
-                    else None
-                ),
-                (
+                    else None,
                     self.running_var
                     if not self.training or self.track_running_stats
-                    else None
-                ),
-                self.weight,
-                self.bias,
-                bn_training,
-                exponential_average_factor,
-                self.eps,
+                    else None,
+                    self.weight,
+                    self.bias,
+                    bn_training,
+                    exponential_average_factor,
+                    self.eps,
+                )
             )
         return normalized

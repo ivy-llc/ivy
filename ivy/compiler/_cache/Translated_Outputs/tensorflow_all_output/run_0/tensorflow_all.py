@@ -1,10 +1,13 @@
 import tensorflow
 
-from typing import Sequence
 from typing import Union
 from typing import Optional
+from typing import Sequence
+
+from .tensorflow__helpers import tensorflow_handle_array_like_without_promotion
 
 
+@tensorflow_handle_array_like_without_promotion
 def tensorflow_all(
     x: Union[tensorflow.Tensor, tensorflow.Variable],
     /,

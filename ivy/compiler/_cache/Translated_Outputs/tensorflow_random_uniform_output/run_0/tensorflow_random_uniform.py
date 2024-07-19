@@ -1,13 +1,15 @@
 import tensorflow
 import tensorflow as tf
 
-from typing import Optional
-from typing import Sequence
 from typing import Union
+from typing import Sequence
+from typing import Optional
 
-from .tensorflow__helpers import tensorflow__check_bounds_and_get_shape
+from .tensorflow__helpers import tensorflow__check_bounds_and_get_shape_bknd
+from .tensorflow__helpers import tensorflow_infer_dtype
 
 
+@tensorflow_infer_dtype
 def tensorflow_random_uniform(
     *,
     low: Union[float, tensorflow.Tensor, tensorflow.Variable] = 0.0,
@@ -18,7 +20,7 @@ def tensorflow_random_uniform(
     seed: Optional[int] = None,
     out: Optional[Union[tensorflow.Tensor, tensorflow.Variable]] = None,
 ):
-    shape = tensorflow__check_bounds_and_get_shape(low, high, shape)
+    shape = tensorflow__check_bounds_and_get_shape_bknd(low, high, shape)
     low = tensorflow.cast(low, dtype)
     high = tensorflow.cast(high, dtype)
     if seed:

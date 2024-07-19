@@ -1,39 +1,50 @@
-from .tensorflow__helpers import tensorflow__handle_padding_shape
-from .tensorflow__helpers import tensorflow_get_item
-from .tensorflow__helpers import tensorflow_pad_1
-from .tensorflow__helpers import tensorflow_set_item
+import tensorflow
+
+from typing import Optional
+from typing import Callable
+from typing import Any
+from typing import Literal
+from typing import Union
+from typing import Iterable
+from typing import Tuple
+from numbers import Number
+
+from .tensorflow__helpers import tensorflow__to_tf_padding_bknd
+from .tensorflow__helpers import tensorflow_handle_array_like_without_promotion
 
 
-def tensorflow_pad(input, pad, mode="constant", value=0):
-    if any([(pad_value < 0) for pad_value in pad]):
-        pad = list(pad)
-        slices = []
-        for n in reversed(range(len(pad) // 2)):
-            i = n * 2
-            j = i + 1
-            start = None
-            stop = None
-            if tensorflow_get_item(pad, i) < 0:
-                start = -tensorflow_get_item(pad, i)
-                pad = tensorflow_set_item(pad, i, 0)
-            if tensorflow_get_item(pad, j) < 0:
-                stop = tensorflow_get_item(pad, j)
-                pad = tensorflow_set_item(pad, j, 0)
-            slices.append(slice(start, stop))
-        ndim = len(input.shape)
-        while len(slices) < ndim:
-            slices.insert(0, slice(None))
-        input = tensorflow_get_item(input, tuple(slices))
-    value = 0 if value is None else value
-    mode_dict = {
-        "constant": "constant",
-        "reflect": "reflect",
-        "replicate": "edge",
-        "circular": "wrap",
-    }
-    if mode not in mode_dict:
-        raise ValueError(f"Unsupported padding mode: {mode}")
-    pad = tensorflow__handle_padding_shape(pad, len(input.shape), mode)
-    return tensorflow_pad_1(
-        input, pad, mode=tensorflow_get_item(mode_dict, mode), constant_values=value
-    )
+@tensorflow_handle_array_like_without_promotion
+def tensorflow_pad(
+    input: Union[tensorflow.Tensor, tensorflow.Variable],
+    pad_width: Union[Iterable[Tuple[int]], int],
+    /,
+    *,
+    mode: Union[
+        Literal[
+            "constant",
+            "dilated",
+            "edge",
+            "linear_ramp",
+            "maximum",
+            "mean",
+            "median",
+            "minimum",
+            "reflect",
+            "symmetric",
+            "wrap",
+            "empty",
+        ],
+        Callable,
+    ] = "constant",
+    stat_length: Union[Iterable[Tuple[int]], int] = 1,
+    constant_values: Union[Iterable[Tuple[Number]], Number] = 0,
+    end_values: Union[Iterable[Tuple[Number]], Number] = 0,
+    reflect_type: Literal["even", "odd"] = "even",
+    **kwargs: Optional[Any],
+):
+    pad_width = tensorflow__to_tf_padding_bknd(pad_width, len(input.shape))
+    if not isinstance(constant_values, (tensorflow.Variable, tensorflow.Tensor)):
+        constant_values = tensorflow.constant(constant_values)
+    if constant_values.dtype != input.dtype:
+        constant_values = tensorflow.cast(constant_values, input.dtype)
+    return tensorflow.pad(input, pad_width, mode=mode, constant_values=constant_values)
