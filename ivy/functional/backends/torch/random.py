@@ -22,14 +22,16 @@ from . import backend_version
 def random_uniform(
     *,
     low: Union[float, torch.Tensor] = 0.0,
-    high: Union[float, torch.Tensor] = 1.0,
+    high: Union[float, torch.Tensor, None] = 1.0,
     shape: Optional[Union[torch.Tensor, ivy.NativeShape, Sequence[int]]] = None,
     dtype: torch.dtype,
     device: torch.device = None,
     seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    shape = _check_bounds_and_get_shape(low, high, shape).shape
+    if high is None:
+        # default to float32, as this is the tf standard
+        high = torch.finfo(dtype).max if dtype is not None else torch.finfo(torch.float32).max
     rand_range = high - low
     if seed:
         torch.manual_seed(seed)

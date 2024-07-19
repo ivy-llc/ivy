@@ -22,7 +22,7 @@ from . import backend_version
 def random_uniform(
     *,
     low: Union[float, np.ndarray] = 0.0,
-    high: Union[float, np.ndarray] = 1.0,
+    high: Union[float, np.ndarray, None] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int], np.ndarray]] = None,
     dtype: np.dtype,
     device: Optional[str] = None,
@@ -31,6 +31,9 @@ def random_uniform(
 ) -> np.ndarray:
     if seed:
         np.random.seed(seed)
+    if high is None:
+        # default to float32, as this is the tf standard
+        high = float(np.finfo(dtype).max if dtype is not None else np.finfo(np.float32).max)
     shape = _check_bounds_and_get_shape(low, high, shape).shape
     return np.asarray(np.random.uniform(low, high, shape), dtype=dtype)
 

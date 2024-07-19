@@ -31,16 +31,17 @@ from . import backend_version
 def random_uniform(
     *,
     low: Union[float, tf.Tensor, tf.Variable] = 0.0,
-    high: Union[float, tf.Tensor, tf.Variable] = 1.0,
+    high: Union[float, tf.Tensor, tf.Variable, None] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int], tf.Tensor]] = None,
     dtype: DType,
     device: Optional[str] = None,
     seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    shape = _check_bounds_and_get_shape(low, high, shape).shape
+    shape = _check_bounds_and_get_shape(low, float(tf.experimental.numpy.finfo(tf.float32).max if dtype is None else tf.experimental.numpy.finfo(dtype).max) if high is None else high, shape).shape
     low = tf.cast(low, dtype)
-    high = tf.cast(high, dtype)
+    if high is not None:
+        high = tf.cast(high, dtype)
     if seed:
         tf.random.set_seed(seed)
     return tf.random.uniform(shape, low, high, dtype=dtype, seed=seed)
