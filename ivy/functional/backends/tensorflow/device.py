@@ -28,6 +28,9 @@ def dev(
     *,
     as_native: bool = False,
 ) -> Union[ivy.Device, str]:
+    if "keras.src.backend.tensorflow.core.Variable" in str(x.__class__):
+        # Read the underlying tensor of a KerasVariable to get the device
+        x = x.value
     if isinstance(x, tf.TensorArray):
         # Read the underlying tensor being wrapped to get the device.
         x = x.stack()
