@@ -8,7 +8,6 @@ from ivy import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import (
     to_ivy_arrays_and_back,
 )
-from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
 
 
 @with_unsupported_dtypes(
@@ -309,12 +308,12 @@ def max_pool2d(
 
         if ceil_mode:
             for i in range(DIMS):
-                padding[i] = _padding_ceil_mode(
+                padding[i] = ivy.functional.ivy.experimental.layers._padding_ceil_mode(
                     x_shape[i], new_kernel[i], padding[i], stride[i]
                 )
         # torch pad takes width padding first, then height padding
         padding = (padding[1], padding[0])
-        pad_array = ivy.flatten(padding)
+        pad_list = list(ivy.flatten(padding))
 
         in_shape = input.shape
         H = in_shape[-2]
@@ -329,13 +328,13 @@ def max_pool2d(
         # find the indices of the max value for each position of the sliding window
         input = torch_frontend.nn.functional.pad(
             input,
-            pad_array,
+            pad_list,
             value=float("-inf"),
         )
 
         input_indices = torch_frontend.nn.functional.pad(
             input_indices,
-            pad_array,
+            pad_list,
             value=0,
         )
 
