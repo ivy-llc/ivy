@@ -314,7 +314,7 @@ def max_pool2d(
                 )
         # torch pad takes width padding first, then height padding
         padding = (padding[1], padding[0])
-        pad_list = list(ivy.flatten(padding))
+        pad_array = ivy.flatten(padding)
 
         in_shape = input.shape
         H = in_shape[-2]
@@ -329,13 +329,13 @@ def max_pool2d(
         # find the indices of the max value for each position of the sliding window
         input = torch_frontend.nn.functional.pad(
             input,
-            pad_list,
+            pad_array,
             value=float("-inf"),
         )
 
         input_indices = torch_frontend.nn.functional.pad(
             input_indices,
-            pad_list,
+            pad_array,
             value=0,
         )
 
