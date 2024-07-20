@@ -33,7 +33,9 @@ def random_uniform(
         np.random.seed(seed)
     if high is None:
         # default to float32, as this is the tf standard
-        high = float(np.finfo(dtype).max if dtype is not None else np.finfo(np.float32).max)
+        high = float(
+            np.finfo(dtype).max if dtype is not None else np.finfo(np.float32).max
+        )
     shape = _check_bounds_and_get_shape(low, high, shape).shape
     return np.asarray(np.random.uniform(low, high, shape), dtype=dtype)
 

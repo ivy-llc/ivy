@@ -52,7 +52,9 @@ def random_uniform(
 ) -> JaxArray:
     if high is None:
         # default to float32, as this is the tf standard
-        high = float(jnp.finfo(dtype).max if dtype is not None else jnp.finfo(jnp.float32).max)
+        high = float(
+            jnp.finfo(dtype).max if dtype is not None else jnp.finfo(jnp.float32).max
+        )
     shape = _check_bounds_and_get_shape(low, high, shape).shape
 
     if seed:

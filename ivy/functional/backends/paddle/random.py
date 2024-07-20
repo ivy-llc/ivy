@@ -41,7 +41,11 @@ def random_uniform(
 ) -> paddle.Tensor:
     if high is None:
         # default to float32, as this is the tf standard
-        high = paddle.finfo(dtype).max if dtype is not None else paddle.finfo(paddle.float32).max
+        high = (
+            paddle.finfo(dtype).max
+            if dtype is not None
+            else paddle.finfo(paddle.float32).max
+        )
     if not dtype:
         dtype = ivy.default_int_dtype()
     dtype = ivy.as_native_dtype(dtype)

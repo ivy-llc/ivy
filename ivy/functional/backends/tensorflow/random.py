@@ -38,7 +38,19 @@ def random_uniform(
     seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    shape = _check_bounds_and_get_shape(low, float(tf.experimental.numpy.finfo(tf.float32).max if dtype is None else tf.experimental.numpy.finfo(dtype).max) if high is None else high, shape).shape
+    shape = _check_bounds_and_get_shape(
+        low,
+        (
+            float(
+                tf.experimental.numpy.finfo(tf.float32).max
+                if dtype is None
+                else tf.experimental.numpy.finfo(dtype).max
+            )
+            if high is None
+            else high
+        ),
+        shape,
+    ).shape
     low = tf.cast(low, dtype)
     if high is not None:
         high = tf.cast(high, dtype)

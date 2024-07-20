@@ -31,7 +31,11 @@ def random_uniform(
 ) -> torch.Tensor:
     if high is None:
         # default to float32, as this is the tf standard
-        high = torch.finfo(dtype).max if dtype is not None else torch.finfo(torch.float32).max
+        high = (
+            torch.finfo(dtype).max
+            if dtype is not None
+            else torch.finfo(torch.float32).max
+        )
     rand_range = high - low
     if seed:
         torch.manual_seed(seed)
