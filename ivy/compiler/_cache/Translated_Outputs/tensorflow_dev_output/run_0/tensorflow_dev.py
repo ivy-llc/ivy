@@ -13,6 +13,8 @@ def tensorflow_dev(
     *,
     as_native: bool = False,
 ):
+    if "keras.src.backend.tensorflow.core.Variable" in str(x.__class__):
+        x = x.value
     if isinstance(x, tensorflow.TensorArray):
         x = tensorflow_stack_bknd_(x)
     dv = x.device
