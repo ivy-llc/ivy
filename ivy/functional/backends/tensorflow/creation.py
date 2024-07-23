@@ -111,7 +111,11 @@ def asarray(
             ret = tf.convert_to_tensor(obj_np, dtype)
         else:
             ret = tf.convert_to_tensor(obj, dtype)
-        return tf.identity(ret) if (copy or ivy.as_native_dev(ivy.dev(ret)) != device) else ret
+        return (
+            tf.identity(ret)
+            if (copy or ivy.as_native_dev(ivy.dev(ret)) != device)
+            else ret
+        )
 
 
 def empty(
