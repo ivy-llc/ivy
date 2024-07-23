@@ -2,7 +2,7 @@
 from __future__ import annotations
 import re
 import jax
-from flax.experimental import nnx as nn
+from flax import nnx as nn
 import jax.tree_util as tree
 import jax.numpy as jnp
 import functools
@@ -371,397 +371,7 @@ class ModelHelpers:
         s = first + "\n" + s
         return s
 
-
-class Layer(nn.Module, ModelHelpers):
-    _build_mode = None
-    _with_partial_v = None
-    _store_vars = True
-    _built = False
-    _v = None
-    _buffers = None
-    _module_dict = None
-    _args = None
-    _kwargs = None
-    _module_graph = None
-    _target = None
-    _lazy_traced = False
-    _training = None
-    _dynamic_backend = None
-    _device = None
-    _dtype = None
-    _previous_frame_info = None
-
-    def setup(
-        self,
-        /,
-        *args,
-        v=None,
-        buffers=None,
-        build_mode="on_init",
-        store_vars=True,
-        with_partial_v=False,
-        dynamic_backend=None,
-        training=True,
-        dtype=None,
-        device=None,
-        module_dict=None,
-        **kwargs,
-    ):
-        self._build_mode = build_mode
-        self._with_partial_v = with_partial_v
-        self._store_vars = store_vars
-        self._built = False
-        self._v_from_constructor = v if isinstance(v, dict) or v is None else dict(v)
-        self._v = v if v is not None else dict()
-        self._buffers = dict(buffers or {})
-        self._module_dict = module_dict if module_dict is not None else dict()
-        self._args = args
-        self._kwargs = kwargs
-        self._module_graph = None
-        self._target = None
-        self._lazy_traced = False
-        self._training = training
-        self._dynamic_backend = dynamic_backend
-        self._device = device or "cpu"
-        self._dtype = dtype or jnp.float32
-        if build_mode != "on_init":
-            return
-        self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
-
-    def build(
-        self,
-        *args,
-        from_call=False,
-        device=None,
-        dtype=None,
-        dynamic_backend=None,
-        **kwargs,
-    ):
-        self._built = True
-        return
-
-    def register_buffer(self, name: str, value: jax.Array):
-        self._buffers.update({name: value})
-        return value
-
-    def register_parameter(self, name: str, value: jax.Array):
-        self._v.update({name: value})
-
-    def train(self, mode: bool = True):
-        self._training = mode
-        for module in self.children():
-            if isinstance(module, nn.Module) and not hasattr(module, "train"):
-                module.trainable = mode
-                continue
-            module.train(mode)
-        self.trainable = mode
-        return self
-
-    def eval(self):
-        return self.train(mode=False)
-
-    def call(self, inputs, training=None, mask=None):
-        raise NotImplementedError(
-            "When subclassing the `Module` class, you should implement a `call` method."
-        )
-
-    def get_config(self):
-        base_config = super().get_config()
-        config = {}
-
-        # Get the names and values of positional arguments in __init__
-        init_signature = inspect.signature(self.__init__)
-        arg_names = list(init_signature.parameters.keys())
-
-        # Include the positional arguments in the config
-        var_positional_arg_encountered = False
-        var_positional_arg_name = None
-        offset = 0
-        for i, arg in enumerate(self._args[1:]):
-            arg_name = arg_names[min(i, len(arg_names) - 1)]
-            if var_positional_arg_encountered:
-                config.update(
-                    {
-                        f"{var_positional_arg_name}_{i - offset}": arg,
-                    }
-                )
-            elif (
-                init_signature.parameters[arg_name].kind
-                == inspect.Parameter.VAR_POSITIONAL
-            ):
-                var_positional_arg_encountered = True
-                var_positional_arg_name = arg_name
-                offset = i
-                config.update(
-                    {
-                        f"{var_positional_arg_name}_{0}": arg,
-                    }
-                )
-            else:
-                config.update(
-                    {
-                        arg_name: arg,
-                    }
-                )
-
-        # Include the keywords arguments in the config
-        kwargs = self._kwargs.copy()
-        kwargs.pop("devices", None)
-        config.update(**kwargs)
-        return {**base_config, **config}
-
-    @classmethod
-    def from_config(cls, config):
-        # Get the signature of the __init__ method
-        init_signature = inspect.signature(cls.__init__)
-        arg_names = list(init_signature.parameters.keys())
-
-        # Separate positional and keyword arguments based on the __init__ signature
-        args = []
-        pos_or_kw = OrderedDict()
-        kwargs = {}
-        var_positional_args = []
-        for arg_name in arg_names:
-            if (
-                arg_name in config
-                and init_signature.parameters[arg_name].kind
-                == inspect.Parameter.KEYWORD_ONLY
-            ):
-                # Handle keyword arguments
-                kwargs[arg_name] = config.pop(arg_name)
-            elif (
-                arg_name in config
-                and init_signature.parameters[arg_name].kind
-                == inspect.Parameter.POSITIONAL_OR_KEYWORD
-            ):
-                # Handle positional or keyword arguments
-                pos_or_kw[arg_name] = config.pop(arg_name)
-            elif any(re.match(rf"{arg_name}_\d+", key) for key in config.keys()):
-                # Handle variable positional arguments
-                var_positional_args.extend(
-                    [
-                        config.pop(key)
-                        for key in sorted(config.keys())
-                        if re.match(rf"{arg_name}_\d+", key)
-                    ]
-                )
-
-        # Unpack positional arguments and the rest as keyword arguments
-        config.pop("name", None)
-        config.pop("trainable", None)
-        config.pop("dtype", None)
-        kwargs.update(config)
-
-        # Determine the final args and kwargs
-        if var_positional_args:
-            args = list(pos_or_kw.values()) + var_positional_args
-        else:
-            kwargs.update(pos_or_kw)
-
-        return cls(*args, **kwargs)
-
-    # Methods to be Optionally Overridden #
-    # -----------------------------------#
-
-    def _create_variables(self, *, device=None, dtype=None):
-        return {}
-
-    def _build(self, *args, **kwargs) -> bool:
-        return True
-
-    def _forward(self, *args, **kwargs):
-        raise NotImplementedError(
-            "When subclassing the `Module` class, you should "
-            "implement a `_forward` method."
-        )
-
-    def _extra_repr(self) -> str:
-        return ""
-
-    # Properties #
-    # -----------#
-
-    @property
-    def device(self):
-        return self._device
-
-    @property
-    def dtype(self):
-        return self._dtype
-
-    @property
-    def build_mode(self):
-        return self._build_mode
-
-    @property
-    def training(self):
-        return self._training
-
-    @property
-    def v(self):
-        return self._v
-
-    @property
-    def buffers(self):
-        return self._buffers
-
-    @property
-    def state_dict(self):
-        return {**self.v, **self.buffers}
-
-    @property
-    def module_dict(self):
-        return self._module_dict
-
-    # Dunder Methods #
-    # ---------------#
-    @store_frame_info
-    def __call__(
-        self,
-        *args,
-        v=None,
-        buffers=None,
-        **kwargs,
-    ):
-        ret = self.apply(v=v, *args, method=self._forward, **kwargs)
-        return ret
-
-    def __getattr__(self, name):
-        if name == "v":
-            if not super().__getattribute__("_v") and not getattr(  # noqa: E501
-                self, "_built", False
-            ):
-                return self._build_and_return_v(
-                    *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
-                )
-
-        _dict = super().__getattribute__("__dict__")
-        if name in _dict:
-            return _dict[name]
-
-        elif "_v" in _dict and name in _dict["_v"]:
-            return _dict["_v"][name]
-
-        return super().__getattribute__(name)
-
-    def __setattr__(self, name, value):
-        if name in ["v", "buffers"]:
-            name = "_" + name
-        if isinstance(value, (Layer, nn.Module)):
-            _dict = getattr(self, "__dict__", None)
-            if _dict:
-                _dict[name] = value
-
-            # compute the module dict
-            self._compute_module_dict()
-
-            obj_to_search = (
-                None
-                if not isinstance(value, (Layer, nn.Module))
-                else (
-                    self._modules
-                    if hasattr(self, "_modules") and self._modules
-                    else self
-                )
-            )
-            found_vars = self._find_variables(
-                obj=obj_to_search,
-                without_initialisation=(
-                    True
-                    if self._v_from_constructor and not self._with_partial_v
-                    else False
-                ),
-            )
-            flattened_v, v_spec = tree_flatten(found_vars)
-            flattend_kc = v_spec.get_keychains()
-            for kc, v in zip(flattend_kc, flattened_v):
-                new_kc = kc.replace("/", ".")
-                if new_kc not in self.v:
-                    self.register_parameter(new_kc, v)
-
-            # once all variables built, find and assign buffers
-            found_buffers = self._find_variables(
-                obj=obj_to_search,
-                without_initialisation=(
-                    True
-                    if self._v_from_constructor and not self._with_partial_v
-                    else False
-                ),
-                trainable=False,
-            )
-            flattened_buf, buf_spec = tree_flatten(found_buffers)
-            flattend_kc = buf_spec.get_keychains()
-            for kc, buf in zip(flattend_kc, flattened_buf):
-                new_kc = kc.replace("/", ".")
-                self.register_buffer(new_kc, buf)
-
-            super().__setattr__(name, value)
-            return
-        else:
-            try:
-                obj_to_search = getattr(self, name)
-            except AttributeError:
-                obj_to_search = None
-            if isinstance(obj_to_search, Layer):
-                # retrieve all hierarchical submodules
-                assign_dict, kc = get_assignment_dict()
-
-                # Iterate over all submods in assign_dict
-                # updating their `v` and `buffers` with the
-                # new value
-                for key, submod in assign_dict.items():
-                    # Get the subkey to match
-                    subkey = kc[len(key) :].lstrip(".")
-
-                    if hasattr(submod, "v"):
-                        for v_key, v_value in submod.v.items():
-                            if v_key.startswith(subkey):
-                                submod.register_parameter(v_key, value)
-
-                    # Repeat the same process for submod.buffers
-                    if hasattr(submod, "buffers"):
-                        for b_key, b_value in submod.buffers.items():
-                            if b_key.startswith(subkey):
-                                submod.register_buffer(b_key, value)
-
-                # finally update the module dict
-                self._module_dict[name] = value
-
-            return super().__setattr__(name, value)
-
-    def __delattr__(self, name):
-        if hasattr(self, name):
-            if isinstance(getattr(self, name), (Layer, nn.Module)):
-                super().__delattr__(name)
-                return
-        super().__delattr__(name)
-
-    def __repr__(self):
-        extra_lines = []
-        extra_repr = self._extra_repr()
-        if extra_repr:
-            extra_lines = extra_repr.split("\n")
-        child_lines = []
-        for key in self.v.keys():
-            if isinstance(getattr(self, key, None), Layer):
-                mod_str = repr(getattr(self, key))
-                mod_str = self._addindent(mod_str, 2)
-                child_lines.append(f"({key}): {mod_str}")
-        lines = extra_lines + child_lines
-
-        main_str = f"{self.__class__.__name__}("
-        if lines:
-            # simple one-liner info, which most builtin Modules will use
-            if len(extra_lines) == 1 and not child_lines:
-                main_str += extra_lines[0]
-            else:
-                main_str += "\n  " + "\n  ".join(lines) + "\n"
-
-        main_str += ")"
-        return main_str
-
-
-class Model(nn.Module, ModelHelpers):
+class Module(nn.Module, ModelHelpers):
     _build_mode = None
     _with_partial_v = None
     _store_vars = True
@@ -1036,7 +646,7 @@ class Model(nn.Module, ModelHelpers):
     def _compute_module_dict(self):
         self._module_dict = dict()
         for key, value in self.__dict__.items():
-            if isinstance(value, (Layer, Model, nn.Module)):
+            if isinstance(value, (Module, nn.Module)):
                 if (
                     "stateful" in value.__module__
                     or hasattr(value, "_frontend_module")
@@ -1049,7 +659,7 @@ class Model(nn.Module, ModelHelpers):
     def __setattr__(self, name, value):
         if name in ["v", "buffers"]:
             name = "_" + name
-        if isinstance(value, (Layer, Model, nn.Module)):
+        if isinstance(value, (Module, nn.Module)):
             _dict = getattr(self, "__dict__", None)
             if _dict:
                 _dict[name] = value
@@ -1059,7 +669,7 @@ class Model(nn.Module, ModelHelpers):
 
             obj_to_search = (
                 None
-                if not isinstance(value, (nn.Module, Layer, Model))
+                if not isinstance(value, (nn.Module, Module))
                 else (
                     self._modules
                     if hasattr(self, "_modules") and self._modules
@@ -1104,7 +714,7 @@ class Model(nn.Module, ModelHelpers):
                 obj_to_search = getattr(self, name)
             except AttributeError:
                 obj_to_search = None
-            if isinstance(obj_to_search, (Model, Layer)):
+            if isinstance(obj_to_search, (nn.Module)):
                 # retrieve all hierarchical submodules
                 assign_dict, kc = get_assignment_dict()
 
@@ -1145,7 +755,7 @@ class Model(nn.Module, ModelHelpers):
         if id(obj) in _visited:
             return vs
         _visited[id(obj)] = True
-        if isinstance(obj, (Layer, Model)) and obj is not self:
+        if isinstance(obj, (Module)) and obj is not self:
             fn = "_build_and_return_v" if trainable else "_build_and_return_buffers"
             if not obj._built and without_initialisation:
                 return lambda: getattr(obj, fn)(
@@ -1227,7 +837,7 @@ class Model(nn.Module, ModelHelpers):
         if id(obj) in _visited or not isinstance(key, str):
             return
         _visited[id(obj)] = True
-        if isinstance(obj, (Layer, Model)) and obj is not self:
+        if isinstance(obj, (Module)) and obj is not self:
             orig_key_chain = key[1:] if key[0] == "_" else key
 
             obj.__call__ = self._fn_with_var_arg(
@@ -1304,7 +914,7 @@ class Model(nn.Module, ModelHelpers):
 
         if replace_v or replace_buffers:
             # Call the forward pass
-            ret = super(Model, self).__call__(*args, **kwargs)  # noqa: UP008
+            ret = super(Module, self).__call__(*args, **kwargs)  # noqa: UP008
             # Replace v, buffers if needed
             self._v = v_orig if replace_v else self._v
             self._buffers = buffers_orig if replace_buffers else self._buffers
@@ -1317,7 +927,7 @@ class Model(nn.Module, ModelHelpers):
         if hasattr(self, name):
             if isinstance(
                 getattr(self, name),
-                (Layer, Model, nn.Module),
+                (Module, nn.Module),
             ):
                 super().__delattr__(name)
                 return
@@ -1330,7 +940,7 @@ class Model(nn.Module, ModelHelpers):
             extra_lines = extra_repr.split("\n")
         child_lines = []
         for key in self.v.keys():
-            if isinstance(getattr(self, key, None), (Layer, Model)):
+            if isinstance(getattr(self, key, None), (Module)):
                 mod_str = repr(getattr(self, key))
                 mod_str = self._addindent(mod_str, 2)
                 child_lines.append(f"({key}): {mod_str}")
