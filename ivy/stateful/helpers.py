@@ -77,15 +77,20 @@ class ModuleHelpers:
             return vs
         elif not hasattr(obj, "__dict__"):
             return vs
-        for k, v in obj.__dict__.items():
-            if v is not None and k[0:2] != "__" and k != "_module_dict":
-                ret = self._find_variables(
-                    obj=v,
-                    without_initialisation=without_initialisation,
-                    _visited=_visited,
-                )
-                if ret:
-                    vs[k[1:] if k[0] == "_" else k] = ret
+        try:
+            obj_name = obj.__name__ if hasattr(obj, "__name__") else None
+        except:
+            obj_name = None
+        if obj_name not in ["sys"]:  # do not recurse into any objects in this list
+            for k, v in obj.__dict__.items():
+                if v is not None and k[0:2] != "__" and k != "_module_dict":
+                    ret = self._find_variables(
+                        obj=v,
+                        without_initialisation=without_initialisation,
+                        _visited=_visited,
+                    )
+                    if ret:
+                        vs[k[1:] if k[0] == "_" else k] = ret
         return vs
 
     def _find_buffers(self):
@@ -229,14 +234,19 @@ class ModuleHelpers:
             return
         if not hasattr(obj, "__dict__"):
             return
-        for k, val in obj.__dict__.items():
-            if k[0:2] == "__":
-                continue
-            k = f"{key}/{k}" if key != "" else k
-            if val is not None:
-                self._wrap_call_methods(
-                    keychain_mappings, key=k, obj=val, _visited=_visited
-                )
+        try:
+            obj_name = obj.__name__ if hasattr(obj, "__name__") else None
+        except:
+            obj_name = None
+        if obj_name not in ["sys"]:  # do not recurse into any objects in this list
+            for k, val in obj.__dict__.items():
+                if k[0:2] == "__":
+                    continue
+                k = f"{key}/{k}" if key != "" else k
+                if val is not None:
+                    self._wrap_call_methods(
+                        keychain_mappings, key=k, obj=val, _visited=_visited
+                    )
         return
 
     def _call(self, *args, v=None, buffers=None, **kwargs):
