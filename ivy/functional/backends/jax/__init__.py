@@ -238,7 +238,7 @@ from .experimental import *
 from . import control_flow_ops
 from .control_flow_ops import *
 from . import module
-from .module import Module
+from .module import Module as Model
 
 
 # sub-backends
@@ -249,7 +249,7 @@ from .sub_backends import *
 if importlib.util.find_spec("flax"):
     import flax
 
-    NativeModule = Module
+    NativeModule = Model
 elif importlib.util.find_spec("haiku"):
     import haiku as hk
 
