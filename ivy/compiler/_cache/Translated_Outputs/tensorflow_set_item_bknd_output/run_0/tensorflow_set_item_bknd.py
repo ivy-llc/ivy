@@ -17,6 +17,7 @@ from .tensorflow__helpers import tensorflow_nonzero
 from .tensorflow__helpers import tensorflow_scatter_nd
 from .tensorflow__helpers import tensorflow_set_item_bknd
 from .tensorflow__helpers import tensorflow_shape
+from .tensorflow__helpers import tensorflow_stop_gradient
 from .tensorflow__helpers import tensorflow_tile
 
 
@@ -32,8 +33,12 @@ def tensorflow_set_item_bknd(
     if isinstance(query, (list, tuple)) and any(
         [(q is Ellipsis or isinstance(q, slice) and q.stop is None) for q in query]
     ):
-        np_array = x.numpy()
-        np_array = tensorflow_set_item_bknd(np_array, query, np.asarray(val))
+        x_stop_gradient = tensorflow_stop_gradient(x, preserve_type=False)
+        np_array = x_stop_gradient.numpy()
+        val_stop_gradient = tensorflow_stop_gradient(val, preserve_type=False)
+        np_array = tensorflow_set_item_bknd(
+            np_array, query, np.asarray(val_stop_gradient)
+        )
         return tensorflow_asarray(np_array)
     if copy:
         x = tensorflow_copy_array(x)

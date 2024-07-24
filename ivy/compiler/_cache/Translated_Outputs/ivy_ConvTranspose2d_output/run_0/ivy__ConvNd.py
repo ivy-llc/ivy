@@ -129,14 +129,14 @@ class ivy__ConvNd(ivy.Module):
         if transposed:
             self.weight = ivy.Array(
                 ivy_empty_frnt(
-                    (in_channels, out_channels // groups, *kernel_size),
+                    (*kernel_size, out_channels // groups, in_channels),
                     **factory_kwargs,
                 )
             )
         else:
             self.weight = ivy.Array(
                 ivy_empty_frnt(
-                    (out_channels, in_channels // groups, *kernel_size),
+                    (*kernel_size, in_channels // groups, out_channels),
                     **factory_kwargs,
                 )
             )

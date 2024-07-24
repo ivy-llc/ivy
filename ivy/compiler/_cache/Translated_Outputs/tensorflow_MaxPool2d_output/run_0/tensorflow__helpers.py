@@ -469,7 +469,8 @@ def tensorflow_handle_methods(fn):
         if tensorflow_is_array_bknd(args[0]):
             return fn(*args, **kwargs)
         else:
-            fn_name = extract_function_name(fn.__name__)
+            pattern = "_bknd_|_bknd|_frnt_|_frnt"
+            fn_name = extract_function_name(re.sub(pattern, "", fn.__name__))
             new_fn = getattr(args[0], fn_name)
             return new_fn(*args[1:], **kwargs)
 
@@ -508,7 +509,9 @@ def tensorflow_default_bknd(
     return (
         x
         if tensorflow_exists_bknd(x)
-        else default_val() if default_callable else default_val
+        else default_val()
+        if default_callable
+        else default_val
     )
 
 
@@ -681,7 +684,8 @@ def tensorflow_handle_methods_1(fn):
         if tensorflow_is_array_bknd(args[0]):
             return fn(*args, **kwargs)
         else:
-            fn_name = extract_function_name(fn.__name__)
+            pattern = "_bknd_|_bknd|_frnt_|_frnt"
+            fn_name = extract_function_name(re.sub(pattern, "", fn.__name__))
             new_fn = getattr(args[0], fn_name)
             return new_fn(*args[1:], **kwargs)
 
@@ -795,6 +799,8 @@ def tensorflow_dev(
     *,
     as_native: bool = False,
 ):
+    if "keras.src.backend.tensorflow.core.Variable" in str(x.__class__):
+        x = x.value
     if isinstance(x, tensorflow.TensorArray):
         x = tensorflow_stack_bknd_(x)
     dv = x.device
@@ -857,6 +863,30 @@ def tensorflow__check_in_nested_sequence(sequence, value=None, _type=None):
             )
 
 
+def tensorflow_is_variable(x, /, *, exclusive=False):
+    return isinstance(x, tensorflow.Variable)
+
+
+def tensorflow_variable(x, /):
+    with tensorflow.device(tensorflow_dev(x, as_native=True)):
+        return tensorflow.Variable(x, trainable=True)
+
+
+@tensorflow_handle_array_like_without_promotion
+def tensorflow_stop_gradient(
+    x: Union[tensorflow.Tensor, tensorflow.Variable],
+    /,
+    *,
+    preserve_type: bool = True,
+    out: Optional[Union[tensorflow.Tensor, tensorflow.Variable]] = None,
+):
+    is_var = tensorflow_is_variable(x)
+    x = tensorflow.stop_gradient(x)
+    if is_var and preserve_type:
+        return tensorflow_variable(x)
+    return x
+
+
 def tensorflow_nested_map_bknd(
     fn: Callable,
     x: Union[tensorflow.Tensor, tf.Tensor, Iterable],
@@ -886,27 +916,21 @@ def tensorflow_nested_map_bknd(
         to_ignore = to_ignore + (class_instance,)
     tuple_check_fn = tensorflow_default_bknd(
         _tuple_check_fn,
-        (
-            (lambda x_, t_: isinstance(x_, t_))
-            if include_derived["tuple"]
-            else lambda x_, t_: type(x_) is t_
-        ),
+        (lambda x_, t_: isinstance(x_, t_))
+        if include_derived["tuple"]
+        else lambda x_, t_: type(x_) is t_,
     )
     list_check_fn = tensorflow_default_bknd(
         _list_check_fn,
-        (
-            (lambda x_, t_: isinstance(x_, t_))
-            if include_derived["list"]
-            else lambda x_, t_: type(x_) is t_
-        ),
+        (lambda x_, t_: isinstance(x_, t_))
+        if include_derived["list"]
+        else lambda x_, t_: type(x_) is t_,
     )
     dict_check_fn = tensorflow_default_bknd(
         _dict_check_fn,
-        (
-            (lambda x_, t_: isinstance(x_, t_))
-            if include_derived["dict"]
-            else lambda x_, t_: type(x_) is t_
-        ),
+        (lambda x_, t_: isinstance(x_, t_))
+        if include_derived["dict"]
+        else lambda x_, t_: type(x_) is t_,
     )
     if tuple_check_fn(x, tuple) and not isinstance(x, to_ignore):
         ret_list = [
@@ -1109,7 +1133,11 @@ def tensorflow_asarray(
             ret = tensorflow.convert_to_tensor(obj_np, dtype)
         else:
             ret = tensorflow.convert_to_tensor(obj, dtype)
-        return tensorflow.identity(ret) if copy or ret.device != device else ret
+        return (
+            tensorflow.identity(ret)
+            if copy or tensorflow_as_native_dev(tensorflow_dev(ret)) != device
+            else ret
+        )
 
 
 @tensorflow_handle_array_like_without_promotion
@@ -1327,7 +1355,9 @@ def tensorflow_where(
         dtype = (
             x1.dtype
             if hasattr(x1, "dtype")
-            else x2.dtype if hasattr(x2, "dtype") else tensorflow_default_dtype_bknd()
+            else x2.dtype
+            if hasattr(x2, "dtype")
+            else tensorflow_default_dtype_bknd()
         )
         if not tensorflow_is_array_bknd(x1):
             x1 = tensorflow_asarray(x1, dtype=dtype)
@@ -1739,7 +1769,9 @@ def tensorflow__parse_query_bknd(query, x_shape, scatter=False):
             (
                 tensorflow_reshape_bknd_(arr, (-1,))
                 if len(arr.shape) > 1
-                else tensorflow_expand_dims(arr) if not len(arr.shape) else arr
+                else tensorflow_expand_dims(arr)
+                if not len(arr.shape)
+                else arr
             )
             for arr in array_queries
         ]
@@ -1931,11 +1963,9 @@ def tensorflow_default_uint_dtype_bknd(
 
             if tensorflow_nested_argwhere_bknd(
                 input,
-                lambda x: (
-                    tensorflow_dtype(x) == "uint64"
-                    if is_native(x)
-                    else x > 9223372036854775807 and x != math.inf
-                ),
+                lambda x: tensorflow_dtype(x) == "uint64"
+                if is_native(x)
+                else x > 9223372036854775807 and x != math.inf,
                 stop_after_n_found=1,
             ):
                 ret = tf.uint64
@@ -2169,7 +2199,9 @@ def tensorflow_multiply(
         dtype = (
             x1.dtype
             if hasattr(x1, "dtype")
-            else x2.dtype if hasattr(x2, "dtype") else tensorflow_default_dtype_bknd()
+            else x2.dtype
+            if hasattr(x2, "dtype")
+            else tensorflow_default_dtype_bknd()
         )
         if not tensorflow_is_array_bknd(x1):
             x1 = tensorflow_asarray(x1, dtype=dtype)
@@ -2279,10 +2311,6 @@ def tensorflow_gather_nd(
         return result
 
 
-def tensorflow_is_variable(x, /, *, exclusive=False):
-    return isinstance(x, tensorflow.Variable)
-
-
 def tensorflow__is_variable_bknd(x, exclusive=False, to_ignore=None):
     x = x
     return tensorflow_nested_map_bknd(
@@ -2333,11 +2361,9 @@ def tensorflow_scatter_nd(
         dtype = tensorflow_promote_types_bknd(out.dtype, updates_dtype)
     updates = tensorflow.cast(
         updates,
-        (
-            tensorflow_as_native_dtype(dtype)
-            if tensorflow_exists_bknd(out)
-            else updates_dtype
-        ),
+        tensorflow_as_native_dtype(dtype)
+        if tensorflow_exists_bknd(out)
+        else updates_dtype,
     )
     expected_shape = (
         list(tensorflow.shape(indices)[:-1])
@@ -2404,8 +2430,12 @@ def tensorflow_set_item_bknd(
     if isinstance(query, (list, tuple)) and any(
         [(q is Ellipsis or isinstance(q, slice) and q.stop is None) for q in query]
     ):
-        np_array = x.numpy()
-        np_array = tensorflow_set_item_bknd(np_array, query, np.asarray(val))
+        x_stop_gradient = tensorflow_stop_gradient(x, preserve_type=False)
+        np_array = x_stop_gradient.numpy()
+        val_stop_gradient = tensorflow_stop_gradient(val, preserve_type=False)
+        np_array = tensorflow_set_item_bknd(
+            np_array, query, np.asarray(val_stop_gradient)
+        )
         return tensorflow_asarray(np_array)
     if copy:
         x = tensorflow_copy_array(x)
@@ -2680,21 +2710,17 @@ def tensorflow_default_int_dtype_bknd(
         elif isinstance(input, (list, tuple, dict)):
             if tensorflow_nested_argwhere_bknd(
                 input,
-                lambda x: (
-                    tensorflow_dtype(x) == "uint64"
-                    if tensorflow_is_array_bknd(x)
-                    else x > 9223372036854775807 and x != math.inf
-                ),
+                lambda x: tensorflow_dtype(x) == "uint64"
+                if tensorflow_is_array_bknd(x)
+                else x > 9223372036854775807 and x != math.inf,
                 stop_after_n_found=1,
             ):
                 ret = tf.uint64
             elif tensorflow_nested_argwhere_bknd(
                 input,
-                lambda x: (
-                    tensorflow_dtype(x) == "int64"
-                    if tensorflow_is_array_bknd(x)
-                    else x > 2147483647 and x != math.inf
-                ),
+                lambda x: tensorflow_dtype(x) == "int64"
+                if tensorflow_is_array_bknd(x)
+                else x > 2147483647 and x != math.inf,
                 stop_after_n_found=1,
             ):
                 ret = tf.int64
@@ -2836,8 +2862,8 @@ def tensorflow_split_frnt(tensor, split_size_or_sections, dim=0):
 
 
 @tensorflow_handle_methods
-def tensorflow_split_frnt_(arr, split_size, dim=0):
-    return tensorflow_split_frnt(arr, split_size, dim)
+def tensorflow_split_frnt_(tensor, split_size, dim=0):
+    return tensorflow_split_frnt(tensor, split_size, dim)
 
 
 @tensorflow_handle_methods_1
@@ -2855,7 +2881,9 @@ def tensorflow_add(
         dtype = (
             x1.dtype
             if hasattr(x1, "dtype")
-            else x2.dtype if hasattr(x2, "dtype") else tensorflow_default_dtype_bknd()
+            else x2.dtype
+            if hasattr(x2, "dtype")
+            else tensorflow_default_dtype_bknd()
         )
         if not tensorflow_is_array_bknd(x1):
             x1 = tensorflow_asarray(x1, dtype=dtype)
@@ -2877,20 +2905,20 @@ def tensorflow_add_frnt(input, other, *, alpha=1, out=None):
 
 
 @tensorflow_handle_methods
-def tensorflow_add_frnt_(arr, other, *, alpha=1):
-    return tensorflow_add_frnt(arr, other, alpha=alpha)
+def tensorflow_add_frnt_(tensor, other, *, alpha=1):
+    return tensorflow_add_frnt(tensor, other, alpha=alpha)
 
 
 def tensorflow_ndim_bknd_(self):
     return len(tuple(self.shape))
 
 
-def tensorflow_dim_frnt_(arr):
-    return tensorflow_ndim_bknd_(arr)
+def tensorflow_dim_frnt_(tensor):
+    return tensorflow_ndim_bknd_(tensor)
 
 
-def tensorflow_ndim_frnt_(arr):
-    return tensorflow_dim_frnt_(arr)
+def tensorflow_ndim_frnt_(tensor):
+    return tensorflow_dim_frnt_(tensor)
 
 
 def tensorflow_check_kernel_padding_size(kernel_size, padding_size):
@@ -3034,13 +3062,17 @@ def tensorflow__output_ceil_shape_bknd(w, f, p, s):
     return math.ceil((w - f + p) / s) + 1
 
 
-def tensorflow__padding_ceil_mode_bknd(w, f, p, s, return_added_padding=False):
-    remaining_pixels = (w - f + p[0]) % s
+def tensorflow__padding_ceil_mode_bknd(
+    w: int, f: int, p: Tuple[int], s: int, return_added_padding: Optional[bool] = False
+):
+    remaining_pixels = (w - f + sum(p)) % s
     added_padding = 0
+    if remaining_pixels <= p[1] and s + p[1] - remaining_pixels >= f:
+        return (p, added_padding) if return_added_padding else p
     if s > 1 and remaining_pixels != 0 and f > 1:
         input_size = w + sum(p)
         if input_size - remaining_pixels - (f - 1) + s > input_size:
-            return p
+            return (p, added_padding) if return_added_padding else p
         output_shape = tensorflow__output_ceil_shape_bknd(w, f, sum(p), s)
         new_pad = (output_shape - 1) * s + f - w
         added_padding = new_pad - sum(p)
@@ -3143,6 +3175,46 @@ def tensorflow_max_pool2d(
     return res
 
 
+@tensorflow_handle_array_like_without_promotion
+def tensorflow_flatten(
+    x: tensorflow.Tensor,
+    /,
+    *,
+    copy: Optional[bool] = None,
+    start_dim: Optional[int] = 0,
+    end_dim: Optional[int] = -1,
+    order: Optional[str] = "C",
+    out: Optional[tensorflow.Tensor] = None,
+):
+    if x.shape == ():
+        x = tensorflow.reshape(x, (1, -1))[0, :]
+    if start_dim == end_dim:
+        return tensorflow_inplace_update(out, x) if tensorflow_exists_bknd(out) else x
+    if start_dim not in range(-x.shape.rank, x.shape.rank):
+        raise IndexError(
+            f"Dimension out of range (expected to be in range of {[-x.shape.rank, x.shape.rank - 1]}, but got {start_dim}"
+        )
+    if end_dim not in range(-x.shape.rank, x.shape.rank):
+        raise IndexError(
+            f"Dimension out of range (expected to be in range of {[-x.shape.rank, x.shape.rank - 1]}, but got {end_dim}"
+        )
+    if end_dim < 0:
+        end_dim += x.shape.rank
+    if start_dim < 0:
+        start_dim += x.shape.rank
+    if start_dim == end_dim:
+        return x
+    in_shape = tensorflow.shape(x)
+    flattened_dim = tensorflow.math.reduce_prod(in_shape[start_dim : end_dim + 1])
+    out_shape = tensorflow.concat(
+        [in_shape[:start_dim], [flattened_dim], in_shape[end_dim + 1 :]], axis=0
+    )
+    tensorflow_check_elem_in_list(order, ["C", "F"])
+    if order == "F":
+        return tensorflow__reshape_fortran_tf(x, out_shape)
+    return tensorflow.reshape(x, out_shape)
+
+
 def tensorflow_arange_frnt(
     start=0,
     end=None,
@@ -3161,128 +3233,19 @@ def tensorflow_reshape_frnt(input, shape):
     return tensorflow_reshape(input, shape)
 
 
-def tensorflow_reshape_frnt_(arr, *args, shape=None):
+def tensorflow_reshape_frnt_(tensor, *args, shape=None):
     if args and shape:
         raise TypeError("reshape() got multiple values for argument 'shape'")
     if shape is not None:
-        return tensorflow_reshape_frnt(arr, shape)
+        return tensorflow_reshape_frnt(tensor, shape)
     if args:
         if isinstance(args[0], (tuple, list, tuple, tf.TensorShape)):
             shape = args[0]
-            return tensorflow_reshape_frnt(arr, shape)
+            return tensorflow_reshape_frnt(tensor, shape)
         else:
-            return tensorflow_reshape_frnt(arr, args)
+            return tensorflow_reshape_frnt(tensor, args)
     else:
         raise ValueError("reshape() got no values for argument 'shape'")
-
-
-@tensorflow_handle_array_like_without_promotion
-def tensorflow_permute_dims(
-    x: Union[tensorflow.Tensor, tensorflow.Variable],
-    /,
-    axes: Tuple[int, ...],
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[Union[tensorflow.Tensor, tensorflow.Variable]] = None,
-):
-    return tensorflow.transpose(x, perm=axes)
-
-
-def tensorflow_permute_frnt(input, dims):
-    return tensorflow_permute_dims(input, axes=dims, copy=False)
-
-
-def tensorflow_permute_frnt_(arr, *args, dims=None):
-    if args and dims:
-        raise TypeError("permute() got multiple values for argument 'dims'")
-    if dims is not None:
-        return tensorflow_permute_frnt(arr, dims)
-    if args:
-        if isinstance(args[0], (tuple, list, tuple, tf.TensorShape)):
-            dims = args[0]
-            return tensorflow_permute_frnt(arr, dims)
-        else:
-            return tensorflow_permute_frnt(arr, args)
-    else:
-        raise ValueError("permute() got no values for argument 'dims'")
-
-
-@tensorflow_infer_dtype
-@tensorflow_handle_array_like_without_promotion
-def tensorflow_zeros(
-    shape: Union[tf.TensorShape, Sequence[int]],
-    *,
-    dtype: tensorflow.DType,
-    device: Optional[str] = None,
-    out: Optional[Union[tensorflow.Tensor, tensorflow.Variable]] = None,
-):
-    return tensorflow.zeros(shape, dtype=tensorflow.float32)
-
-
-@tensorflow_handle_array_like_without_promotion
-def tensorflow_zero_pad(
-    x,
-    /,
-    pad_width,
-    *,
-    out: Optional[Union[tensorflow.Tensor, tensorflow.Variable]] = None,
-):
-    if x.shape == ():
-        x = tensorflow.reshape(x, (-1,))
-    return tensorflow.pad(x, pad_width)
-
-
-def tensorflow_unfold_frnt(input, kernel_size, dilation=1, padding=0, stride=1):
-    if tensorflow_ndim_frnt_(input) != 4:
-        raise Exception("only batched 4D inputs are supported")
-    stride = [stride] * 2 if isinstance(stride, int) else stride
-    dilation = [dilation] * 2 if isinstance(dilation, int) else dilation
-    padding = [padding] * 2 if isinstance(padding, int) else padding
-    kernel_size = [kernel_size] * 2 if isinstance(kernel_size, int) else kernel_size
-    ag__result_list_0 = []
-    for i in range(2):
-        res = (
-            tensorflow_get_item(input.shape, i + 2)
-            + 2 * tensorflow_get_item(padding, i)
-            - tensorflow_get_item(dilation, i)
-            * (tensorflow_get_item(kernel_size, i) - 1)
-            - 1
-        ) // tensorflow_get_item(stride, i) + 1
-        ag__result_list_0.append(res)
-    output_shape = ag__result_list_0
-    ret = tensorflow_zeros(
-        (*input.shape[0:2], *kernel_size, *output_shape), dtype=input.dtype
-    )
-    input_padded = tensorflow_zero_pad(
-        input, ((0, 0), (0, 0), (padding[0],) * 2, (padding[1],) * 2)
-    )
-    for i in range(output_shape[0]):
-        for j in range(output_shape[1]):
-            i_in = i * stride[0]
-            j_in = j * stride[1]
-            ret = tensorflow_set_item_bknd(
-                ret,
-                (
-                    slice(None, None, None),
-                    slice(None, None, None),
-                    slice(None, None, None),
-                    slice(None, None, None),
-                    i,
-                    j,
-                ),
-                tensorflow_get_item(
-                    input_padded,
-                    (
-                        slice(None, None, None),
-                        slice(None, None, None),
-                        slice(i_in, i_in + kernel_size[0] * dilation[0], dilation[0]),
-                        slice(j_in, j_in + kernel_size[1] * dilation[1], dilation[1]),
-                    ),
-                ),
-            )
-    return tensorflow_reshape(
-        ret, (input.shape[0], input.shape[1] * math.prod(kernel_size), -1)
-    )
 
 
 def tensorflow__handle_padding_shape_frnt(padding, n, mode):
@@ -3384,8 +3347,119 @@ def tensorflow_pad_frnt(input, pad, mode="constant", value=0):
     if mode not in mode_dict:
         raise ValueError(f"Unsupported padding mode: {mode}")
     pad = tensorflow__handle_padding_shape_frnt(pad, len(input.shape), mode)
+    order = 0, 2, 3, 1
+    pad = tuple(pad[i] for i in order)
     return tensorflow_pad(
         input, pad, mode=tensorflow_get_item(mode_dict, mode), constant_values=value
+    )
+
+
+@tensorflow_handle_array_like_without_promotion
+def tensorflow_permute_dims(
+    x: Union[tensorflow.Tensor, tensorflow.Variable],
+    /,
+    axes: Tuple[int, ...],
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[Union[tensorflow.Tensor, tensorflow.Variable]] = None,
+):
+    return tensorflow.transpose(x, perm=axes)
+
+
+def tensorflow_permute_frnt(input, dims):
+    return tensorflow_permute_dims(input, axes=dims, copy=False)
+
+
+def tensorflow_permute_frnt_(tensor, *args, dims=None):
+    if args and dims:
+        raise TypeError("permute() got multiple values for argument 'dims'")
+    if dims is not None:
+        return tensorflow_permute_frnt(tensor, dims)
+    if args:
+        if isinstance(args[0], (tuple, list, tuple, tf.TensorShape)):
+            dims = args[0]
+            return tensorflow_permute_frnt(tensor, dims)
+        else:
+            return tensorflow_permute_frnt(tensor, args)
+    else:
+        raise ValueError("permute() got no values for argument 'dims'")
+
+
+@tensorflow_infer_dtype
+@tensorflow_handle_array_like_without_promotion
+def tensorflow_zeros(
+    shape: Union[tf.TensorShape, Sequence[int]],
+    *,
+    dtype: tensorflow.DType,
+    device: Optional[str] = None,
+    out: Optional[Union[tensorflow.Tensor, tensorflow.Variable]] = None,
+):
+    return tensorflow.zeros(shape, dtype=tensorflow.float32)
+
+
+@tensorflow_handle_array_like_without_promotion
+def tensorflow_zero_pad(
+    x,
+    /,
+    pad_width,
+    *,
+    out: Optional[Union[tensorflow.Tensor, tensorflow.Variable]] = None,
+):
+    if x.shape == ():
+        x = tensorflow.reshape(x, (-1,))
+    return tensorflow.pad(x, pad_width)
+
+
+def tensorflow_unfold_frnt(input, kernel_size, dilation=1, padding=0, stride=1):
+    if tensorflow_ndim_frnt_(input) != 4:
+        raise Exception("only batched 4D inputs are supported")
+    stride = [stride] * 2 if isinstance(stride, int) else stride
+    dilation = [dilation] * 2 if isinstance(dilation, int) else dilation
+    padding = [padding] * 2 if isinstance(padding, int) else padding
+    kernel_size = [kernel_size] * 2 if isinstance(kernel_size, int) else kernel_size
+    ag__result_list_0 = []
+    for i in range(2):
+        res = (
+            tensorflow_get_item(input.shape, i + 2)
+            + 2 * tensorflow_get_item(padding, i)
+            - tensorflow_get_item(dilation, i)
+            * (tensorflow_get_item(kernel_size, i) - 1)
+            - 1
+        ) // tensorflow_get_item(stride, i) + 1
+        ag__result_list_0.append(res)
+    output_shape = ag__result_list_0
+    ret = tensorflow_zeros(
+        (*input.shape[0:2], *kernel_size, *output_shape), dtype=input.dtype
+    )
+    input_padded = tensorflow_zero_pad(
+        input, ((0, 0), (0, 0), (padding[0],) * 2, (padding[1],) * 2)
+    )
+    for i in range(output_shape[0]):
+        for j in range(output_shape[1]):
+            i_in = i * stride[0]
+            j_in = j * stride[1]
+            ret = tensorflow_set_item_bknd(
+                ret,
+                (
+                    slice(None, None, None),
+                    slice(None, None, None),
+                    slice(None, None, None),
+                    slice(None, None, None),
+                    i,
+                    j,
+                ),
+                tensorflow_get_item(
+                    input_padded,
+                    (
+                        slice(None, None, None),
+                        slice(None, None, None),
+                        slice(i_in, i_in + kernel_size[0] * dilation[0], dilation[0]),
+                        slice(j_in, j_in + kernel_size[1] * dilation[1], dilation[1]),
+                    ),
+                ),
+            )
+    return tensorflow_reshape(
+        ret, (input.shape[0], input.shape[1] * math.prod(kernel_size), -1)
     )
 
 
@@ -3406,7 +3480,7 @@ def tensorflow_tile_frnt(input, dims):
     return res
 
 
-def tensorflow_repeat_frnt_(arr, *args, repeats=None):
+def tensorflow_repeat_frnt_(tensor, *args, repeats=None):
     if args and repeats:
         raise Exception("repeat() got multiple values for argument 'repeats'")
     if args:
@@ -3416,7 +3490,7 @@ def tensorflow_repeat_frnt_(arr, *args, repeats=None):
             repeats = args
     elif not isinstance(repeats, (tuple, list)):
         raise Exception("repeat(): argument 'repeats' must be tuple of ints")
-    return tensorflow_tile_frnt(arr, repeats)
+    return tensorflow_tile_frnt(tensor, repeats)
 
 
 @tensorflow_handle_array_like_without_promotion
@@ -3495,7 +3569,7 @@ def tensorflow_gather_frnt(input, dim, index, *, sparse_grad=False, out=None):
     dim = dim % len(input.shape)
     all_indices = tensorflow_argwhere(tensorflow_full(index.shape, True))
     gather_locations = tensorflow_reshape(
-        index, [tensorflow_prod(tensorflow_asarray(index.shape))]
+        index, [tensorflow_prod(tensorflow_asarray(index.shape), dtype=tf.int64)]
     )
     gather_indices = []
     for axis in range(len(index.shape)):
@@ -3548,27 +3622,54 @@ def tensorflow_max_pool2d_frnt(
     if return_indices:
         if isinstance(stride, (list, tuple)) and len(stride) == 1:
             stride = stride[0]
+        DIMS = 2
+        x_shape = list(input.shape[2:])
+        new_kernel = [
+            (
+                tensorflow_get_item(kernel_size, i)
+                + (tensorflow_get_item(kernel_size, i) - 1)
+                * (tensorflow_get_item(dilation, i) - 1)
+            )
+            for i in range(DIMS)
+        ]
+        if isinstance(padding, int):
+            padding = [(padding,) * 2] * DIMS
+        elif isinstance(padding, (list, tuple)) and len(padding) == DIMS:
+            padding = [((tensorflow_get_item(padding, i),) * 2) for i in range(DIMS)]
+        if isinstance(stride, int):
+            stride = (stride,) * DIMS
+        if ceil_mode:
+            for i in range(DIMS):
+                padding = tensorflow_set_item_bknd(
+                    padding,
+                    i,
+                    tensorflow__padding_ceil_mode_bknd(
+                        tensorflow_get_item(x_shape, i),
+                        tensorflow_get_item(new_kernel, i),
+                        tensorflow_get_item(padding, i),
+                        tensorflow_get_item(stride, i),
+                    ),
+                )
+        padding = padding[1], padding[0]
+        pad_list = list(tensorflow_flatten(padding))
         in_shape = input.shape
         H = in_shape[-2]
         W = in_shape[-1]
         n_indices = H * W
         input_indices = tensorflow_arange_frnt(0, n_indices, dtype=tf.int64)
         input_indices = tensorflow_reshape_frnt_(input_indices, (1, 1, H, W))
+        input = tensorflow_pad_frnt(input, pad_list, value=float("-inf"))
+        input_indices = tensorflow_pad_frnt(input_indices, pad_list, value=0)
         unfolded_indices = tensorflow_permute_frnt_(
             tensorflow_unfold_frnt(
                 input_indices,
                 kernel_size=kernel_size,
-                padding=padding,
+                padding=0,
                 dilation=dilation,
                 stride=stride,
             ),
             (0, 2, 1),
         )[0]
-        input = tensorflow_pad_frnt(
-            input,
-            [padding] * 4 if isinstance(padding, int) else padding * 2,
-            value=float("-inf"),
-        )
         unfolded_values = tensorflow_unfold_frnt(
             input, kernel_size=kernel_size, padding=0, dilation=dilation, stride=stride
         )

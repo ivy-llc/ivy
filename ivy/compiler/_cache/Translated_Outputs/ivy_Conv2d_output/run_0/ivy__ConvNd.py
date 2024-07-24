@@ -1,8 +1,8 @@
 import ivy
 from collections import OrderedDict
 
-import math
 import typing
+import math
 from typing import Optional
 
 from .ivy__helpers import ivy__calculate_fan_in_and_fan_out
@@ -129,14 +129,14 @@ class ivy__ConvNd(ivy.Module):
         if transposed:
             self.weight = ivy.Array(
                 ivy_empty_frnt(
-                    (in_channels, out_channels // groups, *kernel_size),
+                    (*kernel_size, out_channels // groups, in_channels),
                     **factory_kwargs,
                 )
             )
         else:
             self.weight = ivy.Array(
                 ivy_empty_frnt(
-                    (out_channels, in_channels // groups, *kernel_size),
+                    (*kernel_size, in_channels // groups, out_channels),
                     **factory_kwargs,
                 )
             )

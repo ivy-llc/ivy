@@ -1,9 +1,9 @@
 import tensorflow
 
 from typing import Optional
-from typing import Sequence
 from typing import Literal
 from typing import Union
+from typing import Sequence
 
 from .tensorflow__helpers import tensorflow__get_size_bknd
 from .tensorflow__helpers import tensorflow_exists_bknd
@@ -54,11 +54,11 @@ def tensorflow_interpolate(
             mode = (
                 "bilinear"
                 if mode == "linear"
-                else (
-                    "area"
-                    if mode == "tf_area"
-                    else "nearest" if mode == "nearest-exact" else mode
-                )
+                else "area"
+                if mode == "tf_area"
+                else "nearest"
+                if mode == "nearest-exact"
+                else mode
             )
         if mode == "tf_bicubic":
             mode = "bicubic"

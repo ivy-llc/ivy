@@ -509,7 +509,9 @@ def tensorflow_default_bknd(
     return (
         x
         if tensorflow_exists_bknd(x)
-        else default_val() if default_callable else default_val
+        else default_val()
+        if default_callable
+        else default_val
     )
 
 
@@ -914,27 +916,21 @@ def tensorflow_nested_map_bknd(
         to_ignore = to_ignore + (class_instance,)
     tuple_check_fn = tensorflow_default_bknd(
         _tuple_check_fn,
-        (
-            (lambda x_, t_: isinstance(x_, t_))
-            if include_derived["tuple"]
-            else lambda x_, t_: type(x_) is t_
-        ),
+        (lambda x_, t_: isinstance(x_, t_))
+        if include_derived["tuple"]
+        else lambda x_, t_: type(x_) is t_,
     )
     list_check_fn = tensorflow_default_bknd(
         _list_check_fn,
-        (
-            (lambda x_, t_: isinstance(x_, t_))
-            if include_derived["list"]
-            else lambda x_, t_: type(x_) is t_
-        ),
+        (lambda x_, t_: isinstance(x_, t_))
+        if include_derived["list"]
+        else lambda x_, t_: type(x_) is t_,
     )
     dict_check_fn = tensorflow_default_bknd(
         _dict_check_fn,
-        (
-            (lambda x_, t_: isinstance(x_, t_))
-            if include_derived["dict"]
-            else lambda x_, t_: type(x_) is t_
-        ),
+        (lambda x_, t_: isinstance(x_, t_))
+        if include_derived["dict"]
+        else lambda x_, t_: type(x_) is t_,
     )
     if tuple_check_fn(x, tuple) and not isinstance(x, to_ignore):
         ret_list = [
@@ -1137,7 +1133,11 @@ def tensorflow_asarray(
             ret = tensorflow.convert_to_tensor(obj_np, dtype)
         else:
             ret = tensorflow.convert_to_tensor(obj, dtype)
-        return tensorflow.identity(ret) if copy or ret.device != device else ret
+        return (
+            tensorflow.identity(ret)
+            if copy or tensorflow_as_native_dev(tensorflow_dev(ret)) != device
+            else ret
+        )
 
 
 @tensorflow_handle_array_like_without_promotion
@@ -1355,7 +1355,9 @@ def tensorflow_where(
         dtype = (
             x1.dtype
             if hasattr(x1, "dtype")
-            else x2.dtype if hasattr(x2, "dtype") else tensorflow_default_dtype_bknd()
+            else x2.dtype
+            if hasattr(x2, "dtype")
+            else tensorflow_default_dtype_bknd()
         )
         if not tensorflow_is_array_bknd(x1):
             x1 = tensorflow_asarray(x1, dtype=dtype)
@@ -1767,7 +1769,9 @@ def tensorflow__parse_query_bknd(query, x_shape, scatter=False):
             (
                 tensorflow_reshape_bknd_(arr, (-1,))
                 if len(arr.shape) > 1
-                else tensorflow_expand_dims(arr) if not len(arr.shape) else arr
+                else tensorflow_expand_dims(arr)
+                if not len(arr.shape)
+                else arr
             )
             for arr in array_queries
         ]
@@ -1959,11 +1963,9 @@ def tensorflow_default_uint_dtype_bknd(
 
             if tensorflow_nested_argwhere_bknd(
                 input,
-                lambda x: (
-                    tensorflow_dtype(x) == "uint64"
-                    if is_native(x)
-                    else x > 9223372036854775807 and x != math.inf
-                ),
+                lambda x: tensorflow_dtype(x) == "uint64"
+                if is_native(x)
+                else x > 9223372036854775807 and x != math.inf,
                 stop_after_n_found=1,
             ):
                 ret = tf.uint64
@@ -2197,7 +2199,9 @@ def tensorflow_multiply(
         dtype = (
             x1.dtype
             if hasattr(x1, "dtype")
-            else x2.dtype if hasattr(x2, "dtype") else tensorflow_default_dtype_bknd()
+            else x2.dtype
+            if hasattr(x2, "dtype")
+            else tensorflow_default_dtype_bknd()
         )
         if not tensorflow_is_array_bknd(x1):
             x1 = tensorflow_asarray(x1, dtype=dtype)
@@ -2357,11 +2361,9 @@ def tensorflow_scatter_nd(
         dtype = tensorflow_promote_types_bknd(out.dtype, updates_dtype)
     updates = tensorflow.cast(
         updates,
-        (
-            tensorflow_as_native_dtype(dtype)
-            if tensorflow_exists_bknd(out)
-            else updates_dtype
-        ),
+        tensorflow_as_native_dtype(dtype)
+        if tensorflow_exists_bknd(out)
+        else updates_dtype,
     )
     expected_shape = (
         list(tensorflow.shape(indices)[:-1])
@@ -2708,21 +2710,17 @@ def tensorflow_default_int_dtype_bknd(
         elif isinstance(input, (list, tuple, dict)):
             if tensorflow_nested_argwhere_bknd(
                 input,
-                lambda x: (
-                    tensorflow_dtype(x) == "uint64"
-                    if tensorflow_is_array_bknd(x)
-                    else x > 9223372036854775807 and x != math.inf
-                ),
+                lambda x: tensorflow_dtype(x) == "uint64"
+                if tensorflow_is_array_bknd(x)
+                else x > 9223372036854775807 and x != math.inf,
                 stop_after_n_found=1,
             ):
                 ret = tf.uint64
             elif tensorflow_nested_argwhere_bknd(
                 input,
-                lambda x: (
-                    tensorflow_dtype(x) == "int64"
-                    if tensorflow_is_array_bknd(x)
-                    else x > 2147483647 and x != math.inf
-                ),
+                lambda x: tensorflow_dtype(x) == "int64"
+                if tensorflow_is_array_bknd(x)
+                else x > 2147483647 and x != math.inf,
                 stop_after_n_found=1,
             ):
                 ret = tf.int64
@@ -2864,8 +2862,8 @@ def tensorflow_split_frnt(tensor, split_size_or_sections, dim=0):
 
 
 @tensorflow_handle_methods
-def tensorflow_split_frnt_(arr, split_size, dim=0):
-    return tensorflow_split_frnt(arr, split_size, dim)
+def tensorflow_split_frnt_(tensor, split_size, dim=0):
+    return tensorflow_split_frnt(tensor, split_size, dim)
 
 
 @tensorflow_handle_methods_1
@@ -2883,7 +2881,9 @@ def tensorflow_add(
         dtype = (
             x1.dtype
             if hasattr(x1, "dtype")
-            else x2.dtype if hasattr(x2, "dtype") else tensorflow_default_dtype_bknd()
+            else x2.dtype
+            if hasattr(x2, "dtype")
+            else tensorflow_default_dtype_bknd()
         )
         if not tensorflow_is_array_bknd(x1):
             x1 = tensorflow_asarray(x1, dtype=dtype)
@@ -2905,8 +2905,8 @@ def tensorflow_add_frnt(input, other, *, alpha=1, out=None):
 
 
 @tensorflow_handle_methods
-def tensorflow_add_frnt_(arr, other, *, alpha=1):
-    return tensorflow_add_frnt(arr, other, alpha=alpha)
+def tensorflow_add_frnt_(tensor, other, *, alpha=1):
+    return tensorflow_add_frnt(tensor, other, alpha=alpha)
 
 
 def tensorflow__handle_padding_bknd(x, strides, filters, padding):

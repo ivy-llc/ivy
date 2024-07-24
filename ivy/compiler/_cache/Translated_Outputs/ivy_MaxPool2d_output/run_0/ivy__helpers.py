@@ -15,7 +15,8 @@ def ivy_handle_methods(fn):
         if ivy.is_array(args[0]):
             return fn(*args, **kwargs)
         else:
-            fn_name = extract_function_name(fn.__name__)
+            pattern = "_bknd_|_bknd|_frnt_|_frnt"
+            fn_name = extract_function_name(re.sub(pattern, "", fn.__name__))
             new_fn = getattr(args[0], fn_name)
             return new_fn(*args[1:], **kwargs)
 
@@ -95,6 +96,55 @@ def ivy_reshape_frnt_(arr, *args, shape=None):
         raise ValueError("reshape() got no values for argument 'shape'")
 
 
+def ivy__handle_padding_shape_frnt(padding, n, mode):
+    padding = tuple(
+        [
+            (padding[i * 2], padding[i * 2 + 1])
+            for i in range(int(len(padding) / 2) - 1, -1, -1)
+        ]
+    )
+    if mode == "circular":
+        padding = padding + ((0, 0),) * (n - len(padding))
+    else:
+        padding = ((0, 0),) * (n - len(padding)) + padding
+    if mode == "circular":
+        padding = tuple(list(padding)[::-1])
+    return padding
+
+
+def ivy_pad_frnt(input, pad, mode="constant", value=0):
+    if any([(pad_value < 0) for pad_value in pad]):
+        pad = list(pad)
+        slices = []
+        for n in reversed(range(len(pad) // 2)):
+            i = n * 2
+            j = i + 1
+            start = None
+            stop = None
+            if pad[i] < 0:
+                start = -pad[i]
+                pad[i] = 0
+            if pad[j] < 0:
+                stop = pad[j]
+                pad[j] = 0
+            slices.append(slice(start, stop))
+        ndim = len(input.shape)
+        while len(slices) < ndim:
+            slices.insert(0, slice(None))
+        input = input[tuple(slices)]
+    value = 0 if value is None else value
+    mode_dict = {
+        "constant": "constant",
+        "reflect": "reflect",
+        "replicate": "edge",
+        "circular": "wrap",
+    }
+    if mode not in mode_dict:
+        raise ValueError(f"Unsupported padding mode: {mode}")
+    pad = ivy__handle_padding_shape_frnt(pad, len(input.shape), mode)
+    return ivy.pad(input, pad, mode=mode_dict[mode], constant_values=value)
+
+
 def ivy_permute_frnt(input, dims):
     return ivy.permute_dims(input, axes=dims, copy=False)
 
@@ -153,55 +203,6 @@ def ivy_unfold_frnt(input, kernel_size, dilation=1, padding=0, stride=1):
     )
 
 
-def ivy__handle_padding_shape_frnt(padding, n, mode):
-    padding = tuple(
-        [
-            (padding[i * 2], padding[i * 2 + 1])
-            for i in range(int(len(padding) / 2) - 1, -1, -1)
-        ]
-    )
-    if mode == "circular":
-        padding = padding + ((0, 0),) * (n - len(padding))
-    else:
-        padding = ((0, 0),) * (n - len(padding)) + padding
-    if mode == "circular":
-        padding = tuple(list(padding)[::-1])
-    return padding
-
-
-def ivy_pad_frnt(input, pad, mode="constant", value=0):
-    if any([(pad_value < 0) for pad_value in pad]):
-        pad = list(pad)
-        slices = []
-        for n in reversed(range(len(pad) // 2)):
-            i = n * 2
-            j = i + 1
-            start = None
-            stop = None
-            if pad[i] < 0:
-                start = -pad[i]
-                pad[i] = 0
-            if pad[j] < 0:
-                stop = pad[j]
-                pad[j] = 0
-            slices.append(slice(start, stop))
-        ndim = len(input.shape)
-        while len(slices) < ndim:
-            slices.insert(0, slice(None))
-        input = input[tuple(slices)]
-    value = 0 if value is None else value
-    mode_dict = {
-        "constant": "constant",
-        "reflect": "reflect",
-        "replicate": "edge",
-        "circular": "wrap",
-    }
-    if mode not in mode_dict:
-        raise ValueError(f"Unsupported padding mode: {mode}")
-    pad = ivy__handle_padding_shape_frnt(pad, len(input.shape), mode)
-    return ivy.pad(input, pad, mode=mode_dict[mode], constant_values=value)
-
-
 def ivy_tile_frnt(input, dims):
     try:
         tup = tuple(dims)
@@ -247,7 +248,9 @@ def ivy_gather_frnt(input, dim, index, *, sparse_grad=False, out=None):
         )
     dim = dim % len(input.shape)
     all_indices = ivy.argwhere(ivy.full(index.shape, True))
-    gather_locations = ivy.reshape(index, [ivy.prod(ivy.array(index.shape))])
+    gather_locations = ivy.reshape(
+        index, [ivy.prod(ivy.array(index.shape), dtype=ivy.int64)]
+    )
     gather_indices = []
     for axis in range(len(index.shape)):
         if axis == dim:
@@ -292,27 +295,43 @@ def ivy_max_pool2d_frnt(
     if return_indices:
         if isinstance(stride, (list, tuple)) and len(stride) == 1:
             stride = stride[0]
+        DIMS = 2
+        x_shape = list(input.shape[2:])
+        new_kernel = [
+            (kernel_size[i] + (kernel_size[i] - 1) * (dilation[i] - 1))
+            for i in range(DIMS)
+        ]
+        if isinstance(padding, int):
+            padding = [(padding,) * 2] * DIMS
+        elif isinstance(padding, (list, tuple)) and len(padding) == DIMS:
+            padding = [((padding[i],) * 2) for i in range(DIMS)]
+        if isinstance(stride, int):
+            stride = (stride,) * DIMS
+        if ceil_mode:
+            for i in range(DIMS):
+                padding[i] = ivy.functional.ivy.experimental.layers._padding_ceil_mode(
+                    x_shape[i], new_kernel[i], padding[i], stride[i]
+                )
+        padding = padding[1], padding[0]
+        pad_list = list(ivy.flatten(padding))
         in_shape = input.shape
         H = in_shape[-2]
         W = in_shape[-1]
         n_indices = H * W
         input_indices = ivy_arange_frnt(0, n_indices, dtype=ivy.int64)
         input_indices = ivy_reshape_frnt_(input_indices, (1, 1, H, W))
+        input = ivy_pad_frnt(input, pad_list, value=float("-inf"))
+        input_indices = ivy_pad_frnt(input_indices, pad_list, value=0)
         unfolded_indices = ivy_permute_frnt_(
             ivy_unfold_frnt(
                 input_indices,
                 kernel_size=kernel_size,
-                padding=padding,
+                padding=0,
                 dilation=dilation,
                 stride=stride,
             ),
             (0, 2, 1),
         )[0]
-        input = ivy_pad_frnt(
-            input,
-            [padding] * 4 if isinstance(padding, int) else padding * 2,
-            value=float("-inf"),
-        )
         unfolded_values = ivy_unfold_frnt(
             input, kernel_size=kernel_size, padding=0, dilation=dilation, stride=stride
         )

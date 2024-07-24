@@ -1,8 +1,8 @@
 import ivy.functional.frontends.torch as torch
 import ivy.functional.frontends.torch.nn as nn
 
-import math
 import typing
+import math
 from typing import Optional
 
 from .helpers import Translated__calculate_fan_in_and_fan_out

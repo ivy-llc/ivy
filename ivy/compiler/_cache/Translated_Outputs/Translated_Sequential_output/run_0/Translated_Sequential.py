@@ -1,7 +1,7 @@
 import ivy.functional.frontends.torch.nn as nn
 
-import typing
 import operator
+import typing
 from itertools import islice
 from typing import overload
 from collections import OrderedDict

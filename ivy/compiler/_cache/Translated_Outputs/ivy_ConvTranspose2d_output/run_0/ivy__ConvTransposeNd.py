@@ -60,13 +60,7 @@ class ivy__ConvTransposeNd(ivy__ConvNd):
                 output_size = output_size[num_non_spatial_dims:]
             if len(output_size) != num_spatial_dims:
                 raise ValueError(
-                    "ConvTranspose{}D: for {}D input, output_size must have {} or {} elements (got {})".format(
-                        num_spatial_dims,
-                        ivy_dim_frnt_(input),
-                        num_spatial_dims,
-                        num_non_spatial_dims + num_spatial_dims,
-                        len(output_size),
-                    )
+                    f"ConvTranspose{num_spatial_dims}D: for {ivy_dim_frnt_(input)}D input, output_size must have {num_spatial_dims} or {num_non_spatial_dims + num_spatial_dims} elements (got {len(output_size)})"
                 )
             min_sizes = []
             max_sizes = []

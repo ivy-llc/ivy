@@ -146,7 +146,7 @@ class tensorflow__ConvNd(tensorflow_keras_Layer):
         if transposed:
             self.weight = tensorflow.Variable(
                 tensorflow_empty_frnt(
-                    (in_channels, out_channels // groups, *kernel_size),
+                    (*kernel_size, out_channels // groups, in_channels),
                     **factory_kwargs,
                 ),
                 name="weight",
@@ -154,7 +154,7 @@ class tensorflow__ConvNd(tensorflow_keras_Layer):
         else:
             self.weight = tensorflow.Variable(
                 tensorflow_empty_frnt(
-                    (out_channels, in_channels // groups, *kernel_size),
+                    (*kernel_size, in_channels // groups, out_channels),
                     **factory_kwargs,
                 ),
                 name="weight",

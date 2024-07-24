@@ -2,8 +2,8 @@ import ivy
 from collections import OrderedDict
 import threading
 
-import typing
 import operator
+import typing
 from itertools import islice
 from typing import overload
 

@@ -1,9 +1,9 @@
 import tensorflow
 import tensorflow as tf
 
-from typing import Union
-from typing import Optional
 from typing import Sequence
+from typing import Optional
+from typing import Union
 
 from .tensorflow__helpers import tensorflow__reshape_fortran_tf
 from .tensorflow__helpers import tensorflow_check_elem_in_list

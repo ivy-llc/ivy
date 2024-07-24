@@ -151,7 +151,8 @@ def ivy_handle_methods(fn):
         if ivy.is_array(args[0]):
             return fn(*args, **kwargs)
         else:
-            fn_name = extract_function_name(fn.__name__)
+            pattern = "_bknd_|_bknd|_frnt_|_frnt"
+            fn_name = extract_function_name(re.sub(pattern, "", fn.__name__))
             new_fn = getattr(args[0], fn_name)
             return new_fn(*args[1:], **kwargs)
 

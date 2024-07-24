@@ -70,13 +70,7 @@ class tensorflow__ConvTransposeNd(tensorflow__ConvNd):
                     )
             if len(output_size) != num_spatial_dims:
                 raise ValueError(
-                    "ConvTranspose{}D: for {}D input, output_size must have {} or {} elements (got {})".format(
-                        num_spatial_dims,
-                        tensorflow_dim_frnt_(input),
-                        num_spatial_dims,
-                        num_non_spatial_dims + num_spatial_dims,
-                        len(output_size),
-                    )
+                    f"ConvTranspose{num_spatial_dims}D: for {tensorflow_dim_frnt_(input)}D input, output_size must have {num_spatial_dims} or {num_non_spatial_dims + num_spatial_dims} elements (got {len(output_size)})"
                 )
             min_sizes = []
             max_sizes = []

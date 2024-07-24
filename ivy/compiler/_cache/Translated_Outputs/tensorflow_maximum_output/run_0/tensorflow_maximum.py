@@ -1,7 +1,7 @@
 import tensorflow
 
-from typing import Optional
 from typing import Union
+from typing import Optional
 
 from .tensorflow__helpers import tensorflow_asarray
 from .tensorflow__helpers import tensorflow_default_dtype_bknd
@@ -22,7 +22,9 @@ def tensorflow_maximum(
         dtype = (
             x1.dtype
             if hasattr(x1, "dtype")
-            else x2.dtype if hasattr(x2, "dtype") else tensorflow_default_dtype_bknd()
+            else x2.dtype
+            if hasattr(x2, "dtype")
+            else tensorflow_default_dtype_bknd()
         )
         if not tensorflow_is_array_bknd(x1):
             x1 = tensorflow_asarray(x1, dtype=dtype)

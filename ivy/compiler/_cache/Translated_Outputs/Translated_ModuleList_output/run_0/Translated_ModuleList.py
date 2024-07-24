@@ -2,9 +2,9 @@ import ivy.functional.frontends.torch.nn as nn
 
 import operator
 import typing
-from collections import abc as container_abcs
-from collections import OrderedDict
 from itertools import chain
+from collections import OrderedDict
+from collections import abc as container_abcs
 
 from .helpers import Translated__addindent
 
