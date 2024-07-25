@@ -25,6 +25,9 @@ _round = round
 
 
 def is_native_array(x, /, *, exclusive=False):
+    if "keras.src.backend.tensorflow.core.Variable" in str(x.__class__):
+        # ensure `KerasVariable` classifies as a native array
+        return not exclusive
     if isinstance(x, (tf.Tensor, tf.Variable, tf.TensorArray)):
         if exclusive and isinstance(x, tf.Variable):
             return False
