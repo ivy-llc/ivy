@@ -22,13 +22,15 @@ def tensorflow_random_uniform(
 ):
     shape = tensorflow__check_bounds_and_get_shape_bknd(
         low,
-        float(
-            tensorflow.experimental.numpy.finfo(tensorflow.float32).max
-            if dtype is None
-            else tensorflow.experimental.numpy.finfo(dtype).max
-        )
-        if high is None
-        else high,
+        (
+            float(
+                tensorflow.experimental.numpy.finfo(tensorflow.float32).max
+                if dtype is None
+                else tensorflow.experimental.numpy.finfo(dtype).max
+            )
+            if high is None
+            else high
+        ),
         shape,
     )
     low = tensorflow.cast(low, dtype)
