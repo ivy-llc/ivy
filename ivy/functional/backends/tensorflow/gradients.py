@@ -79,9 +79,11 @@ def execute_with_gradients(
     # Conversion of KerasVariable to tf.Variable within xs_required container, so they can be watched
     if ivy.is_ivy_container(xs_required):
         ivy.nested_map(
-            lambda x: x._value
-            if "keras.src.backend.tensorflow.core.Variable" in str(x.__class__)
-            else x,
+            lambda x: (
+                x._value
+                if "keras.src.backend.tensorflow.core.Variable" in str(x.__class__)
+                else x
+            ),
             xs_required,
             include_derived=True,
         )

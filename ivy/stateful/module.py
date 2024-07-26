@@ -783,7 +783,17 @@ class _KerasIvyModule(Module):
         self._native_params = ivy.Container(
             OrderedDict(
                 sorted(
-                    [(param.name if tf.__version__ < "2.16.0" else _get_variable_name(param), param) for param in self._native_module.variables],
+                    [
+                        (
+                            (
+                                param.name
+                                if tf.__version__ < "2.16.0"
+                                else _get_variable_name(param)
+                            ),
+                            param,
+                        )
+                        for param in self._native_module.variables
+                    ],
                     key=lambda kv: kv[0],
                 )
             ),
