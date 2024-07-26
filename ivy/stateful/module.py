@@ -775,10 +775,15 @@ class _KerasIvyModule(Module):
         return self._native_params
 
     def _build(self, *args, **kwargs):
+        import tensorflow as tf
+
+        def _get_variable_name(variable):
+            return variable.path.split("/")[-2] + "/" + variable.name
+
         self._native_params = ivy.Container(
             OrderedDict(
                 sorted(
-                    [(param.name, param) for param in self._native_module.variables],
+                    [(param.name if tf.__version__ < "2.16.0" else _get_variable_name(param), param) for param in self._native_module.variables],
                     key=lambda kv: kv[0],
                 )
             ),
