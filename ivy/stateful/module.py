@@ -778,7 +778,7 @@ class _KerasIvyModule(Module):
         import tensorflow as tf
 
         def _get_variable_name(variable):
-            return variable.path.split("/")[-2] + "/" + variable.name
+            return variable.path.split("/")[-2] + "/" + variable.name + ":0"
 
         self._native_params = ivy.Container(
             OrderedDict(
