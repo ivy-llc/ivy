@@ -1,7 +1,7 @@
 import tensorflow
 
-from typing import Union
 from typing import Optional
+from typing import Union
 
 from .tensorflow__helpers import tensorflow_as_native_dtype
 from .tensorflow__helpers import tensorflow_default_dtype_bknd

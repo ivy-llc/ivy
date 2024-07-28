@@ -199,7 +199,6 @@ class tensorflow__ConvNd(tensorflow_keras_Layer):
 
     def super___init__(self, *args, device=None, devices=None, **kwargs):
         super().__init__(
-            self,
             *args,
             device=device,
             devices=devices,

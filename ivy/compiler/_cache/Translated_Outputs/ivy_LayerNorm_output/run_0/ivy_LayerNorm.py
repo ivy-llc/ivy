@@ -78,7 +78,6 @@ class ivy_LayerNorm(ivy.Module):
 
     def super___init__(self, *args, device=None, devices=None, **kwargs):
         super().__init__(
-            self,
             *args,
             device=device,
             devices=devices,

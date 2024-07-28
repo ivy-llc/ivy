@@ -2,10 +2,10 @@ import tensorflow
 from collections import OrderedDict
 import threading
 
-import operator
 import typing
-from itertools import islice
+import operator
 from typing import overload
+from itertools import islice
 
 from .tensorflow__stateful import Model as tensorflow_keras_Model
 from .tensorflow__helpers import tensorflow__is_variable_bknd
@@ -183,7 +183,6 @@ class tensorflow_Sequential(tensorflow_keras_Model):
 
     def super___init__(self, *args, device=None, devices=None, **kwargs):
         super().__init__(
-            self,
             *args,
             device=device,
             devices=devices,

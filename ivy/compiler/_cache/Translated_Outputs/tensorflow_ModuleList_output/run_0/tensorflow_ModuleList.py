@@ -4,8 +4,8 @@ import threading
 
 import operator
 import typing
-from itertools import chain
 from collections import abc as container_abcs
+from itertools import chain
 
 from .tensorflow__stateful import Model as tensorflow_keras_Model
 from .tensorflow__helpers import tensorflow__addindent
@@ -142,7 +142,6 @@ class tensorflow_ModuleList(tensorflow_keras_Model):
 
     def super___init__(self, *args, device=None, devices=None, **kwargs):
         super().__init__(
-            self,
             *args,
             device=device,
             devices=devices,

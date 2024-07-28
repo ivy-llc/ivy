@@ -8,6 +8,8 @@ from tensorflow.python.util import nest
 from typing import NamedTuple, Callable, Any, Tuple, List, Dict, Type, Union
 import inspect
 from collections import OrderedDict
+from packaging.version import parse
+import keras
 
 
 def get_assignment_dict():
@@ -102,6 +104,11 @@ def _dict_unflatten(values: List[Any], context: Context) -> Dict[Any, Any]:
 
 
 _register_pytree_node(dict, _dict_flatten, _dict_unflatten)
+
+if parse(keras.__version__).major > 2:
+    _register_pytree_node(
+        keras.src.utils.tracking.TrackedDict, _dict_flatten, _dict_unflatten
+    )
 
 
 def _get_node_type(pytree: Any) -> Any:
@@ -213,6 +220,42 @@ def tree_unflatten(values: List[Any], spec: TreeSpec) -> PyTree:
         start = end
 
     return unflatten_fn(child_pytrees, spec.context)
+
+
+def serialize_obj(obj):
+    if inspect.isclass(obj) or isinstance(obj, type):
+        return {"cls_module": obj.__module__, "cls_name": obj.__name__}
+    return obj
+
+
+def recursive_serialize(d):
+    if isinstance(d, dict):
+        return {k: recursive_serialize(v) for k, v in d.items()}
+    elif isinstance(d, list):
+        return [recursive_serialize(v) for v in d]
+    else:
+        return serialize_obj(d)
+
+
+def deserialize_obj(serialized):
+    if (
+        isinstance(serialized, dict)
+        and "cls_module" in serialized
+        and "cls_name" in serialized
+    ):
+        module = __import__(serialized["cls_module"], fromlist=[serialized["cls_name"]])
+        cls = getattr(module, serialized["cls_name"])
+        return cls
+    return serialized
+
+
+def recursive_deserialize(d):
+    if isinstance(d, dict) and "cls_module" not in d:
+        return {k: recursive_deserialize(v) for k, v in d.items()}
+    elif isinstance(d, list):
+        return [recursive_deserialize(v) for v in d]
+    else:
+        return deserialize_obj(d)
 
 
 class ModelHelpers:
@@ -658,7 +701,19 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
             return ret
         elif hasattr(self.__call__, "wrapped"):
             return self.__call__(*args, **kwargs)
-        return super(Layer, self).__call__(*args, **kwargs)  # noqa: UP008
+
+        # Get the signature of the call method
+        call_signature = inspect.signature(self.call)
+
+        # Convert all positional arguments to keyword arguments based on the signature
+        new_kwargs = {}
+        for idx, (param_name, param) in enumerate(call_signature.parameters.items()):
+            if idx < len(args):
+                new_kwargs[param_name] = args[idx]
+
+        # Merge the existing kwargs
+        new_kwargs.update(kwargs)
+        return super(Layer, self).__call__(**new_kwargs)  # noqa: UP008
 
     @tf.autograph.experimental.do_not_convert
     def build(
@@ -672,6 +727,9 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
     ):
         self._built = True
         return
+
+    def _lock_state(self):
+        pass
 
     @tf.autograph.experimental.do_not_convert
     def register_buffer(self, name: str, value: Union[tf.Tensor, tf.Variable]):
@@ -705,6 +763,15 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
             "When subclassing the `Module` class, you should implement a `call` method."
         )
 
+    def get_build_config(self):
+        config = super().get_build_config()
+        config = recursive_serialize(config)
+        return config
+
+    def build_from_config(self, config):
+        config = recursive_deserialize(config)
+        return super().build_from_config(config)
+
     def get_config(self):
         base_config = super().get_config()
         config = {}
@@ -717,7 +784,7 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
         var_positional_arg_encountered = False
         var_positional_arg_name = None
         offset = 0
-        for i, arg in enumerate(self._args[1:]):
+        for i, arg in enumerate(self._args):
             arg_name = arg_names[min(i, len(arg_names) - 1)]
             if var_positional_arg_encountered:
                 config.update(
@@ -748,10 +815,13 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
         kwargs = self._kwargs.copy()
         kwargs.pop("devices", None)
         config.update(**kwargs)
-        return {**base_config, **config}
+        new_config = {**base_config, **config}
+        new_config = recursive_serialize(new_config)
+        return new_config
 
     @classmethod
     def from_config(cls, config):
+        config = recursive_deserialize(config)
         # Get the signature of the __init__ method
         init_signature = inspect.signature(cls.__init__)
         arg_names = list(init_signature.parameters.keys())
@@ -1319,6 +1389,7 @@ class Model(tf.keras.Model, ModelHelpers):
             return ret
         elif hasattr(self.__call__, "wrapped"):
             return self.__call__(*args, **kwargs)
+
         return super(Model, self).__call__(*args, **kwargs)  # noqa: UP008
 
     @tf.autograph.experimental.do_not_convert
@@ -1366,6 +1437,15 @@ class Model(tf.keras.Model, ModelHelpers):
             "When subclassing the `Module` class, you should implement a `call` method."
         )
 
+    def get_build_config(self):
+        config = super().get_build_config()
+        config = recursive_serialize(config)
+        return config
+
+    def build_from_config(self, config):
+        config = recursive_deserialize(config)
+        return super().build_from_config(config)
+
     def get_config(self):
         base_config = super().get_config()
         config = {}
@@ -1378,7 +1458,7 @@ class Model(tf.keras.Model, ModelHelpers):
         var_positional_arg_encountered = False
         var_positional_arg_name = None
         offset = 0
-        for i, arg in enumerate(self._args[1:]):
+        for i, arg in enumerate(self._args):
             arg_name = arg_names[min(i, len(arg_names) - 1)]
             if var_positional_arg_encountered:
                 config.update(
@@ -1409,10 +1489,13 @@ class Model(tf.keras.Model, ModelHelpers):
         kwargs = self._kwargs.copy()
         kwargs.pop("devices", None)
         config.update(**kwargs)
-        return {**base_config, **config}
+        new_config = {**base_config, **config}
+        new_config = recursive_serialize(new_config)
+        return new_config
 
     @classmethod
     def from_config(cls, config):
+        config = recursive_deserialize(config)
         # Get the signature of the __init__ method
         init_signature = inspect.signature(cls.__init__)
         arg_names = list(init_signature.parameters.keys())

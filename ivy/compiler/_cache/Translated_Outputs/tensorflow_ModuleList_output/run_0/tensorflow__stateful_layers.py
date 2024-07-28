@@ -235,7 +235,13 @@ class KerasDepthwiseConv2D(tf.keras.layers.DepthwiseConv2D):
     @store_frame_info
     def __call__(self, *args, **kwargs):
         if not self.built:
-            return super().__call__(*args, **kwargs)
+            res = super().__call__(*args, **kwargs)
+            # recompute build shapes based on transposed input
+            order = (0, 2, 3, 1)
+            input_shape = args[0].shape
+            new_shape = tuple(input_shape[i] for i in order)
+            self._build_shapes_dict = {"input_shape": new_shape}
+            return res
         return self.call(args[0])
 
     def __repr__(self):
@@ -260,17 +266,20 @@ class KerasDepthwiseConv2D(tf.keras.layers.DepthwiseConv2D):
         new_name = attr_map[name] if name in attr_map else name
         return super().__getattribute__(new_name)
 
-    def build(self, input_shapes):
+    def build(self, input_shape):
+        _, ch, _, _ = input_shape
         if (
             not self.built
             and self.data_format == "channels_last"
             and os.environ.get("DATA_FORMAT", "channels_first") == "channels_first"
         ):
             order = (0, 2, 3, 1)
-            new_shape = tuple(input_shapes[i] for i in order)
-            input_shapes = tf.TensorShape(new_shape)
+            new_shape = tuple(input_shape[i] for i in order)
+            input_shape = tf.TensorShape(new_shape)
 
-        super().build(input_shapes)
+        super().build(input_shape)
+        # modify the channel axis to avoid shape assertion checks by keras
+        self.input_spec.axes = {1: ch}
         return
 
     @tensorflow_handle_transpose_in_input_and_output
@@ -394,7 +403,13 @@ class KerasConv2D(tf.keras.layers.Conv2D):
     @store_frame_info
     def __call__(self, *args, **kwargs):
         if not self.built:
-            return super().__call__(*args, **kwargs)
+            res = super().__call__(*args, **kwargs)
+            # recompute build shapes based on transposed input
+            order = (0, 2, 3, 1)
+            input_shape = args[0].shape
+            new_shape = tuple(input_shape[i] for i in order)
+            self._build_shapes_dict = {"input_shape": new_shape}
+            return res
         return self.call(args[0])
 
     def __repr__(self):
@@ -418,17 +433,20 @@ class KerasConv2D(tf.keras.layers.Conv2D):
         new_name = attr_map[name] if name in attr_map else name
         return super().__getattribute__(new_name)
 
-    def build(self, input_shapes):
+    def build(self, input_shape):
+        _, ch, _, _ = input_shape
         if (
             not self.built
             and self.data_format == "channels_last"
             and os.environ.get("DATA_FORMAT", "channels_first") == "channels_first"
         ):
             order = (0, 2, 3, 1)
-            new_shape = tuple(input_shapes[i] for i in order)
-            input_shapes = tf.TensorShape(new_shape)
+            new_shape = tuple(input_shape[i] for i in order)
+            input_shape = tf.TensorShape(new_shape)
 
-        super().build(input_shapes)
+        super().build(input_shape)
+        # modify the channel axis to avoid shape assertion checks by keras
+        self.input_spec.axes = {1: ch}
         return
 
     @tensorflow_handle_transpose_in_input_and_output
@@ -520,8 +538,8 @@ class KerasDense(tf.keras.layers.Dense):
         new_name = attr_map[name] if name in attr_map else name
         return super().__getattribute__(new_name)
 
-    def build(self, input_shapes):
-        super().build(input_shapes)
+    def build(self, input_shape):
+        super().build(input_shape)
         return
 
     def call(self, input, training=False):
@@ -632,20 +650,29 @@ class KerasBatchNorm2D(tf.keras.layers.BatchNormalization):
     @store_frame_info
     def __call__(self, *args, **kwargs):
         if not self.built:
-            return super().__call__(*args, **kwargs)
+            res = super().__call__(*args, **kwargs)
+            # recompute build shapes based on transposed input
+            order = (0, 2, 3, 1)
+            input_shape = args[0].shape
+            new_shape = tuple(input_shape[i] for i in order)
+            self._build_shapes_dict = {"input_shape": new_shape}
+            return res
         return self.call(args[0])
 
-    def build(self, input_shapes):
+    def build(self, input_shape):
+        _, ch, _, _ = input_shape
         if (
             not self.built
             and self.axis == -1
             and os.environ.get("DATA_FORMAT", "channels_first") == "channels_first"
         ):
             order = (0, 2, 3, 1)
-            new_shape = tuple(input_shapes[i] for i in order)
-            input_shapes = tf.TensorShape(new_shape)
+            new_shape = tuple(input_shape[i] for i in order)
+            input_shape = tf.TensorShape(new_shape)
 
-        super().build(input_shapes)
+        super().build(input_shape)
+        # modify the channel axis to avoid shape assertion checks by keras
+        self.input_spec.axes = {1: ch}
         return
 
     @tensorflow_handle_transpose_in_input_and_output

@@ -92,7 +92,6 @@ class tensorflow_ModuleDict(tensorflow_keras_Model):
 
     def super___init__(self, *args, device=None, devices=None, **kwargs):
         super().__init__(
-            self,
             *args,
             device=device,
             devices=devices,

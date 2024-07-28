@@ -4,8 +4,8 @@ import threading
 
 import operator
 import typing
-from itertools import chain
 from collections import abc as container_abcs
+from itertools import chain
 
 from .ivy__helpers import ivy__addindent
 from .ivy__helpers import ivy_add_frnt_
@@ -124,7 +124,6 @@ class ivy_ModuleList(ivy.Module):
 
     def super___init__(self, *args, device=None, devices=None, **kwargs):
         super().__init__(
-            self,
             *args,
             device=device,
             devices=devices,

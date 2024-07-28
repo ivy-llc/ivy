@@ -2,10 +2,10 @@ import ivy
 from collections import OrderedDict
 import threading
 
-import operator
 import typing
-from itertools import islice
+import operator
 from typing import overload
+from itertools import islice
 
 from .ivy__helpers import ivy_add_frnt_
 from .ivy__helpers import ivy_split_frnt_
@@ -169,7 +169,6 @@ class ivy_Sequential(ivy.Module):
 
     def super___init__(self, *args, device=None, devices=None, **kwargs):
         super().__init__(
-            self,
             *args,
             device=device,
             devices=devices,
