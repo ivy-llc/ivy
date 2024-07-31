@@ -1,28 +1,42 @@
 import tensorflow
-import tensorflow as tf
 
+import math
 from typing import Union
 from typing import Sequence
 from typing import Optional
 
-from .tensorflow__helpers import tensorflow_split_1
+from .tensorflow__helpers import tensorflow_handle_array_like_without_promotion
 
 
+@tensorflow_handle_array_like_without_promotion
 def tensorflow_split(
-    self: tensorflow.Tensor,
+    x: Union[tensorflow.Tensor, tensorflow.Variable],
     /,
     *,
     copy: Optional[bool] = None,
     num_or_size_splits: Optional[
-        Union[int, Sequence[int], tensorflow.Tensor, tf.Tensor]
+        Union[int, Sequence[int], Union[tensorflow.Tensor, tensorflow.Variable]]
     ] = None,
     axis: int = 0,
     with_remainder: bool = False,
 ):
-    return tensorflow_split_1(
-        self,
-        copy=copy,
-        num_or_size_splits=num_or_size_splits,
-        axis=axis,
-        with_remainder=with_remainder,
-    )
+    if x.shape == ():
+        if num_or_size_splits is not None and num_or_size_splits != 1:
+            raise Exception(
+                f"input array had no shape, but num_sections specified was {num_or_size_splits}"
+            )
+        return [x]
+    if num_or_size_splits is None:
+        dim_size = tensorflow.shape(x)[axis]
+        num_or_size_splits = int(dim_size)
+    if isinstance(num_or_size_splits, (tensorflow.Tensor, tensorflow.Variable)):
+        num_or_size_splits = tensorflow.cast(num_or_size_splits, tensorflow.int32)
+    elif isinstance(num_or_size_splits, int) and with_remainder:
+        num_chunks = x.shape[axis] / num_or_size_splits
+        num_chunks_int = math.floor(num_chunks)
+        remainder = num_chunks - num_chunks_int
+        if remainder != 0:
+            num_or_size_splits = [num_or_size_splits] * num_chunks_int + [
+                int(remainder * num_or_size_splits)
+            ]
+    return tensorflow.split(x, num_or_size_splits, axis)

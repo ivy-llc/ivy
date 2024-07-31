@@ -1,19 +1,23 @@
 import tensorflow
 import numpy as np
 
-from typing import TypeVar
 from typing import Union
+from typing import TypeVar
 from typing import Optional
 
-from .tensorflow_NestedSequence import tensorflow_NestedSequence
-from .tensorflow__helpers import tensorflow__asarray_infer_dtype
-from .tensorflow__helpers import tensorflow__asarray_to_native_arrays_and_back
+from .tensorflow_NestedSequence_bknd import tensorflow_NestedSequence_bknd
+from .tensorflow__helpers import tensorflow__asarray_infer_dtype_bknd
+from .tensorflow__helpers import tensorflow__asarray_to_native_arrays_and_back_bknd
+from .tensorflow__helpers import tensorflow_as_native_dev
+from .tensorflow__helpers import tensorflow_dev
+from .tensorflow__helpers import tensorflow_handle_array_like_without_promotion
 
 SupportsBufferProtocol = TypeVar("SupportsBufferProtocol")
 
 
-@tensorflow__asarray_to_native_arrays_and_back
-@tensorflow__asarray_infer_dtype
+@tensorflow_handle_array_like_without_promotion
+@tensorflow__asarray_to_native_arrays_and_back_bknd
+@tensorflow__asarray_infer_dtype_bknd
 def tensorflow_asarray(
     obj: Union[
         tensorflow.Tensor,
@@ -22,7 +26,7 @@ def tensorflow_asarray(
         bool,
         int,
         float,
-        tensorflow_NestedSequence,
+        tensorflow_NestedSequence_bknd,
         SupportsBufferProtocol,
         np.ndarray,
     ],
@@ -45,4 +49,8 @@ def tensorflow_asarray(
             ret = tensorflow.convert_to_tensor(obj_np, dtype)
         else:
             ret = tensorflow.convert_to_tensor(obj, dtype)
-        return tensorflow.identity(ret) if copy or ret.device != device else ret
+        return (
+            tensorflow.identity(ret)
+            if copy or tensorflow_as_native_dev(tensorflow_dev(ret)) != device
+            else ret
+        )

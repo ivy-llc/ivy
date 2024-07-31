@@ -3,9 +3,9 @@ import numpy as np
 
 from typing import Union
 
-from .tensorflow__helpers import tensorflow_default_complex_dtype
-from .tensorflow__helpers import tensorflow_default_float_dtype
-from .tensorflow__helpers import tensorflow_default_int_dtype
+from .tensorflow__helpers import tensorflow_default_complex_dtype_bknd
+from .tensorflow__helpers import tensorflow_default_float_dtype_bknd
+from .tensorflow__helpers import tensorflow_default_int_dtype_bknd
 
 native_dtype_dict = {
     "int8": tensorflow.int8,
@@ -30,11 +30,11 @@ def tensorflow_as_native_dtype(
     dtype_in: Union[tensorflow.DType, str, bool, int, float, np.dtype],
 ):
     if dtype_in is int:
-        return tensorflow_default_int_dtype(as_native=True)
+        return tensorflow_default_int_dtype_bknd(as_native=True)
     if dtype_in is float:
-        return tensorflow_default_float_dtype(as_native=True)
+        return tensorflow_default_float_dtype_bknd(as_native=True)
     if dtype_in is complex:
-        return tensorflow_default_complex_dtype(as_native=True)
+        return tensorflow_default_complex_dtype_bknd(as_native=True)
     if dtype_in is bool:
         return tensorflow.bool
     if isinstance(dtype_in, np.dtype):

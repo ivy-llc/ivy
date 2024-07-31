@@ -8,7 +8,6 @@ from ivy import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import (
     to_ivy_arrays_and_back,
 )
-from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
 
 
 @with_unsupported_dtypes(
@@ -309,7 +308,7 @@ def max_pool2d(
 
         if ceil_mode:
             for i in range(DIMS):
-                padding[i] = _padding_ceil_mode(
+                padding[i] = ivy.functional.ivy.experimental.layers._padding_ceil_mode(
                     x_shape[i], new_kernel[i], padding[i], stride[i]
                 )
         # torch pad takes width padding first, then height padding

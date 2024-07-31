@@ -5,8 +5,10 @@ from typing import Union
 
 from .tensorflow__helpers import tensorflow_check_gather_nd_input_valid
 from .tensorflow__helpers import tensorflow_gather_nd_helper
+from .tensorflow__helpers import tensorflow_handle_array_like_without_promotion
 
 
+@tensorflow_handle_array_like_without_promotion
 def tensorflow_gather_nd(
     params: Union[tensorflow.Tensor, tensorflow.Variable],
     indices: Union[tensorflow.Tensor, tensorflow.Variable],

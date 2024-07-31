@@ -1,19 +1,21 @@
 import tensorflow
 
-from typing import Union
-from typing import Optional
 from typing import Sequence
 from typing import Tuple
+from typing import Optional
+from typing import Union
 
 from .tensorflow__helpers import tensorflow__extend_2d_padding
 from .tensorflow__helpers import tensorflow__extend_3d_strides_dilations
-from .tensorflow__helpers import tensorflow__get_x_data_format
+from .tensorflow__helpers import tensorflow__get_x_data_format_bknd
 from .tensorflow__helpers import tensorflow__pad_before_conv
 from .tensorflow__helpers import tensorflow__x_dil_before_conv
 from .tensorflow__helpers import tensorflow_depthwise_conv2d
 from .tensorflow__helpers import tensorflow_dev
+from .tensorflow__helpers import tensorflow_handle_array_like_without_promotion
 
 
+@tensorflow_handle_array_like_without_promotion
 def tensorflow_conv_general_dilated(
     x: Union[tensorflow.Tensor, tensorflow.Variable],
     filters: Union[tensorflow.Tensor, tensorflow.Variable],
@@ -48,7 +50,7 @@ def tensorflow_conv_general_dilated(
         x = tensorflow.transpose(x, (0, *range(2, dims + 2), 1))
         data_format = "channel_last"
         permuted_x = True
-    data_format = tensorflow__get_x_data_format(dims, data_format)
+    data_format = tensorflow__get_x_data_format_bknd(dims, data_format)
     x = tensorflow__x_dil_before_conv(x, dims, x_dilations, data_format)
     if dims == 2:
         padding = tensorflow__extend_2d_padding(padding, data_format)

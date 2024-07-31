@@ -926,7 +926,14 @@ def _to_pairs(x, n, m=2):
             ),
             as_array=False,
         )
-    return x
+    # convert any arrays to scalars
+    list_x = list(x)
+    for idx in range(n):
+        new_tuple = []
+        for item in list_x[idx]:
+            new_tuple.append(ivy.to_scalar(item))
+        list_x[idx] = tuple(new_tuple)
+    return tuple(list_x)
 
 
 def check_scalar(x, force_integer, force_positive):

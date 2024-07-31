@@ -32,13 +32,20 @@ from . import backend_version
 def random_uniform(
     *,
     low: Union[float, paddle.Tensor] = 0.0,
-    high: Union[float, paddle.Tensor] = 1.0,
+    high: Union[float, paddle.Tensor, None] = 1.0,
     shape: Optional[Union[paddle.Tensor, ivy.NativeShape, Sequence[int]]] = None,
     dtype: paddle.dtype,
     device: core.Place = None,
     seed=None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if high is None:
+        # default to float32, as this is the tf standard
+        high = (
+            paddle.finfo(dtype).max
+            if dtype is not None
+            else paddle.finfo(paddle.float32).max
+        )
     if not dtype:
         dtype = ivy.default_int_dtype()
     dtype = ivy.as_native_dtype(dtype)

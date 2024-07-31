@@ -1,12 +1,14 @@
 import tensorflow
 import tensorflow as tf
 
-from typing import Optional
 from typing import Union
+from typing import Optional
 
 from .tensorflow__helpers import tensorflow_as_native_dtype
+from .tensorflow__helpers import tensorflow_handle_array_like_without_promotion
 
 
+@tensorflow_handle_array_like_without_promotion
 def tensorflow_astype(
     x: Union[tensorflow.Tensor, tensorflow.Variable],
     dtype: Union[tf.DType, str],

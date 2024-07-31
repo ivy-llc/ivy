@@ -1,6 +1,6 @@
 from .ivy__ConvNd import ivy__ConvNd
-from .ivy__helpers import ivy_conv2d
-from .ivy__helpers import ivy_pad
+from .ivy__helpers import ivy_conv2d_frnt
+from .ivy__helpers import ivy_pad_frnt
 from .ivy__helpers import ivy_parse
 
 
@@ -41,8 +41,8 @@ class ivy_Conv2d(ivy__ConvNd):
 
     def _conv_forward(self, input, weight, bias):
         if self.padding_mode != "zeros":
-            return ivy_conv2d(
-                ivy_pad(
+            return ivy_conv2d_frnt(
+                ivy_pad_frnt(
                     input, self._reversed_padding_repeated_twice, mode=self.padding_mode
                 ),
                 weight,
@@ -52,7 +52,7 @@ class ivy_Conv2d(ivy__ConvNd):
                 self.dilation,
                 self.groups,
             )
-        return ivy_conv2d(
+        return ivy_conv2d_frnt(
             input, weight, bias, self.stride, self.padding, self.dilation, self.groups
         )
 

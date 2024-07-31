@@ -6,21 +6,21 @@ import threading
 import typing
 
 from .tensorflow__stateful import Layer as tensorflow_keras_Layer
-from .tensorflow__helpers import tensorflow__is_variable
-from .tensorflow__helpers import tensorflow_add
-from .tensorflow__helpers import tensorflow_default
-from .tensorflow__helpers import tensorflow_device
-from .tensorflow__helpers import tensorflow_empty
-from .tensorflow__helpers import tensorflow_fill_
-from .tensorflow__helpers import tensorflow_ones
+from .tensorflow__helpers import tensorflow__is_variable_bknd
+from .tensorflow__helpers import tensorflow_add_frnt_
+from .tensorflow__helpers import tensorflow_default_bknd
+from .tensorflow__helpers import tensorflow_device_frnt
+from .tensorflow__helpers import tensorflow_empty_frnt
+from .tensorflow__helpers import tensorflow_fill__frnt_
 from .tensorflow__helpers import tensorflow_ones_
-from .tensorflow__helpers import tensorflow_set_item
-from .tensorflow__helpers import tensorflow_split_2
+from .tensorflow__helpers import tensorflow_ones_frnt
+from .tensorflow__helpers import tensorflow_set_item_bknd
+from .tensorflow__helpers import tensorflow_split_frnt_
 from .tensorflow__helpers import tensorflow_store_config_info
-from .tensorflow__helpers import tensorflow_tensor
-from .tensorflow__helpers import tensorflow_zero_
-from .tensorflow__helpers import tensorflow_zeros
+from .tensorflow__helpers import tensorflow_tensor_frnt
+from .tensorflow__helpers import tensorflow_zero__frnt_
 from .tensorflow__helpers import tensorflow_zeros_
+from .tensorflow__helpers import tensorflow_zeros_frnt
 
 
 class tensorflow__NormBase(tensorflow_keras_Layer):
@@ -63,26 +63,26 @@ class tensorflow__NormBase(tensorflow_keras_Layer):
         self.track_running_stats = track_running_stats
         if self.affine:
             self.weight = tensorflow.Variable(
-                tensorflow_empty(num_features, **factory_kwargs), name="weight"
+                tensorflow_empty_frnt(num_features, **factory_kwargs), name="weight"
             )
             self.bias = tensorflow.Variable(
-                tensorflow_empty(num_features, **factory_kwargs), name="bias"
+                tensorflow_empty_frnt(num_features, **factory_kwargs), name="bias"
             )
         else:
             self.register_parameter("weight", None)
             self.register_parameter("bias", None)
         if self.track_running_stats:
             self.register_buffer(
-                "running_mean", tensorflow_zeros(num_features, **factory_kwargs)
+                "running_mean", tensorflow_zeros_frnt(num_features, **factory_kwargs)
             )
             self.register_buffer(
-                "running_var", tensorflow_ones(num_features, **factory_kwargs)
+                "running_var", tensorflow_ones_frnt(num_features, **factory_kwargs)
             )
             self.running_mean: typing.Any
             self.running_var: typing.Any
             self.register_buffer(
                 "num_batches_tracked",
-                tensorflow_tensor(
+                tensorflow_tensor_frnt(
                     0,
                     dtype=tf.int64,
                     **{k: v for k, v in factory_kwargs.items() if k != "dtype"},
@@ -97,9 +97,9 @@ class tensorflow__NormBase(tensorflow_keras_Layer):
 
     def reset_running_stats(self):
         if self.track_running_stats:
-            tensorflow_zero_(self.running_mean)
-            tensorflow_fill_(self.running_var, 1)
-            tensorflow_zero_(self.num_batches_tracked)
+            tensorflow_zero__frnt_(self.running_mean)
+            tensorflow_fill__frnt_(self.running_var, 1)
+            tensorflow_zero__frnt_(self.num_batches_tracked)
 
     def reset_parameters(self):
         self.reset_running_stats()
@@ -130,15 +130,15 @@ class tensorflow__NormBase(tensorflow_keras_Layer):
             num_batches_tracked_key = prefix + "num_batches_tracked"
             if num_batches_tracked_key not in state_dict:
                 with tensorflow.name_scope("state_dict"):
-                    state_dict = tensorflow_set_item(
+                    state_dict = tensorflow_set_item_bknd(
                         state_dict,
                         num_batches_tracked_key,
                         (
                             self.num_batches_tracked
                             if self.num_batches_tracked is not None
                             and self.num_batches_tracked.device
-                            != tensorflow_device("meta")
-                            else tensorflow_tensor(0, dtype=tf.int64)
+                            != tensorflow_device_frnt("meta")
+                            else tensorflow_tensor_frnt(0, dtype=tf.int64)
                         ),
                     )
         super()._load_from_state_dict(
@@ -153,7 +153,6 @@ class tensorflow__NormBase(tensorflow_keras_Layer):
 
     def super___init__(self, *args, device=None, devices=None, **kwargs):
         super().__init__(
-            self,
             *args,
             device=device,
             devices=devices,
@@ -215,7 +214,7 @@ class tensorflow__NormBase(tensorflow_keras_Layer):
         extra_repr = self._extra_repr()
         if extra_repr:
             with tensorflow.name_scope("extra_lines"):
-                extra_lines = tensorflow_split_2(extra_repr, "\n")
+                extra_lines = tensorflow_split_frnt_(extra_repr, "\n")
         child_lines = []
         for key, module in self._module_dict.items():
             mod_str = repr(module)
@@ -323,19 +322,19 @@ class tensorflow__NormBase(tensorflow_keras_Layer):
                 if v is None or id(v) in memo:
                     continue
                 if remove_duplicate:
-                    tensorflow_add(memo, id(v))
+                    tensorflow_add_frnt_(memo, id(v))
                 name = module_prefix + ("." if module_prefix else "") + k
                 yield name, v
 
     def _replace_update_v(self, new_v, native=None):
         with tensorflow.name_scope("native"):
-            native = tensorflow_default(native, self)
+            native = tensorflow_default_bknd(native, self)
         for k, v in new_v.items():
             if isinstance(v, dict):
                 native.module_dict[k] = self._replace_update_v(v, native.module_dict[k])
             elif isinstance(v, tensorflow.Variable):
                 native.__setattr__(k, v)
-            elif tensorflow__is_variable(v):
+            elif tensorflow__is_variable_bknd(v):
                 native.__setattr__(k, tensorflow.Variable(v))
             elif isinstance(v, tensorflow.Variable):
                 native.__setattr__(k, tensorflow.Variable(v))
@@ -347,13 +346,13 @@ class tensorflow__NormBase(tensorflow_keras_Layer):
 
     def _update_v(self, new_v, native=None):
         with tensorflow.name_scope("native"):
-            native = tensorflow_default(native, self)
+            native = tensorflow_default_bknd(native, self)
         for k, v in new_v.items():
             if isinstance(v, dict):
                 native.module_dict[k] = self._replace_update_v(v, native.module_dict[k])
             elif isinstance(v, tensorflow.Variable):
                 native.__setattr__(k, v)
-            elif tensorflow__is_variable(v):
+            elif tensorflow__is_variable_bknd(v):
                 native.__setattr__(k, tensorflow.Variable(v))
             elif isinstance(v, tensorflow.Variable):
                 native.__setattr__(k, tensorflow.Variable(v))
@@ -407,7 +406,7 @@ class tensorflow__NormBase(tensorflow_keras_Layer):
     def get_submodule(self, target):
         if target == "":
             return self
-        atoms: typing.Any = tensorflow_split_2(target, ".")
+        atoms: typing.Any = tensorflow_split_frnt_(target, ".")
         mod: typing.Any = self
         for item in atoms:
             if not hasattr(mod, item):
@@ -444,7 +443,7 @@ class tensorflow__NormBase(tensorflow_keras_Layer):
         memo = set()
         for name, module in self._module_dict.items():
             if module is not None and id(module) not in memo:
-                tensorflow_add(memo, id(module))
+                tensorflow_add_frnt_(memo, id(module))
                 yield name, module
 
     def named_modules(self, memo=None, prefix="", remove_duplicate=True):
@@ -456,7 +455,7 @@ class tensorflow__NormBase(tensorflow_keras_Layer):
             memo = set()
         if id(self) not in memo:
             if remove_duplicate:
-                tensorflow_add(memo, id(self))
+                tensorflow_add_frnt_(memo, id(self))
             yield prefix, self
             for name, module in self._module_dict.items():
                 if module is None:

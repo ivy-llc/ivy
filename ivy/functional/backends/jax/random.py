@@ -43,13 +43,18 @@ def _getRNG():
 def random_uniform(
     *,
     low: Union[float, JaxArray] = 0.0,
-    high: Union[float, JaxArray] = 1.0,
+    high: Union[float, JaxArray, None] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: jaxlib.xla_extension.Device = None,
     dtype: jnp.dtype,
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if high is None:
+        # default to float32, as this is the tf standard
+        high = float(
+            jnp.finfo(dtype).max if dtype is not None else jnp.finfo(jnp.float32).max
+        )
     shape = _check_bounds_and_get_shape(low, high, shape).shape
 
     if seed:

@@ -5,7 +5,7 @@ import re
 import warnings
 
 
-def ivy_empty(
+def ivy_empty_frnt(
     *args,
     size=None,
     out=None,
@@ -29,11 +29,11 @@ def ivy_empty(
     return ivy.empty(shape=size, dtype=dtype, device=device, out=out)
 
 
-def ivy_dim(arr):
+def ivy_dim_frnt_(arr):
     return arr.ndim
 
 
-def ivy_size(arr, dim=None):
+def ivy_size_frnt_(arr, dim=None):
     shape = arr.shape
     if dim is None:
         return shape
@@ -46,15 +46,15 @@ def ivy_size(arr, dim=None):
 
 
 def ivy__calculate_fan_in_and_fan_out(tensor):
-    dimensions = ivy_dim(tensor)
+    dimensions = ivy_dim_frnt_(tensor)
     if dimensions < 2:
         raise ValueError(
             "Fan in and fan out can not be computed for tensor with fewer than 2 dimensions"
         )
-    num_input_fmaps = ivy_size(tensor, 1)
-    num_output_fmaps = ivy_size(tensor, 0)
+    num_input_fmaps = ivy_size_frnt_(tensor, 1)
+    num_output_fmaps = ivy_size_frnt_(tensor, 0)
     receptive_field_size = 1
-    if ivy_dim(tensor) > 2:
+    if ivy_dim_frnt_(tensor) > 2:
         for s in tensor.shape[2:]:
             receptive_field_size *= s
     fan_in = num_input_fmaps * receptive_field_size
@@ -105,7 +105,7 @@ def ivy_calculate_gain(nonlinearity, param=None):
         raise ValueError(f"Unsupported nonlinearity {nonlinearity}")
 
 
-def ivy_uniform_(arr, from_=0, to=1, *, generator=None):
+def ivy_uniform__frnt_(arr, from_=0, to=1, *, generator=None):
     ret = ivy.random_uniform(
         low=from_, high=to, shape=arr.shape, dtype=arr.dtype, seed=generator
     )
@@ -123,18 +123,18 @@ def ivy_kaiming_uniform_(
     gain = ivy_calculate_gain(nonlinearity, a)
     std = gain / math.sqrt(fan)
     bound = math.sqrt(3.0) * std
-    return ivy_uniform_(tensor, -bound, bound, generator=generator)
+    return ivy_uniform__frnt_(tensor, -bound, bound, generator=generator)
 
 
 def ivy__no_grad_uniform_(tensor, a, b, generator=None):
-    return ivy_uniform_(tensor, a, b, generator=generator)
+    return ivy_uniform__frnt_(tensor, a, b, generator=generator)
 
 
-def ivy_uniform__1(tensor, a=0.0, b=1.0, generator=None):
+def ivy_uniform_(tensor, a=0.0, b=1.0, generator=None):
     return ivy__no_grad_uniform_(tensor, a, b, generator)
 
 
-def ivy_linear(input, weight, bias=None):
+def ivy_linear_frnt(input, weight, bias=None):
     return ivy.linear(input, weight, bias=bias)
 
 
@@ -149,7 +149,8 @@ def ivy_handle_methods(fn):
         if ivy.is_array(args[0]):
             return fn(*args, **kwargs)
         else:
-            fn_name = extract_function_name(fn.__name__)
+            pattern = "_bknd_|_bknd|_frnt_|_frnt"
+            fn_name = extract_function_name(re.sub(pattern, "", fn.__name__))
             new_fn = getattr(args[0], fn_name)
             return new_fn(*args[1:], **kwargs)
 
@@ -157,7 +158,7 @@ def ivy_handle_methods(fn):
 
 
 @ivy_handle_methods
-def ivy_split_1(tensor, split_size_or_sections, dim=0):
+def ivy_split_frnt(tensor, split_size_or_sections, dim=0):
     if isinstance(split_size_or_sections, int):
         split_size = split_size_or_sections
         split_size_or_sections = [split_size] * (tensor.shape[dim] // split_size)
@@ -174,15 +175,15 @@ def ivy_split_1(tensor, split_size_or_sections, dim=0):
 
 
 @ivy_handle_methods
-def ivy_split(arr, split_size, dim=0):
-    return ivy_split_1(arr, split_size, dim)
+def ivy_split_frnt_(arr, split_size, dim=0):
+    return ivy_split_frnt(arr, split_size, dim)
 
 
 @ivy_handle_methods
-def ivy_add_1(input, other, *, alpha=1, out=None):
+def ivy_add_frnt(input, other, *, alpha=1, out=None):
     return ivy.add(input, other, alpha=alpha, out=out)
 
 
 @ivy_handle_methods
-def ivy_add(arr, other, *, alpha=1):
-    return ivy_add_1(arr, other, alpha=alpha)
+def ivy_add_frnt_(arr, other, *, alpha=1):
+    return ivy_add_frnt(arr, other, alpha=alpha)

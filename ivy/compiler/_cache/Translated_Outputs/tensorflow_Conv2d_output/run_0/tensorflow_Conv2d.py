@@ -1,9 +1,9 @@
 import tensorflow
 
 from .tensorflow__ConvNd import tensorflow__ConvNd
-from .tensorflow__helpers import tensorflow_conv2d
+from .tensorflow__helpers import tensorflow_conv2d_frnt
 from .tensorflow__helpers import tensorflow_handle_transpose_in_input_and_output
-from .tensorflow__helpers import tensorflow_pad
+from .tensorflow__helpers import tensorflow_pad_frnt
 from .tensorflow__helpers import tensorflow_parse
 
 
@@ -50,8 +50,8 @@ class tensorflow_Conv2d(tensorflow__ConvNd):
 
     def _conv_forward(self, input, weight, bias):
         if self.padding_mode != "zeros":
-            return tensorflow_conv2d(
-                tensorflow_pad(
+            return tensorflow_conv2d_frnt(
+                tensorflow_pad_frnt(
                     input, self._reversed_padding_repeated_twice, mode=self.padding_mode
                 ),
                 weight,
@@ -61,7 +61,7 @@ class tensorflow_Conv2d(tensorflow__ConvNd):
                 self.dilation,
                 self.groups,
             )
-        return tensorflow_conv2d(
+        return tensorflow_conv2d_frnt(
             input, weight, bias, self.stride, self.padding, self.dilation, self.groups
         )
 

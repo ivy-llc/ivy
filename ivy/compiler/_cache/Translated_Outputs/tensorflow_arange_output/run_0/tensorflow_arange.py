@@ -4,9 +4,11 @@ from typing import Optional
 from typing import Union
 
 from .tensorflow__helpers import tensorflow_as_native_dtype
-from .tensorflow__helpers import tensorflow_default_dtype
+from .tensorflow__helpers import tensorflow_default_dtype_bknd
+from .tensorflow__helpers import tensorflow_handle_array_like_without_promotion
 
 
+@tensorflow_handle_array_like_without_promotion
 def tensorflow_arange(
     start: float,
     /,
@@ -40,7 +42,7 @@ def tensorflow_arange(
         else:
             return tensorflow.range(start, stop, delta=step)
     else:
-        dtype = tensorflow_as_native_dtype(tensorflow_default_dtype(dtype=dtype))
+        dtype = tensorflow_as_native_dtype(tensorflow_default_dtype_bknd(dtype=dtype))
         if dtype in [
             tensorflow.int8,
             tensorflow.uint8,

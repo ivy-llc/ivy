@@ -1,17 +1,17 @@
 import ivy
 from collections import OrderedDict
 
-import math
 import typing
+import math
 from typing import Optional
 
 from .ivy__helpers import ivy__calculate_fan_in_and_fan_out
 from .ivy__helpers import ivy__reverse_repeat_tuple
-from .ivy__helpers import ivy_add
-from .ivy__helpers import ivy_empty
+from .ivy__helpers import ivy_add_frnt_
+from .ivy__helpers import ivy_empty_frnt
 from .ivy__helpers import ivy_kaiming_uniform_
-from .ivy__helpers import ivy_split
-from .ivy__helpers import ivy_uniform__1
+from .ivy__helpers import ivy_split_frnt_
+from .ivy__helpers import ivy_uniform_
 
 
 class ivy__ConvNd(ivy.Module):
@@ -128,20 +128,20 @@ class ivy__ConvNd(ivy.Module):
             )
         if transposed:
             self.weight = ivy.Array(
-                ivy_empty(
+                ivy_empty_frnt(
                     (*kernel_size, out_channels // groups, in_channels),
                     **factory_kwargs,
                 )
             )
         else:
             self.weight = ivy.Array(
-                ivy_empty(
+                ivy_empty_frnt(
                     (*kernel_size, in_channels // groups, out_channels),
                     **factory_kwargs,
                 )
             )
         if bias:
-            self.bias = ivy.Array(ivy_empty(out_channels, **factory_kwargs))
+            self.bias = ivy.Array(ivy_empty_frnt(out_channels, **factory_kwargs))
         else:
             self.register_parameter("bias", None)
         self.reset_parameters()
@@ -152,7 +152,7 @@ class ivy__ConvNd(ivy.Module):
             fan_in, _ = ivy__calculate_fan_in_and_fan_out(self.weight)
             if fan_in != 0:
                 bound = 1 / math.sqrt(fan_in)
-                ivy_uniform__1(self.bias, -bound, bound)
+                ivy_uniform_(self.bias, -bound, bound)
 
     def extra_repr(self):
         s = "{in_channels}, {out_channels}, kernel_size={kernel_size}, stride={stride}"
@@ -177,7 +177,6 @@ class ivy__ConvNd(ivy.Module):
 
     def super___init__(self, *args, device=None, devices=None, **kwargs):
         super().__init__(
-            self,
             *args,
             device=device,
             devices=devices,
@@ -233,7 +232,7 @@ class ivy__ConvNd(ivy.Module):
         extra_lines = []
         extra_repr = self._extra_repr()
         if extra_repr:
-            extra_lines = ivy_split(extra_repr, "\n")
+            extra_lines = ivy_split_frnt_(extra_repr, "\n")
         child_lines = []
         for key, module in self._module_dict.items():
             mod_str = repr(module)
@@ -333,7 +332,7 @@ class ivy__ConvNd(ivy.Module):
                 if v is None or id(v) in memo:
                     continue
                 if remove_duplicate:
-                    ivy_add(memo, id(v))
+                    ivy_add_frnt_(memo, id(v))
                 name = module_prefix + ("." if module_prefix else "") + k
                 yield name, v
 
@@ -414,7 +413,7 @@ class ivy__ConvNd(ivy.Module):
     def get_submodule(self, target):
         if target == "":
             return self
-        atoms: typing.Any = ivy_split(target, ".")
+        atoms: typing.Any = ivy_split_frnt_(target, ".")
         mod: typing.Any = self
         for item in atoms:
             if not hasattr(mod, item):
@@ -451,7 +450,7 @@ class ivy__ConvNd(ivy.Module):
         memo = set()
         for name, module in self._module_dict.items():
             if module is not None and id(module) not in memo:
-                ivy_add(memo, id(module))
+                ivy_add_frnt_(memo, id(module))
                 yield name, module
 
     def named_modules(self, memo=None, prefix="", remove_duplicate=True):
@@ -463,7 +462,7 @@ class ivy__ConvNd(ivy.Module):
             memo = set()
         if id(self) not in memo:
             if remove_duplicate:
-                ivy_add(memo, id(self))
+                ivy_add_frnt_(memo, id(self))
             yield prefix, self
             for name, module in self._module_dict.items():
                 if module is None:

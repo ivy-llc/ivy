@@ -238,7 +238,7 @@ from .experimental import *
 from . import control_flow_ops
 from .control_flow_ops import *
 from . import module
-from .module import Model
+from .module import Module as Model
 
 
 # sub-backends

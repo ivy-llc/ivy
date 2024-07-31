@@ -4,17 +4,17 @@ import threading
 
 import typing
 
-from .ivy__helpers import ivy_add
-from .ivy__helpers import ivy_device
-from .ivy__helpers import ivy_empty
-from .ivy__helpers import ivy_fill_
-from .ivy__helpers import ivy_ones
+from .ivy__helpers import ivy_add_frnt_
+from .ivy__helpers import ivy_device_frnt
+from .ivy__helpers import ivy_empty_frnt
+from .ivy__helpers import ivy_fill__frnt_
 from .ivy__helpers import ivy_ones_
-from .ivy__helpers import ivy_split
-from .ivy__helpers import ivy_tensor
-from .ivy__helpers import ivy_zero_
-from .ivy__helpers import ivy_zeros
+from .ivy__helpers import ivy_ones_frnt
+from .ivy__helpers import ivy_split_frnt_
+from .ivy__helpers import ivy_tensor_frnt
+from .ivy__helpers import ivy_zero__frnt_
 from .ivy__helpers import ivy_zeros_
+from .ivy__helpers import ivy_zeros_frnt
 
 
 class ivy__NormBase(ivy.Module):
@@ -55,23 +55,23 @@ class ivy__NormBase(ivy.Module):
         self.affine = affine
         self.track_running_stats = track_running_stats
         if self.affine:
-            self.weight = ivy.Array(ivy_empty(num_features, **factory_kwargs))
-            self.bias = ivy.Array(ivy_empty(num_features, **factory_kwargs))
+            self.weight = ivy.Array(ivy_empty_frnt(num_features, **factory_kwargs))
+            self.bias = ivy.Array(ivy_empty_frnt(num_features, **factory_kwargs))
         else:
             self.register_parameter("weight", None)
             self.register_parameter("bias", None)
         if self.track_running_stats:
             self.register_buffer(
-                "running_mean", ivy_zeros(num_features, **factory_kwargs)
+                "running_mean", ivy_zeros_frnt(num_features, **factory_kwargs)
             )
             self.register_buffer(
-                "running_var", ivy_ones(num_features, **factory_kwargs)
+                "running_var", ivy_ones_frnt(num_features, **factory_kwargs)
             )
             self.running_mean: typing.Any
             self.running_var: typing.Any
             self.register_buffer(
                 "num_batches_tracked",
-                ivy_tensor(
+                ivy_tensor_frnt(
                     0,
                     dtype=ivy.int64,
                     **{k: v for k, v in factory_kwargs.items() if k != "dtype"},
@@ -86,9 +86,9 @@ class ivy__NormBase(ivy.Module):
 
     def reset_running_stats(self):
         if self.track_running_stats:
-            ivy_zero_(self.running_mean)
-            ivy_fill_(self.running_var, 1)
-            ivy_zero_(self.num_batches_tracked)
+            ivy_zero__frnt_(self.running_mean)
+            ivy_fill__frnt_(self.running_var, 1)
+            ivy_zero__frnt_(self.num_batches_tracked)
 
     def reset_parameters(self):
         self.reset_running_stats()
@@ -121,8 +121,8 @@ class ivy__NormBase(ivy.Module):
                 state_dict[num_batches_tracked_key] = (
                     self.num_batches_tracked
                     if self.num_batches_tracked is not None
-                    and self.num_batches_tracked.device != ivy_device("meta")
-                    else ivy_tensor(0, dtype=ivy.int64)
+                    and self.num_batches_tracked.device != ivy_device_frnt("meta")
+                    else ivy_tensor_frnt(0, dtype=ivy.int64)
                 )
         super()._load_from_state_dict(
             state_dict,
@@ -136,7 +136,6 @@ class ivy__NormBase(ivy.Module):
 
     def super___init__(self, *args, device=None, devices=None, **kwargs):
         super().__init__(
-            self,
             *args,
             device=device,
             devices=devices,
@@ -192,7 +191,7 @@ class ivy__NormBase(ivy.Module):
         extra_lines = []
         extra_repr = self._extra_repr()
         if extra_repr:
-            extra_lines = ivy_split(extra_repr, "\n")
+            extra_lines = ivy_split_frnt_(extra_repr, "\n")
         child_lines = []
         for key, module in self._module_dict.items():
             mod_str = repr(module)
@@ -297,7 +296,7 @@ class ivy__NormBase(ivy.Module):
                 if v is None or id(v) in memo:
                     continue
                 if remove_duplicate:
-                    ivy_add(memo, id(v))
+                    ivy_add_frnt_(memo, id(v))
                 name = module_prefix + ("." if module_prefix else "") + k
                 yield name, v
 
@@ -378,7 +377,7 @@ class ivy__NormBase(ivy.Module):
     def get_submodule(self, target):
         if target == "":
             return self
-        atoms: typing.Any = ivy_split(target, ".")
+        atoms: typing.Any = ivy_split_frnt_(target, ".")
         mod: typing.Any = self
         for item in atoms:
             if not hasattr(mod, item):
@@ -415,7 +414,7 @@ class ivy__NormBase(ivy.Module):
         memo = set()
         for name, module in self._module_dict.items():
             if module is not None and id(module) not in memo:
-                ivy_add(memo, id(module))
+                ivy_add_frnt_(memo, id(module))
                 yield name, module
 
     def named_modules(self, memo=None, prefix="", remove_duplicate=True):
@@ -427,7 +426,7 @@ class ivy__NormBase(ivy.Module):
             memo = set()
         if id(self) not in memo:
             if remove_duplicate:
-                ivy_add(memo, id(self))
+                ivy_add_frnt_(memo, id(self))
             yield prefix, self
             for name, module in self._module_dict.items():
                 if module is None:
