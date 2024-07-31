@@ -384,8 +384,8 @@ class ndarray:
 
     def sum(
         self,
-        *,
         axis=None,
+        *,
         dtype=None,
         out=None,
         keepdims=False,
