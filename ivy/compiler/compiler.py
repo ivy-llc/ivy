@@ -1,6 +1,16 @@
 from typing import Callable, Optional, List, Union, Iterable, Sequence, Mapping
 
 
+def clear_graph_cache():
+    """Clears the graph cache which gets populated if `graph_caching` is set
+    to `True` in `ivy.trace_graph`, `ivy.transpile` or `ivy.unify`. Use this to
+    reset or clear the graph cache if needed.
+    """
+    from ._compiler import clear_graph_cache as _clear_graph_cache
+
+    _clear_graph_cache()
+
+
 def source_to_source(
     object,
     source: str = "torch",
