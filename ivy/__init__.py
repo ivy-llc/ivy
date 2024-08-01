@@ -804,7 +804,13 @@ try:
 except:  # noqa: E722
     pass
 try:
-    from .compiler.compiler import clear_graph_cache, source_to_source, transpile, trace_graph, unify
+    from .compiler.compiler import (
+        clear_graph_cache,
+        source_to_source,
+        transpile,
+        trace_graph,
+        unify,
+    )
 except:  # noqa: E722
     pass  # Added for the finally statement
 try:
