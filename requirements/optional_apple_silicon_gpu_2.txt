@@ -1,12 +1,12 @@
-scipy
+autoflake  # for backend generation
+coverage
 dm-haiku  # mod_name=haiku
 flax
+ml-dtypes==0.2.0
+pandas
 protobuf
 pydriller
-coverage
-scikit-learn  # mod_name=sklearn
-pandas
 pyspark
-autoflake  # for backend generation
+scikit-learn  # mod_name=sklearn
+scipy
 snakeviz  # for profiling
-ml-dtypes==0.2.0
