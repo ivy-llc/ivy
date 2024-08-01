@@ -1,28 +1,25 @@
-# frameworks
-dm-haiku # mod_name=haiku
-flax
-jax[cpu]
-jaxlib
-paddlepaddle # mod_name=paddle
-pandas
-scikit-learn # mod_name=sklearn
-scipy
-tensorflow
-torch
-torchvision
-xgboost
-
-# other developer requirements
 autoflake # for backend generation
 coverage
+dm-haiku # mod_name=haiku
+flax
 h5py
 hypothesis==6.98.10 # fixed version till this get solved: https://github.com/HypothesisWorks/hypothesis/issues/3896
+jax
+jaxlib
 matplotlib
 networkx
 opencv-python # mod_name=cv2
+paddlepaddle # mod_name=paddle
+pandas
 pydriller
 pymongo
 pyspark
 pytest
 redis
+scikit-learn # mod_name=sklearn
+scipy
 snakeviz # for profiling
+tensorflow
+torch
+torchvision
+xgboost
