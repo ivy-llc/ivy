@@ -29,6 +29,17 @@ ARRAY_TO_BACKEND = {
 }
 
 
+def _data_to_new_backend(native_x, native_x_backend):
+    device = native_x_backend.dev(native_x)
+    try:
+        result = ivy.from_dlpack(native_x_backend.to_dlpack(native_x))
+        result = ivy.to_device(result, device)
+    except Exception:
+        np_res = native_x_backend.to_numpy(native_x)
+        result = ivy.asarray(np_res, device=device)
+    return result
+
+
 def _array_to_new_backend(
     x: Union[ivy.Array, ivy.NativeArray], native: bool = False
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -59,30 +70,36 @@ def _array_to_new_backend(
 
     # Handle the `Tensor` name clash in paddle and torch
     if not isinstance(native_x_backend, str):
-        native_x_backend = "torch" if "torch" in str(native_x.__class__) else "paddle"
+        native_x_backend = "paddle" if "paddle" in str(native_x.__class__) else "torch"
 
     # If the current backend and the backend for the given array match,
     # simply return the array as is
     if ivy.backend == native_x_backend:
         if native:
             return native_x
-        np_intermediary = ivy.to_numpy(native_x)
-        return ivy.array(np_intermediary)
+
+        return _data_to_new_backend(native_x, native_x_backend)
 
     # Otherwise, convert to the new backend
     else:
-        native_x_backend = ivy.with_backend(native_x_backend)
+        native_x_backend = ivy.with_backend(native_x_backend, cached=True)
         # Handle native variable instances here
-        if native_x_backend.gradients._is_variable(native_x):
+        if (
+            native_x.__class__.__module__ not in (
+                "numpy",
+                "jax.interpreters.xla",
+                "jaxlib.xla_extension",
+            )
+            and native_x_backend.gradients._is_variable(native_x)
+        ):
             x_data = native_x_backend.gradients._variable_data(native_x)
-            # x_data = _array_to_new_backend(x_data, native=True)
+            x_ivy = _data_to_new_backend(x_data, native_x_backend)
             from ivy.functional.ivy.gradients import _variable
 
-            return _variable(x_data).data if native else _variable(x_data)
+            return _variable(x_ivy).data if native else _variable(x_ivy)
 
-        np_intermediary = native_x_backend.to_numpy(native_x)
-        ret = ivy.array(np_intermediary)
-        return ret.data if native else ret
+        x_ivy = _data_to_new_backend(native_x, native_x_backend)
+        return x_ivy.data if native else x_ivy
 
 
 def _to_new_backend(
@@ -293,6 +310,7 @@ def to_new_backend(
     include_derived: Optional[Dict[str, bool]] = None,
     cont_inplace: bool = False,
     to_ignore: Optional[Union[type, Tuple[type]]] = None,
+    shallow: bool = False,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable]:
     """Return the input array converted to new backend framework form if it is
     an `ivy.Array`, `ivy.NativeArray` or NativeVariable instance. If nested is
@@ -330,7 +348,7 @@ def to_new_backend(
             ),
             x,
             include_derived,
-            shallow=False,
+            shallow=shallow,
         )
     return _to_new_backend(x, native=native, inplace=cont_inplace, to_ignore=to_ignore)
 
