@@ -90,7 +90,7 @@ def pytest_configure(config):
 
     if not no_mp:
         # we go multiprocessing, if  multiversion
-        known_backends = {"tensorflow", "torch", "jax"}
+        known_backends = {"tensorflow", "torch", "jax", "keras"}
         found_backends = set()
         for fw in backend_strs:
             if "/" in fw:

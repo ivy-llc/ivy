@@ -1585,6 +1585,8 @@ def handle_backend_invalid(fn: Callable) -> Callable:
                 target_backend is not None
                 and ivy.backend != ""
                 and ivy.current_backend_str() != target_backend.backend
+                # keras supports inputs instantiated with different backends
+                and ivy.current_backend_str() != "keras"
             ):
                 raise ivy.utils.exceptions.IvyInvalidBackendException(
                     "Operation not allowed. Array was instantiated with backend"

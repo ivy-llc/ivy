@@ -6,7 +6,14 @@ import os
 
 def _available_frameworks(path="/opt/fw/"):
     ret = []
-    for backend in ["numpy", "jax", "tensorflow", "torch", "paddle"]:
+    for backend in [
+        "numpy",
+        "jax",
+        "keras",
+        "paddle",
+        "tensorflow",
+        "torch",
+    ]:
         if find_spec(backend) is not None:
             ret.append(backend)
         elif os.path.exists(f"{path}{backend}"):
