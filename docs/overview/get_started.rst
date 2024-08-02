@@ -33,7 +33,7 @@ When installing from source, we recommend installing ivy's dev dependencies with
     pip install -r requirements/requirements.txt
     pip install -r requirements/optional.txt
 
-There are also other 'requirements/optional...' files in the 'requirements' folder that 
+There are also other 'requirements/optional...' files in the 'requirements' folder that
 can be install the dependencies for specific hardware, such as GPU machines or Apple silicon.
 
 If you are planning to contribute, you want to run the tests, or you are looking

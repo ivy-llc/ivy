@@ -84,14 +84,11 @@ def _array_to_new_backend(
     else:
         native_x_backend = ivy.with_backend(native_x_backend, cached=True)
         # Handle native variable instances here
-        if (
-            native_x.__class__.__module__ not in (
-                "numpy",
-                "jax.interpreters.xla",
-                "jaxlib.xla_extension",
-            )
-            and native_x_backend.gradients._is_variable(native_x)
-        ):
+        if native_x.__class__.__module__ not in (
+            "numpy",
+            "jax.interpreters.xla",
+            "jaxlib.xla_extension",
+        ) and native_x_backend.gradients._is_variable(native_x):
             x_data = native_x_backend.gradients._variable_data(native_x)
             x_ivy = _data_to_new_backend(x_data, native_x_backend)
             from ivy.functional.ivy.gradients import _variable

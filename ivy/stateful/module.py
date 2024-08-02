@@ -689,6 +689,7 @@ class _HaikuIvyModule(Module):
         _, param0 = next(param_iterator, ["_", 0])
         if hasattr(param0, "device"):
             import jax
+
             if version.parse(jax.__version__) >= version.parse("0.4.31"):
                 self._device = ivy.as_ivy_dev(param0.device)
             else:
