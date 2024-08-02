@@ -75,6 +75,15 @@ class Finfo:
     def smallest_normal(self):
         return float(self._tf_finfo.tiny)
 
+    def __getattribute__(self, name):
+        try:
+            # Try to get the attribute from the Finfo class
+            return super().__getattribute__(name)
+        except AttributeError:
+            # If the attribute doesn't exist in Finfo, try to get it from _tf_finfo
+            tf_finfo = super().__getattribute__("_tf_finfo")
+            return getattr(tf_finfo, name)
+
 
 class Bfloat16Finfo:
     def __init__(self):
