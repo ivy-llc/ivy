@@ -47,7 +47,7 @@ def hann_window(
         count = jnp.arange(size) / size
     else:
         count = jnp.linspace(start=0, stop=size, num=size)
-    return (0.5 - 0.5 * jnp.cos(2 * jnp.pi * count)).astype(dtype)
+    return jnp.astype((0.5 - 0.5 * jnp.cos(2 * jnp.pi * count)), dtype)
 
 
 def kaiser_window(
@@ -61,9 +61,9 @@ def kaiser_window(
     if window_length < 2:
         return jnp.ones([window_length], dtype=dtype)
     if periodic is False:
-        return jnp.kaiser(M=window_length, beta=beta).astype(dtype)
+        return jnp.astype(jnp.kaiser(M=window_length, beta=beta), dtype)
     else:
-        return jnp.kaiser(M=window_length + 1, beta=beta)[:-1].astype(dtype)
+        return jnp.astype(jnp.kaiser(M=window_length + 1, beta=beta)[:-1], dtype)
 
 
 def tril_indices(
@@ -118,10 +118,11 @@ def blackman_window(
         count = jnp.arange(size) / size
     else:
         count = jnp.linspace(start=0, stop=size, num=size)
-    return (
+    return jnp.astype(
         (0.42 - 0.5 * jnp.cos(2 * jnp.pi * count))
-        + (0.08 * jnp.cos(2 * jnp.pi * 2 * count))
-    ).astype(dtype)
+        + (0.08 * jnp.cos(2 * jnp.pi * 2 * count)),
+        dtype
+    )
 
 
 def trilu(

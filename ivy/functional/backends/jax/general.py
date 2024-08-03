@@ -193,7 +193,7 @@ def gather_nd_helper(params, indices):
         (indices_for_flat_tiled.shape[0], 1),
     )
     indices_for_flat = indices_for_flat_tiled + implicit_indices
-    flat_indices_for_flat = jnp.reshape(indices_for_flat, (-1,)).astype(jnp.int32)
+    flat_indices_for_flat = jnp.astype(jnp.reshape(indices_for_flat, (-1,)), jnp.int32)
     flat_gather = jnp.take(flat_params, flat_indices_for_flat, 0)
     new_shape = list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     ret = jnp.reshape(flat_gather, new_shape)

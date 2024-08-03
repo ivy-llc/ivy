@@ -34,7 +34,7 @@ def argmax(
         ret = jnp.argmax(x, axis=axis, keepdims=keepdims)
     if dtype:
         dtype = ivy.as_native_dtype(dtype)
-        return ret.astype(dtype)
+        return jnp.astype(ret, dtype)
     return ret
 
 
@@ -60,7 +60,7 @@ def argmin(
         ret = jnp.argmin(x, axis=axis, keepdims=keepdims)
     if dtype:
         dtype = ivy.as_native_dtype(dtype)
-        return ret.astype(dtype)
+        return jnp.astype(ret, dtype)
     return ret
 
 

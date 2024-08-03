@@ -13,4 +13,4 @@ def unravel_index(
     *,
     out: Optional[JaxArray] = None,
 ) -> Tuple[JaxArray]:
-    return jnp.unravel_index(indices.astype(jnp.int32), shape)
+    return jnp.unravel_index(jnp.astype(indices, jnp.int32), shape)

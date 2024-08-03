@@ -430,11 +430,11 @@ def vector_norm(
     dtype: Optional[jnp.dtype] = None,
 ) -> JaxArray:
     if dtype and x.dtype != dtype:
-        x = x.astype(dtype)
+        x = jnp.astype(x, dtype)
     abs_x = jnp.abs(x)
     if ord == 0:
         return jnp.sum(
-            (abs_x != 0).astype(abs_x.dtype), axis=axis, keepdims=keepdims, out=out
+            jnp.astype((abs_x != 0), abs_x.dtype), axis=axis, keepdims=keepdims, out=out
         )
     elif ord == inf:
         return jnp.max(abs_x, axis=axis, keepdims=keepdims, out=out)
