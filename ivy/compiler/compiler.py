@@ -2,15 +2,15 @@ from typing import Callable, Optional, List, Union, Iterable, Sequence, Mapping
 
 
 def clear_graph_cache():
-    """Clears the graph cache which gets populated if `graph_caching` is set
-    to `True` in `ivy.trace_graph`, `ivy.transpile` or `ivy.unify`. Use this to
+    """Clears the graph cache which gets populated if `graph_caching` is set to
+    `True` in `ivy.trace_graph`, `ivy.transpile` or `ivy.unify`. Use this to
     reset or clear the graph cache if needed.
 
     Examples
     --------
     >>> import ivy
-    >>> ivy.clear_graph_cache()"""
-
+    >>> ivy.clear_graph_cache()
+    """
     from ._compiler import clear_graph_cache as _clear_graph_cache
 
     return _clear_graph_cache()
@@ -31,14 +31,16 @@ def source_to_source(
     as well e.g. (source="torch_frontend", target="ivy") or (source="torch_frontend", target="tensorflow") etc.
 
     Args:
+    ----
         object: The object (class/function) to be translated.
         source (str, optional): The source framework. Defaults to 'torch'.
         target (str, optional): The target framework. Defaults to 'torch_frontend'.
         profiling: Whether to add performance profiling.
 
     Returns:
-        The translated object."""
-
+    -------
+    The translated object.
+    """
     from ._compiler import source_to_source as _source_to_source
 
     return _source_to_source(
@@ -69,7 +71,8 @@ def trace_graph(
     params_v=None,
     v=None
 ):
-    """Takes `fn` and traces it into a more efficient composition of backend operations.
+    """Takes `fn` and traces it into a more efficient composition of backend
+    operations.
 
     Parameters
     ----------
@@ -139,8 +142,8 @@ def trace_graph(
     >>> start = time.time()
     >>> graph(x)
     >>> print(time.time() - start)
-    0.0001785755157470703"""
-
+    0.0001785755157470703
+    """
     from ._compiler import trace_graph as _trace_graph
 
     return _trace_graph(
@@ -204,8 +207,8 @@ def transpile(
 
     Returns
     -------
-    Either a transpiled Graph or a non-initialized LazyGraph."""
-
+    Either a transpiled Graph or a non-initialized LazyGraph.
+    """
     from ._compiler import transpile as _transpile
 
     return _transpile(
