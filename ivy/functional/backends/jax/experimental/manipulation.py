@@ -226,7 +226,7 @@ def pad(
             mode=mode,
         )
     if jnp.issubdtype(input_dtype, jnp.integer) and mode in ["mean", "median"]:
-        ret = jnp.round(ret).astype(input_dtype)
+        ret = jnp.astype(jnp.round(ret), input_dtype)
     return ret
 
 
@@ -389,7 +389,7 @@ def unique_consecutive(
     if x_shape:
         inverse_indices = jnp.reshape(inverse_indices, x_shape)
     return Results(
-        output.astype(x.dtype),
+        jnp.astype(output, x.dtype),
         inverse_indices,
         counts,
     )
@@ -411,7 +411,7 @@ def fill_diagonal(
     else:
         step = 1 + (jnp.cumprod(shape[:-1])).sum()
     a = jnp.reshape(a, (-1,))
-    a = a.at[:end:step].set(jnp.array(v).astype(a.dtype))
+    a = a.at[:end:step].set(jnp.astype(jnp.array(v), a.dtype))
     a = jnp.reshape(a, shape)
     return a
 
@@ -435,7 +435,7 @@ def take(
     if not isinstance(indices, JaxArray):
         indices = jnp.array(indices)
     if jnp.issubdtype(indices.dtype, jnp.floating):
-        indices = indices.astype(jnp.int64)
+        indices = jnp.astype(indices, jnp.int64)
 
     # raise
     if mode == "raise":

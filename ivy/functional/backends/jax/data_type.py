@@ -135,7 +135,7 @@ def astype(
     ivy.utils.assertions._check_jax_x64_flag(dtype)
     if x.dtype == dtype:
         return jnp.copy(x) if copy else x
-    return x.astype(dtype)
+    return jnp.astype(x, dtype)
 
 
 def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:

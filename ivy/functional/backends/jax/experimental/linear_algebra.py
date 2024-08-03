@@ -81,7 +81,7 @@ def diagflat(
         mode="constant",
     )
 
-    ret = output_array.astype(x.dtype)
+    ret = jnp.astype(output_array, x.dtype)
     if ivy.exists(out):
         ivy.inplace_update(out, ret)
 
