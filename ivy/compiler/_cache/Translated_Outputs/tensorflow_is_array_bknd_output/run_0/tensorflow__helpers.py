@@ -173,6 +173,8 @@ tf.experimental.numpy.experimental_enable_numpy_behavior(True)
 
 
 def tensorflow_is_native_array(x, /, *, exclusive=False):
+    if "keras.src.backend.tensorflow.core.Variable" in str(x.__class__):
+        return not exclusive
     if isinstance(x, (tensorflow.Tensor, tensorflow.Variable, tensorflow.TensorArray)):
         if exclusive and isinstance(x, tensorflow.Variable):
             return False

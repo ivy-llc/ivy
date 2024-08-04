@@ -1,8 +1,8 @@
 import tensorflow
 from collections import OrderedDict
 
-import typing
 import math
+import typing
 from typing import Optional
 
 from .tensorflow__stateful import Layer as tensorflow_keras_Layer

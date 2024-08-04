@@ -2,8 +2,8 @@ import tensorflow
 from collections import OrderedDict
 import threading
 
-import operator
 import typing
+import operator
 from collections import abc as container_abcs
 from itertools import chain
 

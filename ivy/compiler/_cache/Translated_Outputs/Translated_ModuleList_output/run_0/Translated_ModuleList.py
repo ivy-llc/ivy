@@ -1,7 +1,7 @@
 import ivy.functional.frontends.torch.nn as nn
 
-import operator
 import typing
+import operator
 from collections import OrderedDict
 from collections import abc as container_abcs
 from itertools import chain

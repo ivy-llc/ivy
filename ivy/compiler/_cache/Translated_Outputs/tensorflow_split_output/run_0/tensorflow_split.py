@@ -2,8 +2,8 @@ import tensorflow
 
 import math
 from typing import Union
-from typing import Sequence
 from typing import Optional
+from typing import Sequence
 
 from .tensorflow__helpers import tensorflow_handle_array_like_without_promotion
 

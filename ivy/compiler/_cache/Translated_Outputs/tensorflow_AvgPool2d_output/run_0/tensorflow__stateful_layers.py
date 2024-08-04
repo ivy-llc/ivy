@@ -2,10 +2,12 @@ from .tensorflow__helpers import tensorflow_handle_transpose_in_input_and_output
 from .tensorflow__helpers import tensorflow_handle_array_like_without_promotion
 from .tensorflow__stateful import store_frame_info
 import tensorflow as tf
+import keras
 import collections
 from itertools import repeat
 from numbers import Number
 import os
+from packaging.version import parse as parse_package
 
 
 def parse(x):
@@ -257,11 +259,12 @@ class KerasDepthwiseConv2D(tf.keras.layers.DepthwiseConv2D):
         built = object.__getattribute__(self, "__dict__").get("built", False)
 
         if built:
-            attr_map = {"weight": "depthwise_kernel", "out_channels": "filters"}
+            if parse_package(keras.__version__).major > 2:
+                attr_map = {"weight": "kernel"}
+            else:
+                attr_map = {"weight": "depthwise_kernel"}
         else:
-            attr_map = {
-                "out_channels": "filters",
-            }
+            attr_map = {"weight": "weight"}
 
         new_name = attr_map[name] if name in attr_map else name
         return super().__getattribute__(new_name)
