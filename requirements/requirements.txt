@@ -1,5 +1,6 @@
 astor
 astunparse
+black
 colorama
 cloudpickle
 cryptography
@@ -15,6 +16,7 @@ packaging
 psutil
 pyvis
 requests
+ruff
 termcolor
 tqdm
 urllib3<2.0 # for version conflict with google-auth
