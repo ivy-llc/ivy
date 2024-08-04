@@ -1,7 +1,9 @@
-import ivy.functional.frontends.torch.nn.functional as F
+import ivy.functional.frontends.torch as torch
 
 from .Translated__ConvNd import Translated__ConvNd
-from .helpers import Translated_parse
+from .helpers import Translated__ntuple
+
+_pair = Translated__ntuple(2, "_pair")
 
 
 class Translated_Conv2d(Translated__ConvNd):
@@ -20,10 +22,10 @@ class Translated_Conv2d(Translated__ConvNd):
         dtype=None,
     ):
         factory_kwargs = {"device": device, "dtype": dtype}
-        kernel_size_ = Translated_parse(kernel_size)
-        stride_ = Translated_parse(stride)
-        padding_ = padding if isinstance(padding, str) else Translated_parse(padding)
-        dilation_ = Translated_parse(dilation)
+        kernel_size_ = _pair(kernel_size)
+        stride_ = _pair(stride)
+        padding_ = padding if isinstance(padding, str) else _pair(padding)
+        dilation_ = _pair(dilation)
         super().__init__(
             in_channels,
             out_channels,
@@ -32,7 +34,7 @@ class Translated_Conv2d(Translated__ConvNd):
             padding_,
             dilation_,
             False,
-            Translated_parse(0),
+            _pair(0),
             groups,
             bias,
             padding_mode,
@@ -41,18 +43,18 @@ class Translated_Conv2d(Translated__ConvNd):
 
     def _conv_forward(self, input, weight, bias):
         if self.padding_mode != "zeros":
-            return F.conv2d(
-                F.pad(
+            return torch.nn.functional.conv2d(
+                torch.nn.functional.pad(
                     input, self._reversed_padding_repeated_twice, mode=self.padding_mode
                 ),
                 weight,
                 bias,
                 self.stride,
-                Translated_parse(0),
+                _pair(0),
                 self.dilation,
                 self.groups,
             )
-        return F.conv2d(
+        return torch.nn.functional.conv2d(
             input, weight, bias, self.stride, self.padding, self.dilation, self.groups
         )
 

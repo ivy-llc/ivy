@@ -2,8 +2,8 @@ import ivy
 from collections import OrderedDict
 import threading
 
-import math
 import typing
+import math
 
 from .ivy__helpers import ivy__calculate_fan_in_and_fan_out
 from .ivy__helpers import ivy_add_frnt_

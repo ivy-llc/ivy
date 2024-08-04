@@ -1,9 +1,9 @@
-import tensorflow
-
 from .tensorflow__ConvTransposeNd import tensorflow__ConvTransposeNd
+from .tensorflow__helpers import tensorflow__ntuple
 from .tensorflow__helpers import tensorflow_conv_transpose2d_frnt
 from .tensorflow__helpers import tensorflow_handle_transpose_in_input_and_output
-from .tensorflow__helpers import tensorflow_parse
+
+_pair = tensorflow__ntuple(2, "_pair")
 
 
 class tensorflow_ConvTranspose2d(tensorflow__ConvTransposeNd):
@@ -23,16 +23,11 @@ class tensorflow_ConvTranspose2d(tensorflow__ConvTransposeNd):
         dtype=None,
     ):
         factory_kwargs = {"device": device, "dtype": dtype}
-        with tensorflow.name_scope("tensorflow_ConvTranspose2d/kernel_size"):
-            kernel_size = tensorflow_parse(kernel_size)
-        with tensorflow.name_scope("tensorflow_ConvTranspose2d/stride"):
-            stride = tensorflow_parse(stride)
-        with tensorflow.name_scope("tensorflow_ConvTranspose2d/padding"):
-            padding = tensorflow_parse(padding)
-        with tensorflow.name_scope("tensorflow_ConvTranspose2d/dilation"):
-            dilation = tensorflow_parse(dilation)
-        with tensorflow.name_scope("tensorflow_ConvTranspose2d/output_padding"):
-            output_padding = tensorflow_parse(output_padding)
+        kernel_size = _pair(kernel_size)
+        stride = _pair(stride)
+        padding = _pair(padding)
+        dilation = _pair(dilation)
+        output_padding = _pair(output_padding)
         super().__init__(
             in_channels,
             out_channels,

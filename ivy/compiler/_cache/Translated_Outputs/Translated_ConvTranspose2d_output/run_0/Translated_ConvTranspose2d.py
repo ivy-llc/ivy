@@ -1,7 +1,9 @@
-import ivy.functional.frontends.torch.nn.functional as F
+import ivy.functional.frontends.torch as torch
 
 from .Translated__ConvTransposeNd import Translated__ConvTransposeNd
-from .helpers import Translated_parse
+from .helpers import Translated__ntuple
+
+_pair = Translated__ntuple(2, "_pair")
 
 
 class Translated_ConvTranspose2d(Translated__ConvTransposeNd):
@@ -21,11 +23,11 @@ class Translated_ConvTranspose2d(Translated__ConvTransposeNd):
         dtype=None,
     ):
         factory_kwargs = {"device": device, "dtype": dtype}
-        kernel_size = Translated_parse(kernel_size)
-        stride = Translated_parse(stride)
-        padding = Translated_parse(padding)
-        dilation = Translated_parse(dilation)
-        output_padding = Translated_parse(output_padding)
+        kernel_size = _pair(kernel_size)
+        stride = _pair(stride)
+        padding = _pair(padding)
+        dilation = _pair(dilation)
+        output_padding = _pair(output_padding)
         super().__init__(
             in_channels,
             out_channels,
@@ -57,7 +59,7 @@ class Translated_ConvTranspose2d(Translated__ConvTransposeNd):
             num_spatial_dims,
             self.dilation,
         )
-        return F.conv_transpose2d(
+        return torch.nn.functional.conv_transpose2d(
             input,
             self.weight,
             self.bias,

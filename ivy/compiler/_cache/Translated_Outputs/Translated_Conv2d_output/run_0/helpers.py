@@ -4,6 +4,16 @@ import math
 import warnings
 
 
+def Translated__ntuple(n, name="parse"):
+    def parse(x):
+        if isinstance(x, collections.abc.Iterable):
+            return tuple(x)
+        return tuple(repeat(x, n))
+
+    parse.__name__ = name
+    return parse
+
+
 def Translated__reverse_repeat_tuple(t, n):
     return tuple(x for x in reversed(t) for _ in range(n))
 
@@ -87,10 +97,3 @@ def Translated__no_grad_uniform_(tensor, a, b, generator=None):
 
 def Translated_uniform_(tensor, a=0.0, b=1.0, generator=None):
     return Translated__no_grad_uniform_(tensor, a, b, generator)
-
-
-def Translated_parse(x):
-    n = 2
-    if isinstance(x, collections.abc.Iterable):
-        return tuple(x)
-    return tuple(repeat(x, n))

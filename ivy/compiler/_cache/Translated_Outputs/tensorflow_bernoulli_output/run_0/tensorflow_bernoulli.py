@@ -2,8 +2,8 @@ import tensorflow
 import tensorflow as tf
 
 from typing import Optional
-from typing import Union
 from typing import Sequence
+from typing import Union
 
 from .tensorflow__helpers import tensorflow__check_shapes_broadcastable_bknd
 from .tensorflow__helpers import tensorflow_infer_dtype

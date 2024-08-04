@@ -1,11 +1,14 @@
 import tensorflow
 
+
 from .tensorflow__ConvNd import tensorflow__ConvNd
+from .tensorflow__helpers import tensorflow__ntuple
 from .tensorflow__helpers import tensorflow_dim_frnt_
 from .tensorflow__helpers import tensorflow_get_item
-from .tensorflow__helpers import tensorflow_parse
 from .tensorflow__helpers import tensorflow_size_frnt_
 from .tensorflow__helpers import tensorflow_store_config_info
+
+_single = tensorflow__ntuple(1, "_single")
 
 
 class tensorflow__ConvTransposeNd(tensorflow__ConvNd):
@@ -57,8 +60,7 @@ class tensorflow__ConvTransposeNd(tensorflow__ConvNd):
         dilation=None,
     ):
         if output_size is None:
-            with tensorflow.name_scope("ret"):
-                ret = tensorflow_parse(self.output_padding)
+            ret = _single(self.output_padding)
         else:
             with tensorflow.name_scope("has_batch_dim"):
                 has_batch_dim = tensorflow_dim_frnt_(input) == num_spatial_dims + 2

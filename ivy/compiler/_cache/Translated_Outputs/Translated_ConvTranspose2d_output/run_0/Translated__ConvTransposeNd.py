@@ -1,5 +1,7 @@
 from .Translated__ConvNd import Translated__ConvNd
-from .helpers import Translated_parse
+from .helpers import Translated__ntuple
+
+_single = Translated__ntuple(1, "_single")
 
 
 class Translated__ConvTransposeNd(Translated__ConvNd):
@@ -50,7 +52,7 @@ class Translated__ConvTransposeNd(Translated__ConvNd):
         dilation=None,
     ):
         if output_size is None:
-            ret = Translated_parse(self.output_padding)
+            ret = _single(self.output_padding)
         else:
             has_batch_dim = input.dim() == num_spatial_dims + 2
             num_non_spatial_dims = 2 if has_batch_dim else 1

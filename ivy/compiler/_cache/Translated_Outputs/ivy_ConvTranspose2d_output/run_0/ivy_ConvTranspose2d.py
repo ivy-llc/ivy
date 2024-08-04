@@ -1,6 +1,8 @@
 from .ivy__ConvTransposeNd import ivy__ConvTransposeNd
+from .ivy__helpers import ivy__ntuple
 from .ivy__helpers import ivy_conv_transpose2d_frnt
-from .ivy__helpers import ivy_parse
+
+_pair = ivy__ntuple(2, "_pair")
 
 
 class ivy_ConvTranspose2d(ivy__ConvTransposeNd):
@@ -20,11 +22,11 @@ class ivy_ConvTranspose2d(ivy__ConvTransposeNd):
         dtype=None,
     ):
         factory_kwargs = {"device": device, "dtype": dtype}
-        kernel_size = ivy_parse(kernel_size)
-        stride = ivy_parse(stride)
-        padding = ivy_parse(padding)
-        dilation = ivy_parse(dilation)
-        output_padding = ivy_parse(output_padding)
+        kernel_size = _pair(kernel_size)
+        stride = _pair(stride)
+        padding = _pair(padding)
+        dilation = _pair(dilation)
+        output_padding = _pair(output_padding)
         super().__init__(
             in_channels,
             out_channels,

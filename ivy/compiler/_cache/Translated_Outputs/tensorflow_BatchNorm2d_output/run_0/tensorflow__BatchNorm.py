@@ -1,5 +1,6 @@
 import tensorflow
 
+
 from .tensorflow__NormBase import tensorflow__NormBase
 from .tensorflow__helpers import tensorflow_add__frnt_
 from .tensorflow__helpers import tensorflow_batch_norm_frnt
@@ -55,16 +56,12 @@ class tensorflow__BatchNorm(tensorflow__NormBase):
             normalized, self.running_mean, self.running_var = (
                 tensorflow_batch_norm_frnt(
                     input,
-                    (
-                        self.running_mean
-                        if not self.training or self.track_running_stats
-                        else None
-                    ),
-                    (
-                        self.running_var
-                        if not self.training or self.track_running_stats
-                        else None
-                    ),
+                    self.running_mean
+                    if not self.training or self.track_running_stats
+                    else None,
+                    self.running_var
+                    if not self.training or self.track_running_stats
+                    else None,
                     self.weight,
                     self.bias,
                     bn_training,

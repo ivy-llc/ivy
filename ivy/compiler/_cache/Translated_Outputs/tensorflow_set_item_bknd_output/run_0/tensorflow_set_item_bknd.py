@@ -2,9 +2,9 @@ import tensorflow
 import tensorflow as tf
 import numpy as np
 
-from typing import Union
 from typing import Optional
 from typing import Tuple
+from typing import Union
 
 from .tensorflow__helpers import tensorflow__parse_query_bknd
 from .tensorflow__helpers import tensorflow_asarray

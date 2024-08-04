@@ -1,8 +1,8 @@
 import ivy.functional.frontends.torch.nn as nn
 
 import typing
-from collections import OrderedDict
 from collections import abc as container_abcs
+from collections import OrderedDict
 
 
 class Translated_ModuleDict(nn.Module):

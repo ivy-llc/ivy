@@ -1,10 +1,10 @@
-import tensorflow
-
 from .tensorflow__ConvNd import tensorflow__ConvNd
+from .tensorflow__helpers import tensorflow__ntuple
 from .tensorflow__helpers import tensorflow_conv2d_frnt
 from .tensorflow__helpers import tensorflow_handle_transpose_in_input_and_output
 from .tensorflow__helpers import tensorflow_pad_frnt
-from .tensorflow__helpers import tensorflow_parse
+
+_pair = tensorflow__ntuple(2, "_pair")
 
 
 class tensorflow_Conv2d(tensorflow__ConvNd):
@@ -23,16 +23,10 @@ class tensorflow_Conv2d(tensorflow__ConvNd):
         dtype=None,
     ):
         factory_kwargs = {"device": device, "dtype": dtype}
-        with tensorflow.name_scope("tensorflow_Conv2d/kernel_size_"):
-            kernel_size_ = tensorflow_parse(kernel_size)
-        with tensorflow.name_scope("tensorflow_Conv2d/stride_"):
-            stride_ = tensorflow_parse(stride)
-        with tensorflow.name_scope("tensorflow_Conv2d/padding_"):
-            padding_ = (
-                padding if isinstance(padding, str) else tensorflow_parse(padding)
-            )
-        with tensorflow.name_scope("tensorflow_Conv2d/dilation_"):
-            dilation_ = tensorflow_parse(dilation)
+        kernel_size_ = _pair(kernel_size)
+        stride_ = _pair(stride)
+        padding_ = padding if isinstance(padding, str) else _pair(padding)
+        dilation_ = _pair(dilation)
         super().__init__(
             in_channels,
             out_channels,
@@ -41,7 +35,7 @@ class tensorflow_Conv2d(tensorflow__ConvNd):
             padding_,
             dilation_,
             False,
-            tensorflow_parse(0),
+            _pair(0),
             groups,
             bias,
             padding_mode,
@@ -57,7 +51,7 @@ class tensorflow_Conv2d(tensorflow__ConvNd):
                 weight,
                 bias,
                 self.stride,
-                tensorflow_parse(0),
+                _pair(0),
                 self.dilation,
                 self.groups,
             )

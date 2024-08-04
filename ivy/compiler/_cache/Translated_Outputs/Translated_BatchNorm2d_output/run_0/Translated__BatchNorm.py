@@ -1,4 +1,4 @@
-import ivy.functional.frontends.torch.nn.functional as F
+import ivy.functional.frontends.torch as torch
 
 from .Translated__NormBase import Translated__NormBase
 
@@ -45,13 +45,11 @@ class Translated__BatchNorm(Translated__NormBase):
         passed when the update should occur (i.e. in training mode when they are tracked), or when buffer stats are
         used for normalization (i.e. in eval mode when buffers are not None).
         """
-        return F.batch_norm(
+        return torch.nn.functional.batch_norm(
             input,
-            (
-                self.running_mean
-                if not self.training or self.track_running_stats
-                else None
-            ),
+            self.running_mean
+            if not self.training or self.track_running_stats
+            else None,
             self.running_var if not self.training or self.track_running_stats else None,
             self.weight,
             self.bias,

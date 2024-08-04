@@ -1,7 +1,9 @@
 from .ivy__ConvNd import ivy__ConvNd
+from .ivy__helpers import ivy__ntuple
 from .ivy__helpers import ivy_dim_frnt_
-from .ivy__helpers import ivy_parse
 from .ivy__helpers import ivy_size_frnt_
+
+_single = ivy__ntuple(1, "_single")
 
 
 class ivy__ConvTransposeNd(ivy__ConvNd):
@@ -52,7 +54,7 @@ class ivy__ConvTransposeNd(ivy__ConvNd):
         dilation=None,
     ):
         if output_size is None:
-            ret = ivy_parse(self.output_padding)
+            ret = _single(self.output_padding)
         else:
             has_batch_dim = ivy_dim_frnt_(input) == num_spatial_dims + 2
             num_non_spatial_dims = 2 if has_batch_dim else 1

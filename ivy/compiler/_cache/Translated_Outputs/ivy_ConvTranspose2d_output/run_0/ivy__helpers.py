@@ -7,6 +7,16 @@ import re
 import warnings
 
 
+def ivy__ntuple(n, name="parse"):
+    def parse(x):
+        if isinstance(x, collections.abc.Iterable):
+            return tuple(x)
+        return tuple(repeat(x, n))
+
+    parse.__name__ = name
+    return parse
+
+
 def ivy__reverse_repeat_tuple(t, n):
     return tuple(x for x in reversed(t) for _ in range(n))
 
@@ -189,13 +199,6 @@ def ivy_add_frnt(input, other, *, alpha=1, out=None):
 @ivy_handle_methods
 def ivy_add_frnt_(arr, other, *, alpha=1):
     return ivy_add_frnt(arr, other, alpha=alpha)
-
-
-def ivy_parse(x):
-    n = 1
-    if isinstance(x, collections.abc.Iterable):
-        return tuple(x)
-    return tuple(repeat(x, n))
 
 
 def ivy__get_transpose_pad_frnt(padding, output_padding, dims):

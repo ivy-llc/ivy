@@ -1,8 +1,8 @@
 import tensorflow
 import numpy as np
 
-from typing import Optional
 from typing import Union
+from typing import Optional
 from typing import TypeVar
 
 from .tensorflow_NestedSequence_bknd import tensorflow_NestedSequence_bknd

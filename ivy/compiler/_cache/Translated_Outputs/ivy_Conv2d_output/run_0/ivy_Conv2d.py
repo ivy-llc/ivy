@@ -1,7 +1,9 @@
 from .ivy__ConvNd import ivy__ConvNd
+from .ivy__helpers import ivy__ntuple
 from .ivy__helpers import ivy_conv2d_frnt
 from .ivy__helpers import ivy_pad_frnt
-from .ivy__helpers import ivy_parse
+
+_pair = ivy__ntuple(2, "_pair")
 
 
 class ivy_Conv2d(ivy__ConvNd):
@@ -20,10 +22,10 @@ class ivy_Conv2d(ivy__ConvNd):
         dtype=None,
     ):
         factory_kwargs = {"device": device, "dtype": dtype}
-        kernel_size_ = ivy_parse(kernel_size)
-        stride_ = ivy_parse(stride)
-        padding_ = padding if isinstance(padding, str) else ivy_parse(padding)
-        dilation_ = ivy_parse(dilation)
+        kernel_size_ = _pair(kernel_size)
+        stride_ = _pair(stride)
+        padding_ = padding if isinstance(padding, str) else _pair(padding)
+        dilation_ = _pair(dilation)
         super().__init__(
             in_channels,
             out_channels,
@@ -32,7 +34,7 @@ class ivy_Conv2d(ivy__ConvNd):
             padding_,
             dilation_,
             False,
-            ivy_parse(0),
+            _pair(0),
             groups,
             bias,
             padding_mode,
@@ -48,7 +50,7 @@ class ivy_Conv2d(ivy__ConvNd):
                 weight,
                 bias,
                 self.stride,
-                ivy_parse(0),
+                _pair(0),
                 self.dilation,
                 self.groups,
             )
