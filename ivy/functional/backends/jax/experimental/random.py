@@ -100,7 +100,9 @@ def poisson(
         list_shape = None
     if jnp.any(lam < 0):
         pos_lam = jnp.where(lam < 0, 0, lam)
-        ret = jnp.astype(jax.random.poisson(rng_input, pos_lam, shape=list_shape), dtype)
+        ret = jnp.astype(
+            jax.random.poisson(rng_input, pos_lam, shape=list_shape), dtype
+        )
         ret = jnp.where(lam < 0, fill_value, ret)
     else:
         ret = jnp.astype(jax.random.poisson(rng_input, lam, shape=list_shape), dtype)

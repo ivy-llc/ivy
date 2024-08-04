@@ -54,11 +54,11 @@ def tensorflow_interpolate(
             mode = (
                 "bilinear"
                 if mode == "linear"
-                else "area"
-                if mode == "tf_area"
-                else "nearest"
-                if mode == "nearest-exact"
-                else mode
+                else (
+                    "area"
+                    if mode == "tf_area"
+                    else "nearest" if mode == "nearest-exact" else mode
+                )
             )
         if mode == "tf_bicubic":
             mode = "bicubic"

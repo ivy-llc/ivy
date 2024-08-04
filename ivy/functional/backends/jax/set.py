@@ -47,7 +47,9 @@ def unique_all(
             axis=0,
         )
         nan_idx = jnp.where(jnp.isnan(x.flatten()))[0]
-        indices = jnp.astype(jnp.concatenate((indices[:-1], nan_idx), axis=0), indices.dtype)
+        indices = jnp.astype(
+            jnp.concatenate((indices[:-1], nan_idx), axis=0), indices.dtype
+        )
 
     if not by_value:
         sort_idx = jnp.argsort(indices)
@@ -93,7 +95,9 @@ def unique_inverse(
 
     nan_count = jnp.count_nonzero(jnp.isnan(x))
     if nan_count > 1:
-        values = jnp.astype(jnp.append(values, jnp.full(nan_count - 1, jnp.nan), axis=0), x.dtype)
+        values = jnp.astype(
+            jnp.append(values, jnp.full(nan_count - 1, jnp.nan), axis=0), x.dtype
+        )
     inverse_indices = jnp.reshape(inverse_indices, x.shape)
 
     return Results(values, inverse_indices)
@@ -102,9 +106,10 @@ def unique_inverse(
 def unique_values(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     nan_count = jnp.count_nonzero(jnp.isnan(x))
     if nan_count > 1:
-        unique = jnp.astype(jnp.append(
-            jnp.unique(x.flatten()), jnp.full(nan_count - 1, jnp.nan)
-        ), x.dtype)
+        unique = jnp.astype(
+            jnp.append(jnp.unique(x.flatten()), jnp.full(nan_count - 1, jnp.nan)),
+            x.dtype,
+        )
     else:
         unique = jnp.astype(jnp.unique(x.flatten()), x.dtype)
     return unique

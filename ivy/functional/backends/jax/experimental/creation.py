@@ -121,7 +121,7 @@ def blackman_window(
     return jnp.astype(
         (0.42 - 0.5 * jnp.cos(2 * jnp.pi * count))
         + (0.08 * jnp.cos(2 * jnp.pi * 2 * count)),
-        dtype
+        dtype,
     )
 
 

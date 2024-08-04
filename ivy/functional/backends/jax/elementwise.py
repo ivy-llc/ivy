@@ -424,7 +424,9 @@ def pow(
         else:
             fill_value = jnp.finfo(x1.dtype).min
         ret = jnp.float_power(x1, x2)
-        return jnp.astype(jnp.where(jnp.bitwise_and(x1 == 0, x2 < 0), fill_value, ret), x1.dtype)
+        return jnp.astype(
+            jnp.where(jnp.bitwise_and(x1 == 0, x2 < 0), fill_value, ret), x1.dtype
+        )
     if ivy.is_int_dtype(x1) and ivy.any(x2 < 0):
         return jnp.astype(jnp.float_power(x1, x2), x1.dtype)
     return jnp.power(x1, x2)
