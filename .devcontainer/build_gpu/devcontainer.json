@@ -5,7 +5,7 @@
 		"dockerfile": "../../docker/DockerfileGPU",
 		"context": "../..",
 		"args": {
-            "IMAGE_NAME": "transpileai/ivy",
+            "IMAGE_NAME": "ivyllc/ivy",
             "IMAGE_TAG": "latest-gpu"
         }
 	},

@@ -106,8 +106,8 @@ users who would want to test `ivy` with multiple frameworks at once can use our 
 You can pull the images from:
 
 ``` bash
-docker pull transpileai/ivy:latest      # CPU
-docker pull transpileai/ivy:latest-gpu  # GPU
+docker pull ivyllc/ivy:latest      # CPU
+docker pull ivyllc/ivy:latest-gpu  # GPU
 ```
 
 </details>

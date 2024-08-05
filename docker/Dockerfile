@@ -41,6 +41,7 @@ RUN apt-get update && \
 # Install Ivy Upstream
 RUN git clone --progress --recurse-submodules https://github.com/ivy-llc/ivy --depth 1 && \
     cd ivy && \
+    rm -rf ivy/compiler/_cache && \
     cd ivy_tests/array_api_testing/test_array_api && \
     pip3 install --no-cache-dir -r requirements.txt
 
@@ -57,7 +58,7 @@ SHELL ["/bin/bash", "-c"]
 RUN jq -r 'to_entries[] | select(.value != [""]) | .key as $dir | .value[] | @sh "/opt/fw/\($dir) \(.)"' requirement_mappings.json | xargs -I {} sh -c 'printf "Installing %s\n" $2 && pip install --ignore-installed --target $1 $2 --extra-index-url  https://download.pytorch.org/whl/cpu --no-cache-dir' sh {}
 
 # install the requirements.txt, optional.txt with the mapped dependencies filtered out
-RUN pip install --upgrade -r  requirements.txt &&\
+RUN pip install --no-cache-dir --upgrade -r  requirements.txt &&\
     cp ./optional.txt tmp.txt  &&\
     jq -r 'to_entries[] | [.key] + .value | select(length > 0 or (. == "")) | .[]' requirement_mappings.json | sort -u | xargs -I {} sed -i '/{}/d;/torch/d;/torch-scatter/d;/jax\[.*\]/d' tmp.txt && pip install -r tmp.txt
 

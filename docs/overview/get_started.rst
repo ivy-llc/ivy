@@ -49,13 +49,13 @@ supported frameworks and some relevant packages already installed, which you can
 
 .. code-block:: bash
 
-    docker pull transpileai/ivy:latest
+    docker pull ivyllc/ivy:latest
 
 If you are working on a GPU device, you can pull from:
 
 .. code-block:: bash
 
-    docker pull transpileai/ivy:latest-gpu
+    docker pull ivyllc/ivy:latest-gpu
 
 Ivy Folder
 ~~~~~~~~~~
