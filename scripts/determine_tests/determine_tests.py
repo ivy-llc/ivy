@@ -147,7 +147,7 @@ def main():
                 print("Computing Coverage:", test_backend)
                 test_name, backend = test_backend.split(",")
                 command = (
-                    f'docker run -v "$(pwd)":/ivy transpileai/ivy:latest /bin/bash -c "coverage run --source=ivy,'  # noqa
+                    f'docker run -v "$(pwd)":/ivy ivyllc/ivy:latest /bin/bash -c "coverage run --source=ivy,'  # noqa
                     f"ivy_tests -m pytest {test_name} --backend {backend} --disable-warnings > coverage_output;coverage "  # noqa
                     f'annotate > coverage_output" '
                 )

@@ -1,7 +1,7 @@
 {
 	"name": "Ivy Development Environment (image)",
 
-	"image": "transpileai/ivy:latest",
+	"image": "ivyllc/ivy:latest",
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -17,7 +17,7 @@
         "post_create": "bash .devcontainer/post_create_commands.sh",
         "bashrc": "echo \"alias python=python3\" >> ~/.bashrc"
     },
-	"initializeCommand": "docker pull transpileai/ivy:latest",
+	"initializeCommand": "docker pull ivyllc/ivy:latest",
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],

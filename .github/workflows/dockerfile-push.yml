@@ -27,5 +27,5 @@ jobs:
 
     - name: Build and push Dockerfile
       run: |
-        docker build . --file docker/Dockerfile --tag transpileai/ivy:latest
-        docker push transpileai/ivy:latest
+        docker build . --file docker/Dockerfile --tag ivyllc/ivy:latest
+        docker push ivyllc/ivy:latest

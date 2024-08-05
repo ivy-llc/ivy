@@ -88,7 +88,7 @@ def main():
         test_name, backend = test_backend.split(",")
         command = (
             f"docker run --rm --env IVY_BACKEND={backend} --env "
-            'ARRAY_API_TESTS_MODULE="ivy" -v "$(pwd)":/ivy transpileai/ivy:latest '
+            'ARRAY_API_TESTS_MODULE="ivy" -v "$(pwd)":/ivy ivyllc/ivy:latest '
             'timeout 30m /bin/bash -c "coverage run --source=ivy,ivy_tests -m pytest '
             f'{test_name} -k \\"{k_flag[backend]}\\" --disable-warnings --tb=short '
             "--hypothesis-max-examples 5 -vv > coverage_output;coverage annotate > "
