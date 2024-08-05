@@ -1,10 +1,10 @@
 import ivy.functional.frontends.torch as torch
 import ivy.functional.frontends.torch.nn as nn
 
-import operator
 import typing
-from typing import overload
+import operator
 from itertools import islice
+from typing import overload
 from collections import OrderedDict
 
 

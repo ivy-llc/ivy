@@ -2,8 +2,8 @@ import tensorflow
 import numpy as np
 
 from typing import Union
-from typing import Optional
 from typing import TypeVar
+from typing import Optional
 
 from .tensorflow_NestedSequence_bknd import tensorflow_NestedSequence_bknd
 from .tensorflow__helpers import tensorflow__asarray_infer_dtype_bknd

@@ -1,7 +1,7 @@
 import tensorflow
 
-from typing import Optional
 from typing import Union
+from typing import Optional
 
 from .tensorflow__helpers import tensorflow__same_device
 from .tensorflow__helpers import tensorflow_as_native_dev

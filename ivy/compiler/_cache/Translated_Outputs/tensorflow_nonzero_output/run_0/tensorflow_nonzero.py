@@ -1,8 +1,8 @@
 import tensorflow
 
-from typing import Union
-from typing import Optional
 from numbers import Number
+from typing import Optional
+from typing import Union
 
 from .tensorflow__helpers import tensorflow_handle_array_like_without_promotion
 

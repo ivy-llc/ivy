@@ -1,7 +1,7 @@
 import tensorflow
 
-from typing import Union
 from typing import Tuple
+from typing import Union
 from typing import Sequence
 from typing import Optional
 

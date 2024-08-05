@@ -279,6 +279,8 @@ def tensorflow_handle_array_like_without_promotion(fn: Callable):
 
 
 def tensorflow_is_native_array(x, /, *, exclusive=False):
+    if "keras.src.backend.tensorflow.core.Variable" in str(x.__class__):
+        return not exclusive
     if isinstance(x, (tensorflow.Tensor, tensorflow.Variable, tensorflow.TensorArray)):
         if exclusive and isinstance(x, tensorflow.Variable):
             return False
@@ -332,7 +334,9 @@ def tensorflow_default_bknd(
     return (
         x
         if tensorflow_exists_bknd(x)
-        else default_val() if default_callable else default_val
+        else default_val()
+        if default_callable
+        else default_val
     )
 
 
@@ -765,21 +769,17 @@ def tensorflow_default_int_dtype_bknd(
         elif isinstance(input, (list, tuple, dict)):
             if tensorflow_nested_argwhere_bknd(
                 input,
-                lambda x: (
-                    tensorflow_dtype(x) == "uint64"
-                    if tensorflow_is_array_bknd(x)
-                    else x > 9223372036854775807 and x != math.inf
-                ),
+                lambda x: tensorflow_dtype(x) == "uint64"
+                if tensorflow_is_array_bknd(x)
+                else x > 9223372036854775807 and x != math.inf,
                 stop_after_n_found=1,
             ):
                 ret = tf.uint64
             elif tensorflow_nested_argwhere_bknd(
                 input,
-                lambda x: (
-                    tensorflow_dtype(x) == "int64"
-                    if tensorflow_is_array_bknd(x)
-                    else x > 2147483647 and x != math.inf
-                ),
+                lambda x: tensorflow_dtype(x) == "int64"
+                if tensorflow_is_array_bknd(x)
+                else x > 2147483647 and x != math.inf,
                 stop_after_n_found=1,
             ):
                 ret = tf.int64
@@ -959,7 +959,8 @@ def tensorflow_handle_methods(fn):
         if tensorflow_is_array_bknd(args[0]):
             return fn(*args, **kwargs)
         else:
-            fn_name = extract_function_name(fn.__name__)
+            pattern = "_bknd_|_bknd|_frnt_|_frnt"
+            fn_name = extract_function_name(re.sub(pattern, "", fn.__name__))
             new_fn = getattr(args[0], fn_name)
             return new_fn(*args[1:], **kwargs)
 
@@ -1073,6 +1074,8 @@ def tensorflow_dev(
     *,
     as_native: bool = False,
 ):
+    if "keras.src.backend.tensorflow.core.Variable" in str(x.__class__):
+        x = x.value
     if isinstance(x, tensorflow.TensorArray):
         x = tensorflow_stack_bknd_(x)
     dv = x.device
@@ -1135,6 +1138,30 @@ def tensorflow__check_in_nested_sequence(sequence, value=None, _type=None):
             )
 
 
+def tensorflow_is_variable(x, /, *, exclusive=False):
+    return isinstance(x, tensorflow.Variable)
+
+
+def tensorflow_variable(x, /):
+    with tensorflow.device(tensorflow_dev(x, as_native=True)):
+        return tensorflow.Variable(x, trainable=True)
+
+
+@tensorflow_handle_array_like_without_promotion
+def tensorflow_stop_gradient(
+    x: Union[tensorflow.Tensor, tensorflow.Variable],
+    /,
+    *,
+    preserve_type: bool = True,
+    out: Optional[Union[tensorflow.Tensor, tensorflow.Variable]] = None,
+):
+    is_var = tensorflow_is_variable(x)
+    x = tensorflow.stop_gradient(x)
+    if is_var and preserve_type:
+        return tensorflow_variable(x)
+    return x
+
+
 def tensorflow_nested_map_bknd(
     fn: Callable,
     x: Union[tensorflow.Tensor, tf.Tensor, Iterable],
@@ -1164,27 +1191,21 @@ def tensorflow_nested_map_bknd(
         to_ignore = to_ignore + (class_instance,)
     tuple_check_fn = tensorflow_default_bknd(
         _tuple_check_fn,
-        (
-            (lambda x_, t_: isinstance(x_, t_))
-            if include_derived["tuple"]
-            else lambda x_, t_: type(x_) is t_
-        ),
+        (lambda x_, t_: isinstance(x_, t_))
+        if include_derived["tuple"]
+        else lambda x_, t_: type(x_) is t_,
     )
     list_check_fn = tensorflow_default_bknd(
         _list_check_fn,
-        (
-            (lambda x_, t_: isinstance(x_, t_))
-            if include_derived["list"]
-            else lambda x_, t_: type(x_) is t_
-        ),
+        (lambda x_, t_: isinstance(x_, t_))
+        if include_derived["list"]
+        else lambda x_, t_: type(x_) is t_,
     )
     dict_check_fn = tensorflow_default_bknd(
         _dict_check_fn,
-        (
-            (lambda x_, t_: isinstance(x_, t_))
-            if include_derived["dict"]
-            else lambda x_, t_: type(x_) is t_
-        ),
+        (lambda x_, t_: isinstance(x_, t_))
+        if include_derived["dict"]
+        else lambda x_, t_: type(x_) is t_,
     )
     if tuple_check_fn(x, tuple) and not isinstance(x, to_ignore):
         ret_list = [
@@ -1387,7 +1408,11 @@ def tensorflow_asarray(
             ret = tensorflow.convert_to_tensor(obj_np, dtype)
         else:
             ret = tensorflow.convert_to_tensor(obj, dtype)
-        return tensorflow.identity(ret) if copy or ret.device != device else ret
+        return (
+            tensorflow.identity(ret)
+            if copy or tensorflow_as_native_dev(tensorflow_dev(ret)) != device
+            else ret
+        )
 
 
 @tensorflow_handle_array_like_without_promotion
@@ -1605,7 +1630,9 @@ def tensorflow_where(
         dtype = (
             x1.dtype
             if hasattr(x1, "dtype")
-            else x2.dtype if hasattr(x2, "dtype") else tensorflow_default_dtype_bknd()
+            else x2.dtype
+            if hasattr(x2, "dtype")
+            else tensorflow_default_dtype_bknd()
         )
         if not tensorflow_is_array_bknd(x1):
             x1 = tensorflow_asarray(x1, dtype=dtype)
@@ -2017,7 +2044,9 @@ def tensorflow__parse_query_bknd(query, x_shape, scatter=False):
             (
                 tensorflow_reshape_bknd_(arr, (-1,))
                 if len(arr.shape) > 1
-                else tensorflow_expand_dims(arr) if not len(arr.shape) else arr
+                else tensorflow_expand_dims(arr)
+                if not len(arr.shape)
+                else arr
             )
             for arr in array_queries
         ]
@@ -2129,6 +2158,7 @@ def tensorflow_to_numpy(
         return np.asarray(tensorflow.convert_to_tensor(x))
 
 
+@tensorflow_handle_array_like_without_promotion
 def tensorflow_to_scalar(x: Union[tensorflow.Tensor, tensorflow.Variable], /):
     ret = tensorflow_to_numpy(x).item()
     if x.dtype == tensorflow.bfloat16:
@@ -2136,9 +2166,8 @@ def tensorflow_to_scalar(x: Union[tensorflow.Tensor, tensorflow.Variable], /):
     return ret
 
 
-@tensorflow_handle_array_like_without_promotion
-def tensorflow_to_scalar_bknd(x: Union[tensorflow.Tensor, tf.Tensor], /):
-    return tensorflow_to_scalar(x)
+def tensorflow_to_scalar_bknd_(self: tensorflow.Tensor):
+    return tensorflow_to_scalar(self)
 
 
 def tensorflow_default_uint_dtype_bknd(
@@ -2165,11 +2194,9 @@ def tensorflow_default_uint_dtype_bknd(
 
             if tensorflow_nested_argwhere_bknd(
                 input,
-                lambda x: (
-                    tensorflow_dtype(x) == "uint64"
-                    if is_native(x)
-                    else x > 9223372036854775807 and x != math.inf
-                ),
+                lambda x: tensorflow_dtype(x) == "uint64"
+                if is_native(x)
+                else x > 9223372036854775807 and x != math.inf,
                 stop_after_n_found=1,
             ):
                 ret = tf.uint64
@@ -2265,7 +2292,7 @@ def tensorflow_prod(
 
 def tensorflow__numel_bknd(shape):
     shape = tuple(shape)
-    return tensorflow_to_scalar_bknd(tensorflow_prod(shape)) if shape != () else 1
+    return tensorflow_to_scalar_bknd_(tensorflow_prod(shape)) if shape != () else 1
 
 
 def tensorflow_check_one_way_broadcastable(x1, x2):
@@ -2377,7 +2404,9 @@ def tensorflow_multiply(
         dtype = (
             x1.dtype
             if hasattr(x1, "dtype")
-            else x2.dtype if hasattr(x2, "dtype") else tensorflow_default_dtype_bknd()
+            else x2.dtype
+            if hasattr(x2, "dtype")
+            else tensorflow_default_dtype_bknd()
         )
         if not tensorflow_is_array_bknd(x1):
             x1 = tensorflow_asarray(x1, dtype=dtype)
@@ -2487,10 +2516,6 @@ def tensorflow_gather_nd(
         return result
 
 
-def tensorflow_is_variable(x, /, *, exclusive=False):
-    return isinstance(x, tensorflow.Variable)
-
-
 def tensorflow__is_variable_bknd(x, exclusive=False, to_ignore=None):
     x = x
     return tensorflow_nested_map_bknd(
@@ -2541,11 +2566,9 @@ def tensorflow_scatter_nd(
         dtype = tensorflow_promote_types_bknd(out.dtype, updates_dtype)
     updates = tensorflow.cast(
         updates,
-        (
-            tensorflow_as_native_dtype(dtype)
-            if tensorflow_exists_bknd(out)
-            else updates_dtype
-        ),
+        tensorflow_as_native_dtype(dtype)
+        if tensorflow_exists_bknd(out)
+        else updates_dtype,
     )
     expected_shape = (
         list(tensorflow.shape(indices)[:-1])
@@ -2612,8 +2635,12 @@ def tensorflow_set_item_bknd(
     if isinstance(query, (list, tuple)) and any(
         [(q is Ellipsis or isinstance(q, slice) and q.stop is None) for q in query]
     ):
-        np_array = x.numpy()
-        np_array = tensorflow_set_item_bknd(np_array, query, np.asarray(val))
+        x_stop_gradient = tensorflow_stop_gradient(x, preserve_type=False)
+        np_array = x_stop_gradient.numpy()
+        val_stop_gradient = tensorflow_stop_gradient(val, preserve_type=False)
+        np_array = tensorflow_set_item_bknd(
+            np_array, query, np.asarray(val_stop_gradient)
+        )
         return tensorflow_asarray(np_array)
     if copy:
         x = tensorflow_copy_array(x)
