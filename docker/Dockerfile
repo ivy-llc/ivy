@@ -39,11 +39,9 @@ RUN apt-get update && \
 
 
 # Install Ivy Upstream
-RUN git clone --filter=blob:none --no-checkout https://github.com/ivy-llc/ivy --depth 1 && \
+RUN git clone --progress --recurse-submodules https://github.com/ivy-llc/ivy --depth 1 && \
     cd ivy && \
-    git sparse-checkout init --cone && \
-    git sparse-checkout set '*' '!ivy/compiler/_cache' && \
-    git checkout && \
+    rm -rf compiler/_cache && \
     cd ivy_tests/array_api_testing/test_array_api && \
     pip3 install --no-cache-dir -r requirements.txt
 
