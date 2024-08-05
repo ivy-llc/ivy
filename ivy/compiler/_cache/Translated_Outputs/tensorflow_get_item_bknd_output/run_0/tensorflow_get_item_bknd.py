@@ -1,9 +1,9 @@
 import tensorflow
 import tensorflow as tf
 
+from typing import Tuple
 from typing import Optional
 from typing import Union
-from typing import Tuple
 
 from .tensorflow__helpers import tensorflow__parse_query_bknd
 from .tensorflow__helpers import tensorflow_current_backend_str

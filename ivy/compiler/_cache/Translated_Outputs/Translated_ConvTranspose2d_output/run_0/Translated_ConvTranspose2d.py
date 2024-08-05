@@ -1,9 +1,9 @@
 import ivy.functional.frontends.torch as torch
 
 from .Translated__ConvTransposeNd import Translated__ConvTransposeNd
-from .helpers import Translated__ntuple
+from .helpers import Translated__ntuple_parse
 
-_pair = Translated__ntuple(2, "_pair")
+_pair = Translated__ntuple_parse(2, "_pair")
 
 
 class Translated_ConvTranspose2d(Translated__ConvTransposeNd):

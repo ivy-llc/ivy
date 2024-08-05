@@ -1,9 +1,9 @@
 import tensorflow
 import tensorflow as tf
 
+from typing import Union
 from typing import Sequence
 from typing import Optional
-from typing import Union
 
 from .tensorflow__helpers import tensorflow__check_bounds_and_get_shape_bknd
 from .tensorflow__helpers import tensorflow_infer_dtype

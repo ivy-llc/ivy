@@ -1,9 +1,9 @@
 from .ivy__ConvNd import ivy__ConvNd
-from .ivy__helpers import ivy__ntuple
+from .ivy__helpers import ivy__ntuple_parse
 from .ivy__helpers import ivy_dim_frnt_
 from .ivy__helpers import ivy_size_frnt_
 
-_single = ivy__ntuple(1, "_single")
+_single = ivy__ntuple_parse(1, "_single")
 
 
 class ivy__ConvTransposeNd(ivy__ConvNd):

@@ -1,9 +1,9 @@
 import tensorflow
 import numpy as np
 
-from typing import Sequence
-from typing import Union
 from typing import Optional
+from typing import Union
+from typing import Sequence
 
 from .tensorflow__helpers import tensorflow__calculate_out_shape_bknd
 from .tensorflow__helpers import tensorflow_handle_array_like_without_promotion

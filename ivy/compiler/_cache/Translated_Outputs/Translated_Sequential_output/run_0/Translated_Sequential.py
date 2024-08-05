@@ -3,8 +3,8 @@ import ivy.functional.frontends.torch.nn as nn
 
 import typing
 import operator
-from itertools import islice
 from typing import overload
+from itertools import islice
 from collections import OrderedDict
 
 

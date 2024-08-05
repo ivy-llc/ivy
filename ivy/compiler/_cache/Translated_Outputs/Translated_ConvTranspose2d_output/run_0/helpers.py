@@ -4,7 +4,7 @@ import math
 import warnings
 
 
-def Translated__ntuple(n, name="parse"):
+def Translated__ntuple_parse(n, name="parse"):
     def parse(x):
         if isinstance(x, collections.abc.Iterable):
             return tuple(x)

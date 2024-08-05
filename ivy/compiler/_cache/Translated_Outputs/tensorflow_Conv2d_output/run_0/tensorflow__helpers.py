@@ -422,7 +422,7 @@ def tensorflow_handle_array_like_without_promotion(fn: Callable):
     return _handle_array_like_without_promotion
 
 
-def tensorflow__ntuple(n, name="parse"):
+def tensorflow__ntuple_parse(n, name="parse"):
     def parse(x):
         if isinstance(x, collections.abc.Iterable):
             return tuple(x)

@@ -7,7 +7,7 @@ import re
 import warnings
 
 
-def ivy__ntuple(n, name="parse"):
+def ivy__ntuple_parse(n, name="parse"):
     def parse(x):
         if isinstance(x, collections.abc.Iterable):
             return tuple(x)

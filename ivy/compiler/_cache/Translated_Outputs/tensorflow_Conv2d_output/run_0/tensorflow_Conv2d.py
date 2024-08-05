@@ -1,10 +1,10 @@
 from .tensorflow__ConvNd import tensorflow__ConvNd
-from .tensorflow__helpers import tensorflow__ntuple
+from .tensorflow__helpers import tensorflow__ntuple_parse
 from .tensorflow__helpers import tensorflow_conv2d_frnt
 from .tensorflow__helpers import tensorflow_handle_transpose_in_input_and_output
 from .tensorflow__helpers import tensorflow_pad_frnt
 
-_pair = tensorflow__ntuple(2, "_pair")
+_pair = tensorflow__ntuple_parse(2, "_pair")
 
 
 class tensorflow_Conv2d(tensorflow__ConvNd):

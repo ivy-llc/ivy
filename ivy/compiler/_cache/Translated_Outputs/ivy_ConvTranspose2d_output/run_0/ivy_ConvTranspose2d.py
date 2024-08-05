@@ -1,8 +1,8 @@
 from .ivy__ConvTransposeNd import ivy__ConvTransposeNd
-from .ivy__helpers import ivy__ntuple
+from .ivy__helpers import ivy__ntuple_parse
 from .ivy__helpers import ivy_conv_transpose2d_frnt
 
-_pair = ivy__ntuple(2, "_pair")
+_pair = ivy__ntuple_parse(2, "_pair")
 
 
 class ivy_ConvTranspose2d(ivy__ConvTransposeNd):

@@ -2,13 +2,13 @@ import tensorflow
 
 
 from .tensorflow__ConvNd import tensorflow__ConvNd
-from .tensorflow__helpers import tensorflow__ntuple
+from .tensorflow__helpers import tensorflow__ntuple_parse
 from .tensorflow__helpers import tensorflow_dim_frnt_
 from .tensorflow__helpers import tensorflow_get_item
 from .tensorflow__helpers import tensorflow_size_frnt_
 from .tensorflow__helpers import tensorflow_store_config_info
 
-_single = tensorflow__ntuple(1, "_single")
+_single = tensorflow__ntuple_parse(1, "_single")
 
 
 class tensorflow__ConvTransposeNd(tensorflow__ConvNd):

@@ -1,7 +1,7 @@
 from .Translated__ConvNd import Translated__ConvNd
-from .helpers import Translated__ntuple
+from .helpers import Translated__ntuple_parse
 
-_single = Translated__ntuple(1, "_single")
+_single = Translated__ntuple_parse(1, "_single")
 
 
 class Translated__ConvTransposeNd(Translated__ConvNd):
