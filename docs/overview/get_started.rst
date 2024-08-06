@@ -51,12 +51,6 @@ supported frameworks and some relevant packages already installed, which you can
 
     docker pull ivyllc/ivy:latest
 
-If you are working on a GPU device, you can pull from:
-
-.. code-block:: bash
-
-    docker pull ivyllc/ivy:latest-gpu
-
 Ivy Folder
 ~~~~~~~~~~
 
