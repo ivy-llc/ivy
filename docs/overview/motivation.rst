@@ -2,13 +2,10 @@ Motivation
 ==========
 
 | (a) `ML Explosion <motivation/ml_explosion.rst>`_
-| A huge number of ML tools have exploded onto the scene!
+| A huge number of ML frameworks have exploded onto the scene!
 |
-| (b) `Why Unify? <motivation/why_unify.rst>`_
-| Why should we try to unify them?
-|
-| (c) `Standardization <motivation/standardization.rst>`_
-| We’re collaborating with The `Consortium for Python Data API Standards <https://data-apis.org>`_
+| (b) `Why Transpile? <motivation/why_unify.rst>`_
+| Why being able to convert between them is really useful!
 
 .. toctree::
    :hidden:
@@ -16,5 +13,4 @@ Motivation
    :caption: Background
 
    motivation/ml_explosion.rst
-   motivation/why_unify.rst
-   motivation/standardization.rst
+   motivation/why_transpile.rst

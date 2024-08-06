@@ -1,36 +1,27 @@
 ML Explosion
 ============
 
-The number of open source ML projects has grown considerably in recent years, especially Deep Learning, as can be seen from the rapidly increasing number of GitHub repos containing the term “Deep Learning” over time.
-These projects are written in many different frameworks.
+The explosion of different machine learning frameworks such as PyTorch, TensorFlow, JAX and NumPy (just to 
+name a few) has many pros and cons for the development and deployment of machine learning models.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/background/ml_explosion/num_dl_repos_over_time.png?raw=true
-   :align: center
-   :width: 80%
+Each framework brings unique features and strengths to the table, catering to different needs and preferences 
+of developers and organizations. PyTorch, for instance, is renowned for its dynamic computation graph and intuitive 
+interface,  making it a favorite among ML researchers. TensorFlow, with its static computation graph and robust ecosystem, 
+is preferred in production environments and large-scale deployments. And JAX, leveraging just-in-time compilation 
+and automatic differentiation, is gaining traction for its performance efficiency.
 
-While this is a wonderful thing for researchers and developers, when we also consider the speed at which the frameworks are evolving, the shareability of code is significantly hindered, with projects and libraries becoming outdated in a matter of months if not rigorously maintained against the newest frameworks and also the newest framework versions.
+However, this division also presents significant challenges. Each framework has its own syntax, APIs, and paradigms, 
+requiring developers to invest time and effort to learn and switch between them. This lack of standardization means 
+switching between frameworks, whether just a single model or an entire codebase, an incredibly challenging task - this 
+can hinder the efficiency of research and development, and often lead to sub-optimal deployment options. These challenges 
+continue to worsen over time, as the emergence of new industry-leading frameworks like MLX exemplifies the continuing 
+expansion and diversification of the machine learning framework ecosystem, ultimately leading to greater fragmentation.
 
-For software development pipelines where rapid prototyping and collaboration are vital, this is a significant bottleneck.
-As new future frameworks become available, backend-specific code quickly becomes outdated and obsolete, and users of these frameworks are constantly re-inventing the wheel.
-
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/background/ml_explosion/ml_framework_evolution.png?raw=true
-   :align: center
-   :width: 80%
-
-If our desire is to provide a new framework that simultaneously supports all of the modern frameworks in a simple and scalable manner, then we must determine exactly where the common ground lies between them.
-
-Finding common ground between the existing frameworks is essential in order to design a simple, scalable, and universal abstraction.
-
-In the search for common ground, considering the language first, we can see that Python has become the clear front-runner.
-Looking a little deeper at these python frameworks, we find that all of these follow the same core principles of operation, exposing almost identical core functional APIs, but with unique syntax and arguments.
-There are only so many ways to manipulate a tensor, and unsurprisingly these fundamental tensor operations are consistent between frameworks.
-The functions exposed by each framework follow very similar conventions to those of Numpy, first introduced in 2006.
-
-A simple and scalable abstraction layer therefore presents itself.
-The functional APIs of all existing ML frameworks are all cut from the same cloth, adhering to similar sets of functions but with differing syntax and semantics.
+This is the problem we're addressing at Ivy with our `source-to-source transpiler <motivation/why_transpile.rst>`_ - allowing 
+simple and painless conversion of any machine learning models or code between any of these cutting-edge frameworks.
 
 **Round Up**
 
 Hopefully, this has painted a clear picture of how many different ML frameworks have exploded onto the scene 🙂
 
-Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!
+Feel free to reach out on `discord <https://discord.gg/H3pUVDeM>`_ if you have any questions!
