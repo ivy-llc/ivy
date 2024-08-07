@@ -246,7 +246,7 @@ def as_native_dtype(
         return dtype_in
     if dtype_in in char_rep_dtype_dict:
         return as_native_dtype(char_rep_dtype_dict[dtype_in])
-    if dtype_in in native_dtype_dict.values():
+    if dtype_in in native_dtype_dict:
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
         raise ivy.utils.exceptions.IvyException(
