@@ -4,6 +4,22 @@ import math
 import re
 
 
+def ivy__handle_padding_shape_frnt(padding, n, mode):
+    padding = tuple(
+        [
+            (padding[i * 2], padding[i * 2 + 1])
+            for i in range(int(len(padding) / 2) - 1, -1, -1)
+        ]
+    )
+    if mode == "circular":
+        padding = padding + ((0, 0),) * (n - len(padding))
+    else:
+        padding = ((0, 0),) * (n - len(padding)) + padding
+    if mode == "circular":
+        padding = tuple(list(padding)[::-1])
+    return padding
+
+
 def ivy_handle_methods(fn):
     def extract_function_name(s):
         match = re.search("_(.+?)(?:_\\d+)?$", s)
@@ -94,22 +110,6 @@ def ivy_reshape_frnt_(arr, *args, shape=None):
             return ivy_reshape_frnt(arr, args)
     else:
         raise ValueError("reshape() got no values for argument 'shape'")
-
-
-def ivy__handle_padding_shape_frnt(padding, n, mode):
-    padding = tuple(
-        [
-            (padding[i * 2], padding[i * 2 + 1])
-            for i in range(int(len(padding) / 2) - 1, -1, -1)
-        ]
-    )
-    if mode == "circular":
-        padding = padding + ((0, 0),) * (n - len(padding))
-    else:
-        padding = ((0, 0),) * (n - len(padding)) + padding
-    if mode == "circular":
-        padding = tuple(list(padding)[::-1])
-    return padding
 
 
 def ivy_pad_frnt(input, pad, mode="constant", value=0):

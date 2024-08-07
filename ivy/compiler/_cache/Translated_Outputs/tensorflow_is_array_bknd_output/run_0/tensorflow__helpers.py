@@ -128,6 +128,7 @@ promotion_table = {
     ("complex64", "uint32"): "complex128",
     ("complex64", "uint64"): "complex128",
 }
+
 array_api_promotion_table = {
     ("bool", "bool"): "bool",
     ("int8", "int8"): "int8",
@@ -169,6 +170,7 @@ array_api_promotion_table = {
     ("float32", "float64"): "float64",
     ("float64", "float64"): "float64",
 }
+
 tf.experimental.numpy.experimental_enable_numpy_behavior(True)
 
 

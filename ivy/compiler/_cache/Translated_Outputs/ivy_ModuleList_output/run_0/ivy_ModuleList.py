@@ -4,8 +4,8 @@ import threading
 
 import typing
 import operator
-from collections import abc as container_abcs
 from itertools import chain
+from collections import abc as container_abcs
 
 from .ivy__helpers import ivy__addindent
 from .ivy__helpers import ivy_add_frnt_
