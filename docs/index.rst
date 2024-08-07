@@ -46,7 +46,6 @@
 
   overview/design.rst
   overview/contributing.rst
-  overview/volunteer_ranks.rst
   overview/deep_dive.rst
   overview/glossary.rst
   overview/faq.rst
