@@ -10,23 +10,23 @@
 
 <div style="display: block;" align="center">
     <a href="https://ivy.dev/">
-        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/website_button.svg">
+        Website
     </a>
     <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
     <a href="https://ivy.dev/docs">
-        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/docs_button.svg">
+        Docs
     </a>
     <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
     <a href="https://ivy.dev/docs/demos">
-        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/examples_button.svg">
+        Examples
     </a>
     <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
     <a href="https://ivy.dev/docs/overview/design.html">
-        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/design_button.svg">
+        Design
     </a>
     <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
     <a href="https://ivy.dev/docs/overview/faq.html">
-        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/faq_button.svg">
+        FAQ
     </a>
 </div>
 
@@ -62,8 +62,9 @@
 
 Ivy is an open-source machine learning framework that enables you to:
 
-- Use your ML models and/or functions in any framework by converting any code from one framework to another using `ivy.transpile`
-- Convert entire ML models and libraries between frameworks by generating identical source code in any frameworkusing `ivy.source_to_source` *(currently in private beta)*
+- Convert ML models, tools and libraries between frameworks while maintaining complete functionality using `ivy.source_to_source`
+- Create optimized graph-based models and functions in any native framework (PyTorch, TensorFlow, etc..) with `ivy.trace_graph`
+- Use your ML models or functions in any framework using a graph-tracing approach with `ivy.transpile`
 
 <div style="display: block;" align="center">
     <div>
@@ -99,15 +100,12 @@ pip install ivy
 ```
 
 <details>
-<summary><b>Docker Images</b></summary>
+<summary><b>Docker Image</b></summary>
 
-Given the challenges of maintaining installations of various frameworks in a single environment,
-users who would want to test `ivy` with multiple frameworks at once can use our Docker images for a seamless experience.
-You can pull the images from:
+You can pull the Docker image for Ivy from:
 
 ``` bash
-docker pull ivyllc/ivy:latest      # CPU
-docker pull ivyllc/ivy:latest-gpu  # GPU
+docker pull ivyllc/ivy:latest
 ```
 
 </details>
@@ -136,10 +134,8 @@ tutorials to do so are available!
 
 # Getting started
 
-- [Website](https://ivy.dev)
 - [Docs](https://ivy.dev/docs)
 - [Demos](https://ivy.dev/demos)
-- [Design](https://ivy.dev/docs/overview/design.html)
 - [FAQ](https://ivy.dev/docs/overview/faq.html)
 
 [Ivy's transpiler](https://ivy.dev/docs/overview/design/ivy_as_a_transpiler.html) allows you convert code between different ML frameworks. Have a look at our [Quickstart](https://ivy.dev/docs/demos/quickstart.html) notebook to get a brief idea of the features!
