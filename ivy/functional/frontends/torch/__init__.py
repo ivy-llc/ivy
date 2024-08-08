@@ -268,6 +268,7 @@ from . import nn
 from .nn.functional import softmax, relu, lstm
 from . import special
 from . import tensor
+from . import _VF
 from .tensor import *
 from . import blas_and_lapack_ops
 from .blas_and_lapack_ops import *

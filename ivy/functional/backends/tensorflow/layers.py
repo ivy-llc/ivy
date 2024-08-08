@@ -790,7 +790,7 @@ def lstm_update(
     recurrent_bias = (
         recurrent_bias.data if recurrent_bias is not None else recurrent_bias
     )
-    if "cpu" in dev:
+    if "cpu" in dev.lower():
         outputs, new_states = _cpu_lstm(
             x,
             init_h,
