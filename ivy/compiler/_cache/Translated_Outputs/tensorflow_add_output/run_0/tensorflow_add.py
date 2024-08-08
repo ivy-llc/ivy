@@ -23,9 +23,7 @@ def tensorflow_add(
         dtype = (
             x1.dtype
             if hasattr(x1, "dtype")
-            else x2.dtype
-            if hasattr(x2, "dtype")
-            else tensorflow_default_dtype_bknd()
+            else x2.dtype if hasattr(x2, "dtype") else tensorflow_default_dtype_bknd()
         )
         if not tensorflow_is_array_bknd(x1):
             x1 = tensorflow_asarray(x1, dtype=dtype)

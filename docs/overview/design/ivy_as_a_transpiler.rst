@@ -25,7 +25,7 @@ Let's have a look at a brief example:
        def forward(self, x):
         return self._linear(x)
 
-   TFNetwork = ivy.source_to_source(Network, source="torch", target="tensorflow") 
+   TFNetwork = ivy.source_to_source(Network, source="torch", target="tensorflow")
 
    x = tf.convert_to_tensor([1., 2., 3.])
    net = TFNetwork()
