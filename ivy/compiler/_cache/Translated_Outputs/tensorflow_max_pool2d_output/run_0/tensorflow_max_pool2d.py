@@ -1,9 +1,9 @@
 import tensorflow
 
-from typing import Optional
-from typing import Tuple
-from typing import Union
 from typing import List
+from typing import Optional
+from typing import Union
+from typing import Tuple
 
 from .tensorflow__helpers import tensorflow__determine_depth_max_pooling
 from .tensorflow__helpers import tensorflow__handle_padding_bknd

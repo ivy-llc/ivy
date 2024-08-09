@@ -1,8 +1,8 @@
 import tensorflow
 
-from typing import Union
 from typing import Optional
 from typing import Tuple
+from typing import Union
 from typing import Sequence
 
 from .tensorflow__helpers import tensorflow__extend_2d_padding

@@ -1,7 +1,7 @@
 import tensorflow
 
-from typing import Sequence
 from typing import Optional
+from typing import Sequence
 from typing import Union
 
 from .tensorflow__helpers import tensorflow_astype

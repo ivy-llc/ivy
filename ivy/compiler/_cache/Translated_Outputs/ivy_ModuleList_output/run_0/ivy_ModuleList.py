@@ -2,10 +2,10 @@ import ivy
 from collections import OrderedDict
 import threading
 
-import typing
 import operator
-from itertools import chain
+import typing
 from collections import abc as container_abcs
+from itertools import chain
 
 from .ivy__helpers import ivy__addindent
 from .ivy__helpers import ivy_add_frnt_
