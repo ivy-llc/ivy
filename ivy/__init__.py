@@ -806,6 +806,7 @@ except:  # noqa: E722
 try:
     from .compiler.compiler import (
         clear_graph_cache,
+        graph_transpile,
         source_to_source,
         transpile,
         trace_graph,
