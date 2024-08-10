@@ -154,6 +154,7 @@ def log_loss(y_true, y_pred, *, eps=1e-15, sample_weight=None):
             raise IvyValueError(
                 "sample_weight must have the same length as y_true and y_pred"
             )
+
         sample_weight = sample_weight / ivy.sum(sample_weight)
         log_loss = log_loss * sample_weight
     
