@@ -1,8 +1,8 @@
 import tensorflow
 
-from typing import List
-from typing import Optional
 from typing import Union
+from typing import Optional
+from typing import List
 from typing import Tuple
 
 from .tensorflow__helpers import tensorflow__determine_depth_max_pooling

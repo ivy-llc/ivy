@@ -1,8 +1,8 @@
 import tensorflow
 
-from numbers import Number
-from typing import Union
 from typing import Optional
+from typing import Union
+from numbers import Number
 
 from .tensorflow__helpers import tensorflow_as_native_dtype
 from .tensorflow__helpers import tensorflow_asarray

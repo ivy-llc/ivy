@@ -2,10 +2,10 @@ import tensorflow
 from collections import OrderedDict
 import threading
 
-import typing
 import operator
-from itertools import islice
+import typing
 from typing import overload
+from itertools import islice
 
 from .tensorflow__stateful import Model as tensorflow_keras_Model
 from .tensorflow__helpers import tensorflow__is_variable_bknd

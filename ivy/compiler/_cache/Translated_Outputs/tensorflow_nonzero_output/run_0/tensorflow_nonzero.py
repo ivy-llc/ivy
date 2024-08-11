@@ -1,7 +1,7 @@
 import tensorflow
 
-from typing import Union
 from numbers import Number
+from typing import Union
 from typing import Optional
 
 from .tensorflow__helpers import tensorflow_handle_array_like_without_promotion

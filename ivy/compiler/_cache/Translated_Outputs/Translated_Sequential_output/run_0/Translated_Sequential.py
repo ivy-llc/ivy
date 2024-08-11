@@ -1,11 +1,11 @@
 import ivy.functional.frontends.torch as torch
 import ivy.functional.frontends.torch.nn as nn
 
-import typing
 import operator
+import typing
 from collections import OrderedDict
-from itertools import islice
 from typing import overload
+from itertools import islice
 
 
 class Translated_Sequential(nn.Module):
