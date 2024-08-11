@@ -389,7 +389,7 @@ def vander(x, N=None):
         raise RuntimeError("Input dim must be greater than or equal to 1.")
 
     # pytorch always return int64 for integers
-    if "int" in x.dtype:
+    if "int" in str(x.dtype):
         x = ivy.astype(x, ivy.int64)
 
     if len(x.shape) == 1:

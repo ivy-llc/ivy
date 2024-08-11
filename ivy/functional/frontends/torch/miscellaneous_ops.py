@@ -573,9 +573,9 @@ def tensordot(a, b, dims=2, out=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
 def trace(input):
-    if "int" in input.dtype:
+    if "int" in str(input.dtype):
         input = input.astype("int64")
-    target_type = "int64" if "int" in input.dtype else input.dtype
+    target_type = "int64" if "int" in str(input.dtype) else input.dtype
     return ivy.astype(ivy.trace(input), target_type)
 
 
