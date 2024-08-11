@@ -64,6 +64,40 @@ def get_item(
     return x[query]
 
 
+def set_item(
+    x: Union[tf.Tensor, tf.Variable],
+    query: Union[tf.Tensor, tf.Variable, Tuple],
+    val: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    copy: Optional[bool] = False,
+) -> Union[tf.Tensor, tf.Variable]:
+    val = tf.cast(val, x.dtype)
+
+    # TODO: implement mask functionality (test currently set with `allow_mask=False`)
+
+    if isinstance(query, (list, tuple)):
+        new_query = []
+        for q in query:
+            if isinstance(q, tf.Tensor):
+                total_size = tf.reduce_prod(q.shape)
+                if total_size == 0:
+                    q = None
+                elif total_size == 1:
+                    q = 1
+            new_query.append(q)
+        query = tuple(new_query)
+
+    x_is_tf_variable = isinstance(x, tf.Variable)
+    if not x_is_tf_variable:
+        x = tf.Variable(x)
+
+    x[query].assign(val)
+    if not x_is_tf_variable:
+        return x.read_value()
+    return x
+
+
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
     # TensorFlow fails to convert bfloat16 tensor when it has 0 dimensions
     if (
