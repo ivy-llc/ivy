@@ -40,7 +40,8 @@ class LabelEncoder(TransformerMixin, BaseEstimator):
             self.class_to_index_[idx] = value
 
         return self
-#fit transform method
+
+    # fit transform method
     def fit_transform(self, y):
         return self.fit(y).transform(y)
 
