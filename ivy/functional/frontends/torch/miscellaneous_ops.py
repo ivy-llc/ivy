@@ -190,7 +190,7 @@ def cummax(input, dim, *, out=None):
 
 @to_ivy_arrays_and_back
 def cumprod(input, dim, *, dtype=None, out=None):
-    if not dtype and "int" in input.dtype:
+    if not dtype and "int" in str(input.dtype):
         dtype = ivy.int64
     return ivy.cumprod(input, axis=dim, dtype=dtype, out=out)
 
@@ -201,7 +201,7 @@ def cumprod(input, dim, *, dtype=None, out=None):
     "torch",
 )
 def cumsum(input, dim, *, dtype=None, out=None):
-    if not dtype and "int" in input.dtype:
+    if not dtype and "int" in str(input.dtype):
         dtype = ivy.int64
     return ivy.cumsum(input, axis=dim, dtype=dtype, out=out)
 
