@@ -407,3 +407,10 @@ def handle_transpose_in_input_and_output(fn):
 
     handle_transpose_in_input_and_output.__signature__ = original_signature
     return transpose_wrapper
+
+# TODO: temp fix for `ivy.inplace_update`. Dont quite understand the way this function
+# has been implemented in the backends as it seems to also have ivy.Array specific logic.
+# In the case where both x, and val are arrays, it simply returns x (why??)
+# perhaps we can rewrite it in a cleaner format and then remove this fix
+def dummy_inplace_update(x, val, /, *, ensure_in_backend=False, keep_input_dtype=False):
+    return val
