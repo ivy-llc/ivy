@@ -396,8 +396,8 @@ def conv_general_dilated(
             ]
     df = _get_x_data_format(dims, data_format)
     promoted_type = jnp.promote_types(x.dtype, filters.dtype)
-    x = x.astype(promoted_type)
-    filters = filters.astype(promoted_type)
+    x = jnp.astype(x, promoted_type)
+    filters = jnp.astype(filters, promoted_type)
     res = jlax.conv_general_dilated(
         x,
         filters,

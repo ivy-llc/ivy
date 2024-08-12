@@ -69,7 +69,7 @@ def searchsorted(
         ret = jnp.array(out_array).reshape(original_shape)
     else:
         ret = jnp.searchsorted(x, v, side=side)
-    return ret.astype(ret_dtype)
+    return jnp.astype(ret, ret_dtype)
 
 
 # msort

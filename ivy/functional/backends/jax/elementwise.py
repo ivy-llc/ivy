@@ -212,7 +212,7 @@ def floor_divide(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return jnp.floor(jnp.divide(x1, x2)).astype(x1.dtype)
+    return jnp.astype(jnp.floor(jnp.divide(x1, x2)), x1.dtype)
 
 
 def fmin(
@@ -331,8 +331,8 @@ def logaddexp2(
 ) -> JaxArray:
     x1, x2 = promote_types_of_inputs(x1, x2)
     if not is_float_dtype(x1):
-        x1 = x1.astype(default_float_dtype(as_native=True))
-        x2 = x2.astype(default_float_dtype(as_native=True))
+        x1 = jnp.astype(x1, default_float_dtype(as_native=True))
+        x2 = jnp.astype(x2, default_float_dtype(as_native=True))
     return jnp.logaddexp2(x1, x2)
 
 
@@ -424,11 +424,11 @@ def pow(
         else:
             fill_value = jnp.finfo(x1.dtype).min
         ret = jnp.float_power(x1, x2)
-        return jnp.where(jnp.bitwise_and(x1 == 0, x2 < 0), fill_value, ret).astype(
-            x1.dtype
+        return jnp.astype(
+            jnp.where(jnp.bitwise_and(x1 == 0, x2 < 0), fill_value, ret), x1.dtype
         )
     if ivy.is_int_dtype(x1) and ivy.any(x2 < 0):
-        return jnp.float_power(x1, x2).astype(x1.dtype)
+        return jnp.astype(jnp.float_power(x1, x2), x1.dtype)
     return jnp.power(x1, x2)
 
 
@@ -447,7 +447,7 @@ def remainder(
         res_floored = jnp.where(res >= 0, jnp.floor(res), jnp.ceil(res))
         diff = res - res_floored
         diff, x2 = ivy.promote_types_of_inputs(diff, x2)
-        return jnp.round(diff * x2).astype(x1.dtype)
+        return jnp.astype(jnp.round(diff * x2), x1.dtype)
     return jnp.remainder(x1, x2)
 
 
@@ -472,7 +472,7 @@ def sign(
 ) -> JaxArray:
     if "complex" in str(x.dtype):
         return jnp.sign(x) if np_variant else _abs_variant_sign(x)
-    return jnp.where(x == -0.0, 0.0, jnp.sign(x)).astype(x.dtype)
+    return jnp.astype(jnp.where(x == -0.0, 0.0, jnp.sign(x)), x.dtype)
 
 
 def sin(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:

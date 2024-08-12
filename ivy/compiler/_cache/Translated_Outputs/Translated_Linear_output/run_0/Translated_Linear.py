@@ -1,6 +1,5 @@
 import ivy.functional.frontends.torch as torch
 import ivy.functional.frontends.torch.nn as nn
-import ivy.functional.frontends.torch.nn.functional as F
 
 import typing
 import math
@@ -40,7 +39,7 @@ class Translated_Linear(nn.Module):
             Translated_uniform_(self.bias, -bound, bound)
 
     def forward(self, input):
-        return F.linear(input, self.weight, self.bias)
+        return torch.nn.functional.linear(input, self.weight, self.bias)
 
     def extra_repr(self):
         return f"in_features={self.in_features}, out_features={self.out_features}, bias={self.bias is not None}"

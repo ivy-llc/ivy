@@ -1,7 +1,7 @@
 import tensorflow
 
-from typing import Optional
 from typing import Union
+from typing import Optional
 
 from .tensorflow__helpers import tensorflow_check_gather_nd_input_valid
 from .tensorflow__helpers import tensorflow_gather_nd_helper

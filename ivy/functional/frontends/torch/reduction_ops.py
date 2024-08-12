@@ -318,7 +318,7 @@ def norm(input, p="fro", dim=None, keepdim=False, out=None, dtype=None):
 )
 def prod(input, dim=None, keepdim=False, *, dtype=None):
     if not dtype:
-        if "int" in input.dtype:
+        if "int" in str(input.dtype):
             dtype = ivy.int64
     return ivy.prod(input, axis=dim, dtype=dtype, keepdims=keepdim)
 

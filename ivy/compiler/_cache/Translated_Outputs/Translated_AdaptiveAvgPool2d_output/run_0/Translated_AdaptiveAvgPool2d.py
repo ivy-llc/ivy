@@ -1,4 +1,4 @@
-import ivy.functional.frontends.torch.nn.functional as F
+import ivy.functional.frontends.torch as torch
 
 import typing
 
@@ -9,4 +9,4 @@ class Translated_AdaptiveAvgPool2d(Translated__AdaptiveAvgPoolNd):
     output_size: typing.Any
 
     def forward(self, input):
-        return F.adaptive_avg_pool2d(input, self.output_size)
+        return torch.nn.functional.adaptive_avg_pool2d(input, self.output_size)

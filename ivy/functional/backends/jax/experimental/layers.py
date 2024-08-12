@@ -149,8 +149,8 @@ def general_pool(
     if not ivy.is_array(init):
         init = jnp.array(init, dtype=inputs.dtype)
     promoted_type = jnp.promote_types(inputs.dtype, init.dtype)
-    inputs = inputs.astype(promoted_type)
-    init = init.astype(promoted_type)
+    inputs = jnp.astype(inputs, promoted_type)
+    init = jnp.astype(init, promoted_type)
     y = jlax.reduce_window(
         inputs, init, reduce_fn, dims, strides, pad_list, window_dilation=dilation
     )
@@ -238,7 +238,7 @@ def max_pool2d(
     if data_format == "NCHW":
         res = jnp.transpose(res, (0, 3, 1, 2))
 
-    return res.astype(odtype)
+    return jnp.astype(res, odtype)
 
 
 def max_pool3d(
@@ -331,7 +331,7 @@ def avg_pool1d(
     if data_format in ("NCW", "NCL"):
         res = jnp.transpose(res, (0, 2, 1))
     if x.dtype == "float16":
-        res = res.astype("float16")
+        res = jnp.astype(res, "float16")
 
     return res
 
@@ -765,7 +765,7 @@ def reduce_window(
         padding = _to_nested_tuple(padding)
     return jlax.reduce_window(
         operand,
-        jnp.array(init_value).astype(operand.dtype),
+        jnp.astype(jnp.array(init_value), operand.dtype),
         computation,
         window_dimensions,
         window_strides,
@@ -807,7 +807,7 @@ def fft2(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {s}, expecting s points larger than 1"
         )
-    return jnp.fft.fft2(x, s, dim, norm).astype(jnp.complex128)
+    return jnp.astype(jnp.fft.fft2(x, s, dim, norm), jnp.complex128)
 
 
 def ifftn(
@@ -859,12 +859,12 @@ def rfft(
 ) -> JaxArray:
     x = x.real
     if x.dtype == jnp.float16:
-        x = x.astype(jnp.float32)
+        x = jnp.astype(x, jnp.float32)
 
     ret = jnp.fft.rfft(x, n=n, axis=axis, norm=norm)
 
     if x.dtype != jnp.float64:
-        ret = ret.astype(jnp.complex64)
+        ret = jnp.astype(ret, jnp.complex64)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -900,7 +900,7 @@ def rfftn(
         )
     if norm not in {"backward", "ortho", "forward"}:
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
-    return jnp.fft.rfftn(x, s, axes, norm).astype(jnp.complex128)
+    return jnp.astype(jnp.fft.rfftn(x, s, axes, norm), jnp.complex128)
 
 
 # stft

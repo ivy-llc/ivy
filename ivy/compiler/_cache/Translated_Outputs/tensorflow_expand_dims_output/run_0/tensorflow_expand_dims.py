@@ -1,8 +1,8 @@
 import tensorflow
 import numpy as np
 
-from typing import Sequence
 from typing import Union
+from typing import Sequence
 from typing import Optional
 
 from .tensorflow__helpers import tensorflow__calculate_out_shape_bknd

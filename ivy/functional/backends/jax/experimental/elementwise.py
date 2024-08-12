@@ -79,7 +79,7 @@ def float_power(
         out_dtype = jnp.complex128
     else:
         out_dtype = jnp.float64
-    return jnp.float_power(x1, x2).astype(out_dtype)
+    return jnp.astype(jnp.float_power(x1, x2), out_dtype)
 
 
 def copysign(
@@ -91,8 +91,8 @@ def copysign(
 ) -> JaxArray:
     x1, x2 = promote_types_of_inputs(x1, x2)
     if not is_float_dtype(x1):
-        x1 = x1.astype(default_float_dtype(as_native=True))
-        x2 = x2.astype(default_float_dtype(as_native=True))
+        x1 = jnp.astype(x1, default_float_dtype(as_native=True))
+        x2 = jnp.astype(x2, default_float_dtype(as_native=True))
     return jnp.copysign(x1, x2)
 
 
@@ -307,7 +307,7 @@ def gradient(
             if jnp.issubdtype(distances.dtype, jnp.integer):
                 # Convert numpy integer types to float64 to avoid modular
                 # arithmetic in np.diff(distances).
-                distances = distances.astype(jnp.float64)
+                distances = jnp.astype(distances, jnp.float64)
             diffx = jnp.diff(distances)
             # if distances are constant reduce to the scalar case
             # since it brings a consistent speedup
@@ -333,7 +333,7 @@ def gradient(
 
     otype = f.dtype
     if jnp.issubdtype(otype, jnp.integer):
-        f = f.astype(jnp.float64)
+        f = jnp.astype(f, jnp.float64)
 
     for axis, ax_dx in zip(axes, dx):
         if f.shape[axis] < edge_order + 1:

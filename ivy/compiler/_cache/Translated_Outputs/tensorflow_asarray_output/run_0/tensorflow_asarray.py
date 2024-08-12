@@ -1,8 +1,8 @@
 import tensorflow
 import numpy as np
 
-from typing import Union
 from typing import TypeVar
+from typing import Union
 from typing import Optional
 
 from .tensorflow_NestedSequence_bknd import tensorflow_NestedSequence_bknd
@@ -12,6 +12,7 @@ from .tensorflow__helpers import tensorflow_as_native_dev
 from .tensorflow__helpers import tensorflow_dev
 from .tensorflow__helpers import tensorflow_handle_array_like_without_promotion
 
+SupportsBufferProtocol = TypeVar("SupportsBufferProtocol")
 SupportsBufferProtocol = TypeVar("SupportsBufferProtocol")
 
 

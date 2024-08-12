@@ -114,8 +114,8 @@ def histogram(
             a=a, bins=bins, range=range, weights=weights, density=density
         )[0]
     if dtype:
-        ret = ret.astype(dtype)
-        bins_out = jnp.array(bins_out).astype(dtype)
+        ret = jnp.astype(ret, dtype)
+        bins_out = jnp.astype(jnp.array(bins_out), dtype)
     # TODO: weird error when returning bins: return ret, bins_out
     return ret
 
@@ -140,11 +140,11 @@ def median(
         out=out,
     )
     if input.dtype in [jnp.uint64, jnp.int64, jnp.float64]:
-        return ret.astype(jnp.float64)
+        return jnp.astype(ret, jnp.float64)
     elif input.dtype in [jnp.float16, jnp.bfloat16]:
-        return ret.astype(input.dtype)
+        return jnp.astype(ret, input.dtype)
     else:
-        return ret.astype(jnp.float32)
+        return jnp.astype(ret, jnp.float32)
 
 
 # Jax doesn't support overwrite_input=True and out!=None
@@ -266,9 +266,9 @@ def bincount(
 ) -> JaxArray:
     if weights is not None:
         ret = jnp.bincount(x, weights=weights, minlength=minlength)
-        ret = ret.astype(weights.dtype)
+        ret = jnp.astype(ret, weights.dtype)
     else:
-        ret = jnp.bincount(x, minlength=minlength).astype(x.dtype)
+        ret = jnp.astype(jnp.bincount(x, minlength=minlength), x.dtype)
     return ret
 
 
@@ -428,7 +428,7 @@ def cummin(
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
-    return jlax.cummin(x, axis, reverse=reverse).astype(dtype)
+    return jnp.astype(jlax.cummin(x, axis, reverse=reverse), dtype)
 
 
 def igamma(

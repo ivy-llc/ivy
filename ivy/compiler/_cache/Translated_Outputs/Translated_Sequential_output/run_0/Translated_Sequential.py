@@ -1,10 +1,11 @@
+import ivy.functional.frontends.torch as torch
 import ivy.functional.frontends.torch.nn as nn
 
-import typing
 import operator
+import typing
+from collections import OrderedDict
 from typing import overload
 from itertools import islice
-from collections import OrderedDict
 
 
 class Translated_Sequential(nn.Module):
@@ -142,8 +143,10 @@ class Translated_Sequential(nn.Module):
         return self
 
     def insert(self, index, module):
-        if not isinstance(module, nn.Module):
-            raise AssertionError(f"module should be of type: {nn.Module}")
+        if not isinstance(module, torch.nn.modules.module.Module):
+            raise AssertionError(
+                f"module should be of type: {torch.nn.modules.module.Module}"
+            )
         n = len(self._modules)
         if not -n <= index <= n:
             raise IndexError(f"Index out of range: {index}")

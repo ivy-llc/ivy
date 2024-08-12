@@ -1,8 +1,8 @@
 import tensorflow
 
 from typing import Union
-from typing import Optional
 from typing import Tuple
+from typing import Optional
 from typing import List
 
 from .tensorflow__helpers import tensorflow_concat

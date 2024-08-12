@@ -4,6 +4,7 @@
 from collections import OrderedDict
 import os
 import copy
+from packaging import version
 import dill
 from typing import Optional, Tuple, Dict
 
@@ -687,7 +688,12 @@ class _HaikuIvyModule(Module):
         param_iterator = self._hk_params.cont_to_iterator()
         _, param0 = next(param_iterator, ["_", 0])
         if hasattr(param0, "device"):
-            self._device = ivy.as_ivy_dev(param0.device())
+            import jax
+
+            if version.parse(jax.__version__) >= version.parse("0.4.31"):
+                self._device = ivy.as_ivy_dev(param0.device)
+            else:
+                self._device = ivy.as_ivy_dev(param0.device())
         else:
             self._device = ivy.as_ivy_dev("cpu")
         ivy.previous_backend()

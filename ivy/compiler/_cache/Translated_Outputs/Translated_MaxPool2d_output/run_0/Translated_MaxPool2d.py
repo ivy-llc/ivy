@@ -1,4 +1,4 @@
-import ivy.functional.frontends.torch.nn.functional as F
+import ivy.functional.frontends.torch as torch
 
 import typing
 
@@ -12,7 +12,7 @@ class Translated_MaxPool2d(Translated__MaxPoolNd):
     dilation: typing.Any
 
     def forward(self, input):
-        return F.max_pool2d(
+        return torch.nn.functional.max_pool2d(
             input,
             self.kernel_size,
             self.stride,

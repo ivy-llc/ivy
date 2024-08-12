@@ -52,7 +52,6 @@ The contributor guide is split into the sections below, it's best to go from sta
    contributing/building_the_docs.rst
    Deep Dive <https://unify.ai/docs/ivy/overview/deep_dive.html>
    contributing/open_tasks.rst
-   contributing/volunteer_program.rst
    contributing/contributor_rewards.rst
    contributing/helpful_resources.rst
    contributing/error_handling.rst

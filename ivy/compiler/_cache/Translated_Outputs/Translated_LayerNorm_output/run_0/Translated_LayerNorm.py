@@ -1,9 +1,8 @@
 import ivy.functional.frontends.torch as torch
 import ivy.functional.frontends.torch.nn as nn
-import ivy.functional.frontends.torch.nn.functional as F
 
-import numbers
 import typing
+import numbers
 
 from .helpers import Translated_ones_
 from .helpers import Translated_zeros_
@@ -53,7 +52,7 @@ class Translated_LayerNorm(nn.Module):
                 Translated_zeros_(self.bias)
 
     def forward(self, input):
-        return F.layer_norm(
+        return torch.nn.functional.layer_norm(
             input, self.normalized_shape, self.weight, self.bias, self.eps
         )
 

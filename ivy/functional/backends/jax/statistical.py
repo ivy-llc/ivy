@@ -57,7 +57,7 @@ def mean(
     axis = tuple(axis) if isinstance(axis, list) else axis
     if dtype is not None:
         dtype = ivy.as_native_dtype(dtype)
-        x = x.astype(dtype)
+        x = jnp.astype(x, dtype)
     return jnp.mean(x, axis=axis, keepdims=keepdims, dtype=x.dtype)
 
 
@@ -110,7 +110,7 @@ def sum(
     if dtype is None:
         dtype = x.dtype
     if dtype != x.dtype and not ivy.is_bool_dtype(x):
-        x = x.astype(dtype)
+        x = jnp.astype(x, dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
 

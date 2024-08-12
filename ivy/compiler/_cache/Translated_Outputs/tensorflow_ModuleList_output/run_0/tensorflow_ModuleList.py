@@ -4,8 +4,8 @@ import threading
 
 import operator
 import typing
-from collections import abc as container_abcs
 from itertools import chain
+from collections import abc as container_abcs
 
 from .tensorflow__stateful import Model as tensorflow_keras_Model
 from .tensorflow__helpers import tensorflow__addindent

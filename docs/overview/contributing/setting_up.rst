@@ -296,7 +296,7 @@ Windows
 
    a. Docker image -> Docker
    b. Image -> Pull
-   c. Image tag -> unifyai/ivy:latest
+   c. Image tag -> ivyllc/ivy:latest
    d. Select "Next"
 #. The image will start pulling. It will take a respectable amount of time to complete. Once you see the "Introspection Completed" message, select "Next".
 #. Another window will appear, at this step select the following:
@@ -340,7 +340,7 @@ MacOS
 #. Get the latest Docker Image for Ivy by:
 
    a. Running Docker desktop.
-   b. Opening the terminal, and running the command: :code:`docker pull unifyai/ivy:latest`
+   b. Opening the terminal, and running the command: :code:`docker pull ivyllc/ivy:latest`
 
 #. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_
 #. Open pycharm with your cloned Ivy repository.
@@ -351,7 +351,7 @@ MacOS
    b. Going to settings -> project -> Python Interpreter
    c. Clicking add interpreter (currently by clicking the ⚙ icon on the right side) which should open a new window.
    d. Choosing "On Docker" from the dropdown menu.
-   e. Choosing "Docker" from the "Docker server" dropdown menu, choosing "Pull" if you want to use a remote interpreter, and using :code:`unifyai/ivy:latest` as the image tag.
+   e. Choosing "Docker" from the "Docker server" dropdown menu, choosing "Pull" if you want to use a remote interpreter, and using :code:`ivyllc/ivy:latest` as the image tag.
    f. If you don't want to use a remote interpreter, choose "Build" and use the suitable Dockerfile; then choosing :code:`docker/Dockerfile` to be the Dockerfile.
    g. Clicking next and navigating to the system interpreter tab from the menu on the left.
    h. Choosing the built interpreter from the dropdown menu.
@@ -416,7 +416,7 @@ Ubuntu
 #. Get the latest Docker Image for Ivy by:
 
    a. Opening terminal and running :code:`systemctl start docker`
-   b. Running the command: :code:`docker pull unifyai/ivy:latest`
+   b. Running the command: :code:`docker pull ivyllc/ivy:latest`
 
    Note: If you get permission related errors please visit the simple steps at `Linux post-installation page <https://docs.docker.com/engine/install/linux-postinstall/>`_.
 

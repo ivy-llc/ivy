@@ -1,13 +1,13 @@
 import tensorflow
 
-from numbers import Number
-from typing import Union
-from typing import Iterable
 from typing import Callable
 from typing import Any
-from typing import Tuple
+from typing import Union
+from typing import Iterable
 from typing import Optional
 from typing import Literal
+from typing import Tuple
+from numbers import Number
 
 from .tensorflow__helpers import tensorflow__to_tf_padding_bknd
 from .tensorflow__helpers import tensorflow_handle_array_like_without_promotion

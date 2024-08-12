@@ -1,4 +1,4 @@
-import ivy.functional.frontends.torch.nn.functional as F
+import ivy.functional.frontends.torch as torch
 
 import typing
 
@@ -38,7 +38,7 @@ class Translated_AvgPool2d(Translated__AvgPoolNd):
         self.divisor_override = divisor_override
 
     def forward(self, input):
-        return F.avg_pool2d(
+        return torch.nn.functional.avg_pool2d(
             input,
             self.kernel_size,
             self.stride,

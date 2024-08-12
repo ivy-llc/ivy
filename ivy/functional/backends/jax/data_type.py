@@ -109,6 +109,15 @@ class Finfo:
     def smallest_normal(self):
         return float(self._jnp_finfo.tiny)
 
+    def __getattribute__(self, name):
+        try:
+            # Try to get the attribute from the Finfo class
+            return super().__getattribute__(name)
+        except AttributeError:
+            # If the attribute doesn't exist in Finfo, try to get it from _jnp_finfo
+            jnp_finfo = super().__getattribute__("_jnp_finfo")
+            return getattr(jnp_finfo, name)
+
 
 # Array API Standard #
 # -------------------#
@@ -126,7 +135,7 @@ def astype(
     ivy.utils.assertions._check_jax_x64_flag(dtype)
     if x.dtype == dtype:
         return jnp.copy(x) if copy else x
-    return x.astype(dtype)
+    return jnp.astype(x, dtype)
 
 
 def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
@@ -237,7 +246,7 @@ def as_native_dtype(
         return dtype_in
     if dtype_in in char_rep_dtype_dict:
         return as_native_dtype(char_rep_dtype_dict[dtype_in])
-    if dtype_in in native_dtype_dict.values():
+    if dtype_in in native_dtype_dict:
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
         raise ivy.utils.exceptions.IvyException(

@@ -233,6 +233,8 @@ def recursive_serialize(d):
         return {k: recursive_serialize(v) for k, v in d.items()}
     elif isinstance(d, list):
         return [recursive_serialize(v) for v in d]
+    elif isinstance(d, tuple):
+        return tuple(recursive_serialize(v) for v in d)
     else:
         return serialize_obj(d)
 
@@ -254,6 +256,8 @@ def recursive_deserialize(d):
         return {k: recursive_deserialize(v) for k, v in d.items()}
     elif isinstance(d, list):
         return [recursive_deserialize(v) for v in d]
+    elif isinstance(d, tuple):
+        return tuple(recursive_serialize(v) for v in d)
     else:
         return deserialize_obj(d)
 
@@ -927,6 +931,10 @@ class Layer(tf.keras.layers.Layer, ModelHelpers):
     def module_dict(self):
         return self._module_dict
 
+    @property
+    def layers(self):
+        return self._layers
+
     # Dunder Methods #
     # ---------------#
     @store_frame_info
@@ -1404,6 +1412,9 @@ class Model(tf.keras.Model, ModelHelpers):
     ):
         self._built = True
         return
+
+    def _lock_state(self):
+        pass
 
     @tf.autograph.experimental.do_not_convert
     def register_buffer(self, name: str, value: Union[tf.Tensor, tf.Variable]):

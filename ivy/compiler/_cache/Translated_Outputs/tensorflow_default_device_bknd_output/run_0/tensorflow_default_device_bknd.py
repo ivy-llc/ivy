@@ -1,8 +1,8 @@
 import tensorflow
 import tensorflow as tf
 
-from typing import Optional
 from typing import Union
+from typing import Optional
 
 from .tensorflow__helpers import tensorflow_as_ivy_dev
 from .tensorflow__helpers import tensorflow_as_native_dev
@@ -11,6 +11,7 @@ from .tensorflow__helpers import tensorflow_dev
 from .tensorflow__helpers import tensorflow_exists_bknd
 from .tensorflow__helpers import tensorflow_is_array_bknd
 
+default_device_stack = []
 default_device_stack = []
 
 

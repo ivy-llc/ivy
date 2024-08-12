@@ -27,214 +27,6 @@ import tensorflow
 import tensorflow as tf
 
 
-promotion_table = {
-    ("bool", "bool"): "bool",
-    ("int8", "int8"): "int8",
-    ("int8", "int16"): "int16",
-    ("int8", "int32"): "int32",
-    ("int8", "int64"): "int64",
-    ("int16", "int16"): "int16",
-    ("int16", "int32"): "int32",
-    ("int16", "int64"): "int64",
-    ("int32", "int32"): "int32",
-    ("int32", "int64"): "int64",
-    ("int64", "int64"): "int64",
-    ("uint8", "int8"): "int16",
-    ("uint8", "int16"): "int16",
-    ("uint8", "int32"): "int32",
-    ("uint8", "int64"): "int64",
-    ("uint8", "uint8"): "uint8",
-    ("uint8", "uint16"): "uint16",
-    ("uint8", "uint32"): "uint32",
-    ("uint8", "uint64"): "uint64",
-    ("uint16", "int8"): "int32",
-    ("uint16", "int16"): "int32",
-    ("uint16", "int32"): "int32",
-    ("uint16", "int64"): "int64",
-    ("uint16", "uint16"): "uint16",
-    ("uint16", "uint32"): "uint32",
-    ("uint16", "uint64"): "uint64",
-    ("uint32", "int8"): "int64",
-    ("uint32", "int16"): "int64",
-    ("uint32", "int32"): "int64",
-    ("uint32", "int64"): "int64",
-    ("uint32", "uint32"): "uint32",
-    ("uint32", "uint64"): "uint64",
-    ("uint64", "uint64"): "uint64",
-    ("float16", "float16"): "float16",
-    ("float16", "float32"): "float32",
-    ("float16", "float64"): "float64",
-    ("float32", "float32"): "float32",
-    ("float32", "float64"): "float64",
-    ("float64", "float64"): "float64",
-    ("bool", "int8"): "int8",
-    ("bool", "int16"): "int16",
-    ("bool", "int32"): "int32",
-    ("bool", "int64"): "int64",
-    ("bool", "uint8"): "uint8",
-    ("bool", "uint16"): "uint16",
-    ("bool", "uint32"): "uint32",
-    ("bool", "uint64"): "uint64",
-    ("bool", "float16"): "float16",
-    ("bool", "float32"): "float32",
-    ("bool", "float64"): "float64",
-    ("bool", "bfloat16"): "bfloat16",
-    ("bool", "complex64"): "complex64",
-    ("bool", "complex128"): "complex128",
-    ("int8", "float16"): "float16",
-    ("int8", "float32"): "float32",
-    ("int8", "float64"): "float64",
-    ("int8", "bfloat16"): "bfloat16",
-    ("int8", "complex64"): "complex64",
-    ("int8", "complex128"): "complex128",
-    ("int16", "float32"): "float32",
-    ("int16", "float64"): "float64",
-    ("int16", "complex64"): "complex64",
-    ("int16", "complex128"): "complex128",
-    ("int32", "float64"): "float64",
-    ("int32", "complex128"): "complex128",
-    ("int64", "float64"): "float64",
-    ("int64", "complex128"): "complex128",
-    ("uint8", "float16"): "float16",
-    ("uint8", "float32"): "float32",
-    ("uint8", "float64"): "float64",
-    ("uint8", "bfloat16"): "bfloat16",
-    ("uint8", "complex64"): "complex64",
-    ("uint8", "complex128"): "complex128",
-    ("uint16", "float32"): "float32",
-    ("uint16", "float64"): "float64",
-    ("uint16", "complex64"): "complex64",
-    ("uint16", "complex128"): "complex128",
-    ("uint32", "float64"): "float64",
-    ("uint32", "complex128"): "complex128",
-    ("uint64", "int8"): "float64",
-    ("uint64", "int16"): "float64",
-    ("uint64", "int32"): "float64",
-    ("uint64", "int64"): "float64",
-    ("uint64", "float64"): "float64",
-    ("uint64", "complex128"): "complex128",
-    ("float16", "bfloat16"): "float32",
-    ("float16", "complex64"): "complex64",
-    ("float16", "complex128"): "complex128",
-    ("float32", "complex64"): "complex64",
-    ("float32", "complex128"): "complex128",
-    ("float64", "complex64"): "complex128",
-    ("float64", "complex128"): "complex128",
-    ("bfloat16", "float16"): "float32",
-    ("bfloat16", "float32"): "float32",
-    ("bfloat16", "float64"): "float64",
-    ("bfloat16", "bfloat16"): "bfloat16",
-    ("bfloat16", "complex64"): "complex64",
-    ("bfloat16", "complex128"): "complex128",
-    ("complex64", "float64"): "complex128",
-    ("complex64", "complex64"): "complex64",
-    ("complex64", "complex128"): "complex128",
-    ("complex128", "complex128"): "complex128",
-    ("float16", "int16"): "float32",
-    ("float16", "int32"): "float64",
-    ("float16", "int64"): "float64",
-    ("float16", "uint16"): "float32",
-    ("float16", "uint32"): "float64",
-    ("float16", "uint64"): "float64",
-    ("float32", "int32"): "float64",
-    ("float32", "int64"): "float64",
-    ("float32", "uint32"): "float64",
-    ("float32", "uint64"): "float64",
-    ("bfloat16", "int16"): "float32",
-    ("bfloat16", "int32"): "float64",
-    ("bfloat16", "int64"): "float64",
-    ("bfloat16", "uint16"): "float32",
-    ("bfloat16", "uint32"): "float64",
-    ("bfloat16", "uint64"): "float64",
-    ("complex64", "int32"): "complex128",
-    ("complex64", "int64"): "complex128",
-    ("complex64", "uint32"): "complex128",
-    ("complex64", "uint64"): "complex128",
-}
-array_api_promotion_table = {
-    ("bool", "bool"): "bool",
-    ("int8", "int8"): "int8",
-    ("int8", "int16"): "int16",
-    ("int8", "int32"): "int32",
-    ("int8", "int64"): "int64",
-    ("int16", "int16"): "int16",
-    ("int16", "int32"): "int32",
-    ("int16", "int64"): "int64",
-    ("int32", "int32"): "int32",
-    ("int32", "int64"): "int64",
-    ("int64", "int64"): "int64",
-    ("uint8", "int8"): "int16",
-    ("uint8", "int16"): "int16",
-    ("uint8", "int32"): "int32",
-    ("uint8", "int64"): "int64",
-    ("uint8", "uint8"): "uint8",
-    ("uint8", "uint16"): "uint16",
-    ("uint8", "uint32"): "uint32",
-    ("uint8", "uint64"): "uint64",
-    ("uint16", "int8"): "int32",
-    ("uint16", "int16"): "int32",
-    ("uint16", "int32"): "int32",
-    ("uint16", "int64"): "int64",
-    ("uint16", "uint16"): "uint16",
-    ("uint16", "uint32"): "uint32",
-    ("uint16", "uint64"): "uint64",
-    ("uint32", "int8"): "int64",
-    ("uint32", "int16"): "int64",
-    ("uint32", "int32"): "int64",
-    ("uint32", "int64"): "int64",
-    ("uint32", "uint32"): "uint32",
-    ("uint32", "uint64"): "uint64",
-    ("uint64", "uint64"): "uint64",
-    ("float16", "float16"): "float16",
-    ("float16", "float32"): "float32",
-    ("float16", "float64"): "float64",
-    ("float32", "float32"): "float32",
-    ("float32", "float64"): "float64",
-    ("float64", "float64"): "float64",
-}
-tf.experimental.numpy.experimental_enable_numpy_behavior(True)
-default_device_stack = []
-SupportsBufferProtocol = TypeVar("SupportsBufferProtocol")
-default_uint_dtype_stack = []
-default_complex_dtype_stack = []
-default_dtype_stack = []
-default_float_dtype_stack = []
-ivy_dtype_dict = {
-    tensorflow.int8: "int8",
-    tensorflow.int16: "int16",
-    tensorflow.int32: "int32",
-    tensorflow.int64: "int64",
-    tensorflow.uint8: "uint8",
-    tensorflow.uint16: "uint16",
-    tensorflow.uint32: "uint32",
-    tensorflow.uint64: "uint64",
-    tensorflow.bfloat16: "bfloat16",
-    tensorflow.float16: "float16",
-    tensorflow.float32: "float32",
-    tensorflow.float64: "float64",
-    tensorflow.complex64: "complex64",
-    tensorflow.complex128: "complex128",
-    tensorflow.bool: "bool",
-}
-default_int_dtype_stack = []
-backend = ""
-native_dtype_dict = {
-    "int8": tensorflow.int8,
-    "int16": tensorflow.int16,
-    "int32": tensorflow.int32,
-    "int64": tensorflow.int64,
-    "uint8": tensorflow.uint8,
-    "uint16": tensorflow.uint16,
-    "uint32": tensorflow.uint32,
-    "uint64": tensorflow.uint64,
-    "bfloat16": tensorflow.bfloat16,
-    "float16": tensorflow.float16,
-    "float32": tensorflow.float32,
-    "float64": tensorflow.float64,
-    "complex64": tensorflow.complex64,
-    "complex128": tensorflow.complex128,
-    "bool": tensorflow.bool,
-}
 CONV_FUNCS = [
     "Conv1d",
     "Conv2d",
@@ -372,6 +164,136 @@ CONV_BLOCK_FNS = [
 DATA_FORMAT = "PT"
 
 
+def tensorflow_handle_transpose_in_input_and_output(fn):
+    from .tensorflow_TransposeType import tensorflow_TransposeType
+
+    original_signature = inspect.signature(fn)
+
+    @functools.wraps(fn)
+    def transpose_wrapper(self, *args, **kwargs):
+        global DATA_FORMAT
+        kwargs_call = {
+            key: val
+            for key, val in kwargs.items()
+            if key not in dict(original_signature.parameters)
+        }
+        fn_args_and_kwargs = {
+            key: val for key, val in kwargs.items() if key not in kwargs_call
+        }
+        fn_args_and_kwargs.update(dict(zip(fn.__code__.co_varnames[1:], args)))
+        conv_block_start = lambda f: any(
+            substr in f.__qualname__
+            for substr in CONV_FUNCS
+            + NORM_FUNCS
+            + POOL_FUNCS
+            + KERAS_CONV_FUNCS
+            + KERAS_NORM_FUNCS
+            + KERAS_POOL_FUNCS
+        )
+        next_call_in_seq = tensorflow_get_next_func(self)
+        name_of_next_call = (
+            next_call_in_seq.__class__.__name__
+            if hasattr(next_call_in_seq, "__class__")
+            else ""
+        )
+        conv_block_continued = next_call_in_seq and any(
+            substr in name_of_next_call for substr in CONV_BLOCK_FNS
+        )
+        if DATA_FORMAT == "PT" and conv_block_start(self.__class__):
+            input = fn_args_and_kwargs["input"]
+            if len(input.shape) > 4:
+                transpose = tensorflow_TransposeType.CONV3D
+            elif len(input.shape) > 3:
+                transpose = tensorflow_TransposeType.CONV2D
+            elif len(input.shape) > 2:
+                transpose = tensorflow_TransposeType.CONV1D
+            else:
+                transpose = tensorflow_TransposeType.NO_TRANSPOSE
+            fn_args_and_kwargs = tensorflow_set_item_bknd(
+                fn_args_and_kwargs,
+                "input",
+                tensorflow_apply_transpose(input, transpose=transpose, pt_to_tf=True),
+            )
+            DATA_FORMAT = "TF"
+            os.environ = tensorflow_set_item_bknd(
+                os.environ, "DATA_FORMAT", "channels_last"
+            )
+        res = fn(self, **fn_args_and_kwargs)
+        if DATA_FORMAT == "TF" and conv_block_continued or DATA_FORMAT == "PT":
+            return res
+        if len(res.shape) > 4:
+            transpose = tensorflow_TransposeType.CONV3D
+        elif len(res.shape) > 3:
+            transpose = tensorflow_TransposeType.CONV2D
+        elif len(res.shape) > 2:
+            transpose = tensorflow_TransposeType.CONV1D
+        else:
+            transpose = tensorflow_TransposeType.NO_TRANSPOSE
+        res = tensorflow_apply_transpose(res, transpose=transpose, pt_to_tf=False)
+        DATA_FORMAT = "PT"
+        os.environ = tensorflow_set_item_bknd(
+            os.environ, "DATA_FORMAT", "channels_first"
+        )
+        return res
+
+    tensorflow_handle_transpose_in_input_and_output.__signature__ = original_signature
+    return transpose_wrapper
+
+
+def tensorflow__handle_manual_pad_avg_pool(
+    x, kernel, strides, padding, ceil_mode, dims
+):
+    if isinstance(padding, str):
+        pad_specific = [
+            tensorflow__handle_padding_bknd(
+                x.shape[i + 1], strides[i], kernel[i], padding
+            )
+            for i in range(dims)
+        ]
+        padding = [
+            (pad_specific[i] // 2, pad_specific[i] - pad_specific[i] // 2)
+            for i in range(dims)
+        ]
+    else:
+        if isinstance(padding, int):
+            padding = [(padding,) * 2] * dims
+        pad_specific = [sum(padding[i]) for i in range(dims)]
+    c = []
+    if ceil_mode:
+        for i in range(dims):
+            padding[i], c_i = tensorflow__padding_ceil_mode_bknd(
+                x.shape[i + 1], kernel[i], padding[i], strides[i], True
+            )
+            c.append(c_i)
+            pad_specific[i] = sum(padding[i])
+    return padding, pad_specific, c
+
+
+def tensorflow__handle_padding_bknd(x, strides, filters, padding):
+    if isinstance(padding, str) and padding.upper() == "SAME":
+        if x % strides == 0:
+            pad = max(filters - strides, 0)
+        else:
+            pad = max(filters - x % strides, 0)
+    else:
+        pad = 0
+    return pad
+
+
+def tensorflow_handle_get_item(fn):
+    @functools.wraps(fn)
+    def wrapper(inp, query, **kwargs):
+        try:
+            res = inp.__getitem__(query)
+        except IndexError:
+            raise
+        except Exception:
+            res = fn(inp, query, **kwargs)
+        return res
+
+    return wrapper
+
+
 def tensorflow_handle_array_like_without_promotion(fn: Callable):
     @functools.wraps(fn)
     def _handle_array_like_without_promotion(*args, **kwargs):
@@ -417,6 +339,229 @@ def tensorflow_handle_array_like_without_promotion(fn: Callable):
     return _handle_array_like_without_promotion
 
 
+def tensorflow_handle_set_item(fn):
+    @functools.wraps(fn)
+    def wrapper(inp, query, val, **kwargs):
+        try:
+            inp.__setitem__(query, val)
+            res = inp
+        except IndexError:
+            raise
+        except Exception:
+            res = fn(inp, query, val, **kwargs)
+        return res
+
+    return wrapper
+
+
+def tensorflow_handle_methods_1(fn):
+    def extract_function_name(s):
+        match = re.search("_(.+?)(?:_\\d+)?$", s)
+        if match:
+            return match.group(1)
+
+    @functools.wraps(fn)
+    def wrapper(*args, **kwargs):
+        if tensorflow_is_array_bknd(args[0]):
+            return fn(*args, **kwargs)
+        else:
+            pattern = "_bknd_|_bknd|_frnt_|_frnt"
+            fn_name = extract_function_name(re.sub(pattern, "", fn.__name__))
+            new_fn = getattr(args[0], fn_name)
+            return new_fn(*args[1:], **kwargs)
+
+    return wrapper
+
+
+def tensorflow_handle_methods(fn):
+    def extract_function_name(s):
+        match = re.search("_(.+?)(?:_\\d+)?$", s)
+        if match:
+            return match.group(1)
+
+    @functools.wraps(fn)
+    def wrapper(*args, **kwargs):
+        if tensorflow_is_array_bknd(args[0]):
+            return fn(*args, **kwargs)
+        else:
+            pattern = "_bknd_|_bknd|_frnt_|_frnt"
+            fn_name = extract_function_name(re.sub(pattern, "", fn.__name__))
+            new_fn = getattr(args[0], fn_name)
+            return new_fn(*args[1:], **kwargs)
+
+    return wrapper
+
+
+promotion_table = {
+    ("bool", "bool"): "bool",
+    ("int8", "int8"): "int8",
+    ("int8", "int16"): "int16",
+    ("int8", "int32"): "int32",
+    ("int8", "int64"): "int64",
+    ("int16", "int16"): "int16",
+    ("int16", "int32"): "int32",
+    ("int16", "int64"): "int64",
+    ("int32", "int32"): "int32",
+    ("int32", "int64"): "int64",
+    ("int64", "int64"): "int64",
+    ("uint8", "int8"): "int16",
+    ("uint8", "int16"): "int16",
+    ("uint8", "int32"): "int32",
+    ("uint8", "int64"): "int64",
+    ("uint8", "uint8"): "uint8",
+    ("uint8", "uint16"): "uint16",
+    ("uint8", "uint32"): "uint32",
+    ("uint8", "uint64"): "uint64",
+    ("uint16", "int8"): "int32",
+    ("uint16", "int16"): "int32",
+    ("uint16", "int32"): "int32",
+    ("uint16", "int64"): "int64",
+    ("uint16", "uint16"): "uint16",
+    ("uint16", "uint32"): "uint32",
+    ("uint16", "uint64"): "uint64",
+    ("uint32", "int8"): "int64",
+    ("uint32", "int16"): "int64",
+    ("uint32", "int32"): "int64",
+    ("uint32", "int64"): "int64",
+    ("uint32", "uint32"): "uint32",
+    ("uint32", "uint64"): "uint64",
+    ("uint64", "uint64"): "uint64",
+    ("float16", "float16"): "float16",
+    ("float16", "float32"): "float32",
+    ("float16", "float64"): "float64",
+    ("float32", "float32"): "float32",
+    ("float32", "float64"): "float64",
+    ("float64", "float64"): "float64",
+    ("bool", "int8"): "int8",
+    ("bool", "int16"): "int16",
+    ("bool", "int32"): "int32",
+    ("bool", "int64"): "int64",
+    ("bool", "uint8"): "uint8",
+    ("bool", "uint16"): "uint16",
+    ("bool", "uint32"): "uint32",
+    ("bool", "uint64"): "uint64",
+    ("bool", "float16"): "float16",
+    ("bool", "float32"): "float32",
+    ("bool", "float64"): "float64",
+    ("bool", "bfloat16"): "bfloat16",
+    ("bool", "complex64"): "complex64",
+    ("bool", "complex128"): "complex128",
+    ("int8", "float16"): "float16",
+    ("int8", "float32"): "float32",
+    ("int8", "float64"): "float64",
+    ("int8", "bfloat16"): "bfloat16",
+    ("int8", "complex64"): "complex64",
+    ("int8", "complex128"): "complex128",
+    ("int16", "float32"): "float32",
+    ("int16", "float64"): "float64",
+    ("int16", "complex64"): "complex64",
+    ("int16", "complex128"): "complex128",
+    ("int32", "float64"): "float64",
+    ("int32", "complex128"): "complex128",
+    ("int64", "float64"): "float64",
+    ("int64", "complex128"): "complex128",
+    ("uint8", "float16"): "float16",
+    ("uint8", "float32"): "float32",
+    ("uint8", "float64"): "float64",
+    ("uint8", "bfloat16"): "bfloat16",
+    ("uint8", "complex64"): "complex64",
+    ("uint8", "complex128"): "complex128",
+    ("uint16", "float32"): "float32",
+    ("uint16", "float64"): "float64",
+    ("uint16", "complex64"): "complex64",
+    ("uint16", "complex128"): "complex128",
+    ("uint32", "float64"): "float64",
+    ("uint32", "complex128"): "complex128",
+    ("uint64", "int8"): "float64",
+    ("uint64", "int16"): "float64",
+    ("uint64", "int32"): "float64",
+    ("uint64", "int64"): "float64",
+    ("uint64", "float64"): "float64",
+    ("uint64", "complex128"): "complex128",
+    ("float16", "bfloat16"): "float32",
+    ("float16", "complex64"): "complex64",
+    ("float16", "complex128"): "complex128",
+    ("float32", "complex64"): "complex64",
+    ("float32", "complex128"): "complex128",
+    ("float64", "complex64"): "complex128",
+    ("float64", "complex128"): "complex128",
+    ("bfloat16", "float16"): "float32",
+    ("bfloat16", "float32"): "float32",
+    ("bfloat16", "float64"): "float64",
+    ("bfloat16", "bfloat16"): "bfloat16",
+    ("bfloat16", "complex64"): "complex64",
+    ("bfloat16", "complex128"): "complex128",
+    ("complex64", "float64"): "complex128",
+    ("complex64", "complex64"): "complex64",
+    ("complex64", "complex128"): "complex128",
+    ("complex128", "complex128"): "complex128",
+    ("float16", "int16"): "float32",
+    ("float16", "int32"): "float64",
+    ("float16", "int64"): "float64",
+    ("float16", "uint16"): "float32",
+    ("float16", "uint32"): "float64",
+    ("float16", "uint64"): "float64",
+    ("float32", "int32"): "float64",
+    ("float32", "int64"): "float64",
+    ("float32", "uint32"): "float64",
+    ("float32", "uint64"): "float64",
+    ("bfloat16", "int16"): "float32",
+    ("bfloat16", "int32"): "float64",
+    ("bfloat16", "int64"): "float64",
+    ("bfloat16", "uint16"): "float32",
+    ("bfloat16", "uint32"): "float64",
+    ("bfloat16", "uint64"): "float64",
+    ("complex64", "int32"): "complex128",
+    ("complex64", "int64"): "complex128",
+    ("complex64", "uint32"): "complex128",
+    ("complex64", "uint64"): "complex128",
+}
+
+array_api_promotion_table = {
+    ("bool", "bool"): "bool",
+    ("int8", "int8"): "int8",
+    ("int8", "int16"): "int16",
+    ("int8", "int32"): "int32",
+    ("int8", "int64"): "int64",
+    ("int16", "int16"): "int16",
+    ("int16", "int32"): "int32",
+    ("int16", "int64"): "int64",
+    ("int32", "int32"): "int32",
+    ("int32", "int64"): "int64",
+    ("int64", "int64"): "int64",
+    ("uint8", "int8"): "int16",
+    ("uint8", "int16"): "int16",
+    ("uint8", "int32"): "int32",
+    ("uint8", "int64"): "int64",
+    ("uint8", "uint8"): "uint8",
+    ("uint8", "uint16"): "uint16",
+    ("uint8", "uint32"): "uint32",
+    ("uint8", "uint64"): "uint64",
+    ("uint16", "int8"): "int32",
+    ("uint16", "int16"): "int32",
+    ("uint16", "int32"): "int32",
+    ("uint16", "int64"): "int64",
+    ("uint16", "uint16"): "uint16",
+    ("uint16", "uint32"): "uint32",
+    ("uint16", "uint64"): "uint64",
+    ("uint32", "int8"): "int64",
+    ("uint32", "int16"): "int64",
+    ("uint32", "int32"): "int64",
+    ("uint32", "int64"): "int64",
+    ("uint32", "uint32"): "uint32",
+    ("uint32", "uint64"): "uint64",
+    ("uint64", "uint64"): "uint64",
+    ("float16", "float16"): "float16",
+    ("float16", "float32"): "float32",
+    ("float16", "float64"): "float64",
+    ("float32", "float32"): "float32",
+    ("float32", "float64"): "float64",
+    ("float64", "float64"): "float64",
+}
+
+tf.experimental.numpy.experimental_enable_numpy_behavior(True)
+
+
 def tensorflow_store_config_info(fn):
     @functools.wraps(fn)
     def wrapper(self, *args, **kwargs):
@@ -458,25 +603,6 @@ def tensorflow_is_array_bknd(x: Any, /, *, exclusive: bool = False):
     return tensorflow_is_ivy_array_bknd(
         x, exclusive=exclusive
     ) or tensorflow_is_native_array(x, exclusive=exclusive)
-
-
-def tensorflow_handle_methods(fn):
-    def extract_function_name(s):
-        match = re.search("_(.+?)(?:_\\d+)?$", s)
-        if match:
-            return match.group(1)
-
-    @functools.wraps(fn)
-    def wrapper(*args, **kwargs):
-        if tensorflow_is_array_bknd(args[0]):
-            return fn(*args, **kwargs)
-        else:
-            pattern = "_bknd_|_bknd|_frnt_|_frnt"
-            fn_name = extract_function_name(re.sub(pattern, "", fn.__name__))
-            new_fn = getattr(args[0], fn_name)
-            return new_fn(*args[1:], **kwargs)
-
-    return wrapper
 
 
 def tensorflow_exists_bknd(x: Any, /):
@@ -673,26 +799,8 @@ def tensorflow_as_native_dev(device: str, /):
     return ret
 
 
-def tensorflow_handle_methods_1(fn):
-    def extract_function_name(s):
-        match = re.search("_(.+?)(?:_\\d+)?$", s)
-        if match:
-            return match.group(1)
-
-    @functools.wraps(fn)
-    def wrapper(*args, **kwargs):
-        if tensorflow_is_array_bknd(args[0]):
-            return fn(*args, **kwargs)
-        else:
-            pattern = "_bknd_|_bknd|_frnt_|_frnt"
-            fn_name = extract_function_name(re.sub(pattern, "", fn.__name__))
-            new_fn = getattr(args[0], fn_name)
-            return new_fn(*args[1:], **kwargs)
-
-    return wrapper
-
-
 @tensorflow_handle_methods_1
+@tensorflow_handle_array_like_without_promotion
 def tensorflow_split(
     x: Union[tensorflow.Tensor, tensorflow.Variable],
     /,
@@ -808,6 +916,9 @@ def tensorflow_dev(
         return dv
     dv = dv if dv else tensorflow_default_device_bknd(as_native=False)
     return tensorflow_as_ivy_dev(dv)
+
+
+default_device_stack = []
 
 
 def tensorflow_default_device_bknd(
@@ -1103,6 +1214,9 @@ def tensorflow__asarray_infer_dtype_bknd(fn: Callable):
 
     _asarray_infer_dtype_wrapper.infer_dtype = True
     return _asarray_infer_dtype_wrapper
+
+
+SupportsBufferProtocol = TypeVar("SupportsBufferProtocol")
 
 
 @tensorflow_handle_array_like_without_promotion
@@ -1885,6 +1999,7 @@ def tensorflow_to_numpy(
         return np.asarray(tensorflow.convert_to_tensor(x))
 
 
+@tensorflow_handle_array_like_without_promotion
 def tensorflow_to_scalar(x: Union[tensorflow.Tensor, tensorflow.Variable], /):
     ret = tensorflow_to_numpy(x).item()
     if x.dtype == tensorflow.bfloat16:
@@ -1892,9 +2007,8 @@ def tensorflow_to_scalar(x: Union[tensorflow.Tensor, tensorflow.Variable], /):
     return ret
 
 
-@tensorflow_handle_array_like_without_promotion
-def tensorflow_to_scalar_bknd(x: Union[tensorflow.Tensor, tf.Tensor], /):
-    return tensorflow_to_scalar(x)
+def tensorflow_to_scalar_bknd_(self: tensorflow.Tensor):
+    return tensorflow_to_scalar(self)
 
 
 def tensorflow_is_float_dtype_bknd(
@@ -1939,6 +2053,9 @@ def tensorflow_is_uint_dtype_bknd(
             and "uint" in tensorflow_dtype(x),
         )
     return "uint" in tensorflow_as_ivy_dtype_bknd(dtype_in)
+
+
+default_uint_dtype_stack = []
 
 
 def tensorflow_default_uint_dtype_bknd(
@@ -2091,7 +2208,7 @@ def tensorflow_prod(
 
 def tensorflow__numel_bknd(shape):
     shape = tuple(shape)
-    return tensorflow_to_scalar_bknd(tensorflow_prod(shape)) if shape != () else 1
+    return tensorflow_to_scalar_bknd_(tensorflow_prod(shape)) if shape != () else 1
 
 
 def tensorflow_check_one_way_broadcastable(x1, x2):
@@ -2407,21 +2524,6 @@ def tensorflow_scatter_nd(
     return res
 
 
-def tensorflow_handle_set_item(fn):
-    @functools.wraps(fn)
-    def wrapper(inp, query, val, **kwargs):
-        try:
-            inp.__setitem__(query, val)
-            res = inp
-        except IndexError:
-            raise
-        except Exception:
-            res = fn(inp, query, val, **kwargs)
-        return res
-
-    return wrapper
-
-
 @tensorflow_handle_set_item
 def tensorflow_set_item_bknd(
     x: Union[tensorflow.Tensor, tf.Tensor],
@@ -2502,6 +2604,9 @@ def tensorflow__check_complex128_bknd(input):
     return False
 
 
+default_complex_dtype_stack = []
+
+
 def tensorflow_default_complex_dtype_bknd(
     *,
     input: Optional[Union[tensorflow.Tensor, tf.Tensor]] = None,
@@ -2558,6 +2663,9 @@ def tensorflow_default_complex_dtype_bknd(
     return str(tensorflow_as_ivy_dtype(ret))
 
 
+default_dtype_stack = []
+
+
 def tensorflow_default_dtype_bknd(
     *,
     dtype: Optional[Union[str, str]] = None,
@@ -2600,6 +2708,9 @@ def tensorflow_default_dtype_bknd(
     if as_native:
         return tensorflow_as_native_dtype(ret)
     return tensorflow_as_ivy_dtype(ret)
+
+
+default_float_dtype_stack = []
 
 
 def tensorflow_default_float_dtype_bknd(
@@ -2656,6 +2767,25 @@ def tensorflow_default_float_dtype_bknd(
     return str(tensorflow_as_ivy_dtype(ret))
 
 
+ivy_dtype_dict = {
+    tensorflow.int8: "int8",
+    tensorflow.int16: "int16",
+    tensorflow.int32: "int32",
+    tensorflow.int64: "int64",
+    tensorflow.uint8: "uint8",
+    tensorflow.uint16: "uint16",
+    tensorflow.uint32: "uint32",
+    tensorflow.uint64: "uint64",
+    tensorflow.bfloat16: "bfloat16",
+    tensorflow.float16: "float16",
+    tensorflow.float32: "float32",
+    tensorflow.float64: "float64",
+    tensorflow.complex64: "complex64",
+    tensorflow.complex128: "complex128",
+    tensorflow.bool: "bool",
+}
+
+
 def tensorflow_as_ivy_dtype(
     dtype_in: Union[tensorflow.DType, str, int, float, complex, bool, np.dtype], /
 ):
@@ -2690,6 +2820,10 @@ def tensorflow_as_ivy_dtype(
         return str("bool")
     else:
         raise Exception(f"Cannot recognize {dtype_str} as a valid Dtype.")
+
+
+default_int_dtype_stack = []
+backend = ""
 
 
 def tensorflow_default_int_dtype_bknd(
@@ -2766,6 +2900,25 @@ def tensorflow_default_int_dtype_bknd(
     return str(tensorflow_as_ivy_dtype(ret))
 
 
+native_dtype_dict = {
+    "int8": tensorflow.int8,
+    "int16": tensorflow.int16,
+    "int32": tensorflow.int32,
+    "int64": tensorflow.int64,
+    "uint8": tensorflow.uint8,
+    "uint16": tensorflow.uint16,
+    "uint32": tensorflow.uint32,
+    "uint64": tensorflow.uint64,
+    "bfloat16": tensorflow.bfloat16,
+    "float16": tensorflow.float16,
+    "float32": tensorflow.float32,
+    "float64": tensorflow.float64,
+    "complex64": tensorflow.complex64,
+    "complex128": tensorflow.complex128,
+    "bool": tensorflow.bool,
+}
+
+
 def tensorflow_as_native_dtype(
     dtype_in: Union[tensorflow.DType, str, bool, int, float, np.dtype],
 ):
@@ -2815,20 +2968,6 @@ def tensorflow_is_bool_dtype_bknd(
             )
         )
     return "bool" in tensorflow_as_ivy_dtype(dtype_in)
-
-
-def tensorflow_handle_get_item(fn):
-    @functools.wraps(fn)
-    def wrapper(inp, query, **kwargs):
-        try:
-            res = inp.__getitem__(query)
-        except IndexError:
-            raise
-        except Exception:
-            res = fn(inp, query, **kwargs)
-        return res
-
-    return wrapper
 
 
 @tensorflow_handle_get_item
@@ -2915,17 +3054,6 @@ def tensorflow_add_frnt_(tensor, other, *, alpha=1):
     return tensorflow_add_frnt(tensor, other, alpha=alpha)
 
 
-def tensorflow__handle_padding_bknd(x, strides, filters, padding):
-    if isinstance(padding, str) and padding.upper() == "SAME":
-        if x % strides == 0:
-            pad = max(filters - strides, 0)
-        else:
-            pad = max(filters - x % strides, 0)
-    else:
-        pad = 0
-    return pad
-
-
 def tensorflow__output_ceil_shape_bknd(w, f, p, s):
     return math.ceil((w - f + p) / s) + 1
 
@@ -2948,35 +3076,6 @@ def tensorflow__padding_ceil_mode_bknd(
     if return_added_padding:
         return p, added_padding
     return p
-
-
-def tensorflow__handle_manual_pad_avg_pool(
-    x, kernel, strides, padding, ceil_mode, dims
-):
-    if isinstance(padding, str):
-        pad_specific = [
-            tensorflow__handle_padding_bknd(
-                x.shape[i + 1], strides[i], kernel[i], padding
-            )
-            for i in range(dims)
-        ]
-        padding = [
-            (pad_specific[i] // 2, pad_specific[i] - pad_specific[i] // 2)
-            for i in range(dims)
-        ]
-    else:
-        if isinstance(padding, int):
-            padding = [(padding,) * 2] * dims
-        pad_specific = [sum(padding[i]) for i in range(dims)]
-    c = []
-    if ceil_mode:
-        for i in range(dims):
-            padding[i], c_i = tensorflow__padding_ceil_mode_bknd(
-                x.shape[i + 1], kernel[i], padding[i], strides[i], True
-            )
-            c.append(c_i)
-            pad_specific[i] = sum(padding[i])
-    return padding, pad_specific, c
 
 
 def tensorflow_map_bknd(
@@ -3195,79 +3294,3 @@ def tensorflow_apply_transpose(input, transpose, pt_to_tf=True):
         axes = (0, 2, 3, 4, 1) if pt_to_tf else (0, 4, 1, 2, 3)
     input = tensorflow_permute_dims(input, axes=axes)
     return input
-
-
-def tensorflow_handle_transpose_in_input_and_output(fn):
-    from .tensorflow_TransposeType import tensorflow_TransposeType
-
-    original_signature = inspect.signature(fn)
-
-    @functools.wraps(fn)
-    def transpose_wrapper(self, *args, **kwargs):
-        global DATA_FORMAT
-        kwargs_call = {
-            key: val
-            for key, val in kwargs.items()
-            if key not in dict(original_signature.parameters)
-        }
-        fn_args_and_kwargs = {
-            key: val for key, val in kwargs.items() if key not in kwargs_call
-        }
-        fn_args_and_kwargs.update(dict(zip(fn.__code__.co_varnames[1:], args)))
-        conv_block_start = lambda f: any(
-            substr in f.__qualname__
-            for substr in CONV_FUNCS
-            + NORM_FUNCS
-            + POOL_FUNCS
-            + KERAS_CONV_FUNCS
-            + KERAS_NORM_FUNCS
-            + KERAS_POOL_FUNCS
-        )
-        next_call_in_seq = tensorflow_get_next_func(self)
-        name_of_next_call = (
-            next_call_in_seq.__class__.__name__
-            if hasattr(next_call_in_seq, "__class__")
-            else ""
-        )
-        conv_block_continued = next_call_in_seq and any(
-            substr in name_of_next_call for substr in CONV_BLOCK_FNS
-        )
-        if DATA_FORMAT == "PT" and conv_block_start(self.__class__):
-            input = fn_args_and_kwargs["input"]
-            if len(input.shape) > 4:
-                transpose = tensorflow_TransposeType.CONV3D
-            elif len(input.shape) > 3:
-                transpose = tensorflow_TransposeType.CONV2D
-            elif len(input.shape) > 2:
-                transpose = tensorflow_TransposeType.CONV1D
-            else:
-                transpose = tensorflow_TransposeType.NO_TRANSPOSE
-            fn_args_and_kwargs = tensorflow_set_item_bknd(
-                fn_args_and_kwargs,
-                "input",
-                tensorflow_apply_transpose(input, transpose=transpose, pt_to_tf=True),
-            )
-            DATA_FORMAT = "TF"
-            os.environ = tensorflow_set_item_bknd(
-                os.environ, "DATA_FORMAT", "channels_last"
-            )
-        res = fn(self, **fn_args_and_kwargs)
-        if DATA_FORMAT == "TF" and conv_block_continued or DATA_FORMAT == "PT":
-            return res
-        if len(res.shape) > 4:
-            transpose = tensorflow_TransposeType.CONV3D
-        elif len(res.shape) > 3:
-            transpose = tensorflow_TransposeType.CONV2D
-        elif len(res.shape) > 2:
-            transpose = tensorflow_TransposeType.CONV1D
-        else:
-            transpose = tensorflow_TransposeType.NO_TRANSPOSE
-        res = tensorflow_apply_transpose(res, transpose=transpose, pt_to_tf=False)
-        DATA_FORMAT = "PT"
-        os.environ = tensorflow_set_item_bknd(
-            os.environ, "DATA_FORMAT", "channels_first"
-        )
-        return res
-
-    tensorflow_handle_transpose_in_input_and_output.__signature__ = original_signature
-    return transpose_wrapper

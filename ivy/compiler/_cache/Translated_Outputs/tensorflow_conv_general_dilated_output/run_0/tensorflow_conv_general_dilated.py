@@ -1,9 +1,9 @@
 import tensorflow
 
-from typing import Sequence
-from typing import Tuple
 from typing import Optional
 from typing import Union
+from typing import Sequence
+from typing import Tuple
 
 from .tensorflow__helpers import tensorflow__extend_2d_padding
 from .tensorflow__helpers import tensorflow__extend_3d_strides_dilations

@@ -62,9 +62,12 @@ def random_uniform(
     else:
         RNG_, rng_input = jax.random.split(_getRNG())
         _setRNG(RNG_)
-    return jax.random.uniform(
-        rng_input, shape, minval=low, maxval=high, dtype=jnp.float32
-    ).astype(dtype)
+    return jnp.astype(
+        jax.random.uniform(
+            rng_input, shape, minval=low, maxval=high, dtype=jnp.float32
+        ),
+        dtype,
+    )
 
 
 def random_normal(

@@ -24,6 +24,23 @@ native_dtype_dict = {
     "complex128": tensorflow.complex128,
     "bool": tensorflow.bool,
 }
+native_dtype_dict = {
+    "int8": tensorflow.int8,
+    "int16": tensorflow.int16,
+    "int32": tensorflow.int32,
+    "int64": tensorflow.int64,
+    "uint8": tensorflow.uint8,
+    "uint16": tensorflow.uint16,
+    "uint32": tensorflow.uint32,
+    "uint64": tensorflow.uint64,
+    "bfloat16": tensorflow.bfloat16,
+    "float16": tensorflow.float16,
+    "float32": tensorflow.float32,
+    "float64": tensorflow.float64,
+    "complex64": tensorflow.complex64,
+    "complex128": tensorflow.complex128,
+    "bool": tensorflow.bool,
+}
 
 
 def tensorflow_as_native_dtype(

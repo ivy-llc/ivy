@@ -44,9 +44,9 @@ def arange(
     res = jnp.arange(start, stop, step, dtype=dtype)
     if not dtype:
         if res.dtype == jnp.float64:
-            return res.astype(jnp.float32)
+            return jnp.astype(res, jnp.float32)
         elif res.dtype == jnp.int64:
-            return res.astype(jnp.int32)
+            return jnp.astype(res, jnp.int32)
     return res
 
 
@@ -202,7 +202,7 @@ def linspace(
         # but can lead to rounding errors for integer outputs.
         real_dtype = jnp.finfo(computation_dtype).dtype
         step = jnp.reshape(jax.lax.iota(real_dtype, div), iota_shape) / div
-        step = step.astype(computation_dtype)
+        step = jnp.astype(step, computation_dtype)
         start_reshaped = jnp.reshape(broadcast_start, bounds_shape)
         end_reshaped = jnp.reshape(broadcast_stop, bounds_shape)
         out = start_reshaped + step * (end_reshaped - start_reshaped)

@@ -1,8 +1,8 @@
 import tensorflow
 import tensorflow as tf
 
-from typing import Union
 from typing import Optional
+from typing import Union
 
 from .tensorflow__helpers import tensorflow_as_ivy_dtype
 from .tensorflow__helpers import tensorflow_as_native_dtype
@@ -18,6 +18,8 @@ from .tensorflow__helpers import tensorflow_is_uint_dtype_bknd
 
 default_dtype_stack = []
 default_float_dtype_stack = []
+default_float_dtype_stack = []
+default_dtype_stack = []
 
 
 def tensorflow_default_dtype_bknd(

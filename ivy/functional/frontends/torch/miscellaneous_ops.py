@@ -190,7 +190,7 @@ def cummax(input, dim, *, out=None):
 
 @to_ivy_arrays_and_back
 def cumprod(input, dim, *, dtype=None, out=None):
-    if not dtype and "int" in input.dtype:
+    if not dtype and "int" in str(input.dtype):
         dtype = ivy.int64
     return ivy.cumprod(input, axis=dim, dtype=dtype, out=out)
 
@@ -201,7 +201,7 @@ def cumprod(input, dim, *, dtype=None, out=None):
     "torch",
 )
 def cumsum(input, dim, *, dtype=None, out=None):
-    if not dtype and "int" in input.dtype:
+    if not dtype and "int" in str(input.dtype):
         dtype = ivy.int64
     return ivy.cumsum(input, axis=dim, dtype=dtype, out=out)
 
@@ -333,6 +333,22 @@ def flipud(input):
 @to_ivy_arrays_and_back
 def gcd(input, other, *, out=None):
     return ivy.gcd(input, other, out=out)
+
+
+@with_supported_dtypes(
+    {"2.4 and below": ("float32", "float64")},
+    "torch",
+)
+@to_ivy_arrays_and_back
+def histc(input, bins=100, min=0, max=0, *, out=None):
+    if min == 0.0 and max == 0.0:
+        min = ivy.min(input)
+        max = ivy.max(input)
+    bin_edges = ivy.linspace(min, max, bins + 1)
+    bin_indices = ivy.searchsorted(bin_edges, input, side="right") - 1
+    bin_indices = ivy.clip(bin_indices, 0, bins - 1)
+    histogram = ivy.bincount(bin_indices, minlength=bins)
+    return ivy.astype(histogram, input.dtype)
 
 
 @to_ivy_arrays_and_back
@@ -573,9 +589,9 @@ def tensordot(a, b, dims=2, out=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
 def trace(input):
-    if "int" in input.dtype:
+    if "int" in str(input.dtype):
         input = input.astype("int64")
-    target_type = "int64" if "int" in input.dtype else input.dtype
+    target_type = "int64" if "int" in str(input.dtype) else input.dtype
     return ivy.astype(ivy.trace(input), target_type)
 
 

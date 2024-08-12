@@ -1,25 +1,102 @@
 from typing import Callable, Optional, List, Union, Iterable, Sequence, Mapping
 
 
+def clear_graph_cache():
+    """Clears the graph cache which gets populated if `graph_caching` is set to
+    `True` in `ivy.trace_graph`, `ivy.transpile` or `ivy.unify`. Use this to
+    reset or clear the graph cache if needed.
+
+    Examples
+    --------
+    >>> import ivy
+    >>> ivy.clear_graph_cache()
+    """
+    from ._compiler import clear_graph_cache as _clear_graph_cache
+
+    return _clear_graph_cache()
+
+
+def graph_transpile(
+    *objs: Callable,
+    source: Optional[str] = None,
+    to: Optional[str] = None,
+    with_numpy: bool = True,
+    backend_compile: bool = False,
+    static_argnums: Optional[Union[int, Iterable[int]]] = None,
+    static_argnames: Optional[Union[str, Iterable[str]]] = None,
+    compile_mode: Optional[str] = None,
+    graph_caching: bool = True,
+    graph_optimizations: bool = True,
+    modes_to_trace: str = "all",
+    stateful: Optional[List] = None,
+    arg_stateful_idxs: Optional[List] = None,
+    kwarg_stateful_idxs: Optional[List] = None,
+    args: Optional[Sequence] = None,
+    kwargs: Optional[Mapping] = None,
+    params_v=None,
+    v=None
+):
+    """Transpiles Callable objects passed as arguments. If args and kwargs are
+    specified, transpilation is performed eagerly, otherwise, transpilation
+    will happen lazily.
+
+    Parameters
+    ----------
+    objs
+        The native Callables to be transpiled
+    source
+        The framework that `obj` is from.
+    to
+        The target framework to transpile `obj` to.
+    args
+        If specified, arguments that will be used to transpile eagerly.
+    kwargs
+        If specified, keyword arguments that will be used to transpile eagerly.
+
+    Returns
+    -------
+    Either a transpiled Graph or a non-initialized LazyGraph.
+    """
+    from ._compiler import graph_transpile as _graph_transpile
+
+    return _graph_transpile(
+        *objs,
+        source=source,
+        to=to,
+        with_numpy=with_numpy,
+        backend_compile=backend_compile,
+        static_argnums=static_argnums,
+        static_argnames=static_argnames,
+        compile_mode=compile_mode,
+        graph_caching=graph_caching,
+        graph_optimizations=graph_optimizations,
+        modes_to_trace=modes_to_trace,
+        stateful=stateful,
+        arg_stateful_idxs=arg_stateful_idxs,
+        kwarg_stateful_idxs=kwarg_stateful_idxs,
+        args=args,
+        kwargs=kwargs,
+        params_v=params_v,
+        v=v,
+    )
+
+
 def source_to_source(
-    object,
-    source: str = "torch",
-    target: str = "torch_frontend",
-    profiling: bool = False,
+    object, source: str = "torch", target: str = "tensorflow", profiling: bool = False
 ):
     """Converts a given object (class/function) from one framework to another.
 
     This function performs source-to-source translation of a given object from the source framework
     to the target framework.
 
-    The object can be translated between two frameworks or in-between the Ivy IR
-    as well e.g. (source="torch_frontend", target="ivy") or (source="torch_frontend", target="tensorflow") etc.
+    The object can be translated between two frameworks or between the Ivy IR as well
+    e.g. (source="torch_frontend", target="ivy") or (source="torch_frontend", target="tensorflow") etc.
 
     Args:
     ----
         object: The object (class/function) to be translated.
         source (str, optional): The source framework. Defaults to 'torch'.
-        target (str, optional): The target framework. Defaults to 'torch_frontend'.
+        target (str, optional): The target framework. Defaults to 'tensorflow'.
         profiling: Whether to add performance profiling.
 
     Returns:
@@ -154,67 +231,34 @@ def trace_graph(
 
 
 def transpile(
-    *objs: Callable,
-    source: Optional[str] = None,
-    to: Optional[str] = None,
-    with_numpy: bool = True,
-    backend_compile: bool = False,
-    static_argnums: Optional[Union[int, Iterable[int]]] = None,
-    static_argnames: Optional[Union[str, Iterable[str]]] = None,
-    compile_mode: Optional[str] = None,
-    graph_caching: bool = True,
-    graph_optimizations: bool = True,
-    modes_to_trace: str = "all",
-    stateful: Optional[List] = None,
-    arg_stateful_idxs: Optional[List] = None,
-    kwarg_stateful_idxs: Optional[List] = None,
-    args: Optional[Sequence] = None,
-    kwargs: Optional[Mapping] = None,
-    params_v=None,
-    v=None
+    object, source: str = "torch", target: str = "tensorflow", profiling: bool = False
 ):
-    """Transpiles Callable objects passed as arguments. If args and kwargs are
-    specified, transpilation is performed eagerly, otherwise, transpilation
-    will happen lazily.
+    """Converts a given object (class/function) from one framework to another.
 
-    Parameters
-    ----------
-    objs
-        The native Callables to be transpiled
-    source
-        The framework that `obj` is from.
-    to
-        The target framework to transpile `obj` to.
-    args
-        If specified, arguments that will be used to transpile eagerly.
-    kwargs
-        If specified, keyword arguments that will be used to transpile eagerly.
+    This function performs source-to-source translation of a given object from the source framework
+    to the target framework.
 
-    Returns
+    The object can be translated between two frameworks or between the Ivy IR as well
+    e.g. (source="torch_frontend", target="ivy") or (source="torch_frontend", target="tensorflow") etc.
+
+    Args:
+    ----
+        object: The object (class/function) to be translated.
+        source (str, optional): The source framework. Defaults to 'torch'.
+        target (str, optional): The target framework. Defaults to 'tensorflow'.
+        profiling: Whether to add performance profiling.
+
+    Returns:
     -------
-    Either a transpiled Graph or a non-initialized LazyGraph.
+    The translated object.
     """
     from ._compiler import transpile as _transpile
 
     return _transpile(
-        *objs,
+        object=object,
         source=source,
-        to=to,
-        with_numpy=with_numpy,
-        backend_compile=backend_compile,
-        static_argnums=static_argnums,
-        static_argnames=static_argnames,
-        compile_mode=compile_mode,
-        graph_caching=graph_caching,
-        graph_optimizations=graph_optimizations,
-        modes_to_trace=modes_to_trace,
-        stateful=stateful,
-        arg_stateful_idxs=arg_stateful_idxs,
-        kwarg_stateful_idxs=kwarg_stateful_idxs,
-        args=args,
-        kwargs=kwargs,
-        params_v=params_v,
-        v=v,
+        target=target,
+        profiling=profiling,
     )
 
 

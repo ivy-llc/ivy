@@ -23,6 +23,99 @@ import tensorflow
 import tensorflow as tf
 
 
+def tensorflow_handle_array_like_without_promotion(fn: Callable):
+    @functools.wraps(fn)
+    def _handle_array_like_without_promotion(*args, **kwargs):
+        args = list(args)
+        num_args = len(args)
+        try:
+            type_hints = inspect.signature(fn).parameters
+        except (TypeError, ValueError):
+            return fn(*args, **kwargs)
+        parameters = list(type_hints.keys())
+        annotations = [param.annotation for param in type_hints.values()]
+        device = tensorflow__get_preferred_device(args, kwargs)
+        for i, (annotation, parameter, arg) in enumerate(
+            zip(annotations, parameters, args)
+        ):
+            annotation_str = str(annotation)
+            if (
+                ("rray" in annotation_str or "Tensor" in annotation_str)
+                and parameter != "out"
+                and all(
+                    sq not in annotation_str
+                    for sq in ["Sequence", "List", "Tuple", "float", "int", "bool"]
+                )
+            ):
+                if i < num_args:
+                    if tensorflow__check_in_nested_sequence(
+                        arg, value=Ellipsis, _type=slice
+                    ):
+                        continue
+                    if not tensorflow_is_array_bknd(arg):
+                        args = tensorflow_set_item_bknd(
+                            args, i, tensorflow_asarray(arg, device=device)
+                        )
+                elif parameters in kwargs:
+                    kwarg = tensorflow_get_item(kwargs, parameter)
+                    if not tensorflow_is_array_bknd(kwarg):
+                        kwargs = tensorflow_set_item_bknd(
+                            kwargs, parameter, tensorflow_asarray(kwarg, device=device)
+                        )
+        return fn(*args, **kwargs)
+
+    _handle_array_like_without_promotion.handle_array_like_without_promotion = True
+    return _handle_array_like_without_promotion
+
+
+def tensorflow_handle_set_item(fn):
+    @functools.wraps(fn)
+    def wrapper(inp, query, val, **kwargs):
+        try:
+            inp.__setitem__(query, val)
+            res = inp
+        except IndexError:
+            raise
+        except Exception:
+            res = fn(inp, query, val, **kwargs)
+        return res
+
+    return wrapper
+
+
+def tensorflow_handle_methods(fn):
+    def extract_function_name(s):
+        match = re.search("_(.+?)(?:_\\d+)?$", s)
+        if match:
+            return match.group(1)
+
+    @functools.wraps(fn)
+    def wrapper(*args, **kwargs):
+        if tensorflow_is_array_bknd(args[0]):
+            return fn(*args, **kwargs)
+        else:
+            pattern = "_bknd_|_bknd|_frnt_|_frnt"
+            fn_name = extract_function_name(re.sub(pattern, "", fn.__name__))
+            new_fn = getattr(args[0], fn_name)
+            return new_fn(*args[1:], **kwargs)
+
+    return wrapper
+
+
+def tensorflow_handle_get_item(fn):
+    @functools.wraps(fn)
+    def wrapper(inp, query, **kwargs):
+        try:
+            res = inp.__getitem__(query)
+        except IndexError:
+            raise
+        except Exception:
+            res = fn(inp, query, **kwargs)
+        return res
+
+    return wrapper
+
+
 promotion_table = {
     ("bool", "bool"): "bool",
     ("int8", "int8"): "int8",
@@ -147,6 +240,7 @@ promotion_table = {
     ("complex64", "uint32"): "complex128",
     ("complex64", "uint64"): "complex128",
 }
+
 array_api_promotion_table = {
     ("bool", "bool"): "bool",
     ("int8", "int8"): "int8",
@@ -188,94 +282,8 @@ array_api_promotion_table = {
     ("float32", "float64"): "float64",
     ("float64", "float64"): "float64",
 }
+
 tf.experimental.numpy.experimental_enable_numpy_behavior(True)
-default_device_stack = []
-SupportsBufferProtocol = TypeVar("SupportsBufferProtocol")
-default_uint_dtype_stack = []
-default_complex_dtype_stack = []
-default_dtype_stack = []
-default_float_dtype_stack = []
-default_int_dtype_stack = []
-backend = ""
-native_dtype_dict = {
-    "int8": tensorflow.int8,
-    "int16": tensorflow.int16,
-    "int32": tensorflow.int32,
-    "int64": tensorflow.int64,
-    "uint8": tensorflow.uint8,
-    "uint16": tensorflow.uint16,
-    "uint32": tensorflow.uint32,
-    "uint64": tensorflow.uint64,
-    "bfloat16": tensorflow.bfloat16,
-    "float16": tensorflow.float16,
-    "float32": tensorflow.float32,
-    "float64": tensorflow.float64,
-    "complex64": tensorflow.complex64,
-    "complex128": tensorflow.complex128,
-    "bool": tensorflow.bool,
-}
-ivy_dtype_dict = {
-    tensorflow.int8: "int8",
-    tensorflow.int16: "int16",
-    tensorflow.int32: "int32",
-    tensorflow.int64: "int64",
-    tensorflow.uint8: "uint8",
-    tensorflow.uint16: "uint16",
-    tensorflow.uint32: "uint32",
-    tensorflow.uint64: "uint64",
-    tensorflow.bfloat16: "bfloat16",
-    tensorflow.float16: "float16",
-    tensorflow.float32: "float32",
-    tensorflow.float64: "float64",
-    tensorflow.complex64: "complex64",
-    tensorflow.complex128: "complex128",
-    tensorflow.bool: "bool",
-}
-
-
-def tensorflow_handle_array_like_without_promotion(fn: Callable):
-    @functools.wraps(fn)
-    def _handle_array_like_without_promotion(*args, **kwargs):
-        args = list(args)
-        num_args = len(args)
-        try:
-            type_hints = inspect.signature(fn).parameters
-        except (TypeError, ValueError):
-            return fn(*args, **kwargs)
-        parameters = list(type_hints.keys())
-        annotations = [param.annotation for param in type_hints.values()]
-        device = tensorflow__get_preferred_device(args, kwargs)
-        for i, (annotation, parameter, arg) in enumerate(
-            zip(annotations, parameters, args)
-        ):
-            annotation_str = str(annotation)
-            if (
-                ("rray" in annotation_str or "Tensor" in annotation_str)
-                and parameter != "out"
-                and all(
-                    sq not in annotation_str
-                    for sq in ["Sequence", "List", "Tuple", "float", "int", "bool"]
-                )
-            ):
-                if i < num_args:
-                    if tensorflow__check_in_nested_sequence(
-                        arg, value=Ellipsis, _type=slice
-                    ):
-                        continue
-                    if not tensorflow_is_array_bknd(arg):
-                        args = tensorflow_set_item_bknd(
-                            args, i, tensorflow_asarray(arg, device=device)
-                        )
-                elif parameters in kwargs:
-                    kwarg = tensorflow_get_item(kwargs, parameter)
-                    if not tensorflow_is_array_bknd(kwarg):
-                        kwargs = tensorflow_set_item_bknd(
-                            kwargs, parameter, tensorflow_asarray(kwarg, device=device)
-                        )
-        return fn(*args, **kwargs)
-
-    _handle_array_like_without_promotion.handle_array_like_without_promotion = True
-    return _handle_array_like_without_promotion
 
 
 def tensorflow_exists_bknd(x: Any, /):
@@ -315,6 +323,8 @@ def tensorflow_default_bknd(
 
 
 def tensorflow_is_native_array(x, /, *, exclusive=False):
+    if "keras.src.backend.tensorflow.core.Variable" in str(x.__class__):
+        return not exclusive
     if isinstance(x, (tensorflow.Tensor, tensorflow.Variable, tensorflow.TensorArray)):
         if exclusive and isinstance(x, tensorflow.Variable):
             return False
@@ -473,20 +483,6 @@ def tensorflow_is_bool_dtype_bknd(
     return "bool" in tensorflow_as_ivy_dtype(dtype_in)
 
 
-def tensorflow_handle_get_item(fn):
-    @functools.wraps(fn)
-    def wrapper(inp, query, **kwargs):
-        try:
-            res = inp.__getitem__(query)
-        except IndexError:
-            raise
-        except Exception:
-            res = fn(inp, query, **kwargs)
-        return res
-
-    return wrapper
-
-
 @tensorflow_handle_get_item
 def tensorflow_get_item(
     x: Union[tensorflow.Tensor, tensorflow.Variable],
@@ -553,25 +549,8 @@ def tensorflow_as_native_dev(device: str, /):
     return ret
 
 
-def tensorflow_handle_methods(fn):
-    def extract_function_name(s):
-        match = re.search("_(.+?)(?:_\\d+)?$", s)
-        if match:
-            return match.group(1)
-
-    @functools.wraps(fn)
-    def wrapper(*args, **kwargs):
-        if tensorflow_is_array_bknd(args[0]):
-            return fn(*args, **kwargs)
-        else:
-            fn_name = extract_function_name(fn.__name__)
-            new_fn = getattr(args[0], fn_name)
-            return new_fn(*args[1:], **kwargs)
-
-    return wrapper
-
-
 @tensorflow_handle_methods
+@tensorflow_handle_array_like_without_promotion
 def tensorflow_split(
     x: Union[tensorflow.Tensor, tensorflow.Variable],
     /,
@@ -678,6 +657,8 @@ def tensorflow_dev(
     *,
     as_native: bool = False,
 ):
+    if "keras.src.backend.tensorflow.core.Variable" in str(x.__class__):
+        x = x.value
     if isinstance(x, tensorflow.TensorArray):
         x = tensorflow_stack_bknd_(x)
     dv = x.device
@@ -685,6 +666,9 @@ def tensorflow_dev(
         return dv
     dv = dv if dv else tensorflow_default_device_bknd(as_native=False)
     return tensorflow_as_ivy_dev(dv)
+
+
+default_device_stack = []
 
 
 def tensorflow_default_device_bknd(
@@ -738,6 +722,30 @@ def tensorflow__check_in_nested_sequence(sequence, value=None, _type=None):
                 for sub_sequence in sequence
                 if isinstance(sub_sequence, (tuple, list))
             )
+
+
+def tensorflow_is_variable(x, /, *, exclusive=False):
+    return isinstance(x, tensorflow.Variable)
+
+
+def tensorflow_variable(x, /):
+    with tensorflow.device(tensorflow_dev(x, as_native=True)):
+        return tensorflow.Variable(x, trainable=True)
+
+
+@tensorflow_handle_array_like_without_promotion
+def tensorflow_stop_gradient(
+    x: Union[tensorflow.Tensor, tensorflow.Variable],
+    /,
+    *,
+    preserve_type: bool = True,
+    out: Optional[Union[tensorflow.Tensor, tensorflow.Variable]] = None,
+):
+    is_var = tensorflow_is_variable(x)
+    x = tensorflow.stop_gradient(x)
+    if is_var and preserve_type:
+        return tensorflow_variable(x)
+    return x
 
 
 def tensorflow_nested_map_bknd(
@@ -936,6 +944,9 @@ def tensorflow__asarray_infer_dtype_bknd(fn: Callable):
     return _asarray_infer_dtype_wrapper
 
 
+SupportsBufferProtocol = TypeVar("SupportsBufferProtocol")
+
+
 @tensorflow_handle_array_like_without_promotion
 @tensorflow__asarray_to_native_arrays_and_back_bknd
 @tensorflow__asarray_infer_dtype_bknd
@@ -970,7 +981,11 @@ def tensorflow_asarray(
             ret = tensorflow.convert_to_tensor(obj_np, dtype)
         else:
             ret = tensorflow.convert_to_tensor(obj, dtype)
-        return tensorflow.identity(ret) if copy or ret.device != device else ret
+        return (
+            tensorflow.identity(ret)
+            if copy or tensorflow_as_native_dev(tensorflow_dev(ret)) != device
+            else ret
+        )
 
 
 @tensorflow_handle_array_like_without_promotion
@@ -1712,6 +1727,7 @@ def tensorflow_to_numpy(
         return np.asarray(tensorflow.convert_to_tensor(x))
 
 
+@tensorflow_handle_array_like_without_promotion
 def tensorflow_to_scalar(x: Union[tensorflow.Tensor, tensorflow.Variable], /):
     ret = tensorflow_to_numpy(x).item()
     if x.dtype == tensorflow.bfloat16:
@@ -1719,9 +1735,8 @@ def tensorflow_to_scalar(x: Union[tensorflow.Tensor, tensorflow.Variable], /):
     return ret
 
 
-@tensorflow_handle_array_like_without_promotion
-def tensorflow_to_scalar_bknd(x: Union[tensorflow.Tensor, tf.Tensor], /):
-    return tensorflow_to_scalar(x)
+def tensorflow_to_scalar_bknd_(self: tensorflow.Tensor):
+    return tensorflow_to_scalar(self)
 
 
 def tensorflow_is_float_dtype_bknd(
@@ -1766,6 +1781,9 @@ def tensorflow_is_uint_dtype_bknd(
             and "uint" in tensorflow_dtype(x),
         )
     return "uint" in tensorflow_as_ivy_dtype_bknd(dtype_in)
+
+
+default_uint_dtype_stack = []
 
 
 def tensorflow_default_uint_dtype_bknd(
@@ -1918,7 +1936,7 @@ def tensorflow_prod(
 
 def tensorflow__numel_bknd(shape):
     shape = tuple(shape)
-    return tensorflow_to_scalar_bknd(tensorflow_prod(shape)) if shape != () else 1
+    return tensorflow_to_scalar_bknd_(tensorflow_prod(shape)) if shape != () else 1
 
 
 def tensorflow_check_one_way_broadcastable(x1, x2):
@@ -2140,10 +2158,6 @@ def tensorflow_gather_nd(
         return result
 
 
-def tensorflow_is_variable(x, /, *, exclusive=False):
-    return isinstance(x, tensorflow.Variable)
-
-
 def tensorflow__is_variable_bknd(x, exclusive=False, to_ignore=None):
     x = x
     return tensorflow_nested_map_bknd(
@@ -2238,21 +2252,6 @@ def tensorflow_scatter_nd(
     return res
 
 
-def tensorflow_handle_set_item(fn):
-    @functools.wraps(fn)
-    def wrapper(inp, query, val, **kwargs):
-        try:
-            inp.__setitem__(query, val)
-            res = inp
-        except IndexError:
-            raise
-        except Exception:
-            res = fn(inp, query, val, **kwargs)
-        return res
-
-    return wrapper
-
-
 @tensorflow_handle_set_item
 def tensorflow_set_item_bknd(
     x: Union[tensorflow.Tensor, tf.Tensor],
@@ -2265,8 +2264,12 @@ def tensorflow_set_item_bknd(
     if isinstance(query, (list, tuple)) and any(
         [(q is Ellipsis or isinstance(q, slice) and q.stop is None) for q in query]
     ):
-        np_array = x.numpy()
-        np_array = tensorflow_set_item_bknd(np_array, query, np.asarray(val))
+        x_stop_gradient = tensorflow_stop_gradient(x, preserve_type=False)
+        np_array = x_stop_gradient.numpy()
+        val_stop_gradient = tensorflow_stop_gradient(val, preserve_type=False)
+        np_array = tensorflow_set_item_bknd(
+            np_array, query, np.asarray(val_stop_gradient)
+        )
         return tensorflow_asarray(np_array)
     if copy:
         x = tensorflow_copy_array(x)
@@ -2329,6 +2332,9 @@ def tensorflow__check_complex128_bknd(input):
     return False
 
 
+default_complex_dtype_stack = []
+
+
 def tensorflow_default_complex_dtype_bknd(
     *,
     input: Optional[Union[tensorflow.Tensor, tf.Tensor]] = None,
@@ -2385,6 +2391,9 @@ def tensorflow_default_complex_dtype_bknd(
     return str(tensorflow_as_ivy_dtype(ret))
 
 
+default_dtype_stack = []
+
+
 def tensorflow_default_dtype_bknd(
     *,
     dtype: Optional[Union[str, str]] = None,
@@ -2427,6 +2436,9 @@ def tensorflow_default_dtype_bknd(
     if as_native:
         return tensorflow_as_native_dtype(ret)
     return tensorflow_as_ivy_dtype(ret)
+
+
+default_float_dtype_stack = []
 
 
 def tensorflow_default_float_dtype_bknd(
@@ -2506,6 +2518,10 @@ def tensorflow_as_native_dtype(
         )
 
 
+default_int_dtype_stack = []
+backend = ""
+
+
 def tensorflow_default_int_dtype_bknd(
     *,
     input: Optional[Union[tensorflow.Tensor, tf.Tensor]] = None,
@@ -2578,6 +2594,42 @@ def tensorflow_default_int_dtype_bknd(
     if as_native:
         return tensorflow_as_native_dtype(ret)
     return str(tensorflow_as_ivy_dtype(ret))
+
+
+native_dtype_dict = {
+    "int8": tensorflow.int8,
+    "int16": tensorflow.int16,
+    "int32": tensorflow.int32,
+    "int64": tensorflow.int64,
+    "uint8": tensorflow.uint8,
+    "uint16": tensorflow.uint16,
+    "uint32": tensorflow.uint32,
+    "uint64": tensorflow.uint64,
+    "bfloat16": tensorflow.bfloat16,
+    "float16": tensorflow.float16,
+    "float32": tensorflow.float32,
+    "float64": tensorflow.float64,
+    "complex64": tensorflow.complex64,
+    "complex128": tensorflow.complex128,
+    "bool": tensorflow.bool,
+}
+ivy_dtype_dict = {
+    tensorflow.int8: "int8",
+    tensorflow.int16: "int16",
+    tensorflow.int32: "int32",
+    tensorflow.int64: "int64",
+    tensorflow.uint8: "uint8",
+    tensorflow.uint16: "uint16",
+    tensorflow.uint32: "uint32",
+    tensorflow.uint64: "uint64",
+    tensorflow.bfloat16: "bfloat16",
+    tensorflow.float16: "float16",
+    tensorflow.float32: "float32",
+    tensorflow.float64: "float64",
+    tensorflow.complex64: "complex64",
+    tensorflow.complex128: "complex128",
+    tensorflow.bool: "bool",
+}
 
 
 def tensorflow_as_ivy_dtype(
