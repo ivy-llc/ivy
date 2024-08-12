@@ -1211,6 +1211,52 @@ def test_torch_gcd(
     )
 
 
+@handle_frontend_test(
+    fn_tree="torch.histc",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=helpers.get_shape(
+            min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=10
+        ),
+        min_value=-100.0,
+        max_value=100.0,
+    ),
+    bins=st.integers(min_value=1, max_value=100),
+    min_val=st.floats(min_value=-100.0, max_value=100.0),
+    max_val=st.floats(min_value=-100.0, max_value=100.0),
+    test_with_out=st.just(False),
+)
+def test_torch_histc(
+    *,
+    dtype_and_input,
+    bins,
+    min_val,
+    max_val,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, input_tensor = dtype_and_input
+    input_tensor = np.array(input_tensor[0], dtype=input_dtype[0])
+
+    assume(min_val <= max_val)
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input_tensor,
+        bins=bins,
+        min=min_val,
+        max=max_val,
+    )
+
+
 # kron
 @handle_frontend_test(
     fn_tree="torch.kron",
@@ -1946,48 +1992,4 @@ def test_torch_view_as_real(
         fn_tree=fn_tree,
         on_device=on_device,
         input=np.asarray(x[0], dtype=input_dtype[0]),
-    )
-
-
-@handle_frontend_test(
-    fn_tree="torch.histc",
-    dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        shape=helpers.get_shape(min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=10),
-        min_value=-100.0,
-        max_value=100.0,
-    ),
-    bins=st.integers(min_value=1, max_value=100),
-    min_val=st.floats(min_value=-100.0, max_value=100.0),
-    max_val=st.floats(min_value=-100.0, max_value=100.0),
-    test_with_out=st.just(False),
-)
-def test_torch_histc(
-    *,
-    dtype_and_input,
-    bins,
-    min_val,
-    max_val,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, input_tensor = dtype_and_input
-    input_tensor = np.array(input_tensor[0], dtype=input_dtype[0])
-
-    assume(min_val <= max_val)
-
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=input_tensor,
-        bins=bins,
-        min=min_val,
-        max=max_val,
     )

@@ -29,9 +29,11 @@ def tensorflow_scatter_nd(
         dtype = tensorflow_promote_types_bknd(out.dtype, updates_dtype)
     updates = tensorflow.cast(
         updates,
-        tensorflow_as_native_dtype(dtype)
-        if tensorflow_exists_bknd(out)
-        else updates_dtype,
+        (
+            tensorflow_as_native_dtype(dtype)
+            if tensorflow_exists_bknd(out)
+            else updates_dtype
+        ),
     )
     expected_shape = (
         list(tensorflow.shape(indices)[:-1])

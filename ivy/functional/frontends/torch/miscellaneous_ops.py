@@ -335,6 +335,22 @@ def gcd(input, other, *, out=None):
     return ivy.gcd(input, other, out=out)
 
 
+@with_supported_dtypes(
+    {"2.4 and below": ("float32", "float64")},
+    "torch",
+)
+@to_ivy_arrays_and_back
+def histc(input, bins=100, min=0, max=0, *, out=None):
+    if min == 0.0 and max == 0.0:
+        min = ivy.min(input)
+        max = ivy.max(input)
+    bin_edges = ivy.linspace(min, max, bins + 1)
+    bin_indices = ivy.searchsorted(bin_edges, input, side="right") - 1
+    bin_indices = ivy.clip(bin_indices, 0, bins - 1)
+    histogram = ivy.bincount(bin_indices, minlength=bins)
+    return ivy.astype(histogram, input.dtype)
+
+
 @to_ivy_arrays_and_back
 def kron(input, other, *, out=None):
     return ivy.kron(input, other, out=out)
@@ -651,19 +667,3 @@ def view_as_real(input):
     re_part = ivy.real(input)
     im_part = ivy.imag(input)
     return ivy.stack((re_part, im_part), axis=-1)
-
-
-@with_supported_dtypes(
-    {"2.4 and below": ("float32", "float64")},
-    "torch",
-)
-@to_ivy_arrays_and_back
-def histc(input, bins=100, min=0, max=0, *, out=None):
-    if min == 0.0 and max == 0.0:
-        min = ivy.min(input)
-        max = ivy.max(input)
-    bin_edges = ivy.linspace(min, max, bins + 1)
-    bin_indices = ivy.searchsorted(bin_edges, input, side="right") - 1
-    bin_indices = ivy.clip(bin_indices, 0, bins - 1)
-    histogram = ivy.bincount(bin_indices, minlength=bins)
-    return ivy.astype(histogram, input.dtype)
