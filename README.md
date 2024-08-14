@@ -64,7 +64,7 @@ Ivy is an open-source machine learning framework that enables you to:
 
 - Convert ML models, tools and libraries between frameworks while maintaining complete functionality using `ivy.transpile`
 - Create optimized graph-based models and functions in any native framework (PyTorch, TensorFlow, etc..) with `ivy.trace_graph`
-- Use your ML models or functions in any framework using a graph-tracing approach with `ivy.graph_transpile`
+- Use your ML models or functions in any framework using a graph-tracing approach with `ivy.graph_transpile` *(deprecated)*
 
 <div style="display: block;" align="center">
     <div>
@@ -140,18 +140,14 @@ tutorials to do so are available!
 
 [Ivy's transpiler](https://ivy.dev/docs/overview/design/ivy_as_a_transpiler.html) allows you convert code between different ML frameworks. Have a look at our [Quickstart](https://ivy.dev/docs/demos/quickstart.html) notebook to get a brief idea of the features!
 
-The most important notebooks are:
-
-- [How to convert your code between frameworks?](https://ivy.dev/docs/demos/learn_the_basics/04_transpile_code.html)
-- [How to write framework-agnostic code?](https://ivy.dev/docs/demos/learn_the_basics/01_write_ivy_code.html)
-
 Beyond that, based on the frameworks you want to convert code between, there are a few more [examples](#using-ivy) further down this page 👇 which contain a number of models and libraries transpiled between PyTorch, JAX, TensorFlow and NumPy.
 
 <br>
 
 # Using ivy
 
-After installing ivy, you can start using it straight away, for example:
+Here's some examples, to help you get started using Ivy! The [examples page](https://ivy.dev/docs/demos/) also features a wide range of
+demos and tutorials showcasing some more use cases for Ivy.
 
   <details>
    <summary><b>Transpiling any code from one framework to another</b></summary>
@@ -193,14 +189,7 @@ After installing ivy, you can start using it straight away, for example:
 
    </details>
 
-
-\
-The [Examples page](https://ivy.dev/docs/demos/) features a wide range of
-demos and tutorials showcasing the functionalities of Ivy along with
-multiple use cases, but feel free to check out some shorter
-framework-specific examples here ⬇️
-
-<details>
+<!-- <details>
 <summary><b>I'm using PyTorch&ensp;<img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/torch_small_logo.png"></b></summary>
    <blockquote>You can use Ivy to get PyTorch code from:
       <details>
@@ -1068,11 +1057,7 @@ out = np_loss(p, t)
 </details>
 
 </blockquote>
-</details>
-
-
-\
-For a more comprehensive overview, head over to the [Demos](https://ivy.dev/docs/demos/index.html) section with more on the [basics](https://ivy.dev/docs/demos/learn_the_basics.html), a few [guides](https://ivy.dev/docs/demos/guides.html) and a wide-ranging set of [examples](https://ivy.dev/docs/demos/examples_and_demos.html) that demonstrate the transpilation of various popular models. We continue to expand on that list, let us know what demos you'd like us to add next 🎯
+</details> -->
 
 <br>
 
