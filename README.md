@@ -62,9 +62,9 @@
 
 Ivy is an open-source machine learning framework that enables you to:
 
-- Convert ML models, tools and libraries between frameworks while maintaining complete functionality using `ivy.source_to_source`
+- Convert ML models, tools and libraries between frameworks while maintaining complete functionality using `ivy.transpile`
 - Create optimized graph-based models and functions in any native framework (PyTorch, TensorFlow, etc..) with `ivy.trace_graph`
-- Use your ML models or functions in any framework using a graph-tracing approach with `ivy.transpile`
+- Use your ML models or functions in any framework using a graph-tracing approach with `ivy.graph_transpile`
 
 <div style="display: block;" align="center">
     <div>
@@ -159,40 +159,36 @@ After installing ivy, you can start using it straight away, for example:
    ``` python
    import ivy
    import torch
-   import jax
+   import tensorflow as tf
 
-   def jax_fn(x):
-       a = jax.numpy.dot(x, x)
-       b = jax.numpy.mean(x)
+   def torch_fn(x):
+       a = torch.mul(x, x)
+       b = torch.mean(x)
        return x * a + b
 
-   jax_x = jax.numpy.array([1., 2., 3.])
-   torch_x = torch.tensor([1., 2., 3.])
-   torch_fn = ivy.transpile(jax_fn, source="jax", to="torch", args=(jax_x,))
-   ret = torch_fn(torch_x)
+   tf_fn = ivy.transpile(torch_fn, source="torch", target="tensorflow")
+
+   tf_x = tf.convert_to_tensor([1., 2., 3.])
+   ret = tf_fn(tf_x)
    ```
 
    </details>
 
   <details>
-    <summary><b>Running your code with any backend</b></summary>
+   <summary><b>Tracing a computational graph of any code</b></summary>
 
    ``` python
-    import ivy
-    import torch
-    import jax
+   import ivy
+   import torch
 
-    ivy.set_backend("jax")
+   def torch_fn(x):
+       a = torch.mul(x, x)
+       b = torch.mean(x)
+       return x * a + b
 
-    x = jax.numpy.array([1, 2, 3])
-    y = jax.numpy.array([3, 2, 1])
-    z = ivy.add(x, y)
-
-    ivy.set_backend('torch')
-
-    x = torch.tensor([1, 2, 3])
-    y = torch.tensor([3, 2, 1])
-    z = ivy.add(x, y)
+   torch_x = torch.tensor([1., 2., 3.])
+   graph = ivy.trace_graph(jax_fn, to="torch", args=(torch_x,))
+   ret = graph(torch_x)
    ```
 
    </details>
