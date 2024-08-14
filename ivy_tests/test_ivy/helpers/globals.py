@@ -11,6 +11,7 @@ from .pipeline_helper import get_frontend_config
 available_frameworks = [
     "numpy",
     "jax",
+    "keras",
     "tensorflow",
     "torch",
     "paddle",
@@ -30,6 +31,7 @@ mod_frontend = {
 mod_backend = {
     "numpy": None,
     "jax": None,
+    "keras": None,
     "tensorflow": None,
     "torch": None,
     "paddle": None,
