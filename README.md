@@ -1098,8 +1098,7 @@ project to all of the unique perks of a different framework.
 \
 Ivy\'s transpiler allows you to use code from any other framework (or
 from any other version of the same framework!) in your own code, by just
-adding one line of code. Under the hood, Ivy traces a computational
-graph and leverages the frontends and backends to link one version of one framework to another version of another framework.
+adding one line of code.
 
 This way, Ivy makes all ML-related projects available for you,
 independently of the framework you want to use to research, develop, or
@@ -1107,19 +1106,54 @@ deploy systems. Feel free to head over to the docs for the full API
 reference, but the functions you\'d most likely want to use are:
 
 ``` python
-# Traces an efficient fully-functional graph from a function, removing all wrapping and redundant code. See usage in the documentation
-ivy.trace_graph()
-
 # Converts framework-specific code to a target framework of choice. See usage in the documentation
 ivy.transpile()
 
-# Converts framework-specific code to Ivy's framework-agnostic API. See usage in the documentation
-ivy.unify()
+# Traces an efficient fully-functional graph from a function, removing all wrapping and redundant code. See usage in the documentation
+ivy.trace_graph()
 ```
 
-These functions can be used eagerly or lazily. If you pass the necessary
-arguments for function tracing, the graph tracing/transpilation step will
-happen instantly (eagerly). Otherwise, the graph tracing/transpilation
+#### `ivy.transpile` will eagerly transpile if a class or function is provided
+
+``` python
+import ivy
+import torch
+import tensorflow as tf
+
+def torch_fn(x):
+    x = torch.abs(x)
+    return torch.sum(x)
+
+x1 = torch.tensor([1., 2.])
+x1 = tf.convert_to_tensor([1., 2.])
+
+# Transpilation happens eagerly
+tf_fn = ivy.transpile(test_fn, source="torch", target="tensorflow")
+
+# tf_fn is now tensorflow code and runs efficiently
+ret = tf_fn(x1)
+```
+
+#### `ivy.transpile` will lazily transpile if a module (library) is provided
+
+``` python
+import kornia
+
+x2 = torch.rand(5, 3, 4, 4)
+
+# Module is provided -> transpilation happens lazily 
+tf_kornia = ivy.transpile(kornia, source="torch", target="tensorflow")
+
+# The transpilation is initialized here, and this function is converted to tensorflwo
+ret = tf_kornia.color.rgb_to_grayscale(x2)
+
+# Transpilation has already occurred, the tensorflow function runs efficiently
+ret = tf_kornia.color.rgb_to_grayscale(x2)
+```
+
+#### `ivy.trace_graph` can be used eagerly or lazily
+If you pass the necessary arguments for function tracing, the graph tracing step will
+happen instantly (eagerly). Otherwise, the graph tracing
 will happen only when the returned function is first invoked.
 
 ``` python
@@ -1135,21 +1169,21 @@ x1 = ivy.array([1., 2.])
 ```
 
 ``` python
-# Arguments are available -> transpilation happens eagerly
-eager_graph = ivy.transpile(test_fn, source="jax", to="torch", args=(x1,))
+# Arguments are available -> tracing happens eagerly
+eager_graph = ivy.trace_graph(test_fn, to="jax", args=(x1,))
 
-# eager_graph is now torch code and runs efficiently
+# eager_graph now runs efficiently
 ret = eager_graph(x1)
 ```
 
 ``` python
-# Arguments are not available -> transpilation happens lazily
-lazy_graph = ivy.transpile(test_fn, source="jax", to="torch")
+# Arguments are not available -> tracing happens lazily
+lazy_graph = ivy.trace_graph(test_fn, to="jax")
 
-# The transpiled graph is initialized, transpilation will happen here
+# The traced graph is initialized, tracing will happen here
 ret = lazy_graph(x1)
 
-# lazy_graph is now torch code and runs efficiently
+# Tracing has already happend, traced graph runs efficiently
 ret = lazy_graph(x1)
 ```
 
