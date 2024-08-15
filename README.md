@@ -1126,7 +1126,7 @@ import kornia
 
 x2 = torch.rand(5, 3, 4, 4)
 
-# Module is provided -> transpilation happens lazily 
+# Module is provided -> transpilation happens lazily
 tf_kornia = ivy.transpile(kornia, source="torch", target="tensorflow")
 
 # The transpilation is initialized here, and this function is converted to tensorflwo
