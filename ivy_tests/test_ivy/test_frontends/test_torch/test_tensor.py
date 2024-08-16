@@ -13146,24 +13146,31 @@ def test_torch_svd(
     ret = [np.asarray(x) for x in ret]
     frontend_ret = [np.asarray(x) for x in frontend_ret]
 
-    u, s, vh = ret
-    frontend_u, frontend_s, frontend_vh = frontend_ret
-
-    if compute_uv:
+    u, s, v = ret
+    frontend_u, frontend_s, frontend_v = frontend_ret
+    if not compute_uv:
         helpers.assert_all_close(
-            ret_np=frontend_u @ np.diag(frontend_s) @ frontend_vh.T,
-            ret_from_gt_np=u @ np.diag(s) @ vh,
-            rtol=1e-2,
-            atol=1e-2,
+            ret_np=frontend_s,
+            ret_from_gt_np=s,
+            atol=1e-04,
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+        )
+    elif not some:
+        helpers.assert_all_close(
+            ret_np=frontend_u @ np.diag(frontend_s) @ frontend_v.T,
+            ret_from_gt_np=u @ np.diag(s) @ v.T,
+            atol=1e-04,
             backend=backend_fw,
             ground_truth_backend=frontend,
         )
     else:
         helpers.assert_all_close(
-            ret_np=frontend_s,
-            ret_from_gt_np=s,
-            rtol=1e-2,
-            atol=1e-2,
+            ret_np=frontend_u[..., : frontend_s.shape[0]]
+            @ np.diag(frontend_s)
+            @ frontend_v.T,
+            ret_from_gt_np=u[..., : s.shape[0]] @ np.diag(s) @ v.T,
+            atol=1e-04,
             backend=backend_fw,
             ground_truth_backend=frontend,
         )
