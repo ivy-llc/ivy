@@ -2,12 +2,12 @@ Gradients
 =========
 
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`gradients channel`: https://discord.com/channels/799879767196958751/1000043921633722509
+.. _`gradients thread`: https://discord.com/channels/799879767196958751/1190235826806853672
 
 Overview
 --------
 
-Gradients are a crucial aspect of all modern deep learning workflows. 
+Gradients are a crucial aspect of all modern deep learning workflows.
 Different frameworks provide different APIs for gradient computation and there were a few considerations to be made while building a unified gradients API in Ivy.
 There are a number of functions added in ivy to allow gradient computation, but we'll mainly focus on the most commonly used and the most general function :func:`ivy.execute_with_gradients`.
 This is because the other gradient functions such as :func:`ivy.value_and_grad` and :func:`ivy.grad` can be considered as providing a subset of the functionality that :func:`ivy.execute_with_gradients` provides.
@@ -18,31 +18,31 @@ Example Usage of the Gradient API
 The :func:`ivy.execute_with_gradients` function signature
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Following is pseudo function signature for the :func:`ivy.execute_with_gradients` function,
+Following is the pseudo function signature for the :func:`ivy.execute_with_gradients` function,
 
 .. code-block:: python
-    
+
     def execute_with_gradients (
         func : Callable,
         xs : Any arbitrary nest,
         xs_grad_idxs : Input indices,
         ret_grad_idxs : Output indices,
-    ) : 
+    ) :
         return func_ret, grads
 
 The :code:`func` in the input can be any user-defined function that returns a single scalar or any arbitrary nest of scalars.
 By scalars, we are referring to zero-dimensional arrays.
 
-So for example, following are some valid outputs by the :code:`func`,
+So for example, the following are some valid outputs by the :code:`func`,
 
 .. code-block:: python
-    
+
     ivy.array(12.)
-    
+
     # OR
 
     ivy.Container(
-        a=ivy.array(12.), 
+        a=ivy.array(12.),
         b=ivy.Container(
             c=ivy.array(15.),
             d=ivy.array(32.)
@@ -74,8 +74,8 @@ An example using :func:`ivy.execute_with_gradients`
     xs = [x, y]
 
     ret, grads = ivy.execute_with_gradients(
-        func, 
-        xs, 
+        func,
+        xs,
         xs_grad_idxs=[[0]],
         ret_grad_idxs=[["a"]]
     )
@@ -85,7 +85,7 @@ Custom Gradient Functions
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 There are various scenarios where users may want to define custom gradient computation rules for their functions.
-Some of these are numerical stability, smoothing and clipping of the computed gradients.
+Some of these are numerical stability, smoothing, and clipping of the computed gradients.
 Ivy provides the :func:`ivy.bind_custom_gradient_function` function to allow users to bind custom gradient computation logic to their functions.
 
 Following is an example of usage of :func:`ivy.bind_custom_gradient_function`,
@@ -126,8 +126,8 @@ Our policy on gradients
 * The gradient API is fully-functional in ivy.
 * There is no explicit variable class or any public-facing function for adding gradient support to an ivy.Array.
 * The gradient functions in ivy implicitly convert all arrays to support gradient computation before computing gradients and detach all arrays after computing gradients.
-* We don't retain any previously tracked computations in arrays by frameworks like torch for e.g. 
-* This makes our gradient API disambiguous, flexible and easy to debug.
+* We don't retain any previously tracked computations in arrays by frameworks like torch for e.g.
+* This makes our gradient API disambiguous, flexible, and easy to debug.
 * Any framework-specific tracking of computations or variable classes should be handled in the corresponding frontends.
 
 Gradient APIs of frameworks
@@ -172,7 +172,7 @@ Framework-specific Considerations
 
 This should have hopefully given you a good feel for how the gradient API is implemented in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `gradients channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `gradients thread`_!
 
 
 **Video**

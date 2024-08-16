@@ -13,11 +13,143 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 )
 
 
+# --- Helpers --- #
+# --------------- #
+
+
+def _chbevl(x, coef, N):
+    """Evaluates the series.
+
+            N-1
+             - '
+      y  =   >   coef[i] T (x/2)
+             -            i
+            i=0
+
+    of Chebyshev polynomials Ti at argument x/2.
+
+    Coefficients are stored in reverse order, i.e. the zero
+    order term is last in the array.  Note N is the number of
+    coefficients, not the order.
+
+    If coefficients are for the interval a to b, x must
+    have been transformed to x -> 2(2x - b - a)/(b-a) before
+    entering the routine.  This maps x from (a, b) to (-1, 1),
+    over which the Chebyshev polynomials are defined.
+
+    If the coefficients are for the inverted interval, in
+    which (a, b) is mapped to (1/b, 1/a), the transformation
+    required is x -> 2(2ab/x - b - a)/(b-a).  If b is infinity,
+    this becomes x -> 4a/x - 1.
+    """
+    b0 = coef[0:1]
+    b1 = ivy.zeros_like(x)
+    i = N - 1
+    p = 1
+
+    while i > 0:
+        b2 = b1
+        b1 = b0
+        with ivy.PreciseMode(True):
+            b0 = x * b1 - b2 + coef[p : p + 1]
+        p += 1
+        i -= 1
+
+    return 0.5 * (b0 - b2)
+
+
+def _get_chebyshev_coefficients_for_exp_i1():
+    """Chebyshev coefficients for exp(-x) I1(x) / x in the interval [0,8].
+
+    lim(x->0){ exp(-x) I1(x) / x } = 1/2.
+
+    Returns list of 29 float elements
+    -------
+    """
+    return ivy.array(
+        [
+            2.77791411276104639959e-18,
+            -2.11142121435816608115e-17,
+            1.55363195773620046921e-16,
+            -1.10559694773538630805e-15,
+            7.60068429473540693410e-15,
+            -5.04218550472791168711e-14,
+            3.22379336594557470981e-13,
+            -1.98397439776494371520e-12,
+            1.17361862988909016308e-11,
+            -6.66348972350202774223e-11,
+            3.62559028155211703701e-10,
+            -1.88724975172282928790e-9,
+            9.38153738649577178388e-9,
+            -4.44505912879632808065e-8,
+            2.00329475355213526229e-7,
+            -8.56872026469545474066e-7,
+            3.47025130813767847674e-6,
+            -1.32731636560394358279e-5,
+            4.78156510755005422638e-5,
+            -1.61760815825896745588e-4,
+            5.12285956168575772895e-4,
+            -1.51357245063125314899e-3,
+            4.15642294431288815669e-3,
+            -1.05640848946261981558e-2,
+            2.47264490306265168283e-2,
+            -5.29459812080949914269e-2,
+            1.02643658689847095384e-1,
+            -1.76416518357834055153e-1,
+            2.52587186443633654823e-1,
+        ]
+    )
+
+
+def _get_chebyshev_coefficients_for_exp_sqrt_i1():
+    """Chebyshev coefficients for exp(-x) sqrt(x) I1(x) in the inverted
+    interval [8,infinity].
+
+    lim(x->inf){ exp(-x) sqrt(x) I1(x) } = 1/sqrt(2pi).
+
+    Returns a list of 25 elements containing float
+    -------
+    """
+    return ivy.array(
+        [
+            7.51729631084210481353e-18,
+            4.41434832307170791151e-18,
+            -4.65030536848935832153e-17,
+            -3.20952592199342395980e-17,
+            2.96262899764595013876e-16,
+            3.30820231092092828324e-16,
+            -1.88035477551078244854e-15,
+            -3.81440307243700780478e-15,
+            1.04202769841288027642e-14,
+            4.27244001671195135429e-14,
+            -2.10154184277266431302e-14,
+            -4.08355111109219731823e-13,
+            -7.19855177624590851209e-13,
+            2.03562854414708950722e-12,
+            1.41258074366137813316e-11,
+            3.25260358301548823856e-11,
+            -1.89749581235054123450e-11,
+            -5.58974346219658380687e-10,
+            -3.83538038596423702205e-9,
+            -2.63146884688951950684e-8,
+            -2.51223623787020892529e-7,
+            -3.88256480887769039346e-6,
+            -1.10588938762623716291e-4,
+            -9.76109749136146840777e-3,
+            7.78576235018280120474e-1,
+        ]
+    )
+
+
+# --- Main --- #
+# ------------ #
+
+
 @with_unsupported_dtypes(
     {
         "1.2.0": ("float16", "complex64", "complex128"),
         "1.8.0 and below": ("float16",),
-        "2.13.0 and below": ("int8", "int16", "uint8", "uint16", "uint32", "uint64"),
+        "2.15.0 and below": ("int8", "int16", "uint8", "uint16", "uint32", "uint64"),
     },
     "tensorflow",
 )
@@ -61,15 +193,23 @@ def angle(input, name=None):
     return ivy.angle(input)
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("complex",)},
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def argmax(input, axis, output_type=None, name=None):
     output_type = to_ivy_dtype(output_type)
-    if output_type in ["uint16", "int16", "int32", "int64"]:
+    if output_type in ["int32", "int64"]:
         return ivy.astype(ivy.argmax(input, axis=axis), output_type)
     else:
         return ivy.astype(ivy.argmax(input, axis=axis), "int64")
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("complex",)},
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def argmin(input, axis=None, output_type="int64", name=None):
     output_type = to_ivy_dtype(output_type)
@@ -105,7 +245,42 @@ def atanh(x, name="atanh"):
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("int32",)},
+    {"2.15.0 and below": ("float16", "float32", "float64")}, "tensorflow"
+)
+@to_ivy_arrays_and_back
+def bessel_i1(x, name=None):
+    z = ivy.abs(x)
+    result = ivy.zeros_like(z)
+
+    mask1 = z <= 8.0
+
+    if ivy.any(mask1) > 0:
+        y = (z[mask1] / ivy.array([2.0])) - ivy.array([2.0])
+        result[mask1] = (
+            _chbevl(y, _get_chebyshev_coefficients_for_exp_i1(), 29)
+            * z[mask1]
+            * ivy.exp(z[mask1])
+        )
+
+    mask2 = ~mask1
+    if ivy.any(mask2) > 0:
+        result[mask2] = (
+            ivy.exp(z[mask2])
+            * _chbevl(
+                ivy.array([32.0]) / z[mask2] - ivy.array([2.0]),
+                _get_chebyshev_coefficients_for_exp_sqrt_i1(),
+                25,
+            )
+            / ivy.sqrt(z[mask2])
+        )
+
+    result[x < 0.0] = -result[x < 0.0]
+
+    return result
+
+
+@with_supported_dtypes(
+    {"2.15.0 and below": ("int32",)},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
@@ -227,6 +402,11 @@ def cumsum(x, axis, exclusive=False, reverse=False, name=None):
 
 
 @to_ivy_arrays_and_back
+def digamma(x, name=None):
+    return ivy.digamma(x)
+
+
+@to_ivy_arrays_and_back
 def divide(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.divide(x, y)
@@ -284,6 +464,9 @@ def greater(x, y, name=None):
     return ivy.greater(x, y)
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("complex64", "complex128")}, "tensorflow"
+)
 @to_ivy_arrays_and_back
 def greater_equal(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
@@ -292,7 +475,7 @@ def greater_equal(x, y, name=None):
 
 @with_supported_device_and_dtypes(
     {
-        "2.13.0 and below": {
+        "2.15.0 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -305,7 +488,7 @@ def igamma(a, x, name=None):
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    {"2.15.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
@@ -321,7 +504,18 @@ def in_top_k(target, pred, k, name=None):
 
 @with_supported_dtypes(
     {
-        "2.11.0 and below": ("bfloat16", "half", "float32", "float64"),
+        "2.15.0 and below": ("int32", "int64"),
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def invert_permutation(x, name=None):
+    return ivy.invert_permutation(x)
+
+
+@with_supported_dtypes(
+    {
+        "2.15.0 and below": ("bfloat16", "half", "float32", "float64"),
     },
     "tensorflow",
 )
@@ -353,13 +547,15 @@ def is_non_decreasing(x, name="is_non_decreasing"):
 def is_strictly_increasing(x, name="is_strictly_increasing"):
     if ivy.array(x).size < 2:
         return ivy.array(True)
-    if ivy.array(x).size == 2:
-        return ivy.array(x[0] < x[1])
-    return ivy.all(ivy.less(x, ivy.roll(x, -1)))
+    x = ivy.flatten(x)
+    res = ivy.less(x, ivy.roll(x, -1))
+    if res.size >= 2:
+        res[res.size - 1] = True  # The last comparison must be set to true.
+    return ivy.all(res)
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, "tensorflow")
+@with_supported_dtypes({"2.15.0 and below": ("float32", "float64")}, "tensorflow")
 def l2_normalize(x, axis=None, epsilon=1e-12, name=None):
     square_sum = ivy.sum(ivy.square(x), axis=axis, keepdims=True)
     x_inv_norm = ivy.reciprocal(ivy.sqrt(ivy.maximum(square_sum, epsilon)))
@@ -367,6 +563,9 @@ def l2_normalize(x, axis=None, epsilon=1e-12, name=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("complex64", "complex128")}, "tensorflow"
+)
 def less(x, y, name="None"):
     x, y = check_tensorflow_casting(x, y)
     return ivy.less(x, y)
@@ -376,6 +575,13 @@ def less(x, y, name="None"):
 def less_equal(x, y, name="LessEqual"):
     x, y = check_tensorflow_casting(x, y)
     return ivy.less_equal(x, y)
+
+
+# lgamma
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.15.0 and below": ("float32", "float64")}, "tensorflow")
+def lgamma(x, name=None):
+    return ivy.lgamma(x)
 
 
 @to_ivy_arrays_and_back
@@ -395,6 +601,8 @@ def log_sigmoid(x, name=None):
 
 @to_ivy_arrays_and_back
 def log_softmax(logits, axis=None):
+    if axis is None:
+        axis = -1
     return ivy.log_softmax(logits, axis=axis)
 
 
@@ -419,13 +627,22 @@ def logical_xor(x, y, name="LogicalXor"):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, "tensorflow")
 def maximum(x, y, name=None):
     return ivy.maximum(x, y)
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.15.0 and below": ("complex",)}, "tensorflow")
 def minimum(x, y, name=None):
     return ivy.minimum(x, y)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.6.0 and below": ("bfloat16",)}, "paddle")
+def mod(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.remainder(x, y)
 
 
 @to_ivy_arrays_and_back
@@ -539,10 +756,12 @@ def reduce_max(input_tensor, axis=None, keepdims=False, name="reduce_max"):
 
 
 @to_ivy_arrays_and_back
-def reduce_mean(input_tensor, axis=None, keepdims=False, name="reduce_mean"):
+def reduce_mean(
+    input_tensor, axis=None, keepdims=False, dtype=None, name="reduce_mean"
+):
     if ivy.exists(axis):
         axis = ivy.to_list(axis)
-    return ivy.mean(input_tensor, axis=axis, keepdims=keepdims)
+    return ivy.mean(input_tensor, axis=axis, keepdims=keepdims, dtype=dtype)
 
 
 @to_ivy_arrays_and_back
@@ -577,7 +796,7 @@ def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_varian
 
 @with_supported_device_and_dtypes(
     {
-        "2.13.0 and below": {
+        "2.15.0 and below": {
             "cpu": ("float32", "float64"),
             "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
@@ -605,6 +824,25 @@ def scalar_mul(scalar, x, name="scalar_mul"):
     return ivy.multiply(x, scalar).astype(x.dtype)
 
 
+@with_unsupported_dtypes(
+    {"2.15.0 and below": ("float16", "bool", "int16", "int8")},
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def segment_sum(data, segment_ids, name="segment_sum"):
+    data = ivy.array(data)
+    segment_ids = ivy.array(segment_ids)
+    ivy.utils.assertions.check_equal(
+        list(segment_ids.shape), [list(data.shape)[0]], as_array=False
+    )
+    sum_array = ivy.zeros(
+        tuple([int(segment_ids[-1] + 1)] + (list(data.shape))[1:]), dtype=data.dtype
+    )
+    for i in range((segment_ids).shape[0]):
+        sum_array[segment_ids[i]] = sum_array[segment_ids[i]] + data[i]
+    return sum_array
+
+
 @to_ivy_arrays_and_back
 def sigmoid(x, name=None):
     return ivy.sigmoid(x)
@@ -612,7 +850,7 @@ def sigmoid(x, name=None):
 
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "bfloat16",
             "float16",
             "float32",
@@ -644,7 +882,7 @@ def softplus(features, name=None):
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("bfloat32", "float32", "float64")}, "tensorflow"
+    {"2.15.0 and below": ("bfloat32", "float32", "float64")}, "tensorflow"
 )
 @to_ivy_arrays_and_back
 def softsign(features, name=None):
@@ -663,7 +901,7 @@ def square(x, name=None):
 
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "bfloat16",
             "float16",
             "float32",
@@ -698,7 +936,7 @@ def tan(x, name=None):
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    {"2.15.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
@@ -740,6 +978,22 @@ def unsorted_segment_mean(
 
 
 @to_ivy_arrays_and_back
+def unsorted_segment_min(data, segment_ids, num_segments, name="unsorted_segment_min"):
+    data = ivy.array(data)
+    segment_ids = ivy.array(segment_ids)
+
+    ivy.utils.assertions.check_equal(
+        list(segment_ids.shape), [list(data.shape)[0]], as_array=False
+    )
+    min_array = ivy.zeros(
+        tuple([num_segments.item()] + (list(data.shape))[1:]), dtype=ivy.int32
+    )
+    for i in range((segment_ids).shape[0]):
+        min_array[segment_ids[i]] = ivy.minimum(min_array[segment_ids[i]], data[i])
+    return min_array
+
+
+@to_ivy_arrays_and_back
 def unsorted_segment_sqrt_n(
     data, segment_ids, num_segments, name="unsorted_segement_sqrt_n"
 ):
@@ -772,7 +1026,7 @@ def unsorted_segment_sum(data, segment_ids, num_segments, name="unsorted_segment
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("float32", "float64", "complex64", "complex128")},
+    {"2.15.0 and below": ("float32", "float64", "complex64", "complex128")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
@@ -784,7 +1038,7 @@ def xdivy(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, "tensorflow")
+@with_supported_dtypes({"2.15.0 and below": ("float32", "float64")}, "tensorflow")
 def xlog1py(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return x * ivy.log1p(y)
@@ -797,17 +1051,17 @@ def xlogy(x, y, name=None):
 
 @to_ivy_arrays_and_back
 def zero_fraction(value, name="zero_fraction"):
-    zero = ivy.zeros(tuple(list(value.shape)), dtype=ivy.float32)
+    zero = ivy.zeros(tuple(value.shape), dtype=ivy.float32)
     x = ivy.array(value, dtype=ivy.float32)
-    count_zero = ivy.sum(ivy.equal(x, zero))
-    count_nonzero = ivy.sum(ivy.not_equal(x, zero))
+    count_zero = ivy.sum(ivy.equal(x, zero), dtype=ivy.float32)
+    count_nonzero = ivy.sum(ivy.not_equal(x, zero), dtype=ivy.float32)
     return ivy.divide(count_zero, ivy.add(count_zero, count_nonzero))
 
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
-        "2.11.0 and below": ("float32", "float64"),
+        "2.15.0 and below": ("float32", "float64"),
     },
     "tensorflow",
 )

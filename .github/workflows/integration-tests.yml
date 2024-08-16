@@ -1,0 +1,42 @@
+name: integration-tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  actions: read
+jobs:
+  kornia:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target : [ jax, numpy, tensorflow ]
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+          fetch-depth: 100
+
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+
+      - name: Run Tests
+        id: tests
+        run: |
+          pip3 install kornia
+          cd ivy
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/shell/run_integration_tests.sh kornia ${{ matrix.target }} ${{ secrets.IVY_API_KEY }}
+        continue-on-error: true
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1

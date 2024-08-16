@@ -1,26 +1,23 @@
-h5py # unpinned
-pytest # unpinned
-networkx # unpinned
-hypothesis # unpinned
-pymongo # unpinned
-redis # unpinned
-matplotlib # unpinned
-opencv-python # unpinned , mod_name=cv2
-jax # unpinned, we test for latest version now
-jaxlib # unpinned, we test for latest version now
-tensorflow  # unpinned, we test for latest version now
-tensorflow-probability # unpinned, we test for latest version now, mod_name=tensorflow_probability
-torch # unpinned, we test for latest version now
-torch-scatter # unpinned, mod_name=torch_scatter
-functorch # unpinned, we test for latest version now
-scipy # unpinned
-dm-haiku # unpinned mod_name=haiku
-flax
-pydriller
-tqdm
-coverage
-scikit-learn # mod_name=sklearn
-pandas
-pyspark
 autoflake # for backend generation
+coverage
+dm-haiku # mod_name=haiku
+flax
+h5py
+hypothesis
+jax
+jaxlib
+matplotlib
+networkx
+opencv-python # mod_name=cv2
+pandas
+pydriller
+pymongo
+pyspark
+pytest
+redis
+scikit-learn # mod_name=sklearn
+scipy
 snakeviz # for profiling
+tensorflow
+torch
+torchvision

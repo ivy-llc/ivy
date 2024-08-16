@@ -1,29 +1,25 @@
-h5py # unpinned
-pytest # unpinned
-networkx # unpinned
-hypothesis # unpinned
-pymongo # unpinned
-redis # unpinned
-matplotlib # unpinned
-opencv-python # unpinned , mod_name=cv2
-jax[cpu] # unpinned, we test for latest version now, mod_name=jax
-jaxlib # unpinned, we test for latest version now
-paddlepaddle # unpinned , mod_name=paddle
-tensorflow-cpu  # unpinned, we test for latest version now, mod_name=tensorflow
-tensorflow-probability # unpinned, we test for latest version now, mod_name=tensorflow_probability
-torch # unpinned, we test for latest version now
-# torch-scatter # unpinned, mod_name=torch_scatter
-functorch # unpinned, we test for latest version now
-scipy # unpinned
-dm-haiku # unpinned mod_name=haiku
-flax
-pydriller
-tqdm
-coverage
-scikit-learn # mod_name=sklearn
-pandas
-pyspark
 autoflake # for backend generation
+coverage
+dm-haiku # mod_name=haiku
+flax
+h5py
+hypothesis==6.98.10 # fixed version till this get solved: https://github.com/HypothesisWorks/hypothesis/issues/3896
+jax
+jaxlib
+matplotlib
+networkx
+opencv-python # mod_name=cv2
+paddlepaddle # mod_name=paddle
+pandas
+pydriller
+pymongo
+pyspark
+pytest
+redis
+scikit-learn # mod_name=sklearn
+scipy
 snakeviz # for profiling
-cryptography
+tensorflow
+torch
+torchvision
 xgboost

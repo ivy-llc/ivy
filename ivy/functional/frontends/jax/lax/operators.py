@@ -18,7 +18,7 @@ _slice = builtins.slice
 
 
 def _argsort_tuple(the_tuple):
-    return tuple([i for i, _ in sorted(enumerate(the_tuple), key=lambda x: x[1])])
+    return tuple(i for i, _ in sorted(enumerate(the_tuple), key=lambda x: x[1]))
 
 
 def _conv_transpose_padding(k, s, padding):
@@ -120,15 +120,11 @@ def atanh(x):
 def batch_matmul(lhs, rhs, precision=None):
     if lhs.ndim < 2 or rhs.ndim < 2:
         raise ValueError(
-            "Arguments to batch_matmul must be at least 2D, got {}, {}".format(
-                lhs.ndim, rhs.ndim
-            )
+            f"Arguments to batch_matmul must be at least 2D, got {lhs.ndim}, {rhs.ndim}"
         )
     if lhs.ndim != rhs.ndim:
         raise ValueError(
-            "Arguments to batch_matmul must have same ndim, got {}, {}".format(
-                lhs.ndim, rhs.ndim
-            )
+            f"Arguments to batch_matmul must have same ndim, got {lhs.ndim}, {rhs.ndim}"
         )
     return ivy.matmul(lhs, rhs).astype(lhs.dtype)
 
@@ -161,7 +157,7 @@ def broadcast(operand, sizes):
 
 @with_supported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.24 and below": (
             "float16",
             "float32",
             "float64",
@@ -182,6 +178,11 @@ def ceil(x):
 @to_ivy_arrays_and_back
 def clamp(min, x, max):
     return ivy.clip(x, min, max)
+
+
+@to_ivy_arrays_and_back
+def complex(x, y):
+    return ivy.complex(x, y)
 
 
 @to_ivy_arrays_and_back
@@ -233,7 +234,7 @@ def conv_general_dilated(
         rhs = ivy.astype(rhs, preferred_element_type)
     dims = len(lhs.shape) - 2
     dim_nums = _dimension_numbers(dimension_numbers, dims + 2)
-    rhs_spec = tuple([dim_nums[1][i] for i in (*range(2, dims + 2), 1, 0)])
+    rhs_spec = tuple(dim_nums[1][i] for i in (*range(2, dims + 2), 1, 0))
     return ivy.permute_dims(
         ivy.conv_general_dilated(
             ivy.permute_dims(lhs, axes=dim_nums[0]),
@@ -268,7 +269,7 @@ def conv_transpose(
         rhs = ivy.astype(rhs, preferred_element_type)
     dims = len(lhs.shape) - 2
     dim_nums = _dimension_numbers(dimension_numbers, dims + 2, transp=True)
-    rhs_spec = tuple([dim_nums[1][i] for i in (*range(2, dims + 2), 1, 0)])
+    rhs_spec = tuple(dim_nums[1][i] for i in (*range(2, dims + 2), 1, 0))
     rhs_dilation = 1 if rhs_dilation is None else rhs_dilation
     if isinstance(padding, str):
         k_sdims = [rhs.shape[i] for i in rhs_spec[:-2]]
@@ -308,7 +309,7 @@ def cosh(x):
 
 
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("bfloat16", "float16", "bool", "complex64", "complex128")},
+    {"0.4.24 and below": ("bfloat16", "float16", "bool", "complex64", "complex128")},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -399,7 +400,7 @@ def erf(x):
 
 @with_supported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.24 and below": (
             "float16",
             "float32",
             "float64",
@@ -454,12 +455,17 @@ def gt(x, y):
 
 
 @to_ivy_arrays_and_back
+def igamma(a, x):
+    return ivy.igamma(a, x=x)
+
+
+@to_ivy_arrays_and_back
 def imag(x):
     return ivy.imag(x)
 
 
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("bool", "bfloat16")},
+    {"0.4.24 and below": ("bool", "bfloat16")},
     "jax",
 )
 @to_ivy_arrays_and_back

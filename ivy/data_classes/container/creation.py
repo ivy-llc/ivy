@@ -59,10 +59,9 @@ class _ContainerWithCreation(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.asarray. This method simply wraps the
-        function, and so the docstring for ivy.asarray also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.asarray. This method
+        simply wraps the function, and so the docstring for ivy.asarray also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -257,10 +256,9 @@ class _ContainerWithCreation(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.full_like. This method simply wraps
-        the function, and so the docstring for ivy.full_like also applies to this method
-        with minimal changes.
+        """ivy.Container static method variant of ivy.full_like. This method
+        simply wraps the function, and so the docstring for ivy.full_like also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -343,10 +341,9 @@ class _ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.full_like. This method simply wraps
-        the function, and so the docstring for ivy.full_like also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.full_like. This method
+        simply wraps the function, and so the docstring for ivy.full_like also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -428,10 +425,9 @@ class _ContainerWithCreation(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.ones_like. This method simply wraps
-        the function, and so the docstring for ivy.ones_like also applies to this method
-        with minimal changes.
+        """ivy.Container static method variant of ivy.ones_like. This method
+        simply wraps the function, and so the docstring for ivy.ones_like also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -487,10 +483,9 @@ class _ContainerWithCreation(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.ones_like. This method simply wraps
-        the function, and so the docstring for ivy.ones_like also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.ones_like. This method
+        simply wraps the function, and so the docstring for ivy.ones_like also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -546,10 +541,9 @@ class _ContainerWithCreation(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.zeros_like. This method simply wraps
-        the function, and so the docstring for ivy.zeros_like also applies to this
-        method with minimal changes.
+        """ivy.Container static method variant of ivy.zeros_like. This method
+        simply wraps the function, and so the docstring for ivy.zeros_like also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -605,10 +599,9 @@ class _ContainerWithCreation(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.zeros_like. This method simply
-        wraps the function, and so the docstring for ivy.zeros_like also applies to this
-        method with minimal changes.
+        """ivy.Container instance method variant of ivy.zeros_like. This method
+        simply wraps the function, and so the docstring for ivy.zeros_like also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1081,10 +1074,9 @@ class _ContainerWithCreation(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.logspace. This method simply wraps
-        the function, and so the docstring for ivy.logspace also applies to this method
-        with minimal changes.
+        """ivy.Container static method variant of ivy.logspace. This method
+        simply wraps the function, and so the docstring for ivy.logspace also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1164,10 +1156,9 @@ class _ContainerWithCreation(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.logspace. This method simply wraps
-        the function, and so the docstring for ivy.logspace also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.logspace. This method
+        simply wraps the function, and so the docstring for ivy.logspace also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1266,10 +1257,9 @@ class _ContainerWithCreation(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.one_hot. This method simply wraps the
-        function, and so the docstring for ivy.one_hot also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.one_hot. This method
+        simply wraps the function, and so the docstring for ivy.one_hot also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1303,7 +1293,7 @@ class _ContainerWithCreation(ContainerBase):
         ret
             container with tensors of zeros with the same shape and type as the inputs,
             unless dtype provided which overrides.
-        
+
         Examples
         --------
         With :class:`ivy.Container` inputs:
@@ -1314,11 +1304,11 @@ class _ContainerWithCreation(ContainerBase):
         >>> z = ivy.Container.static_one_hot(x, y)
         >>> print(z)
         {
-            a: ivy.array([[0., 1., 0., 0., 0.], 
+            a: ivy.array([[0., 1., 0., 0., 0.],
                         [0., 0., 1., 0., 0.]]),
-            b: ivy.array([[0., 0., 0., 1., 0.], 
+            b: ivy.array([[0., 0., 0., 1., 0.],
                         [0., 1., 0., 0., 0.]]),
-            c: ivy.array([[0., 0., 1., 0., 0.], 
+            c: ivy.array([[0., 0., 1., 0., 0.],
                         [0., 0., 0., 1., 0.]])
         }
 
@@ -1328,7 +1318,7 @@ class _ContainerWithCreation(ContainerBase):
         >>> z = ivy.Container.static_one_hot(x, y)
         >>> print(z)
         {
-            a: ivy.array([[0., 1., 0., 0., 0.], 
+            a: ivy.array([[0., 1., 0., 0., 0.],
                         [0., 0., 1., 0., 0.]]),
             b: ivy.array([], shape=(0, 5)),
             c: ivy.array([[0., 0., 0., 0., 1.]])
@@ -1366,10 +1356,9 @@ class _ContainerWithCreation(ContainerBase):
         device: Optional[Union[ivy.Device, ivy.NativeDevice, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.one_hot. This method simply wraps
-        the function, and so the docstring for ivy.one_hot also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.one_hot. This method
+        simply wraps the function, and so the docstring for ivy.one_hot also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1417,11 +1406,11 @@ class _ContainerWithCreation(ContainerBase):
         >>> z = x.one_hot(y)
         >>> print(z)
         {
-            a: ivy.array([[0., 1., 0., 0., 0.], 
+            a: ivy.array([[0., 1., 0., 0., 0.],
                         [0., 0., 1., 0., 0.]]),
-            b: ivy.array([[0., 0., 0., 1., 0.], 
+            b: ivy.array([[0., 0., 0., 1., 0.],
                         [0., 1., 0., 0., 0.]]),
-            c: ivy.array([[0., 0., 1., 0., 0.], 
+            c: ivy.array([[0., 0., 1., 0., 0.],
                         [0., 0., 0., 1., 0.]])
         }
 
@@ -1431,7 +1420,7 @@ class _ContainerWithCreation(ContainerBase):
         >>> z = x.one_hot(y)
         >>> print(z)
         {
-            a: ivy.array([[0., 1., 0., 0., 0.], 
+            a: ivy.array([[0., 1., 0., 0., 0.],
                         [0., 0., 1., 0., 0.]]),
             b: ivy.array([], shape=(0, 5)),
             c: ivy.array([[0., 0., 0., 0., 1.]])
@@ -1463,10 +1452,9 @@ class _ContainerWithCreation(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        r"""
-        ivy.Container static method variant of ivy.frombuffer. This method simply wraps
-        the function, and so the docstring for ivy.frombuffer also applies to this
-        method with minimal changes.
+        r"""ivy.Container static method variant of ivy.frombuffer. This method
+        simply wraps the function, and so the docstring for ivy.frombuffer also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1543,10 +1531,9 @@ class _ContainerWithCreation(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        r"""
-        ivy.Container instance method variant of ivy.frombuffer. This method simply
-        wraps the function, and so the docstring for ivy.frombuffer also applies to this
-        method with minimal changes.
+        r"""ivy.Container instance method variant of ivy.frombuffer. This method
+        simply wraps the function, and so the docstring for ivy.frombuffer also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1654,7 +1641,6 @@ class _ContainerWithCreation(ContainerBase):
         out: Optional[Union[Tuple[ivy.Array], ivy.Container]] = None,
     ) -> ivy.Container:
         return self.static_triu_indices(
-            self,
             n_rows,
             n_cols,
             k,

@@ -6,6 +6,9 @@ import warnings
 import ivy
 import ivy.functional.frontends.numpy as np_frontend
 from ivy.functional.frontends.numpy.func_wrapper import _to_ivy_array
+from ivy.func_wrapper import (
+    with_supported_device_and_dtypes,
+)
 
 
 # --- Classes ---#
@@ -17,7 +20,7 @@ class ndarray:
         if isinstance(dtype, np_frontend.dtype):
             dtype = dtype.ivy_dtype
 
-        # in thise case shape is actually the desired array
+        # in this case shape is actually the desired array
         if _init_overload:
             self._ivy_array = (
                 ivy.array(shape) if not isinstance(shape, ivy.Array) else shape
@@ -53,7 +56,7 @@ class ndarray:
 
     @property
     def shape(self):
-        return self.ivy_array.shape
+        return tuple(self.ivy_array.shape.shape)
 
     @property
     def size(self):
@@ -165,7 +168,7 @@ class ndarray:
     def argsort(self, *, axis=-1, kind=None, order=None):
         return np_frontend.argsort(self, axis=axis, kind=kind, order=order)
 
-    def mean(self, *, axis=None, dtype=None, out=None, keepdims=False, where=True):
+    def mean(self, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
         return np_frontend.mean(
             self,
             axis=axis,
@@ -326,7 +329,7 @@ class ndarray:
 
     def fill(self, num, /):
         self.ivy_array = np_frontend.full(self.shape, num).ivy_array
-        return
+        return None
 
     def repeat(self, repeats, axis=None):
         return np_frontend.repeat(self, repeats, axis=axis)
@@ -381,8 +384,8 @@ class ndarray:
 
     def sum(
         self,
-        *,
         axis=None,
+        *,
         dtype=None,
         out=None,
         keepdims=False,
@@ -409,6 +412,31 @@ class ndarray:
 
     def tolist(self) -> list:
         return self._ivy_array.to_list()
+
+    @with_supported_device_and_dtypes(
+        {
+            "1.26.3 and below": {
+                "cpu": (
+                    "int64",
+                    "float32",
+                    "float64",
+                    "bfloat16",
+                    "complex64",
+                    "complex128",
+                    "uint64",
+                )
+            }
+        },
+        "numpy",
+    )
+    def trace(self, *, offset=0, axis1=0, axis2=1, out=None):
+        return np_frontend.trace(
+            self,
+            offset=offset,
+            axis1=axis1,
+            axis2=axis2,
+            out=out,
+        )
 
     def view(self):
         return np_frontend.reshape(self, tuple(self.shape))
@@ -578,12 +606,12 @@ class ndarray:
         return np_frontend.array(array)
 
     def __getitem__(self, key, /):
-        ivy_args = ivy.nested_map([self, key], _to_ivy_array)
+        ivy_args = ivy.nested_map(_to_ivy_array, [self, key])
         ret = ivy.get_item(*ivy_args)
         return np_frontend.ndarray(ret, _init_overload=True)
 
     def __setitem__(self, key, value, /):
-        key, value = ivy.nested_map([key, value], _to_ivy_array)
+        key, value = ivy.nested_map(_to_ivy_array, [key, value])
         self.ivy_array[key] = value
 
     def __iter__(self):
@@ -618,8 +646,27 @@ class ndarray:
     def __lshift__(self, value, /):
         return ivy.bitwise_left_shift(self.ivy_array, value)
 
+    def __ilshift__(self, value, /):
+        return ivy.bitwise_left_shift(self.ivy_array, value, out=self)
+
     def round(self, decimals=0, out=None):
         return np_frontend.round(self, decimals=decimals, out=out)
+
+    def var(
+        self, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=True
+    ):
+        return np_frontend.var(
+            self,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            ddof=ddof,
+            keepdims=keepdims,
+            where=where,
+        )
+
+    def __irshift__(self, value, /):
+        return ivy.bitwise_right_shift(self.ivy_array, value, out=self)
 
 
 # --- Helpers --- #
@@ -685,7 +732,7 @@ def _to_bytes_helper(array, order="C"):
         elif ivy.is_uint_dtype(dtype):
             return _unsigned_int_bytes_repr(scalar_value, dtype=dtype)
         else:
-            raise ValueError("Unsupported data type for the array.")
+            raise TypeError("Unsupported data type for the array.")
     else:
         if order == "F":
             array = np_frontend.ravel(array, order="F").ivy_array

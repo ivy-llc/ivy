@@ -18,12 +18,14 @@ def all(input, dim=None, keepdim=False, *, out=None):
     return ret
 
 
+@with_unsupported_dtypes({"2.2 and below": ("complex",)}, "torch")
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def amax(input, dim=None, keepdim=False, *, out=None):
     return ivy.max(input, axis=dim, keepdims=keepdim, out=out)
 
 
+@with_unsupported_dtypes({"2.2 and below": ("complex",)}, "torch")
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def amin(input, dim=None, keepdim=False, *, out=None):
@@ -32,7 +34,7 @@ def amin(input, dim=None, keepdim=False, *, out=None):
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16", "complex")}, "torch")
 def aminmax(input, *, dim=None, keepdim=False, out=None):
     minmax_tuple = namedtuple("minmax", ["min", "max"])
     return minmax_tuple(
@@ -51,6 +53,7 @@ def any(input, dim=None, keepdim=False, *, out=None):
     return ret
 
 
+@with_unsupported_dtypes({"2.2 and below": ("complex", "bool")}, "torch")
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def argmax(input, dim=None, keepdim=False):
@@ -66,7 +69,7 @@ def argmin(input, dim=None, keepdim=False):
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("uint8", "int8")},
+    {"2.2 and below": ("uint8", "int8")},
     "torch",
 )
 def count_nonzero(input, dim=None):
@@ -97,11 +100,25 @@ def logsumexp(input, dim, keepdim=False, *, out=None):
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"2.2 and below": ("complex64", "complex128")},
+    "torch",
+)
 def max(*input, dim=None, keepdim=False, out=None):
     if len(input) == 1:
         input = input[0]
     elif len(input) == 2:
-        return torch_frontend.maximum(*input)
+        input_0 = input[0]
+        input_1 = input[1]
+        if ivy.is_array(input_1):
+            return torch_frontend.maximum(*input)
+        else:
+            input = input_0
+            dim = input_1
+    else:
+        input = input[0]
+        dim = input[1]
+        keepdim = input[2]
     if dim is None:
         return ivy.max(input, axis=dim, keepdims=keepdim, out=out)
     elif out is not None:
@@ -118,14 +135,26 @@ def max(*input, dim=None, keepdim=False, out=None):
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
-def mean(input, dim=None, keepdim=False, *, dtype=None, out=None):
+@with_supported_dtypes(
+    {
+        "2.2.1 and below": (
+            "bfloat16",
+            "float16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "torch",
+)
+def mean(input, /, dim=None, keepdim=False, *, dtype=None, out=None):
     if dtype is not None:
-        input = input.astype(dtype)
-        if out is not None:
-            out = out.astype(dtype)
-    return ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
+        dtype = ivy.as_native_dtype(dtype)
+    return ivy.mean(input, axis=dim, keepdims=keepdim, dtype=dtype, out=out)
 
 
+@with_unsupported_dtypes({"2.2 and below": ("complex", "float16", "bool")}, "torch")
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def median(input, dim=None, keepdim=False, *, out=None):
@@ -161,11 +190,25 @@ def median(input, dim=None, keepdim=False, *, out=None):
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"2.2 and below": ("complex64", "complex128")},
+    "torch",
+)
 def min(*input, dim=None, keepdim=False, out=None):
     if len(input) == 1:
         input = input[0]
     elif len(input) == 2:
-        return torch_frontend.minimum(*input)
+        input_0 = input[0]
+        input_1 = input[1]
+        if ivy.is_array(input_1):
+            return torch_frontend.minimum(*input)
+        else:
+            input = input_0
+            dim = input_1
+    else:
+        input = input[0]
+        dim = input[1]
+        keepdim = input[2]
     if dim is None:
         return ivy.min(input, axis=dim, keepdims=keepdim, out=out)
     elif out is not None:
@@ -185,15 +228,62 @@ def moveaxis(input, source, destination):
     return ivy.moveaxis(input, source, destination)
 
 
+@with_supported_dtypes({"2.2 and below": ("float",)}, "torch")
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def nanmean(input, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.nanmean(input, axis=dim, keepdims=keepdim, dtype=dtype, out=out)
 
 
+@numpy_to_torch_style_args
+@to_ivy_arrays_and_back
+def nanmedian(input, dim=None, keepdim=False, *, out=None):
+    if dim is None:
+        flattened_input = ivy.flatten(input)
+        sorted_input = ivy.sort(flattened_input)
+        nonnan_index = int(sorted_input.shape[0] - ivy.isnan(sorted_input).sum())
+        return sorted_input[(nonnan_index - 1) // 2]
+
+    nanmedian_tuple = namedtuple("nanmedian", ["values", "indices"])
+
+    if input.ndim == 0:
+        result = nanmedian_tuple(input, ivy.array(0))
+    else:
+        sorted_indices = ivy.argsort(input, axis=dim)
+        nonnan_index = (
+            sorted_indices.shape[dim] - ivy.isnan(input).sum(axis=1) - 1
+        ) // 2
+        nonnan_index = ivy.expand_dims(nonnan_index, axis=1)
+        nanmedian_indices = ivy.gather_nd(sorted_indices, nonnan_index, batch_dims=1)
+        nanmedian_values = ivy.take_along_axis(
+            input, ivy.expand_dims(nanmedian_indices, axis=dim), dim
+        ).squeeze(axis=dim)
+
+        if keepdim:
+            nanmedian_values = ivy.expand_dims(nanmedian_values, axis=dim)
+            nanmedian_indices = ivy.expand_dims(nanmedian_tuple, axis=dim)
+
+        result = nanmedian_tuple(nanmedian_values, nanmedian_indices)
+    if out is not None:
+        ivy.inplace_update(out[0], result.values)
+        ivy.inplace_update(out[1], result.indices)
+        return out
+    return result
+
+
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.0.1 and below": ("float", "complex")},
+    {"2.2 and below": ("float", "int")},
+    "torch",
+)
+def nansum(input, dim=None, keepdim=False, *, dtype=None):
+    input = ivy.where(ivy.isnan(input), ivy.zeros_like(input), input)
+    return ivy.sum(input, axis=dim, dtype=dtype, keepdims=keepdim, out=None)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.2 and below": ("float", "complex")},
     "torch",
 )
 def norm(input, p="fro", dim=None, keepdim=False, out=None, dtype=None):
@@ -219,7 +309,7 @@ def norm(input, p="fro", dim=None, keepdim=False, out=None, dtype=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.2 and below": (
             "float16",
             "bfloat16",
         )
@@ -228,14 +318,14 @@ def norm(input, p="fro", dim=None, keepdim=False, out=None, dtype=None):
 )
 def prod(input, dim=None, keepdim=False, *, dtype=None):
     if not dtype:
-        if "int" in input.dtype:
+        if "int" in str(input.dtype):
             dtype = ivy.int64
     return ivy.prod(input, axis=dim, dtype=dtype, keepdims=keepdim)
 
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
 def quantile(input, q, dim=None, keepdim=False, *, interpolation="linear", out=None):
     return ivy.quantile(
         input, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out
@@ -244,14 +334,14 @@ def quantile(input, q, dim=None, keepdim=False, *, interpolation="linear", out=N
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bool", "integer")}, "torch")
 def std(input, dim=None, unbiased=True, keepdim=False, *, out=None):
     return ivy.std(input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out)
 
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
 def std_mean(input, dim, unbiased, keepdim=False, *, out=None):
     temp_std = ivy.std(
         input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out
@@ -266,37 +356,26 @@ def sum(input, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.sum(input, axis=dim, dtype=dtype, keepdims=keepdim, out=out)
 
 
+@with_unsupported_dtypes({"2.2 and below": ("complex",)}, "torch")
 @to_ivy_arrays_and_back
 def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=None):
     if dim is not None:
         sorted = True
     results = ivy.unique_all(input, axis=dim, by_value=sorted)
-
-    fields = ["output"]
-    if return_inverse:
-        fields.append("inverse_indices")
-    if return_counts:
-        fields.append("counts")
-
-    Results = namedtuple("Results", fields)
-
-    values = [results.values]
+    ret = (results.values,) if return_counts or return_inverse else results.values
     if return_inverse:
         inverse_indices = results.inverse_indices
-
         if dim is None:
             inverse_indices = inverse_indices.reshape(input.shape)
-
-        values.append(inverse_indices)
+        ret += (inverse_indices,)
     if return_counts:
-        values.append(results.counts)
-
-    return Results(*values)
+        ret += (results.counts,)
+    return ret
 
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.2 and below": (
             "float16",
             "complex",
         )
@@ -304,7 +383,7 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
     "torch",
 )
 @to_ivy_arrays_and_back
-def unique_consecutive(input, return_inverse, return_counts, dim):
+def unique_consecutive(input, return_inverse=False, return_counts=False, dim=None):
     output, inverse_indices, counts = ivy.unique_consecutive(input, axis=dim)
     ret = (output,)
     if return_inverse:
@@ -318,7 +397,7 @@ def unique_consecutive(input, return_inverse, return_counts, dim):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.2 and below": (
             "float16",
             "bfloat16",
         )
@@ -333,7 +412,7 @@ def var(input, dim, unbiased, keepdim=False, *, out=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.2 and below": (
             "float16",
             "bfloat16",
         )

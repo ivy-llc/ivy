@@ -1,0 +1,534 @@
+# Workflow to run all the tests for the ivy frontends and functional api,
+# and update the remote database with the results
+
+name: update-test-dashboard
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+permissions:
+  actions: read
+jobs:
+  update-frontends-torch:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        submodule : [ blas_and_lapack_ops, comparison_ops, creation_ops, dtype, func_wrapper,
+                      indexing_slicing_joining_mutating_ops, linalg, miscellaneous_ops,
+                      pointwise_ops, random_sampling, reduction_ops, special_funcs,
+                      spectral_ops, tensor_functions, tensor, utilities ]
+        backend : [ jax, numpy, tensorflow, torch ]
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
+          per_page: 64
+
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          pip3 install pytest-json-report
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_torch_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_torch_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
+
+  update-frontends-torch-nn-functional:
+    runs-on: ubuntu-latest
+    strategy:
+        fail-fast: false
+        matrix:
+          submodule : [ convolution_functions, distance_functions, dropout_functions, layer_functions,
+                        linear_functions, loss_functions, non_linear_activation_functions, norms,
+                        pooling_functions, sparse_functions, vision_functions ]
+          backend : [ jax, numpy, tensorflow, torch ]
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
+          per_page: 44
+
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          pip3 install pytest-json-report
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_torch_nn_functional_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_torch_nn_functional_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
+
+  update-frontends-tensorflow:
+    runs-on: ubuntu-latest
+    strategy:
+        fail-fast: false
+        matrix:
+          submodule : [ __operators__, dtypes, func_wrapper, general_functions, linalg, math, nest, nn,
+                        random, raw_ops, signal, tensor, tensorarray, tensorshape ]
+          backend : [ jax, numpy, tensorflow, torch ]
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
+          per_page: 56
+
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          pip3 install pytest-json-report
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_tensorflow_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_tensorflow_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
+
+  update-frontends-tensorflow-keras:
+    runs-on: ubuntu-latest
+    strategy:
+        fail-fast: false
+        matrix:
+          submodule : [ activations, backend ]
+          backend : [ jax, numpy, tensorflow, torch ]
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
+
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          pip3 install pytest-json-report
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_tensorflow_keras_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_tensorflow_keras_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
+
+  update-frontends-jax:
+    runs-on: ubuntu-latest
+    strategy:
+        fail-fast: false
+        matrix:
+          submodule : [ array, func_wrapper, general_functions, random ]
+          backend : [ jax, numpy, tensorflow, torch ]
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
+
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          pip3 install pytest-json-report
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_jax_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_jax_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
+
+  update-frontends-jax-lax:
+    runs-on: ubuntu-latest
+    strategy:
+        fail-fast: false
+        matrix:
+          submodule : [ control_flow_operators, custom_gradient_operators, linalg, operators ]
+          backend : [ jax, numpy, tensorflow, torch ]
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
+
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          pip3 install pytest-json-report
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_jax_lax_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_jax_lax_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
+
+  update-frontends-jax-nn:
+    runs-on: ubuntu-latest
+    strategy:
+        fail-fast: false
+        matrix:
+          submodule : [ non_linear_activations ]
+          backend : [ jax, numpy, tensorflow, torch ]
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
+
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          pip3 install pytest-json-report
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_jax_nn_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_jax_nn_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
+
+  update-frontends-jax-numpy:
+    runs-on: ubuntu-latest
+    strategy:
+        fail-fast: false
+        matrix:
+          submodule : [ creation, dtype, fft, indexing, linalg, logic, manipulations,
+                        mathematical_functions, searching_sorting, statistical ]
+          backend : [ jax, numpy, tensorflow, torch ]
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
+          per_page: 40
+
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          pip3 install pytest-json-report
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_jax_numpy_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_jax_numpy_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
+
+  update-frontends-numpy:
+    runs-on: ubuntu-latest
+    strategy:
+        fail-fast: false
+        matrix:
+          submodule : [ broadcast, data_type_routines, fft, indexing_routines, linalg, logic, manipulation_routines,
+                        mathematical_functions, matrix, ndarray, random, sorting_searching_counting, statistics, ufunc ]
+          backend : [ jax, numpy, tensorflow, torch ]
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
+          per_page: 56
+
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          pip3 install pytest-json-report
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_numpy_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_numpy_frontends.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
+
+  update-ivy-core:
+    runs-on: ubuntu-latest
+    strategy:
+        fail-fast: false
+        matrix:
+          submodule : [ creation, device, dtype, elementwise, general, gradients, linalg, manipulation, meta,
+                        nest, random, searching, set, sorting, statistical, utility ]
+          backend : [ jax, numpy, tensorflow, torch ]
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
+          per_page: 64
+
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          pip3 install pytest-json-report
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_ivy_core.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_ivy_core.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
+
+  update-ivy-experimental-core:
+    runs-on: ubuntu-latest
+    strategy:
+        fail-fast: false
+        matrix:
+          submodule : [ creation, elementwise, general, gradients, linalg, manipulation,
+                        random, searching, sorting, sparse_array, statistical, utility ]
+          backend : [ jax, numpy, tensorflow, torch ]
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
+          per_page: 48
+
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          pip3 install pytest-json-report
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_ivy_experimental_core.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_ivy_experimental_core.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
+
+  update-ivy-experimental-nn:
+    runs-on: ubuntu-latest
+    strategy:
+        fail-fast: false
+        matrix:
+          submodule : [ activations, layers, losses, norms ]
+          backend : [ jax, numpy, tensorflow, torch ]
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
+
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          pip3 install pytest-json-report
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_ivy_experimental_nn.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_ivy_experimental_nn.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi
+
+  update-ivy-nn:
+    runs-on: ubuntu-latest
+    strategy:
+        fail-fast: false
+        matrix:
+          submodule : [ activations, layers, losses, norms ]
+          backend : [ jax, numpy, tensorflow, torch ]
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }} (${{ matrix.submodule }}, ${{ matrix.backend }})
+
+      - name: Install ivy
+        run: |
+          cd ivy
+          sudo pip3 install -e .
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          pip3 install pytest-json-report
+          echo "html_url: ${{ steps.jobs.outputs.html_url }}"
+          if [ "${{ steps.jobs.outputs.html_url }}" = "null" ]; then
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_ivy_nn.sh ${{ matrix.submodule }} ${{ matrix.backend }} https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          else
+            docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/update_test_dashboard/update_ivy_nn.sh ${{ matrix.submodule }} ${{ matrix.backend }} ${{ steps.jobs.outputs.html_url }} ${{ secrets.IVY_DASHBOARD_DB_KEY }}
+          fi

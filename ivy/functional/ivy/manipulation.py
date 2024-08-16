@@ -14,7 +14,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_view,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -43,7 +43,7 @@ def _calculate_out_shape(axis, array_shape):
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def concat(
     xs: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray], ...],
@@ -54,8 +54,7 @@ def concat(
     axis: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Join a sequence of arrays along an existing axis.
+    """Join a sequence of arrays along an existing axis.
 
     Parameters
     ----------
@@ -105,7 +104,7 @@ def concat(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -114,9 +113,8 @@ def expand_dims(
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Expand the shape of an array by inserting a new axis (dimension) of size one at the
-    position specified by axis.
+    """Expand the shape of an array by inserting a new axis (dimension) of size
+    one at the position specified by axis.
 
     Parameters
     ----------
@@ -243,7 +241,7 @@ def expand_dims(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def flip(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -252,9 +250,8 @@ def flip(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Reverses the order of elements in an array along the given axis. The shape of the
-    array must be preserved.
+    """Reverses the order of elements in an array along the given axis. The
+    shape of the array must be preserved.
 
     Parameters
     ----------
@@ -338,7 +335,7 @@ def flip(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def permute_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -347,8 +344,7 @@ def permute_dims(
     copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Permutes the axes (dimensions) of an array x.
+    """Permutes the axes (dimensions) of an array x.
 
     Parameters
     ----------
@@ -439,7 +435,7 @@ def permute_dims(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def reshape(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -450,8 +446,7 @@ def reshape(
     allowzero: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Give a new shape to an array without changing its data.
+    """Give a new shape to an array without changing its data.
 
     Parameters
     ----------
@@ -565,7 +560,7 @@ def reshape(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def roll(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     /,
@@ -574,10 +569,10 @@ def roll(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.Container]:
-    """
-    Roll array elements along a specified axis. Array elements that roll beyond the last
-    position are re-introduced at the first position. Array elements that roll beyond
-    the first position are re-introduced at the last position.
+    """Roll array elements along a specified axis. Array elements that roll
+    beyond the last position are re-introduced at the first position. Array
+    elements that roll beyond the first position are re-introduced at the last
+    position.
 
     Parameters
     ----------
@@ -679,7 +674,7 @@ def roll(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -688,8 +683,7 @@ def squeeze(
     copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Remove singleton dimensions (axes) from x.
+    """Remove singleton dimensions (axes) from x.
 
     Parameters
     ----------
@@ -770,7 +764,7 @@ def squeeze(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def stack(
     arrays: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray], ...],
@@ -781,8 +775,7 @@ def stack(
     axis: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Join a sequence of arrays along a new axis.
+    """Join a sequence of arrays along a new axis.
 
     Parameters
     ----------
@@ -860,17 +853,16 @@ def stack(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def clip(
     x: Union[ivy.Array, ivy.NativeArray],
-    x_min: Union[Number, ivy.Array, ivy.NativeArray],
-    x_max: Union[Number, ivy.Array, ivy.NativeArray],
     /,
+    x_min: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
+    x_max: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Clips (limits) the values in an array.
+    """Clips (limits) the values in an array.
 
     Given an interval, values outside the interval are clipped to the interval edges
     (element-wise). For example, if an interval of [0, 1] is specified, values smaller
@@ -988,7 +980,7 @@ def clip(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def constant_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -997,8 +989,7 @@ def constant_pad(
     value: Number = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Pad an array with a constant value.
+    """Pad an array with a constant value.
 
     Parameters
     ----------
@@ -1085,17 +1076,16 @@ def constant_pad(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     repeats: Union[int, Iterable[int]],
     *,
-    axis: int = None,
+    axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Repeat values along a given dimension.
+    """Repeat values along a given dimension.
 
     Parameters
     ----------
@@ -1158,7 +1148,7 @@ def repeat(
 @handle_view
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def split(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1170,8 +1160,7 @@ def split(
     axis: int = 0,
     with_remainder: bool = False,
 ) -> List[ivy.Array]:
-    """
-    Split an array into multiple sub-arrays.
+    """Split an array into multiple sub-arrays.
 
     Parameters
     ----------
@@ -1225,9 +1214,17 @@ def split(
     >>> x = ivy.Container(a=ivy.array([10, 45, 2]))
     >>> y = ivy.split(x)
     >>> print(y)
-    {
-        a:(list[3],<classivy.array.Array>shape=[1])
-    }
+    [
+        {
+            a: ivy.array([10])
+        },
+        {
+            a: ivy.array([45])
+        },
+        {
+            a: ivy.array([2])
+        }
+    ]
     """
     return current_backend(x).split(
         x,
@@ -1246,7 +1243,7 @@ def split(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def swapaxes(
     x: Union[ivy.Array, ivy.NativeArray],
     axis0: int,
@@ -1256,8 +1253,7 @@ def swapaxes(
     copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Interchange two axes of an array.
+    """Interchange two axes of an array.
 
     Parameters
     ----------
@@ -1356,7 +1352,7 @@ def swapaxes(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def tile(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1364,8 +1360,7 @@ def tile(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Construct an array by repeating x the number of times given by reps.
+    """Construct an array by repeating x the number of times given by reps.
 
     Parameters
     ----------
@@ -1438,7 +1433,7 @@ def tile(
 @handle_view
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def unstack(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1447,8 +1442,7 @@ def unstack(
     axis: int = 0,
     keepdims: bool = False,
 ) -> List[ivy.Array]:
-    """
-    Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
+    """Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
 
     Parameters
     ----------
@@ -1534,7 +1528,7 @@ def unstack(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def zero_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1542,8 +1536,7 @@ def zero_pad(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Pad an array with zeros.
+    """Pad an array with zeros.
 
     Parameters
     ----------

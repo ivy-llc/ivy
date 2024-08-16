@@ -1,7 +1,7 @@
 # global
 import math
 from numbers import Number
-from typing import Union, Optional, Tuple, List, Sequence, Iterable
+from typing import Iterable, List, Optional, Sequence, Tuple, Union
 
 import torch
 
@@ -11,6 +11,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 
 # noinspection PyProtectedMember
 from ivy.functional.ivy.manipulation import _calculate_out_shape
+
 from . import backend_version
 
 
@@ -32,14 +33,7 @@ def concat(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
-        is_tuple = type(xs) is tuple
-        if is_tuple:
-            xs = list(xs)
-        for i in range(len(xs)):
-            xs[i] = torch.flatten(xs[i])
-        if is_tuple:
-            xs = tuple(xs)
-        axis = 0
+        return torch.cat([torch.flatten(x) for x in xs], dim=0, out=out)
     return torch.cat(xs, dim=axis, out=out)
 
 
@@ -67,6 +61,8 @@ def flip(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if copy:
+        x = x.clone()
     num_dims = len(x.shape)
     if not num_dims:
         return x
@@ -82,6 +78,7 @@ def flip(
     return torch.flip(x, new_axis)
 
 
+@with_unsupported_dtypes({"2.1.2 and below": ("bfloat16", "float16")}, backend_version)
 def permute_dims(
     x: torch.Tensor,
     /,
@@ -90,9 +87,16 @@ def permute_dims(
     copy: Optional[bool] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if copy:
+        newarr = torch.clone(x).detach()
+        return torch.permute(newarr, axes)
     return torch.permute(x, axes)
 
 
+@with_unsupported_dtypes(
+    {"2.2 and below": ("bfloat16",)},
+    backend_version,
+)
 def reshape(
     x: torch.Tensor,
     /,
@@ -103,6 +107,8 @@ def reshape(
     allowzero: bool = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if copy:
+        x = x.clone()
     ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
     if not allowzero:
         shape = [
@@ -143,20 +149,18 @@ def squeeze(
     if isinstance(axis, int):
         if x.size(dim=axis) > 1:
             raise ValueError(
-                "Expected dimension of size [{}, {}], but found "
-                "dimension size {}".format(-x.dim(), x.dim(), axis)
+                f"Expected dimension of size [{-x.dim()}, {x.dim()}], but found"
+                f" dimension size {axis}"
             )
         if x.shape[axis] != 1:
             raise ivy.utils.exceptions.IvyException(
                 f"Expected size of axis to be 1 but was {x.shape[axis]}"
             )
         return torch.squeeze(x, axis)
+    if copy:
+        x = x.clone()
     if axis is None:
-        if copy:
-            newarr = torch.clone(x)
-            return torch.squeeze(newarr)
         return torch.squeeze(x)
-    newarr = torch.clone(x)
     if isinstance(axis, tuple):
         axis = list(axis)
     normalise_axis = [
@@ -169,16 +173,11 @@ def squeeze(
         shape = x.shape[i]
         if shape > 1 and (shape < -dim or dim <= shape):
             raise ValueError(
-                "Expected dimension of size [{}, {}], "
-                "but found dimension size {}".format(-dim, dim, shape)
+                f"Expected dimension of size [{-dim}, {dim}], but found dimension size"
+                f" {shape}"
             )
         else:
-            if copy:
-                newarr = torch.squeeze(newarr, i)
-            else:
-                x = torch.squeeze(x, i)
-    if copy:
-        return newarr
+            x = torch.squeeze(x, i)
     return x
 
 
@@ -211,9 +210,8 @@ def split(
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise ivy.utils.exceptions.IvyException(
-                "input array had no shape, but num_sections specified was {}".format(
-                    num_or_size_splits
-                )
+                "input array had no shape, but num_sections specified was"
+                f" {num_or_size_splits}"
             )
         return [x]
     dim_size: int = x.shape[axis]
@@ -240,13 +238,15 @@ def split(
                 torch.tensor(dim_size) / torch.tensor(num_or_size_splits)
             )
     elif isinstance(num_or_size_splits, list):
+        if num_or_size_splits[-1] == -1:
+            # infer the final size split
+            remaining_size = dim_size - sum(num_or_size_splits[:-1])
+            num_or_size_splits[-1] = remaining_size
         num_or_size_splits = tuple(num_or_size_splits)
     return list(torch.split(x, num_or_size_splits, axis))
 
 
-@with_unsupported_dtypes(
-    {"2.0.1 and below": ("int8", "int16", "uint8")}, backend_version
-)
+@with_unsupported_dtypes({"2.2 and below": ("int8", "int16", "uint8")}, backend_version)
 def repeat(
     x: torch.Tensor,
     /,
@@ -284,7 +284,7 @@ def constant_pad(
         x = x.unsqueeze(0)
     if isinstance(pad_width, torch.Tensor):
         pad_width = pad_width.detach().cpu().numpy().tolist()
-    pad_width_flat: List[int] = list()
+    pad_width_flat: List[int] = []
     for pad_width_sec in reversed(pad_width):
         for item in pad_width_sec:
             pad_width_flat.append(item)
@@ -314,13 +314,13 @@ def swapaxes(
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("bool", "float16", "complex")}, backend_version
+    {"2.2 and below": ("bool", "float16", "complex")}, backend_version
 )
 def clip(
     x: torch.Tensor,
-    x_min: Union[Number, torch.Tensor],
-    x_max: Union[Number, torch.Tensor],
     /,
+    x_min: Optional[Union[Number, torch.Tensor]] = None,
+    x_max: Optional[Union[Number, torch.Tensor]] = None,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:

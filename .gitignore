@@ -18,19 +18,21 @@ with_time_logs/
 *.csv
 *.csv#
 *.ods
-*.json
 *.jpg
 *.jpeg
-*.png
 *.gif
+*.so
 .hypothesis
 .array_api_tests_k_flag*
 internal_automation_tools/
 .vscode/*
 .idea/*
 .ivy/*
+*.so
 .DS_Store*
 fn_path_cache
+ivy/engines/XLA/rust_api/target/
+ivy/engines/XLA/rust_api/xla_extension/
 
 # Environments
 .env

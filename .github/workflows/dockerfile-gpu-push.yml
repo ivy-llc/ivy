@@ -1,0 +1,26 @@
+name: GPU Dockerfile Push
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout 🛎 Ivy
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push GPU image
+        run: |
+          docker build --progress=plain --no-cache -t ivyllc/ivy:latest-gpu -f docker/DockerfileGPU .
+          docker push ivyllc/ivy:latest-gpu

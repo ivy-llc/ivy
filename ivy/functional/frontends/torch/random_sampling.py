@@ -5,7 +5,7 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 @with_supported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.2 and below": (
             "float32",
             "float64",
         )
@@ -13,9 +13,9 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
     "torch",
 )
 @to_ivy_arrays_and_back
-def bernoulli(input, *, generator=None, out=None):
+def bernoulli(input, p, *, generator=None, out=None):
     seed = generator.initial_seed() if generator is not None else None
-    return ivy.bernoulli(input, seed=seed, out=out)
+    return ivy.bernoulli(p, logits=input, seed=seed, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -26,7 +26,7 @@ def manual_seed(seed: int):
 
 @with_supported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.2 and below": (
             "float32",
             "float64",
         )
@@ -49,7 +49,7 @@ def multinomial(input, num_samples, replacement=False, *, generator=None, out=No
 
 @with_supported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.2 and below": (
             "float32",
             "float64",
         )
@@ -64,7 +64,7 @@ def normal(mean, std, *, generator=None, out=None):
 
 @with_supported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.2 and below": (
             "float32",
             "float64",
         )
@@ -91,11 +91,11 @@ def rand(
 ):
     if not size and "size" not in kwargs:
         raise ValueError("Missing 1 required positional/keyword argument: size")
-    size = kwargs["size"] if not size else size
+    size = size if size else kwargs["size"]
     if (
         isinstance(size, (list, tuple))
         and len(size) == 1
-        and isinstance(size[0], (list, tuple))
+        and isinstance(size[0], (list, tuple, ivy.Shape))
     ):
         size = size[0]
     seed = generator.initial_seed() if generator is not None else None
@@ -191,11 +191,11 @@ def randn(
 ):
     if not size and "size" not in kwargs:
         raise ValueError("Missing 1 required positional/keyword argument: size")
-    size = kwargs["size"] if not size else size
+    size = size if size else kwargs["size"]
     if (
         isinstance(size, (list, tuple))
         and len(size) == 1
-        and isinstance(size[0], (list, tuple))
+        and isinstance(size[0], (list, tuple, ivy.Shape))
     ):
         size = size[0]
     seed = generator.initial_seed() if generator is not None else None
@@ -255,6 +255,10 @@ def seed() -> int:
     return int(ivy.randint(-(2**63), 2**63 - 1))
 
 
+@with_supported_dtypes(
+    {"2.2 and below": ("uint8",)},
+    "torch",
+)
 @to_ivy_arrays_and_back
 def set_rng_state(new_state):
     return ivy.seed(seed_value=new_state)

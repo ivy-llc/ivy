@@ -21,10 +21,26 @@ def _get_dtype_and_range(draw):
     dim = draw(helpers.ints(min_value=2, max_value=5))
     dtype = draw(helpers.get_dtypes("float", index=1, full=False))
     start = draw(
-        helpers.array_values(dtype=dtype[0], shape=(dim,), min_value=-50, max_value=0)
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=(dim,),
+            min_value=-50,
+            max_value=0,
+            large_abs_safety_factor=4,
+            small_abs_safety_factor=4,
+            safety_factor_scale="log",
+        )
     )
     stop = draw(
-        helpers.array_values(dtype=dtype[0], shape=(dim,), min_value=1, max_value=50)
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=(dim,),
+            min_value=1,
+            max_value=50,
+            large_abs_safety_factor=4,
+            small_abs_safety_factor=4,
+            safety_factor_scale="log",
+        )
     )
     return dtype * 2, start, stop
 
@@ -83,6 +99,7 @@ def test_jax_arange(
     copy=st.booleans(),
     ndmin=helpers.ints(min_value=0, max_value=9),
     test_with_out=st.just(True),
+    test_with_copy=st.just(True),
 )
 def test_jax_array(
     *,
@@ -260,6 +277,7 @@ def test_jax_compress(
         max_dim_size=5,
     ),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_jax_copy(
     dtype_and_a,
@@ -443,6 +461,63 @@ def test_jax_eye(
     )
 
 
+# from_dlpack
+@handle_frontend_test(
+    fn_tree="jax.numpy.from_dlpack",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+)
+def test_jax_from_dlpack(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        x=x[0],
+        backend_to_test=backend_fw,
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.frombuffer",
+    dtype_buffer_count_offset=_get_dtype_buffer_count_offset(),
+    test_with_out=st.just(False),
+)
+def test_jax_frombuffer(
+    *,
+    dtype_buffer_count_offset,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, buffer, count, offset = dtype_buffer_count_offset
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        buffer=buffer,
+        dtype=input_dtype[0],
+        count=count,
+        offset=offset,
+    )
+
+
 # full
 @handle_frontend_test(
     fn_tree="jax.numpy.full",
@@ -601,6 +676,42 @@ def test_jax_identity(
 
 
 @handle_frontend_test(
+    fn_tree="jax.numpy.in1d",
+    dtype_and_a=helpers.dtype_and_values(min_num_dims=1, max_num_dims=1),
+    dtype_and_b=helpers.dtype_and_values(min_num_dims=1, max_num_dims=1),
+    assume_unique=st.booleans(),
+    invert=st.booleans(),
+)
+def test_jax_in1d(
+    *,
+    dtype_and_a,
+    dtype_and_b,
+    assume_unique,
+    invert,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype_a, a = dtype_and_a
+    input_dtype_b, b = dtype_and_b
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype_a + input_dtype_b,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        ar1=a[0],
+        ar2=b[0],
+        assume_unique=assume_unique,
+        invert=invert,
+    )
+
+
+@handle_frontend_test(
     fn_tree="jax.numpy.iterable",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
@@ -716,6 +827,7 @@ def test_jax_logspace(
     sparse=st.booleans(),
     indexing=st.sampled_from(["xy", "ij"]),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_jax_meshgrid(
     dtype_and_arrays,
@@ -731,7 +843,7 @@ def test_jax_meshgrid(
     kw = {}
     i = 0
     for x_ in arrays:
-        kw["x{}".format(i)] = x_
+        kw[f"x{i}"] = x_
         i += 1
     test_flags.num_positional_args = len(arrays)
     helpers.test_frontend_function(
@@ -769,71 +881,6 @@ def test_jax_ndim(
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.numpy.frombuffer",
-    dtype_buffer_count_offset=_get_dtype_buffer_count_offset(),
-    test_with_out=st.just(False),
-)
-def test_jax_numpy_frombuffer(
-    *,
-    dtype_buffer_count_offset,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-    test_flags,
-):
-    input_dtype, buffer, count, offset = dtype_buffer_count_offset
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        buffer=buffer,
-        dtype=input_dtype[0],
-        count=count,
-        offset=offset,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="jax.numpy.in1d",
-    dtype_and_a=helpers.dtype_and_values(min_num_dims=1, max_num_dims=1),
-    dtype_and_b=helpers.dtype_and_values(min_num_dims=1, max_num_dims=1),
-    assume_unique=st.booleans(),
-    invert=st.booleans(),
-)
-def test_jax_numpy_in1d(
-    *,
-    dtype_and_a,
-    dtype_and_b,
-    assume_unique,
-    invert,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-    test_flags,
-):
-    input_dtype_a, a = dtype_and_a
-    input_dtype_b, b = dtype_and_b
-
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype_a + input_dtype_b,
-        frontend=frontend,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        ar1=a[0],
-        ar2=b[0],
-        assume_unique=assume_unique,
-        invert=invert,
     )
 
 
@@ -908,6 +955,54 @@ def test_jax_ones_like(
         a=x[0],
         dtype=dtype[0],
         shape=shape,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.setdiff1d",
+    dtype_and_a=helpers.dtype_and_values(
+        min_num_dims=1,
+        max_num_dims=1,
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    dtype_and_b=helpers.dtype_and_values(
+        min_num_dims=1,
+        max_num_dims=1,
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    use_size=st.booleans(),
+    size=st.integers(min_value=1, max_value=100),
+    assume_unique=st.booleans(),
+)
+def test_jax_setdiff1d(
+    *,
+    dtype_and_a,
+    dtype_and_b,
+    use_size,
+    size,
+    assume_unique,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype_a, a = dtype_and_a
+    input_dtype_b, b = dtype_and_b
+    if not use_size:
+        size = None
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype_a + input_dtype_b,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        ar1=a[0],
+        ar2=b[0],
+        assume_unique=assume_unique,
+        size=size,
     )
 
 

@@ -69,7 +69,7 @@ def _pad_generator(draw, shape, mode):
         pad = pad + draw(
             st.tuples(
                 st.integers(min_value=0, max_value=max(0, max_pad_value)),
-                st.integers(min_value=0, max_value=max(0, max_pad_value)),
+                st.integers(min_value=-3, max_value=max(0, max_pad_value)),
             )
         )
     return pad
@@ -99,17 +99,74 @@ def _pad_helper(draw):
             ret_shape=True,
             min_num_dims=min_v,
             max_num_dims=max_v,
-            min_dim_size=2,
+            min_dim_size=5,
             min_value=-1e05,
             max_value=1e05,
         )
     )
     padding = draw(_pad_generator(shape, mode))
     if mode == "constant":
-        value = draw(helpers.ints(min_value=0, max_value=4))
+        value = draw(helpers.ints(min_value=0, max_value=4) | st.none())
     else:
         value = 0.0
     return dtype, input[0], padding, value, mode
+
+
+@st.composite
+def grid_sample_helper(draw, dtype, mode, mode_3d, padding_mode):
+    dtype = draw(dtype)
+    align_corners = draw(st.booleans())
+    dims = draw(st.integers(4, 5))
+    height = draw(helpers.ints(min_value=5, max_value=10))
+    width = draw(helpers.ints(min_value=5, max_value=10))
+    channels = draw(helpers.ints(min_value=1, max_value=3))
+
+    grid_h = draw(helpers.ints(min_value=2, max_value=4))
+    grid_w = draw(helpers.ints(min_value=2, max_value=4))
+    batch = draw(helpers.ints(min_value=1, max_value=5))
+
+    padding_mode = draw(st.sampled_from(padding_mode))
+    if dims == 4:
+        mode = draw(st.sampled_from(mode))
+        x = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=[batch, channels, height, width],
+                min_value=-1,
+                max_value=1,
+            )
+        )
+
+        grid = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=[batch, grid_h, grid_w, 2],
+                min_value=-1,
+                max_value=1,
+            )
+        )
+    elif dims == 5:
+        mode = draw(st.sampled_from(mode_3d))
+        depth = draw(helpers.ints(min_value=10, max_value=15))
+        grid_d = draw(helpers.ints(min_value=5, max_value=10))
+        x = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=[batch, channels, depth, height, width],
+                min_value=-1,
+                max_value=1,
+            )
+        )
+
+        grid = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=[batch, grid_d, grid_h, grid_w, 3],
+                min_value=-1,
+                max_value=1,
+            )
+        )
+    return dtype, x, grid, mode, padding_mode, align_corners
 
 
 # --- Main --- #
@@ -145,9 +202,43 @@ def test_torch_affine_grid(
 
 
 @handle_frontend_test(
+    fn_tree="torch.nn.functional.grid_sample",
+    dtype_x_grid_modes=grid_sample_helper(
+        dtype=helpers.get_dtypes("valid", full=False),
+        mode=["nearest", "bilinear", "bicubic"],
+        mode_3d=["nearest", "bilinear"],
+        padding_mode=["border", "zeros", "reflection"],
+    ),
+)
+def test_torch_grid_sample(
+    *,
+    dtype_x_grid_modes,
+    on_device,
+    backend_fw,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x, grid, mode, padding_mode, align_corners = dtype_x_grid_modes
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        grid=grid,
+        mode=mode,
+        padding_mode=padding_mode,
+        align_corners=align_corners,
+    )
+
+
+@handle_frontend_test(
     fn_tree="torch.nn.functional.interpolate",
     dtype_and_input_and_other=_interp_args(
-        mode_list=["linear", "bilinear", "trilinear", "nearest", "area"],
+        mode_list="torch",
     ),
     number_positional_args=st.just(2),
 )
@@ -169,6 +260,8 @@ def test_torch_interpolate(
         scale_factor,
         recompute_scale_factor,
     ) = dtype_and_input_and_other
+    if mode not in ["linear", "bilinear", "bicubic", "trilinear"]:
+        align_corners = None
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -176,8 +269,7 @@ def test_torch_interpolate(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-01,
-        atol=1e-01,
+        atol=1e-03,
         input=x[0],
         size=size,
         scale_factor=scale_factor,

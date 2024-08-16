@@ -18,7 +18,7 @@ def is_native_array(
     if exclusive:
         return isinstance(x, mx.ndarray.NDArray)
     else:
-        return isinstance(x, mx.ndarray.NDArray) or isinstance(x, np.ndarray)
+        return isinstance(x, (mx.ndarray.NDArray, np.ndarray))
 
 
 def to_numpy(x: mx.ndarray.NDArray, /, *, copy: bool = True) -> np.ndarray:

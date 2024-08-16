@@ -19,7 +19,7 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
 
 @st.composite
 def _det_helper(draw):
-    square = draw(helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])))
+    square = draw(helpers.ints(min_value=2, max_value=8).map(lambda x: (x, x)))
     shape_prefix = draw(helpers.get_shape())
     dtype_x = draw(
         helpers.dtype_and_values(
@@ -185,7 +185,7 @@ def _get_first_matrix_and_dtype(draw, *, transpose=False, conjugate=False):
     matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=tuple([random_size, shared_size]),
+            shape=(random_size, shared_size),
             min_value=2,
             max_value=5,
         )
@@ -224,7 +224,7 @@ def _get_second_matrix_and_dtype(draw, *, transpose=False):
     matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=tuple([random_size, shared_size]),
+            shape=(random_size, shared_size),
             min_value=2,
             max_value=5,
         )
@@ -279,6 +279,9 @@ def _matrix_rank_helper(draw):
     )
     atol = draw(tol_strategy)
     rtol = draw(tol_strategy)
+    if not (atol is None or rtol is None):
+        assume(type(atol) is type(rtol))
+
     return dtype, x[0], hermitian, atol, rtol
 
 
@@ -355,7 +358,7 @@ def dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
     upper=st.booleans(),
 )
@@ -593,7 +596,7 @@ def test_inner(*, dtype_xy, test_flags, backend_fw, fn_name, on_device):
         small_abs_safety_factor=24,
         large_abs_safety_factor=24,
         safety_factor_scale="log",
-        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: (x, x)),
     ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
     adjoint=st.booleans(),
 )
@@ -641,26 +644,36 @@ def test_matmul(*, x, y, test_flags, backend_fw, fn_name, on_device):
 # matrix_norm
 @handle_test(
     fn_tree="functional.ivy.matrix_norm",
-    # ground_truth_backend="numpy",
     dtype_value_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
         valid_axis=True,
         min_axes_size=2,
         max_axes_size=2,
+        max_value=1e4,
+        min_value=-1e4,
+        abs_smallest_val=1e-4,
         force_tuple_axis=True,
         allow_neg_axes=False,
     ),
     kd=st.booleans(),
     ord=st.sampled_from((-2, -1, 1, 2, -float("inf"), float("inf"), "fro", "nuc")),
+    dtypes=st.sampled_from((None, "16", "32", "64")),
 )
 def test_matrix_norm(
-    *, dtype_value_axis, kd, ord, test_flags, backend_fw, fn_name, on_device
+    *, dtype_value_axis, kd, ord, dtypes, test_flags, backend_fw, fn_name, on_device
 ):
-    dtype, x, axis = dtype_value_axis
+    input_dtype, x, axis = dtype_value_axis
+    if dtypes is not None:
+        # torch backend does not allow down-casting.
+        if input_dtype[0] == "complex128":
+            dtypes = input_dtype[0]
+        else:
+            dtypes = input_dtype[0][0:-2] + max([input_dtype[0][-2:], dtypes])
+
     assume(matrix_is_stable(x[0], cond_limit=10))
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_name=fn_name,
@@ -670,6 +683,7 @@ def test_matrix_norm(
         x=x[0],
         axis=axis,
         keepdims=kd,
+        dtype=dtypes,
         ord=ord,
     )
 
@@ -681,7 +695,7 @@ def test_matrix_norm(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=1e-3,
         max_value=20,
-        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=8).map(lambda x: (x, x)),
     ),
     n=helpers.ints(min_value=-6, max_value=6),
 )
@@ -872,12 +886,12 @@ def test_slogdet(*, dtype_x, test_flags, backend_fw, fn_name, on_device):
 
 @handle_test(
     fn_tree="functional.ivy.solve",
-    x=helpers.get_first_solve_matrix(adjoint=True),
-    y=helpers.get_second_solve_matrix(),
+    x=helpers.get_first_solve_batch_matrix(choose_adjoint=True),
+    y=helpers.get_second_solve_batch_matrix(),
 )
 def test_solve(*, x, y, test_flags, backend_fw, fn_name, on_device):
     input_dtype1, x1, adjoint = x
-    input_dtype2, x2 = y
+    input_dtype2, x2, _ = y
     helpers.test_function(
         input_dtypes=[input_dtype1, input_dtype2],
         test_flags=test_flags,

@@ -1,4 +1,5 @@
-"""Collection of PyTorch random functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of PyTorch random functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 import torch
@@ -21,14 +22,20 @@ from . import backend_version
 def random_uniform(
     *,
     low: Union[float, torch.Tensor] = 0.0,
-    high: Union[float, torch.Tensor] = 1.0,
+    high: Union[float, torch.Tensor, None] = 1.0,
     shape: Optional[Union[torch.Tensor, ivy.NativeShape, Sequence[int]]] = None,
     dtype: torch.dtype,
-    device: torch.device,
+    device: torch.device = None,
     seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    shape = _check_bounds_and_get_shape(low, high, shape).shape
+    if high is None:
+        # default to float32, as this is the tf standard
+        high = (
+            torch.finfo(dtype).max
+            if dtype is not None
+            else torch.finfo(torch.float32).max
+        )
     rand_range = high - low
     if seed:
         torch.manual_seed(seed)
@@ -46,7 +53,7 @@ def random_normal(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype: torch.dtype,
     seed: Optional[int] = None,
-    device: torch.device,
+    device: torch.device = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     _check_valid_scale(std)
@@ -62,7 +69,7 @@ def random_normal(
 random_normal.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -71,7 +78,7 @@ def multinomial(
     batch_size: int = 1,
     probs: Optional[torch.Tensor] = None,
     replace: bool = True,
-    device: torch.device,
+    device: torch.device = None,
     seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -99,7 +106,7 @@ def randint(
     /,
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: torch.device,
+    device: torch.device = None,
     dtype: Optional[Union[torch.dtype, ivy.Dtype]] = None,
     seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
@@ -115,7 +122,7 @@ def randint(
     return (torch.rand(shape, device=device) * rand_range + low).to(dtype)
 
 
-def seed(*, seed_value: int = 0) -> None:
+def seed(*, seed_value: int = 0):
     torch.manual_seed(seed_value)
     torch.cuda.manual_seed(seed_value)
     if hasattr(torch.backends, "mps"):

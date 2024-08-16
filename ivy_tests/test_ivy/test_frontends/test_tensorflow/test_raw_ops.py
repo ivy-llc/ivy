@@ -73,7 +73,7 @@ def _arrays_idx_n_dtypes(draw):
             size=num_arrays,
         )
     )
-    xs = list()
+    xs = []
     input_dtypes = draw(
         helpers.array_dtypes(
             available_dtypes=draw(helpers.get_dtypes("float")), shared_dtype=True
@@ -121,8 +121,9 @@ def _get_shared_dtype(draw):
 
 @st.composite
 def _get_splits(draw, as_list=False):
-    """Generate valid splits, either by generating an integer that evenly divides the
-    axis or a list of splits that sum to the length of the axis being split."""
+    """Generate valid splits, either by generating an integer that evenly
+    divides the axis or a list of splits that sum to the length of the axis
+    being split."""
     shape = draw(st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"))
     axis = draw(
         st.shared(helpers.get_axis(shape=shape, force_int=True), key="target_axis")
@@ -236,7 +237,7 @@ def _pow_helper_shared_dtype(draw):
     dtype1, dtype2 = dtype
     x1, x2 = x
     if "int" in dtype2:
-        x2 = ivy.nested_map(x2, lambda x: abs(x), include_derived={list: True})
+        x2 = ivy.nested_map(lambda x: abs(x), x2, include_derived={"list": True})
 
     if ivy.is_int_dtype(dtype2):
         max_val = ivy.iinfo(dtype2).max
@@ -265,6 +266,40 @@ def _reshape_helper(draw):
 
 
 @st.composite
+def _segment_ops_helper(draw):
+    shape_x = draw(st.integers(min_value=3, max_value=100))
+    shape_y = draw(st.integers(min_value=3, max_value=100))
+    max_val = draw(st.integers(min_value=3, max_value=9))
+    s_dtype = draw(
+        st.sampled_from(
+            [
+                "int32",
+                "int64",
+            ]
+        )
+    )
+    data_dtype, data = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            num_arrays=1,
+            shape=(shape_x, shape_y),
+            min_value=-max_val,
+            max_value=max_val,
+        )
+    )
+    seg_dtype, segment_ids = draw(
+        helpers.dtype_and_values(
+            available_dtypes=[s_dtype],
+            num_arrays=1,
+            shape=(shape_x,),
+            min_value=0,
+            max_value=max_val,
+        )
+    )
+    return data_dtype + seg_dtype, data, segment_ids, max_val
+
+
+@st.composite
 def _squeeze_helper(draw):
     shape = draw(st.shared(helpers.get_shape(), key="value_shape"))
     valid_axes = []
@@ -274,6 +309,12 @@ def _squeeze_helper(draw):
     valid_axes.insert(0, None)
     axis = draw(st.sampled_from(valid_axes))
     return [axis] if axis is not None else axis
+
+
+@st.composite
+def df(draw, data_format):
+    data_format = draw(data_format)
+    return data_format
 
 
 # Reverse
@@ -1073,7 +1114,7 @@ def test_tensorflow_Ceil(  # NOQA
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
     test_with_out=st.just(False),
 )
@@ -1190,6 +1231,35 @@ def test_tensorflow_ConcatV2(
         fn_tree=fn_tree,
         values=xs,
         axis=unique_idx,
+    )
+
+
+# Conj
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Conj",
+    dtype_and_xs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("complex"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Conj(  # NOQA
+    *,
+    dtype_and_xs,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, xs = dtype_and_xs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=xs[0],
     )
 
 
@@ -1817,6 +1887,84 @@ def test_tensorflow_FFT(  # NOQA
     )
 
 
+# FFT2D
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.FFT2D",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("complex"),
+        min_value=-1e5,
+        max_value=1e5,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+)
+def test_tensorflow_FFT2D(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        rtol=1e-02,
+        atol=1e-02,
+    )
+
+
+# FFT3D
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.FFT3D",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("complex"),
+        min_value=-1e5,
+        max_value=1e5,
+        min_num_dims=3,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+)
+def test_tensorflow_FFT3D(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        rtol=1e-02,
+        atol=1e-02,
+    )
+
+
 # fill
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Fill",
@@ -1981,6 +2129,44 @@ def test_tensorflow_Gather(  # NOQA
         params=params,
         indices=indices,
         validate_indices=True,
+    )
+
+
+# GatherNd
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.GatherNd",
+    params_indices_axis_batch_dims=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("valid"),
+        indices_dtypes=["int32", "int64"],
+        min_num_dims=3,
+        max_num_dims=3,
+        min_dim_size=3,
+        max_dim_size=3,
+        axis_zero=True,
+        disable_random_axis=True,
+        indices_same_dims=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_GatherNd(
+    *,
+    params_indices_axis_batch_dims,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtypes, params, indices = params_indices_axis_batch_dims
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        params=params,
+        indices=indices,
     )
 
 
@@ -2631,7 +2817,7 @@ def test_tensorflow_MatMul(  # NOQA
     fn_tree="tensorflow.raw_ops.MatrixDeterminant",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
         min_value=-5,
         max_value=5,
     ),
@@ -2662,7 +2848,7 @@ def test_tensorflow_MatrixDeterminant(  # NOQA
     fn_tree="tensorflow.raw_ops.MatrixInverse",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        shape=helpers.ints(min_value=2, max_value=10).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=10).map(lambda x: (x, x)),
     ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
     adjoint=st.booleans(),
     test_with_out=st.just(False),
@@ -2727,6 +2913,41 @@ def test_tensorflow_Max(  # NOQA
         input=x[0],
         axis=axis,
         keep_dims=keep_dims,
+    )
+
+
+# MaxPool3D
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.MaxPool3D",
+    aliases=["tensorflow.nn.max_pool3d"],
+    data_format=st.sampled_from(["NDHWC", "NCDHW"]),
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=5),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_MaxPool3D(
+    *,
+    x_k_s_p,
+    data_format,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x, ksize, strides, padding = x_k_s_p
+    data_format = data_format
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        ksize=ksize,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
     )
 
 
@@ -2851,6 +3072,38 @@ def test_tensorflow_Min(  # NOQA
     test_with_out=st.just(False),
 )
 def test_tensorflow_Minimum(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs[0],
+        y=xs[1],
+    )
+
+
+# Mod
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Mod",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Mod(  # NOQA
     *,
     dtype_and_x,
     frontend,
@@ -4020,7 +4273,7 @@ def test_tensorflow_Sum(  # NOQA
         available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
     full_matrices=st.booleans(),
     compute_uv=st.just(True),
@@ -4064,6 +4317,7 @@ def test_tensorflow_Svd(
         rtol=1e-2,
         atol=1e-2,
         ground_truth_backend=frontend,
+        backend=backend_fw,
     )
 
 
@@ -4243,6 +4497,34 @@ def test_tensorflow_Unpack(  # NOQA
         value=x[0],
         num=x[0].shape[axis],
         axis=axis,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.UnsortedSegmentProd",
+    params=_segment_ops_helper(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_UnsortedSegmentProd(
+    *,
+    params,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtypes, data, segment_ids, max_val = params
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        data=data[0],
+        segment_ids=segment_ids[0],
+        num_segments=max_val + 1,
     )
 
 

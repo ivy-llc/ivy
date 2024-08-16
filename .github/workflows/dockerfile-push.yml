@@ -2,18 +2,18 @@ name: Dockerfile Push
 
 on:
   schedule:
-    # run at everyday at 00:00 UTC
-    - cron:  '0 0 * * *'
+    # runs everyday at 23:00 UTC
+    - cron:  '0 23 * * *'
   workflow_dispatch:
 
 jobs:
 
   build:
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
-    - 
+    -
       name: Checkout 🛎 Ivy
       uses: actions/checkout@v3
 
@@ -27,5 +27,5 @@ jobs:
 
     - name: Build and push Dockerfile
       run: |
-        docker build . --file docker/Dockerfile --tag unifyai/ivy:latest
-        docker push unifyai/ivy:latest
+        docker build . --file docker/Dockerfile --tag ivyllc/ivy:latest
+        docker push ivyllc/ivy:latest

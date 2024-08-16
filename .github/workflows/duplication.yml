@@ -1,29 +1,29 @@
-name: duplicate-test-check
+name: tests
 on:
+  push:
+    branches:
+        main
   pull_request:
 permissions:
   actions: read
 jobs:
-   run-check:
-     if: contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') || contains(github.event.pull_request.labels.*.name, 'Ivy API Experimental')
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  duplicate-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+          persist-credentials: false
+          fetch-depth: 100
 
+      - name: Check Duplicate Function
+        id: tests
+        run: |
+          cd ivy
+          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest python3 scripts/duplicate.py
+        continue-on-error: true
 
-       - name: Check Duplicate Function
-         id: tests
-         run: |
-           cd ivy
-           docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 duplicate.py
-         continue-on-error: true
-
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1

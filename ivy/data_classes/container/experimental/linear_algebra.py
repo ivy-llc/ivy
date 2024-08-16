@@ -24,10 +24,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> Union[ivy.Container, Tuple[ivy.Container, ivy.Container]]:
-        """
-        ivy.Container static method variant of ivy.eigh_tridiagonal. This method simply
-        wraps the function, and so the docstring for ivy.eigh_tridiagonal also applies
-        to this method with minimal changes.
+        """ivy.Container static method variant of ivy.eigh_tridiagonal. This
+        method simply wraps the function, and so the docstring for
+        ivy.eigh_tridiagonal also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -118,10 +117,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> Union[ivy.Container, Tuple[ivy.Container, ivy.Container]]:
-        """
-        ivy.Container instance method variant of ivy.eigh_tridiagonal. This method
-        simply wraps the function, and so the docstring for ivy.eigh_tridiagonal also
-        applies to this method with minimal changes.
+        """ivy.Container instance method variant of ivy.eigh_tridiagonal. This
+        method simply wraps the function, and so the docstring for
+        ivy.eigh_tridiagonal also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -236,10 +234,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.diagflat. This method simply wraps
-        the function, and so the docstring for ivy.diagflat also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.diagflat. This method
+        simply wraps the function, and so the docstring for ivy.diagflat also
+        applies to this method with minimal changes.
 
         Examples
         --------
@@ -277,10 +274,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.kron. This method simply wraps the
-        function, and so the docstring for ivy.kron also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.kron. This method simply
+        wraps the function, and so the docstring for ivy.kron also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -329,10 +325,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.kron. This method simply wraps the
-        function, and so the docstring for ivy.kron also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.kron. This method
+        simply wraps the function, and so the docstring for ivy.kron also
+        applies to this method with minimal changes.
 
         Examples
         --------
@@ -379,10 +374,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         to_apply: Union[bool, ivy.Container] = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.diagflat. This method simply wraps
-        the function, and so the docstring for ivy.diagflat also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.diagflat. This method
+        simply wraps the function, and so the docstring for ivy.diagflat also
+        applies to this method with minimal changes.
 
         Examples
         --------
@@ -413,10 +407,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.eig. This method simply wraps the
-        function, and so the docstring for ivy.eig also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.eig. This method simply
+        wraps the function, and so the docstring for ivy.eig also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -466,10 +459,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.eig. This method simply wraps the
-        function, and so the docstring for ivy.eig also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.eig. This method simply
+        wraps the function, and so the docstring for ivy.eig also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -519,10 +511,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.eigvals. This method simply wraps the
-        function, and so the docstring for ivy.eigvals also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.eigvals. This method
+        simply wraps the function, and so the docstring for ivy.eigvals also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -566,10 +557,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.eigvals. This method simply wraps
-        the function, and so the docstring for ivy.eigvals also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.eigvals. This method
+        simply wraps the function, and so the docstring for ivy.eigvals also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -612,10 +602,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         to_apply: Union[bool, ivy.Container] = True,
         out: Optional[ivy.Container] = None,
     ):
-        """
-        ivy.Container static method variant of ivy.adjoint. This method simply wraps the
-        function, and so the docstring for ivy.adjoint also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.adjoint. This method
+        simply wraps the function, and so the docstring for ivy.adjoint also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -661,10 +650,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         to_apply: Union[bool, ivy.Container] = True,
         out: Optional[ivy.Container] = None,
     ):
-        """
-        ivy.Container instance method variant of ivy.adjoint. This method simply wraps
-        the function, and so the docstring for ivy.adjoint also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.adjoint. This method
+        simply wraps the function, and so the docstring for ivy.adjoint also
+        applies to this method with minimal changes.
 
         Examples
         --------
@@ -692,10 +680,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.multi_dot. This method simply wraps
-        the function, and so the docstring for ivy.multi_dot also applies to this method
-        with minimal changes.
+        """ivy.Container static method variant of ivy.multi_dot. This method
+        simply wraps the function, and so the docstring for ivy.multi_dot also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -750,10 +737,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.multi_dot. This method simply wraps
-        the function, and so the docstring for ivy.multi_dot also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.multi_dot. This method
+        simply wraps the function, and so the docstring for ivy.multi_dot also
+        applies to this method with minimal changes.
 
         Examples
         --------
@@ -782,7 +768,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
     @staticmethod
     def static_cond(
-        self: ivy.Container,
+        x: ivy.Container,
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
@@ -792,14 +778,13 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         p: Optional[Union[int, float, None, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ):
-        """
-        ivy.Container static method variant of ivy.cond. This method simply wraps the
-        function, and so the docstring for ivy.cond also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.cond. This method simply
+        wraps the function, and so the docstring for ivy.cond also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
-            self
+            x
                 container with input arrays.
             p
                 order of the norm of the matrix (see ivy.norm).
@@ -818,7 +803,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         """
         return ContainerBase.cont_multi_map_in_function(
             "cond",
-            self,
+            x,
             p=p,
             out=out,
             key_chains=key_chains,
@@ -837,10 +822,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         p: Optional[Union[int, float, None, ivy.Container]] = None,
     ):
-        """
-        ivy.Container instance method variant of ivy.cond. This method simply wraps the
-        function, and so the docstring for ivy.cond also applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.cond. This method
+        simply wraps the function, and so the docstring for ivy.cond also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -900,10 +884,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.mode_dot. This method simply wraps
-        the function, and so the docstring for ivy.mode_dot also applies to this method
-        with minimal changes.
+        """ivy.Container static method variant of ivy.mode_dot. This method
+        simply wraps the function, and so the docstring for ivy.mode_dot also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -956,10 +939,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ):
-        """
-        ivy.Container instance method variant of ivy.mode_dot. This method simply wraps
-        the function, and so the docstring for ivy.mode_dot also applies to this method
-        with minimal changes.
+        """ivy.Container instance method variant of ivy.mode_dot. This method
+        simply wraps the function, and so the docstring for ivy.mode_dot also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1013,10 +995,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.multi_mode_dot. This method simply
-        wraps the function, and so the docstring for ivy.multi_mode_dot also applies to
-        this method with minimal changes.
+        """ivy.Container static method variant of ivy.multi_mode_dot. This
+        method simply wraps the function, and so the docstring for
+        ivy.multi_mode_dot also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1073,10 +1054,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.multi_mode_dot. This method simply
-        wraps the function, and so the docstring for ivy.multi_mode_dot also applies to
-        this method with minimal changes.
+        """ivy.Container instance method variant of ivy.multi_mode_dot. This
+        method simply wraps the function, and so the docstring for
+        ivy.multi_mode_dot also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1130,10 +1110,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> Tuple[ivy.Container, ivy.Container]:
-        """
-        ivy.Container static method variant of ivy.svd_flip. This method simply wraps
-        the function, and so the docstring for ivy.svd_flip also applies to this method
-        with minimal changes.
+        """ivy.Container static method variant of ivy.svd_flip. This method
+        simply wraps the function, and so the docstring for ivy.svd_flip also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1172,10 +1151,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> Tuple[ivy.Container, ivy.Container]:
-        """
-        ivy.Container instance method variant of ivy.svd_flip. This method simply wraps
-        the function, and so the docstring for ivy.svd_flip applies to this method with
-        minimal changes.
+        """ivy.Container instance method variant of ivy.svd_flip. This method
+        simply wraps the function, and so the docstring for ivy.svd_flip
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1216,10 +1194,10 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> Tuple[ivy.Container, ivy.Container]:
-        """
-        ivy.Container static method variant of ivy.make_svd_non_negative. This method
-        simply wraps the function, and so the docstring for ivy.make_svd_non_negative
-        also applies to this method with minimal changes.
+        """ivy.Container static method variant of ivy.make_svd_non_negative.
+        This method simply wraps the function, and so the docstring for
+        ivy.make_svd_non_negative also applies to this method with minimal
+        changes.
 
         Parameters
         ----------
@@ -1263,10 +1241,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> Tuple[ivy.Container, ivy.Container]:
-        """
-        ivy.Container instance method variant of ivy.make_svd_non_negative. This method
-        simply wraps the function, and so the docstring for ivy.make_svd_non_negative
-        applies to this method with minimal changes.
+        """ivy.Container instance method variant of ivy.make_svd_non_negative.
+        This method simply wraps the function, and so the docstring for
+        ivy.make_svd_non_negative applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1297,6 +1274,84 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         )
 
     @staticmethod
+    def static_tensor_train(
+        input_tensor: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[Sequence[int], ivy.Container],
+        /,
+        *,
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        verbose: Optional[Union[bool, ivy.Container]] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
+        """ivy.Container static method variant of ivy.tensor_train. This method
+        simply wraps the function, and so the docstring for ivy.tensor_train
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        input_tensor
+            tensor to be decomposed.
+        rank
+            maximum allowable TT-ranks of the decomposition.
+        svd
+            SVD method to use.
+        verbose
+            level of verbosity.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "tensor_train",
+            input_tensor,
+            rank,
+            svd=svd,
+            verbose=verbose,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def tensor_train(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[Sequence[int], ivy.Container],
+        /,
+        *,
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        verbose: Optional[Union[bool, ivy.Container]] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
+        """ivy.Container instance method variant of ivy.tensor_train. This
+        method simply wraps the function, and so the docstring for
+        ivy.tensor_train also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        input_tensor
+            tensor to be decomposed.
+        rank
+            maximum allowable TT-ranks of the decomposition.
+        svd
+            SVD method to use.
+        verbose
+            level of verbosity.
+        """
+        return self.static_tensor_train(
+            self,
+            rank,
+            svd=svd,
+            verbose=verbose,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
     def static_truncated_svd(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -1308,10 +1363,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> Union[ivy.Container, Tuple[ivy.Container, ivy.Container, ivy.Container]]:
-        """
-        ivy.Container static method variant of ivy.truncated_svd. This method simply
-        wraps the function, and so the docstring for ivy.truncated_svd also applies to
-        this method with minimal changes.
+        """ivy.Container static method variant of ivy.truncated_svd. This
+        method simply wraps the function, and so the docstring for
+        ivy.truncated_svd also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1355,10 +1409,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> Union[ivy.Container, Tuple[ivy.Container, ivy.Container, ivy.Container]]:
-        """
-        ivy.Container instance method variant of ivy.truncated_svd. This method simply
-        wraps the function, and so the docstring for ivy.truncated_svd also applies to
-        this method with minimal changes.
+        """ivy.Container instance method variant of ivy.truncated_svd. This
+        method simply wraps the function, and so the docstring for
+        ivy.truncated_svd also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1410,10 +1463,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
-        """
-        ivy.Container static method variant of ivy.initialize_tucker. This method simply
-        wraps the function, and so the docstring for ivy.initialize_tucker also applies
-        to this method with minimal changes.
+        """ivy.Container static method variant of ivy.initialize_tucker. This
+        method simply wraps the function, and so the docstring for
+        ivy.initialize_tucker also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1484,10 +1536,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
-        """
-        ivy.Container instance method variant of ivy.initialize_tucker. This method
-        simply wraps the function, and so the docstring for ivy.initialize_tucker also
-        applies to this method with minimal changes.
+        """ivy.Container instance method variant of ivy.initialize_tucker. This
+        method simply wraps the function, and so the docstring for
+        ivy.initialize_tucker also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1561,10 +1612,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
-        """
-        ivy.Container static method variant of ivy.partial_tucker. This method simply
-        wraps the function, and so the docstring for ivy.partial_tucker also applies to
-        this method with minimal changes.
+        """ivy.Container static method variant of ivy.partial_tucker. This
+        method simply wraps the function, and so the docstring for
+        ivy.partial_tucker also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1639,10 +1689,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
-        """
-        ivy.Container static method variant of ivy.partial_tucker. This method simply
-        wraps the function, and so the docstring for ivy.partial_tucker also applies to
-        this method with minimal changes.
+        """ivy.Container static method variant of ivy.partial_tucker. This
+        method simply wraps the function, and so the docstring for
+        ivy.partial_tucker also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1717,10 +1766,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
-        """
-        ivy.Container static method variant of ivy.tucker. This method simply wraps the
-        function, and so the docstring for ivy.tucker also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.tucker. This method
+        simply wraps the function, and so the docstring for ivy.tucker also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1815,10 +1863,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
-        """
-        ivy.Container static method variant of ivy.tucker. This method simply wraps the
-        function, and so the docstring for ivy.tucker also applies to this method with
-        minimal changes.
+        """ivy.Container static method variant of ivy.tucker. This method
+        simply wraps the function, and so the docstring for ivy.tucker also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1902,10 +1949,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> Union[ivy.Array, ivy.Container]:
-        """
-        Compute the dot product between two arrays `a` and `b` using the current
-        backend's implementation. The dot product is defined as the sum of the element-
-        wise product of the input arrays.
+        """Compute the dot product between two arrays `a` and `b` using the
+        current backend's implementation. The dot product is defined as the sum
+        of the element- wise product of the input arrays.
 
         Parameters
         ----------
@@ -1968,10 +2014,9 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
     ) -> Union[ivy.Array, ivy.Container]:
-        """
-        Compute the dot product between two arrays `a` and `b` using the current
-        backend's implementation. The dot product is defined as the sum of the element-
-        wise product of the input arrays.
+        """Compute the dot product between two arrays `a` and `b` using the
+        current backend's implementation. The dot product is defined as the sum
+        of the element- wise product of the input arrays.
 
         Parameters
         ----------
@@ -2015,6 +2060,353 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         return self.static_dot(
             self,
             b,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_tt_matrix_to_tensor(
+        tt_matrix: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container static method variant of ivy.tt_matrix_to_tensor. This
+        method simply wraps the function, and so the docstring for
+        ivy.tt_matrix_to_tensor also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        tt_matrix
+                array of 4D-arrays
+                TT-Matrix factors (known as core) of shape
+                (rank_k, left_dim_k, right_dim_k, rank_{k+1})
+
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        output_tensor
+                    tensor whose TT-Matrix decomposition was given by 'factors'
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[[[[0.49671414],
+        ...                      [-0.1382643]],
+        ...
+        ...                     [[0.64768857],
+        ...                      [1.5230298]]]],
+        ...                   [[[[-0.23415337],
+        ...                      [-0.23413695]],
+        ...
+        ...                     [[1.57921278],
+        ...                      [0.76743472]]]]])))
+        >>> y = ivy.Container.static_tt_matrix_to_tensor(x)
+        >>> print(y["a"])
+        ivy.array([[[[-0.1163073 , -0.11629914],
+        [ 0.03237505,  0.03237278]],
+
+        [[ 0.78441733,  0.38119566],
+        [-0.21834874, -0.10610882]]],
+
+
+        [[[-0.15165846, -0.15164782],
+        [-0.35662258, -0.35659757]],
+
+        [[ 1.02283812,  0.49705869],
+        [ 2.40518808,  1.16882598]]]])
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "tt_matrix_to_tensor",
+            tt_matrix,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def tt_matrix_to_tensor(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.tt_matrix_to_tensor.
+        This method simply wraps the function, and so the docstring for
+        ivy.tt_matrix_to_tensor also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        tt_matrix
+                array of 4D-arrays
+                TT-Matrix factors (known as core) of shape
+                (rank_k, left_dim_k, right_dim_k, rank_{k+1})
+
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        output_tensor
+                    tensor whose TT-Matrix decomposition was given by 'factors'
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[[[[0.49671414],
+        ...                      [-0.1382643]],
+        ...
+        ...                     [[0.64768857],
+        ...                      [1.5230298]]]],
+        ...                   [[[[-0.23415337],
+        ...                      [-0.23413695]],
+        ...
+        ...                     [[1.57921278],
+        ...                      [0.76743472]]]]])))
+        >>> y = ivy.Container.tt_matrix_to_tensor(x)
+        >>> print(y["a"])
+        ivy.array([[[[-0.1163073 , -0.11629914],
+        [ 0.03237505,  0.03237278]],
+
+        [[ 0.78441733,  0.38119566],
+        [-0.21834874, -0.10610882]]],
+
+
+        [[[-0.15165846, -0.15164782],
+        [-0.35662258, -0.35659757]],
+
+        [[ 1.02283812,  0.49705869],
+        [ 2.40518808,  1.16882598]]]])
+        """
+        return self.static_tt_matrix_to_tensor(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_higher_order_moment(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        order: Union[Sequence[int], ivy.Container],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """ivy.Container static method variant of ivy.higher_order_moment. This
+        method simply wraps the function, and so the docstring for
+        ivy.higher_order_moment also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        x
+            matrix of size (n_samples, n_features)
+            or tensor of size(n_samples, D1, ..., DN)
+
+        order
+            number of the higher-order moment to compute
+
+        Returns
+        -------
+        tensor
+            if tensor is a matrix of size (n_samples, n_features),
+            tensor of size (n_features, )*order
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "higher_order_moment",
+            x,
+            order,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def higher_order_moment(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        order: Union[Sequence[int], ivy.Container],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.higher_order_moment.
+        This method simply wraps the function, and so the docstring for
+        ivy.higher_order_moment also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        x
+            matrix of size (n_samples, n_features)
+            or tensor of size(n_samples, D1, ..., DN)
+
+        order
+            number of the higher-order moment to compute
+
+        Returns
+        -------
+        tensor
+            if tensor is a matrix of size (n_samples, n_features),
+            tensor of size (n_features, )*order
+
+        Examples
+        --------
+        >>> a = ivy.array([[1, 2], [3, 4]])
+        >>> result = ivy.higher_order_moment(a, 3)
+        >>> print(result)
+        ivy.array([[
+            [14, 19],
+            [19, 26]],
+           [[19, 26],
+            [26, 36]
+        ]])
+        """
+        return self.static_higher_order_moment(
+            self,
+            order,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_batched_outer(
+        tensors: Sequence[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """ivy.Container static method variant of ivy.batched_outer. This
+        method simply wraps the function, and so the docstring for
+        ivy.batched_outer also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        tensors
+            list of tensors of shape (n_samples, J1, ..., JN) ,
+            (n_samples, K1, ..., KM) ...
+
+        Returns
+        -------
+        outer product of tensors
+            of shape (n_samples, J1, ..., JN, K1, ..., KM, ...)
+
+        Examples
+        --------
+        >>> a = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+        >>> b = ivy.array([[[.1, .2], [.3, .4]], [[.5, .6], [.7, .8]]])
+        >>> result = ivy.batched_outer(a, b)
+        >>> print(result)
+        ivy.array([[[[[0.1, 0.2],
+              [0.30000001, 0.40000001]],
+             [[0.2       , 0.40000001],
+              [0.60000002, 0.80000001]]],
+            [[[0.3       , 0.60000001],
+              [0.90000004, 1.20000002]],
+             [[0.40000001, 0.80000001],
+              [1.20000005, 1.60000002]]]],
+           [[[[2.5       , 3.00000012],
+              [3.49999994, 4.00000006]],
+             [[3.        , 3.60000014],
+              [4.19999993, 4.80000007]]],
+            [[[3.5       , 4.20000017],
+              [4.89999992, 5.60000008]],
+             [[4.        , 4.80000019],
+              [5.5999999 , 6.4000001 ]]]]])
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "batched_outer",
+            tensors,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def batched_outer(
+        self: ivy.Container,
+        tensors: Sequence[Union[ivy.Container, ivy.Array, ivy.NativeArray]],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.batched_outer. This
+        method simply wraps the function, and so the docstring for
+        ivy.batched_outer also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        tensors
+            list of tensors of shape (n_samples, J1, ..., JN) ,
+            (n_samples, K1, ..., KM) ...
+
+        Returns
+        -------
+        outer product of tensors
+            of shape (n_samples, J1, ..., JN, K1, ..., KM, ...)
+
+        Examples
+        --------
+        >>> a = ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+        >>> b = ivy.array([[[.1, .2], [.3, .4]], [[.5, .6], [.7, .8]]])
+        >>> result = ivy.batched_outer(a, b)
+        >>> print(result)
+        ivy.array([[[[[0.1, 0.2],
+              [0.30000001, 0.40000001]],
+             [[0.2       , 0.40000001],
+              [0.60000002, 0.80000001]]],
+            [[[0.3       , 0.60000001],
+              [0.90000004, 1.20000002]],
+             [[0.40000001, 0.80000001],
+              [1.20000005, 1.60000002]]]],
+           [[[[2.5       , 3.00000012],
+              [3.49999994, 4.00000006]],
+             [[3.        , 3.60000014],
+              [4.19999993, 4.80000007]]],
+            [[[3.5       , 4.20000017],
+              [4.89999992, 5.60000008]],
+             [[4.        , 4.80000019],
+              [5.5999999 , 6.4000001 ]]]]])
+        """
+        return self.static_batched_outer(
+            (self, *tensors),
             out=out,
             key_chains=key_chains,
             to_apply=to_apply,

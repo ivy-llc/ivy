@@ -1,4 +1,5 @@
-"""Collection of Jax random functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Jax random functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 import jax
@@ -42,13 +43,18 @@ def _getRNG():
 def random_uniform(
     *,
     low: Union[float, JaxArray] = 0.0,
-    high: Union[float, JaxArray] = 1.0,
+    high: Union[float, JaxArray, None] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: jaxlib.xla_extension.Device,
+    device: jaxlib.xla_extension.Device = None,
     dtype: jnp.dtype,
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if high is None:
+        # default to float32, as this is the tf standard
+        high = float(
+            jnp.finfo(dtype).max if dtype is not None else jnp.finfo(jnp.float32).max
+        )
     shape = _check_bounds_and_get_shape(low, high, shape).shape
 
     if seed:
@@ -56,9 +62,12 @@ def random_uniform(
     else:
         RNG_, rng_input = jax.random.split(_getRNG())
         _setRNG(RNG_)
-    return jax.random.uniform(
-        rng_input, shape, minval=low, maxval=high, dtype=jnp.float32
-    ).astype(dtype)
+    return jnp.astype(
+        jax.random.uniform(
+            rng_input, shape, minval=low, maxval=high, dtype=jnp.float32
+        ),
+        dtype,
+    )
 
 
 def random_normal(
@@ -66,7 +75,7 @@ def random_normal(
     mean: Union[float, JaxArray] = 0.0,
     std: Union[float, JaxArray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: jaxlib.xla_extension.Device,
+    device: jaxlib.xla_extension.Device = None,
     dtype: jnp.dtype,
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
@@ -82,7 +91,7 @@ def random_normal(
     return jax.random.normal(rng_input, shape, dtype=dtype) * std + mean
 
 
-@with_unsupported_dtypes({"0.4.14 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.24 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -91,7 +100,7 @@ def multinomial(
     batch_size: int = 1,
     probs: Optional[JaxArray] = None,
     replace: bool = True,
-    device: jaxlib.xla_extension.Device,
+    device: jaxlib.xla_extension.Device = None,
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -132,7 +141,7 @@ def randint(
     /,
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: jaxlib.xla_extension.Device,
+    device: jaxlib.xla_extension.Device = None,
     dtype: Optional[Union[jnp.dtype, ivy.Dtype]] = None,
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,

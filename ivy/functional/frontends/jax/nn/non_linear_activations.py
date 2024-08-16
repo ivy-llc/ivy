@@ -120,9 +120,7 @@ def _type_conversion_64(x):
 
 @to_ivy_arrays_and_back
 def celu(x, alpha=1.0):
-    ret = ivy.where(x > 0, x, alpha * ivy.expm1(x / alpha))
-    dtype = _batch_promotion(x, alpha, default_dtype="float64")
-    return ivy.asarray(ret, dtype=dtype)
+    return ivy.celu(x, alpha=alpha)
 
 
 @to_ivy_arrays_and_back
@@ -186,7 +184,7 @@ def leaky_relu(x, negative_slope=0.01):
 @to_ivy_arrays_and_back
 def log_sigmoid(x):
     x = _type_conversion(x)
-    return ivy.negative(ivy.softplus(ivy.negative(x))).astype(x.dtype)
+    return ivy.logsigmoid(x, complex_mode="jax").astype(x.dtype)
 
 
 @to_ivy_arrays_and_back
@@ -273,7 +271,7 @@ def relu(x):
 
 @to_ivy_arrays_and_back
 def relu6(x):
-    res = ivy.relu6(x)
+    res = ivy.relu6(x, complex_mode="jax")
     return _type_conversion_64(res)
 
 
@@ -286,12 +284,12 @@ def selu(x):
 @to_ivy_arrays_and_back
 def sigmoid(x):
     x = _type_conversion(x)
-    ret = ivy.sigmoid(x)
+    ret = ivy.sigmoid(x, complex_mode="jax")
     return ivy.astype(ret, x.dtype)
 
 
 @with_supported_dtypes(
-    {"0.4.14 and below": ("complex", "float")},
+    {"0.4.24 and below": ("complex", "float")},
     "jax",
 )
 @to_ivy_arrays_and_back

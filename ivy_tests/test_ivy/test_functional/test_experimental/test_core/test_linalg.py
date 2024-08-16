@@ -1,9 +1,11 @@
 # global
 import math
 from hypothesis import strategies as st
+from hypothesis import assume
 import numpy as np
 import pytest
 import itertools
+import sys
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -13,6 +15,24 @@ import ivy
 
 # --- Helpers --- #
 # --------------- #
+
+
+# batched_outer
+@st.composite
+def _batched_outer_data(draw):
+    shape = draw(helpers.get_shape(min_num_dims=2, max_num_dims=3))
+    tensors_num = draw(helpers.ints(min_value=1, max_value=5))
+    dtype, tensors = draw(
+        helpers.dtype_and_values(
+            num_arrays=tensors_num,
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=shape,
+            large_abs_safety_factor=20,
+            small_abs_safety_factor=20,
+            safety_factor_scale="log",
+        )
+    )
+    return dtype, tensors
 
 
 @st.composite
@@ -143,15 +163,15 @@ def _generate_diag_args(draw):
 
 # dot
 @st.composite
-def _generate_dot_dtype_and_arrays(draw):
+def _generate_dot_dtype_and_arrays(draw, min_num_dims=0):
     shape_a = draw(
         helpers.get_shape(
-            min_dim_size=2, max_dim_size=5, min_num_dims=0, max_num_dims=5
+            min_dim_size=2, max_dim_size=5, min_num_dims=min_num_dims, max_num_dims=5
         )
     )
     shape_b = draw(
         helpers.get_shape(
-            min_dim_size=2, max_dim_size=5, min_num_dims=0, max_num_dims=5
+            min_dim_size=2, max_dim_size=5, min_num_dims=min_num_dims, max_num_dims=5
         )
     )
 
@@ -233,6 +253,25 @@ def _generate_eigh_tridiagonal_args(draw):
     return dtype, alpha, beta, eigvals_only, select, select_range, tol
 
 
+@st.composite
+def _generate_general_inner_product_args(draw):
+    dim = draw(st.integers(min_value=1, max_value=3))
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=(dim, dim),
+            min_value=1,
+            max_value=10.0,
+            num_arrays=2,
+            shared_dtype=True,
+            allow_nan=False,
+        )
+    )
+    max_value = dim - 1 if dim > 1 else dim
+    n_modes = draw(st.integers(min_value=1, max_value=max_value) | st.just(None))
+    return x_dtype, x, n_modes
+
+
 # multi_dot
 @st.composite
 def _generate_multi_dot_dtype_and_arrays(draw):
@@ -270,6 +309,48 @@ def _generate_multi_dot_dtype_and_arrays(draw):
     )
 
     return input_dtype, [matrix_1[1][0], matrix_2[1][0], matrix_3[1][0]]
+
+
+# solve_triangular
+@st.composite
+def _generate_solve_triangular_args(draw):
+    shape = draw(
+        st.lists(st.integers(min_value=1, max_value=3), min_size=2, max_size=5)
+    )
+    shape_b = list(shape)
+    shape_a = list(shape)
+    shape_a[-1] = shape_a[-2]  # Make square
+
+    dtype_a, a = draw(
+        helpers.dtype_and_values(
+            shape=shape_a,
+            available_dtypes=helpers.get_dtypes("float"),
+            min_value=-10,
+            max_value=10,
+        )
+    )
+
+    dtype_b, b = draw(
+        helpers.dtype_and_values(
+            shape=shape_b,
+            available_dtypes=helpers.get_dtypes("float"),
+            min_value=-10,
+            max_value=10,
+        )
+    )
+
+    dtype_a = dtype_a[0]
+    dtype_b = dtype_b[0]
+    a = a[0]
+    b = b[0]
+    upper = draw(st.booleans())
+    adjoint = draw(st.booleans())
+    unit_diagonal = draw(st.booleans())
+
+    for i in range(shape_a[-2]):
+        a[ivy.abs(a[..., i, i]) < 0.01, i, i] = 0.01  # Make diagonals non-zero
+
+    return upper, adjoint, unit_diagonal, [dtype_a, dtype_b], [a, b]
 
 
 @st.composite
@@ -361,7 +442,24 @@ def _get_dtype_value1_value2_cov(
     return [dtype], value1, value2, rowVar, bias, ddof, fweights, aweights
 
 
-# intialize tucker
+# higher_order_moment
+@st.composite
+def _higher_order_moment_data(draw):
+    shape = draw(helpers.get_shape(min_num_dims=2, max_num_dims=4))
+    order = draw(helpers.ints(min_value=0, max_value=5))
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
+            large_abs_safety_factor=20,
+            small_abs_safety_factor=20,
+            safety_factor_scale="log",
+        )
+    )
+    return dtype, x[0], order
+
+
+# initialize tucker
 @st.composite
 def _initialize_tucker_data(draw):
     x_dtype, x, shape = draw(
@@ -617,6 +715,30 @@ def _partial_tucker_data(draw):
     )
 
 
+# tensor train
+@st.composite
+def _tensor_train_data(draw):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_value=0.1,
+            max_value=10,
+            min_num_dims=2,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=5,
+            ret_shape=True,
+        ).filter(lambda x: "float16" not in x[0] and "bfloat16" not in x[0])
+    )
+    dims = len(shape)
+    rank = [1]
+    for i in range(dims - 1):
+        rank.append(draw(helpers.ints(min_value=1, max_value=shape[i])))
+    rank.append(1)
+
+    return x_dtype, x[0], rank
+
+
 # truncated svd
 @st.composite
 def _truncated_svd_data(draw):
@@ -635,6 +757,27 @@ def _truncated_svd_data(draw):
     uv = draw(st.booleans())
     n_eigen = draw(helpers.ints(min_value=1, max_value=max(shape[-2:])))
     return x_dtype, x[0], uv, n_eigen
+
+
+@st.composite
+def _tt_matrix_to_tensor_data(draw):
+    rank = 1
+    num_factors = draw(st.integers(min_value=1, max_value=3))
+    factor_dims = draw(
+        st.tuples(
+            st.integers(min_value=1, max_value=3), st.integers(min_value=1, max_value=3)
+        )
+    )
+    shape = (num_factors, rank, *factor_dims, rank)
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=1,
+            shape=shape,
+            shared_dtype=True,
+        )
+    )
+    return x_dtype, x
 
 
 # tucker
@@ -717,7 +860,6 @@ def _tucker_data(draw):
     fn_tree="functional.ivy.experimental.adjoint",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=(
-            ivy.float16,
             ivy.float32,
             ivy.float64,
             ivy.complex64,
@@ -733,7 +875,7 @@ def _tucker_data(draw):
         shared_dtype=True,
     ),
 )
-def test_adjoint(dtype_x, test_flags, backend_fw, fn_name):
+def test_adjoint(dtype_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
     helpers.test_function(
         input_dtypes=dtype,
@@ -741,7 +883,49 @@ def test_adjoint(dtype_x, test_flags, backend_fw, fn_name):
         backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
+        on_device=on_device,
     )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.batched_outer",
+    data=_batched_outer_data(),
+)
+def test_batched_outer(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, tensors = data
+    if backend_fw == "paddle":
+        # to avoid large dimension results since paddle don't support them
+        tensors = tensors[:2]
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        atol_=1e-1,
+        rtol_=1e-1,
+        input_dtypes=input_dtypes,
+        tensors=tensors,
+    )
+
+
+# test adapted from tensorly
+# https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/tests/test_outer_product.py#L22
+@pytest.mark.skip(
+    reason=(
+        "ivy.tensordot does not support batched_modes argument for the moment. "
+        "TODO please remove this when the functionality is added. "
+        "see https://github.com/unifyai/ivy/issues/21914"
+    )
+)
+def test_batched_outer_product():
+    batch_size = 3
+    X = ivy.random_uniform(shape=(batch_size, 4, 5, 6))
+    Y = ivy.random_uniform(shape=(batch_size, 3))
+    Z = ivy.random_uniform(shape=(batch_size, 2))
+    res = ivy.batched_outer([X, Y, Z])
+    true_res = ivy.tensordot(X, Y, (), batched_modes=0)
+    true_res = ivy.tensordot(true_res, Z, (), batched_modes=0)
+    np.testing.assert_array_almost_equal(res, true_res)
 
 
 @handle_test(
@@ -876,12 +1060,13 @@ def test_dot(*, data, test_flags, backend_fw, fn_name, on_device):
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_eig(dtype_x, test_flags, backend_fw, fn_name):
+def test_eig(dtype_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         test_values=False,
         x=x[0],
@@ -983,15 +1168,58 @@ def test_eigh_tridiagonal(
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_eigvals(dtype_x, test_flags, backend_fw, fn_name):
+def test_eigvals(dtype_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         test_values=False,
         x=x[0],
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.general_inner_product",
+    data=_generate_general_inner_product_args(),
+)
+def test_general_inner_product(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, x, n_modes = data
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtypes,
+        a=x[0],
+        b=x[1],
+        n_modes=n_modes,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.higher_order_moment",
+    data=_higher_order_moment_data(),
+)
+def test_higher_order_moment(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, x, order = data
+    if backend_fw == "paddle":
+        # to avoid large dimension results since paddle don't support them
+        order = min(order, 2)
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        atol_=1e-1,
+        rtol_=1e-1,
+        input_dtypes=input_dtypes,
+        x=x,
+        order=order,
     )
 
 
@@ -1065,7 +1293,7 @@ def test_khatri_rao(*, data, test_flags, backend_fw, fn_name, on_device):
 
 # The following two tests have been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/tests/test_khatri_rao.py
-@pytest.mark.parametrize("columns, rows", [(4, [3, 4, 2])])
+@pytest.mark.parametrize(("columns", "rows"), [(4, [3, 4, 2])])
 def test_khatri_rao_tensorly_1(columns, rows):
     columns = columns
     rows = rows
@@ -1079,7 +1307,7 @@ def test_khatri_rao_tensorly_1(columns, rows):
 
 
 @pytest.mark.parametrize(
-    "t1, t2, true_res",
+    ("t1", "t2", "true_res"),
     [
         (
             [[1, 2, 3], [4, 5, 6], [7, 8, 9]],
@@ -1151,6 +1379,82 @@ def test_kronecker(*, data, test_flags, backend_fw, fn_name, on_device):
         skip_matrix=skip_matrix,
         reverse=reverse,
     )
+
+
+# lu_factor
+@handle_test(
+    fn_tree="functional.ivy.experimental.lu_factor",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=5,
+    ).filter(
+        lambda x: np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
+    ),
+    test_gradients=st.just(False),
+)
+def test_lu_factor(dtype_x, test_flags, backend_fw, fn_name, on_device):
+    dtype, x = dtype_x
+    ret = helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+        test_values=False,
+    )
+    # check decomp is correct manually by getting the values from test_function above
+    # this is because the decomposition is not unique and test_values will not work
+    ret_f, ret_gt = ret
+
+    # check that the decomposition is correct for current fw at least
+    LU, p = ret_f.LU, ret_f.p
+    L = np.tril(LU, -1) + np.eye(LU.shape[0])
+    U = np.triu(LU)
+    P = np.eye(LU.shape[0])[p]
+    assert np.allclose(L @ U, P @ x[0])
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.lu_solve",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=helpers.get_shape(
+            min_num_dims=2, max_num_dims=2, min_dim_size=2, max_dim_size=2
+        ),
+        num_arrays=2,
+        shared_dtype=True,
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
+    ),
+    test_gradients=st.just(False),
+)
+def test_lu_solve(dtype_x, test_flags, backend_fw, fn_name, on_device):
+    dtype, arr = dtype_x
+    A, B = arr[0], arr[1]
+    ivy.set_backend(backend_fw)
+    lu_ = ivy.lu_factor(A)
+    lu, p = lu_.LU, lu_.p
+    X, X_gt = helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        lu=lu,
+        p=p,
+        b=B,
+        test_values=False,
+    )
+
+    assert np.allclose(A @ X, B)
 
 
 @handle_test(
@@ -1250,7 +1554,7 @@ def test_mode_dot(*, data, test_flags, backend_fw, fn_name, on_device):
 
 
 @pytest.mark.parametrize(
-    "X, U, true_res",
+    ("X", "U", "true_res"),
     [
         (
             [
@@ -1318,7 +1622,7 @@ def test_multi_mode_dot(*, data, test_flags, backend_fw, fn_name, on_device):
 # The following 2 tests have been adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/tests/test_n_mode_product.py#L81
 @pytest.mark.parametrize(
-    "X, U, true_res",
+    ("X", "U", "true_res"),
     [
         ([[1, 2], [0, -1]], [[2, 1], [-1, 1]], [1]),
     ],
@@ -1329,7 +1633,12 @@ def test_multi_mode_dot_tensorly_1(X, U, true_res):
     assert np.allclose(true_res, res)
 
 
-@pytest.mark.parametrize("shape", ((3, 5, 4, 2),))
+@pytest.mark.parametrize(
+    "shape",
+    [
+        (3, 5, 4, 2),
+    ],
+)
 def test_multi_mode_dot_tensorly_2(shape):
     print(shape)
     X = ivy.ones(shape)
@@ -1397,7 +1706,7 @@ def test_partial_tucker(*, data, test_flags, backend_fw, fn_name, on_device):
 # test adapted from TensorLy
 # https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/tests/test_tucker.py#L24
 @pytest.mark.parametrize(
-    "tol_norm_2, tol_max_abs, modes, shape",
+    ("tol_norm_2", "tol_max_abs", "modes", "shape"),
     [
         (
             10e-3,
@@ -1461,6 +1770,32 @@ def test_partial_tucker_tensorly(tol_norm_2, tol_max_abs, modes, shape):
 
 
 @handle_test(
+    fn_tree="functional.ivy.experimental.solve_triangular",
+    data=_generate_solve_triangular_args(),
+    test_instance_method=st.just(False),
+)
+def test_solve_triangular(*, data, test_flags, backend_fw, fn_name, on_device):
+    # Temporarily ignore gradients on paddlepaddle backend
+    # See: https://github.com/unifyai/ivy/pull/25917
+    assume(not (backend_fw == "paddle" and test_flags.test_gradients))
+    upper, adjoint, unit_diagonal, input_dtypes, x = data
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-3,
+        atol_=1e-3,
+        input_dtypes=input_dtypes,
+        x1=x[0],
+        x2=x[1],
+        upper=upper,
+        adjoint=adjoint,
+        unit_diagonal=unit_diagonal,
+    )
+
+
+@handle_test(
     fn_tree="functional.ivy.experimental.svd_flip",
     uv=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -1485,6 +1820,101 @@ def test_svd_flip(*, uv, u_based_decision, test_flags, backend_fw, fn_name, on_d
         V=input[1],
         u_based_decision=u_based_decision,
     )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.tensor_train",
+    data=_tensor_train_data(),
+    # TODO: add support for more modes
+    svd=st.just("truncated_svd"),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_tensor_train(*, data, svd, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x, rank = data
+    results = helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        input_dtypes=input_dtype,
+        input_tensor=x,
+        rank=rank,
+        svd=svd,
+        test_values=False,
+    )
+
+    ret_np, ret_from_gt_np = results
+
+    factors = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    factors_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np, backend=test_flags.ground_truth_backend
+    )
+
+    for f, f_gt in zip(factors, factors_gt):
+        assert np.prod(f.shape) == np.prod(f_gt.shape)
+
+
+# The following 3 tests have been adapted from TensorLy
+# https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/tests/test_tt_decomposition.py
+@pytest.mark.parametrize(
+    ("shape", "rank"), [((3, 4, 5, 6, 2, 10), (1, 3, 3, 4, 2, 2, 1))]
+)
+def test_tensor_train_tensorly_1(shape, rank):
+    tensor = ivy.random_uniform(shape=shape)
+    tensor_shape = tensor.shape
+    factors = ivy.tensor_train(tensor, rank)
+
+    assert len(factors) == 6, "Number of factors should be 6, currently has " + str(
+        len(factors)
+    )
+
+    r_prev_iteration = 1
+    for k in range(6):
+        (r_prev_k, n_k, r_k) = factors[k].shape
+        assert tensor_shape[k] == n_k, (
+            "Mode 1 of factor "
+            + str(k)
+            + "needs "
+            + str(tensor_shape[k])
+            + " dimensions, currently has "
+            + str(n_k)
+        )
+        assert r_prev_k == r_prev_iteration, " Incorrect ranks of factors "
+        r_prev_iteration = r_k
+
+
+@pytest.mark.parametrize(
+    ("shape", "rank"), [((3, 4, 5, 6, 2, 10), (1, 5, 4, 3, 8, 10, 1))]
+)
+def test_tensor_train_tensorly_2(shape, rank):
+    tensor = ivy.random_uniform(shape=shape)
+    factors = ivy.tensor_train(tensor, rank)
+
+    for k in range(6):
+        (r_prev, n_k, r_k) = factors[k].shape
+
+        first_error_message = (
+            "TT rank " + str(k) + " is greater than the maximum allowed "
+        )
+        first_error_message += str(r_prev) + " > " + str(rank[k])
+        assert r_prev <= rank[k], first_error_message
+
+        first_error_message = (
+            "TT rank " + str(k + 1) + " is greater than the maximum allowed "
+        )
+        first_error_message += str(r_k) + " > " + str(rank[k + 1])
+        assert r_k <= rank[k + 1], first_error_message
+
+
+@pytest.mark.parametrize(("shape", "rank", "tol"), [((3, 3, 3), (1, 3, 3, 1), (10e-5))])
+def test_tensor_train_tensorly_3(shape, rank, tol):
+    tensor = ivy.random_uniform(shape=shape)
+    factors = ivy.tensor_train(tensor, rank)
+    reconstructed_tensor = ivy.TTTensor.tt_to_tensor(factors)
+    error = ivy.vector_norm(ivy.matrix_norm(tensor - reconstructed_tensor, ord=2))
+    error /= ivy.vector_norm(ivy.matrix_norm(tensor, ord=2))
+    np.testing.assert_(error < tol, "norm 2 of reconstruction higher than tol")
 
 
 @handle_test(
@@ -1565,6 +1995,25 @@ def test_truncated_svd(*, data, test_flags, backend_fw, fn_name, on_device):
 
 
 @handle_test(
+    fn_tree="functional.ivy.experimental.tt_matrix_to_tensor",
+    data=_tt_matrix_to_tensor_data(),
+    test_gradients=st.just(False),
+)
+def test_tt_matrix_to_tensor(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = data
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e8,
+        atol_=1e8,
+        tt_matrix=x[0],
+    )
+
+
+@handle_test(
     fn_tree="functional.ivy.experimental.tucker",
     data=_tucker_data(),
     test_with_out=st.just(False),
@@ -1626,7 +2075,8 @@ def test_tucker(*, data, test_flags, backend_fw, fn_name, on_device):
 # test adapted from tensorly
 # https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/tests/test_tucker.py#L71
 @pytest.mark.parametrize(
-    "tol_norm_2, tol_max_abs, shape, ranks", [(10e-3, 10e-1, (3, 4, 3), [2, 3, 1])]
+    ("tol_norm_2", "tol_max_abs", "shape", "ranks"),
+    [(10e-3, 10e-1, (3, 4, 3), [2, 3, 1])],
 )
 def test_tucker_tensorly(tol_norm_2, tol_max_abs, shape, ranks):
     tensor = ivy.random_uniform(shape=shape)

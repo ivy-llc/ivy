@@ -18,12 +18,7 @@ def argsort(
     stable: bool = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    kind = "stable" if stable else "quicksort"
-    return (
-        jnp.argsort(-x, axis=axis, kind=kind)
-        if descending
-        else jnp.argsort(x, axis=axis, kind=kind)
-    )
+    return jnp.argsort(x, axis=axis, stable=stable, descending=descending)
 
 
 def sort(
@@ -56,9 +51,7 @@ def searchsorted(
         "only Integer data types are supported for ret_dtype."
     )
     if sorter is not None:
-        assert ivy.is_int_dtype(sorter.dtype) and not ivy.is_uint_dtype(
-            sorter.dtype
-        ), TypeError(
+        assert ivy.is_int_dtype(sorter.dtype), TypeError(
             f"Only signed integer data type for sorter is allowed, got {sorter.dtype}."
         )
         x = jnp.take_along_axis(x, sorter, axis=-1)
@@ -76,11 +69,11 @@ def searchsorted(
         ret = jnp.array(out_array).reshape(original_shape)
     else:
         ret = jnp.searchsorted(x, v, side=side)
-    return ret.astype(ret_dtype)
+    return jnp.astype(ret, ret_dtype)
 
 
 # msort
-@with_unsupported_dtypes({"0.4.14 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"0.4.24 and below": ("complex",)}, backend_version)
 def msort(
     a: Union[JaxArray, list, tuple],
     /,

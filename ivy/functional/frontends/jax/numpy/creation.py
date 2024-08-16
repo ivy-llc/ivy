@@ -1,7 +1,7 @@
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.array import Array
-
+import ivy.functional.frontends.jax.numpy as jnp_frontend
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     outputs_to_frontend_arrays,
@@ -10,11 +10,28 @@ from ivy.functional.frontends.jax.func_wrapper import (
 )
 
 from ivy.func_wrapper import handle_out_argument
-
+from ivy import with_unsupported_device_and_dtypes
 
 ndarray = Array
 
 
+@with_unsupported_device_and_dtypes(
+    {
+        "0.4.24 and below": {
+            "cpu": (
+                "float16",
+                "bflooat16",
+                "complex64",
+                "complex128",
+            ),
+            "gpu": (
+                "complex64",
+                "complex128",
+            ),
+        }
+    },
+    "jax",
+)
 @handle_jax_dtype
 @outputs_to_frontend_arrays
 def arange(start, stop=None, step=1, dtype=None):
@@ -28,12 +45,12 @@ def array(object, dtype=None, copy=True, order="K", ndmin=0):
         raise ivy.utils.exceptions.IvyNotImplementedException(
             "Only implemented for order='K'"
         )
-    ret = ivy.array(object, dtype=dtype)
+    device = ivy.default_device()
+    if ivy.is_array(object):
+        device = ivy.dev(object)
+    ret = ivy.array(object, dtype=dtype, device=device)
     if ivy.get_num_dims(ret) < ndmin:
         ret = ivy.expand_dims(ret, axis=list(range(ndmin - ivy.get_num_dims(ret))))
-
-    default_device = ivy.default_device()
-    ret = ivy.to_device(ret, default_device)
 
     if ret.shape == () and dtype is None:
         return Array(ret, weak_type=True)
@@ -113,6 +130,11 @@ def eye(N, M=None, k=0, dtype=None):
 
 
 @to_ivy_arrays_and_back
+def from_dlpack(x):
+    return ivy.from_dlpack(x)
+
+
+@to_ivy_arrays_and_back
 def frombuffer(buffer, dtype="float", count=-1, offset=0):
     return ivy.frombuffer(buffer, dtype, count, offset)
 
@@ -174,7 +196,7 @@ def iterable(y):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.24 and below": (
             "float16",
             "bfloat16",
         )
@@ -195,7 +217,7 @@ def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.14 and below": (
+        "0.4.24 and below": (
             "float16",
             "bfloat16",
         )
@@ -238,13 +260,39 @@ def ones_like(a, dtype=None, shape=None):
 
 
 @to_ivy_arrays_and_back
+def setdiff1d(ar1, ar2, assume_unique=False, *, size=None, fill_value=None):
+    fill_value = ivy.array(0 if fill_value is None else fill_value, dtype=ar1.dtype)
+    if ar1.size == 0:
+        return ivy.full(size or 0, fill_value, dtype=ar1.dtype)
+    if not assume_unique:
+        val = (
+            ivy.to_scalar(ivy.all(ar1))
+            if ivy.is_bool_dtype(ar1.dtype)
+            else ivy.to_scalar(ivy.min(ar1))
+        )
+        ar1 = jnp_frontend.unique(ar1, size=size and ar1.size, fill_value=val).ivy_array
+    mask = in1d(ar1, ar2, invert=True).ivy_array
+    if size is None:
+        return ar1[mask]
+    else:
+        if not assume_unique:
+            # Set mask to zero at locations corresponding to unique() padding.
+            n_unique = ar1.size + 1 - (ar1 == ar1[0]).sum(dtype=ivy.int64)
+            mask = ivy.where(ivy.arange(ar1.size) < n_unique, mask, False)
+        return ivy.where(
+            ivy.arange(size) < mask.sum(dtype=ivy.int64),
+            ar1[jnp_frontend.where(mask, size=size)[0].ivy_array],
+            fill_value,
+        )
+
+
+@to_ivy_arrays_and_back
 def single(x):
     return ivy.astype(x, ivy.float32)
 
 
 @to_ivy_arrays_and_back
 def size(a, axis=None):
-    ivy.set_default_int_dtype("int64")
     if axis is not None:
         sh = ivy.shape(a)
         return sh[axis]

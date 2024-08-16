@@ -13,7 +13,6 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 @from_zero_dim_arrays_to_scalar
 def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
     axis = tuple(axis) if isinstance(axis, list) else axis
-    global avg
     avg = 0
 
     if keepdims is None:
@@ -72,62 +71,30 @@ def cov(
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def mean(
-    a,
-    /,
-    *,
-    axis=None,
-    keepdims=False,
-    out=None,
-    dtype=None,
-    where=True,
-):
+def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
     axis = tuple(axis) if isinstance(axis, list) else axis
-    if dtype:
-        a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
+    dtype = dtype or a.dtype if not ivy.is_int_dtype(a.dtype) else ivy.float64
+    where = ivy.where(where, ivy.ones_like(a), 0)
+    if where is not True:
+        a = ivy.where(where, a, 0.0)
+        sum = ivy.sum(a, axis=axis, keepdims=keepdims, dtype=dtype)
+        cnt = ivy.sum(where, axis=axis, keepdims=keepdims, dtype=int)
+        ret = ivy.divide(sum, cnt, out=out)
+    else:
+        ret = ivy.mean(a.astype(dtype), axis=axis, keepdims=keepdims, out=out)
 
-    ret = ivy.mean(a, axis=axis, keepdims=keepdims, out=out)
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-
-    return ret
+    return ret.astype(dtype)
 
 
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def nanmean(
-    a,
-    /,
-    *,
-    axis=None,
-    keepdims=False,
-    out=None,
-    dtype=None,
-    where=True,
-):
-    is_nan = ivy.isnan(a)
-    axis = tuple(axis) if isinstance(axis, list) else axis
-
-    if not ivy.any(is_nan):
-        if dtype:
-            a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
-        ret = ivy.mean(a, axis=axis, keepdims=keepdims, out=out)
-
-        if ivy.is_array(where):
-            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-
-    else:
-        a = [i for i in a if ivy.isnan(i) is False]
-
-        if dtype:
-            a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
-        ret = ivy.mean(a, axis=axis, keepdims=keepdims, out=out)
-
-        if ivy.is_array(where):
-            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-
+def nanmean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
+    where = ~ivy.isnan(a) & where
+    ret = mean(a, axis, dtype, keepdims=keepdims, where=where).ivy_array
+    if out is not None:
+        out.data = ret.data
     return ret
 
 
@@ -232,7 +199,9 @@ def var(x, /, *, axis=None, ddof=0.0, keepdims=False, out=None, dtype=None, wher
     dtype = (
         dtype
         if dtype is not None
-        else ivy.float64 if ivy.is_int_dtype(x.dtype) else x.dtype
+        else ivy.float64
+        if ivy.is_int_dtype(x.dtype)
+        else x.dtype
     )
     ret = ivy.var(x, axis=axis, correction=ddof, keepdims=keepdims, out=out)
     ret = (

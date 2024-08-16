@@ -1,19 +1,12 @@
 Building Blocks
 ===============
 
-.. _`out argument`: https://unify.ai/docs/ivy/overview/deep_dive/inplace_updates.html#out-argument
- 
-Here we explain the components of Ivy which are fundamental to its usage either as a code converter or as a fully-fledged framework-agnostic ML framework.
-These are the 4 parts labelled as (a) in the image below:
-
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/submodule_dependency_graph.png?raw=true
-   :align: center
-   :width: 100%
+Here we explain the components of Ivy which are fundamental to its usage as a code converter.
 
 Backend Functional APIs ✅
 --------------------------
 
-The first important point to make is that, Ivy does not implement it’s own C++ or CUDA backend.
+The first important point to make is that, Ivy does not implement its own C++ or CUDA backend.
 Instead, Ivy **wraps** the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment.
 Let’s take the function :func:`ivy.stack` as an example.
 
@@ -73,7 +66,7 @@ There are separate backend modules for JAX, TensorFlow, PyTorch, and NumPy, and 
 
     stack.support_native_out = True
 
-There were no changes required for this function, however NumPy and PyTorch both had to be marked as supporting the `out argument`_ natively.
+There were no changes required for this function, however NumPy and PyTorch both had to be marked as supporting the :ref:`overview/deep_dive/inplace_updates:out argument` natively.
 
 For more complicated functions, we need to do more than simply wrap and maybe change the name.
 For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy’s API.
@@ -197,6 +190,156 @@ The examples can be seen below:
 
 This implicit backend selection, and the use of a shared global ivy namespace for all backends, are both made possible via the backend handler.
 
+Frontend Functional APIs ✅
+---------------------------
+
+While the backend API, Ivy API, and backend handler enable all Ivy code to be framework-agnostic, they do not, for example, enable PyTorch code to be framework agnostic.
+But with frontend APIs, we can also achieve this!
+
+Let’s take a look at how the implementation of :code:`clip` method would seem like in the frontends:
+
+
+.. code-block:: python
+
+   # ivy/functional/frontends/jax/lax/functions.py
+   def clamp(x_min,x, x_max):
+       return ivy.clip(x, x_min, x_max)
+
+
+.. code-block:: python
+
+   # ivy/functional/frontends/numpy/general.py
+   def clip(x, x_min, x_max):
+       return ivy.clip(x, x_min, x_max)
+
+.. code-block:: python
+
+   # ivy/functional/frontends/tensorflow/general.py
+   def clip_by_value(x, x_min, x_max):
+       return ivy.clip(x, x_min, x_max)
+
+.. code-block:: python
+
+   # ivy/functional/frontends/torch/general.py
+   def clamp(x, x_min, x_max):
+       return ivy.clip(x, x_min, x_max)
+
+combined, we have the following situation:
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/clip_backends_n_frontends.png?raw=true
+   :align: center
+   :width: 100%
+
+Importantly, we can select the backend and frontend **independently** from one another.
+For example, this means we can select a JAX backend, but also select the PyTorch frontend and write Ivy code which fully adheres to the PyTorch functional API.
+In the reverse direction: we can take pre-written pure PyTorch code, replace each PyTorch function with the equivalent function using Ivy’s PyTorch frontend, and then run this PyTorch code using JAX:
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/clip_conversion.png?raw=true
+   :align: center
+   :width: 100%
+|
+For this example it’s very simple, the differences are only syntactic, but the above process works for **any** function.
+If there are semantic differences then these will be captured (a) in the wrapped frontend code which expresses the frontend method as a composition of Ivy functions, and (b) in the wrapped backend code which expressed the Ivy functions as compositions of backend methods.
+
+Let’s take a more complex example and convert the PyTorch method :func:`torch.nn.functional.one_hot` into NumPy code.
+The frontend is implemented by wrapping a single Ivy method :func:`ivy.one_hot` as follows:
+
+.. code-block:: python
+
+   # ivy/functional/frontends/torch/nn/sparse_functions.py
+   def one_hot(tensor, num_classes=-1):
+       return ivy.one_hot(tensor, num_classes)
+
+Let’s look at the NumPy backend code for this Ivy method:
+
+.. code-block:: python
+
+   # ivy/functional/backends/numpy/general.py
+    def one_hot(
+        indices: np.ndarray, depth: int, *, device: str, out: Optional[np.ndarray] = None
+    ) -> np.ndarray:
+       res = np.eye(depth)[np.array(indices).reshape(-1)]
+       return res.reshape(list(indices.shape) + [depth])
+
+By chaining these methods together, we can now call :func:`torch.nn.functional.one_hot` using NumPy:
+
+.. code-block:: python
+
+   import ivy
+   import ivy.frontends.torch as torch
+
+   ivy.set_backend('numpy')
+
+   x = np.array([0., 1., 2.])
+   ret = torch.nn.functional.one_hot(x, 3)
+
+Let’s take one more example and convert TensorFlow method :func:`tf.cumprod` into PyTorch code.
+This time, the frontend is implemented by wrapping two Ivy methods :func:`ivy.cumprod`, and :func:`ivy.flip` as follows:
+
+.. code-block:: python
+
+   # ivy/functional/frontends/tensorflow/math.py
+   def cumprod(x, axis=0, exclusive=False, reverse=False, name=None):
+       ret = ivy.cumprod(x, axis, exclusive)
+       if reverse:
+           return ivy.flip(ret, axis)
+       return ret
+
+Let’s look at the PyTorch backend code for both of these Ivy methods:
+
+.. code-block:: python
+
+   # ivy/functional/backends/torch/general.py
+    def cumprod(
+        x: torch.Tensor,
+        axis: int = 0,
+        exclusive: bool = False,
+        *,
+        out: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
+        if exclusive:
+            x = torch.transpose(x, axis, -1)
+            x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1, out=out)
+            res = torch.cumprod(x, -1, out=out)
+            return torch.transpose(res, axis, -1)
+        return torch.cumprod(x, axis, out=out)
+
+.. code-block:: python
+
+   # ivy/functional/backends/torch/manipulation.py
+    def flip(
+        x: torch.Tensor,
+        axis: Optional[Union[int, Sequence[int]]] = None,
+        *,
+        out: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
+        num_dims: int = len(x.shape)
+        if not num_dims:
+            return x
+        if axis is None:
+            new_axis: List[int] = list(range(num_dims))
+        else:
+            new_axis: List[int] = axis
+        if isinstance(new_axis, int):
+            new_axis = [new_axis]
+        else:
+            new_axis = new_axis
+        new_axis = [item + num_dims if item < 0 else item for item in new_axis]
+        ret = torch.flip(x, new_axis)
+        return ret
+
+Again, by chaining these methods together, we can now call :func:`tf.math.cumprod` using PyTorch:
+
+.. code-block:: python
+
+   import ivy
+   import ivy.frontends.tensorflow as tf
+
+   ivy.set_backend('torch')
+
+   x = torch.tensor([[0., 1., 2.]])
+   ret = tf.math.cumprod(x, -1)
+
 Backend Handler ✅
 ------------------
 
@@ -212,14 +355,14 @@ The contents of this function are as follows:
         if backend_stack:
             f = backend_stack[-1]
             if verbosity.level > 0:
-                verbosity.cprint("Using backend from stack: {}".format(f))
+                verbosity.cprint(f"Using backend from stack: {f}")
             return f
 
         # if no global backend exists, we try to infer the backend from the arguments
         f = _determine_backend_from_args(list(args) + list(kwargs.values()))
         if f is not None:
             if verbosity.level > 0:
-                verbosity.cprint("Using backend from type: {}".format(f))
+                verbosity.cprint(f"Using backend from type: {f}")
             implicit_backend = f.current_backend_str()
             return f
         return importlib.import_module(_backend_dict[implicit_backend])
@@ -256,7 +399,8 @@ The following is a slightly simplified version of this code for illustration, wh
        # maybe log to the terminal
        if verbosity.level > 0:
            verbosity.cprint(
-               'Backend stack: {}'.format(backend_stack))
+               f'Backend stack: {backend_stack}'
+            )
 
 The functions implemented by the backend-specific backend such as :code:`ivy.functional.backends.torch` only constitute a subset of the full Ivy API.
 This is because many higher level functions are written as a composition of lower level Ivy functions.
@@ -323,7 +467,7 @@ A good example is :func:`ivy.lstm_update`, as shown:
         ct = init_c
 
         # lstm outputs
-        hts_list = list()
+        hts_list = []
 
         # unrolled time dimension with lstm steps
         for Wii_xt, Wif_xt, Wig_xt, Wio_xt in zip(
@@ -356,175 +500,11 @@ A good example is :func:`ivy.lstm_update`, as shown:
 We *could* find and wrap the functional LSTM update methods for each backend framework which might bring a small performance improvement, but in this case there are no functional LSTM methods exposed in the official functional APIs of the backend frameworks, and therefore the functional LSTM code which does exist for the backends is much less stable and less reliable for wrapping into Ivy.
 Generally, we have made decisions so that Ivy is as stable and scalable as possible, minimizing dependencies to backend framework code where possible with minimal sacrifices in performance.
 
-Graph Compiler 🚧
------------------
-
-“What about performance?” I hear you ask.
-This is a great point to raise!
-
-With the design as currently presented, there would be a small performance hit every time we call an Ivy function by virtue of the added Python wrapping.
-One reason we created the graph compiler was to address this issue.
-
-The compiler takes in any Ivy function, backend function, or composition, and returns the computation graph using the backend functional API only.
-The dependency graph for this process looks like this:
-
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/compiler_dependency_graph.png?raw=true
-   :align: center
-   :width: 75%
-
-Let's look at a few examples, and observe the compiled graph of the Ivy code against the native backend code.
-First, let's set our desired backend as PyTorch.
-When we compile the three functions below, despite the fact that each
-has a different mix of Ivy and PyTorch code, they all compile to the same graph:
-
-+----------------------------------------+-----------------------------------------+-----------------------------------------+
-|.. code-block:: python                  |.. code-block:: python                   |.. code-block:: python                   |
-|                                        |                                         |                                         |
-| def pure_ivy(x):                       | def pure_torch(x):                      | def mix(x):                             |
-|     y = ivy.mean(x)                    |     y = torch.mean(x)                   |     y = ivy.mean(x)                     |
-|     z = ivy.sum(x)                     |     z = torch.sum(x)                    |     z = torch.sum(x)                    |
-|     f = ivy.var(y)                     |     f = torch.var(y)                    |     f = ivy.var(y)                      |
-|     k = ivy.cos(z)                     |     k = torch.cos(z)                    |     k = torch.cos(z)                    |
-|     m = ivy.sin(f)                     |     m = torch.sin(f)                    |     m = ivy.sin(f)                      |
-|     o = ivy.tan(y)                     |     o = torch.tan(y)                    |     o = torch.tan(y)                    |
-|     return ivy.concatenate(            |     return torch.cat(                   |     return ivy.concatenate(             |
-|         [k, m, o], -1)                 |         [k, m, o], -1)                  |         [k, m, o], -1)                  |
-|                                        |                                         |                                         |
-| # input                                | # input                                 | # input                                 |
-| x = ivy.array([[1., 2., 3.]])          | x = torch.tensor([[1., 2., 3.]])        | x = ivy.array([[1., 2., 3.]])           |
-|                                        |                                         |                                         |
-| # create graph                         | # create graph                          | # create graph                          |
-| graph = ivy.compile_graph(             | graph = ivy.compile_graph(              | graph = ivy.compile_graph(              |
-|     pure_ivy, x)                       |     pure_torch, x)                      |     mix, x)                             |
-|                                        |                                         |                                         |
-| # call graph                           | # call graph                            | # call graph                            |
-| ret = graph(x)                         | ret = graph(x)                          | ret = graph(x)                          |
-+----------------------------------------+-----------------------------------------+-----------------------------------------+
-
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/compiled_graph_a.png?raw=true
-   :align: center
-   :width: 75%
-
-For all existing ML frameworks, the functional API is the backbone that underpins all higher level functions and classes.
-This means that under the hood, any code can be expressed as a composition of ops in the functional API.
-The same is true for Ivy.
-Therefore, when compiling the graph with Ivy, any higher-level classes or extra code which does not directly contribute towards the computation graph is excluded.
-For example, the following 3 pieces of code all compile to the exact same computation graph as shown:
-
-+----------------------------------------+-----------------------------------------+-----------------------------------------+
-|.. code-block:: python                  |.. code-block:: python                   |.. code-block:: python                   |
-|                                        |                                         |                                         |
-| class Network(ivy.module)              | def clean(x, w, b):                     | def unclean(x, w, b):                   |
-|                                        |     return w*x + b                      |     y = b + w + x                       |
-|     def __init__(self):                |                                         |     print('message')                    |
-|         self._layer = ivy.Linear(3, 3) |                                         |     wx = w * x                          |
-|         super().__init__()             |                                         |     ret = wx + b                        |
-|                                        |                                         |     temp = y * wx                       |
-|     def _forward(self, x):             |                                         |     return ret                          |
-|         return self._layer(x)          |                                         |                                         |
-|                                        | # input                                 | # input                                 |
-| # build network                        | x = ivy.array([1., 2., 3.])             | x = ivy.array([1., 2., 3.])             |
-| net = Network()                        | w = ivy.random_uniform(                 | w = ivy.random_uniform(                 |
-|                                        |     -1, 1, (3, 3))                      |     -1, 1, (3, 3))                      |
-| # input                                | b = ivy.zeros((3,))                     | b = ivy.zeros((3,))                     |
-| x = ivy.array([1., 2., 3.])            |                                         |                                         |
-|                                        | # compile graph                         | # compile graph                         |
-| # compile graph                        | graph = ivy.compile_graph(              | graph = ivy.compile_graph(              |
-| net.compile_graph(x)                   |     clean, x, w, b)                     |     unclean, x, w, b)                   |
-|                                        |                                         |                                         |
-| # execute graph                        | # execute graph                         | # execute graph                         |
-| net(x)                                 | graph(x, w, b)                          | graph(x, w, b)                          |
-+----------------------------------------+-----------------------------------------+-----------------------------------------+
-
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/compiled_graph_b.png?raw=true
-   :align: center
-   :width: 75%
-
-This compilation is not restricted to just PyTorch.
-Let's take another example, but compile to Tensorflow, NumPy, and JAX:
-
-+------------------------------------+
-|.. code-block:: python              |
-|                                    |
-| def ivy_func(x, y):                |
-|     w = ivy.diag(x)                |
-|     z = ivy.matmul(w, y)           |
-|     return z                       |
-|                                    |
-| # input                            |
-| x = ivy.array([[1., 2., 3.]])      |
-| y = ivy.array([[2., 3., 4.]])      |
-| # create graph                     |
-| graph = ivy.compile_graph(         |
-|     ivy_func, x, y)                |
-|                                    |
-| # call graph                       |
-| ret = graph(x, y)                  |
-+------------------------------------+
-
-Converting this code to a graph, we get a slightly different graph for each backend:
-
-Tensorflow:
-
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/compiled_graph_tf.png?raw=true
-   :align: center
-   :width: 75%
-
-|
-
-Numpy:
-
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/compiled_graph_numpy.png?raw=true
-   :align: center
-   :width: 75%
-
-|
-
-Jax:
-
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/compiled_graph_jax.png?raw=true
-   :align: center
-   :width: 75%
-|
-
-The example above further emphasizes that the graph compiler creates a computation graph consisting of backend functions, not Ivy functions.
-Specifically, the same Ivy code compiles to different graphs depending on the selected backend.
-However, when compiling native framework code, we are only able to compile a graph for that same framework.
-For example, we cannot take torch code and compile this into tensorflow code.
-However, we can transpile torch code into tensorflow code (see :ref:`Ivy as a Transpiler` for more details).
-
-The graph compiler does not compile to C++, CUDA, or any other lower level language.
-It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python.
-Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via :func:`ivy.compile`, which wraps backend-specific compilation code, for example:
-
-.. code-block:: python
-
-    # ivy/functional/backends/tensorflow/compilation.py
-    compile = lambda fn, dynamic=True, example_inputs=None,\
-    static_argnums=None, static_argnames=None:\
-        tf.function(fn)
-
-.. code-block:: python
-
-    # ivy/functional/backends/torch/compilation.py
-    def compile(fn, dynamic=True, example_inputs=None,
-            static_argnums=None, static_argnames=None):
-    if dynamic:
-        return torch.jit.script(fn)
-    return torch.jit.trace(fn, example_inputs)
-
-.. code-block:: python
-
-    # ivy/functional/backends/jax/compilation.py
-    compile = lambda fn, dynamic=True, example_inputs=None,\
-                static_argnums=None, static_argnames=None:\
-    jax.jit(fn, static_argnums=static_argnums,
-            static_argnames=static_argnames)
-
-Therefore, the backend code can always be run with maximal efficiency by compiling into an efficient low-level backend-specific computation graph.
+Source-to-Source Transpiler ✅
+------------------------------
 
 **Round Up**
 
-Hopefully, this has painted a clear picture of the fundamental building blocks underpinning the Ivy framework, being the backend functional APIs, Ivy functional API, backend handler, and graph compiler 🙂
+Hopefully, this has painted a clear picture of the fundamental building blocks underpinning the Ivy framework, being the Backend functional APIs, Ivy functional API, Backend handler, and Tracer 😄
 
 Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!

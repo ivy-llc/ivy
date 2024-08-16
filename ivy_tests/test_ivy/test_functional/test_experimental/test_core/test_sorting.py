@@ -12,13 +12,15 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 
 @st.composite
-def _invert_permutation_helper(draw):
+def _invert_permutation_helper(draw, for_frontend_test=False):
     perm = draw(
         st.permutations(list(range(draw(st.integers(min_value=3, max_value=10)))))
     )
-    if draw(st.booleans()):
+    if for_frontend_test or draw(st.booleans()):
         perm = np.array(perm)
-    dtype = draw(st.sampled_from(["int32", "int64"]))
+    dtype = draw(
+        st.sampled_from(["int32", "int64"] if not for_frontend_test else ["int64"])
+    )
     return dtype, perm
 
 

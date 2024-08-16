@@ -4,10 +4,9 @@ Navigating the Code
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`navigating the code channel`: https://discord.com/channels/799879767196958751/982737793476345888
+.. _`navigating the code thread`: https://discord.com/channels/799879767196958751/1189905165373935616
 .. _`Array API Standard convention`: https://data-apis.org/array-api/2021.12/API_specification/array_object.html#api-specification-array-object--page-root
 .. _`flake8`: https://flake8.pycqa.org/en/latest/index.html
-.. _`pre-commit guide`: https://unify.ai/docs/ivy/overview/contributing/setting_up.html#pre-commit
 
 Categorization
 --------------
@@ -134,7 +133,7 @@ Keyword-only parameters will mandate the use of argument names when calling func
 Similar arguments can be kept together in the argument list, rather than us needing to add these at the very end to ensure positional argument behaviour remains the same.
 
 The :code:`dtype`, :code:`device` and :code:`out` arguments are always keyword-only.
-Arrays always have type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :class:`ivy.Array` in the output.
+Arrays always have a type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :class:`ivy.Array` in the output.
 All functions which produce a single array include the :code:`out` argument.
 The reasons for each of these features are explained in the following sections.
 
@@ -165,7 +164,7 @@ Again, the reasons for these features are explained in the following sections.
 Submodule Helper Functions
 --------------------------
 
-At times, helper functions specific to submodule is required to:
+At times, helper functions specific to the submodule are required to:
 
 * keep the code clean and readable
 * be imported in their respective backend implementations
@@ -193,16 +192,14 @@ To have a better idea on this, let's look at an example!
             )
         ):
             raise ivy.utils.exceptions.IvyException(
-                "the fill_value: {} and data type: {} are not compatible".format(
-                    fill_value, dtype
-                )
+                f"the fill_value: {fill_value} and data type: {dtype} are not compatible"
             )
 
 
 In the :func:`full_like` function in :mod:`creation.py`, the types of :code:`fill_value` and :code:`dtype` has to be verified to avoid errors.
 This check has to be applied to all backends, which means the related code is common and identical.
 In this case, we can extract the code to be a helper function on its own, placed in its related submodule (:mod:`creation.py` here).
-In this example, the helper function is named as :func:`_assert_fill_value_and_dtype_are_compatible`.
+In this example, the helper function is named as :func:`check_fill_value_and_dtype_are_compatible`.
 
 Then, we import this submodule-specific helper function to the respective backends, where examples for each backend is shown below.
 
@@ -302,7 +299,7 @@ This helps to prevent our work from culminating over a fixed version while strid
 
 This should have hopefully given you a good feel for how to navigate the Ivy codebase.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `navigating the code channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `navigating the code thread`_!
 
 
 **Video**

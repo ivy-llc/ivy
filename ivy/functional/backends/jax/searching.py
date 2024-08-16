@@ -12,7 +12,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 # ------------------ #
 
 
-@with_unsupported_dtypes({"0.4.14 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"0.4.24 and below": ("complex",)}, backend_version)
 def argmax(
     x: JaxArray,
     /,
@@ -34,11 +34,11 @@ def argmax(
         ret = jnp.argmax(x, axis=axis, keepdims=keepdims)
     if dtype:
         dtype = ivy.as_native_dtype(dtype)
-        return ret.astype(dtype)
+        return jnp.astype(ret, dtype)
     return ret
 
 
-@with_unsupported_dtypes({"0.4.14 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"0.4.24 and below": ("complex",)}, backend_version)
 def argmin(
     x: JaxArray,
     /,
@@ -60,7 +60,7 @@ def argmin(
         ret = jnp.argmin(x, axis=axis, keepdims=keepdims)
     if dtype:
         dtype = ivy.as_native_dtype(dtype)
-        return ret.astype(dtype)
+        return jnp.astype(ret, dtype)
     return ret
 
 

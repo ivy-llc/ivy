@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t unifyai/ivy:latest --no-cache -f DockerfileApplied ..
+docker build -t ivyllc/ivy:latest --no-cache -f DockerfileApplied ..

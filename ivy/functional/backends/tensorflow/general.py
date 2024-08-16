@@ -1,11 +1,12 @@
-"""
-Tensorflow general functions.
+"""Tensorflow general functions.
 
 Collection of TensorFlow general functions, wrapped to fit Ivy syntax
 and signature.
 """
 
 # global
+import functools
+from operator import mul
 from typing import Optional, Union, Sequence, Callable, Tuple
 import numpy as np
 import multiprocessing as _multiprocessing
@@ -24,7 +25,10 @@ _round = round
 
 
 def is_native_array(x, /, *, exclusive=False):
-    if isinstance(x, (tf.Tensor, tf.Variable)):
+    if "keras.src.backend.tensorflow.core.Variable" in str(x.__class__):
+        # ensure `KerasVariable` classifies as a native array
+        return not exclusive
+    if isinstance(x, (tf.Tensor, tf.Variable, tf.TensorArray)):
         if exclusive and isinstance(x, tf.Variable):
             return False
         return True
@@ -37,7 +41,7 @@ def array_equal(
     /,
 ) -> bool:
     x0, x1 = ivy.promote_types_of_inputs(x0, x1)
-    return bool((tf.experimental.numpy.array_equal(x0, x1)))
+    return bool(tf.experimental.numpy.array_equal(x0, x1))
 
 
 def container_types():
@@ -48,27 +52,16 @@ def current_backend_str() -> str:
     return "tensorflow"
 
 
-def _check_query(query):
-    return not isinstance(query, list) and (
-        not (ivy.is_array(query) and ivy.is_bool_dtype(query) ^ bool(query.ndim > 0))
-    )
-
-
 def get_item(
     x: Union[tf.Tensor, tf.Variable],
     /,
     query: Union[tf.Tensor, tf.Variable, Tuple],
     *,
-    copy: bool = None,
+    copy: Optional[bool] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return x.__getitem__(query)
-
-
-get_item.partial_mixed_handler = lambda x, query, **kwargs: (
-    all(_check_query(i) for i in query)
-    if isinstance(query, tuple)
-    else _check_query(query)
-)
+    if ivy.is_array(query) and ivy.is_bool_dtype(query) and not len(query.shape):
+        return tf.expand_dims(x, 0)
+    return x[query]
 
 
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
@@ -109,8 +102,8 @@ def gather(
     batch_dims: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    axis = axis % len(params.shape)
-    batch_dims = batch_dims % len(params.shape)
+    axis %= len(params.shape)
+    batch_dims %= len(params.shape)
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     return tf.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
@@ -159,7 +152,7 @@ def gather_nd(
     try:
         return tf.gather_nd(params, indices, batch_dims=batch_dims)
     except Exception:  # fall back to compositional implementation
-        batch_dims = batch_dims % len(params.shape)
+        batch_dims %= len(params.shape)
         result = []
         if batch_dims == 0:
             result = gather_nd_helper(params, indices)
@@ -192,6 +185,10 @@ def get_num_dims(x, /, *, as_array=False):
     )
 
 
+def size(x: tf.Tensor, /) -> int:
+    return functools.reduce(mul, x.shape) if len(x.shape) > 0 else 1
+
+
 def inplace_arrays_supported():
     return False
 
@@ -206,11 +203,10 @@ def inplace_decrement(
             x.data = x_native
         else:
             x = ivy.Array(x_native)
+    elif ivy.is_ivy_array(x):
+        x.data -= val_native
     else:
-        if ivy.is_ivy_array(x):
-            x.data -= val_native
-        else:
-            x = ivy.Array(val_native)
+        x = ivy.Array(val_native)
     return x
 
 
@@ -323,34 +319,31 @@ def scatter_flat(
     if ivy.exists(size) and ivy.exists(target):
         ivy.utils.assertions.check_equal(len(target.shape), 1, as_array=False)
         ivy.utils.assertions.check_equal(target.shape[0], size, as_array=False)
+    if target_given:
+        updates = ivy.astype(updates, target.dtype)
     if not target_given:
         target = tf.zeros([size], dtype=updates.dtype)
         res = tf.tensor_scatter_nd_update(target, tf.expand_dims(indices, -1), updates)
+    elif reduction == "max":
+        res = tf.tensor_scatter_nd_max(target, tf.expand_dims(indices, -1), updates)
+    elif reduction == "min":
+        res = tf.tensor_scatter_nd_min(target, tf.expand_dims(indices, -1), updates)
+    elif reduction == "replace":
+        res = tf.tensor_scatter_nd_update(target, tf.expand_dims(indices, -1), updates)
+    elif reduction == "sum":
+        res = tf.tensor_scatter_nd_add(target, tf.expand_dims(indices, -1), updates)
     else:
-        if reduction == "sum":
-            res = tf.tensor_scatter_nd_add(target, tf.expand_dims(indices, -1), updates)
-        elif reduction == "min":
-            res = tf.tensor_scatter_nd_min(target, tf.expand_dims(indices, -1), updates)
-        elif reduction == "max":
-            res = tf.tensor_scatter_nd_max(target, tf.expand_dims(indices, -1), updates)
-        elif reduction == "replace":
-            res = tf.tensor_scatter_nd_update(
-                target, tf.expand_dims(indices, -1), updates
-            )
-        else:
-            raise ivy.utils.exceptions.IvyException(
-                "reduction is {}, but it must be one of "
-                '"sum", "min", "max" or "replace"'.format(reduction)
-            )
-    if ivy.exists(out):
-        return ivy.inplace_update(out, res)
-    return res
+        raise ivy.utils.exceptions.IvyException(
+            f'reduction is {reduction}, but it must be one of "sum", "min", "max" or'
+            ' "replace"'
+        )
+    return ivy.inplace_update(out, res) if ivy.exists(out) else res
 
 
 scatter_flat.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16", "complex")}, backend_version)
 def scatter_nd(
     indices: Union[tf.Tensor, tf.Variable],
     updates: Union[tf.Tensor, tf.Variable],
@@ -369,9 +362,9 @@ def scatter_nd(
     )
 
     expected_shape = (
-        list(indices.shape[:-1]) + list(out.shape[indices.shape[-1] :])
+        list(tf.shape(indices)[:-1]) + list(out.shape[tf.shape(indices)[-1] :])
         if ivy.exists(out)
-        else list(indices.shape[:-1]) + list(shape[indices.shape[-1] :])
+        else list(tf.shape(indices)[:-1]) + list(shape[tf.shape(indices)[-1] :])
     )
     updates = _broadcast_to(updates, expected_shape)._data
     if len(updates.shape) == 0:
@@ -394,12 +387,15 @@ def scatter_nd(
         res = tf.tensor_scatter_nd_min(target, indices, updates)
     elif reduction == "max":
         res = tf.tensor_scatter_nd_max(target, indices, updates)
+    elif reduction == "mul":
+        updates = ivy.multiply(ivy.gather_nd(target, indices), updates).data
+        res = tf.tensor_scatter_nd_update(target, indices, updates)
     elif reduction == "replace":
         res = tf.tensor_scatter_nd_update(target, indices, updates)
     else:
         raise ivy.utils.exceptions.IvyException(
-            "reduction is {}, but it must be one of "
-            '"sum", "min", "max" or "replace"'.format(reduction)
+            f'reduction is {reduction}, but it must be one of "sum", "min", "max",'
+            ' "mul" or "replace"'
         )
     if ivy.exists(out):
         return ivy.inplace_update(out, res)
@@ -473,7 +469,7 @@ def vmap(
 
         # Handling None in in_axes by broadcasting the axis_size
         if isinstance(in_axes, (tuple, list)) and None in in_axes:
-            none_axis_index = list()
+            none_axis_index = []
             for index, axis in enumerate(in_axes):
                 if axis is None:
                     none_axis_index.append(index)
@@ -507,7 +503,7 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16", "complex")}, backend_version)
 def isin(
     elements: tf.Tensor,
     test_elements: tf.Tensor,

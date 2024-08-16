@@ -1,6 +1,6 @@
 # global
 import inspect
-from typing import Callable, Dict
+from typing import Callable, Dict, Optional
 import functools
 
 # local
@@ -37,8 +37,7 @@ def _to_ivy_array(x):
 
 # update kwargs dictionary keys helper
 def _update_kwarg_keys(kwargs: Dict, to_update: Dict) -> Dict:
-    """
-    Update the key-word only arguments dictionary.
+    """Update the key-word only arguments dictionary.
 
     Parameters
     ----------
@@ -100,10 +99,9 @@ def handle_tf_dtype(fn: Callable) -> Callable:
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_ivy_arrays_tf(*args, **kwargs):
-        """
-        Convert all `TensorFlow.Tensor` instances in both the positional and keyword
-        arguments into `ivy.Array` instances, and then call the function with the
-        updated arguments.
+        """Convert all `TensorFlow.Tensor` instances in both the positional and
+        keyword arguments into `ivy.Array` instances, and then call the
+        function with the updated arguments.
 
         Parameters
         ----------
@@ -126,24 +124,26 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 
         # convert all arrays in the inputs to ivy.Array instances
         ivy_args = ivy.nested_map(
-            args, _to_ivy_array, include_derived=True, shallow=False
+            _to_ivy_array, args, include_derived=True, shallow=False
         )
         ivy_kwargs = ivy.nested_map(
-            kwargs, _to_ivy_array, include_derived=True, shallow=False
+            _to_ivy_array, kwargs, include_derived=True, shallow=False
         )
         if has_out:
             ivy_kwargs["out"] = out
         return fn(*ivy_args, **ivy_kwargs)
 
-    _inputs_to_ivy_arrays_tf.inputs_to_ivy_arrays = True
+    _inputs_to_ivy_arrays_tf.inputs_to_ivy_arrays_tf = True
     return _inputs_to_ivy_arrays_tf
 
 
-def map_raw_ops_alias(alias: callable, kwargs_to_update: Dict = None) -> callable:
-    """
-    Map the raw_ops function with its respective frontend alias function, as the
-    implementations of raw_ops is way similar to that of frontend functions, except that
-    only arguments are passed as key-word only in raw_ops functions.
+def map_raw_ops_alias(
+    alias: callable, kwargs_to_update: Optional[Dict] = None
+) -> callable:
+    """Map the raw_ops function with its respective frontend alias function, as
+    the implementations of raw_ops is way similar to that of frontend
+    functions, except that only arguments are passed as key-word only in
+    raw_ops functions.
 
     Parameters
     ----------
@@ -190,15 +190,15 @@ def map_raw_ops_alias(alias: callable, kwargs_to_update: Dict = None) -> callabl
         _wraped_fn.__signature__ = new_signature
         return _wraped_fn
 
+    _wrap_raw_ops_alias.wrap_raw_ops_alias = True
     return _wrap_raw_ops_alias(alias, kwargs_to_update)
 
 
 def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _outputs_to_frontend_arrays_tf(*args, **kwargs):
-        """
-        Call the function, and then convert all `tensorflow.Tensor` instances in the
-        function return into `ivy.Array` instances.
+        """Call the function, and then convert all `tensorflow.Tensor`
+        instances in the function return into `ivy.Array` instances.
 
         Parameters
         ----------
@@ -217,10 +217,10 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
 
         # convert all arrays in the return to `frontend.Tensorflow.tensor` instances
         return ivy.nested_map(
-            ret, _ivy_array_to_tensorflow, include_derived={tuple: True}
+            _ivy_array_to_tensorflow, ret, include_derived={"tuple": True}
         )
 
-    _outputs_to_frontend_arrays_tf.outputs_to_frontend_arrays = True
+    _outputs_to_frontend_arrays_tf.outputs_to_frontend_arrays_tf = True
     return _outputs_to_frontend_arrays_tf
 
 

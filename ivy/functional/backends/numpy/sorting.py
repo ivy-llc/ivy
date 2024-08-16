@@ -37,12 +37,12 @@ def sort(
     kind = "stable" if stable else "quicksort"
     ret = np.asarray(np.sort(x, axis=axis, kind=kind))
     if descending:
-        ret = np.asarray((np.flip(ret, axis)))
+        ret = np.asarray(np.flip(ret, axis))
     return ret
 
 
 # msort
-@with_unsupported_dtypes({"1.25.2 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.26.3 and below": ("complex",)}, backend_version)
 def msort(
     a: Union[np.ndarray, list, tuple], /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -62,14 +62,12 @@ def searchsorted(
     ret_dtype: np.dtype = np.int64,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    assert ivy.is_int_dtype(ret_dtype), ValueError(
+    assert ivy.is_int_dtype(ret_dtype), TypeError(
         "only Integer data types are supported for ret_dtype."
     )
     is_sorter_provided = sorter is not None
     if is_sorter_provided:
-        assert ivy.is_int_dtype(sorter.dtype) and not ivy.is_uint_dtype(
-            sorter.dtype
-        ), TypeError(
+        assert ivy.is_int_dtype(sorter.dtype), TypeError(
             f"Only signed integer data type for sorter is allowed, got {sorter.dtype}."
         )
     if x.ndim != 1:

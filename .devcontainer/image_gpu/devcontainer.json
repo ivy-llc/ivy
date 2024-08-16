@@ -1,7 +1,7 @@
 {
 	"name": "Ivy GPU Development Environment (image)",
 
-	"image": "unifyai/multicuda:base_and_requirements",
+	"image": "ivyllc/ivy:latest-gpu",
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -16,20 +16,20 @@
 	"runArgs": ["--gpus","all"],
 
 	"postCreateCommand": {
-        "post_create": "bash .devcontainer/post_create_commands.sh", 
+        "post_create": "bash .devcontainer/post_create_commands.sh",
         "bashrc": "echo \"alias python=python3\" >> ~/.bashrc"
     },
-	"initializeCommand": "docker pull unifyai/ivy:latest",
-	
+	"initializeCommand": "docker pull ivyllc/ivy:latest",
+
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
-	
+
 	// Uncomment when using a ptrace-based debugger like C++, Go, and Rust
 	// "runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
-	
+
 	// Uncomment to use the Docker CLI from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker.
 	// "mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
-	
+
 	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
 	// "remoteUser": "vscode",
     "features": {

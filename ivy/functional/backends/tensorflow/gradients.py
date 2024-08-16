@@ -1,5 +1,4 @@
-"""
-Tensorflow gradient functions.
+"""Tensorflow gradient functions.
 
 Collection of TensorFlow gradient functions, wrapped to fit Ivy syntax
 and signature.
@@ -38,8 +37,8 @@ def _grad_func(y, xs, xs_required, tape):
     """Gradient calculation function."""
     # Creating a zero gradient nest for the case where no gradients are computed
     grads_ = ivy.nested_map(
-        xs_required,
         lambda x: ivy.to_native(ivy.zeros_like(x)),
+        xs_required,
         include_derived=True,
         shallow=False,
     )
@@ -52,8 +51,8 @@ def _grad_func(y, xs, xs_required, tape):
         grads = grads_ if grads is None else grads
     else:
         grads = ivy.nested_map(
-            grads,
             lambda x: 0 if x is None else x,
+            grads,
             include_derived=True,
         )
         if isinstance(grads, ivy.Container):
@@ -69,13 +68,25 @@ def execute_with_gradients(
     /,
     *,
     retain_grads: bool = False,
-    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
-    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
+    xs_grad_idxs: Sequence[Sequence[Union[str, int]]] = ((0,),),
+    ret_grad_idxs: Sequence[Sequence[Union[str, int]]] = ((0,),),
 ):
     # Conversion of required arrays to float variables and duplicate index chains
     xs, xs_grad_idxs, xs_required, required_duplicate_index_chains, _ = (
         _get_required_float_variables(xs, xs_grad_idxs)
     )
+
+    # Conversion of KerasVariable to tf.Variable within xs_required container, so they can be watched
+    if ivy.is_ivy_container(xs_required):
+        ivy.nested_map(
+            lambda x: (
+                x._value
+                if "keras.src.backend.tensorflow.core.Variable" in str(x.__class__)
+                else x
+            ),
+            xs_required,
+            include_derived=True,
+        )
 
     # Creating a tape to record operations
     with tf.GradientTape(persistent=True, watch_accessed_variables=False) as tape:
@@ -97,8 +108,8 @@ def execute_with_gradients(
         # Gradient calculation for multiple outputs
         y = _get_native_y(y)
         grads_ = ivy.nested_map(
-            y,
             lambda x: _grad_func(x, xs, xs_required, tape),
+            y,
             include_derived=True,
             shallow=False,
         )
@@ -120,17 +131,17 @@ def execute_with_gradients(
 def value_and_grad(func):
     def grad_fn(xs):
         grads = ivy.nested_map(
-            xs, lambda x: ivy.zeros_like(x), include_derived=True, shallow=False
+            lambda x: ivy.zeros_like(x), xs, include_derived=True, shallow=False
         )
         with tf.GradientTape(watch_accessed_variables=False) as tape:
-            xs = ivy.nested_map(xs, lambda x: ivy.to_native(x), include_derived=True)
+            xs = ivy.nested_map(lambda x: ivy.to_native(x), xs, include_derived=True)
             tape.watch(xs)
             y = func(xs)
         y = y.to_native(y)
         grads_ = tape.gradient(y, xs)
         grads_ = ivy.nested_map(
-            grads_,
             lambda x: ivy.to_ivy(x),
+            grads_,
             include_derived=True,
         )
         grads_ = ivy.to_ivy(grads_)
@@ -162,15 +173,14 @@ def stop_gradient(
 
 
 def jac(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(
-        func(ivy.to_ivy(x_in, nested=True)),
-        nested=True,
-        include_derived=True,
-    )
+    def grad_fn(x_in):
+        return ivy.to_native(
+            func(ivy.to_ivy(x_in, nested=True)), nested=True, include_derived=True
+        )
 
     def callback_fn(x_in):
         with tf.GradientTape(persistent=True) as tape:
-            ivy.nested_map(x_in, ivy.copy_array)
+            ivy.nested_map(ivy.copy_array, x_in)
             x_in = ivy.to_native(x_in, nested=True)
             tape.watch(x_in)
             y = grad_fn(x_in)
@@ -178,11 +188,11 @@ def jac(func: Callable):
             # Deal with multiple outputs
             if not isinstance(y, ivy.NativeArray):
                 jacobian = ivy.nested_map(
-                    y,
                     lambda yi: ivy.to_ivy(
                         tape.jacobian(yi, x_in, unconnected_gradients="zero"),
                         nested=True,
                     ),
+                    y,
                     include_derived=True,
                 )
             else:

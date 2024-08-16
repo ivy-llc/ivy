@@ -47,7 +47,9 @@ def unique_all(
             axis=0,
         )
         nan_idx = jnp.where(jnp.isnan(x.flatten()))[0]
-        indices = jnp.concatenate((indices[:-1], nan_idx), axis=0).astype(indices.dtype)
+        indices = jnp.astype(
+            jnp.concatenate((indices[:-1], nan_idx), axis=0), indices.dtype
+        )
 
     if not by_value:
         sort_idx = jnp.argsort(indices)
@@ -60,7 +62,7 @@ def unique_all(
         )
 
     return Results(
-        values.astype(x.dtype),
+        jnp.astype(values, x.dtype),
         indices,
         inverse_indices,
         counts,
@@ -76,8 +78,8 @@ def unique_counts(
     if nan_count > 1:
         nan_idx = jnp.where(jnp.isnan(v))
         c = c.at[nan_idx].set(1)
-        v = jnp.append(v, jnp.full(nan_count - 1, jnp.nan)).astype(x.dtype)
-        c = jnp.append(c, jnp.full(nan_count - 1, 1)).astype("int32")
+        v = jnp.astype(jnp.append(v, jnp.full(nan_count - 1, jnp.nan)), x.dtype)
+        c = jnp.astype(jnp.append(c, jnp.full(nan_count - 1, 1)), "int32")
     Results = namedtuple("Results", ["values", "counts"])
     return Results(v, c)
 
@@ -85,22 +87,29 @@ def unique_counts(
 def unique_inverse(
     x: JaxArray,
     /,
+    *,
+    axis: Optional[int] = None,
 ) -> Tuple[JaxArray, JaxArray]:
     Results = namedtuple("Results", ["values", "inverse_indices"])
-    values, inverse_indices = jnp.unique(x, return_inverse=True)
+    values, inverse_indices = jnp.unique(x, return_inverse=True, axis=axis)
+
     nan_count = jnp.count_nonzero(jnp.isnan(x))
     if nan_count > 1:
-        values = jnp.append(values, jnp.full(nan_count - 1, jnp.nan)).astype(x.dtype)
+        values = jnp.astype(
+            jnp.append(values, jnp.full(nan_count - 1, jnp.nan), axis=0), x.dtype
+        )
     inverse_indices = jnp.reshape(inverse_indices, x.shape)
+
     return Results(values, inverse_indices)
 
 
 def unique_values(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     nan_count = jnp.count_nonzero(jnp.isnan(x))
     if nan_count > 1:
-        unique = jnp.append(
-            jnp.unique(x.flatten()), jnp.full(nan_count - 1, jnp.nan)
-        ).astype(x.dtype)
+        unique = jnp.astype(
+            jnp.append(jnp.unique(x.flatten()), jnp.full(nan_count - 1, jnp.nan)),
+            x.dtype,
+        )
     else:
-        unique = jnp.unique(x.flatten()).astype(x.dtype)
+        unique = jnp.astype(jnp.unique(x.flatten()), x.dtype)
     return unique

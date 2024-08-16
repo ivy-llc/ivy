@@ -3,7 +3,7 @@ from typing import Optional, Union, Tuple, Sequence
 import torch
 
 # local
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
 import ivy
 from ..statistical import _infer_dtype
@@ -12,7 +12,7 @@ from copy import deepcopy
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": (
+        "2.2 and below": (
             "uint8",
             "int8",
             "int16",
@@ -139,7 +139,7 @@ def histogram(
 histogram.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bool")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bool")}, backend_version)
 def median(
     input: torch.Tensor,
     /,
@@ -170,6 +170,7 @@ def median(
 median.support_native_out = False
 
 
+@with_supported_dtypes({"2.2 and below": ("float",)}, backend_version)
 def nanmean(
     a: torch.Tensor,
     /,
@@ -185,6 +186,67 @@ def nanmean(
 nanmean.support_native_out = True
 
 
+def nanmin(
+    a: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+    initial: Optional[Union[int, float, complex, ivy.Container]] = None,
+    where: Optional[torch.Tensor] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    nan_mask = torch.isnan(a)
+    if where is not None:
+        nan_mask = torch.logical_or(nan_mask, torch.logical_not(where))
+    a_copy = a.clone()
+    a_copy[nan_mask] = float("inf")
+    if axis is None:
+        result, _ = a_copy.min(), None
+    else:
+        result, _ = a_copy.min(dim=axis, keepdim=keepdims)
+    if initial is not None:
+        initial = torch.tensor(initial)
+        result = torch.minimum(result, initial)
+    return result
+
+
+def nanprod(
+    a: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[torch.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[torch.Tensor] = None,
+    initial: Optional[Union[int, float, complex, ivy.Container]] = None,
+    where: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(a.dtype)
+    if initial is None:
+        initial = 1
+    a = a.type(dtype)
+    a = torch.nan_to_num(a, nan=1.0)
+    if a.dtype == torch.float16:
+        a = a.type(torch.float32)
+    if axis == ():
+        return a.type(dtype)
+    if axis is None:
+        return torch.prod(input=a, out=out).type(dtype) * initial
+    if isinstance(axis, (tuple, list)):
+        for i in axis:
+            a = torch.prod(a, dim=i, keepdim=keepdims, out=out).type(dtype)
+            if a.dtype == torch.float16:
+                a = a.type(torch.float32)
+        return a.type(dtype) * initial
+    return torch.prod(a, dim=axis, keepdim=keepdims, out=out).type(dtype) * initial
+
+
+nanprod.support_native_out = True
+
+
 def _validate_quantile(q):
     if isinstance(q, float):
         q = torch.as_tensor(q)
@@ -193,7 +255,7 @@ def _validate_quantile(q):
             if not (0.0 <= q[i] <= 1.0):
                 return False
     else:
-        if not (torch.all(0 <= q) and torch.all(q <= 1)):
+        if not (torch.all(q >= 0) and torch.all(q <= 1)):
             return False
     return True
 
@@ -305,7 +367,7 @@ def _compute_quantile_wrapper(
         )
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16", "float16")}, backend_version)
 def quantile(
     a: torch.Tensor,
     q: Union[torch.Tensor, float],
@@ -386,7 +448,7 @@ def _nanmedian(input, axis, keepdims):
     return ret
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16", "float16")}, backend_version)
 def nanmedian(
     input: torch.Tensor,
     /,
@@ -474,7 +536,7 @@ def igamma(
 igamma.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def cov(
     x1: torch.Tensor,
     x2: torch.Tensor = None,
@@ -531,7 +593,7 @@ cov.support_native_out = False
 
 
 @with_unsupported_dtypes(
-    {"2.0.1 and below": ("uint8", "bfloat16", "float16")},
+    {"2.2 and below": ("float16", "complex")},
     backend_version,
 )
 def cummax(
@@ -544,13 +606,6 @@ def cummax(
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor]:
-    if x.dtype in (torch.bool, torch.float16):
-        x = x.to(dtype=torch.float64)
-    elif x.dtype in (torch.int16, torch.int8, torch.uint8):
-        x = x.to(dtype=torch.int64)
-    elif x.dtype in (torch.complex64, torch.complex128):
-        x = x.real.to(dtype=torch.float64)
-
     if exclusive or reverse:
         if exclusive and reverse:
             x1, x2 = torch.cummax(torch.flip(x, dims=(axis,)), axis)
@@ -575,7 +630,7 @@ def cummax(
 
 @with_unsupported_dtypes(
     {
-        "2.0.1 and below": ("uint8", "float16", "bfloat16"),
+        "2.2 and below": ("bool", "float16"),
         "1.12.1 and above": ("uint8", "float16"),
     },
     backend_version,
@@ -593,7 +648,7 @@ def cummin(
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
-    if not (reverse):
+    if not reverse:
         ret = torch.cummin(x, axis)[0]
     else:
         ret = torch.cummin(torch.flip(x, dims=(axis,)), axis)[0]

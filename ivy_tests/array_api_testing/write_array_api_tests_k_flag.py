@@ -14,16 +14,16 @@ fpaths = func_fpaths
 
 # test lists
 framework_tests_to_run = {
-    "jax": list(),
-    "numpy": list(),
-    "torch": list(),
-    "tensorflow": list(),
+    "jax": [],
+    "numpy": [],
+    "torch": [],
+    "tensorflow": [],
 }
 framework_tests_to_skip = {
-    "jax": list(),
-    "numpy": list(),
-    "torch": list(),
-    "tensorflow": list(),
+    "jax": [],
+    "numpy": [],
+    "torch": [],
+    "tensorflow": [],
 }
 # add from each filepath
 for fpath in fpaths:
@@ -33,19 +33,19 @@ for fpath in fpaths:
         # update tests to run and skip
         contents = [line.replace("__", "") for line in contents.split("\n")]
         for framework in framework_tests_to_run:
-            tests_to_run = list()
-            tests_to_skip = list()
+            tests_to_run = []
+            tests_to_skip = []
             for s in contents:
                 if s == "":
                     continue
                 if ("#" not in s) or (
                     "#" in s
-                    and not (framework in s.lower())
+                    and (framework not in s.lower())
                     and any(f in s.lower() for f in framework_tests_to_run)
                 ):
                     tests_to_run += (
-                        ["test_" + s]
-                        if ("#" not in s)
+                        [f"test_{s}"]
+                        if "#" not in s
                         else ["test_" + s.split("#")[1].split(" ")[0]]
                     )
                 else:
@@ -58,7 +58,7 @@ for framework in framework_tests_to_skip:
     framework_tests_to_skip[framework] = [
         tts
         for tts in framework_tests_to_skip[framework]
-        if not max([tts in ttr for ttr in framework_tests_to_run[framework]])
+        if not max(tts in ttr for ttr in framework_tests_to_run[framework])
     ]
 
 

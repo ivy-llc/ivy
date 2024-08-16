@@ -75,7 +75,7 @@ def norm(a, /, *, ord=None, axis=None, keepdims=False, check_finite=True):
     if check_finite:
         _check_finite(a)
 
-    if axis is None and not (ord is None):
+    if axis is None and ord is not None:
         if a.ndim not in (1, 2):
             raise ValueError("Improper number of dimensions to norm.")
         else:

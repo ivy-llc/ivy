@@ -23,14 +23,16 @@ def _assert_array(args, dtype, scalar_check=False, casting="safe"):
                     x, ivy.as_ivy_dtype(dtype), casting=casting
                 ),
                 type="all",
-                message="type of input is incompatible with dtype: {}".format(dtype),
+                message=f"type of input is incompatible with dtype: {dtype}",
             )
         else:
             assert_fn = None if casting == "safe" else ivy.exists
             if ivy.is_bool_dtype(dtype):
                 assert_fn = ivy.is_bool_dtype
             if ivy.is_int_dtype(dtype):
-                assert_fn = lambda x: not ivy.is_float_dtype(x)
+
+                def assert_fn(x):  # noqa F811
+                    return not ivy.is_float_dtype(x)
 
             if assert_fn:
                 ivy.utils.assertions.check_all_or_any_fn(
@@ -43,9 +45,7 @@ def _assert_array(args, dtype, scalar_check=False, casting="safe"):
                         )
                     ),
                     type="all",
-                    message="type of input is incompatible with dtype: {}".format(
-                        dtype
-                    ),
+                    message=f"type of input is incompatible with dtype: {dtype}",
                 )
 
 
@@ -54,18 +54,24 @@ def _assert_no_array(args, dtype, scalar_check=False, none=False):
     if args:
         first_arg = args[0]
         fn_func = ivy.as_ivy_dtype(dtype) if ivy.exists(dtype) else ivy.dtype(first_arg)
-        assert_fn = lambda x: ivy.dtype(x) == fn_func
+
+        def assert_fn(x):
+            return ivy.dtype(x) == fn_func
+
         if scalar_check:
-            assert_fn = lambda x: (
-                ivy.dtype(x) == fn_func
-                if ivy.shape(x) != ()
-                else _casting_no_special_case(ivy.dtype(x), fn_func, none)
-            )
+
+            def assert_fn(x):  # noqa F811
+                return (
+                    ivy.dtype(x) == fn_func
+                    if ivy.shape(x) != ()
+                    else _casting_no_special_case(ivy.dtype(x), fn_func, none)
+                )
+
         ivy.utils.assertions.check_all_or_any_fn(
             *args,
             fn=assert_fn,
             type="all",
-            message="type of input is incompatible with dtype: {}".format(dtype),
+            message=f"type of input is incompatible with dtype: {dtype}",
         )
 
 
@@ -76,7 +82,7 @@ def _assert_no_scalar(args, dtype, none=False):
             *args,
             fn=lambda x: type(x) == type(first_arg),  # noqa: E721
             type="all",
-            message="type of input is incompatible with dtype {}".format(dtype),
+            message=f"type of input is incompatible with dtype: {dtype}",
         )
         if dtype:
             if ivy.is_int_dtype(dtype):
@@ -88,7 +94,7 @@ def _assert_no_scalar(args, dtype, none=False):
             ivy.utils.assertions.check_equal(
                 type(args[0]),
                 check_dtype,
-                message="type of input is incompatible with dtype {}".format(dtype),
+                message=f"type of input is incompatible with dtype: {dtype}",
                 as_array=False,
             )
             if ivy.as_ivy_dtype(dtype) not in ["float64", "int8", "int64", "uint8"]:
@@ -108,16 +114,21 @@ def _assert_scalar(args, dtype):
     if args and dtype:
         assert_fn = None
         if ivy.is_int_dtype(dtype):
-            assert_fn = lambda x: not isinstance(x, float)
+
+            def assert_fn(x):  # noqa F811
+                return not isinstance(x, float)
+
         elif ivy.is_bool_dtype(dtype):
-            assert_fn = lambda x: isinstance(x, bool)
+
+            def assert_fn(x):
+                return isinstance(x, bool)
 
         if assert_fn:
             ivy.utils.assertions.check_all_or_any_fn(
                 *args,
                 fn=assert_fn,
                 type="all",
-                message="type of input is incompatible with dtype: {}".format(dtype),
+                message=f"type of input is incompatible with dtype: {dtype}",
             )
 
 
@@ -194,7 +205,7 @@ def _set_order(args, order):
     )
     if order in ["K", "A", None]:
         check_order = ivy.nested_map(
-            args, _check_C_order, include_derived={tuple: True}, shallow=False
+            _check_C_order, args, include_derived={"tuple": True}, shallow=False
         )
         if all(v is None for v in check_order) or any(
             ivy.multi_index_nest(check_order, ivy.all_nested_indices(check_order))
@@ -216,9 +227,9 @@ def _to_ivy_array(x):
 def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _from_zero_dim_arrays_to_scalar(*args, **kwargs):
-        """
-        Call the function, and then convert all 0 dimensional array instances in the
-        function to float numbers if out argument is not provided.
+        """Call the function, and then convert all 0 dimensional array
+        instances in the function to float numbers if out argument is not
+        provided.
 
         Parameters
         ----------
@@ -238,7 +249,7 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
         if ("out" in kwargs and kwargs["out"] is None) or "out" not in kwargs:
             if isinstance(ret, tuple):
                 # converting every scalar element of the tuple to float
-                data = tuple([ivy.native_array(i) for i in ret])
+                data = tuple(ivy.native_array(i) for i in ret)
                 data = ivy.copy_nest(data, to_mutable=True)
                 ret_idx = ivy.nested_argwhere(data, lambda x: x.shape == ())
                 try:
@@ -247,10 +258,10 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
                         ret_idx,
                         lambda x: np_frontend.numpy_dtype_to_scalar[ivy.dtype(x)](x),
                     )
-                except KeyError:
+                except KeyError as e:
                     raise ivy.utils.exceptions.IvyException(
                         "Casting to specified type is unsupported"
-                    )
+                    ) from e
                 return tuple(data)
             else:
                 # converting the scalar to float
@@ -258,10 +269,10 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
                 if data.shape == ():
                     try:
                         return np_frontend.numpy_dtype_to_scalar[ivy.dtype(data)](data)
-                    except KeyError:
+                    except KeyError as e:
                         raise ivy.utils.exceptions.IvyException(
                             f"Casting to {ivy.dtype(data)} is unsupported"
-                        )
+                        ) from e
         return ret
 
     _from_zero_dim_arrays_to_scalar.from_zero_dim_arrays_to_scalar = True
@@ -271,8 +282,7 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
 def handle_numpy_casting(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _handle_numpy_casting(*args, casting="same_kind", dtype=None, **kwargs):
-        """
-        Check numpy casting type.
+        """Check numpy casting type.
 
         Parameters
         ----------
@@ -333,8 +343,8 @@ def handle_numpy_casting(fn: Callable) -> Callable:
 def handle_numpy_casting_special(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _handle_numpy_casting_special(*args, casting="same_kind", dtype=None, **kwargs):
-        """
-        Check numpy casting type for special cases where output must be type bool.
+        """Check numpy casting type for special cases where output must be type
+        bool.
 
         Parameters
         ----------
@@ -413,14 +423,6 @@ def handle_numpy_out(fn: Callable) -> Callable:
                 **kwargs,
             }
             args = args[:out_pos]
-        if "out" in kwargs:
-            out = kwargs["out"]
-            if ivy.exists(out) and not ivy.nested_any(
-                out, lambda x: isinstance(x, np_frontend.ndarray)
-            ):
-                raise ivy.utils.exceptions.IvyException(
-                    "Out argument must be an ivy.frontends.numpy.ndarray object"
-                )
         return fn(*args, **kwargs)
 
     _handle_numpy_out.handle_numpy_out = True
@@ -430,10 +432,9 @@ def handle_numpy_out(fn: Callable) -> Callable:
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_ivy_arrays_np(*args, **kwargs):
-        """
-        Convert all `ndarray` instances in both the positional and keyword arguments
-        into `ivy.Array` instances, and then call the function with the updated
-        arguments.
+        """Convert all `ndarray` instances in both the positional and keyword
+        arguments into `ivy.Array` instances, and then call the function with
+        the updated arguments.
 
         Parameters
         ----------
@@ -447,22 +448,21 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             The return of the function, with ivy arrays passed in the arguments.
         """
         # convert all arrays in the inputs to ivy.Array instances
-        ivy_args = ivy.nested_map(args, _to_ivy_array, include_derived={tuple: True})
+        ivy_args = ivy.nested_map(_to_ivy_array, args, include_derived={"tuple": True})
         ivy_kwargs = ivy.nested_map(
-            kwargs, _to_ivy_array, include_derived={tuple: True}
+            _to_ivy_array, kwargs, include_derived={"tuple": True}
         )
         return fn(*ivy_args, **ivy_kwargs)
 
-    _inputs_to_ivy_arrays_np.inputs_to_ivy_arrays = True
+    _inputs_to_ivy_arrays_np.inputs_to_ivy_arrays_numpy = True
     return _inputs_to_ivy_arrays_np
 
 
 def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _outputs_to_frontend_arrays(*args, order="K", **kwargs):
-        """
-        Call the function, and then convert all `ivy.Array` instances returned by the
-        function into `ndarray` instances.
+        """Call the function, and then convert all `ivy.Array` instances
+        returned by the function into `ndarray` instances.
 
         Returns
         -------
@@ -473,7 +473,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         #  once frontend specific backend setting is added
         set_default_dtype = False
         if not ("dtype" in kwargs and ivy.exists(kwargs["dtype"])) and any(
-            [not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args]
+            not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args
         ):
             if ivy.current_backend_str() == "jax":
                 import jax
@@ -509,23 +509,22 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         # convert all returned arrays to `ndarray` instances
         if order == "F":
             return ivy.nested_map(
-                ret, _ivy_to_numpy_order_F, include_derived={tuple: True}
+                _ivy_to_numpy_order_F, ret, include_derived={"tuple": True}
             )
         else:
-            return ivy.nested_map(ret, _ivy_to_numpy, include_derived={tuple: True})
+            return ivy.nested_map(_ivy_to_numpy, ret, include_derived={"tuple": True})
 
     if "order" in list(inspect.signature(fn).parameters.keys()):
         contains_order = True
         order_pos = list(inspect.signature(fn).parameters).index("order")
     else:
         contains_order = False
-    _outputs_to_frontend_arrays.outputs_to_frontend_arrays = True
+    _outputs_to_frontend_arrays.outputs_to_frontend_arrays_numpy = True
     return _outputs_to_frontend_arrays
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
-    """
-    Wrap `fn` so it receives and returns `ivy.Array` instances.
+    """Wrap `fn` so it receives and returns `ivy.Array` instances.
 
     Wrap `fn` so that input arrays are all converted to `ivy.Array` instances and
     return arrays are all converted to `ndarray` instances.

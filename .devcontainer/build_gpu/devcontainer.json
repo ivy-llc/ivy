@@ -2,11 +2,11 @@
 	"name": "Ivy GPU Development Environment (build)",
 
 	"build": {
-		"dockerfile": "../../docker/DockerfileGPUMultiCuda",
+		"dockerfile": "../../docker/DockerfileGPU",
 		"context": "../..",
 		"args": {
-            "IMAGE_NAME": "unifyai/multicuda",
-            "IMAGE_TAG": "base_and_requirements"
+            "IMAGE_NAME": "ivyllc/ivy",
+            "IMAGE_TAG": "latest-gpu"
         }
 	},
 
@@ -24,7 +24,7 @@
 	},
 
 	"postCreateCommand": {
-        "post_create": "bash .devcontainer/post_create_commands.sh", 
+        "post_create": "bash .devcontainer/post_create_commands.sh",
         "bashrc": "echo \"alias python=python3\" >> ~/.bashrc"
     },
 

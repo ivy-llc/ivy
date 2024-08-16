@@ -33,7 +33,7 @@ Function Types
 .. _`handle`: https://github.com/unifyai/ivy/blob/0ef2888cbabeaa8f61ce8aaea4f1175071f7c396/ivy/func_wrapper.py#L1027-L1030
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`function types channel`: https://discord.com/channels/799879767196958751/982737839861145630
+.. _`function types thread`: https://discord.com/channels/799879767196958751/1189905318650576896
 
 Firstly, we explain the difference between *primary*, *compositional*, *mixed* and *standalone* functions.
 These four function categorizations are all **mutually exclusive**, and combined they constitute the set of **all** functions in Ivy, as outlined in the simple Venn diagram below.
@@ -52,7 +52,7 @@ These are generally implemented as light wrapping around an existing function in
 
 Primary functions must both be specified in :mod:`ivy/functional/ivy/category_name.py` and also in each of the backend files :mod:`ivy/functional/backends/backend_name/category_name.py`.
 
-The function in :mod:`ivy/functional/ivy/category_name.py` includes the type hints, docstring and docstring examples (explained in more detail in the subsequent sections), but does not include an actual implementation.
+The function in :mod:`ivy/functional/ivy/category_name.py` includes the type hints, docstring, and docstring examples (explained in more detail in the subsequent sections), but does not include an actual implementation.
 
 Instead, in :mod:`ivy/functional/ivy/category_name.py`, primary functions simply defer to the backend-specific implementation.
 
@@ -81,14 +81,14 @@ The backend-specific implementation of :func:`ivy.tan`  for PyTorch in :mod:`ivy
         x = _cast_for_unary_op(x)
         return torch.tan(x, out=out)
 
-The reason that the Ivy implementation has type hint :code:`Union[ivy.Array, ivy.NativeArray]` but PyTorch implementation has :class:`torch.Tensor` is explained in the :ref:`Arrays` section.
-Likewise, the reason that the :code:`out` argument in the Ivy implementation has array type hint :class:`ivy.Array` whereas :code:`x` has :code:`Union[ivy.Array, ivy.NativeArray]` is also explained in the :ref:`Arrays` section.
+The reason that the Ivy implementation has type hint :code:`Union[ivy.Array, ivy.NativeArray]` but PyTorch implementation has :class:`torch.Tensor` is explained in the `Arrays <arrays.rst>`_ section.
+Likewise, the reason that the :code:`out` argument in the Ivy implementation has array type hint :class:`ivy.Array` whereas :code:`x` has :code:`Union[ivy.Array, ivy.NativeArray]` is also explained in the `Arrays <arrays.rst>`_ section.
 
 Compositional Functions
 -----------------------
 
 *Compositional* functions on the other hand **do not** have backend-specific implementations.
-They are implemented as a *composition* of other Ivy functions, which themselves can be either compositional, primary or mixed (explained below).
+They are implemented as a *composition* of other Ivy functions, which themselves can be either compositional, primary, or mixed (explained below).
 
 Therefore, compositional functions are only implemented in :mod:`ivy/functional/ivy/category_name.py`, and there are no implementations in any of the backend files :mod:`ivy/functional/backends/backend_name/category_name.py`.
 
@@ -103,7 +103,7 @@ For example, the implementation of :func:`ivy.cross_entropy` in :mod:`ivy/functi
         *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        reduction: str = "sum",
+        reduction: str = "mean",
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
@@ -116,7 +116,7 @@ Mixed Functions
 ---------------
 ---------------
 
-Sometimes, a function may only be provided by some of the supported backends. In this case, we have to take a mixed approach. We should always have a backend-specific implementation if there is a similar function provided by a certain backend. This maximises runtime efficiency, as the function in the backend will be implemented directly in C or C++. Such functions have some backend-specific implementations in :mod:`ivy/functional/backends/backend_name/category_name.py`, but not for all backends. To support backends that do not have a backend-specific implementation, a compositional implementation is also provided in :mod:`ivy/functional/ivy/category_name.py`. Compositional functions should only be used when there is no similar function to wrap in the backend. 
+Sometimes, a function may only be provided by some of the supported backends. In this case, we have to take a mixed approach. We should always have a backend-specific implementation if there is a similar function provided by a certain backend. This maximises runtime efficiency, as the function in the backend will be implemented directly in C or C++. Such functions have some backend-specific implementations in :mod:`ivy/functional/backends/backend_name/category_name.py`, but not for all backends. To support backends that do not have a backend-specific implementation, a compositional implementation is also provided in :mod:`ivy/functional/ivy/category_name.py`. Compositional functions should only be used when there is no similar function to wrap in the backend.
 
 Because these functions include both a compositional implementation and also at least one backend-specific implementation, these functions are referred to as *mixed*.
 
@@ -133,9 +133,9 @@ Partial Mixed Functions
 There may be instances wherein the native backend function does not encompass the full range of possible cases that ivy wants to support.
 One example of this is :code:`ivy.linear` for which the torch native function :code:`torch.nn.functional.linear` only supports the :code:`weight` argument
 to be a 2 dimensional tensor while as ivy also allows the :code:`weight` argument to be 3 dimensional. While achieving the objective of having superset
-behaviour across the backends, native functionality of frameworks should be made use of as much as possible. Even if a framework-specific function
+behaviour across the backends, the native functionality of frameworks should be made use of as much as possible. Even if a framework-specific function
 doesn't provide complete superset behaviour, we should still make use of the partial behaviour that it provides and then add more logic for the
-remaining part. This is explained in detail in the :ref:`Maximizing Usage of Native Functionality` section. Ivy allows this partial support with the help of the `partial_mixed_handler`_
+remaining part. This is explained in detail in the :ref:`overview/deep_dive/superset_behaviour:Maximizing Usage of Native Functionality` section. Ivy allows this partial support with the help of the `partial_mixed_handler`_
 attribute which should be added to the backend implementation with a boolean function that specifies some condition on the inputs to switch between the compositional
 and primary implementations. For example, the :code:`torch` backend implementation of :code:`linear`` looks like:
 
@@ -159,7 +159,7 @@ the :code:`handle_partial_mixed_function` decorator first evaluates the boolean 
 is `True` and the compositional implementation otherwise.
 
 
-For further information on decorators, please refer to the :ref:`Function Wrapping` section.
+For further information on decorators, please refer to the `Function Wrapping <function_wrapping.rst>`_ section.
 
 For all mixed functions, we must add the :code:`mixed_backend_wrappers` attribute to the compositional implementation of mixed functions to specify which additional wrappers need to be applied to the primary implementation and which ones from the compositional implementation should be skipped.
 We do this by creating a dictionary of two keys, :code:`to_add` and :code:`to_skip`, each containing the tuple of wrappers to be added or skipped respectively. In general, :code:`handle_out_argument`, :code:`inputs_to_native_arrays` and :code:`outputs_to_ivy_arrays`
@@ -215,9 +215,9 @@ This *nestable* property of Ivy functions means that the same function can be us
 
 This added support for handling :class:`ivy.Container` instances is all handled automatically when `_wrap_function`_ is applied to every function in the :code:`ivy` module during `backend setting`_.
 This will add the `handle_nestable`_ wrapping to the function if it has the :code:`@handle_nestable` decorator.
-This function wrapping process is covered in a bit more detail in the :ref:`Function Wrapping` section.
+This function wrapping process is covered in a bit more detail in the `Function Wrapping <function_wrapping.rst>`_ section.
 
-Nestable functions are explained in more detail in the :ref:`Containers` section.
+Nestable functions are explained in more detail in the `Containers <containers.rst>` section.
 
 Convenience Functions
 ---------------------
@@ -225,7 +225,7 @@ Convenience Functions
 A final group of functions are the *convenience* functions (briefly mentioned above).
 Convenience functions do not form part of the computation graph directly, and they do not directly modify arrays.
 However, they can be used to organize and improve the code for other functions which do modify the arrays.
-Convenience functions can be *primary*, *compositional*, *mixed* or *standalone* functions.
+Convenience functions can be *primary*, *compositional*, *mixed*, or *standalone* functions.
 Many are also *nestable*.
 This is another categorization which is **not** mutually exclusive, as outlined by the Venn diagram below:
 
@@ -249,7 +249,7 @@ Feel free to have a look through all of the `submodules`_, you should be able to
 
 This should have hopefully given you a good feel for the different function types.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `function types channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `function types thread`_!
 
 **Video**
 

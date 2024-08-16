@@ -15,28 +15,31 @@ We want our ML unification journey to be as inclusive as possible, this is all o
 The contributor guide is split into the sections below, it's best to go from start to finish, but you can also dive in at any stage! We're excited for you to get involved!  🦾
 
 
-| (a) `Setting Up <https://unify.ai/docs/ivy/overview/contributing/setting_up.html>`_
+| (a) `Setting Up <contributing/setting_up.rst>`_
 | Building the right environment 🏛️
 |
-| (b) :ref:`The Basics`
+| (b) `The Basics <contributing/the_basics.rst>`_
 | Managing your fork 🇾, creating issues ⭕, and creating pull-requests ⬆️
 |
-| (c) :ref:`Building the Docs`
-| How to build the documentation locally 🏗️
-|
-| (d) :ref:`Deep Dive`
-| Take a deep dive into the codebase 🤿
-|
-| (e) :ref:`Open Tasks`
+| (c) `Open Tasks <contributing/open_tasks.rst>`_
 | See where you can help us out! 🙋
 |
-| (f) :ref:`Applied Libraries`
-| Getting started with our applied libraries! 📚
-| 
-| (g) :ref:`Helpful Resources`
+| (d) `Contributor Rewards <contributing/contributor_rewards.rst>`_
+| Check out our contributor badges and achievements! 🏅
+|
+| (e) `Contributor Program <contributing/volunteer_program.rst>`_
+| How to climb up the ranks in our Contributor program 🧗
+|
+| (f) `Building the Docs <contributing/building_the_docs.rst>`_
+| How to build the documentation locally 🏗️
+|
+| (g) `Deep Dive <deep_dive.rst>`_
+| Take a deep dive into the codebase 🤿
+|
+| (h) `Helpful Resources <contributing/helpful_resources.rst>`_
 | Resources you would find useful when learning Ivy 📖
-| 
-| (g) :ref:`Error Handling`
+|
+| (i) `Error Handling <contributing/error_handling.rst>`_
 | Common errors you will be facing contributing to Ivy ❌
 
 .. toctree::
@@ -49,7 +52,7 @@ The contributor guide is split into the sections below, it's best to go from sta
    contributing/building_the_docs.rst
    Deep Dive <https://unify.ai/docs/ivy/overview/deep_dive.html>
    contributing/open_tasks.rst
-   contributing/applied_libraries.rst
+   contributing/contributor_rewards.rst
    contributing/helpful_resources.rst
    contributing/error_handling.rst
 

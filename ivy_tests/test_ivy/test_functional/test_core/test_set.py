@@ -12,7 +12,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.unique_all",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         min_dim_size=1,
         force_int_axis=True,
@@ -46,7 +46,7 @@ def test_unique_all(
 @handle_test(
     fn_tree="functional.ivy.unique_counts",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
         min_dim_size=2,
     ),
@@ -70,17 +70,19 @@ def test_unique_counts(*, dtype_and_x, test_flags, backend_fw, fn_name, on_devic
 # unique_inverse
 @handle_test(
     fn_tree="functional.ivy.unique_inverse",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
         min_dim_size=2,
+        force_int_axis=True,
+        valid_axis=True,
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_unique_inverse(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
-    dtype, x = dtype_and_x
-    assume(not np.any(np.isclose(x, 0.0)))
+def test_unique_inverse(*, dtype_x_axis, test_flags, backend_fw, fn_name, on_device):
+    dtype, x, axis = dtype_x_axis
+    assume(not np.any(np.any(np.isclose(x[0], 0.0), axis=axis)))
 
     helpers.test_function(
         input_dtypes=dtype,
@@ -88,6 +90,7 @@ def test_unique_inverse(*, dtype_and_x, test_flags, backend_fw, fn_name, on_devi
         on_device=on_device,
         backend_to_test=backend_fw,
         fn_name=fn_name,
+        axis=axis,
         x=x[0],
     )
 

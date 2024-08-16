@@ -67,11 +67,21 @@ class Finfo:
     def smallest_normal(self):
         return self._torch_finfo.tiny
 
+    def __getattribute__(self, name):
+        try:
+            # Try to get the attribute from the Finfo class
+            return super().__getattribute__(name)
+        except AttributeError:
+            # If the attribute doesn't exist in Finfo, try to get it from _torch_finfo
+            torch_finfo = super().__getattribute__("_torch_finfo")
+            return getattr(torch_finfo, name)
+
 
 # Array API Standard #
 # -------------------#
 
 
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16", "float16")}, backend_version)
 def astype(
     x: torch.Tensor,
     dtype: torch.dtype,
@@ -90,7 +100,7 @@ def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
     try:
         return list(torch.broadcast_tensors(*arrays))
     except RuntimeError as e:
-        raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
+        raise ivy.utils.exceptions.IvyBroadcastShapeError(e) from e
 
 
 def broadcast_to(
@@ -180,9 +190,9 @@ def as_ivy_dtype(
         )
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("uint16",)}, backend_version)
+@with_unsupported_dtypes({"2.2 and below": ("uint16",)}, backend_version)
 def as_native_dtype(
-    dtype_in: Union[torch.dtype, str, bool, int, float, np.dtype]
+    dtype_in: Union[torch.dtype, str, bool, int, float, np.dtype],
 ) -> torch.dtype:
     if dtype_in is int:
         return ivy.default_int_dtype(as_native=True)
@@ -196,7 +206,7 @@ def as_native_dtype(
         dtype_in = dtype_in.name
     if not isinstance(dtype_in, str):
         return dtype_in
-    if dtype_in in native_dtype_dict.keys():
+    if dtype_in in native_dtype_dict:
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
         raise ivy.utils.exceptions.IvyException(
@@ -227,7 +237,4 @@ def dtype_bits(dtype_in: Union[torch.dtype, str, np.dtype], /) -> int:
 def is_native_dtype(dtype_in: Union[torch.dtype, str], /) -> bool:
     if not ivy.is_hashable_dtype(dtype_in):
         return False
-    if dtype_in in ivy_dtype_dict and isinstance(dtype_in, torch.dtype):
-        return True
-    else:
-        return False
+    return bool(dtype_in in ivy_dtype_dict and isinstance(dtype_in, torch.dtype))
