@@ -4,7 +4,6 @@ import numpy as np
 from hypothesis import strategies as st, assume
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
@@ -879,17 +878,17 @@ def test_torch_svd(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
-        input = x,
+        input=x,
         some=some,
         compute_uv=compute_uv,
     )
     if backend_fw == "torch":
         frontend_ret = [x.detach() for x in frontend_ret]
         ret = [x.detach() for x in frontend_ret]
-        ret = [np.asarray(x, dtype=np.dtype(getattr(np, input_dtype[0]))) for x in ret]
+        ret = [np.asarray(x) for x in ret]
     else:
         ret = [np.asarray(x) for x in ret]
-    frontend_ret = [np.asarray(x, dtype=np.dtype(getattr(np, input_dtype[0]))) for x in frontend_ret]
+    frontend_ret = [np.asarray(x).astype(input_dtype[0]) for x in frontend_ret]
     u, s, v = ret
     frontend_u, frontend_s, frontend_v = frontend_ret
     if not compute_uv:
@@ -910,8 +909,10 @@ def test_torch_svd(
         )
     else:
         helpers.assert_all_close(
-            ret_np=frontend_u[...,:frontend_s.shape[0]] @ np.diag(frontend_s) @ frontend_v.T,
-            ret_from_gt_np=u[...,:s.shape[0]] @ np.diag(s) @ v.T,
+            ret_np=frontend_u[..., : frontend_s.shape[0]]
+            @ np.diag(frontend_s)
+            @ frontend_v.T,
+            ret_from_gt_np=u[..., : s.shape[0]] @ np.diag(s) @ v.T,
             atol=1e-04,
             backend=backend_fw,
             ground_truth_backend=frontend,

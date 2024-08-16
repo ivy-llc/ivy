@@ -4,9 +4,8 @@ import numpy as np
 from hypothesis import strategies as st
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,
 )
@@ -123,7 +122,7 @@ def test_numpy_svd(
     )
     if compute_uv:
         ret = [np.asarray(x) for x in ret]
-        frontend_ret = [np.asarray(x) for x in frontend_ret]
+        frontend_ret = [np.asarray(x).astype(dtype[0]) for x in frontend_ret]
         u, s, vh = ret
         frontend_u, frontend_s, frontend_vh = frontend_ret
         if not full_matrices:
@@ -136,15 +135,17 @@ def test_numpy_svd(
             )
         else:
             helpers.assert_all_close(
-                ret_np=frontend_u[...,:frontend_s.shape[0]] @ np.diag(frontend_s) @ frontend_vh,
-                ret_from_gt_np=u[...,:s.shape[0]] @ np.diag(s) @ vh,
+                ret_np=frontend_u[..., : frontend_s.shape[0]]
+                @ np.diag(frontend_s)
+                @ frontend_vh,
+                ret_from_gt_np=u[..., : s.shape[0]] @ np.diag(s) @ vh,
                 atol=1e-3,
                 backend=backend_fw,
                 ground_truth_backend=frontend,
             )
     else:
         helpers.assert_all_close(
-            ret_np=frontend_ret,
+            ret_np=frontend_ret.astype(dtype[0]),
             ret_from_gt_np=ret,
             atol=1e-3,
             backend=backend_fw,
