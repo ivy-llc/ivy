@@ -2801,7 +2801,7 @@ def rnn_tanh(
     return output[:, -1], output, h_outs
 
 
-def _rnn_tanh_cell(
+def rnn_tanh_cell(
     x,
     init_h,
     kernel,
@@ -2835,7 +2835,7 @@ def _rnn_tanh_layer(
     batch_first,
     batch_sizes=None,
 ):
-    out, ht = _rnn_tanh_cell(
+    out, ht = rnn_tanh_cell(
         x,
         initial_state,
         *all_weights,
@@ -2847,7 +2847,7 @@ def _rnn_tanh_layer(
         x_rev = ivy.flip(x, axis=0)
         initial_state_rev = ivy.flip(initial_state, axis=0)
 
-        out_rev, ht_rev = _rnn_tanh_cell(
+        out_rev, ht_rev = rnn_tanh_cell(
             x_rev,
             initial_state_rev,
             *all_weights,
