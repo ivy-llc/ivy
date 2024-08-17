@@ -2429,7 +2429,7 @@ class Size(tuple):
 
     def __init__(self, shape=()) -> None:
         shape = ivy.Shape([]) if shape == () else shape
-        self._ivy_shape = shape if isinstance(shape, ivy.Shape) else ivy.shape(shape)
+        self._ivy_shape = shape if isinstance(shape, (ivy.Shape,ivy.NativeShape)) else ivy.shape(shape)
 
     def __repr__(self):
         return f'ivy.frontends.torch.Size([{", ".join(str(d) for d in self)}])'
