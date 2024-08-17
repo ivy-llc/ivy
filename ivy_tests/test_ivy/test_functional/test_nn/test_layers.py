@@ -948,6 +948,61 @@ def _x_and_lstm(draw, dtypes):
     )
 
 
+# RNN #
+#-----#
+
+@st.composite
+def _x_and_rnn_tanh(draw, dtypes):
+    dtype = draw(dtypes)
+    batch_shape = (1,)
+
+    t = draw(helpers.ints(min_value=1, max_value=2))
+    _in_ = draw(helpers.ints(min_value=1, max_value=2))
+    _out_ = draw(helpers.ints(min_value=1, max_value=2))
+
+    x_rnn_shape = batch_shape + (t,) + (_in_,)
+    init_h_shape = batch_shape + (_out_,)
+    kernel_shape = (_in_,) + (_out_,)
+    recurrent_kernel_shape = (_out_,) + (_out_,)
+    bias_shape = (_out_,)
+
+    x_rnn = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=x_rnn_shape, min_value=0, max_value=1
+        )
+    )
+    init_h = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=init_h_shape, min_value=0, max_value=1
+        )
+    )
+    kernel = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=kernel_shape, min_value=0, max_value=1
+        )
+    )
+    recurrent_kernel = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=recurrent_kernel_shape, min_value=0, max_value=1
+        )
+    )
+    bias = draw(
+        helpers.array_values(dtype=dtype[0], shape=bias_shape, min_value=0, max_value=1)
+    )
+    recurrent_bias = draw(
+        helpers.array_values(dtype=dtype[0], shape=bias_shape, min_value=0, max_value=1)
+    )
+    return (
+        dtype,
+        x_rnn,
+        init_h,
+        kernel,
+        recurrent_kernel,
+        bias,
+        recurrent_bias,
+    )
+
+
 # Attention #
 # ----------#
 
@@ -1601,6 +1656,39 @@ def test_lstm_update(*, dtype_lstm, test_flags, backend_fw, fn_name, on_device):
         recurrent_bias=recurrent_bias,
     )
 
+# rnn_tanh_update
+@handle_test(
+    fn_tree="functional.ivy.rnn_tanh_update",
+    dtype_rnn=_x_and_rnn_tanh(
+        dtypes=helpers.get_dtypes("numeric"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_rnn_tanh_update(*, dtype_rnn, test_flags, backend_fw, fn_name, on_device):
+    (
+        dtype,
+        x_rnn,
+        init_h,
+        kernel,
+        recurrent_kernel,
+        bias,
+        recurrent_bias,
+    ) = dtype_rnn
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-01,
+        atol_=1e-01,
+        x=x_rnn,
+        init_h=init_h,
+        kernel=kernel,
+        recurrent_kernel=recurrent_kernel,
+        bias=bias,
+        recurrent_bias=recurrent_bias,
+    )
 
 # multi_head_attention
 @handle_test(
