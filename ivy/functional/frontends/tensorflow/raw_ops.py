@@ -832,12 +832,15 @@ def Sum(*, input, axis, keep_dims=False, name="Sum"):
 
 
 @with_supported_dtypes(
-    {"2.15.0 and below": ("float64", "float128", "halfcomplex64", "complex128")},
+    {"2.15.0 and below": ("float64", "float32", "half", "complex64", "complex128")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
-def Svd(*, input, full_matrices=False, compute_uv=True, name=None):
-    return ivy.svd(input, compute_uv=compute_uv, full_matrices=full_matrices)
+def Svd(*, input, full_matrices=False, compute_uv=True, name="Svd"):
+    ret = ivy.svd(input, compute_uv=compute_uv, full_matrices=full_matrices)
+    if not compute_uv:
+        return (ret.S, None, None)
+    return (ret.S, ret.U, ivy.adjoint(ret.Vh))
 
 
 @to_ivy_arrays_and_back

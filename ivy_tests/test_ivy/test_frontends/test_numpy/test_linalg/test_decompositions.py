@@ -85,7 +85,7 @@ def test_numpy_qr(
 @handle_frontend_test(
     fn_tree="numpy.linalg.svd",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=0.1,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
@@ -105,7 +105,7 @@ def test_numpy_svd(
     on_device,
 ):
     dtype, x = dtype_and_x
-    x = x[0]
+    x = np.asarray(x[0], dtype=dtype[0])
     # make symmetric positive-definite
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     ret, frontend_ret = helpers.test_frontend_function(

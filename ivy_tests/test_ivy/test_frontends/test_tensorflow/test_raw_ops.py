@@ -4277,7 +4277,7 @@ def test_tensorflow_Sum(  # NOQA
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
     full_matrices=st.booleans(),
-    compute_uv=st.just(True),
+    compute_uv=st.booleans(),
 )
 def test_tensorflow_Svd(
     *,
@@ -4306,25 +4306,33 @@ def test_tensorflow_Svd(
         full_matrices=full_matrices,
         compute_uv=compute_uv,
     )
-
+    ret = [np.asarray(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
+    s, u, v = ret
+    frontend_s, frontend_u, frontend_v = frontend_ret
     if compute_uv:
-        ret = [np.asarray(x) for x in ret]
-        frontend_ret = [np.asarray(x) for x in frontend_ret]
-
-        s, u, v = ret
-        frontend_s, frontend_u, frontend_v = frontend_ret
-        assert_all_close(
-            ret_np=u @ np.diag(s) @ v.T,
-            ret_from_gt_np=frontend_u @ np.diag(frontend_s) @ frontend_v.T,
-            rtol=1e-2,
-            atol=1e-2,
-            backend=backend_fw,
-            ground_truth_backend=frontend,
-        )
+        if not full_matrices:
+            helpers.assert_all_close(
+                ret_np=frontend_u @ np.diag(frontend_s) @ frontend_v.T,
+                ret_from_gt_np=u @ np.diag(s) @ v.T,
+                atol=1e-04,
+                backend=backend_fw,
+                ground_truth_backend=frontend,
+            )
+        else:
+            helpers.assert_all_close(
+                ret_np=frontend_u[..., : frontend_s.shape[0]]
+                @ np.diag(frontend_s)
+                @ frontend_v.T,
+                ret_from_gt_np=u[..., : s.shape[0]] @ np.diag(s) @ v.T,
+                atol=1e-04,
+                backend=backend_fw,
+                ground_truth_backend=frontend,
+            )
     else:
         assert_all_close(
-            ret_np=s,
-            ret_from_gt_np=frontend_s,
+            ret_np=frontend_s,
+            ret_from_gt_np=s,
             rtol=1e-2,
             atol=1e-2,
             backend=backend_fw,
