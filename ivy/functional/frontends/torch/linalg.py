@@ -229,9 +229,10 @@ def norm(input, ord=None, dim=None, keepdim=False, *, dtype=None, out=None):
         raise RuntimeError(
             f"linalg.norm: If dim is specified, it must be of length 1 or 2. Got {dim}"
         )
-    # Ensure the result is real for 'fro' and 'nuc' norms
-    if ord in ['fro', 'nuc']:
-        ret = ivy.abs(ret)
+    if dtype == "complex64":
+        ret = ivy.astype(ret, "float32")
+    elif dtype == "complex128":
+        ret = ivy.astype(ret, "float64")
     return ret
 
 
