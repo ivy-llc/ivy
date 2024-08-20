@@ -160,6 +160,7 @@ def test_jax_qr(
 
 # svd
 # TODO: implement proper drawing of index parameter and implement subset_by_index
+# and to resolve groundtruth's significant inaccuracy
 @handle_frontend_test(
     fn_tree="jax.lax.linalg.svd",
     dtype_x=helpers.dtype_and_values(
@@ -171,7 +172,9 @@ def test_jax_qr(
     full_matrices=st.booleans(),
     compute_uv=st.booleans(),
     index=st.one_of(
-        st.none() #, st.tuples(st.integers(min_value=0, max_value=3), st.integers(min_value=3, max_value=5))
+        st.none()
+        # , st.tuples(st.integers(min_value=0, max_value=3),
+        # st.integers(min_value=3, max_value=5))
     ),
     test_with_out=st.just(False),
 )
@@ -210,7 +213,7 @@ def test_jax_svd(
         assert_all_close(
             ret_np=np.asarray(frontend_ret, dtype=np.dtype(getattr(np, dtype[0]))),
             ret_from_gt_np=np.asarray(ret),
-            atol=1e-03,
+            rtol=1e-3,
             backend=backend_fw,
             ground_truth_backend=frontend,
         )
@@ -218,22 +221,26 @@ def test_jax_svd(
         if backend_fw == "torch":
             ret = [x.detach() for x in ret]
         ret = [np.asarray(x) for x in ret]
-        frontend_ret = [np.asarray(x, dtype=np.dtype(getattr(np, dtype[0]))) for x in frontend_ret]
+        frontend_ret = [
+            np.asarray(x, dtype=np.dtype(getattr(np, dtype[0]))) for x in frontend_ret
+        ]
         u, s, v = ret
         frontend_u, frontend_s, frontend_v = frontend_ret
         if not full_matrices:
             helpers.assert_all_close(
                 ret_np=frontend_u @ np.diag(frontend_s) @ frontend_v.T,
                 ret_from_gt_np=u @ np.diag(s) @ v.T,
-                atol=1e-3,
+                rtol=1e-3,
                 backend=backend_fw,
                 ground_truth_backend=frontend,
             )
         else:
             helpers.assert_all_close(
-                ret_np=frontend_u[...,:frontend_s.shape[0]] @ np.diag(frontend_s) @ frontend_v.T,
-                ret_from_gt_np=u[...,:s.shape[0]] @ np.diag(s) @ v.T,
-                atol=1e-3,
+                ret_np=frontend_u[..., : frontend_s.shape[0]]
+                @ np.diag(frontend_s)
+                @ frontend_v.T,
+                ret_from_gt_np=u[..., : s.shape[0]] @ np.diag(s) @ v.T,
+                rtol=1e-3,
                 backend=backend_fw,
                 ground_truth_backend=frontend,
             )

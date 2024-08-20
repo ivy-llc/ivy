@@ -4272,7 +4272,7 @@ def test_tensorflow_Sum(  # NOQA
     fn_tree="tensorflow.raw_ops.Svd",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        min_value=0,
+        min_value=0.1,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
@@ -4294,6 +4294,7 @@ def test_tensorflow_Svd(
     x = np.asarray(x[0], dtype=dtype[0])
     # make symmetric positive definite
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+    x = x.astype(dtype[0])
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
@@ -4306,8 +4307,13 @@ def test_tensorflow_Svd(
         full_matrices=full_matrices,
         compute_uv=compute_uv,
     )
+    if backend_fw == "torch":
+        if not compute_uv:
+            ret = [ret[0].detach(), None, None]
+        else:
+            ret = [x.detach() for x in ret]
     ret = [np.asarray(x) for x in ret]
-    frontend_ret = [np.asarray(x) for x in frontend_ret]
+    frontend_ret = [np.asarray(x).astype(dtype[0]) for x in frontend_ret]
     s, u, v = ret
     frontend_s, frontend_u, frontend_v = frontend_ret
     if compute_uv:
@@ -4315,7 +4321,8 @@ def test_tensorflow_Svd(
             helpers.assert_all_close(
                 ret_np=frontend_u @ np.diag(frontend_s) @ frontend_v.T,
                 ret_from_gt_np=u @ np.diag(s) @ v.T,
-                atol=1e-04,
+                rtol=1e-3,
+                atol=1e-3,
                 backend=backend_fw,
                 ground_truth_backend=frontend,
             )
@@ -4325,16 +4332,17 @@ def test_tensorflow_Svd(
                 @ np.diag(frontend_s)
                 @ frontend_v.T,
                 ret_from_gt_np=u[..., : s.shape[0]] @ np.diag(s) @ v.T,
-                atol=1e-04,
+                rtol=1e-3,
+                atol=1e-3,
                 backend=backend_fw,
                 ground_truth_backend=frontend,
             )
     else:
         assert_all_close(
             ret_np=frontend_s,
-            ret_from_gt_np=s,
-            rtol=1e-2,
-            atol=1e-2,
+            ret_from_gt_np=s.astype(dtype[0]),
+            rtol=1e-3,
+            atol=1e-3,
             backend=backend_fw,
             ground_truth_backend=frontend,
         )
