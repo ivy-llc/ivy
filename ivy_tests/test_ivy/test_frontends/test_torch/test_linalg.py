@@ -73,7 +73,7 @@ def _get_axis_and_p(draw):
         helpers.dtype_values_axis(
             available_dtypes=helpers.get_dtypes("valid"),
             min_num_dims=2,
-            max_num_dims=4, 
+            max_num_dims=4,
             valid_axis=True,
             min_value=-1e04,
             max_value=1e04,
