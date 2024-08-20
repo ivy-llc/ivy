@@ -195,3 +195,28 @@ def zeropad2d(x, padding, data_format="NCHW", name=None):
     else:
         raise ValueError(f"Unknown data_format: {data_format}")
     return ivy.pad(x, padding, mode="constant", constant_values=0.0)
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.6.0 and below": ("float32", "float64")}, "paddle")
+def bilinear(x1, x2, weight, bias=None, name=None):
+    x1_shape = ivy.shape(x1)
+    x2_shape = ivy.shape(x2)
+    
+    if len(x1_shape) == 2:
+        x1 = ivy.expand_dims(x1, axis=1)
+    if len(x2_shape) == 2:
+        x2 = ivy.expand_dims(x2, axis=1)
+    
+    output_shape = list(ivy.shape(x1))
+    output_shape[-1] = ivy.shape(weight)[0]
+    
+    x1 = ivy.expand_dims(x1, axis=-1)
+    x2 = ivy.expand_dims(x2, axis=-2)
+    
+    output = ivy.matmul(x1, ivy.matmul(weight, x2))
+    output = ivy.squeeze(output, axis=[-1, -2])
+    
+    if bias is not None:
+        output = ivy.add(output, bias)
+    
+    return ivy.reshape(output, output_shape)
