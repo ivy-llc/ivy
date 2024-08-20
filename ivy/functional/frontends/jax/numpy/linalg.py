@@ -120,6 +120,7 @@ def solve(a, b):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"0.4.24 and below": ("float16", "bfloat16")}, "jax")
 def svd(a, /, *, full_matrices=True, compute_uv=True, hermitian=None):
     # TODO: handle hermitian
     ret = ivy.svd(a, full_matrices=full_matrices, compute_uv=compute_uv)
@@ -127,7 +128,6 @@ def svd(a, /, *, full_matrices=True, compute_uv=True, hermitian=None):
         return tuple(ret)
     else:
         return ivy.svdvals(a)
-
 
 
 @to_ivy_arrays_and_back
