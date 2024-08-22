@@ -64,7 +64,6 @@ Ivy is an open-source machine learning framework that enables you to:
 
 - Convert ML models, tools and libraries between frameworks while maintaining complete functionality using `ivy.transpile`
 - Create optimized graph-based models and functions in any native framework (PyTorch, TensorFlow, etc..) with `ivy.trace_graph`
-- Use your ML models or functions in any framework using a graph-tracing approach with `ivy.graph_transpile` *(deprecated)*
 
 <div style="display: block;" align="center">
     <div>
@@ -129,6 +128,20 @@ page, where OS-specific and IDE-specific instructions and video
 tutorials to do so are available!
 
 </details>
+
+<br>
+
+# Supported Frameworks
+
+These are the frameworks that `ivy.transpile` currently supports conversions from and to.
+We're working hard on adding support for more frameworks, let us know on [Discord](https://discord.gg/uYRmyPxMQq) if there are source/target frameworks that would be useful for you!
+
+| Framework  | Source | Target |
+|------------|:------:|:------:|
+| PyTorch    |   ✅   |   🚧   |
+| TensorFlow |   🚧   |   ✅   |
+| JAX        |   🚧   |   🚧   |
+| NumPy      |   🚧   |   🚧   |
 
 <br>
 
