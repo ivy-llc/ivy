@@ -1,13 +1,13 @@
 Backend Setting
 ===============
 
-.. _`this function`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L154
-.. _`implicit_backend`: https://github.com/unifyai/ivy/blob/3358b5bbadbe4cbc0509cad4ea8f05f178dfd8b8/ivy/utils/backend/handler.py
-.. _`import the backend module`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L184
-.. _`writing the function`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L212
-.. _`wrap the functions`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
-.. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`this function`: https://github.com/ivy-llc/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L154
+.. _`implicit_backend`: https://github.com/ivy-llc/ivy/blob/3358b5bbadbe4cbc0509cad4ea8f05f178dfd8b8/ivy/utils/backend/handler.py
+.. _`import the backend module`: https://github.com/ivy-llc/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L184
+.. _`writing the function`: https://github.com/ivy-llc/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L212
+.. _`wrap the functions`: https://github.com/ivy-llc/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
+.. _`repo`: https://github.com/ivy-llc/ivy
+.. _`discord`: https://discord.gg/uYRmyPxMQq
 .. _`backend setting thread`: https://discord.com/channels/799879767196958751/1189905734645850254
 
 The backend framework can either be set by calling :code:`ivy.set_backend(backend_name)` or it can inferred from the arguments.

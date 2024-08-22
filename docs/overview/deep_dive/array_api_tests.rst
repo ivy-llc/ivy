@@ -6,7 +6,7 @@ Array API Tests
 .. _`test_array_api`: https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/ivy_tests
 .. _`for each backend`: https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/.github/workflows
 .. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`discord`: https://discord.gg/uYRmyPxMQq
 .. _`array api tests thread`: https://discord.com/channels/799879767196958751/1189907361494741073
 .. _`scripts/shell/test_array_api.sh`: https://github.com/unifyai/ivy/blob/bcddc79978afe447958dfa3ea660716845c85846/scripts/shell/test_array_api.sh
 .. _`array-api test repository`: https://github.com/data-apis/array-api/tree/main

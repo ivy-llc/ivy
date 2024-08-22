@@ -7,7 +7,7 @@ Graph Tracers
 .. _`JAX`: https://jax.readthedocs.io/
 .. _`PyTorch`: https://pytorch.org/
 .. _`FX`: https://pytorch.org/docs/stable/fx.html
-.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`discord`: https://discord.gg/uYRmyPxMQq
 
 Graph tracers enable acyclic directed computation graphs to be extracted from functions which operate on the tensors, expressed as source code in the framework.
 There is inevitably some overlap with the role of the lower level compilers here, but for the purpose of this discussion, we consider tracers as being any tool which executes the function to be traced and produces a computation graph consisting solely of the lowest level functions defined within the framework itself, without going any lower.

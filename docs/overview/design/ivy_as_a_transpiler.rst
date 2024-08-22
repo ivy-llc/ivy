@@ -222,4 +222,4 @@ Therefore, the backend code can always be run with maximal efficiency by compili
 Hopefully, this has explained how, with the addition of backend-specific frontends, Ivy will be able to easily convert code between different ML frameworks 🙂 works in progress, as indicated by the construction signs 🚧.
 This is in keeping with the rest of the documentation.
 
-Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!
+Please reach out on `discord <https://discord.gg/uYRmyPxMQq>`_ if you have any questions!

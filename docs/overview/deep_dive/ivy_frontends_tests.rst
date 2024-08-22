@@ -3,13 +3,13 @@ Ivy Frontend Tests
 
 .. _`here`: ../design/ivy_as_a_transpiler.rst
 .. _`ivy frontends tests thread`: https://discord.com/channels/799879767196958751/1190246804940402738
-.. _`test ivy`: https://github.com/unifyai/ivy/tree/db9a22d96efd3820fb289e9997eb41dda6570868/ivy_tests/test_ivy
-.. _`test_frontend_function`: https://github.com/unifyai/ivy/blob/591ac37a664ebdf2ca50a5b0751a3a54ee9d5934/ivy_tests/test_ivy/helpers.py#L1047
-.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`test ivy`: https://github.com/ivy-llc/ivy/tree/db9a22d96efd3820fb289e9997eb41dda6570868/ivy_tests/test_ivy
+.. _`test_frontend_function`: https://github.com/ivy-llc/ivy/blob/591ac37a664ebdf2ca50a5b0751a3a54ee9d5934/ivy_tests/test_ivy/helpers.py#L1047
+.. _`discord`: https://discord.gg/uYRmyPxMQq
 .. _`Function Wrapping`: function_wrapping.rst
 .. _`open task`: ../contributing/open_tasks.rst
 .. _`Ivy Tests`: ivy_tests.rst
-.. _`Function Testing Helpers`: https://github.com/unifyai/ivy/blob/bf0becd459004ae6cffeb3c38c02c94eab5b7721/ivy_tests/test_ivy/helpers/function_testing.py
+.. _`Function Testing Helpers`: https://github.com/ivy-llc/ivy/blob/bf0becd459004ae6cffeb3c38c02c94eab5b7721/ivy_tests/test_ivy/helpers/function_testing.py
 .. _`CI Pipeline`: continuous_integration.rst
 
 
@@ -785,7 +785,7 @@ Naturally, many of the functions in the various frontend APIs are very similar t
 Therefore, the unit tests will follow very similar structures with regards to the data generated for testing.
 There are many data generation helper functions defined in the Ivy API test files, such as :func:`_arrays_idx_n_dtypes` defined in :mod:`ivy/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py`.
 This helper generates: a set of concatenation-compatible arrays, the index for the concatenation, and the data types of each array.
-Not surprisingly, this helper is used for testing :func:`ivy.concat`, as shown `here <https://github.com/unifyai/ivy/blob/86287f4e45bbe581fe54e37d5081c684130cba2b/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L53>`_.
+Not surprisingly, this helper is used for testing :func:`ivy.concat`, as shown `here <https://github.com/ivy-llc/ivy/blob/86287f4e45bbe581fe54e37d5081c684130cba2b/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L53>`_.
 
 Clearly, this helper would also be very useful for testing the various frontend concatenation functions, such as :code:`jax.numpy.concatenate`, :code:`numpy.concatenate`, :code:`tensorflow.concat` and :code:`torch.cat`.
 We could simply copy and paste the implementation from :mod:`/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py` into each file :mod:`/ivy_tests/test_ivy/test_frontends/test_<framework>/test_<group>.py`, but this would result in needless duplication.

@@ -2,7 +2,7 @@ Continuous Integration
 ======================
 
 .. _`continuous integration channel`: https://discord.com/channels/799879767196958751/1189908611208597544
-.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`discord`: https://discord.gg/uYRmyPxMQq
 
 We follow the practice of Continuous Integration (CI), in order to regularly build and test code at Ivy.
 This makes sure that:

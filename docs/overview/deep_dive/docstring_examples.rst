@@ -1,8 +1,8 @@
 Docstring Examples
 ==================
 
-.. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`repo`: https://github.com/ivy-llc/ivy
+.. _`discord`: https://discord.gg/uYRmyPxMQq
 .. _`docstring examples thread`: https://discord.com/channels/799879767196958751/1189906990307233822
 
 After writing the general docstrings, the final step is to add helpful examples to the docstrings.

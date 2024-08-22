@@ -288,7 +288,7 @@ configurations and their values:
 - ``discussion_paragraph``: ``"This should have hopefully given you an overview of the
   {{submodule}} submodule, if you have any questions, please feel free to reach out on
   our [discord]({{discord_link}}) in the [{{submodule}} channel]({{channel_link}})!"``
-- ``discord_link``: ``"https://discord.gg/ZVQdvbzNQJ"``
+- ``discord_link``: ``"https://discord.gg/uYRmyPxMQq"``
 - ``channel_link``: ``"https://discord.com/channels/799879767196958751/{{channel_id}}"``
 
 Here is an example of how it works for ``ivy.functional.ivy.creation``:
@@ -300,7 +300,7 @@ Here is an example of how it works for ``ivy.functional.ivy.creation``:
 
     This should have hopefully given you an overview of the
     **creation** submodule, if you have any questions, please feel free to reach out on
-    our [discord]({{discord_link}}) in the [**creation** channel]({{channel_link}})!
+    our [discord]({{discord_link}})!
 
 2. Then we resolve the ``{{discord_link}}`` template string.
 
@@ -308,7 +308,7 @@ Here is an example of how it works for ``ivy.functional.ivy.creation``:
 
     This should have hopefully given you an overview of the
     creation submodule, if you have any questions, please feel free to reach out on
-    our [discord](**https://discord.gg/ZVQdvbzNQJ**) in the [creation channel]({{channel_link}})!
+    our [discord](**https://discord.gg/uYRmyPxMQq**)!
 
 3. Then we resolve the ``{{channel_link}}`` template string.
 
@@ -316,7 +316,7 @@ Here is an example of how it works for ``ivy.functional.ivy.creation``:
 
     This should have hopefully given you an overview of the
     creation submodule, if you have any questions, please feel free to reach out on
-    our [discord](\https://discord.gg/ZVQdvbzNQJ) in the [creation channel](**https://discord.com/channels/799879767196958751/{{channel_id}}**)!
+    our [discord](\https://discord.gg/uYRmyPxMQq)!
 
 4. We finally resolve ``{{channel_id}}`` template strings.
 
@@ -324,14 +324,13 @@ Here is an example of how it works for ``ivy.functional.ivy.creation``:
 
     This should have hopefully given you an overview of the
     creation submodule, if you have any questions, please feel free to reach out on
-    our [discord](\https://discord.gg/ZVQdvbzNQJ) in the [creation channel](\https://discord.com/channels/799879767196958751/**1000043690254946374**)!
+    our [discord](\https://discord.gg/uYRmyPxMQq)!
 
 5. After that we render the node paragraph as if it's a Markdown text resulting this:
 
     This should have hopefully given you an overview of the
     creation submodule, if you have any questions, please feel free to reach out on
-    our `discord <https://discord.gg/ZVQdvbzNQJ>`_ in the `creation channel
-    <https://discord.com/channels/799879767196958751/1000043690254946374>`_!
+    our `discord <https://discord.gg/uYRmyPxMQq>`_!
 
 All of the above template strings can be customized using the configuration, so feel free
 to change them to your liking.

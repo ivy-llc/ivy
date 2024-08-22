@@ -38,4 +38,4 @@ to the preferred state-of-the-art framework, saving months of painstaking migrat
 
 Hopefully, this has given an idea of how Ivy's transpiler can be useful for the ML community 🙂
 
-Feel free to reach out on `discord <https://discord.gg/H3pUVDeM>`_ if you have any questions!
+Feel free to reach out on `discord <https://discord.gg/uYRmyPxMQq>`_ if you have any questions!

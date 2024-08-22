@@ -1,35 +1,35 @@
 Function Wrapping
 =================
 
-.. _`wrapped`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/utils/backend/handler.py#L259
-.. _`_wrap_function`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L965
-.. _`abs`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/functional/ivy/elementwise.py#L28
-.. _`creation submodule`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/functional/ivy/creation.py
-.. _`zeros`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/functional/ivy/creation.py#L482
-.. _`asarray`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/functional/ivy/creation.py#L383
-.. _`inputs_to_native_arrays`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L405
-.. _`inputs_to_ivy_arrays`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L445
-.. _`outputs_to_ivy_arrays`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L525
-.. _`to_native_arrays_and_back`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L595
-.. _`infer_dtype`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L725
-.. _`infer_device`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L763
-.. _`handle_out_argument`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L800
-.. _`handle_nestable`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L896
-.. _`inputs_to_native_shapes`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L488
-.. _`outputs_to_ivy_shapes`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L501
-.. _`to_native_shapes_and_back`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L514
-.. _`handle_view`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L627
-.. _`handle_view_indexing`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L659
-.. _`handle_array_function`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L299
-.. _`handle_complex_input`: https://github.com/unifyai/ivy/blob/bd9b5b1080d33004e821a48c486b3a879b9d6616/ivy/func_wrapper.py#L1393
-.. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`wrapped`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/utils/backend/handler.py#L259
+.. _`_wrap_function`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L965
+.. _`abs`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/functional/ivy/elementwise.py#L28
+.. _`creation submodule`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/functional/ivy/creation.py
+.. _`zeros`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/functional/ivy/creation.py#L482
+.. _`asarray`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/functional/ivy/creation.py#L383
+.. _`inputs_to_native_arrays`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L405
+.. _`inputs_to_ivy_arrays`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L445
+.. _`outputs_to_ivy_arrays`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L525
+.. _`to_native_arrays_and_back`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L595
+.. _`infer_dtype`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L725
+.. _`infer_device`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L763
+.. _`handle_out_argument`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L800
+.. _`handle_nestable`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L896
+.. _`inputs_to_native_shapes`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L488
+.. _`outputs_to_ivy_shapes`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L501
+.. _`to_native_shapes_and_back`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L514
+.. _`handle_view`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L627
+.. _`handle_view_indexing`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L659
+.. _`handle_array_function`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L299
+.. _`handle_complex_input`: https://github.com/ivy-llc/ivy/blob/bd9b5b1080d33004e821a48c486b3a879b9d6616/ivy/func_wrapper.py#L1393
+.. _`repo`: https://github.com/ivy-llc/ivy
+.. _`discord`: https://discord.gg/uYRmyPxMQq
 .. _`function wrapping thread`: https://discord.com/channels/799879767196958751/1189906704775794688
-.. _`handle_partial_mixed_function`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L944
-.. _`stored as an attribute`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L1054
-.. _`ivy.linear`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/functional/ivy/layers.py#L81
-.. _`handle_exceptions`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/utils/exceptions.py#L189
-.. _`example`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/functional/backends/torch/layers.py#L30
+.. _`handle_partial_mixed_function`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L944
+.. _`stored as an attribute`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L1054
+.. _`ivy.linear`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/functional/ivy/layers.py#L81
+.. _`handle_exceptions`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/utils/exceptions.py#L189
+.. _`example`: https://github.com/ivy-llc/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/functional/backends/torch/layers.py#L30
 .. _`Arrays`: arrays.rst
 .. _`Inplace Updates`: inplace_updates.rst
 .. _`Data Types`: data_types.rst

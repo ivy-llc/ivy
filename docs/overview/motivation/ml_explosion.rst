@@ -24,4 +24,4 @@ simple and painless conversion of any machine learning models or code between an
 
 Hopefully, this has painted a clear picture of how many different ML frameworks have exploded onto the scene 🙂
 
-Feel free to reach out on `discord <https://discord.gg/H3pUVDeM>`_ if you have any questions!
+Feel free to reach out on `discord <https://discord.gg/uYRmyPxMQq>`_ if you have any questions!

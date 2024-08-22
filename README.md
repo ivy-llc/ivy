@@ -51,7 +51,7 @@
     <a href="https://github.com/ivy-llc/ivy/actions?query=workflow%3Adocs">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/ivy-llc/ivy/actions/workflows/docs.yml/badge.svg">
     </a>
-    <a href="https://discord.gg/r5mcSAfp">
+    <a href="https://discord.gg/uYRmyPxMQq">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/discord/1220325004013604945?color=blue&label=%20&logo=discord&logoColor=white">
     </a>
 </div>
@@ -1227,7 +1227,7 @@ in the docs! Or to immediately dive into a useful task, look for any failing tes
 
 Join our growing community on a mission to make conversions between frameworks simple and accessible to all!
 Whether you are a seasoned developer or just starting out, you\'ll find a place here! Join the Ivy community on
-our [Discord](https://discord.gg/mMnS8Egy) 👾 server, which is the
+our [Discord](https://discord.gg/uYRmyPxMQq) 👾 server, which is the
 perfect place to ask questions, share ideas, and get help from both
 fellow developers and the Ivy Team directly.
 

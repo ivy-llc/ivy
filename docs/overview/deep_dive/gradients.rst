@@ -1,7 +1,7 @@
 Gradients
 =========
 
-.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`discord`: https://discord.gg/uYRmyPxMQq
 .. _`gradients thread`: https://discord.com/channels/799879767196958751/1190235826806853672
 
 Overview
