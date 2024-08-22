@@ -1,8 +1,8 @@
 Setting Up
 ==========
 
-.. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`repo`: https://github.com/ivy-llc/ivy
+.. _`discord`: https://discord.gg/uYRmyPxMQq
 .. _`pycharm thread`: https://discord.com/channels/799879767196958751/1186628916522262629
 .. _`docker thread`: https://discord.com/channels/799879767196958751/1186629067966009424
 .. _`pre-commit thread`: https://discord.com/channels/799879767196958751/1186629635694399539

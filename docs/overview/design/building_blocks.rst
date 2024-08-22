@@ -507,4 +507,4 @@ Source-to-Source Transpiler ✅
 
 Hopefully, this has painted a clear picture of the fundamental building blocks underpinning the Ivy framework, being the Backend functional APIs, Ivy functional API, Backend handler, and Tracer 😄
 
-Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!
+Please reach out on `discord <https://discord.gg/uYRmyPxMQq>`_ if you have any questions!

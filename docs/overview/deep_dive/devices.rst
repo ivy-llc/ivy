@@ -1,30 +1,30 @@
 Devices
 =======
 
-.. _`backend setting`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
-.. _`infer_device`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L286
-.. _`ivy.Device`: https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/__init__.py#L42
-.. _`empty class`: https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/__init__.py#L34
-.. _`device class`: https://github.com/unifyai/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/backends/torch/__init__.py#L13
-.. _`device.py`: https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py
-.. _`ivy.total_mem_on_dev`: https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L460
-.. _`ivy.dev_util`: https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L600
-.. _`ivy.num_cpu_cores`: https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L659
-.. _`ivy.default_device`: https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L720
-.. _`ivy.set_soft_device_mode`: https://github.com/unifyai/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/ivy/device.py#L292
-.. _`@handle_device_shifting`: https://github.com/unifyai/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/func_wrapper.py#L797
-.. _`ivy.functional.ivy`: https://github.com/unifyai/ivy/tree/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/ivy
-.. _`tensorflow soft device handling function`: https://github.com/unifyai/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/backends/tensorflow/device.py#L102
-.. _`numpy soft device handling function`: https://github.com/unifyai/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/backends/numpy/device.py#L88
-.. _`ivy implementation`: https://github.com/unifyai/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/ivy/device.py#L138
+.. _`backend setting`: https://github.com/ivy-llc/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
+.. _`infer_device`: https://github.com/ivy-llc/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L286
+.. _`ivy.Device`: https://github.com/ivy-llc/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/__init__.py#L42
+.. _`empty class`: https://github.com/ivy-llc/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/__init__.py#L34
+.. _`device class`: https://github.com/ivy-llc/ivy/blob/0b89c7fa050db13ef52b0d2a3e1a5fb801a19fa2/ivy/functional/backends/torch/__init__.py#L13
+.. _`device.py`: https://github.com/ivy-llc/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py
+.. _`ivy.total_mem_on_dev`: https://github.com/ivy-llc/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L460
+.. _`ivy.dev_util`: https://github.com/ivy-llc/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L600
+.. _`ivy.num_cpu_cores`: https://github.com/ivy-llc/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L659
+.. _`ivy.default_device`: https://github.com/ivy-llc/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L720
+.. _`ivy.set_soft_device_mode`: https://github.com/ivy-llc/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/ivy/device.py#L292
+.. _`@handle_device_shifting`: https://github.com/ivy-llc/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/func_wrapper.py#L797
+.. _`ivy.functional.ivy`: https://github.com/ivy-llc/ivy/tree/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/ivy
+.. _`tensorflow soft device handling function`: https://github.com/ivy-llc/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/backends/tensorflow/device.py#L102
+.. _`numpy soft device handling function`: https://github.com/ivy-llc/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/backends/numpy/device.py#L88
+.. _`ivy implementation`: https://github.com/ivy-llc/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/ivy/device.py#L138
 .. _`tf.device`: https://www.tensorflow.org/api_docs/python/tf/device
-.. _`ivy.DefaultDevice`: https://github.com/unifyai/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/ivy/device.py#L52
-.. _`__enter__`: https://github.com/unifyai/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/ivy/device.py#L76
-.. _`__exit__`: https://github.com/unifyai/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/ivy/device.py#L98
-.. _`ivy.unset_soft_device_mode()`: https://github.com/unifyai/ivy/blob/2f90ce7b6a4c8ddb7227348d58363cd2a3968602/ivy/functional/ivy/device.py#L317
-.. _`ivy.unset_default_device()`: https://github.com/unifyai/ivy/blob/2f90ce7b6a4c8ddb7227348d58363cd2a3968602/ivy/functional/ivy/device.py#L869
-.. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`ivy.DefaultDevice`: https://github.com/ivy-llc/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/ivy/device.py#L52
+.. _`__enter__`: https://github.com/ivy-llc/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/ivy/device.py#L76
+.. _`__exit__`: https://github.com/ivy-llc/ivy/blob/afca97b95d7101c45fa647b308fc8c41f97546e3/ivy/functional/ivy/device.py#L98
+.. _`ivy.unset_soft_device_mode()`: https://github.com/ivy-llc/ivy/blob/2f90ce7b6a4c8ddb7227348d58363cd2a3968602/ivy/functional/ivy/device.py#L317
+.. _`ivy.unset_default_device()`: https://github.com/ivy-llc/ivy/blob/2f90ce7b6a4c8ddb7227348d58363cd2a3968602/ivy/functional/ivy/device.py#L869
+.. _`repo`: https://github.com/ivy-llc/ivy
+.. _`discord`: https://discord.gg/uYRmyPxMQq
 .. _`devices thread`: https://discord.com/channels/799879767196958751/1189906353653817354
 
 The devices currently supported by Ivy are as follows:
