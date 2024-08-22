@@ -1284,19 +1284,23 @@ def test_torch_svd(
     if backend_fw == "torch":
         frontend_ret = [x.detach() for x in frontend_ret]
         ret = [x.detach() for x in ret]
-        ret = [np.asarray(x, dtype=np.dtype(getattr(np, dtype[0]))) for x in ret]
-    else:
-        ret = [np.asarray(x) for x in ret]
-    frontend_ret = [
-        np.asarray(x, dtype=np.dtype(getattr(np, dtype[0]))) for x in frontend_ret
-    ]
+    ret = [np.asarray(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
     u, s, vh = ret
     frontend_u, frontend_s, frontend_vh = frontend_ret
+    if ivy.is_complex_dtype(x.dtype):
+        d = ivy.complex64
+    else:
+        d = ivy.float32
+    # the dtypes somehow become wrong after matrix calculation
+    # though the return values should have correct dtypes
     if full_matrices:
         helpers.assert_all_close(
-            ret_np=frontend_u[..., : frontend_s.shape[0]]
-            @ np.diag(frontend_s)
-            @ frontend_vh,
+            ret_np=(
+                frontend_u[..., : frontend_s.shape[0]]
+                @ np.diag(frontend_s)
+                @ frontend_vh
+            ).astype(d),
             ret_from_gt_np=u[..., : s.shape[0]] @ np.diag(s) @ vh,
             atol=1e-04,
             backend=backend_fw,
@@ -1304,7 +1308,7 @@ def test_torch_svd(
         )
     else:
         helpers.assert_all_close(
-            ret_np=frontend_u @ np.diag(frontend_s) @ frontend_vh,
+            ret_np=(frontend_u @ np.diag(frontend_s) @ frontend_vh).astype(d),
             ret_from_gt_np=u @ np.diag(s) @ vh,
             atol=1e-04,
             backend=backend_fw,

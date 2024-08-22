@@ -333,7 +333,13 @@ def solve_ex(A, B, *, left=True, check_errors=False, out=None):
 )
 def svd(A, /, *, full_matrices=True, driver=None, out=None):
     # TODO: add handling for driver
-    ret = ivy.svd(A, compute_uv=True, full_matrices=full_matrices)
+    USVh = ivy.svd(A, compute_uv=True, full_matrices=full_matrices)
+    if ivy.is_complex_dtype(A.dtype):
+        d = ivy.complex64
+    else:
+        d = ivy.float32
+    nt = namedtuple("svd", "U S Vh")
+    ret = nt(ivy.astype(USVh.U, d), ivy.astype(USVh.S, d), ivy.astype(USVh.Vh, d))
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
