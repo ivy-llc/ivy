@@ -46,9 +46,9 @@ def qr(x, /, *, full_matrices=False):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"0.4.14 and below": ("bfloat16",)}, "jax")
 def svd(x, /, *, full_matrices=True, compute_uv=True, subset_by_index=None):
-    #TODO: handle subset_by_index
+    # TODO: handle subset_by_index
+    ret = ivy.svd(x, full_matrices=full_matrices)
     if compute_uv:
-        return tuple(ivy.svd(x, full_matrices=full_matrices))
+        return tuple(ret)
     else:
         return ivy.svdvals(x)
-

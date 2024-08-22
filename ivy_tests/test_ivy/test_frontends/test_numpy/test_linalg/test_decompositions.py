@@ -122,7 +122,7 @@ def test_numpy_svd(
     )
     if compute_uv:
         ret = [np.asarray(x) for x in ret]
-        frontend_ret = [np.asarray(x).astype(dtype[0]) for x in frontend_ret]
+        frontend_ret = [np.asarray(x) for x in frontend_ret]
         u, s, vh = ret
         frontend_u, frontend_s, frontend_vh = frontend_ret
         if not full_matrices:
@@ -145,7 +145,7 @@ def test_numpy_svd(
             )
     else:
         helpers.assert_all_close(
-            ret_np=frontend_ret.astype(dtype[0]),
+            ret_np=frontend_ret,
             ret_from_gt_np=ret,
             atol=1e-3,
             backend=backend_fw,

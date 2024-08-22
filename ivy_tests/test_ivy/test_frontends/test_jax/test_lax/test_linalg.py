@@ -164,7 +164,7 @@ def test_jax_qr(
 @handle_frontend_test(
     fn_tree="jax.lax.linalg.svd",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),

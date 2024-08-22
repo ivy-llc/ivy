@@ -854,11 +854,11 @@ def test_jax_solve(
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.svd",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
-    ).filter(lambda x: "float16" not in x[0] and "bfloat16" not in x[0]),
+    ),
     full_matrices=st.booleans(),
     compute_uv=st.booleans(),
     test_with_out=st.just(False),
