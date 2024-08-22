@@ -185,9 +185,9 @@ torch_promotion_table = {
 }
 
 
-@handle_exceptions
-def device(dev):
-    return ivy.default_device(dev)
+class device:
+    def __new__(cls, dev):
+        return ivy.default_device(dev)
 
 
 @handle_exceptions
