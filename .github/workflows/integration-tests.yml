@@ -9,6 +9,7 @@ on:
 
 permissions:
   actions: read
+  contents: write
 jobs:
   kornia:
     runs-on: ubuntu-latest
