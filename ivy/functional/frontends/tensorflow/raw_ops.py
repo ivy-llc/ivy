@@ -832,7 +832,16 @@ def Sum(*, input, axis, keep_dims=False, name="Sum"):
 
 
 @with_supported_dtypes(
-    {"2.15.0 and below": ("float64", "float32", "half", "complex64", "complex128")},
+    {
+        "2.15.0 and below": (
+            "float64",
+            "float32",
+            "half",
+            "complex32",
+            "complex64",
+            "complex128",
+        )
+    },
     "tensorflow",
 )
 @to_ivy_arrays_and_back

@@ -896,9 +896,8 @@ def test_jax_svd(
                 x for x in frontend_ret
             ]  # unpack jaxlib.xla_extension.ArrayImpl as it is no .detach()
             ret = [x for x in frontend_ret]
-        detyp = np.dtype(getattr(np, dtype[0]))
-        ret = [np.asarray(x).astype(detyp) for x in ret]
-        frontend_ret = [np.asarray(x, dtype=detyp) for x in frontend_ret]
+        ret = [np.asarray(x) for x in ret]
+        frontend_ret = [np.asarray(x) for x in frontend_ret]
         u, s, vh = ret
         frontend_u, frontend_s, frontend_vh = frontend_ret
         if not full_matrices:
@@ -923,7 +922,7 @@ def test_jax_svd(
         if backend_fw == "torch":
             ret = ret.detach()
         assert_all_close(
-            ret_np=np.asarray(frontend_ret, dtype=np.dtype(getattr(np, dtype[0]))),
+            ret_np=np.asarray(frontend_ret),
             ret_from_gt_np=np.asarray(ret),
             atol=1e-3,
             backend=backend_fw,

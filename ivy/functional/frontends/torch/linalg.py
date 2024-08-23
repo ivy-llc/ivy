@@ -329,7 +329,17 @@ def solve_ex(A, B, *, left=True, check_errors=False, out=None):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.2 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+    {
+        "2.2 and below": (
+            "float64",
+            "float32",
+            "half",
+            "complex32",
+            "complex64",
+            "complex128",
+        )
+    },
+    "torch",
 )
 def svd(A, /, *, full_matrices=True, driver=None, out=None):
     # TODO: add handling for driver

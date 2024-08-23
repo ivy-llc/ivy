@@ -191,7 +191,17 @@ def slogdet(A, *, out=None):
 
 
 @with_supported_dtypes(
-    {"2.2 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+    {
+        "2.2 and below": (
+            "float64",
+            "float32",
+            "half",
+            "complex32",
+            "complex64",
+            "complex128",
+        )
+    },
+    "torch",
 )
 @to_ivy_arrays_and_back
 def svd(input, some=True, compute_uv=True, *, out=None):

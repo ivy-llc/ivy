@@ -2010,7 +2010,17 @@ class Tensor:
         return torch_frontend.conj(self)
 
     @with_supported_dtypes(
-        {"2.2 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+        {
+            "2.2 and below": (
+                "float64",
+                "float32",
+                "half",
+                "complex32",
+                "complex64",
+                "complex128",
+            )
+        },
+        "torch",
     )
     def svd(self, some=True, compute_uv=True, *, out=None):
         return torch_frontend.svd(self, some=some, compute_uv=compute_uv, out=out)

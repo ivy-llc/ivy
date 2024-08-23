@@ -211,7 +211,7 @@ def test_jax_svd(
         if backend_fw == "torch":
             ret = ret.detach()
         assert_all_close(
-            ret_np=np.asarray(frontend_ret, dtype=np.dtype(getattr(np, dtype[0]))),
+            ret_np=np.asarray(frontend_ret),
             ret_from_gt_np=np.asarray(ret),
             rtol=1e-3,
             backend=backend_fw,
@@ -221,9 +221,7 @@ def test_jax_svd(
         if backend_fw == "torch":
             ret = [x.detach() for x in ret]
         ret = [np.asarray(x) for x in ret]
-        frontend_ret = [
-            np.asarray(x, dtype=np.dtype(getattr(np, dtype[0]))) for x in frontend_ret
-        ]
+        frontend_ret = [np.asarray(x) for x in frontend_ret]
         u, s, v = ret
         frontend_u, frontend_s, frontend_v = frontend_ret
         if not full_matrices:

@@ -358,7 +358,16 @@ def solve(matrix, rhs, /, *, adjoint=False, name=None):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.15.0 and below": ("float32", "float64", "half", "complex32", "complex64")},
+    {
+        "2.15.0 and below": (
+            "float32",
+            "float64",
+            "half",
+            "complex32",
+            "complex64",
+            "complex128",
+        )
+    },
     "tensorflow",
 )
 def svd(a, /, *, full_matrices=False, compute_uv=True, name=None):
