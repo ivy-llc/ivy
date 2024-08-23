@@ -19,6 +19,7 @@ pip3 install kornia
 pip3 install accelerate
 pip3 install transformers
 pip3 install redis
+pip3 install hypothesis
 
 # get the nightly binaries
 python << 'EOF'
