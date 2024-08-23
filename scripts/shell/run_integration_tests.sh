@@ -6,7 +6,7 @@ target=$2
 export IVY_KEY=$3
 export VERSION=linux-nightly
 
-pip3 install -r requirements/requirements.txt
+pip3 install -r requirements/requirements.txt --upgrade
 pip3 install jax
 pip3 install jaxlib
 pip3 install flax
