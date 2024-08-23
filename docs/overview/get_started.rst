@@ -30,7 +30,7 @@ When installing from source, we recommend installing ivy's dev dependencies with
 
 .. code-block:: bash
 
-    pip install -r requirements/requirements.txt --upgrade
+    pip install -r requirements/requirements.txt
     pip install -r requirements/optional.txt
 
 There are also other 'requirements/optional...' files in the 'requirements' folder that
