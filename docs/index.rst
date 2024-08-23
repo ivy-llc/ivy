@@ -26,7 +26,6 @@
   :caption: Demos
 
   demos/learn_the_basics.rst
-  demos/guides.rst
   demos/examples_and_demos.rst
 
 
