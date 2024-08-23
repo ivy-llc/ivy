@@ -9,6 +9,7 @@ on:
 
 permissions:
   actions: read
+  contents: write
 jobs:
   kornia:
     runs-on: ubuntu-latest
@@ -32,9 +33,8 @@ jobs:
       - name: Run Tests
         id: tests
         run: |
-          pip3 install kornia
           cd ivy
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest scripts/shell/run_integration_tests.sh kornia ${{ matrix.target }} ${{ secrets.IVY_API_KEY }}
+          sudo scripts/shell/run_integration_tests.sh kornia ${{ matrix.target }} ${{ secrets.IVY_API_KEY }}
         continue-on-error: true
 
       - name: Check on failures
