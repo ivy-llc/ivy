@@ -3,7 +3,7 @@ astunparse
 black
 colorama
 cloudpickle
-cryptography>=43.0.0
+cryptography>=40.0.0
 dill
 diskcache
 einops
