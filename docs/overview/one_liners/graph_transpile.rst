@@ -1,5 +1,5 @@
 ``ivy.graph_transpile()``
-===================
+=========================
 
 Ivy's Graph Transpiler converts a function written in any framework into your framework of
 choice, preserving all the logic between frameworks.
