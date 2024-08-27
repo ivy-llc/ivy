@@ -265,7 +265,17 @@ def promote_types_of_torch_inputs(
 
 
 from . import nn
-from .nn.functional import softmax, relu, lstm
+from .nn.functional import (
+    softmax,
+    relu,
+    lstm,
+    conv1d,
+    conv2d,
+    conv3d,
+    conv_transpose1d,
+    conv_transpose2d,
+    conv_transpose3d,
+)
 from . import special
 from . import tensor
 from . import _VF
