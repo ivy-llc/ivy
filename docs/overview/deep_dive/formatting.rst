@@ -4,7 +4,7 @@ Formatting
 .. _`flake8`: https://flake8.pycqa.org/en/latest/index.html
 .. _`black`: https://black.readthedocs.io/en/stable/index.html
 .. _`formatting thread`: https://discord.com/channels/799879767196958751/1190247322626572408
-.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`discord`: https://discord.gg/uYRmyPxMQq
 
 Currently, Ivy follows the `black`_ code style, and `flake8`_ formatter in order to ensure that our code is consistent,
 readable, and bug free. This deep-dive will explain how to use these tools to ensure that your code is formatted

@@ -12,14 +12,13 @@ One liners
     .. grid-item-card:: ``ivy.transpile()``
         :link: one_liners/transpile.rst
 
+        Converts any code - such as a ``class``, ``function`` or ``module`` - from a source framework into a new framework.
+
+    .. grid-item-card:: ``ivy.graph_transpile()``
+        :link: one_liners/graph_transpile.rst
+
         Transpiles a ``Callable`` or set of them from a ``source`` framework to another
         framework.
-
-    .. grid-item-card:: ``ivy.unify()``
-        :link: one_liners/unify.rst
-
-        Transpiles an object into Ivy code. It's an alias to
-        ``ivy.transpile(..., to="ivy", ...)``
 
 .. toctree::
     :hidden:
@@ -27,4 +26,4 @@ One liners
 
     one_liners/trace.rst
     one_liners/transpile.rst
-    one_liners/unify.rst
+    one_liners/graph_transpile.rst

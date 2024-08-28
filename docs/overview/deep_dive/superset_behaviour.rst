@@ -2,10 +2,10 @@ Superset Behaviour
 ==================
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
-.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`discord`: https://discord.gg/uYRmyPxMQq
 .. _`superset behavior thread`: https://discord.com/channels/799879767196958751/1189905520686014514
-.. _`partial_mixed_handler`: https://github.com/unifyai/ivy/blob/a07919ebf64181852a3564c4d994bc1c25bd9a6f/ivy/functional/backends/tensorflow/experimental/layers.py#L817
-.. _`handle_partial_mixed_function`: https://github.com/unifyai/ivy/blob/a07919ebf64181852a3564c4d994bc1c25bd9a6f/ivy/func_wrapper.py#L981
+.. _`partial_mixed_handler`: https://github.com/ivy-llc/ivy/blob/a07919ebf64181852a3564c4d994bc1c25bd9a6f/ivy/functional/backends/tensorflow/experimental/layers.py#L817
+.. _`handle_partial_mixed_function`: https://github.com/ivy-llc/ivy/blob/a07919ebf64181852a3564c4d994bc1c25bd9a6f/ivy/func_wrapper.py#L981
 
 When implementing functions in Ivy, whether they are primary, compositional, or mixed, we are constantly faced with the question: which backend implementation should Ivy most closely follow?
 
@@ -257,7 +257,7 @@ This provides the flexibility to add any custom logic based on the use-case for 
 **Note**
 
 Even though we are always striving to adhere to the superset, there might be cases where a feature has slipped under the radar.
-In case you stumble upon an Ivy function that you think has not included all native framework functionalities in the optimal way, you are invited to let us know in the comment section of `this <https://github.com/unifyai/ivy/issues/6406>`_ dedicated issue.
+In case you stumble upon an Ivy function that you think has not included all native framework functionalities in the optimal way, you are invited to let us know in the comment section of `this <https://github.com/ivy-llc/ivy/issues/6406>`_ dedicated issue.
 
 
 **Round Up**

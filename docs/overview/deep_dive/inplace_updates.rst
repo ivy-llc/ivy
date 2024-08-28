@@ -1,25 +1,25 @@
 Inplace Updates
 ===============
 
-.. _`backend setting`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
-.. _`handle_out_argument`: https://github.com/unifyai/ivy/blob/dcfec8b85de3c422dc0ca1970d67cb620cae62a4/ivy/func_wrapper.py#L340
+.. _`backend setting`: https://github.com/ivy-llc/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
+.. _`handle_out_argument`: https://github.com/ivy-llc/ivy/blob/dcfec8b85de3c422dc0ca1970d67cb620cae62a4/ivy/func_wrapper.py#L340
 .. _`torch.tan`: https://pytorch.org/docs/stable/generated/torch.tan.html
 .. _`numpy.tan`: https://numpy.org/doc/stable/reference/generated/numpy.tan.html
 .. _`tf.math.tan`: https://www.tensorflow.org/api_docs/python/tf/math/tan
 .. _`jax.numpy.tan`: https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.tan.html?highlight=tan
-.. _`presence of this attribute`: https://github.com/unifyai/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L341
-.. _`by the backend function`: https://github.com/unifyai/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L372
-.. _`handled by the wrapper`: https://github.com/unifyai/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L373
-.. _`_wrap_fn`: https://github.com/unifyai/ivy/blob/6497b8a3d6b0d8aac735a158cd03c8f98eb288c2/ivy/container/wrapping.py#L69
-.. _`NON_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9
+.. _`presence of this attribute`: https://github.com/ivy-llc/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L341
+.. _`by the backend function`: https://github.com/ivy-llc/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L372
+.. _`handled by the wrapper`: https://github.com/ivy-llc/ivy/blob/8ded4a5fc13a278bcbf2d76d1fa58ab41f5797d0/ivy/func_wrapper.py#L373
+.. _`_wrap_fn`: https://github.com/ivy-llc/ivy/blob/6497b8a3d6b0d8aac735a158cd03c8f98eb288c2/ivy/container/wrapping.py#L69
+.. _`NON_WRAPPED_FUNCTIONS`: https://github.com/ivy-llc/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
-.. _`ivy.reshape`: https://github.com/unifyai/ivy/blob/633eb420c5006a0a17c238bfa794cf5b6add8598/ivy/functional/ivy/manipulation.py#L418
-.. _`ivy.astype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L46
-.. _`ivy.asarray`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/creation.py#L114
-.. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`ivy.reshape`: https://github.com/ivy-llc/ivy/blob/633eb420c5006a0a17c238bfa794cf5b6add8598/ivy/functional/ivy/manipulation.py#L418
+.. _`ivy.astype`: https://github.com/ivy-llc/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L46
+.. _`ivy.asarray`: https://github.com/ivy-llc/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/creation.py#L114
+.. _`repo`: https://github.com/ivy-llc/ivy
+.. _`discord`: https://discord.gg/uYRmyPxMQq
 .. _`inplace updates thread`: https://discord.com/channels/799879767196958751/1189906590166437938
-.. _`example`: https://github.com/unifyai/ivy/blob/0ef2888cbabeaa8f61ce8aaea4f1175071f7c396/ivy/functional/ivy/layers.py#L169-L176
+.. _`example`: https://github.com/ivy-llc/ivy/blob/0ef2888cbabeaa8f61ce8aaea4f1175071f7c396/ivy/functional/ivy/layers.py#L169-L176
 
 
 Inplace updates enable users to overwrite the contents of existing arrays with new data.
@@ -425,8 +425,8 @@ Additionally, with a PyTorch backend, the :func:`ivy.negative` function defers t
 If we had instead simply used the wrapper `handle_out_argument`_, then we would not leverage any of these benefits, and instead simply call :func:`ivy.inplace_update` at the very end of the function call.
 
 For some compositional functions, the internal function which generates the final return value does not itself support the :code:`out` argument.
-For example, `ivy.multi_head_attention <https://github.com/unifyai/ivy/blob/2045db570d7977830681a7498a3c1045fb5bcc79/ivy/functional/ivy/layers.py#L165>`_ includes support for arbitrary functions passed in the input, including :code:`to_out_fn` which, if specified, is applied to the outputs before returning.
-For such functions, the inplace update should just be performed using :func:`ivy.inplace_update` at the end of the function, like `so <https://github.com/unifyai/ivy/blob/2045db570d7977830681a7498a3c1045fb5bcc79/ivy/functional/ivy/layers.py#L254>`_.
+For example, `ivy.multi_head_attention <https://github.com/ivy-llc/ivy/blob/2045db570d7977830681a7498a3c1045fb5bcc79/ivy/functional/ivy/layers.py#L165>`_ includes support for arbitrary functions passed in the input, including :code:`to_out_fn` which, if specified, is applied to the outputs before returning.
+For such functions, the inplace update should just be performed using :func:`ivy.inplace_update` at the end of the function, like `so <https://github.com/ivy-llc/ivy/blob/2045db570d7977830681a7498a3c1045fb5bcc79/ivy/functional/ivy/layers.py#L254>`_.
 
 Technically, this could be handled using the `handle_out_argument`_ wrapping, but we opt to implement this in the compositional function itself, due to point 1 mentioned above.
 

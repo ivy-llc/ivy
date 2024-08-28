@@ -1398,7 +1398,18 @@ class Model(tf.keras.Model, ModelHelpers):
         elif hasattr(self.__call__, "wrapped"):
             return self.__call__(*args, **kwargs)
 
-        return super(Model, self).__call__(*args, **kwargs)  # noqa: UP008
+        # Get the signature of the call method
+        call_signature = inspect.signature(self.call)
+
+        # Convert all positional arguments to keyword arguments based on the signature
+        new_kwargs = {}
+        for idx, (param_name, param) in enumerate(call_signature.parameters.items()):
+            if idx < len(args):
+                new_kwargs[param_name] = args[idx]
+
+        # Merge the existing kwargs
+        new_kwargs.update(kwargs)
+        return super(Model, self).__call__(**new_kwargs)  # noqa: UP008
 
     @tf.autograph.experimental.do_not_convert
     def build(

@@ -65,4 +65,4 @@ If you find any issue or bug while using the tracer and/or the transpiler, pleas
 raise an `issue in GitHub <https://github.com/ivy-llc/ivy/issues>`_ and add the ``tracer``
 or the ``transpiler`` label accordingly. A member of the team will get back to you ASAP!
 
-`Join ivy's discord server <https://discord.gg/huQXz3XN>`_
+`Join ivy's discord server <https://discord.gg/uYRmyPxMQq>`_

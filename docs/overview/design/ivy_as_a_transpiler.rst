@@ -3,6 +3,22 @@ Ivy as a Transpiler
 
 Here, we explain the Ivy's source-to-source transpiler and computational graph tracer, and the roles they play.
 
+
+**Supported Frameworks**
+
++-------------+-+--------+--------+
+| Framework   | | Source | Target |
++=============+=+========+========+
+| PyTorch     | | ✅     | 🚧     |
++-------------+-+--------+--------+
+| TensorFlow  | | 🚧     | ✅     |
++-------------+-+--------+--------+
+| JAX         | | 🚧     | 🚧     |
++-------------+-+--------+--------+
+| NumPy       | | 🚧     | 🚧     |
++-------------+-+--------+--------+
+
+
 Source-to-Source Transpiler ✅
 ------------------------------
 
@@ -25,18 +41,18 @@ Let's have a look at a brief example:
        def forward(self, x):
         return self._linear(x)
 
-   TFNetwork = ivy.source_to_source(Network, source="torch", target="tensorflow")
+   TFNetwork = ivy.transpile(Network, source="torch", target="tensorflow")
 
    x = tf.convert_to_tensor([1., 2., 3.])
    net = TFNetwork()
    net(x)
 
-| Here **ivy.source_to_source** takes three arguments:
+| Here **ivy.transpile** takes three arguments:
 | - The object to be converted
 | - The framework we are converting from
 | - The framework we are converting to
 
-The transpiled TensorFlow class is immediately available for use after the ivy.source_to_source call, as shown in this example, but the
+The transpiled TensorFlow class is immediately available for use after the ivy.transpile call, as shown in this example, but the
 generated source code is also saved into the **Translated_Outputs/** directory, meaning you can edit the source code manually after the fact,
 or use it just as if the model had been originally written in TensorFlow.
 
@@ -206,4 +222,4 @@ Therefore, the backend code can always be run with maximal efficiency by compili
 Hopefully, this has explained how, with the addition of backend-specific frontends, Ivy will be able to easily convert code between different ML frameworks 🙂 works in progress, as indicated by the construction signs 🚧.
 This is in keeping with the rest of the documentation.
 
-Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!
+Please reach out on `discord <https://discord.gg/uYRmyPxMQq>`_ if you have any questions!

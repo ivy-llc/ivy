@@ -1,14 +1,14 @@
 Fix Failing Tests:
 ==============================
 
-.. _`repo`: https://github.com/unifyai/ivy
-.. _`issues`: https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3A%22Failing+Test%22
-.. _`issue`: https://github.com/unifyai/ivy/issues/25849
-.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`repo`: https://github.com/ivy-llc/ivy
+.. _`issues`: https://github.com/ivy-llc/ivy/issues?q=is%3Aopen+is%3Aissue+label%3A%22Failing+Test%22
+.. _`issue`: https://github.com/ivy-llc/ivy/issues/25849
+.. _`discord`: https://discord.gg/uYRmyPxMQq
 .. _`docker thread`: https://discord.com/channels/799879767196958751/1186629067966009424
 .. _`miniconda`: https://docs.conda.io/en/latest/miniconda.html
 .. _`venv`: https://docs.python.org/3/library/venv.html
-.. _`ivy/scripts/shell`: https://github.com/unifyai/ivy/tree/f71a414417646e1dfecb5de27fb555f80333932c/scripts/shell
+.. _`ivy/scripts/shell`: https://github.com/ivy-llc/ivy/tree/f71a414417646e1dfecb5de27fb555f80333932c/scripts/shell
 .. _`platform compatibility tags`: https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/
 .. _`logging level`: https://docs.python.org/3/library/logging.html#logging.Logger.setLevel
 .. _`pycharm thread`: https://discord.com/channels/799879767196958751/1186628916522262629

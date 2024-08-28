@@ -1,7 +1,7 @@
 Ivy Frontends
 =============
 
-.. _`tensorflow.tan`: https://github.com/unifyai/ivy/blob/f52457a7bf3cfafa30a7c1a29a708ade017a735f/ivy_tests/test_ivy/test_frontends/test_tensorflow/test_math.py#L109
+.. _`tensorflow.tan`: https://github.com/ivy-llc/ivy/blob/f52457a7bf3cfafa30a7c1a29a708ade017a735f/ivy_tests/test_ivy/test_frontends/test_tensorflow/test_math.py#L109
 .. _`aliases`: https://www.tensorflow.org/api_docs/python/tf/math/tan
 .. _`jax.lax.add`: https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.add.html
 .. _`jax.lax`: https://jax.readthedocs.io/en/latest/jax.lax.html
@@ -15,7 +15,7 @@ Ivy Frontends
 .. _`torch`: https://pytorch.org/docs/stable/torch.html#math-operations
 .. _`torch.tan`: https://pytorch.org/docs/stable/generated/torch.tan.html#torch.tan
 .. _`YouTube tutorial series`: https://www.youtube.com/watch?v=72kBVJTpzIw&list=PLwNuX3xB_tv-wTpVDMSJr7XW6IP_qZH0t
-.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`discord`: https://discord.gg/uYRmyPxMQq
 .. _`ivy frontends thread`: https://discord.com/channels/799879767196958751/1189908295041941514
 .. _`Array manipulation routines`: https://numpy.org/doc/stable/reference/routines.array-manipulation.html#
 .. _`Array creation routines`: https://numpy.org/doc/stable/reference/routines.array-creation.html
@@ -286,7 +286,7 @@ Let's see how the :code:`map_raw_ops_alias` decorator can be used to tackle thes
     )
 
 The decorator :code:`map_raw_ops_alias` here, takes the existing behaviour of :func:`tf_frontend.math.argmax` as its first parameter, and changes all its arguments to key-word only. The argument :code:`kwargs_to_update` is a dictionary indicating all updates in arguments names to be made, in the case of :func:`tf.raw_ops.ArgMax`, :code:`dimension` is replacing :code:`axis`.
-The wrapper mentioned above is implemented here `map_raw_ops_alias <https://github.com/unifyai/ivy/blob/54cc9cd955b84c50a1743dddddaf6e961f688dd5/ivy/functional/frontends/tensorflow/func_wrapper.py#L127>`_  in the ivy codebase.
+The wrapper mentioned above is implemented here `map_raw_ops_alias <https://github.com/ivy-llc/ivy/blob/54cc9cd955b84c50a1743dddddaf6e961f688dd5/ivy/functional/frontends/tensorflow/func_wrapper.py#L127>`_  in the ivy codebase.
 
 **PyTorch**
 
@@ -317,7 +317,7 @@ Short Frontend Implementations
 
 Ideally, all frontend functions should call the equivalent Ivy function and only be one line long. This is mainly because compositional implementations are bound to be slower than direct backend implementation calls.
 
-In case a frontend function is complex and there is no equivalent Ivy function to use, it is strongly advised to add that function to our Experimental API. To do so, you are invited to open a *Missing Function Suggestion* issue as described in the `Open Tasks <../contributing/open_tasks.rst>`_ section. A member of our team will then review your issue, and if the proposed addition is deemed to be timely and sensible, we will add the function to the "Extend Ivy Functional API" `ToDo list issue <https://github.com/unifyai/ivy/issues/3856>`_.
+In case a frontend function is complex and there is no equivalent Ivy function to use, it is strongly advised to add that function to our Experimental API. To do so, you are invited to open a *Missing Function Suggestion* issue as described in the `Open Tasks <../contributing/open_tasks.rst>`_ section. A member of our team will then review your issue, and if the proposed addition is deemed to be timely and sensible, we will add the function to the "Extend Ivy Functional API" `ToDo list issue <https://github.com/ivy-llc/ivy/issues/3856>`_.
 
 If you would rather not wait around for a member of our team to review your suggestion, you can instead go straight ahead and add the frontend function as a heavy composition of the existing Ivy functions, with a :code:`#ToDo` comment included, explaining that this frontend implementation will be simplified when :func:`ivy.func_name` is added.
 
@@ -376,7 +376,7 @@ Supported Data Types and Devices
 
 Sometimes, the corresponding function in the original framework might only support a subset of data types.
 For example, :func:`tf.math.logical_and` only supports inputs of type :code:`tf.bool`.
-However, Ivy's `implementation <https://github.com/unifyai/ivy/blob/6089953297b438c58caa71c058ed1599f40a270c/ivy/functional/frontends/tensorflow/math.py#L84>`_ is as follows, with direct wrapping around :func:`ivy.logical_and`:
+However, Ivy's `implementation <https://github.com/ivy-llc/ivy/blob/6089953297b438c58caa71c058ed1599f40a270c/ivy/functional/frontends/tensorflow/math.py#L84>`_ is as follows, with direct wrapping around :func:`ivy.logical_and`:
 
 .. code-block:: python
 
@@ -389,7 +389,7 @@ However, the primary purpose of these frontend functions is for code transpilati
 Additionally, the unit tests for all frontend functions use the original framework function as the ground truth, and so we can only test :func:`ivy.functional.frontends.tensorflow.math.logical_and` with boolean inputs anyway.
 
 
-For these reasons, all frontend functions which correspond to functions with limited data type support in the native framework (in other words, which have even more restrictions than the data type limitations of the framework itself) should be flagged `as such <https://github.com/unifyai/ivy/blob/6089953297b438c58caa71c058ed1599f40a270c/ivy/functional/frontends/tensorflow/math.py#L88>`_ in a manner like the following:
+For these reasons, all frontend functions which correspond to functions with limited data type support in the native framework (in other words, which have even more restrictions than the data type limitations of the framework itself) should be flagged `as such <https://github.com/ivy-llc/ivy/blob/6089953297b438c58caa71c058ed1599f40a270c/ivy/functional/frontends/tensorflow/math.py#L88>`_ in a manner like the following:
 
 .. code-block:: python
 
@@ -398,11 +398,11 @@ For these reasons, all frontend functions which correspond to functions with lim
 The same logic applies to unsupported devices.
 Even if the wrapped Ivy function supports more devices, we should still flag the frontend function supported devices to be the same as those supported by the function in the native framework.
 Again, this is only needed if the limitations go beyond those of the framework itself.
-For example, it is not necessary to uniquely flag every single NumPy function as supporting only CPU, as this is a limitation of the entire framework, and this limitation is already `globally flagged <https://github.com/unifyai/ivy/blob/6eb2cadf04f06aace9118804100b0928dc71320c/ivy/functional/backends/numpy/__init__.py#L21>`_.
+For example, it is not necessary to uniquely flag every single NumPy function as supporting only CPU, as this is a limitation of the entire framework, and this limitation is already `globally flagged <https://github.com/ivy-llc/ivy/blob/6eb2cadf04f06aace9118804100b0928dc71320c/ivy/functional/backends/numpy/__init__.py#L21>`_.
 
 It could also be the case that a frontend function supports a data type, but one or more of the backend frameworks does not, and therefore the frontend function may not support the data type due to backend limitation.
-For example, the frontend function `jax.lax.cumprod <https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/frontends/jax/lax/operators.py#L111>`_ does support all data types, but PyTorch does not support :code:`bfloat16` for the function :func:`cumprod`, even though the framework generally supports handling :code:`bfloat16` data type.
-In that case, we should flag that the backend function does not support :code:`bfloat16` as this is done `here <https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/backends/torch/statistical.py#L234>`_.
+For example, the frontend function `jax.lax.cumprod <https://github.com/ivy-llc/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/frontends/jax/lax/operators.py#L111>`_ does support all data types, but PyTorch does not support :code:`bfloat16` for the function :func:`cumprod`, even though the framework generally supports handling :code:`bfloat16` data type.
+In that case, we should flag that the backend function does not support :code:`bfloat16` as this is done `here <https://github.com/ivy-llc/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/backends/torch/statistical.py#L234>`_.
 
 Classes and Instance Methods
 ----------------------------
@@ -419,7 +419,7 @@ In order to implement Ivy's frontend APIs to the extent that is required for arb
 
 **numpy.ndarray**
 
-For an example of how these are implemented, we first show the instance method for :meth:`np.ndarray.argsort`, which is implemented in the frontend `ndarray class <https://github.com/unifyai/ivy/blob/94679019a8331cf9d911c024b9f3e6c9b09cad02/ivy/functional/frontends/numpy/ndarray/ndarray.py#L8>`_:
+For an example of how these are implemented, we first show the instance method for :meth:`np.ndarray.argsort`, which is implemented in the frontend `ndarray class <https://github.com/ivy-llc/ivy/blob/94679019a8331cf9d911c024b9f3e6c9b09cad02/ivy/functional/frontends/numpy/ndarray/ndarray.py#L8>`_:
 
 
 .. code-block:: python
@@ -555,7 +555,7 @@ The :code:`casting` rules are explained in the `numpy.can_cast documentation <ht
 While handling this argument, the :code:`dtype` argument is used to state the desired return dtype.
 
 To handle this, a decorator - :code:`handle_numpy_casting` is used to simplify the handling logic and reduce code redundancy.
-It is located in the `ivy/functional/frontends/numpy/func_wrapper.py <https://github.com/unifyai/ivy/blob/45d443187678b33dd2b156f29a18b84efbc48814/ivy/functional/frontends/numpy/func_wrapper.py#L39>`_.
+It is located in the `ivy/functional/frontends/numpy/func_wrapper.py <https://github.com/ivy-llc/ivy/blob/45d443187678b33dd2b156f29a18b84efbc48814/ivy/functional/frontends/numpy/func_wrapper.py#L39>`_.
 
 This decorator is then added to the numpy frontend functions with the :code:`casting` argument.
 An example of the :func:`add` function is shown below.
@@ -656,14 +656,14 @@ When listing frontend functions, extra care should be taken to keep note of thes
 
 * For duplicate functions of the first type, we should list the function once in any namespace where it exists and leave it out of all other namespaces.
 
-* For duplicates of the second type, we should list the function in each namespace where it exists but there should be a note to highlight that the function(s) on the list are duplicates and should therefore be implemented as aliases. For example, most of the functions in `tf.raw_ops` are aliases and this point is made clear when listing the functions on the ToDo list `here <https://github.com/unifyai/ivy/issues/1565>`_.
+* For duplicates of the second type, we should list the function in each namespace where it exists but there should be a note to highlight that the function(s) on the list are duplicates and should therefore be implemented as aliases. For example, most of the functions in `tf.raw_ops` are aliases and this point is made clear when listing the functions on the ToDo list `here <https://github.com/ivy-llc/ivy/issues/1565>`_.
 
 **Contributing duplicate frontend functions**
 
 Before working on a frontend function, contributors should check if the function is designated as an alias on the ToDo list.
 If the function is an alias, you should check if there is an implementation that can be aliased.
 
-* If an implementation exists then simply create an alias of the implementation, for example many functions in `ivy/functional/frontends/tensorflow/raw_ops` are implemented as aliases `here <https://github.com/unifyai/ivy/blob/main/ivy/functional/frontends/tensorflow/raw_ops.py>`_.
+* If an implementation exists then simply create an alias of the implementation, for example many functions in `ivy/functional/frontends/tensorflow/raw_ops` are implemented as aliases `here <https://github.com/ivy-llc/ivy/blob/main/ivy/functional/frontends/tensorflow/raw_ops.py>`_.
 
 * If there is no implementation to be aliased then feel free to contribute the implementation first, then go ahead to create the alias.
 

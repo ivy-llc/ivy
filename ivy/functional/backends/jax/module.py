@@ -897,7 +897,7 @@ class Module(nn.Module, ModelHelpers):
                 *args,
                 **kwargs,
                 from_call=True,
-                dtype=first_arr.dtype if first_arr is not None else tf.float32,
+                dtype=first_arr.dtype if first_arr is not None else jax.numpy.float32,
             )
         # If `v` was provided, replace with the module's v
         replace_v = False

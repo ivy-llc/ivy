@@ -1,36 +1,36 @@
 Containers
 ==========
 
-.. _`ivy.Container`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L52
-.. _`dict`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L51
-.. _`ivy.Container.cont_map`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3070
-.. _`ivy.Container.cont_all_true`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L1592
-.. _`ivy.Container.cont_to_iterator`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L2043
-.. _`ContainerBase`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L51
-.. _`ivy.Container.cont_multi_map`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L623
-.. _`ivy.Container.cont_diff`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L427
-.. _`ivy.Container.cont_common_key_chains`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L741
-.. _`ivy.Container.cont_multi_map_in_function`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L162
-.. _`ivy.Container.tan`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/elementwise.py#L7347
-.. _`ivy.Container.roll`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/manipulation.py#L927
-.. _`instance method is added`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/__init__.py#L683
-.. _`inherits`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L52
-.. _`ContainerWithElementwise`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/elementwise.py#L9
-.. _`__repr__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3629
-.. _`__getattr__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3860
-.. _`__setattr__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3882
-.. _`__getitem__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3934
-.. _`__setitem__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3976
-.. _`__contains__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3996
-.. _`__getstate__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L4004
-.. _`__setstate__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L4019
-.. _`implemented`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L133
-.. _`__add__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L191
-.. _`__sub__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L290
-.. _`__mul__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L389
-.. _`__truediv__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L399
-.. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`ivy.Container`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L52
+.. _`dict`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L51
+.. _`ivy.Container.cont_map`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3070
+.. _`ivy.Container.cont_all_true`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L1592
+.. _`ivy.Container.cont_to_iterator`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L2043
+.. _`ContainerBase`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L51
+.. _`ivy.Container.cont_multi_map`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L623
+.. _`ivy.Container.cont_diff`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L427
+.. _`ivy.Container.cont_common_key_chains`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L741
+.. _`ivy.Container.cont_multi_map_in_function`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L162
+.. _`ivy.Container.tan`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/elementwise.py#L7347
+.. _`ivy.Container.roll`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/manipulation.py#L927
+.. _`instance method is added`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/__init__.py#L683
+.. _`inherits`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L52
+.. _`ContainerWithElementwise`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/elementwise.py#L9
+.. _`__repr__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3629
+.. _`__getattr__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3860
+.. _`__setattr__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3882
+.. _`__getitem__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3934
+.. _`__setitem__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3976
+.. _`__contains__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3996
+.. _`__getstate__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L4004
+.. _`__setstate__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L4019
+.. _`implemented`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L133
+.. _`__add__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L191
+.. _`__sub__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L290
+.. _`__mul__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L389
+.. _`__truediv__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L399
+.. _`repo`: https://github.com/ivy-llc/ivy
+.. _`discord`: https://discord.gg/uYRmyPxMQq
 .. _`containers thread`: https://discord.com/channels/799879767196958751/1189906066549506048
 
 

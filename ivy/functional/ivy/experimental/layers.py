@@ -2464,11 +2464,16 @@ def adaptive_avg_pool2d(
             return ivy.squeeze(pooled_output, axis=0)
         return pooled_output
 
+    if not hasattr(input, "device"):
+        device = list(input.devices())[0]
+    else:
+        device = input.device
+
     idxh, length_h, range_max_h, adaptive_h = _compute_idx(
-        input.shape[-2], output_size[-2], input.device
+        input.shape[-2], output_size[-2], device
     )
     idxw, length_w, range_max_w, adaptive_w = _compute_idx(
-        input.shape[-1], output_size[-1], input.device
+        input.shape[-1], output_size[-1], device
     )
 
     # to numpy and back in order to bypass a slicing error in tensorflow
