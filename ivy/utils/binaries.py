@@ -54,7 +54,6 @@ def check_for_binaries():
                         f" :\n{config_str}\n"
                     )
                     initial = False
-                logging.warning(f"\t{path} not found.")
         if not initial:
             print()
 
