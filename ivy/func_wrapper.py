@@ -361,7 +361,9 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
                     # Fix for ellipsis, slices for numpy's __getitem__
                     # No need to try and convert them into arrays
                     # since asarray throws unpredictable bugs
-                    if _check_in_nested_sequence(arg, value=Ellipsis, _type=slice):
+                    if arg is None or _check_in_nested_sequence(
+                        arg, value=Ellipsis, _type=slice
+                    ):
                         continue
                     if not ivy.is_array(arg):
                         args[i] = ivy.array(arg, device=device)
