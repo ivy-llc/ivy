@@ -20,9 +20,10 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 
-def _calculate_out_shape(axis: Union[int, Sequence[int]], array_shape: Sequence[int]) -> List[int]:
-    """
-    Calculate the output shape for expanding dimensions of an array.
+def _calculate_out_shape(
+    axis: Union[int, Sequence[int]], array_shape: Sequence[int]
+) -> List[int]:
+    """Calculate the output shape for expanding dimensions of an array.
 
     Parameters
     ----------
