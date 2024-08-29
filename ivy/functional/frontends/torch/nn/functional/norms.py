@@ -15,8 +15,8 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 @to_ivy_arrays_and_back
 def batch_norm(
     input,
-    running_mean,
-    running_var,
+    running_mean=None,
+    running_var=None,
     weight=None,
     bias=None,
     training=False,
@@ -35,8 +35,10 @@ def batch_norm(
         data_format="NCS",
     )
     if training:
-        ivy.inplace_update(running_mean, mean)
-        ivy.inplace_update(running_var, var)
+        if running_mean is not None:
+            ivy.inplace_update(running_mean, mean)
+        if running_var is not None:
+            ivy.inplace_update(running_var, var)
     return normalized
 
 
@@ -68,8 +70,8 @@ def group_norm(input, num_groups, weight=None, bias=None, eps=1e-05):
 @to_ivy_arrays_and_back
 def instance_norm(
     input,
-    running_mean,
-    running_var,
+    running_mean=None,
+    running_var=None,
     weight=None,
     bias=None,
     use_input_stats=False,
@@ -87,8 +89,10 @@ def instance_norm(
         momentum=momentum,
         data_format="NCS",
     )
-    ivy.inplace_update(running_mean, mean)
-    ivy.inplace_update(running_var, var)
+    if running_mean is not None:
+        ivy.inplace_update(running_mean, mean)
+    if running_var is not None:
+        ivy.inplace_update(running_var, var)
     return normalized
 
 

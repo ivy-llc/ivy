@@ -75,8 +75,8 @@ class _ArrayWithNormsExperimental(abc.ABC):
 
     def batch_norm(
         self: Union[ivy.NativeArray, ivy.Array],
-        mean: Union[ivy.NativeArray, ivy.Array],
-        variance: Union[ivy.NativeArray, ivy.Array],
+        mean: Optional[Union[ivy.NativeArray, ivy.Array]],
+        variance: Optional[Union[ivy.NativeArray, ivy.Array]],
         /,
         *,
         offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
@@ -145,8 +145,8 @@ class _ArrayWithNormsExperimental(abc.ABC):
 
     def instance_norm(
         self: Union[ivy.NativeArray, ivy.Array],
-        mean: Union[ivy.NativeArray, ivy.Array],
-        variance: Union[ivy.NativeArray, ivy.Array],
+        mean: Optional[Union[ivy.NativeArray, ivy.Array]],
+        variance: Optional[Union[ivy.NativeArray, ivy.Array]],
         /,
         *,
         offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,

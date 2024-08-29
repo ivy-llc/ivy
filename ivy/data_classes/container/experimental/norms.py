@@ -246,8 +246,8 @@ class _ContainerWithNormsExperimental(ContainerBase):
     @staticmethod
     def static_batch_norm(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        mean: Union[ivy.NativeArray, ivy.Array, ivy.Container],
-        variance: Union[ivy.NativeArray, ivy.Array, ivy.Container],
+        mean: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]],
+        variance: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]],
         /,
         *,
         offset: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
@@ -342,8 +342,8 @@ class _ContainerWithNormsExperimental(ContainerBase):
 
     def batch_norm(
         self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        mean: Union[ivy.NativeArray, ivy.Array, ivy.Container],
-        variance: Union[ivy.NativeArray, ivy.Array, ivy.Container],
+        mean: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]],
+        variance: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]],
         /,
         *,
         offset: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
@@ -438,8 +438,8 @@ class _ContainerWithNormsExperimental(ContainerBase):
     @staticmethod
     def static_instance_norm(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        mean: Union[ivy.NativeArray, ivy.Array, ivy.Container],
-        variance: Union[ivy.NativeArray, ivy.Array, ivy.Container],
+        mean: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]],
+        variance: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]],
         /,
         *,
         offset: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
@@ -532,8 +532,8 @@ class _ContainerWithNormsExperimental(ContainerBase):
 
     def instance_norm(
         self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        mean: Union[ivy.NativeArray, ivy.Array, ivy.Container],
-        variance: Union[ivy.NativeArray, ivy.Array, ivy.Container],
+        mean: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]],
+        variance: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]],
         /,
         *,
         offset: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,

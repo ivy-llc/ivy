@@ -193,8 +193,8 @@ local_response_norm.mixed_backend_wrappers = {
 @handle_array_function
 def batch_norm(
     x: Union[ivy.NativeArray, ivy.Array],
-    mean: Union[ivy.NativeArray, ivy.Array],
-    variance: Union[ivy.NativeArray, ivy.Array],
+    mean: Optional[Union[ivy.NativeArray, ivy.Array]],
+    variance: Optional[Union[ivy.NativeArray, ivy.Array]],
     /,
     *,
     offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
@@ -270,9 +270,15 @@ def batch_norm(
         dims = (0, *range(1, xdims - 1))
         mean = ivy.mean(x, axis=dims)
         variance = ivy.var(x, axis=dims)
-        runningmean = (1 - momentum) * runningmean + momentum * mean
-        runningvariance = (1 - momentum) * runningvariance + momentum * variance * n / (
-            n - 1
+        runningmean = (
+            (1 - momentum) * runningmean + momentum * mean
+            if runningmean is not None
+            else runningmean
+        )
+        runningvariance = (
+            (1 - momentum) * runningvariance + momentum * variance * n / (n - 1)
+            if runningvariance is not None
+            else runningvariance
         )
     inv = 1.0 / ivy.sqrt(variance + eps)
     offset = 0 if offset is None else offset
@@ -313,8 +319,8 @@ batch_norm.mixed_backend_wrappers = {
 @handle_array_function
 def instance_norm(
     x: Union[ivy.NativeArray, ivy.Array],
-    mean: Union[ivy.NativeArray, ivy.Array],
-    variance: Union[ivy.NativeArray, ivy.Array],
+    mean: Optional[Union[ivy.NativeArray, ivy.Array]],
+    variance: Optional[Union[ivy.NativeArray, ivy.Array]],
     /,
     *,
     offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
@@ -387,8 +393,8 @@ def instance_norm(
     C = x.shape[-1]
     S = x.shape[0:-2]
     x = x.reshape((1, *S, N * C))
-    mean = ivy.tile(mean, N)
-    variance = ivy.tile(variance, N)
+    mean = ivy.tile(mean, N) if mean is not None else mean
+    variance = ivy.tile(variance, N) if variance is not None else variance
     if scale is not None:
         scale = ivy.tile(scale, N)
     if offset is not None:
@@ -414,8 +420,16 @@ def instance_norm(
             xnormalized, axes=(xdims - 2, *range(0, xdims - 2), xdims - 1)
         )
 
-    runningmean = runningmean.reshape((N, C)).mean(axis=0)
-    runningvariance = runningvariance.reshape((N, C)).mean(axis=0)
+    runningmean = (
+        runningmean.reshape((N, C)).mean(axis=0)
+        if runningmean is not None
+        else runningmean
+    )
+    runningvariance = (
+        runningvariance.reshape((N, C)).mean(axis=0)
+        if runningvariance is not None
+        else runningvariance
+    )
 
     if ivy.exists(out):
         xnormalized = ivy.inplace_update(out[0], xnormalized)
