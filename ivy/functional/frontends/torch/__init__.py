@@ -309,6 +309,7 @@ from .tensor_functions import *
 from . import utilities
 from .utilities import *
 from . import linalg
+from .linalg import lu
 from . import func
 from .func import *
 
