@@ -781,10 +781,10 @@ def test_torch_lu_factor(
         test_values=False,
     )
     ret_f, ret_gt = ret
-    LU, p = ret_f.LU, ret_f.p
+    LU, pivots = ret_f
     L = np.tril(LU, -1) + np.eye(LU.shape[0])
     U = np.triu(LU)
-    P = np.eye(LU.shape[0])[p]
+    P = np.eye(LU.shape[0])[pivots]
     assert np.allclose(L @ U, P @ input[0])
 
 
@@ -818,18 +818,11 @@ def test_torch_lu_factor_ex(
         test_values=False,
     )
     ret_f, ret_gt = ret
-    ret_f_matrix, ret_f_info = ret_f
-    if ret_f_info == 0:
-        (
-            LU,
-            p,
-        ) = (
-            ret_f_matrix.LU,
-            ret_f_matrix.p,
-        )
+    LU, pivots, info = ret_f
+    if info == 0:
         L = np.tril(LU, -1) + np.eye(LU.shape[0])
         U = np.triu(LU)
-        P = np.eye(LU.shape[0])[p]
+        P = np.eye(LU.shape[0])[pivots]
         assert np.allclose(L @ U, P @ input[0])
 
 
