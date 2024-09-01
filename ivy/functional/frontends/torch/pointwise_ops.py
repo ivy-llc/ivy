@@ -131,14 +131,6 @@ def ceil(input, *, out=None):
 @with_unsupported_dtypes({"2.2 and below": ("float16", "complex")}, "torch")
 @to_ivy_arrays_and_back
 def clamp(input, min=None, max=None, *, out=None):
-    ivy.utils.assertions.check_all_or_any_fn(
-        min,
-        max,
-        fn=ivy.exists,
-        type="any",
-        limit=[1, 2],
-        message="at most one of min or max can be None",
-    )
     if min is None:
         return ivy.minimum(input, max, out=out)
     if max is None:
