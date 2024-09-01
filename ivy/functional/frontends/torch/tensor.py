@@ -381,9 +381,6 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.2 and below": ("bfloat16", "uint16")}, "torch")
     def copy_(self, other, non_blocking=False):
-        ivy.utils.assertions.check_one_way_broadcastable(
-            self.ivy_array.shape, torch_frontend.tensor(other).ivy_array.shape
-        )
         self._ivy_array = torch_frontend.tensor(other).ivy_array
         return self
 
@@ -1963,7 +1960,6 @@ class Tensor:
         if gradient is None and int(torch_frontend.numel(self)) > 1:
             raise RuntimeError("grad can be implicitly created only for scalar outputs")
         if self.grad_fn is None and self._grads is None:
-            assert self.shape == gradient.shape, "Mismatch in shape"
             self._grads = gradient
             return
         _grad_list = self.grad_fn(
