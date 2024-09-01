@@ -308,25 +308,11 @@ def flip(input, dims):
 
 @to_ivy_arrays_and_back
 def fliplr(input):
-    ivy.utils.assertions.check_greater(
-        len(input.shape),
-        2,
-        allow_equal=True,
-        message="requires tensor to be at least 2D",
-        as_array=False,
-    )
     return ivy.fliplr(input, copy=True)
 
 
 @to_ivy_arrays_and_back
 def flipud(input):
-    ivy.utils.assertions.check_greater(
-        len(input.shape),
-        1,
-        allow_equal=True,
-        message="requires tensor to be at least 1D",
-        as_array=False,
-    )
     return ivy.flipud(input, copy=True)
 
 
@@ -468,75 +454,6 @@ def roll(input, shifts, dims=None):
 @to_ivy_arrays_and_back
 def rot90(input, k, dims):
     total_dims = ivy.get_num_dims(input)
-    total_rot_dims = len(dims)
-
-    ivy.utils.assertions.check_greater(
-        total_dims,
-        2,
-        allow_equal=True,
-        message="expected total dims >= 2, but got total dims = " + str(total_dims),
-        as_array=False,
-    )
-
-    ivy.utils.assertions.check_equal(
-        total_rot_dims,
-        2,
-        message="expected total rotation dims == 2, but got dims = "
-        + str(total_rot_dims),
-        as_array=False,
-    )
-
-    ivy.utils.assertions.check_equal(
-        dims[0],
-        dims[1],
-        inverse=True,
-        message="expected rotation dims to be different, but got dim0 = "
-        + str(dims[0])
-        + " and dim1 = "
-        + str(dims[1]),
-        as_array=False,
-    )
-
-    ivy.utils.assertions.check_equal(
-        ivy.abs(dims[0] - dims[1]),
-        total_dims,
-        inverse=True,
-        message="expected rotation dims to be different, but got dim0 = "
-        + str(dims[0])
-        + " and dim1 = "
-        + str(dims[1]),
-    )
-
-    # range of dims
-    ivy.utils.assertions.check_less(
-        dims[0],
-        total_dims,
-        message="Rotation dim0 out of range, dim0 = " + str(dims[0]),
-        as_array=False,
-    )
-
-    ivy.utils.assertions.check_greater(
-        dims[0],
-        -total_dims,
-        allow_equal=True,
-        message="Rotation dim0 out of range, dim0 = " + str(dims[0]),
-        as_array=False,
-    )
-
-    ivy.utils.assertions.check_less(
-        dims[1],
-        total_dims,
-        message="Rotation dim1 out of range, dim1 = " + str(dims[1]),
-        as_array=False,
-    )
-
-    ivy.utils.assertions.check_greater(
-        dims[1],
-        -total_dims,
-        allow_equal=True,
-        message="Rotation dim1 out of range, dim1 = " + str(dims[1]),
-        as_array=False,
-    )
 
     k = (4 + (k % 4)) % 4
     new_axes = list(range(total_dims))
