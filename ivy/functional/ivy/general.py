@@ -2879,20 +2879,6 @@ def set_item(
     ivy.array([[ 0, -1, 20],
            [10, 10, 10]])
     """
-    # TODO: we may be able to remove this logic by instead tracing _parse_query
-    # as a node in the graph??
-    if isinstance(query, (list, tuple)) and any(
-        [q is Ellipsis or (isinstance(q, slice) and q.stop is None) for q in query]
-    ):
-        # use numpy for item setting when an ellipsis or unbounded slice is present,
-        # as they would otherwise cause static dim sizes to be traced into the graph
-        # NOTE: this does however cause tf.function to be incompatible
-        x_stop_gradient = ivy.stop_gradient(x, preserve_type=False)
-        np_array = x_stop_gradient.numpy()
-        val_stop_gradient = ivy.stop_gradient(val, preserve_type=False)
-        np_array[query] = np.asarray(val_stop_gradient)
-        return ivy.array(np_array)
-
     if copy:
         x = ivy.copy_array(x)
     if not ivy.is_array(val):
