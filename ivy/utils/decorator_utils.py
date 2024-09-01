@@ -7,7 +7,6 @@ import copy
 import os
 import ivy
 
-DATA_FORMAT = "PT"
 CONV_FUNCS = [
     "Conv1d",
     "Conv2d",
@@ -341,7 +340,7 @@ def handle_transpose_in_input_and_output(fn):
 
     @functools.wraps(fn)
     def transpose_wrapper(self, *args, **kwargs):
-        global DATA_FORMAT
+        DATA_FORMAT = os.environ.get("DATA_FORMAT", "channels_first")
         # isolates the actual `**kwargs` for the decorated function
         kwargs_call = {
             key: val
@@ -375,7 +374,7 @@ def handle_transpose_in_input_and_output(fn):
             substr in name_of_next_call for substr in CONV_BLOCK_FNS
         )
 
-        if DATA_FORMAT == "PT" and conv_block_start(self.__class__):
+        if DATA_FORMAT == "channels_first" and conv_block_start(self.__class__):
             input = fn_args_and_kwargs["input"]
             if len(input.shape) > 4:
                 transpose = TransposeType.CONV3D
@@ -389,12 +388,14 @@ def handle_transpose_in_input_and_output(fn):
                 input, transpose=transpose, pt_to_tf=True
             )
 
-            DATA_FORMAT = "TF"
-            os.environ["DATA_FORMAT"] = "channels_last"
+            DATA_FORMAT = "channels_last"
+            os.environ["DATA_FORMAT"] = DATA_FORMAT
 
         res = fn(self, **fn_args_and_kwargs)
 
-        if (DATA_FORMAT == "TF" and conv_block_continued) or DATA_FORMAT == "PT":
+        if (
+            DATA_FORMAT == "channels_last" and conv_block_continued
+        ) or DATA_FORMAT == "channels_first":
             return res
 
         if len(res.shape) > 4:
@@ -407,8 +408,8 @@ def handle_transpose_in_input_and_output(fn):
             transpose = TransposeType.NO_TRANSPOSE
         res = apply_transpose(res, transpose=transpose, pt_to_tf=False)
 
-        DATA_FORMAT = "PT"
-        os.environ["DATA_FORMAT"] = "channels_first"
+        DATA_FORMAT = "channels_first"
+        os.environ["DATA_FORMAT"] = DATA_FORMAT
 
         return res
 
