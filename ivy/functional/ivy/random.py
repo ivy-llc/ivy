@@ -25,13 +25,6 @@ from ivy.utils.exceptions import handle_exceptions
 
 def _check_bounds_and_get_shape(low, high, shape):
     if shape is not None:
-        ivy.utils.assertions.check_all_or_any_fn(
-            low,
-            high,
-            fn=lambda x: isinstance(x, (int, float)),
-            type="all",
-            message="low and high bounds must be numerics when shape is specified",
-        )
         return ivy.Shape(shape)
 
     valid_types = (ivy.Array,)
@@ -40,10 +33,6 @@ def _check_bounds_and_get_shape(low, high, shape):
     else:
         valid_types += (ivy.NativeArray,)
     if isinstance(low, valid_types):
-        if isinstance(high, valid_types):
-            ivy.utils.assertions.check_equal(
-                ivy.shape(low), ivy.shape(high), as_array=False
-            )
         return ivy.shape(low)
     if isinstance(high, valid_types):
         return ivy.shape(high)
