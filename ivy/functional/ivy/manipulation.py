@@ -21,7 +21,8 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 def _calculate_out_shape(
-    axis: Union[int, Sequence[int]], array_shape: Sequence[int]
+    axis: Union[int, Sequence[int]],
+    array_shape: Sequence[int],
 ) -> List[int]:
     """Calculate the output shape for expanding dimensions of an array.
 
@@ -37,7 +38,7 @@ def _calculate_out_shape(
     list
         The calculated output shape.
     """
-    if type(axis) not in (tuple, list):
+    if not isinstance(axis, (tuple, list)):
         axis = (axis,)
     out_dims = len(axis) + len(array_shape)
     norm_axis = normalize_axis_tuple(axis, out_dims)
