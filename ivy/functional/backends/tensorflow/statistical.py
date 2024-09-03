@@ -12,9 +12,7 @@ from ivy.utils.einsum_parser import legalise_einsum_expr
 # -------------------#
 
 
-@with_unsupported_dtypes(
-    {"2.15.0 and below": ("complex", "bool", "uint64")}, backend_version
-)
+@with_unsupported_dtypes({"2.15.0 and below": ("complex", "uint64")}, backend_version)
 def min(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -26,6 +24,9 @@ def min(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
+    is_bool = tf.dtypes.as_dtype(x.dtype) == tf.bool
+    if is_bool:
+        x = tf.cast(x, tf.int32)
     if where is not None:
         max_val = (
             ivy.iinfo(x.dtype).max
@@ -36,6 +37,8 @@ def min(
     result = tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
     if initial is not None:
         result = tf.minimum(result, initial)
+    if is_bool:
+        result = tf.cast(result, tf.bool)
     return result
 
 

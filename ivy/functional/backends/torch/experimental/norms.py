@@ -59,8 +59,8 @@ def local_response_norm(
 @with_unsupported_dtypes({"2.2 and below": ("bfloat16", "float16")}, backend_version)
 def batch_norm(
     x: torch.Tensor,
-    mean: torch.Tensor,
-    variance: torch.Tensor,
+    mean: Optional[torch.Tensor],
+    variance: Optional[torch.Tensor],
     /,
     *,
     scale: Optional[torch.Tensor] = None,
@@ -74,8 +74,8 @@ def batch_norm(
     xdims = x.ndim
     if data_format == "NSC":
         x = torch.permute(x, dims=(0, xdims - 1, *range(1, xdims - 1)))
-    runningmean = mean.detach().clone()
-    runningvariance = variance.detach().clone()
+    runningmean = mean.detach().clone() if mean is not None else mean
+    runningvariance = variance.detach().clone() if variance is not None else variance
     xnormalized = torch.nn.functional.batch_norm(
         x,
         runningmean,
@@ -94,8 +94,8 @@ def batch_norm(
 batch_norm.partial_mixed_handler = (
     lambda x, mean, variance, scale=None, offset=None, **kwargs: (
         x.ndim > 1
-        and mean.ndim == 1
-        and variance.ndim == 1
+        and (mean is None or mean.ndim == 1)
+        and (variance is None or variance.ndim == 1)
         and (scale is None or scale.ndim == 1)
         and (offset is None or offset.ndim == 1)
     )
@@ -105,8 +105,8 @@ batch_norm.partial_mixed_handler = (
 @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, backend_version)
 def instance_norm(
     x: torch.Tensor,
-    mean: torch.Tensor,
-    variance: torch.Tensor,
+    mean: Optional[torch.Tensor] = None,
+    variance: Optional[torch.Tensor] = None,
     /,
     *,
     scale: Optional[torch.Tensor] = None,
@@ -117,8 +117,8 @@ def instance_norm(
     data_format: Optional[str] = "NSC",
     out: Optional[Tuple[torch.Tensor, torch.Tensor, torch.Tensor]] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-    runningmean = mean.clone()
-    runningvariance = variance.clone()
+    runningmean = mean.clone() if mean is not None else mean
+    runningvariance = variance.clone() if variance is not None else variance
     # reshape  from  N, *S, C to N, C, *S
     xdims = x.ndim
     if data_format == "NSC":
@@ -140,10 +140,10 @@ def instance_norm(
 
 
 instance_norm.partial_mixed_handler = (
-    lambda x, mean, variance, scale=None, offset=None, **kwargs: (
+    lambda x, mean=None, variance=None, scale=None, offset=None, **kwargs: (
         x.ndim > 1
-        and mean.ndim == 1
-        and variance.ndim == 1
+        and (mean is None or mean.ndim == 1)
+        and (variance is None or variance.ndim == 1)
         and (scale is None or scale.ndim == 1)
         and (offset is None or offset.ndim == 1)
     )

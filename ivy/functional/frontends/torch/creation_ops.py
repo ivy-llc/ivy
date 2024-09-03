@@ -82,11 +82,6 @@ def complex(
     *,
     out=None,
 ):
-    assert real.dtype == imag.dtype, TypeError(
-        "Expected real and imag to have the same dtype, "
-        f" but got real.dtype = {real.dtype} and imag.dtype = {imag.dtype}."
-    )
-
     complex_dtype = ivy.complex64 if real.dtype != ivy.float64 else ivy.complex128
     complex_array = real + imag * 1j
     return complex_array.astype(complex_dtype, out=out)
@@ -314,11 +309,6 @@ def range(
         step = 1
     elif len(args) == 3:
         start, end, step = args
-    else:
-        ivy.utils.assertions.check_true(
-            len(args) == 1 or len(args) == 3,
-            "only 1 or 3 positional arguments are supported",
-        )
     range_vec = []
     elem = start
     while 1:

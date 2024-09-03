@@ -69,8 +69,8 @@ local_response_norm.partial_mixed_handler = lambda x, size, **kwargs: size % 2 !
 @with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, backend_version)
 def batch_norm(
     x: Union[tf.Tensor, tf.Variable],
-    mean: Union[tf.Tensor, tf.Variable],
-    variance: Union[tf.Tensor, tf.Variable],
+    mean: Optional[Union[tf.Tensor, tf.Variable]],
+    variance: Optional[Union[tf.Tensor, tf.Variable]],
     /,
     *,
     scale: Optional[Union[tf.Tensor, tf.Variable]] = None,
@@ -103,9 +103,15 @@ def batch_norm(
         dims = (0, *range(1, xdims - 1))
         mean = tf.math.reduce_mean(x, axis=dims)
         variance = tf.math.reduce_variance(x, axis=dims)
-        runningmean = (1 - momentum) * runningmean + momentum * mean
-        runningvariance = (1 - momentum) * runningvariance + momentum * variance * n / (
-            n - 1
+        runningmean = (
+            ((1 - momentum) * runningmean + momentum * mean)
+            if runningmean is not None
+            else runningmean
+        )
+        runningvariance = (
+            (1 - momentum) * runningvariance + momentum * variance * n / (n - 1)
+            if runningvariance is not None
+            else runningvariance
         )
 
     inv = 1.0 / tf.math.sqrt(variance + eps)
@@ -126,8 +132,8 @@ def batch_norm(
 
 def instance_norm(
     x: Union[tf.Tensor, tf.Variable],
-    mean: Union[tf.Tensor, tf.Variable],
-    variance: Union[tf.Tensor, tf.Variable],
+    mean: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    variance: Optional[Union[tf.Tensor, tf.Variable]] = None,
     /,
     *,
     scale: Optional[Union[tf.Tensor, tf.Variable]] = None,
@@ -161,8 +167,8 @@ def instance_norm(
     C = x.shape[-1]
     S = x.shape[0:-2]
     x = tf.reshape(x, (1, *S, N * C))
-    mean = tf.tile(mean, [N])
-    variance = tf.tile(variance, [N])
+    mean = tf.tile(mean, [N]) if mean is not None else mean
+    variance = tf.tile(variance, [N]) if variance is not None else variance
     if scale is not None:
         scale = tf.tile(scale, [N])
     if offset is not None:
@@ -187,10 +193,21 @@ def instance_norm(
             xnormalized, perm=(xdims - 2, *range(0, xdims - 2), xdims - 1)
         )
 
+    runningmean = (
+        tf.reduce_mean(tf.reshape(runningmean, (N, C)), axis=0)
+        if runningmean is not None
+        else runningmean
+    )
+    runningvariance = (
+        tf.reduce_mean(tf.reshape(runningvariance, (N, C)), axis=0)
+        if runningvariance is not None
+        else runningvariance
+    )
+
     return (
         xnormalized,
-        tf.reduce_mean(tf.reshape(runningmean, (N, C)), axis=0),
-        tf.reduce_mean(tf.reshape(runningvariance, (N, C)), axis=0),
+        runningmean,
+        runningvariance,
     )
 
 

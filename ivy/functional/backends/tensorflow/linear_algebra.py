@@ -233,17 +233,6 @@ def matmul(
         x1 = tf.cast(x1, dtype_from)
         x2 = tf.cast(x2, dtype_from)
 
-    if (
-        x1.shape == ()
-        or x2.shape == ()
-        or (len(x1.shape) == len(x2.shape) == 1 and x1.shape != x2.shape)
-        or (len(x1.shape) == len(x2.shape) == 1 and x1.shape != x2.shape)
-        or (len(x1.shape) == 1 and len(x2.shape) >= 2 and x1.shape[0] != x2.shape[-2])
-        or (len(x2.shape) == 1 and len(x1.shape) >= 2 and x2.shape[0] != x1.shape[-1])
-        or (len(x1.shape) >= 2 and len(x2.shape) >= 2 and x1.shape[-1] != x2.shape[-2])
-    ):
-        raise ivy.utils.exceptions.IvyException("Error,shapes not compatible")
-
     x1_padded = False
     x1_padded_2 = False
     x2_padded = False

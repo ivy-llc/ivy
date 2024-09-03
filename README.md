@@ -1,9 +1,9 @@
 <div style="display: block;" align="center">
-    <img class="only-dark" width="50%" src="https://raw.githubusercontent.com/ivy-llc/ivy-llc.github.io/main/src/assets/full_logo_dark_long.svg#gh-dark-mode-only"/>
+    <img class="only-dark" width="50%" src="https://raw.githubusercontent.com/ivy-llc/assets/ef677f0eb3e9ee756cf766e3ac0088eb8c187713/assets/full_logo_dark_long.svg#gh-dark-mode-only"/>
 </div>
 
 <div style="display: block;" align="center">
-    <img class="only-light" width="50%" src="https://raw.githubusercontent.com/ivy-llc/ivy-llc.github.io/main/src/assets/full_logo_light_long.svg#gh-light-mode-only"/>
+    <img class="only-light" width="50%" src="https://raw.githubusercontent.com/ivy-llc/assets/ef677f0eb3e9ee756cf766e3ac0088eb8c187713/assets/full_logo_light_long.svg#gh-light-mode-only"/>
 </div>
 
 ------------------------------------------------------------------------
