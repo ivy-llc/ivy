@@ -339,6 +339,32 @@ def _check_tf_pad(input_shape, pad_width, mode, constant_values, reflect_type):
     )
 
 
+def pad_sequence(
+    sequences: Union[tf.Tensor, tf.Variable, Iterable[Tuple[int]]],
+    batch_first: bool = False,
+    padding_value: Union[Iterable[Tuple[Number]], Number] = 0,
+):
+    # Determine the maximum sequence length
+    if len(sequences) > 0:
+        assert isinstance(sequences[0], (tf.Tensor, tf.Variable)), (
+            "Expected a list of tensors or variables, but got a list of "
+            f"type {type(sequences[0])}"
+        )
+    max_len = tf.reduce_max([tf.shape(seq)[0] for seq in sequences])
+
+    # Pad sequences to the maximum length
+    padded_sequences = [
+        tf.pad(seq, [[0, max_len - tf.shape(seq)[0]], [0, 0]], constant_values=padding_value)
+        for seq in sequences
+    ]
+
+    # Stack the padded sequences along the appropriate axis
+    if batch_first:
+        return tf.stack(padded_sequences, axis=0)
+    else:
+        return tf.stack(padded_sequences, axis=1)
+
+
 def expand(
     x: Union[tf.Tensor, tf.Variable],
     shape: Union[List[int], List[Tuple]],

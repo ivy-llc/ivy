@@ -1276,6 +1276,72 @@ pad.mixed_backend_wrappers = {
     "to_skip": ("inputs_to_ivy_arrays",),
 }
 
+@handle_exceptions
+@to_native_arrays_and_back
+def pad_sequence(
+    sequences: Union[Iterable[Union[ivy.Array, ivy.NativeArray]]],
+    *,
+    batch_first: bool = False,
+    padding_value: Union[Iterable[Tuple[Number]], Number] = 0,
+) -> ivy.Array:
+    """
+    Pad a list of variable-length sequences to the same length.
+
+    Parameters
+    ----------
+    sequences
+        A list of input sequences (arrays) to pad and stack. Each sequence should have
+        shape `(seq_len, feature_size)`, where `seq_len` can vary between sequences.
+    batch_first
+        If `True`, the output tensor will have shape `(batch_size, max_len, feature_size)`,
+        where `batch_size` is the number of sequences and `max_len` is the length of
+        the longest sequence. If `False`, the output tensor will have shape
+        `(max_len, batch_size, feature_size)`. Default is `False`.
+    padding_value
+        The value to use for padding shorter sequences to the maximum length. This
+        value is broadcasted to all padded areas of the sequences. Default is `0`.
+
+    Returns
+    -------
+    ret
+        Padded tensor with shape determined by `batch_first`. The length of each sequence
+        is padded to match the length of the longest sequence in `sequences`.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> seq1 = ivy.array([[1, 2], [3, 4]])
+    >>> seq2 = ivy.array([[5, 6]])
+    >>> y = ivy.pad_sequence([seq1, seq2], batch_first=True, padding_value=-1)
+    >>> print(y)
+    ivy.array([[[ 1,  2],
+                [ 3,  4]],
+               [[ 5,  6],
+                [-1, -1]]])
+
+    >>> y = ivy.pad_sequence([seq1, seq2], batch_first=False, padding_value=0)
+    >>> print(y)
+    ivy.array([[[1, 2],
+                [5, 6]],
+               [[3, 4],
+                [0, 0]]])
+
+    With :class:`ivy.NativeArray` input:
+
+    >>> seq1 = ivy.native_array([[1, 2], [3, 4]])
+    >>> seq2 = ivy.native_array([[5, 6]])
+    >>> y = ivy.pad_sequence([seq1, seq2], batch_first=True)
+    >>> print(y)
+    ivy.array([[[1, 2],
+                [3, 4]],
+               [[5, 6],
+                [0, 0]]])
+
+    """
+    return ivy.current_backend().pad_sequence(
+        sequences, batch_first=batch_first, padding_value=padding_value
+    )
 
 @handle_exceptions
 @handle_backend_invalid
