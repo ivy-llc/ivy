@@ -229,6 +229,13 @@ def pad(
         ret = jnp.astype(jnp.round(ret), input_dtype)
     return ret
 
+def pad_sequence(
+    sequences: Union[JaxArray, Iterable[Tuple[int]]],
+    batch_first: bool = False,
+    padding_value: Union[Iterable[Tuple[Number]], Number] = 0,
+):
+    raise ivy.exceptions.IvyNotImplementedException("pad_sequence not implemented for Jax backend")
+
 
 def vsplit(
     ary: JaxArray,

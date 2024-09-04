@@ -456,6 +456,15 @@ def zero_pad(
     },
     backend_version,
 )
+
+def pad_sequence(
+    sequences: Union[paddle.Tensor, Iterable[Tuple[int]]],
+    batch_first: bool = False,
+    padding_value: Union[Iterable[Tuple[Number]], Number] = 0,
+):
+    raise ivy.exceptions.IvyNotImplementedException("pad_sequence not implemented for Paddle backend")
+
+
 def swapaxes(
     x: paddle.Tensor,
     axis0: int,
