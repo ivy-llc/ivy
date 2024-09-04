@@ -1249,14 +1249,14 @@ class Tensor:
         return torch_frontend.dot(self, tensor)
 
     @with_supported_dtypes({"2.2 and below": ("float32", "float64")}, "torch")
-    def bernoulli(self, p, *, generator=None, out=None):
+    def bernoulli(self, *, generator=None, out=None):
         return torch_frontend.bernoulli(
-            self._ivy_array, p, generator=generator, out=out
+            self._ivy_array, generator=generator, out=out
         )
 
     @with_supported_dtypes({"2.2 and below": ("float32", "float64")}, "torch")
     def bernoulli_(self, p, *, generator=None, out=None):
-        self.ivy_array = self.bernoulli(p, generator=generator, out=out).ivy_array
+        self.ivy_array = torch_frontend.bernoulli(torch_frontend.full(self.shape, p, dtype=torch_frontend.float64), generator=generator, out=out).ivy_array
         return self
 
     def numel(self):
