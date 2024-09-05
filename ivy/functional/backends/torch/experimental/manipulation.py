@@ -155,6 +155,7 @@ def _check_torch_pad(mode, reflect_type, pad_width, input_shape, constant_values
         )
     )
 
+
 def pad_sequence(
     sequences: Union[torch.Tensor, Iterable[Tuple[int]]],
     batch_first: bool = False,

@@ -354,7 +354,11 @@ def pad_sequence(
 
     # Pad sequences to the maximum length
     padded_sequences = [
-        tf.pad(seq, [[0, max_len - tf.shape(seq)[0]], [0, 0]], constant_values=padding_value)
+        tf.pad(
+            seq,
+            [[0, max_len - tf.shape(seq)[0]], [0, 0]],
+            constant_values=padding_value,
+        )
         for seq in sequences
     ]
 

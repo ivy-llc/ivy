@@ -1276,6 +1276,7 @@ pad.mixed_backend_wrappers = {
     "to_skip": ("inputs_to_ivy_arrays",),
 }
 
+
 @handle_exceptions
 @to_native_arrays_and_back
 def pad_sequence(
@@ -1284,8 +1285,7 @@ def pad_sequence(
     batch_first: bool = False,
     padding_value: Union[Iterable[Tuple[Number]], Number] = 0,
 ) -> ivy.Array:
-    """
-    Pad a list of variable-length sequences to the same length.
+    """Pad a list of variable-length sequences to the same length.
 
     Parameters
     ----------
@@ -1337,11 +1337,11 @@ def pad_sequence(
                 [3, 4]],
                [[5, 6],
                 [0, 0]]])
-
     """
     return ivy.current_backend().pad_sequence(
         sequences, batch_first=batch_first, padding_value=padding_value
     )
+
 
 @handle_exceptions
 @handle_backend_invalid
