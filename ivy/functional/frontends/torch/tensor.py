@@ -1442,8 +1442,10 @@ class Tensor:
         self.ivy_array = self.bitwise_and(other).ivy_array
         return self
 
-    def new(self):
-        return torch_frontend.tensor([], dtype=self.dtype, device=self.device)
+    def new(self, *shape_list):
+        if isinstance(shape_list[0], (list, tuple)):
+            shape_list = shape_list[0]
+        return torch_frontend.zeros(shape_list, dtype=self.dtype, device=self.device)
 
     def __array__(self, dtype=None):
         if dtype is None:
