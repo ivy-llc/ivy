@@ -18,6 +18,18 @@ from ivy.functional.ivy.device import (
     Profiler as BaseProfiler,
 )
 
+# Invalid data types
+invalid_dtypes = {
+    "2.2 and below": (
+        ivy.uint16,
+        ivy.uint32,
+        ivy.uint64,
+    )
+}
+
+# Unsupported devices
+unsupported_devices = ("tpu",)
+
 torch_scatter = None
 
 # API #
@@ -103,7 +115,6 @@ def gpu_is_available() -> bool:
     ) or torch.cuda.is_available()
 
 
-# noinspection PyUnresolvedReferences
 def tpu_is_available() -> bool:
     if importlib.util.find_spec("torch_xla") is not None:
         return True
@@ -114,8 +125,6 @@ def handle_soft_device_variable(*args, fn, **kwargs):
     args, kwargs, device_shifting_dev = _shift_native_arrays_on_default_device(
         *args, **kwargs
     )
-    # checking if this function accepts `device` argument
-    # must be handled in the backend
     if "device" in inspect.signature(fn).parameters:
         kwargs["device"] = device_shifting_dev
     return fn(*args, **kwargs)
