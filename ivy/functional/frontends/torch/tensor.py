@@ -929,6 +929,10 @@ class Tensor:
     def t(self):
         return torch_frontend.t(self)
 
+    def t_(self):
+        self.ivy_array = self.t().ivy_array
+        return self
+
     def flatten(self, start_dim=0, end_dim=-1):
         return torch_frontend.flatten(self, start_dim, end_dim)
 
