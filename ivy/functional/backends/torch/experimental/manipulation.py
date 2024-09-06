@@ -156,6 +156,18 @@ def _check_torch_pad(mode, reflect_type, pad_width, input_shape, constant_values
     )
 
 
+def pad_sequence(
+    sequences: Union[torch.Tensor, Iterable[Tuple[int]]],
+    batch_first: bool = False,
+    padding_value: Union[Iterable[Tuple[Number]], Number] = 0,
+):
+    return torch.nn.utils.rnn.pad_sequence(
+        sequences,
+        batch_first=batch_first,
+        padding_value=padding_value,
+    )
+
+
 def flipud(
     m: torch.Tensor,
     /,

@@ -273,6 +273,16 @@ def pad(
         )
 
 
+def pad_sequence(
+    sequences: Union[np.ndarray, Iterable[Tuple[int]]],
+    batch_first: bool = False,
+    padding_value: Union[Iterable[Tuple[Number]], Number] = 0,
+):
+    raise ivy.exceptions.IvyNotImplementedException(
+        "pad_sequence not implemented for Numpy backend"
+    )
+
+
 def vsplit(
     ary: np.ndarray,
     indices_or_sections: Union[int, Sequence[int], np.ndarray],

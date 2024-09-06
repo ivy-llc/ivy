@@ -312,7 +312,8 @@ from . import linalg
 from .linalg import lu
 from . import func
 from .func import *
-
+from . import casting_ops
+from .casting_ops import *
 
 _frontend_array = tensor
 

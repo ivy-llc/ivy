@@ -230,6 +230,16 @@ def pad(
     return ret
 
 
+def pad_sequence(
+    sequences: Union[JaxArray, Iterable[Tuple[int]]],
+    batch_first: bool = False,
+    padding_value: Union[Iterable[Tuple[Number]], Number] = 0,
+):
+    raise ivy.exceptions.IvyNotImplementedException(
+        "pad_sequence not implemented for Jax backend"
+    )
+
+
 def vsplit(
     ary: JaxArray,
     indices_or_sections: Union[int, Sequence[int], JaxArray],
