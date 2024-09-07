@@ -106,7 +106,7 @@ class Tensor:
 
     @property
     def requires_grad(self):
-        return self._requires_grad
+        return ivy.requires_gradient(self.ivy_array)
 
     @property
     def is_leaf(self):
@@ -2038,7 +2038,8 @@ class Tensor:
         return self
 
     def requires_grad_(self, requires_grad=True):
-        self._requires_grad = requires_grad
+        if ivy.requires_gradient(self.ivy_array) and not requires_grad:
+            return ivy.stop_gradient(self.ivy_array)
         return self
 
     def backward(self, gradient=None, retain_graph=None, create_graph=False):
