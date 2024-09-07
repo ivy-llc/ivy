@@ -12,6 +12,7 @@ from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
     handle_array_function,
     inputs_to_ivy_arrays,
+    inputs_to_native_arrays,
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
@@ -438,11 +439,8 @@ def stop_gradient(
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
+@inputs_to_native_arrays
 @handle_array_function
-@handle_device
 def requires_gradient(
     x: Union[ivy.Array, ivy.NativeArray],
 ) -> bool:
