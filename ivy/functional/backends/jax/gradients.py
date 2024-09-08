@@ -145,13 +145,15 @@ def stop_gradient(
 ) -> JaxArray:
     return jlax.stop_gradient(x)
 
+
 def requires_gradient(
     x: JaxArray,
-   ) -> bool:
-   if isinstance(x, jax.core.Tracer):
-    # JAX tracers indicate whether a value is being traced for gradients
-    return True
-   return False
+) -> bool:
+    if isinstance(x, jax.core.Tracer):
+        # JAX tracers indicate whether a value is being traced for gradients
+        return True
+    return False
+
 
 def jac(func: Callable):
     def grad_fn(x_in):

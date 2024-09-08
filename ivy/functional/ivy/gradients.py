@@ -455,9 +455,10 @@ def requires_gradient(
     -------
     ret
         A boolean indicating whether gradient computation is enabled for the input array.
-
     """
     return current_backend(x).requires_gradient(x)
+
+
 # AutoGrad #
 
 

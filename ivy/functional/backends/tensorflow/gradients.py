@@ -171,9 +171,10 @@ def stop_gradient(
         return variable(x)
     return x
 
+
 def requires_gradient(
     x: Union[tf.Tensor, tf.Variable],
-   ) -> bool:
+) -> bool:
     is_var = is_variable(x)
     if is_var:
         return x.trainable

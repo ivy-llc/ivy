@@ -182,9 +182,10 @@ def stop_gradient(
         return x
     return x.detach()
 
+
 def requires_gradient(
     x: Optional[torch.Tensor],
-   ) -> bool:
+) -> bool:
     is_var = is_variable(x)
     if is_var:
         return x.requires_grad

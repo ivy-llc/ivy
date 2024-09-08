@@ -21,8 +21,11 @@ def is_variable(x, /, *, exclusive=False):
     return False
 
 
-def requires_gradient(x,) -> bool:
+def requires_gradient(
+    x,
+) -> bool:
     return False
+
 
 def variable_data(x, /):
     return x
