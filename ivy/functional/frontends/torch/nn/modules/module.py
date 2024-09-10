@@ -17,7 +17,6 @@ class Module(ivy.Module):
 
     def __init__(self, *args, device=None, devices=None, **kwargs) -> None:
         super().__init__(
-            self,
             *args,
             device=device,
             devices=devices,
