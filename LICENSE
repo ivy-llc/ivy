@@ -60,12 +60,13 @@ for personal, non-commercial purposes, subject to the restrictions set forth bel
 You are permitted to use Ivy only for personal or academic purposes. You may not use Ivy,
 directly or indirectly, for any commercial, enterprise, or for-profit activities, including
 but not limited to the provision of services or development of products for any commercial
-organization or entity.
+organization or entity, unless a separate enterprise license is obtained from Licensor.
 
 3.2 No Redistribution
 You are not permitted to distribute, sublicense, or share Ivy, or any Derivative Works, to
-any third party in any form, including, but not limited to, distributing it as part of another
-product, service, or software package.
+any third party in any form, unless express written permission is granted by Licensor. This
+includes, but is not limited to, distributing it as part of another product, service, or
+software package.
 
 3.3 Prohibited Uses
 
@@ -113,7 +114,7 @@ Licensor will comply with all applicable data protection laws and regulations, i
 You are solely responsible for the legality and use of any data and code you submit, transmit, or provide to
 Ivy ("Licensee Data and Code"). You represent and warrant that you have all necessary rights, permissions, consents,
 and approvals for Licensor to use Licensee Data and Code as described herein. You grant Licensor a non-exclusive
-license to reproduce and use Licensee Data and Code for providing Ivy, monitoring its use, creating statistical
+license to reproduce and use Licensee Data and Code for monitoring the use of Ivy, creating statistical
 analyses, and improving Ivy and other products. All analyses and related intellectual property rights are the
 exclusive property of Licensor. Licensor may use and exploit these analyses for any lawful purpose, provided
 they do not identify you or any individual.
@@ -143,8 +144,8 @@ Licensor will provide notice of termination via email or other reasonable means.
 
 Upon termination or expiration of this EULA for any reason, all licensed rights granted in this EULA will immediately cease to exist,
 and you must promptly discontinue all use of Ivy, erase all copies of Ivy from your computers, and permanently destroy all copies of Ivy
-and any related documentation in your possession or control. Sections 3, 4, 5, 6, 7, 8, 9, 10, and 11 will survive termination of this
-EULA and remain in full force and effect.
+and any related documentation in your possession or control. Sections 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, and 15 will survive
+termination of this EULA and remain in full force and effect.
 
 8. Disclaimer of Warranties
 
