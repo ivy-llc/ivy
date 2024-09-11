@@ -2,51 +2,209 @@ Copyright 2024 Transpile AI Ltd.  All rights reserved.
 
 End-User License Agreement (EULA) for Ivy
 
-This End-User License Agreement (“EULA”) is a legal agreement between you (“Licensee” or “you”) and Transpile AI Ltd (“Licensor” or “we”) regarding the use of the Ivy software package and GitHub repository (“Ivy”). By downloading, installing, or otherwise using Ivy, you agree to be bound by the terms of this EULA.
+This End-User License Agreement (“EULA”) is a legal agreement between you (“Licensee” or “you”) and Transpile AI Ltd (“Licensor” or “we”)
+regarding the use of the Ivy software package and GitHub repository (“Ivy”). By downloading, installing, or otherwise using Ivy,
+you agree to be bound by the terms of this EULA.
 
-1. License Grant
+1. Definitions
 
-Subject to the terms and conditions of this EULA, Licensor hereby grants you a limited, non-exclusive, non-transferable, non-sublicensable, and revocable license to use Ivy solely for personal, non-commercial purposes, subject to the restrictions set forth below.
+"License" shall mean the terms and conditions for use, reproduction,
+and distribution as defined by Sections 1 through 9 of this document.
 
-2. Restrictions
+"Licensor" shall mean the copyright owner or entity authorized by
+the copyright owner that is granting the License, which is Transpile AI Ltd.
 
-2.1 Non-Commercial Use Only
-You are permitted to use Ivy only for personal or academic purposes. You may not use Ivy, directly or indirectly, for any commercial, enterprise, or for-profit activities, including but not limited to the provision of services or development of products for any commercial organization or entity.
+"Legal Entity" shall mean the union of the acting entity and all
+other entities that control, are controlled by, or are under common
+control with that entity. For the purposes of this definition,
+"control" means (i) the power, direct or indirect, to cause the
+direction or management of such entity, whether by contract or
+otherwise, or (ii) ownership of fifty percent (50%) or more of the
+outstanding shares, or (iii) beneficial ownership of such entity.
 
-2.2 No Redistribution
-You are not permitted to distribute, sublicense, or share Ivy, or any derivative works, to any third party in any form, including, but not limited to, distributing it as part of another product or service.
+"You" (or "Your") shall mean an individual or Legal Entity
+exercising permissions granted by this License.
 
-2.3 Prohibited Uses
+"Source" form shall mean the preferred form for making modifications,
+including but not limited to software source code, documentation
+source, and configuration files.
+
+"Object" form shall mean any form resulting from mechanical
+transformation or translation of a Source form, including but
+not limited to compiled object code, generated documentation,
+and conversions to other media types.
+
+"Work" shall mean the work of authorship, whether in Source or
+Object form, made available under the License, as indicated by a
+copyright notice that is included in or attached to the work.
+
+"Derivative Works" shall mean any work, whether in Source or Object
+form, that is based on (or derived from) the Work and for which the
+editorial revisions, annotations, elaborations, or other modifications
+represent, as a whole, an original work of authorship. For the purposes
+of this License, Derivative Works shall not include works that remain
+separable from, or merely link (or bind by name) to the interfaces of,
+the Work and Derivative Works thereof.
+
+"Distribute" shall mean making the Work available publicly or to any third party.
+
+2. License Grant
+
+Subject to the terms and conditions of this EULA, Licensor hereby grants you a limited,
+non-exclusive, non-transferable, non-sublicensable, and revocable license to use Ivy solely
+for personal, non-commercial purposes, subject to the restrictions set forth below.
+
+3. Restrictions
+
+3.1 Non-Commercial Use Only
+You are permitted to use Ivy only for personal or academic purposes. You may not use Ivy,
+directly or indirectly, for any commercial, enterprise, or for-profit activities, including
+but not limited to the provision of services or development of products for any commercial
+organization or entity.
+
+3.2 No Redistribution
+You are not permitted to distribute, sublicense, or share Ivy, or any Derivative Works, to
+any third party in any form, including, but not limited to, distributing it as part of another
+product, service, or software package.
+
+3.3 Prohibited Uses
 
 	•	You may not use Ivy in a way that violates any laws or regulations.
-	•	You may not incorporate Ivy into any project, product, or service intended for enterprise use or commercial gain.
-	•	Ivy may not be modified, reverse engineered, or decompiled by any entity that operates for commercial gain, regardless of the purpose or intent of modification.
+	•	You may not incorporate Ivy into any project, product, or service intended for
+        enterprise use or commercial gain.
+	•	Ivy may not be modified, reverse engineered, or decompiled by any entity that
+        operates for commercial gain, regardless of the purpose or intent of modification.
 
-3. Ownership
+3.4 Generated Source Code Ownership and Use
 
-Licensor retains all right, title, and interest in and to Ivy, including all intellectual property rights. This EULA does not convey any ownership rights to you. All rights not expressly granted in this EULA are reserved by Licensor.
+    • Any source code files generated by Ivy may not be used for enterprise or commercial purposes
+      without obtaining a separate enterprise license from Licensor.
+    • Any source code files generated by Ivy are owned by Licensor, unless a separate written agreement
+      has been reached between you and Licensor.
+    • Source code files generated by Ivy, or any Derivative Works thereof, may not be distributed
+      in any manner without express written permission from Licensor. Written permission can be
+      requested by emailing contact@ivy.dev, and is granted at the sole discretion of Licensor.
 
-4. Termination
+3.5 Feedback
+You agree that any ideas, suggestions, proposals, concepts, designs, improvements, or other
+materials ("Feedback") you submit to Licensor regarding Ivy are provided voluntarily and without
+obligation of confidentiality. You grant Licensor a fully paid, royalty-free, perpetual, irrevocable,
+worldwide, non-exclusive, and fully sublicensable right and license to use, reproduce, perform, display,
+distribute, adapt, modify, re-format, create Derivative Works of, and otherwise commercially or
+non-commercially exploit in any manner, any and all Feedback.
 
-Licensor reserves the right to terminate this EULA at any time if you fail to comply with any terms of this EULA. Upon termination, you must immediately cease all use of Ivy and destroy all copies of Ivy in your possession.
+4. Data Collection
 
-5. Disclaimer of Warranties
+By using Ivy, you acknowledge and agree that Licensor may collect and use technical data and
+related information, including but not limited to information about the machine learning models
+and code that are transpiled with Ivy, and details of how Ivy is used.
 
-IVY IS PROVIDED “AS IS” WITHOUT ANY WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT. LICENSOR DOES NOT WARRANT THAT IVY WILL BE ERROR-FREE OR THAT IT WILL OPERATE WITHOUT INTERRUPTION.
+4.1 Consent
+By using Ivy, you consent to the collection, use, and processing of your data as described in this section.
 
-6. Limitation of Liability
+4.2 Data Usage
+The data collected will be used to improve Ivy, provide support, and enhance user experience.
+No personally identifiable information will be shared with third parties under any circumstances.
 
-TO THE MAXIMUM EXTENT PERMITTED BY LAW, LICENSOR SHALL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING OUT OF YOUR USE OR INABILITY TO USE IVY, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+4.3 Compliance
+Licensor will comply with all applicable data protection laws and regulations, in the collection, use, and processing of your data.
 
-7. Governing Law
+4.4 Licensee Data and Code
+You are solely responsible for the legality and use of any data and code you submit, transmit, or provide to
+Ivy ("Licensee Data and Code"). You represent and warrant that you have all necessary rights, permissions, consents,
+and approvals for Licensor to use Licensee Data and Code as described herein. You grant Licensor a non-exclusive
+license to reproduce and use Licensee Data and Code for providing Ivy, monitoring its use, creating statistical
+analyses, and improving Ivy and other products. All analyses and related intellectual property rights are the
+exclusive property of Licensor. Licensor may use and exploit these analyses for any lawful purpose, provided
+they do not identify you or any individual.
 
-This EULA is governed by and construed in accordance with the laws of the State of Delaware, without regard to its conflict of law principles. Any disputes arising under this EULA will be subject to the exclusive jurisdiction of the state and federal courts located in the State of Delaware.
+4.5 Indemnification
+You shall defend, indemnify, and hold harmless Licensor and its affiliates, employees, officers, directors, and agents from and
+against all claims and allegations, and all damages, losses, liability and expenses (including reasonable attorneys’ fees),
+resulting from Licensor’s use of Licensee Data and Code as permitted and contemplated herein.
 
-8. Amendments
+5. Ownership
 
-Licensor reserves the right to modify this EULA at any time. Any changes will be effective upon posting the revised EULA on Ivy repository or website. Your continued use of Ivy after any changes have been posted constitutes your acceptance of the modified terms.
+Licensor retains all right, title, and interest in and to Ivy, including all intellectual property rights.
+This EULA does not convey any ownership rights to you. All rights not expressly granted in this EULA are reserved by Licensor.
 
-9. Contact Information
+6. Third Party Software
+
+Ivy may include software licensed from third parties ("Third Party Software"). Such software is subject to the terms and conditions
+provided by the third parties. Nothing in this EULA limits your rights under, or grants you rights that supersede, the terms and conditions
+of any applicable license for Third Party Software. A list of Third Party Software and corresponding license terms is available from
+Licensor upon request.
+
+7. Termination
+
+Licensor reserves the right to terminate this EULA at any time if you fail to comply with any terms of this EULA.
+Upon termination, you must immediately cease all use of Ivy and destroy all copies of Ivy in your possession.
+Licensor will provide notice of termination via email or other reasonable means. Termination will be effective immediately upon notice.
+
+Upon termination or expiration of this EULA for any reason, all licensed rights granted in this EULA will immediately cease to exist,
+and you must promptly discontinue all use of Ivy, erase all copies of Ivy from your computers, and permanently destroy all copies of Ivy
+and any related documentation in your possession or control. Sections 3, 4, 5, 6, 7, 8, 9, 10, and 11 will survive termination of this
+EULA and remain in full force and effect.
+
+8. Disclaimer of Warranties
+
+IVY IS PROVIDED “AS IS” WITHOUT ANY WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT. LICENSOR DOES
+NOT WARRANT THAT IVY WILL BE ERROR-FREE OR THAT IT WILL OPERATE WITHOUT INTERRUPTION.
+
+9. Limitation of Liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, LICENSOR SHALL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING OUT OF YOUR USE OR INABILITY TO USE IVY, EVEN IF ADVISED
+OF THE POSSIBILITY OF SUCH DAMAGES.
+
+LICENSOR’S TOTAL CUMULATIVE LIABILITY IN CONNECTION WITH THIS EULA AND THE LICENSED SOFTWARE, WHETHER IN
+CONTRACT OR TORT OR OTHERWISE, WILL NOT EXCEED ONE-THOUSAND DOLLARS USD ($1,000).
+
+9.1 Versioning
+You acknowledge that new versions of Ivy may be subject to a different license agreement provided by Licensor with such new versions, rather than this EULA.
+
+9.2 Miscellaneous
+Neither the rights nor the obligations arising under this EULA are assignable or transferable by you, and any such attempted assignment
+or transfer shall be void and without effect. Any notice to you may be provided by email or posted in publicly accessible areas of
+Licensor’s website. This EULA and all disputes arising out of or relating to it shall be governed by the laws of the State of Delaware,
+without regard to conflict of laws principles. You and Licensor irrevocably submit to the exclusive jurisdiction of the federal or state
+courts located in Delaware and waive any objection based on lack of personal jurisdiction or inconvenient forum.
+
+10. Governing Law
+
+This EULA is governed by and construed in accordance with the laws of the State of Delaware, without regard
+to its conflict of law principles. Any disputes arising under this EULA will be subject to the exclusive
+jurisdiction of the state and federal courts located in the State of Delaware.
+
+11. Amendments
+
+Licensor reserves the right to modify this EULA at any time. Any changes will be effective upon posting the
+revised EULA on Ivy repository or website. Your continued use of Ivy after any changes have been posted
+constitutes your acceptance of the modified terms.
+
+12. Indemnification
+
+You agree to indemnify, defend, and hold harmless Licensor, its affiliates, and their respective officers,
+directors, employees, and agents from and against any and all claims, liabilities, damages, losses, and expenses,
+including reasonable attorneys' fees, arising out of or in any way connected with your use of Ivy.
+
+13. Export Control
+
+You agree to comply with all applicable export and re-export control laws and regulations, including the
+Export Administration Regulations maintained by the U.S. Department of Commerce and trade and economic sanctions
+maintained by the Treasury Department's Office of Foreign Assets Control.
+
+14. Severability
+
+If any provision of this EULA is held to be invalid or unenforceable, the remaining provisions of this EULA will remain in full force and effect.
+
+15. Entire Agreement
+
+This EULA constitutes the entire agreement between you and Licensor regarding the use of Ivy and supersedes all
+prior or contemporaneous understandings and agreements, whether written or oral, regarding such subject matter.
+
+16. Contact Information
 
 For any questions about this EULA, please contact Licensor at:
 contact@ivy.dev
