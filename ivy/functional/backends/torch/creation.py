@@ -81,6 +81,12 @@ def arange(
 arange.support_native_out = True
 
 
+def complex(
+    real: torch.Tensor, imag: torch.Tensor, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.complex(real, imag, out=out)
+
+
 def _stack_tensors(x, dtype):
     if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
         for i, item in enumerate(x):

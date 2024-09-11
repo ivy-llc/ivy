@@ -65,6 +65,14 @@ def arange(
         return paddle.arange(start, stop, step).cast(dtype)
 
 
+def complex(
+    real: paddle.Tensor,
+    imag: paddle.Tensor,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.complex(real, imag)
+
+
 @_asarray_to_native_arrays_and_back
 @_asarray_infer_device
 @_asarray_handle_nestable

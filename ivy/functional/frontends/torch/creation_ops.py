@@ -83,7 +83,7 @@ def complex(
     out=None,
 ):
     complex_dtype = ivy.complex64 if real.dtype != ivy.float64 else ivy.complex128
-    complex_array = real + imag * 1j
+    complex_array = ivy.complex(real, imag, out=out)
     return complex_array.astype(complex_dtype, out=out)
 
 

@@ -3,6 +3,7 @@ from numbers import Number
 import numpy as np
 from typing import Union, Optional, List, Sequence, Tuple
 
+import jax
 import jax.dlpack
 import jax.numpy as jnp
 import jax._src as _src
@@ -81,6 +82,10 @@ def asarray(
     # this workaround only works because we are inside jax.default_device context
     # invoked in @handle_device decorator
     return jnp.copy(ret) if (dev(ret, as_native=True) != device or copy) else ret
+
+
+def complex(real: JaxArray, imag: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.lax.complex(real, imag)
 
 
 def empty(
