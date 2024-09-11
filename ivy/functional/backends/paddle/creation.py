@@ -1,4 +1,5 @@
 # global
+import builtins
 import struct
 from numbers import Number
 from typing import Union, List, Optional, Sequence, Tuple
@@ -115,7 +116,7 @@ def asarray(
         ret = ret.astype(dtype) if ret.dtype != obj.dtype else ret
         return paddle_backend.to_device(ret, device)
 
-    elif isinstance(obj, (Number, bool, complex)):
+    elif isinstance(obj, (Number, bool, builtins.complex)):
         ret = paddle.to_tensor(obj, dtype=dtype, place=device)
 
         if ret.ndim != 0:  # for versions <2.5.0
@@ -247,7 +248,7 @@ def full(
         dtype = ivy.default_dtype(item=fill_value)
     if not isinstance(shape, Sequence):
         shape = [shape]
-    if isinstance(fill_value, complex):
+    if isinstance(fill_value, builtins.complex):
         fill_value = paddle.to_tensor(fill_value)
         ret_real = paddle.full(shape=shape, fill_value=fill_value.real())
         ret_imag = paddle.full(shape=shape, fill_value=fill_value.imag())
