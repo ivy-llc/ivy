@@ -436,15 +436,15 @@ def complex(
     >>> print(x)
     ivy.array([2.25+4.75j, 3.25+5.75j])
 
-    >>> real = ivy.array(1)
-    >>> imag = ivy.array(2)
+    >>> real = ivy.array(1.)
+    >>> imag = ivy.array(2.)
     >>> x = ivy.complex(real, imag)
     >>> print(x)
     ivy.array(1.+2.j)
 
-    >>> real = ivy.array([1, 2])
-    >>> imag = ivy.array([3, 4])
-    >>> x = ivy.complex(real, imag, step)
+    >>> real = ivy.array([1., 2.])
+    >>> imag = ivy.array([3., 4.])
+    >>> x = ivy.complex(real, imag)
     >>> print(x)
     ivy.array([1.+3.j, 2.+4.j])
     """
