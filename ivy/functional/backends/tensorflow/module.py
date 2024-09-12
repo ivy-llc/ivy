@@ -3,13 +3,417 @@ from __future__ import annotations
 import re
 import os
 import tensorflow as tf
+import keras
+import numpy as np
 import functools
 from tensorflow.python.util import nest
-from typing import NamedTuple, Callable, Any, Tuple, List, Dict, Type, Union
+from typing import (
+    NamedTuple,
+    Callable,
+    Any,
+    Tuple,
+    List,
+    Dict,
+    Type,
+    Union,
+    TYPE_CHECKING,
+)
 import inspect
 from collections import OrderedDict
 from packaging.version import parse
-import keras
+
+if TYPE_CHECKING:
+    import torch.nn as nn
+
+
+if parse(keras.__version__).major > 2:
+    KerasVariable = keras.src.backend.Variable
+else:
+    KerasVariable = tf.Variable
+
+
+def _compute_module_dict_tf(model, prefix=""):
+    _module_dict = dict()
+    for key, value in model.__dict__.items():
+        if isinstance(value, (tf.keras.Model, tf.keras.layers.Layer)):
+            if not hasattr(value, "named_parameters"):
+                _module_dict.update(_compute_module_dict_tf(value, prefix=f"{key}."))
+            else:
+                _module_dict[prefix + key] = value
+    return _module_dict
+
+
+def _compute_module_dict_pt(model, keychains):
+    _module_dict = dict()
+    for keychain in keychains:
+        keys = keychain.split(".")
+        value = model
+        for key in keys:
+            value = getattr(value, key)
+        _module_dict[keychain] = value
+    return _module_dict
+
+
+def _retrive_layer(model, key):
+    if len(key.split(".")) == 1:
+        return model, key
+
+    module_path, weight_name = key.rsplit(".", 1)
+
+    # Retrieve the layer using the module path
+    layer = model
+    for attr in module_path.split("."):
+        layer = getattr(layer, attr)
+
+    return layer, weight_name
+
+
+def _maybe_update_keras_layer_weights(layer, weight_name, new_weight):
+    # Update the weight in the retrieved layer
+    if hasattr(layer, weight_name):
+        weight_var = getattr(layer, weight_name)
+        if isinstance(weight_var, tf.Variable):
+            weight_var.assign(tf.Variable(new_weight, dtype=weight_var.dtype))
+        elif isinstance(weight_var, KerasVariable):
+            weight_var.assign(
+                KerasVariable(new_weight, dtype=weight_var.dtype, name=weight_var.name)
+            )
+        else:
+            setattr(
+                layer,
+                weight_name,
+                tf.convert_to_tensor(new_weight, dtype=weight_var.dtype),
+            )
+    else:
+        raise AttributeError(
+            f"Layer '{layer}' does not have a weight named '{weight_name}'"
+        )
+
+
+def _sync_models_torch_and_tf(model1: "nn.Module", model2: Any[Model, Layer]):
+    """
+    Synchronizes the parameters and buffers between two models: a PyTorch
+    model and a TensorFlow model that is an instance of `Model` or `Layer`.
+
+    Args:
+        model1 (torch.nn.Module): The original PyTorch model.
+        model2 (keras.Model | keras.Layer): The custom TensorFlow model,
+                                            which must inherit from both
+                                            `keras.Model`/`keras.Layer`
+                                            and expose a `torch.nn.Module`-like
+                                            interface (with `named_parameters()`
+                                            and `named_buffers()` methods).
+
+    Returns:
+        None
+
+    Example:
+        ```python
+        import torch.nn as nn
+        import keras
+
+        # `CustomKerasLinear` is a subclass of keras.layers.Layer and exposes a similar
+        # interface to torch.nn.Module (with named_parameters and named_buffers).
+        class CustomKerasLinear(Layer):
+            def __init__(self, in_features, out_features):
+                super(CustomKerasLinear, self).__init__()
+                self.weight = tf.Variable(tf.random.normal([out_features, in_features]))
+                self.bias = tf.Variable(tf.random.normal([out_features]))
+
+            def call(self, x):
+                return tf.matmul(x, self.weight) + self.bias
+
+            def named_parameters(self):
+                        return [("weight", self.weight), ("bias", self.bias)]
+
+            def named_buffers(self):
+                        return []
+
+            def eval(self):
+                return False
+
+        # `CustomKerasModel` is a subclass of keras.Model and exposes a similar
+        # interface to torch.nn.Module (with named_parameters and named_buffers).
+        class CustomKerasModel(Model):
+            def __init__(self):
+                super(CustomKerasModel, self).__init__()
+                self.linear = CustomKerasLinear(10, 5)
+
+            def call(self, x):
+                return self.linear(x)
+
+            def named_parameters(self):
+                return [("linear.weight", self.linear.weight), ("linear.bias", self.linear.bias)]
+
+            def named_buffers(self):
+                return []
+
+            def eval(self):
+                return False
+
+        class PyTorchModel(nn.Module):
+            def __init__(self):
+                super(PyTorchModel, self).__init__()
+                self.linear = nn.Linear(10, 5)
+
+            def forward(self, x):
+                return self.linear(x)
+
+        # Instantiate both models
+        model_pt = PyTorchModel()  # PyTorch model
+        model_tf = CustomKerasModel()  # Custom Keras model
+
+        # Sync all submodules between the PyTorch and Keras models
+        _sync_models_torch_and_tf(model_pt, model_tf)
+        ```
+    """
+    import torch
+
+    has_keras_layers = os.environ.get("USE_NATIVE_KERAS_LAYERS", None) == "true"
+    transpose_weights = (
+        has_keras_layers
+        or os.environ.get("APPLY_TRANSPOSE_OPTIMIZATION", None) == "true"
+    )
+
+    params1 = dict(model1.named_parameters())
+    params2 = dict(model2.named_parameters())
+    buffers1 = dict(model1.named_buffers())
+    buffers2 = dict(model2.named_buffers())
+    # TODO: remove this once the stateful attribute name-conflict has been resolved.
+    key_mapping = {}
+    for k in params2.keys():
+        key_mapping[k.replace("pt_", "")] = k
+
+    for k in buffers2.keys():
+        key_mapping[k.replace("pt_", "")] = k
+
+    params2 = {k.replace("pt_", ""): v for k, v in params2.items()}
+    buffers2 = {k.replace("pt_", ""): v for k, v in buffers2.items()}
+
+    # Check if both models have the same parameters and buffers
+    assert params1.keys() == params2.keys()
+    assert buffers1.keys() == buffers2.keys()
+
+    # Set the parameters and buffers of the second model to be the same as the first model
+    with torch.no_grad():
+        for name in params1:
+            layer, weight_name = _retrive_layer(model2, key_mapping[name])
+
+            params1_np = params1[name].cpu().detach().numpy()
+            # Transpose the parameters to match the TensorFlow format
+            if (
+                transpose_weights
+                and "DepthwiseConv" in layer.__class__.__name__
+                and len(params1_np.shape) == 4
+            ):  # DepthConvolutional layer
+                params1_np = np.transpose(params1_np, (2, 3, 0, 1))
+            elif (
+                transpose_weights
+                and "Conv" in layer.__class__.__name__
+                and len(params1_np.shape) == 4
+            ):  # Convolutional layer
+                params1_np = np.transpose(params1_np, (2, 3, 1, 0))
+            elif (
+                "Dense" in layer.__class__.__name__
+                and len(params1_np.shape) == 2
+                and layer.built
+            ):  # Dense layer
+                params1_np = np.transpose(params1_np, (1, 0))
+
+            # inplace update the native keras layer. This is done as the parameters in
+            # self.v are a different copy than the parameters in self.weights. Hence, we
+            # need to explicitly update self.weights, otherwise the changes won't reflect.
+            if layer.__class__.__name__.startswith("Keras"):
+                _maybe_update_keras_layer_weights(
+                    layer=layer, weight_name=weight_name, new_weight=params1_np
+                )
+                params2[name] = getattr(layer, weight_name)
+                continue
+
+            params2[name].assign(tf.Variable(params1_np, dtype=params2[name].dtype))
+
+        for name in buffers1:
+            layer, weight_name = _retrive_layer(model2, key_mapping[name])
+
+            buffers1_np = buffers1[name].cpu().detach().numpy()
+            if (
+                transpose_weights
+                and "DepthwiseConv" in layer.__class__.__name__
+                and len(params1_np.shape) == 4
+            ):  # DepthConvolutional layer
+                params1_np = np.transpose(params1_np, (2, 3, 0, 1))
+            elif (
+                transpose_weights
+                and "Conv" in layer.__class__.__name__
+                and len(params1_np.shape) == 4
+            ):  # Convolutional layer
+                buffers1_np = np.transpose(buffers1_np, (2, 3, 1, 0))
+            elif (
+                "Dense" in layer.__class__.__name__
+                and len(params1_np.shape) == 2
+                and layer.built
+            ):  # Dense layer
+                buffers1_np = np.transpose(buffers1_np, (1, 0))
+
+            # inplace update the native keras layer. This is done as the parameters in
+            # self.v are a different copy than the parameters in self.weights. Hence, we
+            # need to explicitly update self.weights, otherwise the changes won't reflect.
+            if layer.__class__.__name__.startswith("Keras"):
+                _maybe_update_keras_layer_weights(
+                    layer=layer, weight_name=weight_name, new_weight=buffers1_np
+                )
+                buffers2[name] = getattr(layer, weight_name)
+                continue
+
+            if isinstance(buffers2[name], tf.Variable):
+                buffers2[name].assign(
+                    tf.Variable(buffers1_np, dtype=buffers2[name].dtype)
+                )
+            else:
+                buffers2[name] = tf.convert_to_tensor(
+                    buffers1_np, dtype=buffers2[name].dtype
+                )
+
+    # Check if the parameters and buffers are the same
+    for name in params1:
+        layer, weight_name = _retrive_layer(model2, key_mapping[name])
+
+        params1_np = params1[name].cpu().detach().numpy()
+        params2_np = params2[name].numpy()
+        # Transpose the parameters back to the PyTorch format for comparison
+        if (
+            transpose_weights
+            and "DepthwiseConv" in layer.__class__.__name__
+            and len(params2_np.shape) == 4
+        ):  # Convolutional layer
+            params2_np = np.transpose(params2_np, (2, 3, 0, 1))
+        elif (
+            transpose_weights
+            and "Conv" in layer.__class__.__name__
+            and len(params2_np.shape) == 4
+        ):  # Convolutional layer
+            params2_np = np.transpose(params2_np, (3, 2, 0, 1))
+        elif (
+            "Dense" in layer.__class__.__name__
+            and len(params1_np.shape) == 2
+            and layer.built
+        ):  # Dense layer
+            params2_np = np.transpose(params2_np, (1, 0))
+
+        assert np.allclose(
+            params1_np, params2_np
+        ), f"Mismatch found in parameters: {name}"
+
+    for name in buffers1:
+        layer, weight_name = _retrive_layer(model2, key_mapping[name])
+
+        buffers1_np = buffers1[name].cpu().detach().numpy()
+        buffers2_np = buffers2[name].numpy()
+
+        # Transpose the parameters back to the PyTorch format for comparison
+        if (
+            transpose_weights
+            and "DepthwiseConv" in layer.__class__.__name__
+            and len(params2_np.shape) == 4
+        ):  # Convolutional layer
+            params2_np = np.transpose(params2_np, (2, 3, 0, 1))
+        elif (
+            transpose_weights
+            and "Conv" in layer.__class__.__name__
+            and len(params2_np.shape) == 4
+        ):  # Convolutional layer
+            buffers2_np = np.transpose(buffers2_np, (3, 2, 0, 1))
+        elif (
+            "Dense" in layer.__class__.__name__
+            and len(params1_np.shape) == 2
+            and layer.built
+        ):  # Dense layer
+            buffers2_np = np.transpose(buffers2_np, (1, 0))
+
+        assert np.allclose(
+            buffers1_np, buffers2_np
+        ), f"Mismatch found in buffers: {name}"
+
+
+def sync_models_torch_and_tf(model_pt: "nn.Module", model_tf: keras.Model):
+    """
+    Synchronizes the weights and buffers between a PyTorch model (`torch.nn.Module`)
+    and a TensorFlow model (`keras.Model`) that uses custom submodules.
+
+    This function ensures that the PyTorch model and the TensorFlow model
+    have identical parameters and buffers by iterating through their submodules
+    and synchronizing them. The TensorFlow model's submodules must be instances
+    of `Model`/`Layer` and exposes an interface similar to `torch.nn.Module`,
+    particularly the `named_parameters()` and `named_buffers()` methods.
+
+    Args:
+        model_pt (torch.nn.Module): The original PyTorch model.
+        model_tf (keras.Model): The TensorFlow model, which should consist of
+                                submodules that inherit from the custom
+                                Model/Layer class.
+
+    Returns:
+        None
+
+    Example:
+        ```python
+        import torch.nn as nn
+        import keras
+
+        class CustomKerasLinear(Layer):
+            def __init__(self, in_features, out_features):
+                super(CustomKerasLinear, self).__init__()
+                self.weight = tf.Variable(tf.random.normal([out_features, in_features]))
+                self.bias = tf.Variable(tf.random.normal([out_features]))
+
+            def call(self, x):
+                return tf.matmul(x, self.weight) + self.bias
+
+            def named_parameters(self):
+                        return [("weight", self.weight), ("bias", self.bias)]
+
+            def named_buffers(self):
+                        return []
+
+            def eval(self):
+                return False
+
+        #`NativeKerasModel` is a subclass of keras.Model and does NOT exposes a similar
+        # interface to torch.nn.Module (with named_parameters and named_buffers).
+        class NativeKerasModel(keras.Model):
+            def __init__(self):
+                super(NativeKerasModel, self).__init__()
+                self.linear = CustomKerasLinear(10, 5)
+
+            def call(self, x):
+                return self.linear(x)
+
+        class PyTorchModel(nn.Module):
+            def __init__(self):
+                super(PyTorchModel, self).__init__()
+                self.linear = nn.Linear(10, 5)
+
+            def forward(self, x):
+                return self.linear(x)
+
+        # Instantiate both models
+        model_pt = PyTorchModel()  # PyTorch model
+        model_tf = NativeKerasModel()  # Native Keras model inheriting from keras.Model
+
+        # Sync all submodules between the PyTorch and Keras models
+        sync_models_torch_and_tf(model_pt, model_tf)
+        ```
+    """
+
+    all_submods_tf = _compute_module_dict_tf(model_tf)
+    all_submods_pt = _compute_module_dict_pt(
+        model_pt, keychains=list(all_submods_tf.keys())
+    )
+
+    for pt_model, tf_model in zip(all_submods_pt.values(), all_submods_tf.values()):
+        pt_model.eval()
+        tf_model.eval()
+        _sync_models_torch_and_tf(pt_model, tf_model)
 
 
 def get_assignment_dict():
