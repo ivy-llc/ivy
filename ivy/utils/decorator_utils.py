@@ -432,8 +432,11 @@ def handle_transpose_in_input_and_output_for_functions(fn):
                 kwargs["data_format"] = value_map[kwargs["data_format"]]
             if "filter_format" in kwargs and kwargs["filter_format"] in value_map:
                 kwargs["filter_format"] = value_map[kwargs["filter_format"]]
+                os.environ["DATA_FORMAT"] = "channels_last"
 
-        return fn(*args, **kwargs)
+        res = fn(*args, **kwargs)
+        os.environ["DATA_FORMAT"] = DATA_FORMAT
+        return res
 
     return transpose_wrapper
 
