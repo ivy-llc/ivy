@@ -1,15 +1,14 @@
-name: 'Auto Assign'
+name: assign
+
 on:
   pull_request:
-    types: [opened]
-  pull_request_target:
-    types: [opened]
-  issues:
-    types: [opened]
+    types: [opened, ready_for_review]
+
 jobs:
-  add-reviews:
+  assign:
     runs-on: ubuntu-latest
     steps:
-      - uses: kentaro-m/auto-assign-action@v2.0.0
+      - uses: hkusu/review-assign-action@v1
         with:
-          configuration-path: '.github/auto_assign.yml'
+          reviewers: Sam-Armstrong, hmahmood24, YushaArif99
+          max-num-of-reviewers: 1
