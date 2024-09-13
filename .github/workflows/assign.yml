@@ -9,6 +9,6 @@ jobs:
     steps:
       - uses: hkusu/review-assign-action@v1
         with:
-          reviewers: Sam-Armstrong, hmahmood24, YushaArif99
+          assignees: Sam-Armstrong, hmahmood24, YushaArif99
           max-num-of-reviewers: 1
           github-token: ${{ secrets.GITHUB_TOKEN }}
