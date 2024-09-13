@@ -1,8 +1,7 @@
-name: assign
+name: Review Assign
 
 on:
   pull_request:
-    types: [opened, ready_for_review]
 
 jobs:
   assign:
@@ -12,3 +11,4 @@ jobs:
         with:
           reviewers: Sam-Armstrong, hmahmood24, YushaArif99
           max-num-of-reviewers: 1
+          github-token: ${{ secrets.GITHUB_TOKEN }}
