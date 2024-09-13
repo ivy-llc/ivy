@@ -7,6 +7,7 @@ import inspect
 import os
 import ast
 import builtins
+import logging
 
 # Helpers #
 # ------- #
@@ -380,7 +381,7 @@ def _handle_inplace_mode(ivy_pack=None):
         and not ivy_pack.native_inplace_support
         and ivy_pack.inplace_mode == "lenient"
     ):
-        warnings.warn(
+        logging.debug(
             f"The current backend: '{current_backend}' does not support "
             "inplace updates natively. Ivy would quietly create new arrays when "
             "using inplace updates with this backend, leading to memory overhead "
