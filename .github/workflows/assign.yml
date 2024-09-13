@@ -1,4 +1,4 @@
-name: Review Assign
+name: assign
 
 on:
   pull_request:
@@ -7,8 +7,15 @@ jobs:
   assign:
     runs-on: ubuntu-latest
     steps:
-      - uses: hkusu/review-assign-action@v1
+      - name: Get random assignee
+        id: random
+        run: |
+          ASSIGNEES=("Sam-Armstrong" "hmahmood24" "YushaArif99")
+          RANDOM_INDEX=$((RANDOM % ${#ASSIGNEES[@]}))
+          echo "assignee=${ASSIGNEES[$RANDOM_INDEX]}" >> $GITHUB_OUTPUT
+
+      - name: Assign the issue or PR
+        uses: actions-ecosystem/action-add-assignees@v1
         with:
-          assignees: Sam-Armstrong, hmahmood24, YushaArif99
-          max-num-of-reviewers: 1
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.github_token }}
+          assignees: ${{ steps.random.outputs.assignee }}
