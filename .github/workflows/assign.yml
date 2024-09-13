@@ -17,5 +17,5 @@ jobs:
       - name: Assign the issue or PR
         uses: actions-ecosystem/action-add-assignees@v1
         with:
-          github_token: ${{ secrets.github_token }}
+          github_token: ${{ secrets.DEV_BOT_GENERAL_PAT }}
           assignees: ${{ steps.random.outputs.assignee }}
