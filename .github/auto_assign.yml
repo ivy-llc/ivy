@@ -1,0 +1,9 @@
+addReviewers: true
+addAssignees: false
+
+reviewers:
+  - Sam-Armstrong
+  - hmahmood24
+  - YushaArif99
+
+numberOfReviewers: 1
