@@ -315,6 +315,8 @@ from . import func
 from .func import *
 from . import casting_ops
 from .casting_ops import *
+from . import serialization
+from .serialization import *
 
 _frontend_array = tensor
 
