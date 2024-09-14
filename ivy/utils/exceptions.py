@@ -1,4 +1,3 @@
-import warnings
 import ivy
 import functools
 from typing import Callable
