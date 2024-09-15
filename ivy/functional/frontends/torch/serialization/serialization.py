@@ -14,7 +14,9 @@ def load(
     mmap: Optional[bool] = None,
     **pickle_load_args: Any,
 ) -> Any:
-    raise ivy.exceptions.IvyNotImplementedException("The `torch.load` frontend has not yet been implemented.")
+    raise ivy.exceptions.IvyNotImplementedException(
+        "The `torch.load` frontend has not yet been implemented."
+    )
 
 
 def save(
@@ -23,6 +25,8 @@ def save(
     pickle_module: Any = None,
     pickle_protocol: int = 2,
     _use_new_zipfile_serialization: bool = True,
-    _disable_byteorder_record: bool = False
+    _disable_byteorder_record: bool = False,
 ) -> None:
-    raise ivy.exceptions.IvyNotImplementedException("The `torch.save` frontend has not yet been implemented.")
+    raise ivy.exceptions.IvyNotImplementedException(
+        "The `torch.save` frontend has not yet been implemented."
+    )
