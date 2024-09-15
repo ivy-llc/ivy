@@ -61,7 +61,15 @@ def get_item(
 ) -> Union[tf.Tensor, tf.Variable]:
     if ivy.is_array(query) and ivy.is_bool_dtype(query) and not len(query.shape):
         return tf.expand_dims(x, 0)
-    return x[query]
+    if isinstance(query, tf.Tensor):
+        if query.dtype == tf.bool:
+            return tf.boolean_mask(x, query, axis=0)
+        else:
+            query = tf.cast(query, tf.int64)
+            return tf.gather(x, query, axis=0)
+    else:
+        # for slices and other basic indexing, use __getitem__
+        return x[query]
 
 
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
