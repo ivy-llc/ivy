@@ -61,13 +61,16 @@ def get_item(
 ) -> Union[tf.Tensor, tf.Variable]:
     if ivy.is_array(query) and ivy.is_bool_dtype(query) and not len(query.shape):
         return tf.expand_dims(x, 0)
-    if isinstance(query, tf.Tensor):
+    if isinstance(query, (tf.Tensor, tf.Variable)):
         if query.dtype == tf.bool:
             return tf.boolean_mask(x, query, axis=0)
         else:
             query = tf.cast(query, tf.int64)
             return tf.gather(x, query, axis=0)
     else:
+        if any([isinstance(q, slice) for q in query]):
+            # convert any lists/tuples within the query to slices
+            query = tuple([slice(*q) if isinstance(q, (list, tuple)) else q for q in query])
         # for slices and other basic indexing, use __getitem__
         return x[query]
 
