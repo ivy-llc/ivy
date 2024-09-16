@@ -75,6 +75,39 @@ def get_item(
         return x[query]
 
 
+def set_item(
+    x: Union[tf.Tensor, tf.Variable],
+    query: Union[tf.Tensor, tf.Variable, Tuple],
+    val: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    copy: Optional[bool] = False,
+) -> Union[tf.Tensor, tf.Variable]:
+    # TODO: we should re-write this at some point so it's compatible with tf.function (don't use numpy as an intermediary)
+    # when doing this, be sure to check the performance of the function on large tensors, compared to this implementation
+
+    x_np = x.numpy()
+    val_np = val.numpy()
+
+    if isinstance(query, (tf.Tensor, tf.Variable)):
+        query_np = query.numpy()
+    elif isinstance(query, tuple):
+        query_np = tuple(
+            q.numpy() if isinstance(q, (tf.Tensor, tf.Variable)) else q
+            for q in query
+        )
+    else:
+        query_np = query
+
+    x_np[query_np] = val_np
+
+    if isinstance(x, tf.Variable) and not copy:
+        x.assign(x_np)
+        return x
+    else:
+        return tf.Variable(x_np) if isinstance(x, tf.Variable) else tf.convert_to_tensor(x_np)
+
+
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
     # TensorFlow fails to convert bfloat16 tensor when it has 0 dimensions
     if (

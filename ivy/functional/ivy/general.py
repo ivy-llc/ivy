@@ -2879,25 +2879,7 @@ def set_item(
     ivy.array([[ 0, -1, 20],
            [10, 10, 10]])
     """
-    if copy:
-        x = ivy.copy_array(x)
-    if not ivy.is_array(val):
-        val = ivy.array(val)
-    if 0 in x.shape or 0 in val.shape:
-        return x
-    if ivy.is_array(query) and ivy.is_bool_dtype(query):
-        if not len(query.shape):
-            query = ivy.tile(query, (x.shape[0],))
-        indices = ivy.nonzero(query, as_tuple=False)
-    else:
-        indices, target_shape, _ = _parse_query(
-            query, ivy.shape(x, as_array=True), scatter=True
-        )
-        if indices is None:
-            return x
-    val = val.astype(x.dtype)
-    ret = ivy.scatter_nd(indices, val, reduction="replace", out=x)
-    return ret
+    return current_backend(x).set_item(x, query, val, copy=copy)
 
 
 set_item.mixed_backend_wrappers = {
