@@ -276,6 +276,8 @@ from .nn.functional import (
     conv_transpose2d,
     conv_transpose3d,
 )
+from . import utils
+from .utils import *
 from . import special
 from . import tensor
 from . import _VF
