@@ -786,7 +786,7 @@ from ivy.utils.backend import (
 )
 from . import wrappers
 from . import func_wrapper
-from .utils import assertions, exceptions, verbosity
+from .utils import assertions, exceptions
 from .utils.backend import handler
 from . import functional
 from .functional import *
