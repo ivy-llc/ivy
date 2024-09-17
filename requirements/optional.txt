@@ -18,6 +18,7 @@ pydriller
 pymongo
 pyspark
 pytest
+pyvis
 redis
 scikit-learn # mod_name=sklearn
 scipy

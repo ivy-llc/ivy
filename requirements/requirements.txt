@@ -7,7 +7,6 @@ gast
 numpy # unpinned we test with latest version now
 packaging
 psutil
-pyvis
 requests
 ruff
 termcolor
