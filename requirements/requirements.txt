@@ -8,5 +8,4 @@ packaging
 psutil
 requests
 ruff
-termcolor
 tqdm

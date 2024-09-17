@@ -3,7 +3,6 @@
 
 import os
 import argparse
-import termcolor
 import importlib
 import faulthandler
 from packaging import version
@@ -144,7 +143,7 @@ def main(filepaths, assert_matching_versions, update_versions):
         )
     print(PRINT_MSG)
     if WARN:
-        print(termcolor.colored("WARNING\n" + WARN_MSG, "red"))
+        print("WARNING\n" + WARN_MSG)
     if ERROR:
         raise Exception(ERROR_MSG)
 
