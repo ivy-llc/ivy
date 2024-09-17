@@ -354,15 +354,11 @@ The contents of this function are as follows:
         # if a global backend has been set with set_backend then this will be returned
         if backend_stack:
             f = backend_stack[-1]
-            if verbosity.level > 0:
-                verbosity.cprint(f"Using backend from stack: {f}")
             return f
 
         # if no global backend exists, we try to infer the backend from the arguments
         f = _determine_backend_from_args(list(args) + list(kwargs.values()))
         if f is not None:
-            if verbosity.level > 0:
-                verbosity.cprint(f"Using backend from type: {f}")
             implicit_backend = f.current_backend_str()
             return f
         return importlib.import_module(_backend_dict[implicit_backend])
@@ -395,12 +391,6 @@ The following is a slightly simplified version of this code for illustration, wh
                backend.__dict__[k] = v
            # update global ivy.__dict__ with this method
            ivy.__dict__[k] = backend.__dict__[k]
-
-       # maybe log to the terminal
-       if verbosity.level > 0:
-           verbosity.cprint(
-               f'Backend stack: {backend_stack}'
-            )
 
 The functions implemented by the backend-specific backend such as :code:`ivy.functional.backends.torch` only constitute a subset of the full Ivy API.
 This is because many higher level functions are written as a composition of lower level Ivy functions.

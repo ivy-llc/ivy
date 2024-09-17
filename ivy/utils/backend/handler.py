@@ -7,7 +7,7 @@ import importlib
 import functools
 import numpy as np
 import gc
-from ivy.utils import _importlib, verbosity
+from ivy.utils import _importlib
 
 # local
 from ivy.func_wrapper import _wrap_function
@@ -181,16 +181,12 @@ def current_backend(*args, **kwargs):
     # set_backend then this will be returned
     if backend_stack:
         f = backend_stack[-1]
-        if verbosity.level > 0:
-            verbosity.cprint(f"Using backend from stack: {f}")
         return f
 
     # if no global backend exists, we try to infer
     # the backend from the arguments
     f = _determine_backend_from_args(list(args) + list(kwargs.values()))
     if f is not None:
-        if verbosity.level > 0:
-            verbosity.cprint(f"Using backend from type: {f}")
         implicit_backend = f.current_backend_str()
         return f
     return importlib.import_module(_backend_dict[implicit_backend])
@@ -383,8 +379,6 @@ def set_backend(backend: str, dynamic: bool = False):
             dynamic_backend_converter(backend_stack)
         for sub_backend in ivy.available_sub_backends:
             ivy.set_sub_backend(sub_backend)
-        if verbosity.level > 0:
-            verbosity.cprint(f"backend stack: {backend_stack}")
     _handle_inplace_mode()
     return ivy
 
@@ -500,8 +494,6 @@ def previous_backend():
                 ivy.__dict__[k] = v
             if k in ivy.functional.__dict__ and not k.startswith("__"):
                 ivy.functional.__dict__[k] = v
-    if verbosity.level > 0:
-        verbosity.cprint(f"backend stack: {backend_stack}")
     _handle_inplace_mode()
     return backend
 
