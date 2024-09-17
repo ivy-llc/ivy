@@ -8,6 +8,7 @@ hypothesis==6.98.10 # fixed version till this get solved: https://github.com/Hyp
 jax
 jaxlib
 matplotlib
+ml-dtypes # mod_name=ml_dtypes
 networkx
 opencv-python # mod_name=cv2
 paddlepaddle # mod_name=paddle

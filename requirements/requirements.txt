@@ -4,7 +4,6 @@ cryptography>=40.0.0
 dill
 einops
 gast
-ml-dtypes # mod_name=ml_dtypes
 numpy # unpinned we test with latest version now
 nvidia-ml-py # mod_name=pynvml
 packaging
