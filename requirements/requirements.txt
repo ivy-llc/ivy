@@ -1,5 +1,4 @@
 astor
-black
 colorama
 cloudpickle
 cryptography>=40.0.0

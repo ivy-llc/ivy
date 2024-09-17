@@ -1,5 +1,6 @@
 astunparse
 autoflake # for backend generation
+black
 coverage
 dm-haiku # mod_name=haiku
 flax
