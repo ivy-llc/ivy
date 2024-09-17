@@ -10,6 +10,7 @@ jaxlib
 matplotlib
 ml-dtypes # mod_name=ml_dtypes
 networkx
+nvidia-ml-py # mod_name=pynvml
 opencv-python # mod_name=cv2
 paddlepaddle # mod_name=paddle
 pandas

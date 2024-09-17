@@ -5,7 +5,6 @@ dill
 einops
 gast
 numpy # unpinned we test with latest version now
-nvidia-ml-py # mod_name=pynvml
 packaging
 psutil
 pyvis
