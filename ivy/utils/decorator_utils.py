@@ -183,8 +183,6 @@ def handle_get_item(fn):
     def wrapper(inp, query, **kwargs):
         try:
             res = inp.__getitem__(query)
-        except IndexError:
-            raise
         except Exception:
             res = fn(inp, query, **kwargs)
         return res
