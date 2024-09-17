@@ -4,11 +4,10 @@ cryptography>=40.0.0
 dill
 einops
 gast
-numpy # unpinned we test with latest version now
+numpy
 packaging
 psutil
 requests
 ruff
 termcolor
 tqdm
-urllib3<2.0 # for version conflict with google-auth
