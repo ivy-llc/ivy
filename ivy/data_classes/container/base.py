@@ -6,7 +6,6 @@ from itertools import chain
 import re
 import abc
 import copy
-import termcolor
 import numpy as np
 import json
 
@@ -107,9 +106,6 @@ class ContainerBase(dict, abc.ABC):
         default_key_color
             The default key color for printing the container to the terminal.
             Default is 'green'.
-        keyword_color_dict
-            A dict mapping keywords to their termcolor color codes for printing the
-            container. (Default value = None)
         rebuild_child_containers
             Whether to rebuild container found in dict_in with these constructor params.
             Default is ``False``, in which case the original container are kept as are.
@@ -3888,12 +3884,9 @@ class ContainerBase(dict, abc.ABC):
                         ' "'.join(
                             sub_str.split(' "')[:-1]
                             + [
-                                termcolor.colored(
-                                    ivy.Container.cont_trim_key(
-                                        sub_str.split(' "')[-1], self._key_length_limit
-                                    ),
-                                    self._default_key_color,
-                                )
+                                ivy.Container.cont_trim_key(
+                                    sub_str.split(' "')[-1], self._key_length_limit
+                                ),
                             ]
                         )
                         if i < split_size - 1
@@ -3906,20 +3899,9 @@ class ContainerBase(dict, abc.ABC):
             ret = (
                 json_dumped_str.replace('"', "")
                 .replace(", 'shape=', [", " shape=[")
-                .replace(":", termcolor.colored(":", "magenta"))
-                .replace("{", termcolor.colored("{", "blue"))
-                .replace("}", termcolor.colored("}", "blue"))
-                .replace("shape=", termcolor.colored("shape=", "magenta"))
-                .replace("device=", termcolor.colored("device=", "magenta"))
                 .replace("<class'", "<class '")
                 .replace("'", "")
-                .replace("<class", "<" + termcolor.colored("class", "blue"))
             )
-            # ToDo: make the solution below more elegant
-            for i in range(10):
-                ret = ret.replace(f"diff_{i}", termcolor.colored(f"diff_{i}", "red"))
-            for keyword, color in self._keyword_color_dict.items():
-                ret = ret.replace(keyword, termcolor.colored(keyword, color))
             return ret
         return new_dict
 
