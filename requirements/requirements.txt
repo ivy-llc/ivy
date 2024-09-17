@@ -1,7 +1,6 @@
 astor
 cryptography>=40.0.0
 dill
-diskcache
 einops
 gast
 google-auth # mod_name=google.auth
