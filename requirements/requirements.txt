@@ -1,5 +1,4 @@
 astor
-astunparse
 cryptography>=40.0.0
 dill
 einops
