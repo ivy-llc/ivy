@@ -1,7 +1,6 @@
 """Base Container Object."""
 
 # global
-import colorama
 
 try:
     # noinspection PyPackageRequirements
@@ -12,5 +11,3 @@ except ModuleNotFoundError:
 # local
 from .wrapping import add_ivy_container_instance_methods  # noqa
 from .container import ContainerBase, Container  # noqa
-
-colorama.init(strip=False)

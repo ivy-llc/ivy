@@ -1,7 +1,6 @@
 # global
 import os
 import redis
-from colorama import Fore
 from hypothesis import settings, HealthCheck, Phase
 from hypothesis.database import (
     MultiplexedDatabase,
@@ -55,7 +54,7 @@ def pytest_terminal_summary(terminalreporter):
     passed_ratio = 1 - (session.testsfailed / session.testscollected)
     text = f" {passed_ratio:.1%} of {session.testscollected} passed "
     text = text.center(terminalreporter._screen_width, "=")
-    terminalreporter.write(content=Fore.GREEN + text)
+    terminalreporter.write(content=text)
     for key in mod_backend:
         if mod_backend[key]:
             mod_backend[key][0].terminate()
