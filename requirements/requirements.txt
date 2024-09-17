@@ -1,5 +1,4 @@
 astor
-astunparse
 black
 colorama
 cloudpickle

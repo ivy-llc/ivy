@@ -1,5 +1,4 @@
 import ast
-import astunparse
 import inspect
 
 replace_map = {}
@@ -74,7 +73,7 @@ def transform_function(func):
     source = inspect.getsource(func)
     tree = ast.parse(source)
     transformed_tree = ReplaceFunction().visit(tree)
-    transformed_code = astunparse.unparse(transformed_tree)
+    transformed_code = ast.unparse(transformed_tree)
 
     namespace = {}
     exec(transformed_code, globals(), namespace)
