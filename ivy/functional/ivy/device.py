@@ -19,12 +19,8 @@ try:
     except pynvml.NVMLError:
         pass
 except ImportError:
-    warnings.warn(
-        "pynvml installation was not found in the environment, functionalities"
-        " of the Ivy's device module will be limited. Please install pynvml if"
-        " you wish to use GPUs with Ivy."
-    )
-    # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
+    pynvml = None
+    # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile and is only in requirements/optional.txt
 
 from typing import Union, Callable, Iterable, Any
 
@@ -492,6 +488,10 @@ def total_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> float:
     8.589934592
     """
     if "gpu" in device:
+        if pynvml is None:
+            raise ivy.exceptions.IvyException(
+                "'pynvml' installation was not found in the environment."
+            )
         handle = _get_nvml_gpu_handle(device)
         info = pynvml.nvmlDeviceGetMemoryInfo(handle)
         return info.total / 1e9
@@ -543,6 +543,10 @@ def used_mem_on_dev(
     """
     ivy.clear_cached_mem_on_dev(device)
     if "gpu" in device:
+        if pynvml is None:
+            raise ivy.exceptions.IvyException(
+                "'pynvml' installation was not found in the environment."
+            )
         handle = _get_nvml_gpu_handle(device)
         if process_specific:
             pid = os.getpid()
@@ -603,6 +607,10 @@ def percent_used_mem_on_dev(
     """
     ivy.clear_cached_mem_on_dev(device)
     if "gpu" in device:
+        if pynvml is None:
+            raise ivy.exceptions.IvyException(
+                "'pynvml' installation was not found in the environment."
+            )
         handle = _get_nvml_gpu_handle(device)
         info = pynvml.nvmlDeviceGetMemoryInfo(handle)
         if process_specific:
@@ -659,6 +667,10 @@ def dev_util(
     if device == "cpu":
         return psutil.cpu_percent()
     elif "gpu" in device:
+        if pynvml is None:
+            raise ivy.exceptions.IvyException(
+                "'pynvml' installation was not found in the environment."
+            )
         handle = _get_nvml_gpu_handle(device)
         return pynvml.nvmlDeviceGetUtilizationRates(handle).gpu
     else:
