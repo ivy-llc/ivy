@@ -1,5 +1,4 @@
 astor
-cloudpickle
 cryptography>=40.0.0
 dill
 diskcache
