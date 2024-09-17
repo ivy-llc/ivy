@@ -20,8 +20,11 @@ from typing import (
     Literal,
 )
 import einops
-import ml_dtypes  # noqa
 import numpy as np
+try:
+    import ml_dtypes  # noqa
+except:
+    pass
 
 # local
 import ivy
