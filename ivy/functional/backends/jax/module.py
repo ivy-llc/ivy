@@ -60,8 +60,6 @@ def store_frame_info(fn):
             stack = inspect.stack()
             self._previous_frame_info = stack[1]
         res = fn(self, *args, **kwargs)
-        # reset the frame-info
-        self._previous_frame_info = None
         return res
 
     return frame_info_wrapper
