@@ -723,10 +723,9 @@ def interpolate(
         return ivy.inplace_update(out, ret)
     return ret
 
-
-interpolate.partial_mixed_handler = (
-    lambda *args, mode="linear", recompute_scale_factor=None, align_corners=None, **kwargs: mode  # noqa: E501
-    not in [
+def _check_mode(*args, mode="linear", recompute_scale_factor=None, align_corners=None, **kwargs):
+    return (
+        mode not in [
         "area",
         "nearest",
         "nd",
@@ -738,7 +737,7 @@ interpolate.partial_mixed_handler = (
     and not align_corners
     and recompute_scale_factor
 )
-
+interpolate.partial_mixed_handler =_check_mode
 
 def reduce_window(
     operand: JaxArray,
