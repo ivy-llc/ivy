@@ -70,7 +70,9 @@ def get_item(
     else:
         if any([isinstance(q, slice) for q in query]):
             # convert any lists/tuples within the query to slices
-            query = tuple([slice(*q) if isinstance(q, (list, tuple)) else q for q in query])
+            query = tuple(
+                [slice(*q) if isinstance(q, (list, tuple)) else q for q in query]
+            )
         # for slices and other basic indexing, use __getitem__
         return x[query]
 
@@ -95,8 +97,7 @@ def set_item(
         query = query.numpy()
     elif isinstance(query, tuple):
         query = tuple(
-            q.numpy() if isinstance(q, (tf.Tensor, tf.Variable)) else q
-            for q in query
+            q.numpy() if isinstance(q, (tf.Tensor, tf.Variable)) else q for q in query
         )
 
     x[query] = val
