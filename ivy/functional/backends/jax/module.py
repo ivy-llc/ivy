@@ -708,6 +708,13 @@ class Module(nn.Module, ModelHelpers):
 
             super().__setattr__(name, value)
             return
+        elif isinstance(value, nnx.Param):
+            _dict = getattr(self, "__dict__", None)
+            if _dict:
+                _dict[name] = value
+            self.register_parameter(name, value)
+            super().__setattr__(name, value)
+            return
         else:
             try:
                 obj_to_search = getattr(self, name)
