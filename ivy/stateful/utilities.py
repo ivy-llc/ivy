@@ -89,9 +89,9 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
     import flax.nnx as nnx
     import jax.numpy as jnp
 
-    has_keras_layers = os.environ.get("USE_NATIVE_KERAS_LAYERS", None) == "true"
+    has_flax_layers = os.environ.get("USE_NATIVE_FW_LAYERS", None) == "true"
     transpose_weights = (
-        has_keras_layers
+        has_flax_layers
         or os.environ.get("APPLY_TRANSPOSE_OPTIMIZATION", None) == "true"
     )
 
@@ -286,7 +286,7 @@ def _sync_models_torch_and_tf(model1: "nn.Module", model2: "KerasModel"):
     else:
         KerasVariable = tf.Variable
 
-    has_keras_layers = os.environ.get("USE_NATIVE_KERAS_LAYERS", None) == "true"
+    has_keras_layers = os.environ.get("USE_NATIVE_FW_LAYERS", None) == "true"
     transpose_weights = (
         has_keras_layers
         or os.environ.get("APPLY_TRANSPOSE_OPTIMIZATION", None) == "true"
