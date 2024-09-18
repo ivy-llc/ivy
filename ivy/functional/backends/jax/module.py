@@ -448,15 +448,24 @@ class Module(nn.Module, ModelHelpers):
     def train(self, mode: bool = True):
         self._training = mode
         for module in self.children():
-            if isinstance(module, nn.Module) and not hasattr(module, "train"):
+            if isinstance(module, Module):
                 module.trainable = mode
-                continue
-            module.train(mode)
+
+        super().train()
         self.trainable = mode
         return self
 
-    def eval(self):
-        return self.train(mode=False)
+    def eval(
+        self,
+    ):
+        self._training = False
+        for module in self.children():
+            if isinstance(module, Module):
+                module.trainable = False
+
+        super().eval()
+        self.trainable = False
+        return self
 
     def call(self, inputs, training=None, mask=None):
         raise NotImplementedError(
