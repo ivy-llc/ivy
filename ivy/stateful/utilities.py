@@ -730,8 +730,12 @@ def sync_models_torch_and_jax(
             _sync_models_torch_and_jax(pt_model, jax_model)
 
 
-def sync_models_torch(
-    original_model: "nn.Module", translated_model: Union["keras.Model", "KerasModel", "nnx.Module", "FlaxModel"], *, target: str
+def sync_models(
+    original_model: "nn.Module",
+    translated_model: Union["keras.Model", "KerasModel", "nnx.Module", "FlaxModel"],
+    *,
+    source: str = "torch",
+    target: str = "tensorflow",
 ):
     """
     Synchronizes the weights and buffers between a native PyTorch model (`torch.nn.Module`)
@@ -741,31 +745,26 @@ def sync_models_torch(
         original_model (torch.nn.Module): The PyTorch model to synchronize from.
         translated_model (tf.keras.Model or nnx.Module): The target model to synchronize to,
                                                   either a TensorFlow or Flax model.
-        target (str): The framework of the translated model, either 'tensorflow' or 'jax'.
+        source (str): The framework of the original model, Defaults to 'torch'.
+        target (str): The framework of the translated model. Defaults to 'tensorflow'.
     """
-    try:
-        import torch  # noqa
-    except ModuleNotFoundError as exc:
-        raise ModuleNotFoundError(
-            "`torch` was not found installed on your system. Please proceed "
-            "to install it and restart your interpreter to see the changes."
-        ) from exc
 
-    try:
-        assert isinstance(
-            original_model, torch.nn.Module
-        ), "The first model must be an instance of `torch.nn.Module` (PyTorch)."
-    except AssertionError as e:
-        raise TypeError("PyTorch model is required as the first argument.") from e
-
+    if source != "torch":
+        raise ivy.utils.exceptions.IvyNotImplementedException(
+            "sync_models is not implemented for source other than 'torch'. got {}".format(
+                source
+            )
+        )
     if target == "tensorflow":
         sync_models_torch_and_tf(original_model, translated_model)
 
     elif target == "jax":
         sync_models_torch_and_jax(original_model, translated_model)
     else:
-        raise ivy.utils.exceptions.IvyException(
-            "target must be either 'tensorflow' or 'jax'."
+        raise ivy.utils.exceptions.IvyNotImplementedException(
+            "sync_models is not implemented for target other than 'tensorflow' or 'jax'. got {}".format(
+                source
+            )
         )
 
     print("All parameters and buffers are now synced!")
