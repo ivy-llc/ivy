@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 def _is_submodule(obj, kw):
     cls_str = {
         "torch": ("torch.nn.modules.module.Module",),
-        "keras": ("keras.engine.training.Model", "keras.src.models.model.Model"),
+        "keras": ("keras.engine.training.Model", "keras.src.models.model.Model", "keras.src.layers.layer.Layer"),
         "flax": ("flax.nnx.nnx.module.Module",),
     }[kw]
     try:
@@ -578,7 +578,7 @@ def sync_models_torch_and_tf(
 
     try:
         assert isinstance(
-            model_tf, tf.keras.Model
+            model_tf, (tf.keras.Model,tf.keras.layers.Layer)
         ), "The second model must be an instance of `tf.keras.Model` (TensorFlow)."
     except AssertionError as e:
         raise TypeError("The second model must be a TensorFlow model.") from e
