@@ -748,9 +748,6 @@ def sync_models_torch_and_jax(
 def sync_models(
     original_model: "nn.Module",
     translated_model: Union["keras.Model", "KerasModel", "nnx.Module", "FlaxModel"],
-    *,
-    source: str = "torch",
-    target: str = "tensorflow",
 ):
     """
     Synchronizes the weights and buffers between a native PyTorch model (`torch.nn.Module`)
@@ -760,25 +757,23 @@ def sync_models(
         original_model (torch.nn.Module): The PyTorch model to synchronize from.
         translated_model (tf.keras.Model or nnx.Module): The target model to synchronize to,
                                                   either a TensorFlow or Flax model.
-        source (str): The framework of the original model, Defaults to 'torch'.
-        target (str): The framework of the translated model. Defaults to 'tensorflow'.
     """
 
-    if source != "torch":
-        raise ivy.utils.exceptions.IvyNotImplementedException(
-            "sync_models is not implemented for source other than 'torch'. got {}".format(
-                source
+    if not _is_submodule(original_model, "torch"):
+        raise ivy.utils.exceptions.IvyException(
+            "sync_models expected an instance of `nn.Module` as the first argument. got {}".format(
+                original_model
             )
         )
-    if target == "tensorflow":
+    if _is_submodule(original_model, "keras"):
         sync_models_torch_and_tf(original_model, translated_model)
 
-    elif target == "jax":
+    elif _is_submodule(original_model, "flax"):
         sync_models_torch_and_jax(original_model, translated_model)
     else:
         raise ivy.utils.exceptions.IvyNotImplementedException(
-            "sync_models is not implemented for target other than 'tensorflow' or 'jax'. got {}".format(
-                source
+            "sync_models expected an instance of a `keras.Model` or `nnx.Module` as the second argument. got {}".format(
+                translated_model
             )
         )
 
