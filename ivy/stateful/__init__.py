@@ -17,4 +17,4 @@ from .optimizers import *
 from . import sequential
 from .sequential import *
 from . import utilities
-from .utilities import sync_models_torch
+from .utilities import sync_models
