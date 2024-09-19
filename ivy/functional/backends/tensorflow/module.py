@@ -26,7 +26,7 @@ if TYPE_CHECKING:
     import torch.nn as nn
 
 
-if parse(keras.__version__).major > 2:
+if keras.__version__ >= "3.0.0":
     KerasVariable = keras.src.backend.Variable
 else:
     KerasVariable = tf.Variable
