@@ -765,10 +765,10 @@ def sync_models(
                 original_model
             )
         )
-    if _is_submodule(original_model, "keras"):
+    if _is_submodule(translated_model, "keras"):
         sync_models_torch_and_tf(original_model, translated_model)
 
-    elif _is_submodule(original_model, "flax"):
+    elif _is_submodule(translated_model, "flax"):
         sync_models_torch_and_jax(original_model, translated_model)
     else:
         raise ivy.utils.exceptions.IvyNotImplementedException(
