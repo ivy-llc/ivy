@@ -569,19 +569,6 @@ def sync_models_torch_and_tf(
             "to install it and restart your interpreter to see the changes."
         ) from exc
 
-    try:
-        assert isinstance(
-            model_pt, torch.nn.Module
-        ), "The original model must be an instance of `torch.nn.Module` (PyTorch)."
-    except AssertionError as e:
-        raise TypeError("PyTorch model is required as the first argument.") from e
-
-    try:
-        assert isinstance(
-            model_tf, (tf.keras.Model,tf.keras.layers.Layer)
-        ), "The second model must be an instance of `tf.keras.Model` (TensorFlow)."
-    except AssertionError as e:
-        raise TypeError("The second model must be a TensorFlow model.") from e
 
     if hasattr(model_tf, "named_parameters"):
         _sync_models_torch_and_tf(model_pt, model_tf)
@@ -713,20 +700,6 @@ def sync_models_torch_and_jax(
             "`jax` was not found installed on your system. Please proceed "
             "to install it and restart your interpreter to see the changes."
         ) from exc
-
-    try:
-        assert isinstance(
-            model_pt, torch.nn.Module
-        ), "The original model must be an instance of `torch.nn.Module` (PyTorch)."
-    except AssertionError as e:
-        raise TypeError("PyTorch model is required as the first argument.") from e
-
-    try:
-        assert isinstance(
-            model_jax, nnx.Module
-        ), "The second model must be an instance of `nnx.Module`."
-    except AssertionError as e:
-        raise TypeError("The second model must be a Flax model.") from e
 
     if hasattr(model_jax, "named_parameters"):
         _sync_models_torch_and_jax(model_pt, model_jax)
