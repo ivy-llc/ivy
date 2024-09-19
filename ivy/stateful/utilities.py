@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 def _is_submodule(obj, kw):
     cls_str = {
         "torch": ("torch.nn.modules.module.Module",),
-        "keras": ("keras.engine.training.Model", "keras.src.models.model.Model", "keras.src.layers.layer.Layer"),
+        "keras": ("keras.engine.training.Model", "tf_keras.src.engine.training.Model", "keras.src.models.model.Model", "tf_keras.src.engine.base_layer.Layer", "keras.src.engine.base_layer.Layer", "keras.src.layers.layer.Layer"),
         "flax": ("flax.nnx.nnx.module.Module",),
     }[kw]
     try:
