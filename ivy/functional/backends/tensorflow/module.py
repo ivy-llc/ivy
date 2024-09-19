@@ -3,13 +3,35 @@ from __future__ import annotations
 import re
 import os
 import tensorflow as tf
+import keras
+import numpy as np
 import functools
 from tensorflow.python.util import nest
-from typing import NamedTuple, Callable, Any, Tuple, List, Dict, Type, Union
+from typing import (
+    NamedTuple,
+    Callable,
+    Any,
+    Tuple,
+    List,
+    Dict,
+    Type,
+    Union,
+    TYPE_CHECKING,
+)
 import inspect
 from collections import OrderedDict
 from packaging.version import parse
-import keras
+
+if TYPE_CHECKING:
+    import torch.nn as nn
+
+
+if keras.__version__ >= "3.0.0":
+    KerasVariable = keras.src.backend.Variable
+else:
+    KerasVariable = tf.Variable
+
+
 
 
 def get_assignment_dict():

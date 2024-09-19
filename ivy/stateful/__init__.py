@@ -16,3 +16,5 @@ from . import optimizers
 from .optimizers import *
 from . import sequential
 from .sequential import *
+from . import utilities
+from .utilities import sync_models
