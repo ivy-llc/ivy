@@ -539,12 +539,27 @@ def sync_models_torch_and_tf(
         return _module_dict
 
     try:
+        import torch
+    except ModuleNotFoundError as exc:
+        raise ModuleNotFoundError(
+            "`torch` was not found installed on your system. Please proceed "
+            "to install it and restart your interpreter to see the changes."
+        ) from exc
+
+    try:
         import tensorflow as tf
     except ModuleNotFoundError as exc:
         raise ModuleNotFoundError(
             "`tensorflow` was not found installed on your system. Please proceed "
             "to install it and restart your interpreter to see the changes."
         ) from exc
+
+    try:
+        assert isinstance(
+            model_pt, torch.nn.Module
+        ), "The original model must be an instance of `torch.nn.Module` (PyTorch)."
+    except AssertionError as e:
+        raise TypeError("PyTorch model is required as the first argument.") from e
 
     try:
         assert isinstance(
@@ -653,6 +668,14 @@ def sync_models_torch_and_jax(
         return _module_dict
 
     try:
+        import torch  # noqa
+    except ModuleNotFoundError as exc:
+        raise ModuleNotFoundError(
+            "`torch` was not found installed on your system. Please proceed "
+            "to install it and restart your interpreter to see the changes."
+        ) from exc
+
+    try:
         import flax  # noqa
 
         version = parse(flax.__version__)
@@ -675,6 +698,13 @@ def sync_models_torch_and_jax(
             "`jax` was not found installed on your system. Please proceed "
             "to install it and restart your interpreter to see the changes."
         ) from exc
+
+    try:
+        assert isinstance(
+            model_pt, torch.nn.Module
+        ), "The original model must be an instance of `torch.nn.Module` (PyTorch)."
+    except AssertionError as e:
+        raise TypeError("PyTorch model is required as the first argument.") from e
 
     try:
         assert isinstance(
