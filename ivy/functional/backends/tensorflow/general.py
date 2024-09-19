@@ -68,7 +68,9 @@ def get_item(
             query = tf.cast(query, tf.int64)
             return tf.gather(x, query, axis=0)
     else:
-        if isinstance(query, (list, tuple)) and any([isinstance(q, (list, tuple)) for q in query]):
+        if isinstance(query, (list, tuple)) and any(
+            [isinstance(q, (list, tuple)) for q in query]
+        ):
             # convert any lists/tuples within the query to slices
             query = tuple(
                 [slice(*q) if isinstance(q, (list, tuple)) else q for q in query]

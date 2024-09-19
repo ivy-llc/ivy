@@ -161,9 +161,7 @@ def _should_install_backend(package_name):
             with open("../../requirements/optional.txt", "a") as reqr_file:
                 reqr_file.write("\n" + package_name + "\n")
         except subprocess.CalledProcessError as e:
-            raise RuntimeError(
-                f"Installing {package_name} failed. {e}"
-            ) from e
+            raise RuntimeError(f"Installing {package_name} failed. {e}") from e
     elif ret.lower() == "n":
         print(
             "Will continue without backend installed, "
@@ -242,11 +240,7 @@ def _add_alias_for_backend():
 
 def _update_flag_config_value(key):
     # Handle flag input and update it's value
-    ret = input(
-        f"\nToggle flag {key} [Y/n]? "
-        f"default: '{config_flags[key]}'"
-        f": "
-    )
+    ret = input(f"\nToggle flag {key} [Y/n]? " f"default: '{config_flags[key]}'" f": ")
     ret = ret.strip(" ").lower()
     if ret == "y":
         config_flags[key] = not config_flags[key]
