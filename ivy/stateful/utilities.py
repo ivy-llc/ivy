@@ -12,6 +12,21 @@ if TYPE_CHECKING:
     import flax.nnx as nnx
 
 
+def _is_submodule(obj, kw):
+    cls_str = {
+        "torch": ("torch.nn.modules.module.Module",),
+        "keras": ("keras.engine.training.Model", "keras.src.models.model.Model"),
+        "flax": ("flax.nnx.nnx.module.Module",),
+    }[kw]
+    try:
+        for bc in type(obj).mro():
+            if any(cls in str(bc) for cls in cls_str):
+                return True
+    except TypeError:
+        pass
+    return False
+
+
 def _compute_module_dict_pt(model, keychains):
     _module_dict = dict()
     for keychain in keychains:
