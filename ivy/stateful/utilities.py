@@ -15,7 +15,14 @@ if TYPE_CHECKING:
 def _is_submodule(obj, kw):
     cls_str = {
         "torch": ("torch.nn.modules.module.Module",),
-        "keras": ("keras.engine.training.Model", "tf_keras.src.engine.training.Model", "keras.src.models.model.Model", "tf_keras.src.engine.base_layer.Layer", "keras.src.engine.base_layer.Layer", "keras.src.layers.layer.Layer"),
+        "keras": (
+            "keras.engine.training.Model",
+            "tf_keras.src.engine.training.Model",
+            "keras.src.models.model.Model",
+            "tf_keras.src.engine.base_layer.Layer",
+            "keras.src.engine.base_layer.Layer",
+            "keras.src.layers.layer.Layer",
+        ),
         "flax": ("flax.nnx.nnx.module.Module",),
     }[kw]
     try:
@@ -53,14 +60,16 @@ def _retrive_layer(model, key):
 
 
 def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
-    """
-    Synchronizes the parameters and buffers of the original and the translated model.
+    """Synchronizes the parameters and buffers of the original and the
+    translated model.
 
     Args:
+    ----
         model1 (torch.nn.Module): The original PyTorch model.
         model2 (ivy.Module converted Flax.nnx.Module)): The converted ivy.Module converted Flax.nnx.Module.
 
     Returns:
+    -------
         None
     """
 
@@ -258,14 +267,16 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
 
 
 def _sync_models_torch_and_tf(model1: "nn.Module", model2: "KerasModel"):
-    """
-    Synchronizes the parameters and buffers of the original and the translated model.
+    """Synchronizes the parameters and buffers of the original and the
+    translated model.
 
     Args:
+    ----
         model1 (torch.nn.Module): The original PyTorch model.
         model2 (ivy.Module converted keras.Model)): The converted ivy.Module converted keras.Model.
 
     Returns:
+    -------
         None
     """
 
@@ -470,9 +481,8 @@ def _sync_models_torch_and_tf(model1: "nn.Module", model2: "KerasModel"):
 def sync_models_torch_and_tf(
     model_pt: "nn.Module", model_tf: Union["keras.Model", "KerasModel"]
 ):
-    """
-    Synchronizes the weights and buffers between a PyTorch model (`torch.nn.Module`)
-    and a TensorFlow model (`keras.Model`).
+    """Synchronizes the weights and buffers between a PyTorch model
+    (`torch.nn.Module`) and a TensorFlow model (`keras.Model`).
 
     This function ensures that both models have identical parameters and buffers by
     iterating through their submodules and synchronizing them. The TensorFlow model
@@ -481,15 +491,18 @@ def sync_models_torch_and_tf(
     including `named_parameters()` and `named_buffers()`.
 
     Args:
+    ----
         model_pt (torch.nn.Module): The PyTorch model to synchronize from.
         model_tf (keras.Model): The TensorFlow model to synchronize to, with submodules
                                 inheriting from the custom `KerasModel`/`KerasLayer` class.
 
     Returns:
+    -------
         None
 
 
     Example:
+    -------
         ```python
         import torch.nn as nn
         import keras
@@ -554,7 +567,7 @@ def sync_models_torch_and_tf(
         return _module_dict
 
     try:
-        import torch
+        pass
     except ModuleNotFoundError as exc:
         raise ModuleNotFoundError(
             "`torch` was not found installed on your system. Please proceed "
@@ -568,7 +581,6 @@ def sync_models_torch_and_tf(
             "`tensorflow` was not found installed on your system. Please proceed "
             "to install it and restart your interpreter to see the changes."
         ) from exc
-
 
     if hasattr(model_tf, "named_parameters"):
         _sync_models_torch_and_tf(model_pt, model_tf)
@@ -587,9 +599,8 @@ def sync_models_torch_and_tf(
 def sync_models_torch_and_jax(
     model_pt: "nn.Module", model_jax: Union["nnx.Module", "FlaxModel"]
 ):
-    """
-    Synchronizes the weights and buffers between a PyTorch model (`torch.nn.Module`)
-    and a Flax model (`flax.nnx.Module`).
+    """Synchronizes the weights and buffers between a PyTorch model
+    (`torch.nn.Module`) and a Flax model (`flax.nnx.Module`).
 
     This function ensures both models have identical parameters and buffers by
     iterating through their submodules and synchronizing them. The Flax model must
@@ -598,13 +609,17 @@ def sync_models_torch_and_jax(
     including `named_parameters()` and `named_buffers()`.
 
     Args:
+    ----
         model_pt (torch.nn.Module): The PyTorch model to synchronize from.
         model_flax (flax.nnx.Module): The Flax model to synchronize to, with submodules
                                       inheriting from the custom `FlaxModel` class.
+
     Returns:
+    -------
         None
 
     Example:
+    -------
         ```python
         import torch.nn as nn
         import jax.numpy as jnp
@@ -722,16 +737,15 @@ def sync_models(
     original_model: "nn.Module",
     translated_model: Union["keras.Model", "KerasModel", "nnx.Module", "FlaxModel"],
 ):
-    """
-    Synchronizes the weights and buffers between a native PyTorch model (`torch.nn.Module`)
-    and it's translated version in TensorFlow or Flax.
+    """Synchronizes the weights and buffers between a native PyTorch model
+    (`torch.nn.Module`) and it's translated version in TensorFlow or Flax.
 
     Args:
+    ----
         original_model (torch.nn.Module): The PyTorch model to synchronize from.
         translated_model (tf.keras.Model or nnx.Module): The target model to synchronize to,
                                                   either a TensorFlow or Flax model.
     """
-
     if not _is_submodule(original_model, "torch"):
         raise ivy.utils.exceptions.IvyException(
             "sync_models expected an instance of `nn.Module` as the first argument. got {}".format(
