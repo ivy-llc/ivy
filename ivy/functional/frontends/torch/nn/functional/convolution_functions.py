@@ -227,6 +227,7 @@ def conv_transpose2d(
             output_padding=output_padding,
             groups=groups,
             dilation=dilation,
+            filter_format="channel_first",
         )
 
 
