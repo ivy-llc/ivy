@@ -240,7 +240,11 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
         layer, weight_name = _retrive_layer(model2, key_mapping[name])
 
         params1_np = params1[name].cpu().detach().numpy()
-        params2_np = params2[name].value._value
+        params2_np = (
+            params2[name].value._value
+            if isinstance(params2[name], nnx.Variable)
+            else params2[name]._value
+        )
         # Transpose the parameters back to the PyTorch format for comparison
         if (
                 transpose_weights
