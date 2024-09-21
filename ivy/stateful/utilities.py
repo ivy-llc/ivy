@@ -157,6 +157,12 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
             # Transpose the parameters to match the TensorFlow format
             if (
                 transpose_weights
+                and "ConvTranspose" in layer.__class__.__name__
+                and len(params1_np.shape) == 4
+            ):  # Transpose Convolutional layer
+                params1_np = np.transpose(params1_np, (2, 3, 0, 1))
+            elif (
+                transpose_weights
                 and "Conv" in layer.__class__.__name__
                 and len(params1_np.shape) == 4
             ):  # Convolutional layer
@@ -186,6 +192,12 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
 
             buffers1_np = buffers1[name].cpu().detach().numpy()
             if (
+                transpose_weights
+                and "ConvTranspose" in layer.__class__.__name__
+                and len(params1_np.shape) == 4
+            ):  # Transpose Convolutional layer
+                buffers1_np = np.transpose(buffers1_np, (2, 3, 0, 1))
+            elif (
                 transpose_weights
                 and "Conv" in layer.__class__.__name__
                 and len(params1_np.shape) == 4
@@ -225,6 +237,12 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
         params2_np = params2[name].value._value
         # Transpose the parameters back to the PyTorch format for comparison
         if (
+                transpose_weights
+                and "ConvTranspose" in layer.__class__.__name__
+                and len(params1_np.shape) == 4
+            ):  # Transpose Convolutional layer
+                params2_np = np.transpose(params2_np, (2, 3, 0, 1))
+        elif (
             transpose_weights
             and "Conv" in layer.__class__.__name__
             and len(params2_np.shape) == 4
@@ -251,6 +269,12 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
 
         # Transpose the parameters back to the PyTorch format for comparison
         if (
+                transpose_weights
+                and "ConvTranspose" in layer.__class__.__name__
+                and len(params1_np.shape) == 4
+            ):  # Transpose Convolutional layer
+                buffers2_np = np.transpose(buffers2_np, (2, 3, 0, 1))
+        elif (
             transpose_weights
             and "Conv" in layer.__class__.__name__
             and len(params2_np.shape) == 4
