@@ -92,7 +92,7 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
 
         return param_and_buff_map[weight_name]
 
-    def _maybe_update_flax_layer_weights(layer, weight_name, new_weight):
+    def _maybe_update_flax_layer_weights(layer, weight_name, new_weight, original_weight):
         # Update the weight in the retrieved layer
         if hasattr(layer, weight_name):
             weight_var = getattr(layer, weight_name)
@@ -178,7 +178,7 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
             if layer.__class__.__name__.startswith("Flax"):
                 flax_name = _pt_name_to_flax_name(layer, weight_name)
                 _maybe_update_flax_layer_weights(
-                    layer=layer, weight_name=flax_name, new_weight=params1_np
+                    layer=layer, weight_name=weight_name, new_weight=params1_np, original_weight=params1[name].cpu().detach().numpy()
                 )
                 params2[name] = getattr(layer, flax_name)
                 continue
@@ -216,7 +216,7 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
             if layer.__class__.__name__.startswith("Flax"):
                 flax_name = _pt_name_to_flax_name(layer, weight_name)
                 _maybe_update_flax_layer_weights(
-                    layer=layer, weight_name=flax_name, new_weight=buffers1_np
+                    layer=layer, weight_name=weight_name, new_weight=buffers1_np, original_weight=buffers1[name].cpu().detach().numpy()
                 )
                 buffers2[name] = getattr(layer, flax_name)
                 continue
