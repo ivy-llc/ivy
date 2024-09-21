@@ -448,10 +448,10 @@ class Module(nnx.Module, ModelHelpers):
     def train(self, mode: bool = True):
         for _, module in self.named_modules():
             if isinstance(module, Module):
-                module.trainable = mode
+                module.training = mode
 
         super().train()
-        self.trainable = mode
+        self.training = mode
         return self
 
     def eval(
@@ -459,10 +459,10 @@ class Module(nnx.Module, ModelHelpers):
     ):
         for _, module in self.named_modules():
             if isinstance(module, Module):
-                module.trainable = False
+                module.training = False
 
         super().eval()
-        self.trainable = False
+        self.training = False
         return self
 
     def call(self, inputs, training=None, mask=None):
@@ -602,6 +602,10 @@ class Module(nnx.Module, ModelHelpers):
     def training(self):
         return self._training
 
+    @training.setter
+    def training(self, value):
+        self._training = value
+    
     @property
     def v(self):
         return self._v
