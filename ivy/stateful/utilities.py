@@ -95,6 +95,7 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
     def _maybe_update_flax_layer_weights(layer, weight_name, new_weight, original_weight):
         # Update the weight in the retrieved layer
         if hasattr(layer, weight_name):
+            layer._built = True
             weight_var = getattr(layer, weight_name)
             if isinstance(weight_var, nnx.Variable):
                 weight_var.value = jnp.asarray(new_weight, dtype=weight_var.value.dtype)
@@ -104,6 +105,11 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
                     weight_name,
                     jnp.asarray(new_weight, dtype=weight_var.dtype),
                 )
+            
+            # now also update the PT placeholder weights for this layer
+            layer._built = False
+            pt_weight_name = "pt_weight" if weight_name == "weight" else "pt_bias" if weight_name == "bias" else weight_name
+            setattr(layer, pt_weight_name, jnp.asarray(original_weight, dtype=weight_var.dtype))
         else:
             raise AttributeError(
                 f"Layer '{layer}' does not have a weight named '{weight_name}'"
