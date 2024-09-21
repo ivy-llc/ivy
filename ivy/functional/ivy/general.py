@@ -289,7 +289,7 @@ def is_native_array(
     x
         The input to check
     exclusive
-        Whether to check if the data type is exclusively an array, rather than a
+        Whether to check if the input x is exclusively an array, rather than a
         variable or traced array.
 
     Returns
