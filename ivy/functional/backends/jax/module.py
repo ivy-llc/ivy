@@ -446,8 +446,7 @@ class Module(nnx.Module, ModelHelpers):
         self._v.update({name: value})
 
     def train(self, mode: bool = True):
-        self._training = mode
-        for module in self.children():
+        for _, module in self.named_modules():
             if isinstance(module, Module):
                 module.trainable = mode
 
@@ -458,8 +457,7 @@ class Module(nnx.Module, ModelHelpers):
     def eval(
         self,
     ):
-        self._training = False
-        for module in self.children():
+        for _, module in self.named_modules():
             if isinstance(module, Module):
                 module.trainable = False
 
