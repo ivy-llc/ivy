@@ -717,14 +717,14 @@ class Module(nnx.Module, ModelHelpers):
                 new_kc = kc.replace("/", ".")
                 self.register_buffer(new_kc, buf)
 
-            super().__setattr__(name, value)
+            object.__setattr__(self, name, value)
             return
         elif isinstance(value, nnx.Param):
             _dict = getattr(self, "__dict__", None)
             if _dict:
                 _dict[name] = value
             self.register_parameter(name, value)
-            super().__setattr__(name, value)
+            object.__setattr__(self, name, value)
             return
         else:
             try:
@@ -756,7 +756,10 @@ class Module(nnx.Module, ModelHelpers):
                 # finally update the module dict
                 self._module_dict[name] = value
 
-            return super().__setattr__(name, value)
+            #TODO: super().__setattr__ leads to an error during jax.jit 
+            # as jax disallow's state mutation during jit compilation.
+            # maybe find a fix or add a warning.
+            return object.__setattr__(self, name, value)
 
     def _find_variables(
         self,
