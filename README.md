@@ -64,7 +64,7 @@
 
 # Convert Machine Learning Code Between Frameworks
 
-Ivy is an open-source machine learning framework that enables you to:
+Ivy enables you to:
 
 - Convert ML models, tools and libraries between frameworks while maintaining complete functionality using `ivy.transpile`
 - Create optimized graph-based models and functions in any native framework (PyTorch, TensorFlow, etc..) with `ivy.trace_graph`
