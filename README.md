@@ -1,5 +1,7 @@
 <div style="display: block;" align="center">
-    <img class="dark-light" width="50%" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/logos/ivy-long.svg"/>
+    <a href="https://ivy.dev/">
+        <img class="dark-light" width="50%" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/logos/ivy-long.svg"/>
+    </a>
 </div>
 
 ------------------------------------------------------------------------
@@ -7,33 +9,42 @@
 <table align="center">
   <tr>
     <td align="center">
-      <img class="dark-light" width="75" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/website.svg" alt="Website">
+      <a href="https://ivy.dev/">
+          <img class="dark-light" width="75" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/website.svg" alt="Website">
+      </a>
       <br>
       <a href="https://ivy.dev/" style="text-decoration: none;">Website</a>
     </td>
     <td align="center">
-      <img class="dark-light" width="70" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/docs.svg" alt="Docs">
+      <a href="https://ivy.dev/docs">
+          <img class="dark-light" width="70" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/docs.svg" alt="Docs">
+      </a>
       <br>
       <a href="https://ivy.dev/docs" style="text-decoration: none;">Docs</a>
     </td>
     <td align="center">
-      <img class="dark-light" width="75" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/demos.svg" alt="Demos">
+      <a href="https://ivy.dev/docs/demos">
+          <img class="dark-light" width="75" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/demos.svg" alt="Demos">
+      </a>
       <br>
       <a href="https://ivy.dev/docs/demos" style="text-decoration: none;">Demos</a>
     </td>
     <td align="center">
-      <img class="dark-light" width="75" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/design.svg" alt="Design">
+      <a href="https://ivy.dev/docs/overview/design">
+          <img class="dark-light" width="75" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/design.svg" alt="Design">
+      </a>
       <br>
       <a href="https://ivy.dev/docs/overview/design" style="text-decoration: none;">Design</a>
     </td>
     <td align="center">
-      <img class="dark-light" width="75" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/faq.svg" alt="FAQ">
+      <a href="https://ivy.dev/docs/overview/faq">
+          <img class="dark-light" width="75" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/faq.svg" alt="FAQ">
+      </a>
       <br>
       <a href="https://ivy.dev/docs/overview/faq" style="text-decoration: none;">FAQ</a>
     </td>
   </tr>
 </table>
-
 <br>
 
 <div style="margin-top: 10px; margin-bottom: 10px; display: block;" align="center">
