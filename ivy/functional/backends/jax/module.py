@@ -605,7 +605,7 @@ class Module(nnx.Module, ModelHelpers):
     @training.setter
     def training(self, value):
         self._training = value
-    
+
     @property
     def v(self):
         return self._v
@@ -756,7 +756,7 @@ class Module(nnx.Module, ModelHelpers):
                 # finally update the module dict
                 self._module_dict[name] = value
 
-            #TODO: super().__setattr__ leads to an error during jax.jit 
+            # TODO: super().__setattr__ leads to an error during jax.jit
             # as jax disallow's state mutation during jit compilation.
             # maybe find a fix or add a warning.
             return object.__setattr__(self, name, value)

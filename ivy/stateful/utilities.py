@@ -92,7 +92,9 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
 
         return param_and_buff_map[weight_name]
 
-    def _maybe_update_flax_layer_weights(layer, weight_name, new_weight, original_weight):
+    def _maybe_update_flax_layer_weights(
+        layer, weight_name, new_weight, original_weight
+    ):
         # Update the weight in the retrieved layer
         if hasattr(layer, weight_name):
             layer._built = True
@@ -105,11 +107,19 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
                     weight_name,
                     jnp.asarray(new_weight, dtype=weight_var.dtype),
                 )
-            
+
             # now also update the PT placeholder weights for this layer
             layer._built = False
-            pt_weight_name = "pt_weight" if weight_name == "weight" else "pt_bias" if weight_name == "bias" else weight_name
-            setattr(layer, pt_weight_name, jnp.asarray(original_weight, dtype=weight_var.dtype))
+            pt_weight_name = (
+                "pt_weight"
+                if weight_name == "weight"
+                else "pt_bias" if weight_name == "bias" else weight_name
+            )
+            setattr(
+                layer,
+                pt_weight_name,
+                jnp.asarray(original_weight, dtype=weight_var.dtype),
+            )
         else:
             raise AttributeError(
                 f"Layer '{layer}' does not have a weight named '{weight_name}'"
@@ -184,7 +194,10 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
             if layer.__class__.__name__.startswith("Flax"):
                 flax_name = _pt_name_to_flax_name(layer, weight_name)
                 _maybe_update_flax_layer_weights(
-                    layer=layer, weight_name=weight_name, new_weight=params1_np, original_weight=params1[name].cpu().detach().numpy()
+                    layer=layer,
+                    weight_name=weight_name,
+                    new_weight=params1_np,
+                    original_weight=params1[name].cpu().detach().numpy(),
                 )
                 params2[name] = getattr(layer, flax_name)
                 continue
@@ -222,7 +235,10 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
             if layer.__class__.__name__.startswith("Flax"):
                 flax_name = _pt_name_to_flax_name(layer, weight_name)
                 _maybe_update_flax_layer_weights(
-                    layer=layer, weight_name=weight_name, new_weight=buffers1_np, original_weight=buffers1[name].cpu().detach().numpy()
+                    layer=layer,
+                    weight_name=weight_name,
+                    new_weight=buffers1_np,
+                    original_weight=buffers1[name].cpu().detach().numpy(),
                 )
                 buffers2[name] = getattr(layer, flax_name)
                 continue
@@ -247,11 +263,11 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
         )
         # Transpose the parameters back to the PyTorch format for comparison
         if (
-                transpose_weights
-                and "ConvTranspose" in layer.__class__.__name__
-                and len(params1_np.shape) == 4
-            ):  # Transpose Convolutional layer
-                params2_np = np.transpose(params2_np, (2, 3, 0, 1))
+            transpose_weights
+            and "ConvTranspose" in layer.__class__.__name__
+            and len(params1_np.shape) == 4
+        ):  # Transpose Convolutional layer
+            params2_np = np.transpose(params2_np, (2, 3, 0, 1))
         elif (
             transpose_weights
             and "Conv" in layer.__class__.__name__
@@ -279,11 +295,11 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
 
         # Transpose the parameters back to the PyTorch format for comparison
         if (
-                transpose_weights
-                and "ConvTranspose" in layer.__class__.__name__
-                and len(params1_np.shape) == 4
-            ):  # Transpose Convolutional layer
-                buffers2_np = np.transpose(buffers2_np, (2, 3, 0, 1))
+            transpose_weights
+            and "ConvTranspose" in layer.__class__.__name__
+            and len(params1_np.shape) == 4
+        ):  # Transpose Convolutional layer
+            buffers2_np = np.transpose(buffers2_np, (2, 3, 0, 1))
         elif (
             transpose_weights
             and "Conv" in layer.__class__.__name__
@@ -477,11 +493,11 @@ def _sync_models_torch_and_tf(model1: "nn.Module", model2: "KerasModel"):
         ):  # Depthwise Convolutional layer
             params2_np = np.transpose(params2_np, (2, 3, 0, 1))
         elif (
-                transpose_weights
-                and "ConvTranspose" in layer.__class__.__name__
-                and len(params1_np.shape) == 4
-            ):  # Transpose Convolutional layer
-                params2_np = np.transpose(params2_np, (2, 3, 0, 1))
+            transpose_weights
+            and "ConvTranspose" in layer.__class__.__name__
+            and len(params1_np.shape) == 4
+        ):  # Transpose Convolutional layer
+            params2_np = np.transpose(params2_np, (2, 3, 0, 1))
         elif (
             transpose_weights
             and "Conv" in layer.__class__.__name__
@@ -513,11 +529,11 @@ def _sync_models_torch_and_tf(model1: "nn.Module", model2: "KerasModel"):
         ):  # Depthwise Convolutional layer
             buffers2_np = np.transpose(buffers2_np, (2, 3, 0, 1))
         elif (
-                transpose_weights
-                and "ConvTranspose" in layer.__class__.__name__
-                and len(params1_np.shape) == 4
-            ):  # Transpose Convolutional layer
-                buffers2_np = np.transpose(buffers2_np, (2, 3, 0, 1))
+            transpose_weights
+            and "ConvTranspose" in layer.__class__.__name__
+            and len(params1_np.shape) == 4
+        ):  # Transpose Convolutional layer
+            buffers2_np = np.transpose(buffers2_np, (2, 3, 0, 1))
         elif (
             transpose_weights
             and "Conv" in layer.__class__.__name__
