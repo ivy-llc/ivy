@@ -1207,10 +1207,10 @@ You can find Ivy's documentation on the [Docs page](https://ivy.dev/docs/), whic
 - [Design](https://ivy.dev/docs/overview/design.html): A user-focused guide about the design decision behind the architecture and the main building blocks of Ivy.
 - [Deep Dive](https://ivy.dev/docs/overview/deep_dive.html): Which delves deeper into the implementation details of Ivy and is oriented towards potential contributors to the code base.
 
+
 <br>
 
 # Contributing
-
 
 We believe that everyone can contribute and make a difference. Whether
 it\'s writing code, fixing bugs, or simply sharing feedback,
@@ -1220,14 +1220,17 @@ Check out all of our [Open Tasks](https://ivy.dev/docs/overview/contributing/ope
 and find out more info in our [Contributing guide](https://ivy.dev/docs/overview/contributing.html)
 in the docs! Or to immediately dive into a useful task, look for any failing tests on our [Test Dashboard](https://github.com/ivy-llc/ivy-tests-dashboard/blob/main/DASHBOARD.md)!
 
-<a href="https://github.com/ivy-llc/ivy/graphs/contributors">
-  <img class="dark-light" src="https://contrib.rocks/image?repo=ivy-llc/ivy&anon=0&columns=20&max=100&r=true" />
-</a>
 
 <br>
 
 # Community
 
+<a href="https://github.com/ivy-llc/ivy/graphs/contributors">
+  <img class="dark-light" src="https://contrib.rocks/image?repo=ivy-llc/ivy&anon=0&columns=20&max=100&r=true" />
+</a>
+
+<br>
+<br>
 
 Join our growing community on a mission to make conversions between frameworks simple and accessible to all!
 Whether you are a seasoned developer or just starting out, you\'ll find a place here! Join the Ivy community on
