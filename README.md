@@ -4,33 +4,35 @@
 
 ------------------------------------------------------------------------
 
-<div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap;" align="center">
-    <div style="margin: 10px;">
-        <img class="dark-light" width="50" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/website.svg" alt="Website">
-        <br>
-        <a href="https://ivy.dev/" style="text-decoration: none;">Website</a>
-    </div>
-    <div style="margin: 10px;">
-        <img class="dark-light" width="50" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/docs.svg" alt="Docs">
-        <br>
-        <a href="https://ivy.dev/docs" style="text-decoration: none;">Docs</a>
-    </div>
-    <div style="margin: 10px;">
-        <img class="dark-light" width="50" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/demos.svg" alt="Demos">
-        <br>
-        <a href="https://ivy.dev/docs/demos" style="text-decoration: none;">Demos</a>
-    </div>
-    <div style="margin: 10px;">
-        <img class="dark-light" width="50" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/design.svg" alt="Design">
-        <br>
-        <a href="https://ivy.dev/docs/overview/design" style="text-decoration: none;">Design</a>
-    </div>
-    <div style="margin: 10px;">
-        <img class="dark-light" width="50" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/faq.svg" alt="FAQ">
-        <br>
-        <a href="https://ivy.dev/docs/overview/faq" style="text-decoration: none;">FAQ</a>
-    </div>
-</div>
+<table align="center">
+  <tr>
+    <td align="center">
+      <img width="75" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/website.svg" alt="Website">
+      <br>
+      <a href="https://ivy.dev/" style="text-decoration: none;">Website</a>
+    </td>
+    <td align="center">
+      <img width="70" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/docs.svg" alt="Docs">
+      <br>
+      <a href="https://ivy.dev/docs" style="text-decoration: none;">Docs</a>
+    </td>
+    <td align="center">
+      <img width="75" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/demos.svg" alt="Demos">
+      <br>
+      <a href="https://ivy.dev/docs/demos" style="text-decoration: none;">Demos</a>
+    </td>
+    <td align="center">
+      <img width="75" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/design.svg" alt="Design">
+      <br>
+      <a href="https://ivy.dev/docs/overview/design" style="text-decoration: none;">Design</a>
+    </td>
+    <td align="center">
+      <img width="75" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/faq.svg" alt="FAQ">
+      <br>
+      <a href="https://ivy.dev/docs/overview/faq" style="text-decoration: none;">FAQ</a>
+    </td>
+  </tr>
+</table>
 
 <br>
 
@@ -67,26 +69,26 @@ Ivy is an open-source machine learning framework that enables you to:
 - Convert ML models, tools and libraries between frameworks while maintaining complete functionality using `ivy.transpile`
 - Create optimized graph-based models and functions in any native framework (PyTorch, TensorFlow, etc..) with `ivy.trace_graph`
 
-<div style="display: flex; justify-content: center; align-items: center; gap: 50px; flex-wrap: wrap;">
+<div style="display: block;" align="center">
     <div>
-        <a href="https://jax.readthedocs.io">
-            <img class="dark-light" width="50" height="50" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/logos/jax.svg">
-        </a>
-    </div>
-    <div>
-        <a href="https://www.tensorflow.org">
-            <img class="dark-light" width="50" height="50" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/logos/tensorflow.svg">
-        </a>
-    </div>
-    <div>
-        <a href="https://pytorch.org">
-            <img class="dark-light" width="50" height="50" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/logos/pytorch.svg">
-        </a>
-    </div>
-    <div>
-        <a href="https://numpy.org">
-            <img class="dark-light" width="50" height="50" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/logos/numpy.svg">
-        </a>
+    <a href="https://jax.readthedocs.io">
+        <img class="dark-light" width="100" height="100" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/logos/jax.svg">
+    </a>
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
+    <a href="https://www.tensorflow.org">
+        <img class="dark-light" width="100" height="100" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/logos/tensorflow.svg">
+    </a>
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
+    <a href="https://pytorch.org">
+        <img class="dark-light" width="100" height="100" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/logos/pytorch.svg">
+    </a>
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
+    <a href="https://numpy.org">
+        <img class="dark-light" width="100" height="100" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/logos/numpy.svg">
+    </a>
     </div>
 </div>
 
