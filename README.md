@@ -7,27 +7,27 @@
 <table align="center">
   <tr>
     <td align="center">
-      <img width="75" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/website.svg" alt="Website">
+      <img class="dark-light" width="75" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/website.svg" alt="Website">
       <br>
       <a href="https://ivy.dev/" style="text-decoration: none;">Website</a>
     </td>
     <td align="center">
-      <img width="70" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/docs.svg" alt="Docs">
+      <img class="dark-light" width="70" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/docs.svg" alt="Docs">
       <br>
       <a href="https://ivy.dev/docs" style="text-decoration: none;">Docs</a>
     </td>
     <td align="center">
-      <img width="75" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/demos.svg" alt="Demos">
+      <img class="dark-light" width="75" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/demos.svg" alt="Demos">
       <br>
       <a href="https://ivy.dev/docs/demos" style="text-decoration: none;">Demos</a>
     </td>
     <td align="center">
-      <img width="75" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/design.svg" alt="Design">
+      <img class="dark-light" width="75" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/design.svg" alt="Design">
       <br>
       <a href="https://ivy.dev/docs/overview/design" style="text-decoration: none;">Design</a>
     </td>
     <td align="center">
-      <img width="75" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/faq.svg" alt="FAQ">
+      <img class="dark-light" width="75" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/faq.svg" alt="FAQ">
       <br>
       <a href="https://ivy.dev/docs/overview/faq" style="text-decoration: none;">FAQ</a>
     </td>
