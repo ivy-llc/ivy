@@ -719,7 +719,11 @@ class Module(nnx.Module, ModelHelpers):
 
             object.__setattr__(self, name, value)
             return
-        elif isinstance(value, nnx.Param):
+        #TODO: remove this once JAX adds native support for nnx.Param
+        # inside its functions. This is a temporary fix wherein we
+        # treat jax.Array's as parameters as well when ideally these
+        # should get casted to nnx.Params.
+        elif isinstance(value, (nnx.Param, jax.Array)):
             _dict = getattr(self, "__dict__", None)
             if _dict:
                 _dict[name] = value
