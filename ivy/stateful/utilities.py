@@ -402,12 +402,6 @@ def _sync_models_torch_and_tf(model1: "nn.Module", model2: "KerasModel"):
                 params1_np = np.transpose(params1_np, (2, 3, 0, 1))
             elif (
                 transpose_weights
-                and "ConvTranspose" in layer.__class__.__name__
-                and len(params1_np.shape) == 4
-            ):  # Transpose Convolutional layer
-                params1_np = np.transpose(params1_np, (2, 3, 0, 1))
-            elif (
-                transpose_weights
                 and "Conv" in layer.__class__.__name__
                 and len(params1_np.shape) == 4
             ):  # Convolutional layer
@@ -440,12 +434,6 @@ def _sync_models_torch_and_tf(model1: "nn.Module", model2: "KerasModel"):
                 and "DepthwiseConv" in layer.__class__.__name__
                 and len(params1_np.shape) == 4
             ):  # Depthwise Convolutional layer
-                buffers1_np = np.transpose(buffers1_np, (2, 3, 0, 1))
-            if (
-                transpose_weights
-                and "ConvTranspose" in layer.__class__.__name__
-                and len(params1_np.shape) == 4
-            ):  # Transpose Convolutional layer
                 buffers1_np = np.transpose(buffers1_np, (2, 3, 0, 1))
             elif (
                 transpose_weights
@@ -494,12 +482,6 @@ def _sync_models_torch_and_tf(model1: "nn.Module", model2: "KerasModel"):
             params2_np = np.transpose(params2_np, (2, 3, 0, 1))
         elif (
             transpose_weights
-            and "ConvTranspose" in layer.__class__.__name__
-            and len(params1_np.shape) == 4
-        ):  # Transpose Convolutional layer
-            params2_np = np.transpose(params2_np, (2, 3, 0, 1))
-        elif (
-            transpose_weights
             and "Conv" in layer.__class__.__name__
             and len(params2_np.shape) == 4
         ):  # Regular Convolutional layer
@@ -527,12 +509,6 @@ def _sync_models_torch_and_tf(model1: "nn.Module", model2: "KerasModel"):
             and "DepthwiseConv" in layer.__class__.__name__
             and len(params2_np.shape) == 4
         ):  # Depthwise Convolutional layer
-            buffers2_np = np.transpose(buffers2_np, (2, 3, 0, 1))
-        elif (
-            transpose_weights
-            and "ConvTranspose" in layer.__class__.__name__
-            and len(params1_np.shape) == 4
-        ):  # Transpose Convolutional layer
             buffers2_np = np.transpose(buffers2_np, (2, 3, 0, 1))
         elif (
             transpose_weights
