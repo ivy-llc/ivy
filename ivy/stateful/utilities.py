@@ -201,10 +201,16 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
                 )
                 params2[name] = getattr(layer, flax_name)
                 continue
-
-            params2[name].value = jnp.asarray(
-                params1_np, dtype=params2[name].value.dtype
-            )
+            
+            if isinstance(params2[name], nnx.Variable):
+                params2[name].value = jnp.asarray(
+                    params1_np, dtype=params2[name].value.dtype
+                )
+            else:
+                params2[name] = jnp.asarray(
+                    params1_np, dtype=params2[name].dtype
+                )
+                setattr(model2, name, params2[name])
 
         for name in buffers1:
             layer, weight_name = _retrive_layer(model2, key_mapping[name])
@@ -250,6 +256,7 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
 
             else:
                 buffers2[name] = jnp.asarray(buffers1_np, dtype=buffers2[name].dtype)
+                setattr(model2, name, buffers2[name])
 
     # Check if the parameters and buffers are the same
     for name in params1:
