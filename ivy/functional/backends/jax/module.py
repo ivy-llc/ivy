@@ -723,11 +723,26 @@ class Module(nnx.Module, ModelHelpers):
         # inside its functions. This is a temporary fix wherein we
         # treat jax.Array's as parameters as well when ideally these
         # should get casted to nnx.Params.
-        elif isinstance(value, (nnx.Param, jax.Array)):
+        elif isinstance(value, nnx.Param):
             _dict = getattr(self, "__dict__", None)
             if _dict:
                 _dict[name] = value
             self.register_parameter(name, value)
+            object.__setattr__(self, name, value)
+            return
+        elif isinstance(value, jax.Array):
+            _dict = getattr(self, "__dict__", None)
+            if _dict and name in _dict:
+                orig_value = _dict[name]
+                if isinstance(orig_value, nnx.Param):
+                    new_value = nnx.Param(value)
+                    _dict[name] = new_value
+                    self.register_parameter(name, new_value)
+                    object.__setattr__(self, name, new_value)
+                    return
+                
+            if _dict:
+                _dict[name] = value
             object.__setattr__(self, name, value)
             return
         else:
