@@ -590,9 +590,17 @@ class Module(nnx.Module, ModelHelpers):
     def device(self):
         return self._device
 
+    @device.setter
+    def device(self, value):
+        self._device = value
+
     @property
     def dtype(self):
         return self._dtype
+
+    @dtype.setter
+    def dtype(self, value):
+        self._dtype = value
 
     @property
     def build_mode(self):
