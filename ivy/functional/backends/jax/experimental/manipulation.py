@@ -340,6 +340,11 @@ def expand(
     for i, dim in enumerate(shape):
         if dim < 0:
             shape[i] = x.shape[i]
+    
+    #TODO: remove this once JAX supports passing in nnx.Variables to
+    # jnp.broadcast_to
+    if hasattr(x, '__jax_array__'):
+        x = x.__jax_array__()
     return jnp.broadcast_to(x, tuple(shape))
 
 
