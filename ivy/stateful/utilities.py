@@ -201,15 +201,13 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
                 )
                 params2[name] = getattr(layer, flax_name)
                 continue
-            
+
             if isinstance(params2[name], nnx.Variable):
                 params2[name].value = jnp.asarray(
                     params1_np, dtype=params2[name].value.dtype
                 )
             else:
-                params2[name] = jnp.asarray(
-                    params1_np, dtype=params2[name].dtype
-                )
+                params2[name] = jnp.asarray(params1_np, dtype=params2[name].dtype)
                 setattr(model2, name, params2[name])
 
         for name in buffers1:
