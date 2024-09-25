@@ -192,6 +192,14 @@ def stop_gradient(
         return variable(x)
     return x
 
+def requires_gradient(
+    x: paddle.Tensor,
+) -> bool:
+    is_var = is_variable(x)
+    if is_var:
+        return x.stop_gradient
+    return False
+
 
 def _get_jac_one_arg_fn(grad_fn, xs, out_idx):
     nested_indices = iter(ivy.all_nested_indices(xs))
