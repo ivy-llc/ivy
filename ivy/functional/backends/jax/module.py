@@ -748,7 +748,7 @@ class Module(nnx.Module, ModelHelpers):
                     self.register_parameter(name, new_value)
                     object.__setattr__(self, name, new_value)
                     return
-                
+
             if _dict:
                 _dict[name] = value
             object.__setattr__(self, name, value)

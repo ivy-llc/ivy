@@ -3,6 +3,7 @@ import jax
 import jax.numpy as jnp
 from typing import Optional, Literal, Union, List
 from packaging.version import parse as _parse
+
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -33,7 +34,7 @@ def sort(
 ) -> JaxArray:
     kind = "stable" if stable else "quicksort"
     if _parse(jax.__version__) > _parse("0.4.28"):
-        # kind argument has been removed in jax 0.4.28 
+        # kind argument has been removed in jax 0.4.28
         ret = jnp.asarray(jnp.sort(x, axis=axis, stable=stable))
     else:
         ret = jnp.asarray(jnp.sort(x, axis=axis, kind=kind))
