@@ -23,7 +23,7 @@ def _is_submodule(obj, kw):
             "keras.src.engine.base_layer.Layer",
             "keras.src.layers.layer.Layer",
         ),
-        "flax": ("flax.nnx.nnx.module.Module",),
+        "flax": ("flax.nnx.nnx.module.Module","transformers.modeling_flax_utils.FlaxPreTrainedModel"),
     }[kw]
     try:
         for bc in type(obj).mro():
@@ -730,7 +730,7 @@ def sync_models_torch_and_jax(
     def _compute_module_dict_jax(model, prefix=""):
         _module_dict = dict()
         for key, value in model.__dict__.items():
-            if isinstance(value, nnx.Module):
+            if isinstance(value, nnx.Module) and value != model:
                 if not hasattr(value, "named_parameters"):
                     _module_dict.update(
                         _compute_module_dict_jax(value, prefix=f"{key}.")
