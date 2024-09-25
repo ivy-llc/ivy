@@ -9,7 +9,7 @@ body:
     attributes:
       label: Path
       description: "Path to the documentation which have the issue. Can be a documentation URL or path to docstring (file::function-name)."
-      placeholder: https://unify.ai/docs/ivy/, ivy\functional\ivy\activations.py::relu
+      placeholder: https://docs.ivy.dev, ivy\functional\ivy\activations.py::relu
     validations:
       required: true
   - type: input
