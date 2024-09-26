@@ -23,7 +23,10 @@ def _is_submodule(obj, kw):
             "keras.src.engine.base_layer.Layer",
             "keras.src.layers.layer.Layer",
         ),
-        "flax": ("flax.nnx.nnx.module.Module","transformers.modeling_flax_utils.FlaxPreTrainedModel"),
+        "flax": (
+            "flax.nnx.nnx.module.Module",
+            "transformers.modeling_flax_utils.FlaxPreTrainedModel",
+        ),
     }[kw]
     try:
         for bc in type(obj).mro():

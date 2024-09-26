@@ -192,6 +192,7 @@ def stop_gradient(
         return variable(x)
     return x
 
+
 def requires_gradient(
     x: paddle.Tensor,
 ) -> bool:
