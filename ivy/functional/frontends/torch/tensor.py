@@ -1464,6 +1464,8 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
     def __eq__(self, other):
+        if isinstance(other, (list, tuple)):
+            return False
         return torch_frontend.eq(self, other)
 
     @with_unsupported_dtypes({"2.2 and below": ("complex",)}, "torch")
@@ -1476,6 +1478,8 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
     def __ne__(self, other):
+        if isinstance(other, (list, tuple)):
+            return True
         return self.ne(other)
 
     @with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
