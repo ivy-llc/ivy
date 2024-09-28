@@ -24,6 +24,10 @@ KERAS_CONV_FUNCS = [
     "KerasConv2DTranspose",
     "KerasConv3DTranspose",
 ]
+FLAX_CONV_FUNCS = [
+    "FlaxConv",
+    "FlaxConvTranspose",
+]
 POOL_FUNCS = [
     "MaxPool1d",
     "MaxPool2d",
@@ -49,6 +53,7 @@ KERAS_POOL_FUNCS = [
     "KerasMaxPool2D",
     "KerasMaxPool3D",
 ]
+FLAX_POOL_FUNCS = []
 PADDING_FUNCS = [
     "ReflectionPad1d",
     "ReflectionPad2d",
@@ -65,6 +70,7 @@ KERAS_PADDING_FUNCS = [
     "KerasZeroPadding2D",
     "KerasZeroPadding3D",
 ]
+FLAX_PADDING_FUNCS = []
 ACTIVATION_FUNCS = [
     "ELU",
     "Hardshrink",
@@ -92,6 +98,7 @@ ACTIVATION_FUNCS = [
     "LogSoftmax",
     "AdaptiveLogSoftmaxWithLoss",
 ]
+FLAX_ACTIVATION_FUNCS = []
 KERAS_ACTIVATION_FUNCS = [
     "KerasReLU",
     "KerasPReLU",
@@ -123,6 +130,11 @@ KERAS_NORM_FUNCS = [
     "KerasUnitNorm2D",
     "KerasUnitNorm3D",
 ]
+FLAX_NORM_FUNCS = [
+    "FlaxBatchNorm",
+    "FlaxLayerNorm",
+    "FlaxGroupNorm",
+]
 DROPOUT_FUNCS = [
     "Dropout",
     "Dropout2d",
@@ -133,20 +145,26 @@ DROPOUT_FUNCS = [
 KERAS_DROPOUT_FUNCS = [
     "KerasDropout",
 ]
-
+FLAX_DROPOUT_FUNCS = []
 CONV_BLOCK_FNS = [
     *CONV_FUNCS,
     *KERAS_CONV_FUNCS,
+    *FLAX_CONV_FUNCS,
     *POOL_FUNCS,
     *KERAS_POOL_FUNCS,
+    *FLAX_POOL_FUNCS,
     *PADDING_FUNCS,
     *KERAS_PADDING_FUNCS,
+    *FLAX_PADDING_FUNCS,
     *ACTIVATION_FUNCS,
     *KERAS_ACTIVATION_FUNCS,
+    *FLAX_ACTIVATION_FUNCS,
     *NORM_FUNCS,
     *KERAS_NORM_FUNCS,
+    *FLAX_NORM_FUNCS,
     *DROPOUT_FUNCS,
     *KERAS_DROPOUT_FUNCS,
+    *FLAX_DROPOUT_FUNCS,
 ]
 
 
@@ -183,8 +201,6 @@ def handle_get_item(fn):
     def wrapper(inp, query, **kwargs):
         try:
             res = inp.__getitem__(query)
-        except IndexError:
-            raise
         except Exception:
             res = fn(inp, query, **kwargs)
         return res
@@ -332,7 +348,10 @@ def apply_transpose(input, transpose, pt_to_tf=True):
         # -> TF: (kernel[0], kernel[1], kernel[2], num_in_channel, num_out_channel)
         axes = (0, 2, 3, 4, 1) if pt_to_tf else (0, 4, 1, 2, 3)
 
-    input = ivy.permute_dims(input, axes=axes).data
+    if ivy.is_array(input):
+        input = ivy.permute_dims(input, axes=axes).data
+    else:
+        input = tuple(input[i] for i in axes)
     return input
 
 
@@ -364,6 +383,9 @@ def handle_transpose_in_input_and_output(fn):
                 + KERAS_CONV_FUNCS
                 + KERAS_NORM_FUNCS
                 + KERAS_POOL_FUNCS
+                + FLAX_CONV_FUNCS
+                + FLAX_NORM_FUNCS
+                + FLAX_POOL_FUNCS
             )
         )
         next_call_in_seq = get_next_func(self)
@@ -376,8 +398,9 @@ def handle_transpose_in_input_and_output(fn):
             substr in name_of_next_call for substr in CONV_BLOCK_FNS
         )
 
+        arg_name = "input" if "input" in fn_args_and_kwargs else "inputs"
         if DATA_FORMAT == "channels_first" and conv_block_start(self.__class__):
-            input = fn_args_and_kwargs["input"]
+            input = fn_args_and_kwargs[arg_name]
             if len(input.shape) > 4:
                 transpose = TransposeType.CONV3D
             elif len(input.shape) > 3:
@@ -386,7 +409,7 @@ def handle_transpose_in_input_and_output(fn):
                 transpose = TransposeType.CONV1D
             else:
                 transpose = TransposeType.NO_TRANSPOSE
-            fn_args_and_kwargs["input"] = apply_transpose(
+            fn_args_and_kwargs[arg_name] = apply_transpose(
                 input, transpose=transpose, pt_to_tf=True
             )
 
@@ -416,6 +439,45 @@ def handle_transpose_in_input_and_output(fn):
         return res
 
     handle_transpose_in_input_and_output.__signature__ = original_signature
+    return transpose_wrapper
+
+
+def handle_transpose_in_input_and_output_for_functions(fn):
+    @functools.wraps(fn)
+    def transpose_wrapper(*args, **kwargs):
+        DATA_FORMAT = os.environ.get("DATA_FORMAT", "channels_first")
+        if DATA_FORMAT == "channels_first":
+            value_map = {"channel_last": "channel_first", "NHWC": "NCHW", "NSC": "NCS"}
+            if "data_format" in kwargs and kwargs["data_format"] in value_map:
+                kwargs["data_format"] = value_map[kwargs["data_format"]]
+            if "filter_format" in kwargs and kwargs["filter_format"] in value_map:
+                kwargs["filter_format"] = value_map[kwargs["filter_format"]]
+            os.environ["DATA_FORMAT"] = "channels_last"
+
+        res = fn(*args, **kwargs)
+        os.environ["DATA_FORMAT"] = DATA_FORMAT
+        return res
+
+    return transpose_wrapper
+
+
+def handle_transpose_in_pad(fn):
+    @functools.wraps(fn)
+    def transpose_wrapper(input, pad_width, *args, **kwargs):
+        DATA_FORMAT = os.environ.get("DATA_FORMAT", "channels_first")
+        if DATA_FORMAT == "channels_last":
+            if len(input.shape) > 4:
+                transpose = TransposeType.CONV3D
+            elif len(input.shape) > 3:
+                transpose = TransposeType.CONV2D
+            elif len(input.shape) > 2:
+                transpose = TransposeType.CONV1D
+            else:
+                transpose = TransposeType.NO_TRANSPOSE
+            pad_width = apply_transpose(pad_width, transpose=transpose, pt_to_tf=True)
+
+        return fn(input, pad_width, *args, **kwargs)
+
     return transpose_wrapper
 
 

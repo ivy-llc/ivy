@@ -724,20 +724,26 @@ def interpolate(
     return ret
 
 
-interpolate.partial_mixed_handler = (
-    lambda *args, mode="linear", recompute_scale_factor=None, align_corners=None, **kwargs: mode  # noqa: E501
-    not in [
-        "area",
-        "nearest",
-        "nd",
-        "tf_area",
-        "mitchellcubic",
-        "gaussian",
-        "bicubic",
-    ]
-    and not align_corners
-    and recompute_scale_factor
-)
+def _check_mode(
+    *args, mode="linear", recompute_scale_factor=None, align_corners=None, **kwargs
+):
+    return (
+        mode
+        not in [
+            "area",
+            "nearest",
+            "nd",
+            "tf_area",
+            "mitchellcubic",
+            "gaussian",
+            "bicubic",
+        ]
+        and not align_corners
+        and recompute_scale_factor
+    )
+
+
+interpolate.partial_mixed_handler = _check_mode
 
 
 def reduce_window(

@@ -125,7 +125,7 @@ setup(
     long_description_content_type="text/markdown",
     url="https://ivy.dev",
     project_urls={
-        "Docs": "https://ivy.dev/docs/",
+        "Docs": "https://docs.ivy.dev/",
         "Source": "https://github.com/ivy-llc/ivy",
     },
     include_package_data=True,

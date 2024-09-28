@@ -106,7 +106,7 @@ class Tensor:
 
     @property
     def requires_grad(self):
-        return self._requires_grad
+        return ivy.requires_gradient(self.ivy_array)
 
     @property
     def is_leaf(self):
@@ -118,6 +118,10 @@ class Tensor:
             return -1
         else:
             return int(self.device.split(":")[-1])
+
+    @property
+    def itemsize(self):
+        return self.element_size()
 
     # Setters #
     # --------#
@@ -720,6 +724,12 @@ class Tensor:
         ret = self.detach()
         self.ivy_array = ivy.inplace_update(self.ivy_array, ret.ivy_array)
         return self
+
+    def cpu(self):
+        return ivy.to_device(self.ivy_array, "cpu")
+
+    def cuda(self):
+        return ivy.to_device(self.ivy_array, "gpu:0")
 
     @with_unsupported_dtypes({"2.2 and below": ("uint16",)}, "torch")
     @numpy_to_torch_style_args
@@ -1454,6 +1464,8 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
     def __eq__(self, other):
+        if isinstance(other, (list, tuple)):
+            return False
         return torch_frontend.eq(self, other)
 
     @with_unsupported_dtypes({"2.2 and below": ("complex",)}, "torch")
@@ -1466,6 +1478,8 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
     def __ne__(self, other):
+        if isinstance(other, (list, tuple)):
+            return True
         return self.ne(other)
 
     @with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
@@ -1531,6 +1545,10 @@ class Tensor:
             raise ValueError(
                 "only one element tensors can be converted to Python scalars"
             )
+
+    def element_size(self):
+        dtype = ivy.dtype(self.ivy_array)
+        return int(ivy.dtype_bits(dtype) // 8)
 
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
@@ -2038,7 +2056,8 @@ class Tensor:
         return self
 
     def requires_grad_(self, requires_grad=True):
-        self._requires_grad = requires_grad
+        if ivy.requires_gradient(self.ivy_array) and not requires_grad:
+            return ivy.stop_gradient(self.ivy_array)
         return self
 
     def backward(self, gradient=None, retain_graph=None, create_graph=False):

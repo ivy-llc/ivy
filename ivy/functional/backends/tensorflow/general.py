@@ -61,7 +61,54 @@ def get_item(
 ) -> Union[tf.Tensor, tf.Variable]:
     if ivy.is_array(query) and ivy.is_bool_dtype(query) and not len(query.shape):
         return tf.expand_dims(x, 0)
-    return x[query]
+    if isinstance(query, (tf.Tensor, tf.Variable)):
+        if query.dtype == tf.bool:
+            return tf.boolean_mask(x, query, axis=0)
+        else:
+            query = tf.cast(query, tf.int64)
+            return tf.gather(x, query, axis=0)
+    else:
+        if isinstance(query, (list, tuple)) and any(
+            [isinstance(q, (list, tuple)) for q in query]
+        ):
+            # convert any lists/tuples within the query to slices
+            query = tuple(
+                [slice(*q) if isinstance(q, (list, tuple)) else q for q in query]
+            )
+        # for slices and other basic indexing, use __getitem__
+        return x[query]
+
+
+def set_item(
+    x: Union[tf.Tensor, tf.Variable],
+    query: Union[tf.Tensor, tf.Variable, Tuple],
+    val: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    copy: Optional[bool] = False,
+) -> Union[tf.Tensor, tf.Variable]:
+    # TODO: we should re-write this at some point so it's compatible with tf.function (don't use numpy as an intermediary)
+    # when doing this, be sure to check the performance of the function on large tensors, compared to this implementation
+
+    if tf.is_tensor(x):
+        x = x.numpy()
+    if tf.is_tensor(val):
+        val = val.numpy()
+
+    if isinstance(query, (tf.Tensor, tf.Variable)):
+        query = query.numpy()
+    elif isinstance(query, tuple):
+        query = tuple(
+            q.numpy() if isinstance(q, (tf.Tensor, tf.Variable)) else q for q in query
+        )
+
+    x[query] = val
+
+    if isinstance(x, tf.Variable) and not copy:
+        x.assign(x)
+        return x
+    else:
+        return tf.Variable(x) if isinstance(x, tf.Variable) else tf.convert_to_tensor(x)
 
 
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:

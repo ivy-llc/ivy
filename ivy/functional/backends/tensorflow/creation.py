@@ -74,6 +74,12 @@ def arange(
             return tf.range(start, stop, delta=step, dtype=dtype)
 
 
+def complex(
+    real: tf.Tensor, imag: tf.Tensor, out: Optional[tf.Tensor] = None
+) -> tf.Tensor:
+    return tf.complex(real, imag)
+
+
 @_asarray_to_native_arrays_and_back
 @_asarray_infer_device
 @_asarray_handle_nestable

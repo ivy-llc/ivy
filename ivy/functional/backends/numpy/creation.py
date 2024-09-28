@@ -43,6 +43,12 @@ def arange(
     return res
 
 
+def complex(
+    real: np.ndarray, imag: np.ndarray, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return real + imag * 1j
+
+
 @_asarray_to_native_arrays_and_back
 @_asarray_infer_device
 @_asarray_handle_nestable

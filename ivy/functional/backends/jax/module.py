@@ -2,7 +2,7 @@
 from __future__ import annotations
 import re
 import jax
-from flax import nnx as nn
+import flax.nnx as nnx
 import jax.tree_util as tree
 import jax.numpy as jnp
 import functools
@@ -60,8 +60,6 @@ def store_frame_info(fn):
             stack = inspect.stack()
             self._previous_frame_info = stack[1]
         res = fn(self, *args, **kwargs)
-        # reset the frame-info
-        self._previous_frame_info = None
         return res
 
     return frame_info_wrapper
@@ -372,7 +370,7 @@ class ModelHelpers:
         return s
 
 
-class Module(nn.Module, ModelHelpers):
+class Module(nnx.Module, ModelHelpers):
     _build_mode = None
     _with_partial_v = None
     _store_vars = True
@@ -448,17 +446,24 @@ class Module(nn.Module, ModelHelpers):
         self._v.update({name: value})
 
     def train(self, mode: bool = True):
-        self._training = mode
-        for module in self.children():
-            if isinstance(module, nn.Module) and not hasattr(module, "train"):
-                module.trainable = mode
-                continue
-            module.train(mode)
-        self.trainable = mode
+        for _, module in self.named_modules():
+            if isinstance(module, Module):
+                module.training = mode
+
+        super().train()
+        self.training = mode
         return self
 
-    def eval(self):
-        return self.train(mode=False)
+    def eval(
+        self,
+    ):
+        for _, module in self.named_modules():
+            if isinstance(module, Module):
+                module.training = False
+
+        super().eval()
+        self.training = False
+        return self
 
     def call(self, inputs, training=None, mask=None):
         raise NotImplementedError(
@@ -585,9 +590,17 @@ class Module(nn.Module, ModelHelpers):
     def device(self):
         return self._device
 
+    @device.setter
+    def device(self, value):
+        self._device = value
+
     @property
     def dtype(self):
         return self._dtype
+
+    @dtype.setter
+    def dtype(self, value):
+        self._dtype = value
 
     @property
     def build_mode(self):
@@ -596,6 +609,10 @@ class Module(nn.Module, ModelHelpers):
     @property
     def training(self):
         return self._training
+
+    @training.setter
+    def training(self, value):
+        self._training = value
 
     @property
     def v(self):
@@ -647,7 +664,7 @@ class Module(nn.Module, ModelHelpers):
     def _compute_module_dict(self):
         self._module_dict = dict()
         for key, value in self.__dict__.items():
-            if isinstance(value, (Module, nn.Module)):
+            if isinstance(value, (Module, nnx.Module)):
                 if (
                     "stateful" in value.__module__
                     or hasattr(value, "_frontend_module")
@@ -660,7 +677,7 @@ class Module(nn.Module, ModelHelpers):
     def __setattr__(self, name, value):
         if name in ["v", "buffers"]:
             name = "_" + name
-        if isinstance(value, (Module, nn.Module)):
+        if isinstance(value, (Module, nnx.Module)):
             _dict = getattr(self, "__dict__", None)
             if _dict:
                 _dict[name] = value
@@ -670,7 +687,7 @@ class Module(nn.Module, ModelHelpers):
 
             obj_to_search = (
                 None
-                if not isinstance(value, (nn.Module, Module))
+                if not isinstance(value, (nnx.Module, Module))
                 else (
                     self._modules
                     if hasattr(self, "_modules") and self._modules
@@ -708,14 +725,40 @@ class Module(nn.Module, ModelHelpers):
                 new_kc = kc.replace("/", ".")
                 self.register_buffer(new_kc, buf)
 
-            super().__setattr__(name, value)
+            object.__setattr__(self, name, value)
+            return
+        # TODO: remove this once JAX adds native support for nnx.Param
+        # inside its functions. This is a temporary fix wherein we
+        # treat jax.Array's as parameters as well when ideally these
+        # should get casted to nnx.Params.
+        elif isinstance(value, nnx.Param):
+            _dict = getattr(self, "__dict__", None)
+            if _dict:
+                _dict[name] = value
+            self.register_parameter(name, value)
+            object.__setattr__(self, name, value)
+            return
+        elif isinstance(value, jax.Array):
+            _dict = getattr(self, "__dict__", None)
+            if _dict and name in _dict:
+                orig_value = _dict[name]
+                if isinstance(orig_value, nnx.Param):
+                    new_value = nnx.Param(value)
+                    _dict[name] = new_value
+                    self.register_parameter(name, new_value)
+                    object.__setattr__(self, name, new_value)
+                    return
+
+            if _dict:
+                _dict[name] = value
+            object.__setattr__(self, name, value)
             return
         else:
             try:
                 obj_to_search = getattr(self, name)
             except AttributeError:
                 obj_to_search = None
-            if isinstance(obj_to_search, (nn.Module)):
+            if isinstance(obj_to_search, (nnx.Module)):
                 # retrieve all hierarchical submodules
                 assign_dict, kc = get_assignment_dict()
 
@@ -740,7 +783,10 @@ class Module(nn.Module, ModelHelpers):
                 # finally update the module dict
                 self._module_dict[name] = value
 
-            return super().__setattr__(name, value)
+            # TODO: super().__setattr__ leads to an error during jax.jit
+            # as jax disallow's state mutation during jit compilation.
+            # maybe find a fix or add a warning.
+            return object.__setattr__(self, name, value)
 
     def _find_variables(
         self,
@@ -765,7 +811,7 @@ class Module(nn.Module, ModelHelpers):
             return getattr(obj, fn)(
                 *obj._args, dynamic_backend=obj._dynamic_backend, **obj._kwargs
             )
-        elif isinstance(obj, nn.Module) and obj is not self:
+        elif isinstance(obj, nnx.Module) and obj is not self:
             return obj.v if trainable else obj.buffers
 
         elif isinstance(obj, (list, tuple)):
@@ -928,7 +974,7 @@ class Module(nn.Module, ModelHelpers):
         if hasattr(self, name):
             if isinstance(
                 getattr(self, name),
-                (Module, nn.Module),
+                (Module, nnx.Module),
             ):
                 super().__delattr__(name)
                 return

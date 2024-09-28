@@ -46,9 +46,11 @@ def _conv_transpose(
     output_padding=0,
     groups=1,
     dilation=1,
+    filter_format="channel_first",
 ):
     dims = len(input.shape) - 2
-    weight = ivy.permute_dims(weight, axes=(*range(2, dims + 2), 0, 1))
+    if filter_format == "channel_first":
+        weight = ivy.permute_dims(weight, axes=(*range(2, dims + 2), 0, 1))
     for i in range(dims):
         weight = ivy.flip(weight, axis=i)
     padding, output_padding, stride, dilation = map(
@@ -185,6 +187,7 @@ def conv_transpose1d(
             output_padding=output_padding,
             groups=groups,
             dilation=dilation,
+            filter_format="channel_first",
         )
 
 
@@ -224,6 +227,7 @@ def conv_transpose2d(
             output_padding=output_padding,
             groups=groups,
             dilation=dilation,
+            filter_format="channel_first",
         )
 
 

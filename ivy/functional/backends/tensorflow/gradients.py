@@ -172,6 +172,15 @@ def stop_gradient(
     return x
 
 
+def requires_gradient(
+    x: Union[tf.Tensor, tf.Variable],
+) -> bool:
+    is_var = is_variable(x)
+    if is_var:
+        return x.trainable
+    return False
+
+
 def jac(func: Callable):
     def grad_fn(x_in):
         return ivy.to_native(

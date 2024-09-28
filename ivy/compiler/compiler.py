@@ -82,7 +82,10 @@ def graph_transpile(
 
 
 def source_to_source(
-    object, source: str = "torch", target: str = "tensorflow", profiling: bool = False
+    object,
+    source: str = "torch",
+    target: str = "tensorflow",
+    reuse_existing: bool = True,
 ):
     """Converts a given object (class/function) from one framework to another.
 
@@ -97,7 +100,11 @@ def source_to_source(
         object: The object (class/function) to be translated.
         source (str, optional): The source framework. Defaults to 'torch'.
         target (str, optional): The target framework. Defaults to 'tensorflow'.
-        profiling: Whether to add performance profiling.
+        reuse_existing (bool, optional): If True, the function will check if `object`
+                                         already exists in the translated directory and reuse it.
+                                         If False, it will re-translate `object`,
+                                         even if it already exists in the directory, and overwrite
+                                         the old implementation. Defaults to 'True'.
 
     Returns:
     -------
@@ -109,7 +116,7 @@ def source_to_source(
         object=object,
         source=source,
         target=target,
-        profiling=profiling,
+        reuse_existing=reuse_existing,
     )
 
 
@@ -231,7 +238,10 @@ def trace_graph(
 
 
 def transpile(
-    object, source: str = "torch", target: str = "tensorflow", profiling: bool = False
+    object,
+    source: str = "torch",
+    target: str = "tensorflow",
+    reuse_existing: bool = True,
 ):
     """Converts a given object (class/function) from one framework to another.
 
@@ -246,7 +256,11 @@ def transpile(
         object: The object (class/function) to be translated.
         source (str, optional): The source framework. Defaults to 'torch'.
         target (str, optional): The target framework. Defaults to 'tensorflow'.
-        profiling: Whether to add performance profiling.
+        reuse_existing (bool, optional): If True, the function will check if `object`
+                                         already exists in the translated directory and reuse it.
+                                         If False, it will re-translate `object`,
+                                         even if it already exists in the directory, and overwrite
+                                         the old implementation. Defaults to 'True'.
 
     Returns:
     -------
@@ -258,7 +272,7 @@ def transpile(
         object=object,
         source=source,
         target=target,
-        profiling=profiling,
+        reuse_existing=reuse_existing,
     )
 
 

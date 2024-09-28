@@ -83,7 +83,7 @@ def complex(
     out=None,
 ):
     complex_dtype = ivy.complex64 if real.dtype != ivy.float64 else ivy.complex128
-    complex_array = real + imag * 1j
+    complex_array = ivy.complex(real, imag, out=out)
     return complex_array.astype(complex_dtype, out=out)
 
 
@@ -149,11 +149,6 @@ def eye(
     n, m=None, *, out=None, dtype=None, layout=None, device=None, requires_grad=False
 ):
     return ivy.eye(n, m, dtype=dtype, device=device, out=out)
-
-
-@to_ivy_arrays_and_back
-def from_dlpack(ext_tensor):
-    return ivy.from_dlpack(ext_tensor)
 
 
 @to_ivy_arrays_and_back

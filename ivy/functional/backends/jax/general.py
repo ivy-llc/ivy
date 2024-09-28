@@ -54,6 +54,12 @@ def current_backend_str() -> str:
 def is_native_array(x, /, *, exclusive=False):
     if exclusive:
         return isinstance(x, NativeArray)
+    elif any(
+        cls in str(x.__class__)
+        for cls in ["flax.nnx.nnx.variables.Param", "flax.core.scope.Variable"]
+    ):
+        # ensure flax Variables(linen, nnx) classify as a native array if `exclusive` is False
+        return True
     return isinstance(
         x,
         (

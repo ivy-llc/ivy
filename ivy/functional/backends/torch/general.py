@@ -20,7 +20,7 @@ import ivy
 from ivy.func_wrapper import _update_torch_views, with_unsupported_dtypes
 
 from ...ivy.general import _broadcast_to
-from . import backend_version, is_variable
+from . import backend_version
 
 torch_scatter = None
 
@@ -378,10 +378,8 @@ def inplace_update(
         if keep_input_dtype:
             val = ivy.astype(val, x.dtype)
         (x_native, val_native), _ = ivy.args_to_native(x, val)
-        if is_variable(x_native):
-            x_native.copy_ = val_native
-        else:
-            x_native[()] = val_native
+        with torch.no_grad():
+            x_native.copy_(val_native)
         x_native = x_native.to(val_native.device)
         if ivy.is_native_array(x):
             return x_native

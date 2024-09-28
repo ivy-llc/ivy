@@ -12,6 +12,7 @@ from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
     handle_array_function,
     inputs_to_ivy_arrays,
+    inputs_to_native_arrays,
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
@@ -433,6 +434,29 @@ def stop_gradient(
     }
     """
     return current_backend(x).stop_gradient(x, preserve_type=preserve_type, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@inputs_to_native_arrays
+@handle_array_function
+def requires_gradient(
+    x: Union[ivy.Array, ivy.NativeArray],
+) -> bool:
+    """Check if gradient computation is enabled for the given array.
+
+    Parameters
+    ----------
+    x
+        Array to check whether it requires gradient computation.
+
+    Returns
+    -------
+    ret
+        A boolean indicating whether gradient computation is enabled for the input array.
+    """
+    return current_backend(x).requires_gradient(x)
 
 
 # AutoGrad #

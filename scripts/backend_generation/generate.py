@@ -3,7 +3,6 @@ import subprocess
 import pprint
 import inspect
 import json
-from colorama import Fore, Style, init
 from importlib import import_module
 from importlib.util import find_spec
 from tree_generation import generate as generate_backend
@@ -101,9 +100,9 @@ def _update_native_config_value(key):
     # Handle the logic for updating native config
     ret = input(
         "\nPress ENTER to skip, use full namespace\n"
-        f"Enter a value for {Style.BRIGHT + key + Style.NORMAL} "
+        f"Enter a value for {key} "
         "(case sensitive) "
-        f"default: '{Style.BRIGHT}{config_natives[key]['name']}{Style.NORMAL}': "
+        f"default: '{config_natives[key]['name']}': "
     )
     if ret != "" and _imported_backend is not None:
         parsed = ret.strip().rpartition(".")
@@ -113,23 +112,23 @@ def _update_native_config_value(key):
                 try:
                     obj = __builtins__.__dict__[parsed[-1]]
                 except KeyError:
-                    print(f"{Fore.RED}{parsed[-1]} is not a primitive object.")
+                    print(f"{parsed[-1]} is not a primitive object.")
                     return False
             else:
                 try:
                     mod = import_module(parsed[0])
                 except ModuleNotFoundError:
-                    print(f"{Fore.RED}failed to import {parsed[0]}")
+                    print(f"failed to import {parsed[0]}")
                     return False
                 try:
                     obj = getattr(mod, parsed[-1])
                 except AttributeError:
-                    print(f"{Fore.RED}{parsed[-1]} is not found in module.")
+                    print(f"{parsed[-1]} is not found in module.")
                     return False
             if not inspect.isclass(obj):
-                print(f"{Fore.RED}{obj} is not a class.")
+                print(f"{obj} is not a class.")
                 return False
-            print(f"{Fore.GREEN}Found class: {obj}")
+            print(f"Found class: {obj}")
             # Use alias if exists
             if backend["alias"] is not None:
                 modified_namespace = parsed[0].replace(
@@ -140,7 +139,7 @@ def _update_native_config_value(key):
             )
             return True
         except KeyError:
-            print(f"{Fore.RED}Couldn't find {ret}")
+            print(f"Couldn't find {ret}")
             return False
     return True
 
@@ -162,16 +161,14 @@ def _should_install_backend(package_name):
             with open("../../requirements/optional.txt", "a") as reqr_file:
                 reqr_file.write("\n" + package_name + "\n")
         except subprocess.CalledProcessError as e:
-            raise RuntimeError(
-                f"{Fore.RED}Installing {package_name} failed. {e}"
-            ) from e
+            raise RuntimeError(f"Installing {package_name} failed. {e}") from e
     elif ret.lower() == "n":
         print(
-            Fore.YELLOW + "Will continue without backend installed, "
+            "Will continue without backend installed, "
             "type checking won't be available.\n"
         )
     else:
-        print(f"{Fore.RED}{ret} not understood.")
+        print(f"{ret} not understood.")
         return False
 
     return True
@@ -195,7 +192,7 @@ def _get_backend():
     else:
         global _backend_is_installed
         _backend_is_installed = True
-        print(f"{Fore.GREEN}Backend {package_name} found.", end=" ")
+        print(f"Backend {package_name} found.", end=" ")
         print(f"Installed at {backend_spec.origin}\n")
 
     _get_user_input(_add_alias_for_backend)
@@ -220,12 +217,12 @@ def _get_backend():
         _get_user_input(_import_name)
 
         global _imported_backend
-        print(f"{Style.BRIGHT}Importing {backend['name']} for type checking...")
+        print(f"Importing {backend['name']} for type checking...")
         try:
             _imported_backend = import_module(backend["name"])
             return True
         except Exception as e:
-            print(f"{Fore.RED}Failed to import {backend['name']}:{e}")
+            print(f"Failed to import {backend['name']}:{e}")
             return False
 
     return True
@@ -243,24 +240,20 @@ def _add_alias_for_backend():
 
 def _update_flag_config_value(key):
     # Handle flag input and update it's value
-    ret = input(
-        f"\nToggle flag {Style.BRIGHT}{key}{Style.NORMAL} [Y/n]? "
-        f"default: {Fore.RED}'{config_flags[key]}'"
-        f"{Style.RESET_ALL}: "
-    )
+    ret = input(f"\nToggle flag {key} [Y/n]? " f"default: '{config_flags[key]}'" f": ")
     ret = ret.strip(" ").lower()
     if ret == "y":
         config_flags[key] = not config_flags[key]
         return True
     elif ret in ["n", ""]:
         return True
-    print(f"{Fore.RED}{ret} not understood.")
+    print(f"{ret} not understood.")
     return False
 
 
 def _update_valid_config_value(key):
     # Handle valids selection
-    print(f"Select items to remove from list {Style.BRIGHT}{key}:\n")
+    print(f"Select items to remove from list {key}:\n")
     for i, item in enumerate(config_valids[key]):
         print(f"{i}. {item}")
     ret = input("\nPress ENTER to skip. Enter numbers (space separated): ")
@@ -275,7 +268,7 @@ def _update_valid_config_value(key):
 
 
 def _call_generate_tree(config_name: str):
-    ret = input(Style.BRIGHT + "\n:: Procced with generation? [Y/n]\n").strip().lower()
+    ret = input("\n:: Procced with generation? [Y/n]\n").strip().lower()
     if ret == "y":
         generate_backend(config_name)
         return True
@@ -285,8 +278,6 @@ def _call_generate_tree(config_name: str):
 
 
 if __name__ == "__main__":
-    init(autoreset=True)
-
     _get_user_input(_get_backend)
 
     for key in config_natives:
@@ -348,13 +339,12 @@ if __name__ == "__main__":
             valid_items = config_valids[key]
             invalid_items = config_valids[f"in{key}"]
         print("\n:: " + key.partition("_")[-1])
-        print(f"{Fore.GREEN}valid > {valid_items.__str__()}")
-        print(f"{Fore.RED}invalid > {invalid_items.__str__()}")
+        print(f"valid > {valid_items.__str__()}")
+        print(f"invalid > {invalid_items.__str__()}")
 
     # Print flags
     for key, value in config_flags.items():
-        flag_color = Fore.GREEN if value else Fore.RED
-        print(f"\n:: {key}: {flag_color}{value}")
+        print(f"\n:: {key}: {value}")
 
     json_config = {**backend, **config_flags, **config_natives}
     for k, v in config_valids.items():

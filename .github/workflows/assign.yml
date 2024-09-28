@@ -1,0 +1,27 @@
+name: assign
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - ready_for_review
+  issues:
+    types:
+      - opened
+
+jobs:
+  assign:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get random assignee
+        id: random
+        run: |
+          ASSIGNEES=("Sam-Armstrong" "hmahmood24" "YushaArif99")
+          RANDOM_INDEX=$((RANDOM % ${#ASSIGNEES[@]}))
+          echo "assignee=${ASSIGNEES[$RANDOM_INDEX]}" >> $GITHUB_OUTPUT
+
+      - name: Assign the issue or PR
+        uses: actions-ecosystem/action-add-assignees@v1
+        with:
+          github_token: ${{ secrets.DEV_BOT_GENERAL_PAT }}
+          assignees: ${{ steps.random.outputs.assignee }}

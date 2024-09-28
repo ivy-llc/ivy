@@ -183,6 +183,15 @@ def stop_gradient(
     return x.detach()
 
 
+def requires_gradient(
+    x: Optional[torch.Tensor],
+) -> bool:
+    is_var = is_variable(x)
+    if is_var:
+        return x.requires_grad
+    return False
+
+
 def jac(func: Callable):
     def grad_fn(x_in):
         return ivy.to_native(

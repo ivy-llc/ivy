@@ -461,6 +461,58 @@ def test_torch_broadcast_to(
 
 
 @handle_frontend_test(
+    fn_tree="torch.bucketize",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    dtype_and_boundaries=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    out_int32=st.booleans(),
+    right=st.booleans(),
+)
+def test_torch_bucketize(
+    *,
+    dtype_and_input,
+    dtype_and_boundaries,
+    out_int32,
+    right,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, input = dtype_and_input
+    boundaries_dtype, boundaries = dtype_and_boundaries
+
+    assume(boundaries[0].ndim == 1)
+
+    boundaries[0] = np.sort(boundaries[0])
+
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype[0], boundaries_dtype[0]],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
+        boundaries=boundaries[0],
+        out_int32=out_int32,
+        right=right,
+    )
+
+
+@handle_frontend_test(
     fn_tree="torch.cartesian_prod",
     dtype_and_tensors=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),

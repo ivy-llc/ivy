@@ -84,6 +84,19 @@ def broadcast_to(tensor, shape):
 
 
 @to_ivy_arrays_and_back
+def bucketize(input, boundaries, *, out_int32=False, right=False, out=None):
+    if right:
+        idx = torch_frontend.searchsorted(boundaries, input, right=True)
+    else:
+        idx = torch_frontend.searchsorted(boundaries, input, right=False)
+
+    if out_int32:
+        return idx.int()
+    else:
+        return idx.long()
+
+
+@to_ivy_arrays_and_back
 def cartesian_prod(*tensors):
     if len(tensors) == 1:
         return tensors

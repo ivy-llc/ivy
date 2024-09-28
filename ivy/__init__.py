@@ -786,7 +786,7 @@ from ivy.utils.backend import (
 )
 from . import wrappers
 from . import func_wrapper
-from .utils import assertions, exceptions, verbosity
+from .utils import assertions, exceptions
 from .utils.backend import handler
 from . import functional
 from .functional import *
@@ -1018,8 +1018,8 @@ def _assert_array_significant_figures_formatting(sig_figs):
 def vec_sig_fig(x, sig_fig=3):
     if isinstance(x, np.bool_):
         return x
-    if isinstance(x, complex):
-        return complex(x)
+    if isinstance(x, builtins.complex):
+        return builtins.complex(x)
     if np.issubdtype(x.dtype, np.floating):
         x_positive = np.where(np.isfinite(x) & (x != 0), np.abs(x), 10 ** (sig_fig - 1))
         mags = 10 ** (sig_fig - 1 - np.floor(np.log10(x_positive)))

@@ -15,9 +15,9 @@ Please, follow the next process when you work on your subtask:
 
    Currently, there are three open tasks:
 
-   - [Function Reformatting](https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#function-formatting)
-   - [Frontend APIs](https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#frontend-apis)
-   - [Ivy Experimental API](https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#ivy-experimental-api)
+   - [Function Reformatting](https://docs.ivy.dev/overview/contributing/open_tasks.html#function-formatting)
+   - [Frontend APIs](https://docs.ivy.dev/overview/contributing/open_tasks.html#frontend-apis)
+   - [Ivy Experimental API](https://docs.ivy.dev/overview/contributing/open_tasks.html#ivy-experimental-api)
 
 2. **Create Issue:**
 
