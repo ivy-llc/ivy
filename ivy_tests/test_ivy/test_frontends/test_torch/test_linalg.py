@@ -1288,7 +1288,7 @@ def test_torch_svd(
                 frontend_u[..., : frontend_s.shape[0]]
                 @ np.diag(frontend_s)
                 @ frontend_vh
-            ).astype(d),
+            )
             ret_from_gt_np=u[..., : s.shape[0]] @ np.diag(s) @ vh,
             atol=1e-04,
             backend=backend_fw,
