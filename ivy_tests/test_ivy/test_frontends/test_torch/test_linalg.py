@@ -1242,7 +1242,12 @@ def test_torch_solve_ex(
 # svd
 @handle_frontend_test(
     fn_tree="torch.linalg.svd",
-    dtype_and_x=_get_dtype_and_matrix(square=True),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
+    ),
     full_matrices=st.booleans(),
 )
 def test_torch_svd(
@@ -1257,7 +1262,7 @@ def test_torch_svd(
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
-    # make symmetric positive definite beforehand
+    # make symmetric positive definite
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -1267,25 +1272,36 @@ def test_torch_svd(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
-        atol=1e-03,
-        rtol=1e-05,
         A=x,
         full_matrices=full_matrices,
     )
-    ret = [ivy.to_numpy(x) for x in ret]
+    if backend_fw == "torch":
+        frontend_ret = [x.detach() for x in frontend_ret]
+        ret = [x.detach() for x in ret]
+    ret = [np.asarray(x) for x in ret]
     frontend_ret = [np.asarray(x) for x in frontend_ret]
-
     u, s, vh = ret
     frontend_u, frontend_s, frontend_vh = frontend_ret
-
-    assert_all_close(
-        ret_np=u @ np.diag(s) @ vh,
-        ret_from_gt_np=frontend_u @ np.diag(frontend_s) @ frontend_vh,
-        rtol=1e-2,
-        atol=1e-2,
-        ground_truth_backend=frontend,
-        backend=backend_fw,
-    )
+    if full_matrices:
+        helpers.assert_all_close(
+            ret_np=(
+                frontend_u[..., : frontend_s.shape[0]]
+                @ np.diag(frontend_s)
+                @ frontend_vh
+            ).astype(d),
+            ret_from_gt_np=u[..., : s.shape[0]] @ np.diag(s) @ vh,
+            atol=1e-04,
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+        )
+    else:
+        helpers.assert_all_close(
+            ret_np=(frontend_u @ np.diag(frontend_s) @ frontend_vh).astype(d),
+            ret_from_gt_np=u @ np.diag(s) @ vh,
+            atol=1e-04,
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+        )
 
 
 # svdvals
