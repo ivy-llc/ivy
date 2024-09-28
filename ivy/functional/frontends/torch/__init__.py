@@ -239,11 +239,11 @@ def promote_types_of_torch_inputs(
     """
     if (ivy.isscalar(x1) or isinstance(x1, (list, tuple))) and ivy.is_int_dtype(x1):
         x1 = ivy.asarray(x1, dtype="int64")
-    elif (ivy.isscalar(x1) or isinstance(x1, (list, tuple))):
+    elif ivy.isscalar(x1) or isinstance(x1, (list, tuple)):
         x1 = ivy.asarray(x1)
     if (ivy.isscalar(x2) or isinstance(x2, (list, tuple))) and ivy.is_int_dtype(x2):
         x2 = ivy.asarray(x2, dtype="int64")
-    elif (ivy.isscalar(x2) or isinstance(x2, (list, tuple))):
+    elif ivy.isscalar(x2) or isinstance(x2, (list, tuple)):
         x2 = ivy.asarray(x2)
     type1 = ivy.default_dtype(item=x1).strip("u123456789")
     type2 = ivy.default_dtype(item=x2).strip("u123456789")
