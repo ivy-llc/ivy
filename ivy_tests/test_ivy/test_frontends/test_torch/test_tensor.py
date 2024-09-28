@@ -13145,14 +13145,11 @@ def test_torch_svd(
     )
     ret = [np.asarray(x) for x in ret]
     frontend_ret = [np.asarray(x.resolve_conj()) for x in frontend_ret]
-
     u, s, v = ret
     frontend_u, frontend_s, frontend_v = frontend_ret
     if not compute_uv:
         helpers.assert_all_close(
-            ret_np=frontend_s.astype(
-                input_dtype[0]
-            ),  # it somehow always return float32
+            ret_np=frontend_s
             ret_from_gt_np=s,
             atol=1e-04,
             backend=backend_fw,
