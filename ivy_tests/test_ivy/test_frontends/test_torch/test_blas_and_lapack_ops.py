@@ -886,9 +886,7 @@ def test_torch_svd(
         frontend_ret = [x.detach() for x in frontend_ret]
         ret = [x.detach() for x in ret]
     ret = [np.asarray(x) for x in ret]
-    frontend_ret = [
-        np.asarray(x.resolve_conj()).astype(input_dtype[0]) for x in frontend_ret
-    ]
+    frontend_ret = [np.asarray(x.resolve_conj()) for x in frontend_ret]
     u, s, v = ret
     frontend_u, frontend_s, frontend_v = frontend_ret
     if not compute_uv:
