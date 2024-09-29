@@ -9,9 +9,9 @@ import torch
 
 jax.config.update("jax_enable_x64", True)
 
-jax_kornia = ivy.graph_transpile(kornia, source="torch", to="jax")
-np_kornia = ivy.graph_transpile(kornia, source="torch", to="numpy")
-tf_kornia = ivy.graph_transpile(kornia, source="torch", to="tensorflow")
+# jax_kornia = ivy.transpile(kornia, source="torch", to="jax")
+# np_kornia = ivy.transpile(kornia, source="torch", to="numpy")
+tf_kornia = ivy.transpile(kornia, source="torch", to="tensorflow")
 
 
 # Helpers #
@@ -131,7 +131,7 @@ def _test_function(
         transpiled_fn(*trace_args, **trace_kwargs)
     except Exception as e:
         # don't fail the test if unable to connect to the server
-        if "Unable to connect to ivy server." in str(e):
+        if "Unable to connect to ivy server" in str(e):
             pytest.skip()
         else:
             raise e
