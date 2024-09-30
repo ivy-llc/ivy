@@ -8,8 +8,8 @@ export VERSION=linux-nightly
 export DEBUG=0
 
 pip3 install -r requirements/requirements.txt --upgrade
-pip3 install jax
-pip3 install jaxlib
+pip3 install jax==0.4.30
+pip3 install jaxlib==0.4.30
 pip3 install flax
 pip3 install opencv-python
 pip3 install pytest
