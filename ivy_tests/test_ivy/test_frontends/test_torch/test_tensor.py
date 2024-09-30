@@ -13148,7 +13148,7 @@ def test_torch_svd(
     frontend_u, frontend_s, frontend_v = frontend_ret
     if not compute_uv:
         helpers.assert_all_close(
-            ret_np=frontend_s
+            ret_np=frontend_s,
             ret_from_gt_np=s,
             atol=1e-04,
             backend=backend_fw,
