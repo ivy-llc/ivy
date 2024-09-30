@@ -357,8 +357,32 @@ def solve(matrix, rhs, /, *, adjoint=False, name=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.15.0 and below": (
+            "float32",
+            "float64",
+            "half",
+            "complex32",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
 def svd(a, /, *, full_matrices=False, compute_uv=True, name=None):
-    return ivy.svd(a, compute_uv=compute_uv, full_matrices=full_matrices)
+    if ivy.is_complex_dtype(a.dtype):
+        d = ivy.complex128
+    else:
+        d = ivy.float64
+    if compute_uv:
+        svd = ivy.svd(a, compute_uv=compute_uv, full_matrices=full_matrices)
+        return tuple(
+            [ivy.astype(svd.S, d), ivy.astype(svd.U, d), ivy.astype(svd.Vh.T, d)]
+        )
+    else:
+        svd = ivy.svd(a, compute_uv=compute_uv, full_matrices=full_matrices)
+        return ivy.astype(svd.S, d)
 
 
 @to_ivy_arrays_and_back
