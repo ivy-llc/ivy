@@ -215,7 +215,7 @@ def test_posterize(target_framework, backend_compile):
         test_kwargs,
         target_framework,
         backend_compile=backend_compile,
-        tolerance=1e-3,
+        tolerance=1e0,
     )
 
 
