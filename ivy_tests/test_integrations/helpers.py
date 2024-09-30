@@ -9,7 +9,7 @@ import torch
 
 jax.config.update("jax_enable_x64", True)
 
-# jax_kornia = ivy.transpile(kornia, source="torch", target="jax")
+jax_kornia = ivy.transpile(kornia, source="torch", target="jax")
 # np_kornia = ivy.transpile(kornia, source="torch", target="numpy")
 tf_kornia = ivy.transpile(kornia, source="torch", target="tensorflow")
 
