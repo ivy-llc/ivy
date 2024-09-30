@@ -5,6 +5,7 @@ target=$2
 
 export IVY_KEY=$3
 export VERSION=linux-nightly
+export DEBUG=0
 
 pip3 install -r requirements/requirements.txt --upgrade
 pip3 install jax
@@ -27,4 +28,4 @@ import ivy
 ivy.utils.cleanup_and_fetch_binaries()
 EOF
 
-pytest ivy_tests/test_integrations/test_$integration.py -p no:warnings --target $target
+pytest ivy_tests/test_integrations/test_$integration.py -p no:warnings --tb=short --target $target
