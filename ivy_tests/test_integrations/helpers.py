@@ -127,6 +127,8 @@ def _test_function(
         pytest.skip()
     transpiled_fn = eval(prefix + fn)
 
+    trace_args = _nest_torch_tensor_to_new_framework(trace_args, target)
+    trace_kwargs = _nest_torch_tensor_to_new_framework(trace_kwargs, target)
     try:
         transpiled_fn(*trace_args, **trace_kwargs)
     except Exception as e:
