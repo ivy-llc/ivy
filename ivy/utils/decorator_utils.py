@@ -282,7 +282,7 @@ def get_next_func(obj):
         return None
 
     # Check if the filename contains "Sequential"
-    if "Sequential" in frame_info.filename:
+    if "torch/nn/modules/container" in frame_info.filename:
         try:
             # find the next call in the sequence
             self_seq = calling_frame.f_locals["self"]
