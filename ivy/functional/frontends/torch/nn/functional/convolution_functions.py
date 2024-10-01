@@ -84,8 +84,13 @@ def _conv_transpose(
         for i in range(dims):
             unpad_slice += (
                 slice(
-                    max([padding[i] - (dilation[i] // 2), padding[i], output_padding[i]]),
-                    ret.shape[2 + i] - padding[i] + output_padding[i] + (dilation[i] // 2),
+                    max(
+                        [padding[i] - (dilation[i] // 2), padding[i], output_padding[i]]
+                    ),
+                    ret.shape[2 + i]
+                    - padding[i]
+                    + output_padding[i]
+                    + (dilation[i] // 2),
                     1,
                 ),
             )
@@ -94,13 +99,18 @@ def _conv_transpose(
         for i in range(dims):
             unpad_slice += (
                 slice(
-                    max([padding[i] - (dilation[i] // 2), padding[i], output_padding[i]]),
-                    ret.shape[1 + i] - padding[i] + output_padding[i] + (dilation[i] // 2),
+                    max(
+                        [padding[i] - (dilation[i] // 2), padding[i], output_padding[i]]
+                    ),
+                    ret.shape[1 + i]
+                    - padding[i]
+                    + output_padding[i]
+                    + (dilation[i] // 2),
                     1,
                 ),
             )
         unpad_slice += (slice(None),)
-        
+
     ret = ret[unpad_slice]
     return ret
 
