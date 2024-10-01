@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target : [ jax, tensorflow ]
+        target : [ jax, numpy, tensorflow ]
     steps:
       - name: Checkout Ivy 🛎
         uses: actions/checkout@v3
