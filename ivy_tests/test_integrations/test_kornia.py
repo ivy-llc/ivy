@@ -3,7 +3,8 @@
 from helpers import _test_function
 import kornia
 import torch
-import pytest 
+import pytest
+
 
 def test_rgb_to_grayscale(target_framework, backend_compile):
     trace_args = (torch.rand(1, 3, 4, 4),)
@@ -1528,9 +1529,9 @@ def test_determinant_to_polynomial(target_framework, backend_compile):
 
 
 def test_nms3d(target_framework, backend_compile):
-    if target_framework == 'numpy':
-        pytest.skip() # stateful class tests are not supported
-        
+    if target_framework == "numpy":
+        pytest.skip()  # stateful class tests are not supported
+
     trace_args = (
         torch.rand(1, 1, 5, 5, 5),
         (3, 3, 3),
