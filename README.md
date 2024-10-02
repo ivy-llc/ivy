@@ -155,8 +155,8 @@ We're working hard on adding support for more frameworks, let us know on [Discor
 |------------|:------:|:------:|
 | PyTorch    |   ✅   |   🚧   |
 | TensorFlow |   🚧   |   ✅   |
-| JAX        |   🚧   |   🚧   |
-| NumPy      |   🚧   |   🚧   |
+| JAX        |   🚧   |   ✅   |
+| NumPy      |   🚧   |   ✅   |
 
 <br>
 
