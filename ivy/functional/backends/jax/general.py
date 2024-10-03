@@ -109,6 +109,9 @@ def set_item(
     *,
     copy: Optional[bool] = False,
 ) -> JaxArray:
+    
+    if query == [] or query == ():
+        return x
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         query = _mask_to_index(query, x)
     expected_shape = x[query].shape
