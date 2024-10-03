@@ -5,7 +5,7 @@ on:
 jobs:
   integration-tests:
     name: Run Integration Tests
-    uses: ivy-llc/ivy-integration-tests/.github/workflows/qa_integration_tests.yml@main
+    uses: ivy-llc/ivy-integration-tests/.github/workflows/qa-integration-tests.yml@main
     with:
       binaries-branch: nightly
     secrets: inherit
