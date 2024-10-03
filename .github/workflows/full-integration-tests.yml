@@ -1,0 +1,15 @@
+name: full-integration-tests
+on:
+  push:
+    branches:
+      - main
+      - qa
+  workflow_dispatch:
+
+jobs:
+  integration-tests:
+    name: Run Integration Tests
+    uses: ivy-llc/ivy-integration-tests/.github/workflows/qa_integration_tests.yml@main
+    with:
+      binaries-branch: linux-nightly
+    secrets: inherit
