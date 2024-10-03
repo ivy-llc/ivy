@@ -5,12 +5,21 @@ on:
   workflow_dispatch:
 
 jobs:
+  integration-tests:
+    name: Run Integration Tests
+    uses: ivy-llc/ivy-integration-tests/.github/workflows/qa_integration_tests.yml@main
+    with:
+      binaries-branch: main
+    secrets: inherit
+
   publish-binaries:
     name: Publish Binaries
+    needs: integration-tests
     uses: ./.github/workflows/binaries.yml
     secrets: inherit
 
   deploy:
     name: Deploy to PyPI
+    needs: integration-tests
     uses: ./.github/workflows/pypi.yml
     secrets: inherit
