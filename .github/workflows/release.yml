@@ -4,6 +4,10 @@ on:
     types: [ published ]
   workflow_dispatch:
 
+permissions:
+  actions: read
+  contents: write
+
 jobs:
   integration-tests:
     name: Run Integration Tests
