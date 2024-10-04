@@ -1,5 +1,8 @@
-name: Pre-Release Workflow
+name: tests
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -8,8 +11,7 @@ permissions:
 
 jobs:
   integration-tests:
-    name: Run Integration Tests
     uses: ivy-llc/ivy-integration-tests/.github/workflows/qa-integration-tests.yml@main
     with:
-      binaries-branch: nightly
+      binaries-branch: linux-nightly
     secrets: inherit
