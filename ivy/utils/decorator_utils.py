@@ -177,7 +177,10 @@ def handle_methods(fn):
     @functools.wraps(fn)
     def wrapper(*args, **kwargs):
         array_like = args[0]
-        if hasattr(array_like, '__class__') and array_like.__class__.__name__  in ['list', 'tuple']:
+        if hasattr(array_like, "__class__") and array_like.__class__.__name__ in [
+            "list",
+            "tuple",
+        ]:
             array_like = array_like[0]
 
         if ivy.is_array(array_like):
