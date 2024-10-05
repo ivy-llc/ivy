@@ -2109,7 +2109,19 @@ class Tensor:
     def conj(self):
         return torch_frontend.conj(self)
 
-    @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
+    @with_supported_dtypes(
+        {
+            "2.2 and below": (
+                "float64",
+                "float32",
+                "half",
+                "complex32",
+                "complex64",
+                "complex128",
+            )
+        },
+        "torch",
+    )
     def svd(self, some=True, compute_uv=True, *, out=None):
         return torch_frontend.svd(self, some=some, compute_uv=compute_uv, out=out)
 
