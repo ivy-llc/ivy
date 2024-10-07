@@ -112,6 +112,9 @@ def set_item(
     
     if isinstance(query, (list,tuple)) and (query == [] or query == ()):
         return x
+    # convert nnx.Param to jax.Array
+    if hasattr(x, "value"):
+        x = x.value 
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         query = _mask_to_index(query, x)
     if isinstance(query, (list, tuple)) and isinstance(query[0], int):
