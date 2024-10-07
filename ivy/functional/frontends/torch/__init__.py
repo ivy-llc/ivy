@@ -284,6 +284,7 @@ from . import _VF
 from . import jit
 from . import overrides
 from . import _C
+from . import hub
 from .tensor import *
 from . import blas_and_lapack_ops
 from .blas_and_lapack_ops import *
