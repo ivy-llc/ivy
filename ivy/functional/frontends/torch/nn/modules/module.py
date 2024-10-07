@@ -289,7 +289,65 @@ class Module(ivy.Module):
                         memo, submodule_prefix, remove_duplicate
                     )
 
+    def _load_from_state_dict(
+        self, state_dict, prefix, strict, missing_keys, unexpected_keys, error_msgs
+    ):
+        def _retrive_layer(model, key):
+            if len(key.split(".")) == 1:
+                return model, key
 
+            module_path, weight_name = key.rsplit(".", 1)
+
+            # Retrieve the layer using the module path
+            layer = model
+            for attr in module_path.split("."):
+                layer = getattr(layer, attr)
+
+            return layer, weight_name
+
+        persistent_buffers = {k: v for k, v in self._buffers.items()}
+        local_name_params = itertools.chain(
+            self._parameters.items(), persistent_buffers.items()
+        )
+        local_state = {k: v for k, v in local_name_params if v is not None}
+
+        for name, param in local_state.items():
+            key = prefix + name
+            if key in state_dict:
+                input_param = state_dict[key]
+                if not ivy.is_array(input_param):
+                    error_msgs.append(
+                        f'While copying the parameter named "{key}", '
+                        "expected ArrayLike object from checkpoint but "
+                        f"received {type(input_param)}"
+                    )
+                    continue
+
+                if not isinstance(input_param, Parameter):
+                    input_param = Parameter(input_param)
+
+                layer, weight_name = _retrive_layer(self, name)
+                try:
+                    setattr(layer, weight_name, input_param)
+                except Exception as ex:
+                    error_msgs.append(
+                        f'While copying the parameter named "{key}", '
+                        f"whose dimensions in the model are {param.shape} and "
+                        f"whose dimensions in the checkpoint are {input_param.shape}, "
+                        f"an exception occurred : {ex.args}."
+                    )
+            elif strict:
+                missing_keys.append(key)
+
+        if strict:
+            for key in state_dict.keys():
+                if key.startswith(prefix):
+                    input_name = key[len(prefix) :].split(".", 1)
+                    if len(input_name) > 1:
+                        if input_name[0] not in self._modules:
+                            unexpected_keys.append(key)
+                    elif input_name[0] not in local_state:
+                        unexpected_keys.append(key)
 
     def load_state_dict(
         self, state_dict: typing.Mapping[str, Any], strict: bool = True, assign: bool = False
