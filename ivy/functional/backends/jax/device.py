@@ -27,6 +27,8 @@ def _to_array(x):
         return _to_array(x.aval)
     elif isinstance(x, jax.interpreters.batching.BatchTracer):
         return _to_array(x.val)
+    elif 'flax.nnx.nnx.variables' in str(x.__class__):
+        return x.value
     return x
 
 
