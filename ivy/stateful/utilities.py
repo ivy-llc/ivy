@@ -241,24 +241,8 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
             layer, weight_name = _retrive_layer(model2, key_mapping[name])
 
             params1_np = params1[name].cpu().detach().numpy()
-            # Transpose the parameters to match the TensorFlow format
-            if (
-                transpose_weights
-                and "ConvTranspose" in layer.__class__.__name__
-                and len(params1_np.shape) == 4
-            ):  # Transpose Convolutional layer
-                params1_np = np.transpose(params1_np, (2, 3, 0, 1))
-            elif (
-                transpose_weights
-                and "Conv" in layer.__class__.__name__
-                and len(params1_np.shape) == 4
-            ):  # Convolutional layer
-                params1_np = np.transpose(params1_np, (2, 3, 1, 0))
-            elif (
-                "Linear" in layer.__class__.__name__ and len(params1_np.shape) == 2
-            ):  # Dense layer
-                params1_np = np.transpose(params1_np, (1, 0))
-
+            # Transpose the parameters to match the JAX format
+            params1_np = transpose_weights_pt_to_tf_jax(layer, params1_np, transpose_weights)
             # inplace update the native Flax layer. This is done as the parameters in
             # self.v are a different copy than the layer's original parameters. Hence, we
             # need to explicitly update the layer's original parameters, otherwise the changes won't reflect.
@@ -285,24 +269,8 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
             layer, weight_name = _retrive_layer(model2, key_mapping[name])
 
             buffers1_np = buffers1[name].cpu().detach().numpy()
-            if (
-                transpose_weights
-                and "ConvTranspose" in layer.__class__.__name__
-                and len(params1_np.shape) == 4
-            ):  # Transpose Convolutional layer
-                buffers1_np = np.transpose(buffers1_np, (2, 3, 0, 1))
-            elif (
-                transpose_weights
-                and "Conv" in layer.__class__.__name__
-                and len(params1_np.shape) == 4
-            ):  # Convolutional layer
-                buffers1_np = np.transpose(buffers1_np, (2, 3, 1, 0))
-            elif (
-                "Linear" in layer.__class__.__name__
-                and len(params1_np.shape) == 2
-                and layer.built
-            ):  # Dense layer
-                buffers1_np = np.transpose(buffers1_np, (1, 0))
+            # Transpose the buffers to match the JAX format
+            buffers1_np = transpose_weights_pt_to_tf_jax(layer, buffers1_np, transpose_weights)
 
             # inplace update the native Flax layer. This is done as the buffers in
             # self.buffers are a different copy than the layer's original buffers. Hence, we
@@ -338,22 +306,7 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
             else params2[name]._value
         )
         # Transpose the parameters back to the PyTorch format for comparison
-        if (
-            transpose_weights
-            and "ConvTranspose" in layer.__class__.__name__
-            and len(params1_np.shape) == 4
-        ):  # Transpose Convolutional layer
-            params2_np = np.transpose(params2_np, (2, 3, 0, 1))
-        elif (
-            transpose_weights
-            and "Conv" in layer.__class__.__name__
-            and len(params2_np.shape) == 4
-        ):  # Convolutional layer
-            params2_np = np.transpose(params2_np, (3, 2, 0, 1))
-        elif (
-            "Linear" in layer.__class__.__name__ and len(params1_np.shape) == 2
-        ):  # Dense layer
-            params2_np = np.transpose(params2_np, (1, 0))
+        params2_np = transpose_weights_tf_jax_to_pt(layer, params2_np, transpose_weights)
 
         assert np.allclose(
             params1_np, params2_np
@@ -369,23 +322,8 @@ def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
             else buffers2[name]._value
         )
 
-        # Transpose the parameters back to the PyTorch format for comparison
-        if (
-            transpose_weights
-            and "ConvTranspose" in layer.__class__.__name__
-            and len(params1_np.shape) == 4
-        ):  # Transpose Convolutional layer
-            buffers2_np = np.transpose(buffers2_np, (2, 3, 0, 1))
-        elif (
-            transpose_weights
-            and "Conv" in layer.__class__.__name__
-            and len(params2_np.shape) == 4
-        ):  # Convolutional layer
-            buffers2_np = np.transpose(buffers2_np, (3, 2, 0, 1))
-        elif (
-            "Linear" in layer.__class__.__name__ and len(params1_np.shape) == 2
-        ):  # Dense layer
-            buffers2_np = np.transpose(buffers2_np, (1, 0))
+        # Transpose the buffers back to the PyTorch format for comparison
+        buffers2_np = transpose_weights_tf_jax_to_pt(layer, buffers2_np, transpose_weights)
 
         assert np.allclose(
             buffers1_np, buffers2_np
@@ -470,24 +408,7 @@ def _sync_models_torch_and_tf(model1: "nn.Module", model2: "KerasModel"):
 
             params1_np = params1[name].cpu().detach().numpy()
             # Transpose the parameters to match the TensorFlow format
-            if (
-                transpose_weights
-                and "DepthwiseConv" in layer.__class__.__name__
-                and len(params1_np.shape) == 4
-            ):  # Depthwise Convolutional layer
-                params1_np = np.transpose(params1_np, (2, 3, 0, 1))
-            elif (
-                transpose_weights
-                and "Conv" in layer.__class__.__name__
-                and len(params1_np.shape) == 4
-            ):  # Convolutional layer
-                params1_np = np.transpose(params1_np, (2, 3, 1, 0))
-            elif (
-                "Dense" in layer.__class__.__name__
-                and len(params1_np.shape) == 2
-                and layer.built
-            ):  # Dense layer
-                params1_np = np.transpose(params1_np, (1, 0))
+            params1_np = transpose_weights_pt_to_tf_jax(layer, params1_np, transpose_weights)
 
             # inplace update the native keras layer. This is done as the parameters in
             # self.v are a different copy than the parameters in self.weights. Hence, we
@@ -505,24 +426,8 @@ def _sync_models_torch_and_tf(model1: "nn.Module", model2: "KerasModel"):
             layer, weight_name = _retrive_layer(model2, key_mapping[name])
 
             buffers1_np = buffers1[name].cpu().detach().numpy()
-            if (
-                transpose_weights
-                and "DepthwiseConv" in layer.__class__.__name__
-                and len(params1_np.shape) == 4
-            ):  # Depthwise Convolutional layer
-                buffers1_np = np.transpose(buffers1_np, (2, 3, 0, 1))
-            elif (
-                transpose_weights
-                and "Conv" in layer.__class__.__name__
-                and len(params1_np.shape) == 4
-            ):  # Convolutional layer
-                buffers1_np = np.transpose(buffers1_np, (2, 3, 1, 0))
-            elif (
-                "Dense" in layer.__class__.__name__
-                and len(params1_np.shape) == 2
-                and layer.built
-            ):  # Dense layer
-                buffers1_np = np.transpose(buffers1_np, (1, 0))
+            # Transpose the buffers to match the TensorFlow format
+            buffers1_np = transpose_weights_pt_to_tf_jax(layer, buffers1_np, transpose_weights)
 
             # inplace update the native keras layer. This is done as the parameters in
             # self.v are a different copy than the parameters in self.weights. Hence, we
@@ -550,24 +455,7 @@ def _sync_models_torch_and_tf(model1: "nn.Module", model2: "KerasModel"):
         params1_np = params1[name].cpu().detach().numpy()
         params2_np = params2[name].numpy()
         # Transpose the parameters back to the PyTorch format for comparison
-        if (
-            transpose_weights
-            and "DepthwiseConv" in layer.__class__.__name__
-            and len(params2_np.shape) == 4
-        ):  # Depthwise Convolutional layer
-            params2_np = np.transpose(params2_np, (2, 3, 0, 1))
-        elif (
-            transpose_weights
-            and "Conv" in layer.__class__.__name__
-            and len(params2_np.shape) == 4
-        ):  # Regular Convolutional layer
-            params2_np = np.transpose(params2_np, (3, 2, 0, 1))
-        elif (
-            "Dense" in layer.__class__.__name__
-            and len(params1_np.shape) == 2
-            and layer.built
-        ):  # Dense layer
-            params2_np = np.transpose(params2_np, (1, 0))
+        params2_np = transpose_weights_tf_jax_to_pt(layer, params2_np, transpose_weights)
 
         assert np.allclose(
             params1_np, params2_np
@@ -578,26 +466,8 @@ def _sync_models_torch_and_tf(model1: "nn.Module", model2: "KerasModel"):
 
         buffers1_np = buffers1[name].cpu().detach().numpy()
         buffers2_np = buffers2[name].numpy()
-
-        # Transpose the parameters back to the PyTorch format for comparison
-        if (
-            transpose_weights
-            and "DepthwiseConv" in layer.__class__.__name__
-            and len(params2_np.shape) == 4
-        ):  # Depthwise Convolutional layer
-            buffers2_np = np.transpose(buffers2_np, (2, 3, 0, 1))
-        elif (
-            transpose_weights
-            and "Conv" in layer.__class__.__name__
-            and len(params2_np.shape) == 4
-        ):  # Regular Convolutional layer
-            buffers2_np = np.transpose(buffers2_np, (3, 2, 0, 1))
-        elif (
-            "Dense" in layer.__class__.__name__
-            and len(params1_np.shape) == 2
-            and layer.built
-        ):  # Dense layer
-            buffers2_np = np.transpose(buffers2_np, (1, 0))
+        # Transpose the buffers back to the PyTorch format for comparison
+        buffers2_np = transpose_weights_tf_jax_to_pt(layer, buffers2_np, transpose_weights)
 
         assert np.allclose(
             buffers1_np, buffers2_np
