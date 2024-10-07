@@ -109,11 +109,13 @@ def set_item(
     *,
     copy: Optional[bool] = False,
 ) -> JaxArray:
-
-    if query == [] or query == ():
+    
+    if isinstance(query, (list,tuple)) and (query == [] or query == ()):
         return x
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         query = _mask_to_index(query, x)
+    if isinstance(query, (list, tuple)) and isinstance(query[0], int):
+        query = jax.numpy.asarray(query)
     expected_shape = x[query].shape
     if ivy.is_array(val):
         val = _broadcast_to(val, expected_shape)._data
