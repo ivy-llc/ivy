@@ -61,7 +61,75 @@ def _retrive_layer(model, key):
 
     return layer, weight_name
 
+def transpose_weights_pt_to_tf_jax(layer, params_np, transpose_weights):
+    """
+    Transpose weights from PyTorch to TensorFlow/JAX format.
 
+    Args:
+    - layer: The layer object.
+    - params_np: The weights in NumPy format.
+    - transpose_weights: Flag to enable weight transposition.
+
+    Returns:
+    - Transposed weights.
+    """
+    if not transpose_weights:
+        return params_np
+
+    if "ConvTranspose" in layer.__class__.__name__ and len(params_np.shape) == 4:
+        return np.transpose(params_np, (2, 3, 0, 1))
+    elif "DepthwiseConv" in layer.__class__.__name__ and len(params_np.shape) == 4:  
+        # Depthwise Convolutional layer
+        return np.transpose(params_np, (2, 3, 0, 1))
+    elif "Conv" in layer.__class__.__name__:
+        if len(params_np.shape) == 3:  # 1D Convolutional layer
+            return np.transpose(params_np, (2, 1, 0))
+        elif len(params_np.shape) == 4:  # 2D Convolutional layer
+            return np.transpose(params_np, (2, 3, 1, 0))
+        elif len(params_np.shape) == 5:  # 3D Convolutional layer
+            return np.transpose(params_np, (2, 3, 4, 1, 0))
+    elif "Linear" in layer.__class__.__name__ and len(params_np.shape) == 2:
+        return np.transpose(params_np, (1, 0))
+    elif "Dense" in layer.__class__.__name__ and len(params_np.shape) == 2:
+        return np.transpose(params_np, (1, 0))
+
+    return params_np
+
+
+def transpose_weights_tf_jax_to_pt(layer, params_np, transpose_weights):
+    """
+    Transpose weights from TensorFlow/JAX to PyTorch format.
+
+    Args:
+    - layer: The layer object.
+    - params_np: The weights in NumPy format.
+    - transpose_weights: Flag to enable weight transposition.
+
+    Returns:
+    - Transposed weights.
+    """
+    if not transpose_weights:
+        return params_np
+
+    if "ConvTranspose" in layer.__class__.__name__ and len(params_np.shape) == 4:
+        return np.transpose(params_np, (2, 3, 0, 1))
+    elif "DepthwiseConv" in layer.__class__.__name__ and len(params_np.shape) == 4:  
+        # Depthwise Convolutional layer
+        return  np.transpose(params_np, (2, 3, 0, 1))
+    elif "Conv" in layer.__class__.__name__:
+        if len(params_np.shape) == 3:  # 1D Convolutional layer
+            return np.transpose(params_np, (2, 1, 0))
+        elif len(params_np.shape) == 4:  # 2D Convolutional layer
+            return np.transpose(params_np, (3, 2, 0, 1))
+        elif len(params_np.shape) == 5:  # 3D Convolutional layer
+            return np.transpose(params_np, (4, 3, 2, 1, 0))
+    elif "Linear" in layer.__class__.__name__ and len(params_np.shape) == 2:
+        return np.transpose(params_np, (1, 0))
+    elif "Dense" in layer.__class__.__name__ and len(params_np.shape) == 2:
+        return np.transpose(params_np, (1, 0))
+   
+    return params_np
+    
 def _sync_models_torch_and_jax(model1: "nn.Module", model2: "FlaxModel"):
     """Synchronizes the parameters and buffers of the original and the
     translated model.
