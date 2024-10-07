@@ -136,6 +136,20 @@ class Module(ivy.Module):
         fn(self)
         return self
 
+    def _apply(self, fn, recurse=True):
+        if recurse:
+            if hasattr(self, "children"):
+                for module in self.children():
+                    if hasattr(module, "_apply"):
+                        module._apply(fn)
+        for key, param in self.v.items():
+            if param is not None:
+                self.v[key] = fn(param)
+        for key, buf in self.buffers.items():
+            if buf is not None:
+                self.buffers[key] = fn(buf)
+        return self
+
     def register_buffer(
         self, name: str, value: Optional["Tensor"], persistent: bool = False
     ) -> None:
@@ -276,6 +290,9 @@ class Module(ivy.Module):
         for p in self.parameters():
             p.requires_grad_(requires_grad)
         return self
+
+    def to(self, *args, **kwargs):
+        return self._apply(lambda t: t.to(*args, **kwargs))
 
     def _get_name(self):
         return self.__class__.__name__
