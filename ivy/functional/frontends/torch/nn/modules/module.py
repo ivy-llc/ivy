@@ -1,8 +1,11 @@
 # global
 import ivy
 from collections import OrderedDict
+import typing
 from typing import Any, Dict, Iterator, List, Optional, Set, Tuple, Callable
 import threading
+import itertools
+import warnings 
 
 # local
 from ivy.functional.frontends.torch.nn.parameter import Parameter
@@ -285,6 +288,86 @@ class Module(ivy.Module):
                     yield from module.named_modules(
                         memo, submodule_prefix, remove_duplicate
                     )
+
+
+
+    def load_state_dict(
+        self, state_dict: typing.Mapping[str, Any], strict: bool = True, assign: bool = False
+    ):
+        r"""Copy parameters and buffers from :attr:`state_dict` into this module and its descendants.
+
+        If :attr:`strict` is ``True``, then
+        the keys of :attr:`state_dict` must exactly match the keys returned
+        by this module's :meth:`~Module.state_dict` function.
+
+        Args:
+            state_dict (dict): a dict containing parameters and
+                persistent buffers.
+            strict (bool, optional): whether to strictly enforce that the keys
+                in :attr:`state_dict` match the keys returned by this module's
+                :meth:`~Module.state_dict` function. Default: ``True``
+
+        Returns:
+            ``NamedTuple`` with ``missing_keys`` and ``unexpected_keys`` fields:
+                * **missing_keys** is a list of str containing any keys that are expected
+                    by this module but missing from the provided ``state_dict``.
+                * **unexpected_keys** is a list of str containing the keys that are not
+                    expected by this module but present in the provided ``state_dict``.
+        """
+        if not isinstance(state_dict, typing.Mapping):
+            raise TypeError(
+                f"Expected state_dict to be dict-like, got {type(state_dict)}."
+            )
+
+        missing_keys: List[str] = []
+        unexpected_keys: List[str] = []
+        error_msgs: List[str] = []
+
+        state_dict = ivy.nested_map(
+            lambda x: ivy.native_array(x.numpy()),
+            state_dict,
+            include_derived=True,
+            shallow=True,
+        )
+        state_dict = OrderedDict(state_dict)
+
+        def load(module, local_state_dict, prefix=""):
+            module._load_from_state_dict(
+                local_state_dict,
+                prefix,
+                strict,
+                missing_keys,
+                unexpected_keys,
+                error_msgs,
+            )
+            #TODO: maybe we should implement this similar to PT
+            # and make this recursive. 
+
+        load(self, state_dict)
+        del load
+
+        if len(error_msgs) > 0:
+            raise RuntimeError(
+                "Error(s) in loading state_dict for {}:\n\t{}".format(
+                    self.__class__.__name__, "\n\t".join(error_msgs)
+                )
+            )
+        if strict:
+            missing_keys = sorted(missing_keys)
+            unexpected_keys = sorted(unexpected_keys)
+            if len(missing_keys) > 0:
+                warnings.warn(
+                    "Missing key(s) in state_dict: {}\n".format(
+                        ", ".join(f"'{k}'" for k in missing_keys)
+                    )
+                )
+            if len(unexpected_keys) > 0:
+                warnings.warn(
+                    "Unexpected key(s) in state_dict: {}\n".format(
+                        ", ".join(f"'{k}'" for k in unexpected_keys)
+                    )
+                )
+                
 
     def requires_grad_(self, requires_grad: bool = True):
         for p in self.parameters():
