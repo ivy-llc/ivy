@@ -343,6 +343,35 @@ def _sync_models_torch_and_tf(model1: "nn.Module", model2: "KerasModel"):
     -------
         None
     """
+    def _pt_name_to_keras_name(layer, weight_name):
+        if layer.__class__.__name__ in ("KerasConv2D", "KerasDense"):
+            param_and_buff_map = {
+                "weight": "_kernel",
+                "bias": "bias",
+            }
+        elif layer.__class__.__name__ == "KerasDepthwiseConv2D":
+            if parse(keras.__version__).major > 2:
+                param_and_buff_map = {
+                    "weight": "kernel",
+                    "bias": "bias",
+                }
+            else:
+                param_and_buff_map = {
+                    "weight": "depthwise_kernel",
+                    "bias": "bias",
+                }
+        elif layer.__class__.__name__ == "KerasBatchNorm2D":
+            param_and_buff_map = {
+                "weight": "gamma",
+                "bias": "beta",
+                "running_mean": "moving_mean",
+                "running_var": "moving_variance",
+                "num_batches_tracked": "num_batches_tracked",
+            }
+        else:
+            raise ValueError(f"Layer '{layer}' is not supported.")
+
+        return param_and_buff_map[weight_name] 
 
     def _maybe_update_keras_layer_weights(layer, weight_name, new_weight):
         # Update the weight in the retrieved layer
