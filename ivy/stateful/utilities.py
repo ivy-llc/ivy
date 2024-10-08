@@ -456,10 +456,11 @@ def _sync_models_torch_and_tf(model1: "nn.Module", model2: "KerasModel"):
             # self.v are a different copy than the parameters in self.weights. Hence, we
             # need to explicitly update self.weights, otherwise the changes won't reflect.
             if layer.__class__.__name__.startswith("Keras"):
+                keras_name = _pt_name_to_keras_name(layer, weight_name)
                 _maybe_update_keras_layer_weights(
                     layer=layer, weight_name=weight_name, new_weight=params1_np, original_weight=params1[name].cpu().detach().numpy()
                 )
-                params2[name] = getattr(layer, weight_name)
+                params2[name] = getattr(layer, keras_name)
                 continue
 
             params2[name].assign(tf.Variable(params1_np, dtype=params2[name].dtype))
@@ -475,10 +476,11 @@ def _sync_models_torch_and_tf(model1: "nn.Module", model2: "KerasModel"):
             # self.v are a different copy than the parameters in self.weights. Hence, we
             # need to explicitly update self.weights, otherwise the changes won't reflect.
             if layer.__class__.__name__.startswith("Keras"):
+                keras_name = _pt_name_to_keras_name(layer, weight_name)
                 _maybe_update_keras_layer_weights(
                     layer=layer, weight_name=weight_name, new_weight=buffers1_np,original_weight=buffers1[name].cpu().detach().numpy()
                 )
-                buffers2[name] = getattr(layer, weight_name)
+                buffers2[name] = getattr(layer, keras_name)
                 continue
 
             if isinstance(buffers2[name], tf.Variable):
