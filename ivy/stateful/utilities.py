@@ -376,6 +376,7 @@ def _sync_models_torch_and_tf(model1: "nn.Module", model2: "KerasModel"):
     def _maybe_update_keras_layer_weights(layer, weight_name, new_weight, original_weight):
         # Update the weight in the retrieved layer
         if hasattr(layer, weight_name):
+            layer._is_built = True
             weight_var = getattr(layer, weight_name)
             if isinstance(weight_var, tf.Variable):
                 weight_var.assign(tf.Variable(new_weight, dtype=weight_var.dtype))
@@ -389,8 +390,20 @@ def _sync_models_torch_and_tf(model1: "nn.Module", model2: "KerasModel"):
                 setattr(
                     layer,
                     weight_name,
-                    tf.convert_to_tensor(new_weight, dtype=weight_var.dtype),
+                    tf.convert_to_tensor(original_weight, dtype=weight_var.dtype),
                 )
+            # now also update the PT placeholder weights for this layer
+            layer._is_built = False
+            pt_weight_name = (
+                "pt_weight"
+                if weight_name == "weight"
+                else "pt_bias" if weight_name == "bias" else weight_name
+            )
+            setattr(
+                layer,
+                pt_weight_name,
+                None if original_weight is None else tf.convert_to_tensor(original_weight, dtype=weight_var.dtype),
+            )
         else:
             raise AttributeError(
                 f"Layer '{layer}' does not have a weight named '{weight_name}'"
