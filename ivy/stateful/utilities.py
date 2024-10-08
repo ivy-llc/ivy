@@ -372,8 +372,8 @@ def _sync_models_torch_and_tf(model1: "nn.Module", model2: "KerasModel"):
             raise ValueError(f"Layer '{layer}' is not supported.")
 
         return param_and_buff_map[weight_name] 
-
-    def _maybe_update_keras_layer_weights(layer, weight_name, new_weight):
+    
+    def _maybe_update_keras_layer_weights(layer, weight_name, new_weight, original_weight):
         # Update the weight in the retrieved layer
         if hasattr(layer, weight_name):
             weight_var = getattr(layer, weight_name)
@@ -444,7 +444,7 @@ def _sync_models_torch_and_tf(model1: "nn.Module", model2: "KerasModel"):
             # need to explicitly update self.weights, otherwise the changes won't reflect.
             if layer.__class__.__name__.startswith("Keras"):
                 _maybe_update_keras_layer_weights(
-                    layer=layer, weight_name=weight_name, new_weight=params1_np
+                    layer=layer, weight_name=weight_name, new_weight=params1_np, original_weight=params1[name].cpu().detach().numpy()
                 )
                 params2[name] = getattr(layer, weight_name)
                 continue
@@ -463,7 +463,7 @@ def _sync_models_torch_and_tf(model1: "nn.Module", model2: "KerasModel"):
             # need to explicitly update self.weights, otherwise the changes won't reflect.
             if layer.__class__.__name__.startswith("Keras"):
                 _maybe_update_keras_layer_weights(
-                    layer=layer, weight_name=weight_name, new_weight=buffers1_np
+                    layer=layer, weight_name=weight_name, new_weight=buffers1_np,original_weight=buffers1[name].cpu().detach().numpy()
                 )
                 buffers2[name] = getattr(layer, weight_name)
                 continue
