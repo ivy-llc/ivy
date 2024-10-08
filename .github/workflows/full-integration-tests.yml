@@ -13,5 +13,5 @@ jobs:
   integration-tests:
     uses: ivy-llc/ivy-integration-tests/.github/workflows/qa-integration-tests.yml@main
     with:
-      binaries-branch: linux-nightly
+      binaries-branch: testing-nightly
     secrets: inherit
