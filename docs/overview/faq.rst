@@ -47,7 +47,7 @@ Type and Shape Checking
 **Q:** What kind of type system does Ivy use?  Does it do shape-checking of tensors? If so, how does it handle dynamic sizes? The gold standard here is a fully dependent type system, but this is very rare, with the exception of `dex`_.
 
 **A:**  The checks performed during compiling will remain backend-specific.
-The function :func:`ivy.compile` wraps the backend tracing functions, for example :func:`jax.jit`, :func:`tf.function`, :func:`torch.jit.script` and :func:`torch.jit.trace`.
+The function :func:`ivy.trace_graph` wraps the backend tracing functions, for example :func:`jax.jit`, :func:`tf.function`, :func:`torch.jit.script` and :func:`torch.jit.trace`.
 For some backends, shape-checking will be performed during the tracing phase and for others it will not.
 
 GPU handling
@@ -56,36 +56,6 @@ GPU handling
 
 **A:** Ivy handles GPU usage by simply wrapping the backend frameworks, so Ivy will use GPUs in the same manner as the backend framework does.
 E.g. When using a torch backend, torch will be a dependency of Ivy, and its handling of GPU functionalities will be inherited and extended upon by Ivy.
-
-Model Deployment
-----------------
-**Q:** Does Ivy support model deployment?
-
-**A:** Yes, Ivy will support efficient model deployment.
-However, currently this feature is not yet supported as the tracer module is still under development, and will be released soon with ivy version 1.2.0.
-
-
-Dynamic Control Flow
---------------------
-**Q:** Tensorflow has dynamic control-flow primitives (loops, branches) even within a static computation graph.
-Jax also has dynamic control-flow (:code:`lax.scan`, :code:`lax.while`), but support is limited; only :code:`lax.scan` is differentiable in reverse mode.
-
-Branching is also tricky, and is backend-dependent.
-CPUs have branch predictors and can execute tight loops, GPUs don't, but have drivers that can schedule kernels dynamically, and some other architectures do static scheduling, which limits the kinds of algorithms that can run effectively.
-
-TensorFlow eager and PyTorch allow you to use full python control flow, (loops, branches, function calls, dynamic dispatch, recursion) but there is no static computation graph.
-How will Ivy handle dynamic control flow?
-Will Ivy parse python ASTs?
-
-**A:** For now, Ivy will not support dynamic control flow by parsing ASTs.
-The dynamism of :code:`for` loops and :code:`while` loops will be ignored during tracing, and just the static trace which chains the array operations performed during the forward pass at tracing time will be preserved.
-
-However, Ivy will support the tracing of looping and branching methods such as :code:`lax.scan`, :code:`lax.while`, :code:`tf.while`, :code:`tf.cond` etc.
-In cases where there is not an associated compilable method in other backends, we will strive to implement this as a composition of existing compilable operations.
-If such a composition is not possible, then we will instead convert these to compositions of pure Python :code:`for`, :code:`while` and :code:`if` statements (when using a PyTorch backend for example).
-
-The reverse mode conversions will not be possible without using parsing ASTs though.
-This does mean that for example TensorFlow (with loops + branches) → PyTorch (with for, while + if statements) but the reverse mode will not preserve the loops and branches PyTorch (with for, while + if statements) → TensorFlow (static, no loops or branches).
 
 Auto-Differentiation
 --------------------
@@ -147,24 +117,3 @@ Custom Operations
 Will Ivy support this ability also?
 
 **A:** We will not attempt to provide a unified back-door for all possible backend kernel customizations, but of course users can still use the backend-specific backdoors which already exist when using Ivy.
-
-The Pipeline
-------------
-
-**Q:** How will Ivy manage the training loop and input pipeline?  What about loading and saving models, recording of scalar metrics, visualization, etc.? These are often also somewhat framework-dependent.
-
-**A:** We are not advocating to replace all code with Ivy.
-We would encourage users to continue using whatever data loaders they want to, and perhaps just use an Ivy model, or use Ivy to convert a model, or even just a single function from a library.
-
-State
------
-
-**Q:** Tensorflow handles state as part of the static graph.
-JAX is purely functional and so outsources it to one of several third-party libraries, like Flax.
-How will Ivy handle state?
-
-**A:** Ivy has a fully functional backend.
-When using a TensorFlow or PyTorch backend, we pass all of the variables and gradients explicitly as function inputs and outputs.
-This is not actually required for the stateful back-ends, but we still return the values such that JAX is also supported.
-Ivy will remain fully functional in design, and we therefore assume behavior similar to JAX.
-Our simple example on the `README`_ trains correctly for all back-ends, which passes everything explicitly in a functional manner.
