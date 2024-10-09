@@ -1,10 +1,10 @@
 Contributing
 ============
 
-.. _`issues`: https://github.com/unifyai/ivy/issues
-.. _`pull-requests`: https://github.com/unifyai/ivy/pulls
+.. _`issues`: https://github.com/ivy-llc/ivy/issues
+.. _`pull-requests`: https://github.com/ivy-llc/ivy/pulls
 
-We **strongly** welcome contributions and/or any form of engagement from absolutely anyone in the community, regardless of skill-level!
+We welcome contributions and/or any form of engagement from absolutely anyone in the community, regardless of skill-level!
 
 Whether you're a veteran developer 🥷 or a total beginner 🤷, everyone is welcome to create `issues`_ and create `pull-requests`_.
 
@@ -21,25 +21,16 @@ The contributor guide is split into the sections below, it's best to go from sta
 | (b) `The Basics <contributing/the_basics.rst>`_
 | Managing your fork 🇾, creating issues ⭕, and creating pull-requests ⬆️
 |
-| (c) `Open Tasks <contributing/open_tasks.rst>`_
-| See where you can help us out! 🙋
-|
-| (d) `Contributor Rewards <contributing/contributor_rewards.rst>`_
-| Check out our contributor badges and achievements! 🏅
-|
-| (e) `Contributor Program <contributing/volunteer_program.rst>`_
-| How to climb up the ranks in our Contributor program 🧗
-|
-| (f) `Building the Docs <contributing/building_the_docs.rst>`_
+| (c) `Building the Docs <contributing/building_the_docs.rst>`_
 | How to build the documentation locally 🏗️
 |
-| (g) `Deep Dive <deep_dive.rst>`_
+| (d) `Deep Dive <deep_dive.rst>`_
 | Take a deep dive into the codebase 🤿
 |
-| (h) `Helpful Resources <contributing/helpful_resources.rst>`_
+| (e) `Helpful Resources <contributing/helpful_resources.rst>`_
 | Resources you would find useful when learning Ivy 📖
 |
-| (i) `Error Handling <contributing/error_handling.rst>`_
+| (f) `Error Handling <contributing/error_handling.rst>`_
 | Common errors you will be facing contributing to Ivy ❌
 
 .. toctree::
@@ -51,8 +42,6 @@ The contributor guide is split into the sections below, it's best to go from sta
    contributing/the_basics.rst
    contributing/building_the_docs.rst
    Deep Dive <https://docs.ivy.dev/overview/deep_dive.html>
-   contributing/open_tasks.rst
-   contributing/contributor_rewards.rst
    contributing/helpful_resources.rst
    contributing/error_handling.rst
 
