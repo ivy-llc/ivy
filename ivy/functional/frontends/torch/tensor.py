@@ -126,11 +126,6 @@ class Tensor:
     # Setters #
     # --------#
 
-    @device.setter
-    def cuda(self, device=None):
-        self.device = device
-        return self
-
     @ivy_array.setter
     def ivy_array(self, array):
         self._ivy_array = array if isinstance(array, ivy.Array) else ivy.array(array)
@@ -728,8 +723,8 @@ class Tensor:
     def cpu(self):
         return ivy.to_device(self.ivy_array, "cpu")
 
-    def cuda(self):
-        return ivy.to_device(self.ivy_array, "gpu:0")
+    def cuda(self, device=None, non_blocking=False, memory_format=None):
+        return self.to("cuda" if device is None else device)
 
     @with_unsupported_dtypes({"2.2 and below": ("uint16",)}, "torch")
     @numpy_to_torch_style_args
