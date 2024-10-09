@@ -73,16 +73,13 @@ We're excited for you to get involved! 🦾
 | (t) `Exception Handling <deep_dive/exception_handling.rst>`_ ⚠
 | How to handle exceptions and assertions in a function
 |
-| (u) `Continuous Integration <deep_dive/continuous_integration.rst>`_ 🔁
-| Ivy Tests running on the Repository
-|
-| (v) `Gradients <deep_dive/gradients.rst>`_ 🔁
+| (u) `Gradients <deep_dive/gradients.rst>`_ 🔁
 | Everything about our Gradients API
 |
-| (w) `Operating Modes <deep_dive/operating_modes.rst>`_ 🧮
+| (v) `Operating Modes <deep_dive/operating_modes.rst>`_ 🧮
 | Everything about modes Ivy can operate in, along with their purposes
 |
-| (x) `Building the Docs Pipeline <deep_dive/building_the_docs_pipeline.rst>`_ 📚
+| (w) `Building the Docs Pipeline <deep_dive/building_the_docs_pipeline.rst>`_ 📚
 | How are we building our docs
 
 
@@ -111,7 +108,6 @@ We're excited for you to get involved! 🦾
    deep_dive/ivy_frontends.rst
    deep_dive/ivy_frontends_tests.rst
    deep_dive/exception_handling.rst
-   deep_dive/continuous_integration.rst
    deep_dive/gradients.rst
    deep_dive/operating_modes.rst
    deep_dive/building_the_docs_pipeline.rst
