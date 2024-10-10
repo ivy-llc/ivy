@@ -1140,7 +1140,6 @@ class Tensor:
         return torch_frontend.masked_select(self, mask)
 
     def masked_scatter(self, mask, source):
-        self = torch_frontend.broadcast_to(self, source.shape)
         mask = torch_frontend.broadcast_to(mask, self.shape)
         flat_self = torch_frontend.flatten(self.clone())
         flat_mask = torch_frontend.flatten(mask)
@@ -1150,7 +1149,6 @@ class Tensor:
         return flat_self.reshape(self.shape)
 
     def masked_scatter_(self, mask, source):
-        self = torch_frontend.broadcast_to(self, source.shape)
         mask = torch_frontend.broadcast_to(mask, self.shape)
         flat_self = torch_frontend.flatten(self.clone())
         flat_mask = torch_frontend.flatten(mask)
