@@ -767,7 +767,7 @@ class Module(nnx.Module, ModelHelpers, TorchModuleHelpers):
         self._built = True
         return
 
-    def register_buffer(self, name: str, value: jax.Array):
+    def register_buffer(self, name: str, value: jax.Array, persistent: bool = False):
         self._buffers.update({name: value})
         return value
 
