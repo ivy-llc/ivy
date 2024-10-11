@@ -1075,7 +1075,7 @@ class Layer(tf.keras.layers.Layer, ModelHelpers, TorchModuleHelpers):
         pass
 
     @tf.autograph.experimental.do_not_convert
-    def register_buffer(self, name: str, value: Union[tf.Tensor, tf.Variable]):
+    def register_buffer(self, name: str, value: Union[tf.Tensor, tf.Variable], persistent: bool = False):
         self._buffers.update({name: value})
         return value
 
@@ -1767,7 +1767,7 @@ class Model(tf.keras.Model, ModelHelpers, TorchModuleHelpers):
         pass
 
     @tf.autograph.experimental.do_not_convert
-    def register_buffer(self, name: str, value: Union[tf.Tensor, tf.Variable]):
+    def register_buffer(self, name: str, value: Union[tf.Tensor, tf.Variable], persistent: bool = False):
         self._buffers.update({name: value})
         return value
 
