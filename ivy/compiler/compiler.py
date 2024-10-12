@@ -21,6 +21,7 @@ def source_to_source(
     source: str = "torch",
     target: str = "tensorflow",
     reuse_existing: bool = True,
+    output_dir: str = "ivy_transpiled_outputs/",
 ):
     """Converts a given object (class/function) from one framework to another.
 
@@ -39,6 +40,8 @@ def source_to_source(
                                          If False, it will re-translate `object`,
                                          even if it already exists in the directory, and overwrite
                                          the old implementation. Defaults to 'True'.
+        output_dir (str, optional): The path to the directory where translated files will be saved.
+                                    Defaults to 'ivy_transpiled_outputs/' in the current working directory.
 
     Returns:
         The translated object."""
@@ -50,6 +53,7 @@ def source_to_source(
         source=source,
         target=target,
         reuse_existing=reuse_existing,
+        output_dir=output_dir,
     )
 
 
@@ -174,6 +178,7 @@ def transpile(
     source: str = "torch",
     target: str = "tensorflow",
     reuse_existing: bool = True,
+    output_dir: str = "ivy_transpiled_outputs/",
 ):
     """Converts a given object (class/function) from one framework to another.
 
@@ -192,6 +197,8 @@ def transpile(
                                          If False, it will re-translate `object`,
                                          even if it already exists in the directory, and overwrite
                                          the old implementation. Defaults to 'True'.
+        output_dir (str, optional): The path to the directory where translated files will be saved.
+                                    Defaults to 'ivy_transpiled_outputs/' in the current working directory.
 
     Returns:
         The translated object."""
@@ -203,4 +210,5 @@ def transpile(
         source=source,
         target=target,
         reuse_existing=reuse_existing,
+        output_dir=output_dir,
     )
