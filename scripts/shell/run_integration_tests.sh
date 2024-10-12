@@ -4,7 +4,7 @@ integration=$1
 target=$2
 
 export IVY_KEY=$3
-export VERSION=linux-nightly
+export VERSION=testing-nightly
 export DEBUG=0
 
 pip3 install -r requirements/requirements.txt --upgrade
