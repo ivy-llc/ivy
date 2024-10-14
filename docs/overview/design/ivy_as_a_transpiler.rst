@@ -53,7 +53,7 @@ Let's have a look at a brief example:
 | - The framework we are converting to
 
 The transpiled TensorFlow class is immediately available for use after the ivy.transpile call, as shown in this example, but the
-generated source code is also saved into the **Translated_Outputs/** directory, meaning you can edit the source code manually after the fact,
+generated source code is also saved into the **ivy_transpiled_outputs/** directory, meaning you can edit the source code manually after the fact,
 or use it just as if the model had been originally written in TensorFlow.
 
 Graph Tracer ✅
