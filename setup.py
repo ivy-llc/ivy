@@ -117,10 +117,7 @@ setup(
     version=__version__,
     author="Transpile AI",
     author_email="hello@transpile-ai.com",
-    description=(
-        "The unified machine learning framework, enabling framework-agnostic "
-        "functions, layers and libraries."
-    ),
+    description="Convert Machine Learning Code Between Frameworks",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://ivy.dev",
