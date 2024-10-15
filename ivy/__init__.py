@@ -101,6 +101,8 @@ class Parafac2Tensor:
 class TTTensor:
     pass
 
+class Variable:
+    pass
 
 class Device(str):
     def __new__(cls, dev_str):
