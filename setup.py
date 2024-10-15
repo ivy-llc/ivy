@@ -116,7 +116,7 @@ setup(
     name="ivy",
     version=__version__,
     author="Transpile AI",
-    author_email="hello@transpile-ai.com",
+    author_email="contact@ivy.dev",
     description="Convert Machine Learning Code Between Frameworks",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -131,9 +131,7 @@ setup(
         _strip(line)
         for line in open("requirements/requirements.txt", "r", encoding="utf-8")
     ],
-    classifiers=[
-        "License :: OSI Approved :: Apache Software License",
-    ],
-    license="Apache 2.0",
+    classifiers=[],
+    license="End-User License Agreement for Ivy",
     options=options,
 )
