@@ -193,7 +193,7 @@ def handle_methods(fn):
                 if not callable(new_fn):
                     return new_fn
                 return new_fn(*args[1:], **kwargs)
-            except AttributeError:
+            except Exception:
                 return fn(*args, **kwargs)
 
     return wrapper
