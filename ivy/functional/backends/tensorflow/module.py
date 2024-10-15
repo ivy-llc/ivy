@@ -1364,7 +1364,7 @@ class Layer(tf.keras.layers.Layer, ModelHelpers, TorchModuleHelpers):
 
             super().__setattr__(name, value)
             return
-        elif isinstance(value, tf.Variable) and not name.startswith("_"):
+        elif isinstance(value, (tf.Variable, KerasVariable)) and not name.startswith("_"):
             _dict = getattr(self, "__dict__", None)
             if _dict:
                 _dict[name] = value
@@ -1387,7 +1387,7 @@ class Layer(tf.keras.layers.Layer, ModelHelpers, TorchModuleHelpers):
             val = (
                 value
                 if not cast_dtype
-                else tf.Variable(initial_value=tf.cast(value.value(), dtype), name=name)
+                else KerasVariable(initial_value=tf.cast(value.value(), dtype), name=name)
             )
             self.register_parameter(name, val)
             super().__setattr__(name, val)
@@ -2052,7 +2052,7 @@ class Model(tf.keras.Model, ModelHelpers, TorchModuleHelpers):
 
             super().__setattr__(name, value)
             return
-        elif isinstance(value, tf.Variable) and not name.startswith("_"):
+        elif isinstance(value, (tf.Variable, KerasVariable)) and not name.startswith("_"):
             _dict = getattr(self, "__dict__", None)
             if _dict:
                 _dict[name] = value
@@ -2076,7 +2076,7 @@ class Model(tf.keras.Model, ModelHelpers, TorchModuleHelpers):
             val = (
                 value
                 if not cast_dtype
-                else tf.Variable(initial_value=tf.cast(value.value(), dtype), name=name)
+                else KerasVariable(initial_value=tf.cast(value.value(), dtype), name=name)
             )
             self.register_parameter(name, val)
             super().__setattr__(name, val)
