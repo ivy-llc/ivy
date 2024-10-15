@@ -101,8 +101,6 @@ class Parafac2Tensor:
 class TTTensor:
     pass
 
-class Variable:
-    pass
 
 class Device(str):
     def __new__(cls, dev_str):
@@ -1005,7 +1003,7 @@ native_inplace_support = None
 
 supports_gradients = None
 
-
+Variable = Array
 # Array Significant Figures #
 
 
