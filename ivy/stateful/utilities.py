@@ -24,7 +24,7 @@ def _is_submodule(obj, kw):
             "keras.src.layers.layer.Layer",
         ),
         "flax": (
-            "flax.nnx.nnx.module.Module",
+            "flax.nnx.module.Module",
             "transformers.modeling_flax_utils.FlaxPreTrainedModel",
         ),
     }[kw]
