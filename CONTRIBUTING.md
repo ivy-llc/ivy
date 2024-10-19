@@ -44,8 +44,4 @@ Please, follow the next process when you work on your subtask:
 
 - Finally, we limit the maximum number of open and incomplete sub-task issues to three per person.
 
- Feel free to watch the next video:
-
-[![Video](https://img.youtube.com/vi/wBKTOGmwfbo/0.jpg)](https://www.youtube.com/embed/wBKTOGmwfbo)
-
 For questions, please reach out on [discord](https://discord.gg/uYRmyPxMQq)!

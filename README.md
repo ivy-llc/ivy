@@ -23,11 +23,11 @@
       <a href="https://docs.ivy.dev/" style="text-decoration: none;">Docs</a>
     </td>
     <td align="center">
-      <a href="https://docs.ivy.dev/demos">
+      <a href="https://www.docs.ivy.dev/demos/examples_and_demos.html">
           <img class="dark-light" width="75" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/demos.svg" alt="Demos">
       </a>
       <br>
-      <a href="https://docs.ivy.dev/demos" style="text-decoration: none;">Demos</a>
+      <a href="https://www.docs.ivy.dev/demos/examples_and_demos.html" style="text-decoration: none;">Demos</a>
     </td>
     <td align="center">
       <a href="https://docs.ivy.dev/overview/design.html">
@@ -137,10 +137,9 @@ cd ivy
 pip install --user -e .
 ```
 
-If you want to set up testing and various frameworks it\'s probably     best
+If you want to set up testing and various frameworks it\'s probably best
 to check out the [Setting Up](https://docs.ivy.dev/overview/contributing/setting_up.html)
-page, where OS-specific and IDE-specific instructions and video
-tutorials to do so are available!
+page, where OS-specific and IDE-specific instructions are available!
 
 </details>
 
@@ -163,7 +162,7 @@ We're working hard on adding support for more frameworks, let us know on [Discor
 # Getting started
 
 - [Docs](https://docs.ivy.dev/)
-- [Demos](https://docs.ivy.dev/demos)
+- [Demos](https://www.docs.ivy.dev/demos/examples_and_demos.html)
 - [FAQ](https://docs.ivy.dev/overview/faq.html)
 
 [Ivy's transpiler](https://docs.ivy.dev/overview/design/ivy_as_a_transpiler.html) allows you convert code between different ML frameworks. Have a look at our [Quickstart](https://docs.ivy.dev/demos/quickstart.html) notebook to get a brief idea of the features!
@@ -174,7 +173,7 @@ Beyond that, based on the frameworks you want to convert code between, there are
 
 # Using ivy
 
-Here's some examples, to help you get started using Ivy! The [examples page](https://docs.ivy.dev/demos/) also features a wide range of
+Here's some examples, to help you get started using Ivy! The [examples page](https://www.docs.ivy.dev/demos/examples_and_demos.html) also features a wide range of
 demos and tutorials showcasing some more use cases for Ivy.
 
   <details>
