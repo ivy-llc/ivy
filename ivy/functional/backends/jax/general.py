@@ -56,7 +56,7 @@ def is_native_array(x, /, *, exclusive=False):
         return isinstance(x, NativeArray)
     elif any(
         cls in str(x.__class__)
-        for cls in ["flax.nnx.variablelib", "flax.core.scope.Variable"]
+        for cls in ["flax.nnx.nnx.variables", "flax.nnx.variablelib", "flax.core.scope.Variable"]
     ):
         # ensure flax Variables(linen, nnx) classify as a native array if `exclusive` is False
         return True

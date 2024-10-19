@@ -25,6 +25,7 @@ def _is_submodule(obj, kw):
         ),
         "flax": (
             "flax.nnx.module.Module",
+            "flax.nnx.nnx.module.Module",
             "transformers.modeling_flax_utils.FlaxPreTrainedModel",
         ),
     }[kw]
