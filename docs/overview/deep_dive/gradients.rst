@@ -175,10 +175,10 @@ This should have hopefully given you a good feel for how the gradient API is imp
 If you have any questions, please feel free to reach out on `discord`_ in the `gradients thread`_!
 
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/riNddnTgDdk" class="video">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/riNddnTgDdk" class="video">
+..     </iframe>

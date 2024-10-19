@@ -196,10 +196,10 @@ These examples should hopefully give you a good understanding of what is require
 If you have any questions, please feel free to reach out on `discord`_ in the `docstrings thread`_!
 
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/TnshJ8swuJM" class="video">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/TnshJ8swuJM" class="video">
+..     </iframe>

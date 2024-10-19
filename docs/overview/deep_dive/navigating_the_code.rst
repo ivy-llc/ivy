@@ -302,10 +302,10 @@ This should have hopefully given you a good feel for how to navigate the Ivy cod
 If you have any questions, please feel free to reach out on `discord`_ in the `navigating the code thread`_!
 
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/67UYuLcAKbY" class="video">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/67UYuLcAKbY" class="video">
+..     </iframe>

@@ -750,10 +750,10 @@ These three examples should give you a good understanding of what is required wh
 If you have any questions, please feel free to reach out on `discord`_ in the `docstring examples thread`_!
 
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/rtce8XthiKA" class="video">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/rtce8XthiKA" class="video">
+..     </iframe>
