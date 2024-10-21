@@ -8,7 +8,7 @@ on:
 jobs:
 
   build:
-    runs-on: ubuntu-latest-Latest
+    runs-on: ubuntu-latest-Large
 
     steps:
       - name: Checkout 🛎 Ivy
