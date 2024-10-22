@@ -1,8 +1,7 @@
-python -m pip install .
-python -c "import ivy; ivy.utils.cleanup_and_fetch_binaries()"
 jq -c '.compiler[]' available_configs.json | while read config; do
     export TAG=cp311-cp311-win_amd64
     export CLEAN=true
+    python3 scripts/load_relevant_binaries.py --tag $TAG
     python -m build
     python3 scripts/rename_wheels.py
 done
