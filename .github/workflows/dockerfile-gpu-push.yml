@@ -8,7 +8,9 @@ on:
 jobs:
 
   build:
-    runs-on: ubuntu-latest-8-cores
+    runs-on:
+      group: large-runners
+      labels: ubuntu-latest-8-cores
 
     steps:
       - name: Checkout 🛎 Ivy
