@@ -1,5 +1,5 @@
 jq -c '.compiler[]' available_configs.json | while read config; do
-    export TAG=cp311-cp311-win_amd64
+    export TAG=${config:1:${#config}-2}
     export CLEAN=true
     python3 scripts/load_relevant_binaries.py --tag $TAG
     python -m build
