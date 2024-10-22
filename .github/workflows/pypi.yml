@@ -18,10 +18,10 @@ jobs:
           python3 -m pip install --upgrade build
           python3 -m pip install --upgrade twine
 
-      - name: Add Tag to Version
-        run: |
-          cd ivy
-          echo "__version__ = '${{ github.ref_name }}'" > ivy/_version.py
+      # - name: Add Tag to Version
+      #   run: |
+      #     cd ivy
+      #     echo "__version__ = '${{ github.ref_name }}'" > ivy/_version.py
 
       - name: Upload to PyPI
         if: startsWith(github.ref, 'refs/tags')
