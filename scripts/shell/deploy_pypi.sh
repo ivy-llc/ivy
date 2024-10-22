@@ -1,3 +1,4 @@
+python -c "import ivy; ivy.utils.cleanup_and_fetch_binaries()"
 jq -c '.compiler[]' available_configs.json | while read config; do
     export TAG=cp311-cp311-win_amd64
     export CLEAN=true
