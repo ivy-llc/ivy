@@ -28,13 +28,11 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     tag = args.tag
-
     ext = "pyd" if "win_" in tag else "so"
 
     folder_path = os.sep.join(__file__.split(os.sep)[:-2])
     binaries_path = os.path.join(folder_path, "binaries.json")
     available_configs_path = os.path.join(folder_path, "available_configs.json")
-    print(binaries_path, os.path.exists(binaries_path))
     if os.path.exists(binaries_path):
         binaries_dict = json.load(open(binaries_path))
         available_configs = json.load(open(available_configs_path))

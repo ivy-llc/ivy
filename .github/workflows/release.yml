@@ -1,6 +1,5 @@
 name: Release Workflow
 on:
-  push:
   release:
     types: [ published ]
   workflow_dispatch:
@@ -10,19 +9,21 @@ permissions:
   contents: write
 
 jobs:
-  # integration-tests:
-  #   name: Run Integration Tests
-  #   uses: ivy-llc/ivy-integration-tests/.github/workflows/qa-integration-tests.yml@main
-  #   with:
-  #     binaries-branch: testing-nightly
-  #   secrets: inherit
+  integration-tests:
+    name: Run Integration Tests
+    uses: ivy-llc/ivy-integration-tests/.github/workflows/qa-integration-tests.yml@main
+    with:
+      binaries-branch: testing-nightly
+    secrets: inherit
 
-  # publish-binaries:
-  #   name: Publish Binaries
-  #   uses: ./.github/workflows/binaries.yml
-  #   secrets: inherit
+  publish-binaries:
+    name: Publish Binaries
+    needs: integration-tests
+    uses: ./.github/workflows/binaries.yml
+    secrets: inherit
 
   deploy:
     name: Deploy to PyPI
+    needs: integration-tests
     uses: ./.github/workflows/pypi.yml
     secrets: inherit
