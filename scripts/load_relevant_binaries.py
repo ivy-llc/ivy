@@ -5,18 +5,17 @@ from packaging import tags
 from urllib import request
 
 
-def _get_paths_from_binaries(binaries, root_dir=""):
+def _get_paths_from_binaries(binaries, root_dir="", ext="so"):
     """Get all the paths from the binaries.json into a list."""
     paths = []
-    ext = "pyd" if os.name == "nt" else "so"
     if isinstance(binaries, str):
         return [os.path.join(root_dir, binaries + "." + ext)]
     elif isinstance(binaries, dict):
         for k, v in binaries.items():
-            paths += _get_paths_from_binaries(v, os.path.join(root_dir, k))
+            paths += _get_paths_from_binaries(v, os.path.join(root_dir, k), ext=ext)
     else:
         for i in binaries:
-            paths += _get_paths_from_binaries(i, root_dir)
+            paths += _get_paths_from_binaries(i, root_dir, ext=ext)
     return paths
 
 
@@ -30,6 +29,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     tag = args.tag
 
+    ext = "pyd" if "win_" in tag else "so"
+
     folder_path = os.sep.join(__file__.split(os.sep)[:-2])
     binaries_path = os.path.join(folder_path, "binaries.json")
     available_configs_path = os.path.join(folder_path, "available_configs.json")
@@ -37,7 +38,7 @@ if __name__ == "__main__":
     if os.path.exists(binaries_path):
         binaries_dict = json.load(open(binaries_path))
         available_configs = json.load(open(available_configs_path))
-        binaries_paths = _get_paths_from_binaries(binaries_dict, folder_path)
+        binaries_paths = _get_paths_from_binaries(binaries_dict, folder_path, ext=ext)
         binaries_exts = {path.split(".")[-1] for path in binaries_paths}
 
         # remove existing binaries
@@ -60,7 +61,6 @@ if __name__ == "__main__":
                 continue
             folders = path.split(os.sep)
             _, file_path = os.sep.join(folders[:-1]), folders[-1]
-            ext = "pyd" if os.name == "nt" else "so"
             file_name = f"{file_path[:-(len(ext)+1)]}_{tag}.{ext}"
             search_path = f"{module}/{file_name}"
             try:
