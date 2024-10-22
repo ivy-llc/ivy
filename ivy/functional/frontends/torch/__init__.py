@@ -281,6 +281,7 @@ from .utils import *
 from . import special
 from . import tensor
 from . import _VF
+from . import onnx
 from . import jit
 from . import overrides
 from . import _C
