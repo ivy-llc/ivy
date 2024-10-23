@@ -965,12 +965,9 @@ class Module(nnx.Module, ModelHelpers, TorchModuleHelpers):
     def __call__(
         self,
         *args,
-        v=None,
-        buffers=None,
         **kwargs,
     ):
-        ret = self._call(v=v, *args, **kwargs)
-        return ret
+        return self.forward(*args, **kwargs)
 
     def __getattr__(self, name):
         if name == "v":
