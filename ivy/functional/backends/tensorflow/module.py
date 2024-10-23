@@ -1045,8 +1045,8 @@ class Layer(tf.keras.layers.Layer, ModelHelpers, TorchModuleHelpers):
         elif hasattr(self.__call__, "wrapped"):
             return self.__call__(*args, **kwargs)
 
-        # Get the signature of the call method
-        call_signature = inspect.signature(self.call)
+        # Get the signature of the forward method
+        call_signature = inspect.signature(self.forward)
 
         # Convert all positional arguments to keyword arguments based on the signature
         new_kwargs = {}
@@ -1735,8 +1735,8 @@ class Model(tf.keras.Model, ModelHelpers, TorchModuleHelpers):
         elif hasattr(self.__call__, "wrapped"):
             return self.__call__(*args, **kwargs)
 
-        # Get the signature of the call method
-        call_signature = inspect.signature(self.call)
+        # Get the signature of the forward method
+        call_signature = inspect.signature(self.forward)
 
         # Convert all positional arguments to keyword arguments based on the signature
         new_kwargs = {}
