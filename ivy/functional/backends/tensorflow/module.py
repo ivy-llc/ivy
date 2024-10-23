@@ -805,6 +805,8 @@ class Layer(tf.keras.layers.Layer, ModelHelpers, TorchModuleHelpers):
             trainable=training,
             dtype=dtype,
         )
+        if hasattr(self, 'forward'):
+            self._call_signature = inspect.signature(self.forward)
         self._build_mode = build_mode
         self._with_partial_v = with_partial_v
         self._store_vars = store_vars
@@ -1495,6 +1497,8 @@ class Model(tf.keras.Model, ModelHelpers, TorchModuleHelpers):
             trainable=training,
             dtype=dtype,
         )
+        if hasattr(self, 'forward'):
+            self._call_signature = inspect.signature(self.forward)
         self._build_mode = build_mode
         self._with_partial_v = with_partial_v
         self._store_vars = store_vars
