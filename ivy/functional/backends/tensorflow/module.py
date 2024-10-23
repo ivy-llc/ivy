@@ -1101,10 +1101,8 @@ class Layer(tf.keras.layers.Layer, ModelHelpers, TorchModuleHelpers):
         return self.train(mode=False)
 
     @tf.autograph.experimental.do_not_convert
-    def call(self, inputs, training=None, mask=None):
-        raise NotImplementedError(
-            "When subclassing the `Module` class, you should implement a `call` method."
-        )
+    def call(self, *args, **kwargs):
+        return self.forward(*args, **kwargs)
 
     def get_build_config(self):
         config = super().get_build_config()
@@ -1793,10 +1791,8 @@ class Model(tf.keras.Model, ModelHelpers, TorchModuleHelpers):
         return self.train(mode=False)
 
     @tf.autograph.experimental.do_not_convert
-    def call(self, inputs, training=None, mask=None):
-        raise NotImplementedError(
-            "When subclassing the `Module` class, you should implement a `call` method."
-        )
+    def call(self, *args, **kwargs):
+        return self.forward(*args, **kwargs)
 
     def get_build_config(self):
         config = super().get_build_config()
