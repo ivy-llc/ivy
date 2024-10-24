@@ -1,4 +1,3 @@
-asttokens
 astor
 cryptography>=40.0.0
 dill
