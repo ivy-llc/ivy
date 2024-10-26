@@ -116,16 +116,13 @@ setup(
     name="ivy",
     version=__version__,
     author="Transpile AI",
-    author_email="hello@transpile-ai.com",
-    description=(
-        "The unified machine learning framework, enabling framework-agnostic "
-        "functions, layers and libraries."
-    ),
+    author_email="contact@ivy.dev",
+    description="Convert Machine Learning Code Between Frameworks",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://ivy.dev",
     project_urls={
-        "Docs": "https://ivy.dev/docs/",
+        "Docs": "https://docs.ivy.dev/",
         "Source": "https://github.com/ivy-llc/ivy",
     },
     include_package_data=True,
@@ -134,9 +131,7 @@ setup(
         _strip(line)
         for line in open("requirements/requirements.txt", "r", encoding="utf-8")
     ],
-    classifiers=[
-        "License :: OSI Approved :: Apache Software License",
-    ],
-    license="Apache 2.0",
+    classifiers=[],
+    license="End-User License Agreement for Ivy",
     options=options,
 )

@@ -14,16 +14,9 @@ One liners
 
         Converts any code - such as a ``class``, ``function`` or ``module`` - from a source framework into a new framework.
 
-    .. grid-item-card:: ``ivy.graph_transpile()``
-        :link: one_liners/graph_transpile.rst
-
-        Transpiles a ``Callable`` or set of them from a ``source`` framework to another
-        framework.
-
 .. toctree::
     :hidden:
     :maxdepth: -1
 
     one_liners/trace.rst
     one_liners/transpile.rst
-    one_liners/graph_transpile.rst

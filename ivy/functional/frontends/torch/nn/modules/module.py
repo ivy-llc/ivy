@@ -1,8 +1,11 @@
 # global
 import ivy
 from collections import OrderedDict
+import typing
 from typing import Any, Dict, Iterator, List, Optional, Set, Tuple, Callable
 import threading
+import itertools
+import warnings 
 
 # local
 from ivy.functional.frontends.torch.nn.parameter import Parameter
@@ -134,6 +137,20 @@ class Module(ivy.Module):
             else:
                 fn(module)
         fn(self)
+        return self
+
+    def _apply(self, fn, recurse=True):
+        if recurse:
+            if hasattr(self, "children"):
+                for module in self.children():
+                    if hasattr(module, "_apply"):
+                        module._apply(fn)
+        for key, param in self.v.items():
+            if param is not None:
+                self.v[key] = fn(param)
+        for key, buf in self.buffers.items():
+            if buf is not None:
+                self.buffers[key] = fn(buf)
         return self
 
     def register_buffer(
@@ -272,10 +289,151 @@ class Module(ivy.Module):
                         memo, submodule_prefix, remove_duplicate
                     )
 
+    def _load_from_state_dict(
+        self, state_dict, prefix, strict, missing_keys, unexpected_keys, error_msgs
+    ):
+        def _retrive_layer(model, key):
+            if len(key.split(".")) == 1:
+                return model, key
+
+            module_path, weight_name = key.rsplit(".", 1)
+
+            # Retrieve the layer using the module path
+            layer = model
+            for attr in module_path.split("."):
+                layer = getattr(layer, attr)
+
+            return layer, weight_name
+
+        persistent_buffers = {k: v for k, v in self._buffers.items()}
+        local_name_params = itertools.chain(
+            self._parameters.items(), persistent_buffers.items()
+        )
+        local_state = {k: v for k, v in local_name_params if v is not None}
+
+        for name, param in local_state.items():
+            key = prefix + name
+            if key in state_dict:
+                input_param = state_dict[key]
+                if not ivy.is_array(input_param):
+                    error_msgs.append(
+                        f'While copying the parameter named "{key}", '
+                        "expected ArrayLike object from checkpoint but "
+                        f"received {type(input_param)}"
+                    )
+                    continue
+
+                if not isinstance(input_param, Parameter):
+                    input_param = Parameter(input_param)
+
+                layer, weight_name = _retrive_layer(self, name)
+                try:
+                    setattr(layer, weight_name, input_param)
+                except Exception as ex:
+                    error_msgs.append(
+                        f'While copying the parameter named "{key}", '
+                        f"whose dimensions in the model are {param.shape} and "
+                        f"whose dimensions in the checkpoint are {input_param.shape}, "
+                        f"an exception occurred : {ex.args}."
+                    )
+            elif strict:
+                missing_keys.append(key)
+
+        if strict:
+            for key in state_dict.keys():
+                if key.startswith(prefix):
+                    input_name = key[len(prefix) :].split(".", 1)
+                    if len(input_name) > 1:
+                        if input_name[0] not in self._modules:
+                            unexpected_keys.append(key)
+                    elif input_name[0] not in local_state:
+                        unexpected_keys.append(key)
+
+    def load_state_dict(
+        self, state_dict: typing.Mapping[str, Any], strict: bool = True, assign: bool = False
+    ):
+        r"""Copy parameters and buffers from :attr:`state_dict` into this module and its descendants.
+
+        If :attr:`strict` is ``True``, then
+        the keys of :attr:`state_dict` must exactly match the keys returned
+        by this module's :meth:`~Module.state_dict` function.
+
+        Args:
+            state_dict (dict): a dict containing parameters and
+                persistent buffers.
+            strict (bool, optional): whether to strictly enforce that the keys
+                in :attr:`state_dict` match the keys returned by this module's
+                :meth:`~Module.state_dict` function. Default: ``True``
+
+        Returns:
+            ``NamedTuple`` with ``missing_keys`` and ``unexpected_keys`` fields:
+                * **missing_keys** is a list of str containing any keys that are expected
+                    by this module but missing from the provided ``state_dict``.
+                * **unexpected_keys** is a list of str containing the keys that are not
+                    expected by this module but present in the provided ``state_dict``.
+        """
+        if not isinstance(state_dict, typing.Mapping):
+            raise TypeError(
+                f"Expected state_dict to be dict-like, got {type(state_dict)}."
+            )
+
+        missing_keys: List[str] = []
+        unexpected_keys: List[str] = []
+        error_msgs: List[str] = []
+
+        state_dict = ivy.nested_map(
+            lambda x: ivy.native_array(x.numpy()),
+            state_dict,
+            include_derived=True,
+            shallow=True,
+        )
+        state_dict = OrderedDict(state_dict)
+
+        def load(module, local_state_dict, prefix=""):
+            module._load_from_state_dict(
+                local_state_dict,
+                prefix,
+                strict,
+                missing_keys,
+                unexpected_keys,
+                error_msgs,
+            )
+            #TODO: maybe we should implement this similar to PT
+            # and make this recursive. 
+
+        load(self, state_dict)
+        del load
+
+        if len(error_msgs) > 0:
+            raise RuntimeError(
+                "Error(s) in loading state_dict for {}:\n\t{}".format(
+                    self.__class__.__name__, "\n\t".join(error_msgs)
+                )
+            )
+        if strict:
+            missing_keys = sorted(missing_keys)
+            unexpected_keys = sorted(unexpected_keys)
+            if len(missing_keys) > 0:
+                warnings.warn(
+                    "Missing key(s) in state_dict: {}\n".format(
+                        ", ".join(f"'{k}'" for k in missing_keys)
+                    )
+                )
+            if len(unexpected_keys) > 0:
+                warnings.warn(
+                    "Unexpected key(s) in state_dict: {}\n".format(
+                        ", ".join(f"'{k}'" for k in unexpected_keys)
+                    )
+                )
+                
+
     def requires_grad_(self, requires_grad: bool = True):
         for p in self.parameters():
             p.requires_grad_(requires_grad)
         return self
+
+    def to(self, *args, **kwargs):
+        return self._apply(lambda t: t.to(*args, **kwargs))
 
     def _get_name(self):
         return self.__class__.__name__

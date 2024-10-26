@@ -2453,7 +2453,7 @@ def adaptive_avg_pool2d(
         stride = tuple(i_s // o_s for i_s, o_s in zip(input.shape[-2:], output_size))
         kernel_size = stride  # Mathematically identical to the previous expression
         pooled_output = ivy.avg_pool2d(
-            input, kernel_size, stride, "VALID", data_format="NCHW"
+            input, kernel_size, stride, "VALID", data_format=data_format
         )
         pooled_output = (
             ivy.permute_dims(pooled_output, (0, *range(2, input.ndim), 1))

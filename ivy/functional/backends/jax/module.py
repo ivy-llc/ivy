@@ -2,13 +2,27 @@
 from __future__ import annotations
 import re
 import jax
-from flax import nnx as nn
+import flax.nnx as nnx
 import jax.tree_util as tree
 import jax.numpy as jnp
 import functools
-from typing import NamedTuple, Callable, Any, Tuple, List, Dict, Type
+from typing import (
+    NamedTuple,
+    Callable,
+    Any,
+    Tuple,
+    List,
+    Set,
+    Dict,
+    Type,
+    Iterator,
+    Optional,
+)
 import inspect
 from collections import OrderedDict
+import itertools
+import warnings
+import typing
 
 
 def get_assignment_dict():
@@ -60,8 +74,6 @@ def store_frame_info(fn):
             stack = inspect.stack()
             self._previous_frame_info = stack[1]
         res = fn(self, *args, **kwargs)
-        # reset the frame-info
-        self._previous_frame_info = None
         return res
 
     return frame_info_wrapper
@@ -215,6 +227,321 @@ def tree_unflatten(values: List[Any], spec: TreeSpec) -> PyTree:
 
     return unflatten_fn(child_pytrees, spec.context)
 
+
+class TorchModuleHelpers:
+
+    def add_module(self, name: str, module: Optional["Module"]) -> None:
+        if not isinstance(module, (Module, nnx.Module)) and module is not None:
+            raise TypeError(f"{type(module)} is not a Module subclass")
+        elif not isinstance(name, str):
+            raise TypeError(f"module name should be a string. Got {type(name)}")
+        elif hasattr(self, name) and name not in self._modules:
+            raise KeyError(f"attribute '{name}' already exists")
+        elif "." in name:
+            raise KeyError(f'module name can\'t contain ".", got: {name}')
+        elif name == "":
+            raise KeyError('module name can\'t be empty string ""')
+
+        self._modules[name] = module
+
+        super().__setattr__(name, module)
+
+    def apply(self, fn: Callable[["Module"], None]):
+        for module in self.children():
+            if hasattr(module, "apply"):
+                module.apply(fn)
+            else:
+                fn(module)
+        fn(self)
+        return self
+
+    def _apply(self, fn, recurse=True):
+        if recurse:
+            if hasattr(self, "children"):
+                for module in self.children():
+                    if hasattr(module, "_apply"):
+                        module._apply(fn)
+        for key, param in self.v.items():
+            if param is not None:
+                self.v[key] = fn(param)
+        for key, buf in self.buffers.items():
+            if buf is not None:
+                self.buffers[key] = fn(buf)
+        return self
+
+    def _named_members(
+        self, get_members_fn, prefix="", recurse=True, remove_duplicate: bool = True
+    ):
+        r"""Helper method for yielding various names + members of modules."""
+        memo = set()
+        modules = (
+            self.named_modules(prefix=prefix, remove_duplicate=remove_duplicate)
+            if recurse
+            else [(prefix, self)]
+        )
+        for module_prefix, module in modules:
+            members = get_members_fn(module)
+            for k, v in members:
+                if v is None or id(v) in memo:
+                    continue
+                if remove_duplicate:
+                    memo.add(id(v))
+                name = module_prefix + ("." if module_prefix else "") + k
+                yield name, v
+                
+    def register_module(self, name: str, module: Optional["Module"]) -> None:
+        r"""Alias for :func:`add_module`."""
+        self.add_module(name, module)
+
+    def get_submodule(self, target: str) -> "Module":
+        if target == "":
+            return self
+
+        atoms: List[str] = target.split(".")
+        mod: Module = self
+
+        for item in atoms:
+            if not hasattr(mod, item):
+                raise AttributeError(
+                    mod._get_name() + " has no attribute `" + item + "`"
+                )
+
+            mod = getattr(mod, item)
+
+            if not isinstance(mod, (Module, nnx.Module)):
+                raise TypeError("`" + item + "` is not a Module")
+
+        return mod
+
+    def get_parameter(self, target: str):
+        target = target.replace(".", "/")
+        return self.v[target]
+
+    def parameters(self, recurse: bool = True):
+        for _, param in self.named_parameters(recurse=recurse):
+            yield param
+
+    def named_parameters(
+        self, prefix: str = "", recurse: bool = True, remove_duplicate: bool = True
+    ):
+        if not getattr(self, "_built", False):
+            self.build(
+                *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
+            )
+        gen = self._named_members(
+            lambda module: module.v.items(),
+            prefix=prefix,
+            recurse=recurse,
+            remove_duplicate=remove_duplicate,
+        )
+        yield from gen
+
+    def named_buffers(
+        self, prefix: str = "", recurse: bool = True, remove_duplicate: bool = True
+    ):
+        if not getattr(self, "_built", False):
+            self.build(
+                *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
+            )
+        gen = self._named_members(
+            lambda module: module.buffers.items(),
+            prefix=prefix,
+            recurse=recurse,
+            remove_duplicate=remove_duplicate,
+        )
+        yield from gen
+
+    def children(self) -> Iterator["Module"]:
+        for _, module in self.named_children():
+            yield module
+
+    def named_children(self) -> Iterator[Tuple[str, "Module"]]:
+        if not getattr(self, "_built", False):
+            self.build(
+                *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
+            )
+        memo = set()
+        for name, module in self._module_dict.items():
+            if module is not None and id(module) not in memo:
+                memo.add(id(module))
+                yield name, module
+
+    def modules(self) -> Iterator["Module"]:
+        for _, module in self.named_modules():
+            yield module
+
+    def named_modules(
+        self,
+        memo: Optional[Set["Module"]] = None,
+        prefix: str = "",
+        remove_duplicate: bool = True,
+    ):
+        if not getattr(self, "_built", False):
+            self.build(
+                *self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
+            )
+        if memo is None:
+            memo = set()
+        if id(self) not in memo:
+            if remove_duplicate:
+                memo.add(id(self))
+            yield prefix, self
+            for name, module in self._module_dict.items():
+                if module is None:
+                    continue
+                submodule_prefix = prefix + ("." if prefix else "") + name
+                if not hasattr(module, "named_modules"):
+                    yield submodule_prefix, self
+                else:
+                    yield from module.named_modules(
+                        memo, submodule_prefix, remove_duplicate
+                    )
+
+    def _load_from_state_dict(
+        self, state_dict, prefix, strict, missing_keys, unexpected_keys, error_msgs
+    ):
+        def _retrive_layer(model, key):
+            if len(key.split(".")) == 1:
+                return model, key
+
+            module_path, weight_name = key.rsplit(".", 1)
+
+            # Retrieve the layer using the module path
+            layer = model
+            for attr in module_path.split("."):
+                layer = getattr(layer, attr)
+
+            return layer, weight_name
+
+        persistent_buffers = {k: v for k, v in self._buffers.items()}
+        local_name_params = itertools.chain(
+            self._parameters.items(), persistent_buffers.items()
+        )
+        local_state = {k: v for k, v in local_name_params if v is not None}
+
+        for name, param in local_state.items():
+            key = prefix + name
+            if key in state_dict:
+                input_param = state_dict[key]
+                if not isinstance(input_param, (jax.Array, nnx.Param)):
+                    error_msgs.append(
+                        f'While copying the parameter named "{key}", '
+                        "expected ArrayLike object from checkpoint but "
+                        f"received {type(input_param)}"
+                    )
+                    continue
+
+                if not isinstance(input_param, nnx.Param):
+                    input_param = nnx.Param(input_param)
+
+                layer, weight_name = _retrive_layer(self, name)
+                try:
+                    setattr(layer, weight_name, input_param)
+                except Exception as ex:
+                    error_msgs.append(
+                        f'While copying the parameter named "{key}", '
+                        f"whose dimensions in the model are {param.shape} and "
+                        f"whose dimensions in the checkpoint are {input_param.shape}, "
+                        f"an exception occurred : {ex.args}."
+                    )
+            elif strict:
+                missing_keys.append(key)
+
+        if strict:
+            for key in state_dict.keys():
+                if key.startswith(prefix):
+                    input_name = key[len(prefix) :].split(".", 1)
+                    if len(input_name) > 1:
+                        if input_name[0] not in self._modules:
+                            unexpected_keys.append(key)
+                    elif input_name[0] not in local_state:
+                        unexpected_keys.append(key)
+
+    def load_state_dict(
+        self,
+        state_dict: typing.Mapping[str, Any],
+        strict: bool = True,
+        assign: bool = False,
+    ):
+        r"""Copy parameters and buffers from :attr:`state_dict` into this module and its descendants.
+
+        If :attr:`strict` is ``True``, then
+        the keys of :attr:`state_dict` must exactly match the keys returned
+        by this module's :meth:`~Module.state_dict` function.
+
+        Args:
+            state_dict (dict): a dict containing parameters and
+                persistent buffers.
+            strict (bool, optional): whether to strictly enforce that the keys
+                in :attr:`state_dict` match the keys returned by this module's
+                :meth:`~Module.state_dict` function. Default: ``True``
+
+        Returns:
+            ``NamedTuple`` with ``missing_keys`` and ``unexpected_keys`` fields:
+                * **missing_keys** is a list of str containing any keys that are expected
+                    by this module but missing from the provided ``state_dict``.
+                * **unexpected_keys** is a list of str containing the keys that are not
+                    expected by this module but present in the provided ``state_dict``.
+        """
+        if not isinstance(state_dict, typing.Mapping):
+            raise TypeError(
+                f"Expected state_dict to be dict-like, got {type(state_dict)}."
+            )
+
+        missing_keys: List[str] = []
+        unexpected_keys: List[str] = []
+        error_msgs: List[str] = []
+
+        state_dict = jax.tree_map(
+            lambda x: jnp.asarray(x.numpy()),
+            state_dict,
+        )
+        state_dict = OrderedDict(state_dict)
+
+        def load(module, local_state_dict, prefix=""):
+            module._load_from_state_dict(
+                local_state_dict,
+                prefix,
+                strict,
+                missing_keys,
+                unexpected_keys,
+                error_msgs,
+            )
+            # TODO: maybe we should implement this similar to PT
+            # and make this recursive.
+
+        load(self, state_dict)
+        del load
+
+        if len(error_msgs) > 0:
+            raise RuntimeError(
+                "Error(s) in loading state_dict for {}:\n\t{}".format(
+                    self.__class__.__name__, "\n\t".join(error_msgs)
+                )
+            )
+        if strict:
+            missing_keys = sorted(missing_keys)
+            unexpected_keys = sorted(unexpected_keys)
+            if len(missing_keys) > 0:
+                warnings.warn(
+                    "Missing key(s) in state_dict: {}\n".format(
+                        ", ".join(f"'{k}'" for k in missing_keys)
+                    )
+                )
+            if len(unexpected_keys) > 0:
+                warnings.warn(
+                    "Unexpected key(s) in state_dict: {}\n".format(
+                        ", ".join(f"'{k}'" for k in unexpected_keys)
+                    )
+                )
+
+    def requires_grad_(self, requires_grad: bool = True):
+        for p in self.parameters():
+            p.requires_grad_(requires_grad)
+        return self
+
+    def _get_name(self):
+        return self.__class__.__name__
 
 class ModelHelpers:
     @staticmethod
@@ -372,7 +699,7 @@ class ModelHelpers:
         return s
 
 
-class Module(nn.Module, ModelHelpers):
+class Module(nnx.Module, ModelHelpers, TorchModuleHelpers):
     _build_mode = None
     _with_partial_v = None
     _store_vars = True
@@ -440,7 +767,7 @@ class Module(nn.Module, ModelHelpers):
         self._built = True
         return
 
-    def register_buffer(self, name: str, value: jax.Array):
+    def register_buffer(self, name: str, value: jax.Array, persistent: bool = False):
         self._buffers.update({name: value})
         return value
 
@@ -448,17 +775,24 @@ class Module(nn.Module, ModelHelpers):
         self._v.update({name: value})
 
     def train(self, mode: bool = True):
-        self._training = mode
-        for module in self.children():
-            if isinstance(module, nn.Module) and not hasattr(module, "train"):
-                module.trainable = mode
-                continue
-            module.train(mode)
-        self.trainable = mode
+        for _, module in self.named_modules():
+            if isinstance(module, Module):
+                module.training = mode
+
+        super().train()
+        self.training = mode
         return self
 
-    def eval(self):
-        return self.train(mode=False)
+    def eval(
+        self,
+    ):
+        for _, module in self.named_modules():
+            if isinstance(module, Module):
+                module.training = False
+
+        super().eval()
+        self.training = False
+        return self
 
     def call(self, inputs, training=None, mask=None):
         raise NotImplementedError(
@@ -585,9 +919,17 @@ class Module(nn.Module, ModelHelpers):
     def device(self):
         return self._device
 
+    @device.setter
+    def device(self, value):
+        self._device = value
+
     @property
     def dtype(self):
         return self._dtype
+
+    @dtype.setter
+    def dtype(self, value):
+        self._dtype = value
 
     @property
     def build_mode(self):
@@ -596,6 +938,10 @@ class Module(nn.Module, ModelHelpers):
     @property
     def training(self):
         return self._training
+
+    @training.setter
+    def training(self, value):
+        self._training = value
 
     @property
     def v(self):
@@ -619,12 +965,9 @@ class Module(nn.Module, ModelHelpers):
     def __call__(
         self,
         *args,
-        v=None,
-        buffers=None,
         **kwargs,
     ):
-        ret = self._call(v=v, *args, **kwargs)
-        return ret
+        return self.forward(*args, **kwargs)
 
     def __getattr__(self, name):
         if name == "v":
@@ -647,7 +990,7 @@ class Module(nn.Module, ModelHelpers):
     def _compute_module_dict(self):
         self._module_dict = dict()
         for key, value in self.__dict__.items():
-            if isinstance(value, (Module, nn.Module)):
+            if isinstance(value, (Module, nnx.Module)):
                 if (
                     "stateful" in value.__module__
                     or hasattr(value, "_frontend_module")
@@ -660,7 +1003,7 @@ class Module(nn.Module, ModelHelpers):
     def __setattr__(self, name, value):
         if name in ["v", "buffers"]:
             name = "_" + name
-        if isinstance(value, (Module, nn.Module)):
+        if isinstance(value, (Module, nnx.Module)):
             _dict = getattr(self, "__dict__", None)
             if _dict:
                 _dict[name] = value
@@ -670,7 +1013,7 @@ class Module(nn.Module, ModelHelpers):
 
             obj_to_search = (
                 None
-                if not isinstance(value, (nn.Module, Module))
+                if not isinstance(value, (nnx.Module, Module))
                 else (
                     self._modules
                     if hasattr(self, "_modules") and self._modules
@@ -708,14 +1051,40 @@ class Module(nn.Module, ModelHelpers):
                 new_kc = kc.replace("/", ".")
                 self.register_buffer(new_kc, buf)
 
-            super().__setattr__(name, value)
+            object.__setattr__(self, name, value)
+            return
+        # TODO: remove this once JAX adds native support for nnx.Param
+        # inside its functions. This is a temporary fix wherein we
+        # treat jax.Array's as parameters as well when ideally these
+        # should get casted to nnx.Params.
+        elif isinstance(value, nnx.Param):
+            _dict = getattr(self, "__dict__", None)
+            if _dict:
+                _dict[name] = value
+            self.register_parameter(name, value)
+            object.__setattr__(self, name, value)
+            return
+        elif isinstance(value, jax.Array):
+            _dict = getattr(self, "__dict__", None)
+            if _dict and name in _dict:
+                orig_value = _dict[name]
+                if isinstance(orig_value, nnx.Param):
+                    new_value = nnx.Param(value)
+                    _dict[name] = new_value
+                    self.register_parameter(name, new_value)
+                    object.__setattr__(self, name, new_value)
+                    return
+
+            if _dict:
+                _dict[name] = value
+            object.__setattr__(self, name, value)
             return
         else:
             try:
                 obj_to_search = getattr(self, name)
             except AttributeError:
                 obj_to_search = None
-            if isinstance(obj_to_search, (nn.Module)):
+            if isinstance(obj_to_search, (nnx.Module)):
                 # retrieve all hierarchical submodules
                 assign_dict, kc = get_assignment_dict()
 
@@ -740,7 +1109,10 @@ class Module(nn.Module, ModelHelpers):
                 # finally update the module dict
                 self._module_dict[name] = value
 
-            return super().__setattr__(name, value)
+            # TODO: super().__setattr__ leads to an error during jax.jit
+            # as jax disallow's state mutation during jit compilation.
+            # maybe find a fix or add a warning.
+            return object.__setattr__(self, name, value)
 
     def _find_variables(
         self,
@@ -765,7 +1137,7 @@ class Module(nn.Module, ModelHelpers):
             return getattr(obj, fn)(
                 *obj._args, dynamic_backend=obj._dynamic_backend, **obj._kwargs
             )
-        elif isinstance(obj, nn.Module) and obj is not self:
+        elif isinstance(obj, nnx.Module) and obj is not self:
             return obj.v if trainable else obj.buffers
 
         elif isinstance(obj, (list, tuple)):
@@ -928,7 +1300,7 @@ class Module(nn.Module, ModelHelpers):
         if hasattr(self, name):
             if isinstance(
                 getattr(self, name),
-                (Module, nn.Module),
+                (Module, nnx.Module),
             ):
                 super().__delattr__(name)
                 return

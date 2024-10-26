@@ -15,9 +15,9 @@ Please, follow the next process when you work on your subtask:
 
    Currently, there are three open tasks:
 
-   - [Function Reformatting](https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#function-formatting)
-   - [Frontend APIs](https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#frontend-apis)
-   - [Ivy Experimental API](https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#ivy-experimental-api)
+   - [Function Reformatting](https://docs.ivy.dev/overview/contributing/open_tasks.html#function-formatting)
+   - [Frontend APIs](https://docs.ivy.dev/overview/contributing/open_tasks.html#frontend-apis)
+   - [Ivy Experimental API](https://docs.ivy.dev/overview/contributing/open_tasks.html#ivy-experimental-api)
 
 2. **Create Issue:**
 
@@ -43,9 +43,5 @@ Please, follow the next process when you work on your subtask:
 - Please don't take it personally if your issue or PR gets closed because of this 7-day inactivity time limit.
 
 - Finally, we limit the maximum number of open and incomplete sub-task issues to three per person.
-
- Feel free to watch the next video:
-
-[![Video](https://img.youtube.com/vi/wBKTOGmwfbo/0.jpg)](https://www.youtube.com/embed/wBKTOGmwfbo)
 
 For questions, please reach out on [discord](https://discord.gg/uYRmyPxMQq)!

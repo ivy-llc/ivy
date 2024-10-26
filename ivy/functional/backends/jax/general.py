@@ -54,6 +54,12 @@ def current_backend_str() -> str:
 def is_native_array(x, /, *, exclusive=False):
     if exclusive:
         return isinstance(x, NativeArray)
+    elif any(
+        cls in str(x.__class__)
+        for cls in ["flax.nnx.nnx.variables", "flax.nnx.variablelib", "flax.core.scope.Variable"]
+    ):
+        # ensure flax Variables(linen, nnx) classify as a native array if `exclusive` is False
+        return True
     return isinstance(
         x,
         (
@@ -103,8 +109,16 @@ def set_item(
     *,
     copy: Optional[bool] = False,
 ) -> JaxArray:
+    
+    if isinstance(query, (list,tuple)) and (query == [] or query == ()):
+        return x
+    # convert nnx.Param to jax.Array
+    if hasattr(x, "value"):
+        x = x.value 
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         query = _mask_to_index(query, x)
+    if isinstance(query, list) and isinstance(query[0], int):
+        query = jax.numpy.asarray(query)
     expected_shape = x[query].shape
     if ivy.is_array(val):
         val = _broadcast_to(val, expected_shape)._data

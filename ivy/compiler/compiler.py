@@ -2,83 +2,18 @@ from typing import Callable, Optional, List, Union, Iterable, Sequence, Mapping
 
 
 def clear_graph_cache():
-    """Clears the graph cache which gets populated if `graph_caching` is set to
-    `True` in `ivy.trace_graph`, `ivy.transpile` or `ivy.unify`. Use this to
+    """Clears the graph cache which gets populated if `graph_caching` is set
+    to `True` in `ivy.trace_graph`, `ivy.transpile` or `ivy.unify`. Use this to
     reset or clear the graph cache if needed.
 
     Examples
     --------
     >>> import ivy
-    >>> ivy.clear_graph_cache()
-    """
+    >>> ivy.clear_graph_cache()"""
+
     from ._compiler import clear_graph_cache as _clear_graph_cache
 
     return _clear_graph_cache()
-
-
-def graph_transpile(
-    *objs: Callable,
-    source: Optional[str] = None,
-    to: Optional[str] = None,
-    with_numpy: bool = True,
-    backend_compile: bool = False,
-    static_argnums: Optional[Union[int, Iterable[int]]] = None,
-    static_argnames: Optional[Union[str, Iterable[str]]] = None,
-    compile_mode: Optional[str] = None,
-    graph_caching: bool = True,
-    graph_optimizations: bool = True,
-    modes_to_trace: str = "all",
-    stateful: Optional[List] = None,
-    arg_stateful_idxs: Optional[List] = None,
-    kwarg_stateful_idxs: Optional[List] = None,
-    args: Optional[Sequence] = None,
-    kwargs: Optional[Mapping] = None,
-    params_v=None,
-    v=None
-):
-    """Transpiles Callable objects passed as arguments. If args and kwargs are
-    specified, transpilation is performed eagerly, otherwise, transpilation
-    will happen lazily.
-
-    Parameters
-    ----------
-    objs
-        The native Callables to be transpiled
-    source
-        The framework that `obj` is from.
-    to
-        The target framework to transpile `obj` to.
-    args
-        If specified, arguments that will be used to transpile eagerly.
-    kwargs
-        If specified, keyword arguments that will be used to transpile eagerly.
-
-    Returns
-    -------
-    Either a transpiled Graph or a non-initialized LazyGraph.
-    """
-    from ._compiler import graph_transpile as _graph_transpile
-
-    return _graph_transpile(
-        *objs,
-        source=source,
-        to=to,
-        with_numpy=with_numpy,
-        backend_compile=backend_compile,
-        static_argnums=static_argnums,
-        static_argnames=static_argnames,
-        compile_mode=compile_mode,
-        graph_caching=graph_caching,
-        graph_optimizations=graph_optimizations,
-        modes_to_trace=modes_to_trace,
-        stateful=stateful,
-        arg_stateful_idxs=arg_stateful_idxs,
-        kwarg_stateful_idxs=kwarg_stateful_idxs,
-        args=args,
-        kwargs=kwargs,
-        params_v=params_v,
-        v=v,
-    )
 
 
 def source_to_source(
@@ -86,6 +21,7 @@ def source_to_source(
     source: str = "torch",
     target: str = "tensorflow",
     reuse_existing: bool = True,
+    output_dir: str = "ivy_transpiled_outputs/",
 ):
     """Converts a given object (class/function) from one framework to another.
 
@@ -96,7 +32,6 @@ def source_to_source(
     e.g. (source="torch_frontend", target="ivy") or (source="torch_frontend", target="tensorflow") etc.
 
     Args:
-    ----
         object: The object (class/function) to be translated.
         source (str, optional): The source framework. Defaults to 'torch'.
         target (str, optional): The target framework. Defaults to 'tensorflow'.
@@ -105,11 +40,12 @@ def source_to_source(
                                          If False, it will re-translate `object`,
                                          even if it already exists in the directory, and overwrite
                                          the old implementation. Defaults to 'True'.
+        output_dir (str, optional): The path to the directory where translated files will be saved.
+                                    Defaults to 'ivy_transpiled_outputs/' in the current working directory.
 
     Returns:
-    -------
-    The translated object.
-    """
+        The translated object."""
+
     from ._compiler import source_to_source as _source_to_source
 
     return _source_to_source(
@@ -117,6 +53,7 @@ def source_to_source(
         source=source,
         target=target,
         reuse_existing=reuse_existing,
+        output_dir=output_dir,
     )
 
 
@@ -140,8 +77,7 @@ def trace_graph(
     params_v=None,
     v=None
 ):
-    """Takes `fn` and traces it into a more efficient composition of backend
-    operations.
+    """Takes `fn` and traces it into a more efficient composition of backend operations.
 
     Parameters
     ----------
@@ -211,8 +147,8 @@ def trace_graph(
     >>> start = time.time()
     >>> graph(x)
     >>> print(time.time() - start)
-    0.0001785755157470703
-    """
+    0.0001785755157470703"""
+
     from ._compiler import trace_graph as _trace_graph
 
     return _trace_graph(
@@ -242,6 +178,7 @@ def transpile(
     source: str = "torch",
     target: str = "tensorflow",
     reuse_existing: bool = True,
+    output_dir: str = "ivy_transpiled_outputs/",
 ):
     """Converts a given object (class/function) from one framework to another.
 
@@ -252,7 +189,6 @@ def transpile(
     e.g. (source="torch_frontend", target="ivy") or (source="torch_frontend", target="tensorflow") etc.
 
     Args:
-    ----
         object: The object (class/function) to be translated.
         source (str, optional): The source framework. Defaults to 'torch'.
         target (str, optional): The target framework. Defaults to 'tensorflow'.
@@ -261,11 +197,12 @@ def transpile(
                                          If False, it will re-translate `object`,
                                          even if it already exists in the directory, and overwrite
                                          the old implementation. Defaults to 'True'.
+        output_dir (str, optional): The path to the directory where translated files will be saved.
+                                    Defaults to 'ivy_transpiled_outputs/' in the current working directory.
 
     Returns:
-    -------
-    The translated object.
-    """
+        The translated object."""
+
     from ._compiler import transpile as _transpile
 
     return _transpile(
@@ -273,31 +210,5 @@ def transpile(
         source=source,
         target=target,
         reuse_existing=reuse_existing,
-    )
-
-
-def unify(
-    *objs: Callable,
-    source: Optional[str] = None,
-    graph_caching: bool = True,
-    graph_optimizations: bool = True,
-    args: Optional[Sequence] = None,
-    kwargs: Optional[Mapping] = None,
-    with_numpy: bool = True,
-    modes_to_trace: str = "all",
-    **transpile_kwargs
-):
-
-    from ._compiler import unify as _unify
-
-    return _unify(
-        *objs,
-        source=source,
-        graph_caching=graph_caching,
-        graph_optimizations=graph_optimizations,
-        args=args,
-        kwargs=kwargs,
-        with_numpy=with_numpy,
-        modes_to_trace=modes_to_trace,
-        **transpile_kwargs,
+        output_dir=output_dir,
     )

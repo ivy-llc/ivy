@@ -269,10 +269,10 @@ If you find yourself proposing the addition of a new function in Ivy, then we wi
 If you have any questions, please feel free to reach out on `discord`_ in the `superset behavior thread`_!
 
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/_D6xER3H4NU" class="video">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/_D6xER3H4NU" class="video">
+..     </iframe>

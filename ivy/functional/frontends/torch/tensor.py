@@ -1135,19 +1135,21 @@ class Tensor:
         return torch_frontend.masked_select(self, mask)
 
     def masked_scatter(self, mask, source):
+        mask = torch_frontend.broadcast_to(mask, self.shape)
         flat_self = torch_frontend.flatten(self.clone())
         flat_mask = torch_frontend.flatten(mask)
         flat_source = torch_frontend.flatten(source)
         indices = torch_frontend.squeeze(torch_frontend.nonzero(flat_mask), -1)
-        flat_self.scatter_(0, indices, flat_source[: indices.shape[0]])
+        flat_self[indices] = flat_source[:indices.numel()]
         return flat_self.reshape(self.shape)
 
     def masked_scatter_(self, mask, source):
+        mask = torch_frontend.broadcast_to(mask, self.shape)
         flat_self = torch_frontend.flatten(self.clone())
         flat_mask = torch_frontend.flatten(mask)
         flat_source = torch_frontend.flatten(source)
         indices = torch_frontend.squeeze(torch_frontend.nonzero(flat_mask), -1)
-        flat_self.scatter_(0, indices, flat_source[: indices.shape[0]])
+        flat_self[indices] = flat_source[:indices.numel()]
         ret = flat_self.reshape(self.shape)
         self.ivy_array = ivy.inplace_update(self.ivy_array, ret.ivy_array)
         return self
@@ -1302,8 +1304,8 @@ class Tensor:
         return self
 
     @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
-    def dot(self, tensor):
-        return torch_frontend.dot(self, tensor)
+    def dot(self, inp):
+        return torch_frontend.dot(self, inp)
 
     @with_supported_dtypes({"2.2 and below": ("float32", "float64")}, "torch")
     def bernoulli(self, *, generator=None, out=None):
@@ -1459,6 +1461,8 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
     def __eq__(self, other):
+        if isinstance(other, (list, tuple)):
+            return False
         return torch_frontend.eq(self, other)
 
     @with_unsupported_dtypes({"2.2 and below": ("complex",)}, "torch")
@@ -1471,6 +1475,8 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
     def __ne__(self, other):
+        if isinstance(other, (list, tuple)):
+            return True
         return self.ne(other)
 
     @with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")

@@ -323,13 +323,13 @@ If Docker's latest version causes an error, try using an earlier version by visi
 For some Windows users, it might be necessary to enable virtualisation from the BIOS setup.
 
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/7I_46c2AvJg" class="video" allowfullscreen="true">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/7I_46c2AvJg" class="video" allowfullscreen="true">
+..     </iframe>
 
 
 MacOS
@@ -363,13 +363,13 @@ If Docker's latest version causes an error, try using an earlier version by visi
 
 When setting up on an M1 Mac, you would have to update the Dockerfile to install libraries from :code:`requirements/optional_apple_silicon_1.txt` and :code:`requirements/optional_apple_silicon_2.txt` instead of :code:`requirements/optional.txt`.
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/5BxizBIC-GQ" class="video" allowfullscreen="true">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/5BxizBIC-GQ" class="video" allowfullscreen="true">
+..     </iframe>
 
 
 Ubuntu
@@ -447,13 +447,13 @@ This is a common error which you might face. If you are not successfully able to
 
 For questions, please reach out on `discord`_ in the `docker thread`_!
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video" allowfullscreen="true">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video" allowfullscreen="true">
+..     </iframe>
 
 Setting Up Testing in PyCharm
 -----------------------------
@@ -881,13 +881,13 @@ Running a :code:`pip install -e .` is sufficient to download the binaries if the
 .. note:: Bear in mind that the binaries are **not** required for working on the open tasks for the most part, so it's totally fine to not have the binaries downloaded on your system for working on any of the open tasks.
 
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/8rDcMMIl8dM" class="video" allowfullscreen="true">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/8rDcMMIl8dM" class="video" allowfullscreen="true">
+..     </iframe>
 
 
 **Round Up**

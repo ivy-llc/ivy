@@ -9,8 +9,8 @@ Comparing Ivy with ONNX
 .. |onnx| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/exchange_formats/onnx.png
     :height: 20pt
     :class: dark-light
-.. |ivy| image:: https://raw.githubusercontent.com/ivy-llc/assets/ef677f0eb3e9ee756cf766e3ac0088eb8c187713/assets/full_logo_dark_long.svg#gh-dark-mode-only
-    :height: 26pt
+.. |ivy| image:: https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/logos/ivy-long.png
+    :height: 40pt
     :class: dark-light
 
 ONNX |onnx|

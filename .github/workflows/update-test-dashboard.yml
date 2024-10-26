@@ -4,8 +4,6 @@
 name: update-test-dashboard
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 0 * * *"
 permissions:
   actions: read
 jobs:

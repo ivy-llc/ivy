@@ -32,8 +32,8 @@ that your pre-commit check has some failures.
 
 Here are some relevant resources regarding tests and pre-commit:
 
-https://unify.ai/docs/ivy/overview/deep_dive/ivy_tests.html
-https://unify.ai/docs/ivy/overview/deep_dive/formatting.html#pre-commit
+https://docs.ivy.dev/overview/deep_dive/ivy_tests.html
+https://docs.ivy.dev/overview/deep_dive/formatting.html#pre-commit
 
 -->
 

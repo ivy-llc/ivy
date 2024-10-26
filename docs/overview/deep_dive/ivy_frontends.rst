@@ -23,7 +23,7 @@ Ivy Frontends
 Introduction
 ------------
 
-On top of the Ivy functional API and backend functional APIs, Ivy has another set of framework-specific frontend functional APIs, which play an important role in code transpilations, as explained `here <https://lets-unify.ai/docs/ivy/overview/design/ivy_as_a_transpiler.html>`_.
+On top of the Ivy functional API and backend functional APIs, Ivy has another set of framework-specific frontend functional APIs, which play an important role in code transpilations, as explained `here <https://docs.ivy.dev/overview/design/ivy_as_a_transpiler.html>`_.
 
 
 
@@ -674,15 +674,14 @@ Unit tests should be written for all aliases. This is arguably a duplication, bu
 **Round Up**
 
 This should hopefully have given you a better grasp on what the Ivy Frontend APIs are for, how they should be implemented, and the things to watch out for!
-We also have a short `YouTube tutorial series`_ on this as well if you prefer a video explanation!
 
 If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends thread`_!
 
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/SdiyetRNey8" class="video">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/SdiyetRNey8" class="video">
+..     </iframe>

@@ -12,6 +12,9 @@
         "cp311-cp311-macosx_12_0_arm64",
         "cp312-cp312-manylinux_2_17_x86_64",
         "cp312-cp312-win_amd64",
-        "cp312-cp312-macosx_12_0_arm64"
+        "cp312-cp312-macosx_12_0_arm64",
+        "cp313-cp313-manylinux_2_17_x86_64",
+        "cp313-cp313-win_amd64",
+        "cp313-cp313-macosx_12_0_arm64"
     ]
 }

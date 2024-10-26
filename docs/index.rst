@@ -17,6 +17,7 @@
   :caption: The Basics
 
   overview/get_started.rst
+  overview/api_key.rst
   demos/quickstart.ipynb
 
 

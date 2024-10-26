@@ -15,7 +15,6 @@ Array API Tests
 .. _`git website`: https://www.git-scm.com/book/en/v2/Git-Tools-Submodules
 .. _`hypothesis`: https://hypothesis.readthedocs.io/en/latest/
 .. _`ivy tests`: ivy_tests.rst
-.. _`CI Pipeline`: continuous_integration.html
 
 In conjunction with our own ivy unit tests, we import the array-api `test suite`_.
 These tests check that all ivy backend libraries behave according to the `Array API Standard`_ which was established in May 2020 by a group of maintainers.
@@ -206,10 +205,10 @@ This should have hopefully given you a good understanding of how the Array API t
 
 If you have any questions, please feel free to reach out on `discord`_ in the `array api tests thread`_!
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/R1XuYwzhxWw" class="video">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/R1XuYwzhxWw" class="video">
+..     </iframe>

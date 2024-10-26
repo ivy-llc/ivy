@@ -61,7 +61,6 @@ Ivy Tests
 .. _`get_bounds`: https://github.com/ivy-llc/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L145
 .. _`subsets`: https://github.com/ivy-llc/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L48
 .. _`num_positional_args`: https://github.com/ivy-llc/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/testing_helpers.py#L78
-.. _`CI Pipeline`: continuous_integration.rst
 .. _`Hypothesis docs`: https://hypothesis.readthedocs.io/en/latest/data.html#core-strategies
 .. _`this`: https://github.com/ivy-llc/ivy/blob/8dcc33b895240395686db165c710ac31708aa691/ivy_tests/test_ivy/test_functional/test_core/test_general.py#L1650
 
@@ -943,10 +942,10 @@ This should have hopefully given you a good feel for how the tests are implement
 If you have any questions, please feel free to reach out on `discord`_ in the `ivy tests thread`_!
 
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/2AwWuHIe2h8" class="video">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/2AwWuHIe2h8" class="video">
+..     </iframe>

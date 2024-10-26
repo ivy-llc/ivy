@@ -1,7 +1,7 @@
 
 ## Frontend Task Checklist
 #### IMPORTANT NOTICE 🚨:
-The [Ivy Docs](https://unify.ai/docs/ivy/) represent the ground truth for the task descriptions and this checklist should only be used as a supplementary item to aid with the review process.
+The [Ivy Docs](https://docs.ivy.dev/) represent the ground truth for the task descriptions and this checklist should only be used as a supplementary item to aid with the review process.
 
 Please note that the contributor is not expected to understand everything in the checklist. It's mainly here for the reviewer to make sure everything has been done correctly 🙂
 

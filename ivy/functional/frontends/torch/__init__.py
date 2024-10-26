@@ -237,13 +237,13 @@ def promote_types_of_torch_inputs(
     used as inputs only for those functions that expect an array-like or
     tensor-like objects, otherwise it might give unexpected results.
     """
-    if ivy.isscalar(x1) and ivy.is_int_dtype(x1):
+    if (ivy.isscalar(x1) or isinstance(x1, (list, tuple))) and ivy.is_int_dtype(x1):
         x1 = ivy.asarray(x1, dtype="int64")
-    elif ivy.isscalar(x1):
+    elif ivy.isscalar(x1) or isinstance(x1, (list, tuple)):
         x1 = ivy.asarray(x1)
-    if ivy.isscalar(x2) and ivy.is_int_dtype(x2):
+    if (ivy.isscalar(x2) or isinstance(x2, (list, tuple))) and ivy.is_int_dtype(x2):
         x2 = ivy.asarray(x2, dtype="int64")
-    elif ivy.isscalar(x2):
+    elif ivy.isscalar(x2) or isinstance(x2, (list, tuple)):
         x2 = ivy.asarray(x2)
     type1 = ivy.default_dtype(item=x1).strip("u123456789")
     type2 = ivy.default_dtype(item=x2).strip("u123456789")
@@ -281,9 +281,11 @@ from .utils import *
 from . import special
 from . import tensor
 from . import _VF
+from . import onnx
 from . import jit
 from . import overrides
 from . import _C
+from . import hub
 from .tensor import *
 from . import blas_and_lapack_ops
 from .blas_and_lapack_ops import *

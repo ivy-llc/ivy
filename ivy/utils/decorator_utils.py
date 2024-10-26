@@ -24,6 +24,10 @@ KERAS_CONV_FUNCS = [
     "KerasConv2DTranspose",
     "KerasConv3DTranspose",
 ]
+FLAX_CONV_FUNCS = [
+    "FlaxConv",
+    "FlaxConvTranspose",
+]
 POOL_FUNCS = [
     "MaxPool1d",
     "MaxPool2d",
@@ -49,6 +53,7 @@ KERAS_POOL_FUNCS = [
     "KerasMaxPool2D",
     "KerasMaxPool3D",
 ]
+FLAX_POOL_FUNCS = []
 PADDING_FUNCS = [
     "ReflectionPad1d",
     "ReflectionPad2d",
@@ -65,6 +70,7 @@ KERAS_PADDING_FUNCS = [
     "KerasZeroPadding2D",
     "KerasZeroPadding3D",
 ]
+FLAX_PADDING_FUNCS = []
 ACTIVATION_FUNCS = [
     "ELU",
     "Hardshrink",
@@ -92,6 +98,7 @@ ACTIVATION_FUNCS = [
     "LogSoftmax",
     "AdaptiveLogSoftmaxWithLoss",
 ]
+FLAX_ACTIVATION_FUNCS = []
 KERAS_ACTIVATION_FUNCS = [
     "KerasReLU",
     "KerasPReLU",
@@ -123,6 +130,11 @@ KERAS_NORM_FUNCS = [
     "KerasUnitNorm2D",
     "KerasUnitNorm3D",
 ]
+FLAX_NORM_FUNCS = [
+    "FlaxBatchNorm",
+    "FlaxLayerNorm",
+    "FlaxGroupNorm",
+]
 DROPOUT_FUNCS = [
     "Dropout",
     "Dropout2d",
@@ -133,20 +145,26 @@ DROPOUT_FUNCS = [
 KERAS_DROPOUT_FUNCS = [
     "KerasDropout",
 ]
-
+FLAX_DROPOUT_FUNCS = []
 CONV_BLOCK_FNS = [
     *CONV_FUNCS,
     *KERAS_CONV_FUNCS,
+    *FLAX_CONV_FUNCS,
     *POOL_FUNCS,
     *KERAS_POOL_FUNCS,
+    *FLAX_POOL_FUNCS,
     *PADDING_FUNCS,
     *KERAS_PADDING_FUNCS,
+    *FLAX_PADDING_FUNCS,
     *ACTIVATION_FUNCS,
     *KERAS_ACTIVATION_FUNCS,
+    *FLAX_ACTIVATION_FUNCS,
     *NORM_FUNCS,
     *KERAS_NORM_FUNCS,
+    *FLAX_NORM_FUNCS,
     *DROPOUT_FUNCS,
     *KERAS_DROPOUT_FUNCS,
+    *FLAX_DROPOUT_FUNCS,
 ]
 
 
@@ -159,7 +177,10 @@ def handle_methods(fn):
     @functools.wraps(fn)
     def wrapper(*args, **kwargs):
         array_like = args[0]
-        if isinstance(array_like, (list, tuple)):
+        if hasattr(array_like, "__class__") and array_like.__class__.__name__ in [
+            "list",
+            "tuple",
+        ]:
             array_like = array_like[0]
 
         if ivy.is_array(array_like):
@@ -172,7 +193,7 @@ def handle_methods(fn):
                 if not callable(new_fn):
                     return new_fn
                 return new_fn(*args[1:], **kwargs)
-            except AttributeError:
+            except Exception:
                 return fn(*args, **kwargs)
 
     return wrapper
@@ -264,7 +285,7 @@ def get_next_func(obj):
         return None
 
     # Check if the filename contains "Sequential"
-    if "Sequential" in frame_info.filename:
+    if "torch/nn/modules/container" in frame_info.filename:
         try:
             # find the next call in the sequence
             self_seq = calling_frame.f_locals["self"]
@@ -365,6 +386,9 @@ def handle_transpose_in_input_and_output(fn):
                 + KERAS_CONV_FUNCS
                 + KERAS_NORM_FUNCS
                 + KERAS_POOL_FUNCS
+                + FLAX_CONV_FUNCS
+                + FLAX_NORM_FUNCS
+                + FLAX_POOL_FUNCS
             )
         )
         next_call_in_seq = get_next_func(self)
@@ -377,8 +401,9 @@ def handle_transpose_in_input_and_output(fn):
             substr in name_of_next_call for substr in CONV_BLOCK_FNS
         )
 
+        arg_name = "input" if "input" in fn_args_and_kwargs else "inputs"
         if DATA_FORMAT == "channels_first" and conv_block_start(self.__class__):
-            input = fn_args_and_kwargs["input"]
+            input = fn_args_and_kwargs[arg_name]
             if len(input.shape) > 4:
                 transpose = TransposeType.CONV3D
             elif len(input.shape) > 3:
@@ -387,7 +412,7 @@ def handle_transpose_in_input_and_output(fn):
                 transpose = TransposeType.CONV1D
             else:
                 transpose = TransposeType.NO_TRANSPOSE
-            fn_args_and_kwargs["input"] = apply_transpose(
+            fn_args_and_kwargs[arg_name] = apply_transpose(
                 input, transpose=transpose, pt_to_tf=True
             )
 

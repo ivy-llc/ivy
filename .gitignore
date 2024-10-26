@@ -22,13 +22,13 @@ with_time_logs/
 *.jpeg
 *.gif
 *.so
+*.pyd
 .hypothesis
 .array_api_tests_k_flag*
 internal_automation_tools/
 .vscode/*
 .idea/*
 .ivy/*
-*.so
 .DS_Store*
 fn_path_cache
 ivy/engines/XLA/rust_api/target/

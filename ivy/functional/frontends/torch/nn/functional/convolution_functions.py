@@ -46,9 +46,11 @@ def _conv_transpose(
     output_padding=0,
     groups=1,
     dilation=1,
+    filter_format="channel_first",
 ):
     dims = len(input.shape) - 2
-    weight = ivy.permute_dims(weight, axes=(*range(2, dims + 2), 0, 1))
+    if filter_format == "channel_first":
+        weight = ivy.permute_dims(weight, axes=(*range(2, dims + 2), 0, 1))
     for i in range(dims):
         weight = ivy.flip(weight, axis=i)
     padding, output_padding, stride, dilation = map(
@@ -77,15 +79,38 @@ def _conv_transpose(
         dilations=dilation,
         bias=bias,
     )
-    unpad_slice = (slice(None),) * 2
-    for i in range(dims):
-        unpad_slice += (
-            slice(
-                max([padding[i] - (dilation[i] // 2), padding[i], output_padding[i]]),
-                ret.shape[2 + i] - padding[i] + output_padding[i] + (dilation[i] // 2),
-                1,
-            ),
-        )
+    if filter_format == "channel_first":
+        unpad_slice = (slice(None),) * 2
+        for i in range(dims):
+            unpad_slice += (
+                slice(
+                    max(
+                        [padding[i] - (dilation[i] // 2), padding[i], output_padding[i]]
+                    ),
+                    ret.shape[2 + i]
+                    - padding[i]
+                    + output_padding[i]
+                    + (dilation[i] // 2),
+                    1,
+                ),
+            )
+    else:
+        unpad_slice = (slice(None),)
+        for i in range(dims):
+            unpad_slice += (
+                slice(
+                    max(
+                        [padding[i] - (dilation[i] // 2), padding[i], output_padding[i]]
+                    ),
+                    ret.shape[1 + i]
+                    - padding[i]
+                    + output_padding[i]
+                    + (dilation[i] // 2),
+                    1,
+                ),
+            )
+        unpad_slice += (slice(None),)
+
     ret = ret[unpad_slice]
     return ret
 
@@ -185,6 +210,7 @@ def conv_transpose1d(
             output_padding=output_padding,
             groups=groups,
             dilation=dilation,
+            filter_format="channel_first",
         )
 
 
@@ -224,6 +250,7 @@ def conv_transpose2d(
             output_padding=output_padding,
             groups=groups,
             dilation=dilation,
+            filter_format="channel_first",
         )
 
 

@@ -343,6 +343,7 @@ def histc(input, bins=100, min=0, max=0, *, out=None):
     if min == 0.0 and max == 0.0:
         min = ivy.min(input)
         max = ivy.max(input)
+    input = ivy.flatten(input)
     bin_edges = ivy.linspace(min, max, bins + 1)
     bin_indices = ivy.searchsorted(bin_edges, input, side="right") - 1
     bin_indices = ivy.clip(bin_indices, 0, bins - 1)
