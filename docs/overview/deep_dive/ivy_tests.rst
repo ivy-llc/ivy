@@ -3,21 +3,21 @@ Ivy Tests
 
 .. _`test suite`: https://github.com/data-apis/array-api-tests
 .. _`Hypothesis`: https://hypothesis.readthedocs.io/en/latest/
-.. _`test_array_api`: https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/ivy_tests
-.. _`test_ivy`: https://github.com/unifyai/ivy/tree/0fc4a104e19266fb4a65f5ec52308ff816e85d78/ivy_tests/test_ivy
-.. _`commit`: https://github.com/unifyai/ivy/commit/8e6074419c0b6ee27c52e8563374373c8bcff30f
-.. _`uploading`: https://github.com/unifyai/ivy/blob/0fc4a104e19266fb4a65f5ec52308ff816e85d78/.github/workflows/test-array-api-torch.yml#L30
-.. _`downloading`: https://github.com/unifyai/ivy/blob/0fc4a104e19266fb4a65f5ec52308ff816e85d78/.github/workflows/test-array-api-torch.yml#L14
-.. _`continuous integration`: https://github.com/unifyai/ivy/tree/0fc4a104e19266fb4a65f5ec52308ff816e85d78/.github/workflows
+.. _`test_array_api`: https://github.com/ivy-llc/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/ivy_tests
+.. _`test_ivy`: https://github.com/ivy-llc/ivy/tree/0fc4a104e19266fb4a65f5ec52308ff816e85d78/ivy_tests/test_ivy
+.. _`commit`: https://github.com/ivy-llc/ivy/commit/8e6074419c0b6ee27c52e8563374373c8bcff30f
+.. _`uploading`: https://github.com/ivy-llc/ivy/blob/0fc4a104e19266fb4a65f5ec52308ff816e85d78/.github/workflows/test-array-api-torch.yml#L30
+.. _`downloading`: https://github.com/ivy-llc/ivy/blob/0fc4a104e19266fb4a65f5ec52308ff816e85d78/.github/workflows/test-array-api-torch.yml#L14
+.. _`continuous integration`: https://github.com/ivy-llc/ivy/tree/0fc4a104e19266fb4a65f5ec52308ff816e85d78/.github/workflows
 .. _`search strategies`: https://hypothesis.readthedocs.io/en/latest/data.html
 .. _`methods`: https://hypothesis.readthedocs.io/en/latest/data.html
-.. _`finfo`: https://github.com/unifyai/ivy/blob/d8f1ffe8ebf38fa75161c1a9459170e95f3c82b6/ivy/functional/ivy/data_type.py#L276
-.. _`data generation`: https://github.com/unifyai/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L337
+.. _`finfo`: https://github.com/ivy-llc/ivy/blob/d8f1ffe8ebf38fa75161c1a9459170e95f3c82b6/ivy/functional/ivy/data_type.py#L276
+.. _`data generation`: https://github.com/ivy-llc/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L337
 .. _`Function Types`: function_types.rst
-.. _`test_default_int_dtype`: https://github.com/unifyai/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L835
+.. _`test_default_int_dtype`: https://github.com/ivy-llc/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L835
 .. _`sampled_from`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.sampled_from
 .. _`lists`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.lists
-.. _`default`: https://github.com/unifyai/ivy/blob/aef5ef5620bb6ad194030276e9c00118d006091b/ivy_tests/test_ivy/helpers/test_parameter_flags.py#L28
+.. _`default`: https://github.com/ivy-llc/ivy/blob/aef5ef5620bb6ad194030276e9c00118d006091b/ivy_tests/test_ivy/helpers/test_parameter_flags.py#L28
 .. _`booleans`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.booleans
 .. _`integers`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.integers
 .. _`floats`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.floats
@@ -31,38 +31,38 @@ Ivy Tests
 .. _`flatmap`: https://hypothesis.readthedocs.io/en/latest/data.html#chaining-strategies-together
 .. _`data`: https://hypothesis.readthedocs.io/en/latest/data.html?highlight=strategies.data#hypothesis.strategies.data
 .. _`composite`: https://hypothesis.readthedocs.io/en/latest/data.html?highlight=strategies.composite#hypothesis.strategies.composite
-.. _`line`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L477
-.. _`here`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L392
-.. _`this`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_sorting.py#L18
-.. _`example`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/helpers.py#L1085
-.. _`test_concat`: https://github.com/unifyai/ivy/blob/1281a2baa15b8e43a06df8926ceef1a3d7605ea6/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L51
-.. _`test_device`: https://github.com/unifyai/ivy/blob/main/ivy_tests/test_ivy/test_functional/test_core/test_device.py
-.. _`test_manipulation`: https://github.com/unifyai/ivy/blob/main/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py
-.. _`test_layers`: https://github.com/unifyai/ivy/blob/main/ivy_tests/test_ivy/test_functional/test_nn/test_layers.py
-.. _`keyword`:https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/helpers.py#L1108
-.. _`arguments`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/helpers.py#L1354
+.. _`line`: https://github.com/ivy-llc/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L477
+.. _`here`: https://github.com/ivy-llc/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L392
+.. _`this`: https://github.com/ivy-llc/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_sorting.py#L18
+.. _`example`: https://github.com/ivy-llc/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/helpers.py#L1085
+.. _`test_concat`: https://github.com/ivy-llc/ivy/blob/1281a2baa15b8e43a06df8926ceef1a3d7605ea6/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L51
+.. _`test_device`: https://github.com/ivy-llc/ivy/blob/main/ivy_tests/test_ivy/test_functional/test_core/test_device.py
+.. _`test_manipulation`: https://github.com/ivy-llc/ivy/blob/main/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py
+.. _`test_layers`: https://github.com/ivy-llc/ivy/blob/main/ivy_tests/test_ivy/test_functional/test_nn/test_layers.py
+.. _`keyword`:https://github.com/ivy-llc/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/helpers.py#L1108
+.. _`arguments`: https://github.com/ivy-llc/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/helpers.py#L1354
 .. _`documentation`: https://hypothesis.readthedocs.io/en/latest/quickstart.html
-.. _`test_gelu`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_nn/test_activations.py#L104
-.. _`test_array_function`: https://github.com/unifyai/ivy/blob/0fc4a104e19266fb4a65f5ec52308ff816e85d78/ivy_tests/test_ivy/helpers.py#L401
+.. _`test_gelu`: https://github.com/ivy-llc/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_nn/test_activations.py#L104
+.. _`test_array_function`: https://github.com/ivy-llc/ivy/blob/0fc4a104e19266fb4a65f5ec52308ff816e85d78/ivy_tests/test_ivy/helpers.py#L401
 .. _`artifact`: https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts
-.. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`ivy tests channel`: https://discord.com/channels/799879767196958751/982738436383445073
-.. _`test helpers`:  https://github.com/unifyai/ivy/tree/main/ivy_tests/test_ivy/helpers/hypothesis_helpers
-.. _`get_dtypes`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/dtype_helpers.py#L60
-.. _`dtype_and_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L83
-.. _`dtype_values_axis`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L235
-.. _`array_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L543
-.. _`array_dtypes`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/dtype_helpers.py#L15
-.. _`array_bools`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L17
-.. _`reshape_shapes`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L16
-.. _`get_axis`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L178
-.. _`get_shape`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L67
-.. _`get_bounds`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L145
-.. _`subsets`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L48
-.. _`num_positional_args`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/testing_helpers.py#L78
-.. _`CI Pipeline`: continuous_integration.rst
+.. _`repo`: https://github.com/ivy-llc/ivy
+.. _`discord`: https://discord.gg/uYRmyPxMQq
+.. _`ivy tests thread`: https://discord.com/channels/799879767196958751/1189907526226034698
+.. _`test helpers`:  https://github.com/ivy-llc/ivy/tree/main/ivy_tests/test_ivy/helpers/hypothesis_helpers
+.. _`get_dtypes`: https://github.com/ivy-llc/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/dtype_helpers.py#L60
+.. _`dtype_and_values`: https://github.com/ivy-llc/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L83
+.. _`dtype_values_axis`: https://github.com/ivy-llc/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L235
+.. _`array_values`: https://github.com/ivy-llc/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L543
+.. _`array_dtypes`: https://github.com/ivy-llc/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/dtype_helpers.py#L15
+.. _`array_bools`: https://github.com/ivy-llc/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L17
+.. _`reshape_shapes`: https://github.com/ivy-llc/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L16
+.. _`get_axis`: https://github.com/ivy-llc/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L178
+.. _`get_shape`: https://github.com/ivy-llc/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L67
+.. _`get_bounds`: https://github.com/ivy-llc/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L145
+.. _`subsets`: https://github.com/ivy-llc/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L48
+.. _`num_positional_args`: https://github.com/ivy-llc/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/testing_helpers.py#L78
 .. _`Hypothesis docs`: https://hypothesis.readthedocs.io/en/latest/data.html#core-strategies
+.. _`this`: https://github.com/ivy-llc/ivy/blob/8dcc33b895240395686db165c710ac31708aa691/ivy_tests/test_ivy/test_functional/test_core/test_general.py#L1650
 
 On top of the Array API `test suite`_, which is included as a submodule mapped to the folder :code:`test_array_api`, there is also a collection of Ivy tests, located in subfolder `test_ivy`_.
 
@@ -221,7 +221,7 @@ Ivy Test Decorators
 
 - Why do we need to handle test decorators?
 
-In order to run a test, a lot of pre-processing must be done, e.g. import the function, does it support complex data type? does it run on CPU? how many parameters does it take? are they positional or keyword only, or both? and a lot of information about the function that is being tested, this allows us later to run the test efficiently and in a **complete** way. all of this happens at collecting time.
+In order to run a test, a lot of pre-processing must be done, e.g. import the function, does it support complex data type? does it run on CPU? how many parameters does it take? are they positional or keyword only, or both? and a lot of information about the function that is being tested, this allows us later to run the test efficiently and in a **complete** way. All of this happens at collecting time.
 
 - What do the handle test decorators do?
 
@@ -241,14 +241,15 @@ This is not an exhaustive list of what the :code:`handle_test` decorators actual
 
 - Why do we have multiple handle test decorators?
 
-Having multiple test decorators is mainly for efficiency, `handle_test` could do what `handle_frontend_test` does, it just handles the parameters slightly different, and this can be inferred at run time, but we choose to separate the decorator for general different usages, currently we have 4 separate decorators
+Having multiple test decorators is mainly for efficiency, `handle_test` could do what `handle_frontend_test` does, it just handles the parameters slightly different, and this can be inferred at run time, but we choose to separate the decorator for general different usages, currently we have 5 separate decorators
 
 1.  :code:`handle_test`
 2.  :code:`handle_method`
 3.  :code:`handle_frontend_test`
 4.  :code:`handle_frontend_method`
+5.  :code:`handle_example`
 
-One of the few differences between the 4 decorators is that they generate different kinds of flags, some generate more or less, but they all share the same general structure.
+One of the few differences between the 5 decorators is that they generate different kinds of flags, some generate more or less, but they all share the same general structure.
 
 - Integration
 
@@ -358,6 +359,49 @@ Let's look at the data produced by this strategy -:
 
 These values are then unpacked, converted to :class:`ivy.Array` class, with corresponding dtypes.
 The test then runs on the newly created arrays with specified data types.
+
+Adding Explicit Examples to tests
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In certain cases where we'd like to test certain examples explicitly which are outliers and it isn't feasible to define them as a strategy,
+we can use the :code:`@handle_example` decorator. One such example is `this`_ where we need to test `ivy.set_item` with slice objects.
+
+Hypothesis allows us to test with an explicit example deterministically using the `@example`_ decorator. Our :code:`@handle_example` decorator is a wrapper around this.
+Which helps us to use the default values of the test_flags, method_flags allowing us to easily test explicit examples for the ivy functional tests, frontend_tests, methods, and frontend_methods.
+
+We have to pass one of the following 4 arguments as `True` to the :code:`@handle_example` decorator depending on what test we are dealing with.
+1. `test_example`
+2. `test_frontend_example`
+3. `test_method_example`
+4. `test_frontend_method_example`
+
+The following example shows, how we can use the :code:`@handle_example` decorator to test the one of the frontend functions by adding an explicit example.
+
+.. code-block:: python
+    @handle_frontend_test(
+    fn_tree="paddle.acos",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float"),),
+    )
+    @handle_example(
+        test_frontend_example=True,
+        dtype_and_x=(["float32"], [np.array(9.0, dtype=np.float32)]),
+        fn_tree="ivy.functional.frontends.paddle.acos",
+        test_flags={
+            "native_arrays": [True],
+            "with_copy": True,
+            "with_out": True,
+        },
+    )
+    def test_some_function(
+        *,
+        dtype_and_x,
+        fn_tree,
+        frontend,
+        test_flags,
+        backend_fw,
+    ):
+        pass
+
 
 Why do we need helper functions?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -895,13 +939,13 @@ This ensures that the given example is always tested while running the test, all
 
 This should have hopefully given you a good feel for how the tests are implemented in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `ivy tests channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `ivy tests thread`_!
 
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/2AwWuHIe2h8" class="video">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/2AwWuHIe2h8" class="video">
+..     </iframe>

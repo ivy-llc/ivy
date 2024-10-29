@@ -1,5 +1,5 @@
-"""Collection of Jax network layers, wrapped to fit Ivy syntax and signature."""
-
+"""Collection of Jax network layers, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 import jax.lax as jlax
@@ -64,7 +64,7 @@ def _get_new_padding_before_conv(
     dilations,
     x_dilations,
 ):
-    if not len(x_dilations) == x_dilations.count(1):
+    if len(x_dilations) != x_dilations.count(1):
         new_pad = [0] * dims
         x_shape = (
             list(x.shape[1 : dims + 1])
@@ -131,6 +131,7 @@ def conv1d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
     bias: Optional[JaxArray] = None,
@@ -142,7 +143,8 @@ def conv1d_transpose(
         x_shape = list(x.shape[1:2])
     else:
         x_shape = list(x.shape[2:])
-    filters = jnp.swapaxes(filters, -1, -2)
+    if filter_format == "channel_first":
+        filters = jnp.transpose(filters, (2, 1, 0))
     padding = _get_tranpose_padding(
         x_shape, filters.shape, strides, padding, 1, dilations, output_shape
     )
@@ -199,6 +201,7 @@ def conv2d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "NHWC",
     dilations: Union[int, Tuple[int, int]] = 1,
     bias: Optional[JaxArray] = None,
@@ -210,7 +213,8 @@ def conv2d_transpose(
         x_shape = list(x.shape[1:3])
     else:
         x_shape = list(x.shape[2:])
-    filters = jnp.swapaxes(filters, -1, -2)
+    if filter_format == "channel_first":
+        filters = jnp.transpose(filters, (2, 3, 1, 0))
     padding = _get_tranpose_padding(
         x_shape, filters.shape, strides, padding, 2, dilations, output_shape
     )
@@ -300,13 +304,15 @@ def conv3d_transpose(
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dilations: Union[int, Tuple[int, int, int]] = 1,
+    filter_format: str = "channel_last",
     data_format: str = "NDHWC",
     bias: Optional[JaxArray] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
-    filters = jnp.swapaxes(filters, -1, -2)
+    if filter_format == "channel_first":
+        filters = jnp.transpose(filters, (2, 3, 4, 1, 0))
     if data_format == "NDHWC":
         x_shape = list(x.shape[1:4])
     else:
@@ -333,11 +339,11 @@ def conv3d_transpose(
 def _get_filter_dataformat(dims: int = 2, filter_format: str = "channel_last"):
     first = True if filter_format == "channel_first" else False
     if dims == 1:
-        return "WIO" if not first else "OIW"
+        return "OIW" if first else "WIO"
     if dims == 2:
-        return "HWIO" if not first else "OIHW"
+        return "OIHW" if first else "HWIO"
     elif dims == 3:
-        return "DHWIO" if not first else "OIDHW"
+        return "OIDHW" if first else "DHWIO"
 
 
 def conv_general_dilated(
@@ -362,7 +368,7 @@ def conv_general_dilated(
     if isinstance(padding, int):
         padding = [(padding, padding)] * dims
     filter_df = _get_filter_dataformat(dims, filter_format)
-    if not len(x_dilations) == x_dilations.count(1):
+    if len(x_dilations) != x_dilations.count(1):
         new_pad = [0] * dims
         x_shape = (
             list(x.shape[1 : dims + 1])
@@ -390,8 +396,8 @@ def conv_general_dilated(
             ]
     df = _get_x_data_format(dims, data_format)
     promoted_type = jnp.promote_types(x.dtype, filters.dtype)
-    x = x.astype(promoted_type)
-    filters = filters.astype(promoted_type)
+    x = jnp.astype(x, promoted_type)
+    filters = jnp.astype(filters, promoted_type)
     res = jlax.conv_general_dilated(
         x,
         filters,
@@ -418,15 +424,17 @@ def conv_general_transpose(
     *,
     dims: int = 2,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    filter_format: str = "channel_last",
     data_format: str = "channel_last",
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
-    feature_group_count: Optional[int] = 1,
+    feature_group_count: int = 1,
     bias: Optional[JaxArray] = None,
     out: Optional[JaxArray] = None,
 ):
     strides = [strides] * dims if isinstance(strides, int) else strides
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
-    filters = jnp.swapaxes(filters, -1, -2)
+    if filter_format == "channel_first":
+        filters = jnp.transpose(filters, (*range(2, dims + 2), 1, 0))
     df = _get_x_data_format(dims, "channel_last")
     filter_df = _get_filter_dataformat(dims)
     if data_format == "channel_first":
@@ -455,3 +463,84 @@ def conv_general_transpose(
     if data_format == "channel_first":
         return jnp.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
+
+
+def nms(
+    boxes,
+    scores=None,
+    iou_threshold=0.5,
+    max_output_size=None,
+    score_threshold=float("-inf"),
+):
+    change_id = False
+    if score_threshold != float("-inf") and scores is not None:
+        keep_idx = scores > score_threshold
+        boxes = boxes[keep_idx]
+        scores = scores[keep_idx]
+        change_id = True
+        nonzero = jnp.nonzero(keep_idx)[0].flatten()
+    if scores is None:
+        scores = jnp.ones((boxes.shape[0],), dtype=boxes.dtype)
+
+    if len(boxes) < 2:
+        if len(boxes) == 1:
+            ret = jnp.array([0], dtype=ivy.int64)
+        else:
+            ret = jnp.array([], dtype=ivy.int64)
+    else:
+        areas = jnp.prod(boxes[:, 2:4] - boxes[:, :2], axis=1)
+        order = jnp.argsort(-1 * scores)  # get boxes with more ious first
+        boxes = boxes[order]
+        areas = areas[order]
+        size = order.size
+        pad_width = 1 if size == 0 else 2 ** (size - 1).bit_length()
+
+        order = jnp.pad(order, [0, pad_width - size], constant_values=pad_width)
+        boxes = jnp.pad(boxes, [[0, pad_width - size], [0, 0]])
+        areas = jnp.pad(areas, [0, pad_width - size])
+        keep = jnp.zeros((size,), dtype=jnp.int64)
+        keep_idx = 0
+
+        def body_fn(loop_vars):
+            keep, keep_idx, boxes, areas, order = loop_vars
+            max_iou_idx = order[0]
+            keep = keep.at[keep_idx].set(max_iou_idx)
+            keep_idx += 1
+            boxes1 = jnp.maximum(boxes[0, :2], boxes[1:, :2])
+            boxes2 = jnp.minimum(boxes[0, 2:4], boxes[1:, 2:4])
+            boxes_intersection = jnp.maximum(0.0, boxes2 - boxes1)
+            intersection = jnp.prod(
+                jnp.where(boxes_intersection != 0, boxes_intersection, 1), axis=1
+            )
+            iou = intersection / (areas[0] + areas[1:] - intersection)
+            condition = jnp.pad(iou <= iou_threshold, [1, 0], constant_values=False)
+            order = jnp.where(condition, order, pad_width)
+            boxes = jnp.where(jnp.expand_dims(condition, axis=1), boxes, 0)
+            areas = jnp.where(condition, areas, 0)
+            first = jnp.argwhere(order < pad_width, size=pad_width)[0][0]
+            forward = jnp.array([0, first])
+            order = order.at[forward].set(order[forward[::-1]])
+            boxes = boxes.at[forward].set(boxes[forward[::-1]])
+            areas = areas.at[forward].set(areas[forward[::-1]])
+
+            return keep, keep_idx, boxes, areas, order
+
+        def cond_fn(loop_vars):
+            _, _, _, _, order = loop_vars
+            return jnp.min(order) != jnp.max(order)
+
+        init_vars = (keep, keep_idx, boxes, areas, order)
+        keep, keep_idx, boxes, _, _ = jlax.while_loop(cond_fn, body_fn, init_vars)
+
+        ret = jnp.array(keep[:keep_idx], dtype=jnp.int64)
+
+    if len(ret) > 1 and scores is not None:
+        ret = sorted(
+            ret.flatten().tolist(), reverse=True, key=lambda x: (scores[x], -x)
+        )
+        ret = jnp.array(ret, dtype=jnp.int64).flatten()
+
+    if change_id and len(ret) > 0:
+        ret = jnp.array(nonzero[ret], dtype=jnp.int64).flatten()
+
+    return ret.flatten()[:max_output_size]

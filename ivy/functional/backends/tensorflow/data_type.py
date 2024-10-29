@@ -75,6 +75,15 @@ class Finfo:
     def smallest_normal(self):
         return float(self._tf_finfo.tiny)
 
+    def __getattribute__(self, name):
+        try:
+            # Try to get the attribute from the Finfo class
+            return super().__getattribute__(name)
+        except AttributeError:
+            # If the attribute doesn't exist in Finfo, try to get it from _tf_finfo
+            tf_finfo = super().__getattribute__("_tf_finfo")
+            return getattr(tf_finfo, name)
+
 
 class Bfloat16Finfo:
     def __init__(self):
@@ -86,8 +95,9 @@ class Bfloat16Finfo:
         self.tiny = 1.17549e-38
 
     def __repr__(self):
-        return "finfo(resolution={}, min={}, max={}, dtype={})".format(
-            self.resolution, self.min, self.max, "bfloat16"
+        return (
+            f"finfo(resolution={self.resolution}, min={self.min}, max={self.max},"
+            " dtype='bfloat16')"
         )
 
 
@@ -114,17 +124,19 @@ def broadcast_arrays(
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     if len(arrays) > 1:
         try:
-            desired_shape = tf.broadcast_dynamic_shape(arrays[0].shape, arrays[1].shape)
+            desired_shape = tf.broadcast_dynamic_shape(
+                tf.shape(arrays[0]), tf.shape(arrays[1])
+            )
         except tf.errors.InvalidArgumentError as e:
-            raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
+            raise ivy.utils.exceptions.IvyBroadcastShapeError(e) from e
         if len(arrays) > 2:
             for i in range(2, len(arrays)):
                 try:
                     desired_shape = tf.broadcast_dynamic_shape(
-                        desired_shape, arrays[i].shape
+                        desired_shape, tf.shape(arrays[i])
                     )
                 except tf.errors.InvalidArgumentError as e:
-                    raise ivy.utils.exceptions.IvyBroadcastShapeError(e)
+                    raise ivy.utils.exceptions.IvyBroadcastShapeError(e) from e
     else:
         return [arrays[0]]
     result = []
@@ -163,7 +175,7 @@ def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable, np.ndarray], /) -> np.
     return tf.experimental.numpy.iinfo(ivy.as_ivy_dtype(type))
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": ("bfloat16",)}, backend_version)
 def result_type(
     *arrays_and_dtypes: Union[tf.Tensor, tf.Variable, tf.DType],
 ) -> ivy.Dtype:
@@ -238,7 +250,7 @@ def as_native_dtype(
         dtype_in = dtype_in.name
     if not isinstance(dtype_in, str):
         return dtype_in
-    if dtype_in in native_dtype_dict.keys():
+    if dtype_in in native_dtype_dict:
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
         raise ivy.utils.exceptions.IvyException(
@@ -272,10 +284,7 @@ def dtype_bits(dtype_in: Union[tf.DType, str, np.dtype], /) -> int:
 def is_native_dtype(dtype_in: Union[tf.DType, str], /) -> bool:
     if not ivy.is_hashable_dtype(dtype_in):
         return False
-    if dtype_in in ivy_dtype_dict and isinstance(dtype_in, tf.dtypes.DType):
-        return True
-    else:
-        return False
+    return bool(dtype_in in ivy_dtype_dict and isinstance(dtype_in, tf.dtypes.DType))
 
 
 # ToDo:

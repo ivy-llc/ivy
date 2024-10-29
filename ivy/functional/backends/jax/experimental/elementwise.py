@@ -1,5 +1,5 @@
 import operator
-from typing import Optional, Union, Tuple, List
+from typing import Optional, Union, Tuple, List, Sequence
 from numbers import Number
 
 from ivy import (
@@ -19,12 +19,38 @@ from .. import backend_version
 jax_ArrayLike = Union[JaxArray, Number]
 
 
+def amax(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    ret = jnp.amax(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
+    return jnp.asarray(ret) if jnp.isscalar(ret) else ret
+
+
+def amin(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    ret = jnp.amin(a=jnp.asarray(x), axis=axis, keepdims=keepdims)
+    return jnp.asarray(ret) if jnp.isscalar(ret) else ret
+
+
 def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sinc(x)
 
 
 @with_supported_dtypes(
-    {"0.4.14 and below": ("float16", "float32", "float64")}, backend_version
+    {"0.4.24 and below": ("float16", "float32", "float64")}, backend_version
 )
 def lgamma(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jlax.lgamma(x)
@@ -53,7 +79,7 @@ def float_power(
         out_dtype = jnp.complex128
     else:
         out_dtype = jnp.float64
-    return jnp.float_power(x1, x2).astype(out_dtype)
+    return jnp.astype(jnp.float_power(x1, x2), out_dtype)
 
 
 def copysign(
@@ -65,8 +91,8 @@ def copysign(
 ) -> JaxArray:
     x1, x2 = promote_types_of_inputs(x1, x2)
     if not is_float_dtype(x1):
-        x1 = x1.astype(default_float_dtype(as_native=True))
-        x2 = x2.astype(default_float_dtype(as_native=True))
+        x1 = jnp.astype(x1, default_float_dtype(as_native=True))
+        x2 = jnp.astype(x2, default_float_dtype(as_native=True))
     return jnp.copysign(x1, x2)
 
 
@@ -227,7 +253,7 @@ def _normalize_axis_tuple(axis: Union[int, list, tuple], ndim: int) -> Tuple[int
             axis = [operator.index(axis)]
         except TypeError:
             pass
-    axis = tuple([_normalize_axis_index(ax, ndim) for ax in axis])
+    axis = tuple(_normalize_axis_index(ax, ndim) for ax in axis)
     if len(set(axis)) != len(axis):
         raise ValueError("repeated axis")
     return axis
@@ -281,7 +307,7 @@ def gradient(
             if jnp.issubdtype(distances.dtype, jnp.integer):
                 # Convert numpy integer types to float64 to avoid modular
                 # arithmetic in np.diff(distances).
-                distances = distances.astype(jnp.float64)
+                distances = jnp.astype(distances, jnp.float64)
             diffx = jnp.diff(distances)
             # if distances are constant reduce to the scalar case
             # since it brings a consistent speedup
@@ -307,7 +333,7 @@ def gradient(
 
     otype = f.dtype
     if jnp.issubdtype(otype, jnp.integer):
-        f = f.astype(jnp.float64)
+        f = jnp.astype(f, jnp.float64)
 
     for axis, ax_dx in zip(axes, dx):
         if f.shape[axis] < edge_order + 1:
@@ -464,3 +490,21 @@ def digamma(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return js.special.digamma(x)
+
+
+def erfc(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return js.special.erfc(x)
+
+
+def erfinv(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return js.special.erfinv(x)

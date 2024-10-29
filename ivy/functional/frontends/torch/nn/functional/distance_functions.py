@@ -4,7 +4,7 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def cosine_similarity(x1, x2, *, dim=1, eps=1e-08):
     x1, x2 = torch_frontend.promote_types_of_torch_inputs(x1, x2)
@@ -28,7 +28,7 @@ def cosine_similarity(x1, x2, *, dim=1, eps=1e-08):
     return cosine
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
     x1, x2 = torch_frontend.promote_types_of_torch_inputs(x1, x2)
@@ -42,7 +42,7 @@ def pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
     return ivy.vector_norm(x1 - x2 + eps, ord=p, axis=output_dim - 1, keepdims=keepdim)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def pdist(input, p=2):
     x = ivy.array(

@@ -4,12 +4,15 @@ from ivy.functional.frontends.torch.func_wrapper import (
     to_ivy_arrays_and_back,
     to_ivy_shape,
 )
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+)
 import ivy.functional.frontends.torch as torch_frontend
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 def arange(
     start=0,
     end=None,
@@ -71,6 +74,19 @@ def asarray(
     return ivy.asarray(obj, copy=copy, dtype=dtype, device=device)
 
 
+@with_supported_dtypes({"2.2 and below": ("float32", "float64")}, "torch")
+@to_ivy_arrays_and_back
+def complex(
+    real,
+    imag,
+    *,
+    out=None,
+):
+    complex_dtype = ivy.complex64 if real.dtype != ivy.float64 else ivy.complex128
+    complex_array = ivy.complex(real, imag, out=out)
+    return complex_array.astype(complex_dtype, out=out)
+
+
 @to_ivy_arrays_and_back
 def empty(
     *args,
@@ -86,7 +102,13 @@ def empty(
     if args and size:
         raise TypeError("empty() got multiple values for argument 'shape'")
     if size is None:
-        size = args[0] if isinstance(args[0], (tuple, list, ivy.Shape)) else args
+        size = (
+            args[0]
+            if isinstance(args[0], (tuple, list, ivy.Shape, ivy.NativeShape))
+            else args
+        )
+    if isinstance(size, (tuple, list)):
+        size = tuple(s.to_scalar() if ivy.is_array(s) else s for s in size)
     return ivy.empty(shape=size, dtype=dtype, device=device, out=out)
 
 
@@ -105,15 +127,28 @@ def empty_like(
 
 
 @to_ivy_arrays_and_back
+def empty_strided(
+    size,
+    stride,
+    *,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False,
+    pin_memory=False,
+):
+    max_offsets = [(s - 1) * st for s, st in zip(size, stride)]
+    items = sum(max_offsets) + 1
+    empty_array = empty(items, dtype=dtype, device=device)
+    strided_array = as_strided(empty_array, size, stride)
+    return strided_array
+
+
+@to_ivy_arrays_and_back
 def eye(
     n, m=None, *, out=None, dtype=None, layout=None, device=None, requires_grad=False
 ):
     return ivy.eye(n, m, dtype=dtype, device=device, out=out)
-
-
-@to_ivy_arrays_and_back
-def from_dlpack(ext_tensor):
-    return ivy.from_dlpack(ext_tensor)
 
 
 @to_ivy_arrays_and_back
@@ -133,6 +168,7 @@ def frombuffer(
     return ivy.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
 
 
+@with_unsupported_dtypes({"2.2.0 and below": ("bfloat16",)}, "torch")
 @to_ivy_arrays_and_back
 def full(
     size,
@@ -169,7 +205,7 @@ def heaviside(input, values, *, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 def linspace(
     start,
     end,
@@ -181,12 +217,12 @@ def linspace(
     layout=None,
     requires_grad=False,
 ):
-    ret = ivy.linspace(start, end, num=steps, dtype=dtype, device=device, out=out)
-    return ret
+    dtype = torch_frontend.get_default_dtype() if dtype is None else dtype
+    return ivy.linspace(start, end, num=steps, dtype=dtype, device=device, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 def logspace(
     start,
     end,
@@ -211,7 +247,11 @@ def ones(*args, size=None, out=None, dtype=None, device=None, requires_grad=Fals
     if args and size:
         raise TypeError("ones() got multiple values for argument 'shape'")
     if size is None:
-        size = args[0] if isinstance(args[0], (tuple, list, ivy.Shape)) else args
+        size = (
+            args[0]
+            if isinstance(args[0], (tuple, list, ivy.Shape, ivy.NativeShape))
+            else args
+        )
     return ivy.ones(shape=size, dtype=dtype, device=device, out=out)
 
 
@@ -234,8 +274,19 @@ def ones_like_v_0p4p0_and_above(
     return ret
 
 
+@with_supported_dtypes({"2.2 and below": ("float32", "float64")}, "torch")
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+def polar(
+    abs,
+    angle,
+    *,
+    out=None,
+):
+    return complex(abs * angle.cos(), abs * angle.sin(), out=out)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 def range(
     *args,
     dtype=None,
@@ -253,11 +304,6 @@ def range(
         step = 1
     elif len(args) == 3:
         start, end, step = args
-    else:
-        ivy.utils.assertions.check_true(
-            len(args) == 1 or len(args) == 3,
-            "only 1 or 3 positional arguments are supported",
-        )
     range_vec = []
     elem = start
     while 1:
@@ -292,7 +338,11 @@ def zeros(*args, size=None, out=None, dtype=None, device=None, requires_grad=Fal
     if args and size:
         raise TypeError("zeros() got multiple values for argument 'shape'")
     if size is None:
-        size = args[0] if isinstance(args[0], (tuple, list, ivy.Shape)) else args
+        size = (
+            args[0]
+            if isinstance(args[0], (tuple, list, ivy.Shape, ivy.NativeShape))
+            else args
+        )
     return ivy.zeros(shape=size, dtype=dtype, device=device, out=out)
 
 

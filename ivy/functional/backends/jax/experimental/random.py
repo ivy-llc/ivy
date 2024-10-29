@@ -56,7 +56,7 @@ def beta(
     return jax.random.beta(rng_input, a, b, shape, dtype)
 
 
-@with_unsupported_dtypes({"0.4.14 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.24 and below": ("bfloat16",)}, backend_version)
 def gamma(
     alpha: Union[float, JaxArray],
     beta: Union[float, JaxArray],
@@ -100,10 +100,12 @@ def poisson(
         list_shape = None
     if jnp.any(lam < 0):
         pos_lam = jnp.where(lam < 0, 0, lam)
-        ret = jax.random.poisson(rng_input, pos_lam, shape=list_shape).astype(dtype)
+        ret = jnp.astype(
+            jax.random.poisson(rng_input, pos_lam, shape=list_shape), dtype
+        )
         ret = jnp.where(lam < 0, fill_value, ret)
     else:
-        ret = jax.random.poisson(rng_input, lam, shape=list_shape).astype(dtype)
+        ret = jnp.astype(jax.random.poisson(rng_input, lam, shape=list_shape), dtype)
     return ret
 
 
@@ -117,6 +119,7 @@ def bernoulli(
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    dtype = dtype if dtype is not None else probs.dtype
     if seed:
         rng_input = jax.random.PRNGKey(seed)
     else:
@@ -124,6 +127,6 @@ def bernoulli(
         _setRNG(RNG_)
     if logits is not None:
         probs = jax.nn.softmax(logits, axis=-1)
-    if not _check_shapes_broadcastable(shape, probs.shape):
+    if hasattr(probs, "shape") and not _check_shapes_broadcastable(shape, probs.shape):
         shape = probs.shape
-    return jax.random.bernoulli(rng_input, probs, shape=shape)
+    return jnp.astype(jax.random.bernoulli(rng_input, probs, shape=shape), dtype)

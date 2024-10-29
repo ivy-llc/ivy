@@ -1,4 +1,3 @@
-import numpy as np
 import ivy
 
 
@@ -11,8 +10,8 @@ def _broadcast_inputs(x1, x2):
     iterables = (list, tuple, ivy.Shape)
     if not isinstance(x1_, iterables):
         x1_, x2_ = x2, x1
-        if not isinstance(x1_, iterables):
-            return [x1], [x2]
+    if not isinstance(x1_, iterables):
+        return [x1], [x2]
     if not isinstance(x2_, iterables):
         x1 = [x1] * len(x2)
     return x1, x2
@@ -23,76 +22,88 @@ def _broadcast_inputs(x1, x2):
 
 
 def check_less(x1, x2, allow_equal=False, message="", as_array=True):
-    comp_fn = lambda x1, x2: (ivy.any(x1 > x2), ivy.any(x1 >= x2))
+    def comp_fn(x1, x2):
+        return ivy.any(x1 > x2), ivy.any(x1 >= x2)
+
     if not as_array:
-        iter_comp_fn = lambda x1_, x2_: (
-            any(x1 > x2 for x1, x2 in zip(x1_, x2_)),
-            any(x1 >= x2 for x1, x2 in zip(x1_, x2_)),
-        )
-        comp_fn = lambda x1, x2: iter_comp_fn(*_broadcast_inputs(x1, x2))
+
+        def iter_comp_fn(x1_, x2_):
+            return any(x1 > x2 for x1, x2 in zip(x1_, x2_)), any(
+                x1 >= x2 for x1, x2 in zip(x1_, x2_)
+            )
+
+        def comp_fn(x1, x2):  # noqa F811
+            return iter_comp_fn(*_broadcast_inputs(x1, x2))
+
     gt, gt_eq = comp_fn(x1, x2)
     # less_equal
     if allow_equal and gt:
         raise ivy.utils.exceptions.IvyException(
-            "{} must be lesser than or equal to {}".format(x1, x2)
-            if message == ""
-            else message
+            f"{x1} must be lesser than or equal to {x2}" if message == "" else message
         )
-    # less
     elif not allow_equal and gt_eq:
         raise ivy.utils.exceptions.IvyException(
-            "{} must be lesser than {}".format(x1, x2) if message == "" else message
+            f"{x1} must be lesser than {x2}" if message == "" else message
         )
 
 
 def check_greater(x1, x2, allow_equal=False, message="", as_array=True):
-    comp_fn = lambda x1, x2: (ivy.any(x1 < x2), ivy.any(x1 <= x2))
+    def comp_fn(x1, x2):
+        return ivy.any(x1 < x2), ivy.any(x1 <= x2)
+
     if not as_array:
-        iter_comp_fn = lambda x1_, x2_: (
-            any(x1 < x2 for x1, x2 in zip(x1_, x2_)),
-            any(x1 <= x2 for x1, x2 in zip(x1_, x2_)),
-        )
-        comp_fn = lambda x1, x2: iter_comp_fn(*_broadcast_inputs(x1, x2))
+
+        def iter_comp_fn(x1_, x2_):
+            return any(x1 < x2 for x1, x2 in zip(x1_, x2_)), any(
+                x1 <= x2 for x1, x2 in zip(x1_, x2_)
+            )
+
+        def comp_fn(x1, x2):  # noqa F811
+            return iter_comp_fn(*_broadcast_inputs(x1, x2))
+
     lt, lt_eq = comp_fn(x1, x2)
     # greater_equal
     if allow_equal and lt:
         raise ivy.utils.exceptions.IvyException(
-            "{} must be greater than or equal to {}".format(x1, x2)
-            if message == ""
-            else message
+            f"{x1} must be greater than or equal to {x2}" if message == "" else message
         )
-    # greater
     elif not allow_equal and lt_eq:
         raise ivy.utils.exceptions.IvyException(
-            "{} must be greater than {}".format(x1, x2) if message == "" else message
+            f"{x1} must be greater than {x2}" if message == "" else message
         )
 
 
 def check_equal(x1, x2, inverse=False, message="", as_array=True):
     # not_equal
-    eq_fn = lambda x1, x2: (x1 == x2 if inverse else x1 != x2)
-    comp_fn = lambda x1, x2: ivy.any(eq_fn(x1, x2))
+    def eq_fn(x1, x2):
+        return x1 == x2 if inverse else x1 != x2
+
+    def comp_fn(x1, x2):
+        return ivy.any(eq_fn(x1, x2))
+
     if not as_array:
-        iter_comp_fn = lambda x1_, x2_: any(eq_fn(x1, x2) for x1, x2 in zip(x1_, x2_))
-        comp_fn = lambda x1, x2: iter_comp_fn(*_broadcast_inputs(x1, x2))
+
+        def iter_comp_fn(x1_, x2_):
+            return any(eq_fn(x1, x2) for x1, x2 in zip(x1_, x2_))
+
+        def comp_fn(x1, x2):  # noqa F811
+            return iter_comp_fn(*_broadcast_inputs(x1, x2))
+
     eq = comp_fn(x1, x2)
     if inverse and eq:
         raise ivy.utils.exceptions.IvyException(
-            "{} must not be equal to {}".format(x1, x2) if message == "" else message
+            f"{x1} must not be equal to {x2}" if message == "" else message
         )
-    # equal
     elif not inverse and eq:
         raise ivy.utils.exceptions.IvyException(
-            "{} must be equal to {}".format(x1, x2) if message == "" else message
+            f"{x1} must be equal to {x2}" if message == "" else message
         )
 
 
 def check_isinstance(x, allowed_types, message=""):
     if not isinstance(x, allowed_types):
         raise ivy.utils.exceptions.IvyException(
-            "type of x: {} must be one of the allowed types: {}".format(
-                type(x), allowed_types
-            )
+            f"type of x: {type(x)} must be one of the allowed types: {allowed_types}"
             if message == ""
             else message
         )
@@ -114,11 +125,11 @@ def check_exists(x, inverse=False, message=""):
 def check_elem_in_list(elem, list, inverse=False, message=""):
     if inverse and elem in list:
         raise ivy.utils.exceptions.IvyException(
-            message if message != "" else "{} must not be one of {}".format(elem, list)
+            message if message != "" else f"{elem} must not be one of {list}"
         )
     elif not inverse and elem not in list:
         raise ivy.utils.exceptions.IvyException(
-            message if message != "" else "{} must be one of {}".format(elem, list)
+            message if message != "" else f"{elem} must be one of {list}"
         )
 
 
@@ -146,7 +157,7 @@ def check_all_or_any_fn(
     *args,
     fn,
     type="all",
-    limit=[0],
+    limit=(0,),
     message="args must exist according to type and limit given",
     as_array=True,
 ):
@@ -166,8 +177,9 @@ def check_shape(x1, x2, message=""):
     message = (
         message
         if message != ""
-        else "{} and {} must have the same shape ({} vs {})".format(
-            x1, x2, ivy.shape(x1), ivy.shape(x2)
+        else (
+            f"{x1} and {x2} must have the same shape ({ivy.shape(x1)} vs"
+            f" {ivy.shape(x2)})"
         )
     )
     if ivy.shape(x1)[:] != ivy.shape(x2)[:]:
@@ -179,8 +191,9 @@ def check_same_dtype(x1, x2, message=""):
         message = (
             message
             if message != ""
-            else "{} and {} must have the same dtype ({} vs {})".format(
-                x1, x2, ivy.dtype(x1), ivy.dtype(x2)
+            else (
+                f"{x1} and {x2} must have the same dtype ({ivy.dtype(x1)} vs"
+                f" {ivy.dtype(x2)})"
             )
         )
         raise ivy.utils.exceptions.IvyException(message)
@@ -190,33 +203,9 @@ def check_same_dtype(x1, x2, message=""):
 # -------- #
 
 
-def check_fill_value_and_dtype_are_compatible(fill_value, dtype):
-    if ivy.is_array(fill_value) and len(fill_value.shape) == 0:
-        fill_value = ivy.to_scalar(fill_value)
-    if (
-        not (
-            (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
-            and (isinstance(fill_value, int) or ivy.isinf(fill_value))
-        )
-        and not (
-            ivy.is_complex_dtype(dtype) and isinstance(fill_value, (float, complex))
-        )
-        and not (
-            ivy.is_float_dtype(dtype)
-            and isinstance(fill_value, (float, np.float32))
-            or isinstance(fill_value, bool)
-        )
-    ):
-        raise ivy.utils.exceptions.IvyException(
-            "the fill_value: {} and data type: {} are not compatible".format(
-                fill_value, dtype
-            )
-        )
-
-
-def check_unsorted_segment_min_valid_params(data, segment_ids, num_segments):
-    if not (isinstance(num_segments, int)):
-        raise ValueError("num_segments must be of integer type")
+def check_unsorted_segment_valid_params(data, segment_ids, num_segments):
+    if not isinstance(num_segments, int):
+        raise TypeError("num_segments must be of integer type")
 
     valid_dtypes = [
         ivy.int32,
@@ -243,7 +232,7 @@ def check_unsorted_segment_min_valid_params(data, segment_ids, num_segments):
             num_segments = num_segments.item()
 
     if segment_ids.dtype not in valid_dtypes:
-        raise ValueError("segment_ids must have an integer dtype")
+        raise TypeError("segment_ids must have an integer dtype")
 
     if data.shape[0] != segment_ids.shape[0]:
         raise ValueError("The length of segment_ids should be equal to data.shape[0].")
@@ -265,45 +254,35 @@ def check_unsorted_segment_min_valid_params(data, segment_ids, num_segments):
 def check_gather_input_valid(params, indices, axis, batch_dims):
     if batch_dims > axis:
         raise ivy.utils.exceptions.IvyException(
-            "batch_dims ({}) must be less than or equal to axis ({}).".format(
-                batch_dims, axis
-            )
+            f"batch_dims ({batch_dims}) must be less than or equal to axis ({axis})."
         )
     if params.shape[0:batch_dims] != indices.shape[0:batch_dims]:
         raise ivy.utils.exceptions.IvyException(
-            "batch dimensions must match in `params` and `indices`;"
-            + " saw {} vs. {}".format(
-                params.shape[0:batch_dims], indices.shape[0:batch_dims]
-            )
+            "batch dimensions must match in `params` and `indices`; saw"
+            f" {params.shape[0:batch_dims]} vs. {indices.shape[0:batch_dims]}"
         )
 
 
 def check_gather_nd_input_valid(params, indices, batch_dims):
     if batch_dims >= len(params.shape):
         raise ivy.utils.exceptions.IvyException(
-            "batch_dims = {} must be less than rank(`params`) = {}.".format(
-                batch_dims, len(params.shape)
-            )
+            f"batch_dims = {batch_dims} must be less than rank(`params`) ="
+            f" {len(params.shape)}."
         )
     if batch_dims >= len(indices.shape):
         raise ivy.utils.exceptions.IvyException(
-            "batch_dims = {}  must be less than rank(`indices`) = {}.".format(
-                batch_dims, len(indices.shape)
-            )
+            f"batch_dims = {batch_dims}  must be less than rank(`indices`) ="
+            f" {len(indices.shape)}."
         )
     if params.shape[0:batch_dims] != indices.shape[0:batch_dims]:
         raise ivy.utils.exceptions.IvyException(
-            "batch dimensions must match in `params` and `indices`;"
-            + " saw {} vs. {}".format(
-                params.shape[0:batch_dims], indices.shape[0:batch_dims]
-            )
+            "batch dimensions must match in `params` and `indices`; saw"
+            f" {params.shape[0:batch_dims]} vs. {indices.shape[0:batch_dims]}"
         )
     if indices.shape[-1] > (len(params.shape[batch_dims:])):
         raise ivy.utils.exceptions.IvyException(
-            "index innermost dimension length must be <= "
-            + "rank(`params[batch_dims:]`); saw: {} vs. {} .".format(
-                indices.shape[-1], len(params.shape[batch_dims:])
-            )
+            "index innermost dimension length must be <= rank(`params[batch_dims:]`);"
+            f" saw: {indices.shape[-1]} vs. {len(params.shape[batch_dims:])} ."
         )
 
 
@@ -311,7 +290,7 @@ def check_one_way_broadcastable(x1, x2):
     if len(x1) > len(x2):
         return False
     for a, b in zip(x1[::-1], x2[::-1]):
-        if a == 1 or a == b:
+        if a in (1, b):
             pass
         else:
             return False
@@ -321,24 +300,23 @@ def check_one_way_broadcastable(x1, x2):
 def check_inplace_sizes_valid(var, data):
     if not check_one_way_broadcastable(data.shape, var.shape):
         raise ivy.utils.exceptions.IvyException(
-            "Could not output values of shape {} into array with shape {}.".format(
-                var.shape, data.shape
-            )
+            f"Could not output values of shape {var.shape} into array with shape"
+            f" {data.shape}."
         )
 
 
 def check_shapes_broadcastable(var, data):
     if not check_one_way_broadcastable(var, data):
         raise ivy.utils.exceptions.IvyBroadcastShapeError(
-            "Could not broadcast shape {} to shape {}.".format(data, var)
+            f"Could not broadcast shape {data} to shape {var}."
         )
 
 
 def check_dimensions(x):
     if len(x.shape) <= 1:
         raise ivy.utils.exceptions.IvyException(
-            "input must have greater than one dimension; "
-            + " {} has {} dimensions".format(x, len(x.shape))
+            f"input must have greater than one dimension;  {x} has"
+            f" {len(x.shape)} dimensions"
         )
 
 
@@ -349,10 +327,8 @@ def check_kernel_padding_size(kernel_size, padding_size):
             or padding_size[i][1] > kernel_size[i] // 2
         ):
             raise ValueError(
-                "Padding size should be less than or equal to half of the kernel size. "
-                "Got kernel_size: {} and padding_size: {}".format(
-                    kernel_size, padding_size
-                )
+                "Padding size should be less than or equal to half of the kernel size."
+                f" Got kernel_size: {kernel_size} and padding_size: {padding_size}"
             )
 
 
@@ -372,6 +348,7 @@ def _check_jax_x64_flag(dtype):
         ivy.backend == "jax"
         and not ivy.functional.backends.jax.jax.config.jax_enable_x64
     ):
+
         ivy.utils.assertions.check_elem_in_list(
             dtype,
             ["float64", "int64", "uint64", "complex128"],

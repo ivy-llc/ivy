@@ -1,13 +1,12 @@
 The Basics
 ==========
 
-.. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`todo list issues channel`: https://discord.com/channels/799879767196958751/982728618469912627
+.. _`repo`: https://github.com/ivy-llc/ivy
+.. _`discord`: https://discord.gg/uYRmyPxMQq
+.. _`todo list issues thread`: https://discord.com/channels/799879767196958751/1189903501011202128
 .. _`Atlassian tutorial`: https://www.atlassian.com/git/tutorials/saving-changes/git-stash
-.. _`fork management channel`: https://discord.com/channels/799879767196958751/982728689408167956
+.. _`fork management thread`: https://discord.com/channels/799879767196958751/1189903708465672272
 .. _`pull requests channel`: https://discord.com/channels/799879767196958751/982728733859414056
-.. _`commit frequency channel`: https://discord.com/channels/799879767196958751/982728822317256712
 .. _`PyCharm blog`: https://www.jetbrains.com/help/pycharm/finding-and-replacing-text-in-file.html
 .. _`Debugging`: https://www.jetbrains.com/help/pycharm/debugging-code.html
 
@@ -16,14 +15,14 @@ Getting Help
 
 There are a few different communication channels that you can make use of in order to ask for help:
 
-#. `Discord server <https://discord.gg/sXyFF8tDtm>`_
+#. `Discord server <https://discord.gg/uYRmyPxMQq>`_
 #. `Issues <https://github.com/unifyai/ivy/issues>`_
 
 We'll quickly outline how each of these should be used, and also which question is most appropriate for which context.
 
 **Discord Server**
 
-The `discord server <https://discord.gg/sXyFF8tDtm>`_ is most suitable for very quick and simple questions.
+The `discord server <https://discord.gg/uYRmyPxMQq>`_ is most suitable for very quick and simple questions.
 These questions should **always** be asked in the correct channel.
 There is a tendency to use the *general* landing channel for everything.
 This isn't the end of the world, but if many unrelated messages come flying into the *general* channel, then it does make it very hard to keep track of the different discussions, and it makes it less likely that you will receive a response.
@@ -35,13 +34,13 @@ For example, if you are applying for an internship, then you should make use of 
 As the name suggests, the `issues <https://github.com/unifyai/ivy/issues>`_ section on GitHub is the best place to raise issues or general bugs that you find with the project.
 It can also serve as a useful place to ask questions, but only if you suspect that the behaviour you are observing *might* be a bug.
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/T5vQP1pCXS8" class="video" allowfullscreen="true">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/T5vQP1pCXS8" class="video" allowfullscreen="true">
+..     </iframe>
 
 |
 
@@ -53,7 +52,7 @@ We make extensive use of `ToDo list issues <https://github.com/unifyai/ivy/issue
 
 We have a clear process for contributors to engage with such ToDo lists:
 
-a. Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and (iii) is not mentioned in the comments. Currently, there are three open tasks: :ref:`overview/contributing/open_tasks:Function Formatting`, :ref:`overview/contributing/open_tasks:Frontend APIs` and :ref:`overview/contributing/open_tasks:Ivy Experimental API`.
+a. Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and (iii) is not mentioned in the comments. Currently, there are three open tasks: :ref:`overview/contributing/open_tasks:Fixing Failing Tests`, :ref:`overview/contributing/open_tasks:Function Formatting`, :ref:`overview/contributing/open_tasks:Frontend APIs` and :ref:`overview/contributing/open_tasks:Ivy Experimental API`.
 
 b. Create a new issue with the title being just the name of the sub-task you would like to work on.
 
@@ -103,17 +102,17 @@ This is to prevent anyone from self-allocating many sub-tasks, preventing others
 Even though the limit is three, sub-tasks should only be self-assigned using **one comment per sub-task**.
 For example, a sequence of comments like this :code:`- [ ] #Issue_number` will register correctly whereas a single comment like this :code:`- [ ] #Issue_number, - [ ] #Issue_number, - [ ] #Issue_number` or this :code:`- [ ] #Issue_number #Issue_number #Issue_number` etc. will not.
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/wBKTOGmwfbo" class="video" allowfullscreen="true">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/wBKTOGmwfbo" class="video" allowfullscreen="true">
+..     </iframe>
 
 |
 
-For questions, please reach out on `discord`_ in the `todo list issues channel`_!
+For questions, please reach out on `discord`_ in the `todo list issues thread`_!
 
 Managing Your Fork
 ------------------
@@ -129,9 +128,9 @@ This can be done using:
 The main branch then simply has the role of being kept up to date with upstream.
 You *can* create PRs based on the main branch of your fork, but this will make things more complicated if you would then like to create additional PRs in the future.
 
-For keeping any branch on your fork up to date, there is a script in the root folder of the repo `merge_with_upstream.sh <https://github.com/unifyai/ivy/blob/2994da4f7347b0b3fdd81b91c83bcbaa5580e7fb/merge_with_upstream.sh>`_.
-To update your fork's branch to the upstream main branch, simply run :code:`./merge_with_upstream.sh name_of_your_branch`.
-To update the main branch, this would then be: :code:`./merge_with_upstream.sh main`.
+For keeping any branch on your fork up to date, there is a script in the root folder of the repo `scripts/shell/merge_with_upstream.sh <https://github.com/unifyai/ivy/blob/bcddc79978afe447958dfa3ea660716845c85846/scripts/shell/merge_with_upstream.sh>`_.
+To update your fork's branch to the upstream main branch, simply run :code:`./scripts/shell/merge_with_upstream.sh name_of_your_branch`.
+To update the main branch, this would then be: :code:`./scripts/shell/merge_with_upstream.sh main`.
 
 When making a PR (explained in the next sub-section), sometimes you will see that changes to upstream have caused conflicts with your PR.
 In this case, you will need to either resolve these conflicts in the browser, or clone your fork and make changes locally in the terminal and push once resolved.
@@ -144,17 +143,17 @@ The corresponding commands are :code:`git stash` -> :code:`git fetch` -> :code:`
 Note that this only works for uncommitted changes (staged and unstaged) and untracked files won't be stashed.
 For a comprehensive explanation of git stashing, check out this `Atlassian tutorial`_.
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/TFMPihytg9U" class="video" allowfullscreen="true">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/TFMPihytg9U" class="video" allowfullscreen="true">
+..     </iframe>
 
 |
 
-For questions, please reach out on `discord`_ in the `fork management channel`_!
+For questions, please reach out on `discord`_ in the `fork management thread`_!
 
 Who To Ask
 ----------
@@ -239,17 +238,17 @@ This will enable us to quickly fix conflicts, merge with upstream, and get thing
 
 The code review process is explained in more detail in the following video.
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/9G4d-CvlT2g" class="video" allowfullscreen="true">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/9G4d-CvlT2g" class="video" allowfullscreen="true">
+..     </iframe>
 
 |
 
-For questions, please reach out on `discord`_ in the `pull requests channel`_!
+For questions, please reach out on `discord`_ in the `pull requests thread`_!
 
 Small Commits Often
 -------------------
@@ -295,7 +294,7 @@ As a final note, a beautiful commit history is not something we particularly car
 We're much more concerned that the code itself is good, that things are updated as quickly as possible, and that all developers are able to work efficiently.
 If a mistake is committed into the history, it's generally not too difficult to simply undo this in future commits, so don't stress about this too much 🙂
 
-For questions, please reach out on the on `discord`_ in the `commit frequency channel`_!
+For questions, please reach out on the on `discord`_ in the `commit frequency thread`_!
 
 Interactive Ivy Docker Container
 --------------------------------
@@ -599,4 +598,4 @@ with PyCharm
 
 This should have hopefully given you a good understanding of the basics for contributing.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `todo list issues channel`_, `fork management channel`_, `pull requests channel`_, `commit frequency channel`_ depending on the question!
+If you have any questions, please feel free to reach out on `discord`_ in the `todo list issues thread`_, `fork management thread`_, `pull requests thread`_, depending on the question!

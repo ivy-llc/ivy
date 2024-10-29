@@ -33,7 +33,7 @@ def _arrays_idx_n_dtypes(draw):
             size=num_arrays,
         )
     )
-    xs = list()
+    xs = []
     input_dtypes = draw(
         helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("float")))
     )
@@ -152,8 +152,9 @@ def _get_splits(
     allow_array_indices=True,
     is_mod_split=False,
 ):
-    """Generate valid splits, either by generating an integer that evenly divides the
-    axis or a list of splits that sum to the length of the axis being split."""
+    """Generate valid splits, either by generating an integer that evenly
+    divides the axis or a list of splits that sum to the length of the axis
+    being split."""
     shape = draw(
         st.shared(helpers.get_shape(min_num_dims=min_num_dims), key="value_shape")
     )
@@ -346,6 +347,7 @@ def test_constant_pad(
     axis=helpers.get_axis(
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
+    test_with_copy=st.just(True),
 )
 def test_expand_dims(*, dtype_value, axis, test_flags, backend_fw, fn_name, on_device):
     dtype, value = dtype_value
@@ -379,6 +381,7 @@ def test_expand_dims(*, dtype_value, axis, test_flags, backend_fw, fn_name, on_d
         max_size=1,
         force_int=True,
     ),
+    test_with_copy=st.just(True),
 )
 def test_flip(*, dtype_value, axis, test_flags, backend_fw, fn_name, on_device):
     dtype, value = dtype_value
@@ -402,6 +405,7 @@ def test_flip(*, dtype_value, axis, test_flags, backend_fw, fn_name, on_device):
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     permutation=_permute_dims_helper(),
+    test_with_copy=st.just(True),
 )
 def test_permute_dims(
     *, dtype_value, permutation, test_flags, backend_fw, fn_name, on_device
@@ -475,6 +479,7 @@ def test_repeat(
     ),
     order=st.sampled_from(["C", "F"]),
     allowzero=st.booleans(),
+    test_with_copy=st.just(True),
 )
 def test_reshape(
     *,
@@ -581,6 +586,7 @@ def test_roll(*, dtype_value, shift, axis, test_flags, backend_fw, fn_name, on_d
     with_remainder=st.booleans(),
     num_or_size_splits=_get_splits(),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_split(
     *,
@@ -621,6 +627,7 @@ def test_split(
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
     axis=_squeeze_helper(),
+    test_with_copy=st.just(True),
 )
 def test_squeeze(*, dtype_value, axis, test_flags, backend_fw, fn_name, on_device):
     dtype, value = dtype_value
@@ -632,28 +639,6 @@ def test_squeeze(*, dtype_value, axis, test_flags, backend_fw, fn_name, on_devic
         fn_name=fn_name,
         on_device=on_device,
         x=value[0],
-        axis=axis,
-    )
-
-
-@handle_test(
-    fn_tree="functional.ivy.stack",
-    dtypes_arrays=_stack_helper(),
-    axis=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="values_shape"),
-        force_int=True,
-    ),
-)
-def test_stack(*, dtypes_arrays, axis, test_flags, backend_fw, fn_name, on_device):
-    dtypes, arrays = dtypes_arrays
-
-    helpers.test_function(
-        input_dtypes=dtypes,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        arrays=arrays,
         axis=axis,
     )
 
@@ -694,6 +679,7 @@ def test_stack(*, dtypes_arrays, axis, test_flags, backend_fw, fn_name, on_devic
     axis1=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"), force_int=True
     ),
+    test_with_copy=st.just(True),
 )
 def test_swapaxes(
     *, dtype_value, axis0, axis1, test_flags, backend_fw, fn_name, on_device
@@ -755,6 +741,7 @@ def test_tile(*, dtype_value, repeat, test_flags, backend_fw, fn_name, on_device
     ),
     keepdims=st.booleans(),
     test_with_out=st.just(False),
+    test_with_copy=st.just(True),
 )
 def test_unstack(
     *, x_n_dtype_axis, keepdims, test_flags, backend_fw, fn_name, on_device

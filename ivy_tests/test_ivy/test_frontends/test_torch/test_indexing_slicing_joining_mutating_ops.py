@@ -1,17 +1,18 @@
 # global
+import random
+
 from hypothesis import strategies as st
 import math
 
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
+import ivy_tests.test_ivy.helpers.globals as test_globals
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
-from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
-    _broadcastable_trio,
-)
-from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # noqa
-    _get_splits,
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
+    two_broadcastable_shapes,
 )
 
 
@@ -71,9 +72,75 @@ def _arrays_dim_idx_n_dtypes(draw):
         )
     )
 
-    xs = list()
+    xs = []
     available_input_types = draw(helpers.get_dtypes("numeric"))
     available_input_types.remove("float16")  # half summation unstable in backends
+    input_dtypes = draw(
+        helpers.array_dtypes(
+            available_dtypes=available_input_types,
+            num_arrays=num_arrays,
+            shared_dtype=True,
+        )
+    )
+    for ud, dt in zip(unique_dims, input_dtypes):
+        x = draw(
+            helpers.array_values(
+                shape=common_shape[:_dim] + [ud] + common_shape[_dim:],
+                dtype=dt,
+                large_abs_safety_factor=2.5,
+                small_abs_safety_factor=2.5,
+                safety_factor_scale="log",
+            )
+        )
+        xs.append(x)
+    return xs, input_dtypes, _dim, _idx
+
+
+@st.composite
+def _arrays_dim_idx_n_dtypes_extend(
+    draw, support_dtypes="numeric", unsupport_dtypes=()
+):
+    num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4), key="num_dims"))
+    num_arrays = 2
+    common_shape = draw(
+        helpers.lists(
+            x=helpers.ints(min_value=2, max_value=3),
+            min_size=num_dims - 1,
+            max_size=num_dims - 1,
+        )
+    )
+    _dim = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
+    unique_dims = draw(
+        helpers.lists(
+            x=helpers.ints(min_value=2, max_value=3),
+            min_size=num_arrays,
+            max_size=num_arrays,
+        )
+    )
+
+    min_dim = min(unique_dims)
+    max_dim = max(unique_dims)
+    _idx = draw(
+        helpers.array_values(
+            shape=min_dim,
+            dtype="int64",
+            min_value=0,
+            max_value=max_dim,
+            exclude_min=False,
+        )
+    )
+
+    xs = []
+    available_input_types = draw(helpers.get_dtypes(support_dtypes))
+
+    unstabled_dtypes = ["float16"]
+    available_input_types = [
+        dtype for dtype in available_input_types if dtype not in unstabled_dtypes
+    ]
+    available_input_types = [
+        dtype for dtype in available_input_types if dtype not in unsupport_dtypes
+    ]
+
     input_dtypes = draw(
         helpers.array_dtypes(
             available_dtypes=available_input_types,
@@ -115,7 +182,7 @@ def _arrays_idx_n_dtypes(draw):
             size=num_arrays,
         )
     )
-    xs = list()
+    xs = []
     input_dtypes = draw(
         helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("float")))
     )
@@ -149,6 +216,63 @@ def _chunk_helper(draw):
                 factors.append(i)
         chunks = draw(st.sampled_from(factors))
     return dtype, x, axis, chunks
+
+
+# diagonal_scatter
+@st.composite
+def _diag_x_y_offset_axes(draw):
+    currentshape = random.randint(2, 4)
+
+    if test_globals.CURRENT_BACKEND == "paddle":
+        currentshape = 2
+
+    offset = draw(
+        helpers.ints(min_value=-(currentshape - 1), max_value=currentshape - 1)
+    )
+    available_input_types = draw(helpers.get_dtypes("float"))
+
+    available_input_types = helpers.array_dtypes(available_dtypes=available_input_types)
+
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            min_num_dims=currentshape,
+            max_num_dims=currentshape,
+            min_dim_size=currentshape,
+            max_dim_size=currentshape,
+            num_arrays=1,
+            available_dtypes=available_input_types,
+        ),
+    )
+
+    diagonal_shape = draw(
+        helpers.get_shape(
+            min_num_dims=currentshape - 1,
+            max_num_dims=currentshape - 1,
+            min_dim_size=currentshape,
+            max_dim_size=currentshape,
+        ),
+    )
+    diagonal_shape = diagonal_shape[:-1] + (diagonal_shape[-1] - abs(offset),)
+    y = draw(
+        helpers.array_values(
+            shape=diagonal_shape,
+            dtype=available_input_types,
+            exclude_min=False,
+        )
+    )
+
+    prohibited_pairs = {(2, -1), (-2, 1), (1, -2), (-1, 2)}
+
+    axes = draw(
+        st.lists(
+            helpers.ints(min_value=-2, max_value=1), min_size=2, max_size=2, unique=True
+        ).filter(
+            lambda axes: (axes[0] % 2 != axes[1] % 2)
+            and tuple(axes) not in prohibited_pairs,
+        )
+    )
+
+    return dtype, x, y, offset, axes
 
 
 @st.composite
@@ -209,6 +333,31 @@ def _dtypes_input_mask(draw):
     )
 
     return _dtype, _x, _mask
+
+
+@st.composite
+def _where_helper(draw):
+    shape_1, shape_2 = draw(two_broadcastable_shapes())
+    dtype_x1, x1 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=shape_1,
+        )
+    )
+    dtype_x2, x2 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=shape_1,
+            shared_dtype=True,
+        )
+    )
+    _, cond = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["bool"],
+            shape=shape_2,
+        )
+    )
+    return ["bool", *dtype_x1, *dtype_x2], [cond[0], x1[0], x2[0]]
 
 
 # reshape
@@ -346,6 +495,34 @@ def test_torch_chunk(
     )
 
 
+# columnstack
+@handle_frontend_test(
+    fn_tree="torch.column_stack",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_columnstack(
+    *,
+    dtype_value,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensors=value,
+    )
+
+
 # concat
 @handle_frontend_test(
     fn_tree="torch.concat",
@@ -397,6 +574,35 @@ def test_torch_conj(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.diagonal_scatter", dtype_and_values=_diag_x_y_offset_axes()
+)
+def test_torch_diagonal_scatter(
+    *,
+    dtype_and_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, value, src, offset, axes = dtype_and_values
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
+        src=src,
+        offset=offset,
+        dim1=axes[0],
+        dim2=axes[1],
     )
 
 
@@ -631,6 +837,49 @@ def test_torch_index_copy(
         dim=axis,
         index=indices,
         source=source,
+    )
+
+
+# index_reduce
+@handle_frontend_test(
+    fn_tree="torch.index_reduce",
+    xs_dtypes_dim_idx=_arrays_dim_idx_n_dtypes_extend(
+        support_dtypes="numeric",
+        unsupport_dtypes=ivy.function_unsupported_dtypes(
+            ivy.functional.frontends.torch.index_reduce
+        ),
+    ),
+    reduce=st.sampled_from(["prod", "mean", "amin", "amax"]),
+)
+def test_torch_index_reduce(
+    *,
+    xs_dtypes_dim_idx,
+    reduce,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    xs, input_dtypes, axis, indices = xs_dtypes_dim_idx
+    if xs[0].shape[axis] < xs[1].shape[axis]:
+        source, input = xs
+    else:
+        input, source = xs
+
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtypes[0], "int64", input_dtypes[1]],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-03,
+        input=input,
+        dim=axis,
+        index=indices,
+        source=source,
+        reduce=reduce,
     )
 
 
@@ -910,7 +1159,7 @@ def test_torch_nonzero(
 @handle_frontend_test(
     fn_tree="torch.permute",
     dtype_values_axis=_array_idxes_n_dtype(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_torch_permute(
@@ -1107,11 +1356,13 @@ def test_torch_squeeze(
     dim=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ).filter(lambda axis: isinstance(axis, int)),
+    use_axis_arg=st.booleans(),
 )
 def test_torch_stack(
     *,
     dtype_value_shape,
     dim,
+    use_axis_arg,
     on_device,
     fn_tree,
     frontend,
@@ -1119,6 +1370,7 @@ def test_torch_stack(
     backend_fw,
 ):
     input_dtype, value = dtype_value_shape
+    dim_arg = {"axis" if use_axis_arg else "dim": dim}
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -1127,7 +1379,7 @@ def test_torch_stack(
         fn_tree=fn_tree,
         on_device=on_device,
         tensors=value,
-        dim=dim,
+        **dim_arg,
     )
 
 
@@ -1564,7 +1816,7 @@ def test_torch_vstack(
 
 @handle_frontend_test(
     fn_tree="torch.where",
-    broadcastables=_broadcastable_trio(),
+    broadcastables=_where_helper(),
     only_cond=st.booleans(),
 )
 def test_torch_where(
@@ -1577,7 +1829,7 @@ def test_torch_where(
     backend_fw,
     on_device,
 ):
-    cond, xs, dtypes = broadcastables
+    dtypes, arrays = broadcastables
 
     if only_cond:
         helpers.test_frontend_function(
@@ -1587,18 +1839,18 @@ def test_torch_where(
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
-            condition=xs[0],
+            condition=arrays[0],
         )
 
     else:
         helpers.test_frontend_function(
-            input_dtypes=["bool"] + dtypes,
+            input_dtypes=dtypes,
+            backend_to_test=backend_fw,
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
-            condition=cond,
-            input=xs[0],
-            other=xs[1],
-            backend_to_test=backend_fw,
+            condition=arrays[0],
+            input=arrays[1],
+            other=arrays[2],
         )

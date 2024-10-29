@@ -2,14 +2,16 @@ import importlib
 
 
 versions = {
-    "torch": "2.0.1",
-    "tensorflow": "2.13.0",
+    "torch": "2.2",
+    "tensorflow": "2.15.0",
     "numpy": "1.25.2",
-    "jax": "0.4.14",
+    "jax": "0.4.24",
     "scipy": "1.10.1",
-    "paddle": "2.5.1",
+    "paddle": "2.6.0",
     "sklearn": "1.3.0",
     "xgboost": "1.7.6",
+    "torchvision": "0.15.2.",
+    "mindspore": "2.0.0",
 }
 
 
@@ -26,6 +28,7 @@ def fn_name_from_version_specific_fn_name(name, version):
         the version is inferred by importing the framework in the case of frontend
         version support and defaults to the highest available version in case of import
         failure
+
     Returns
     -------
         the name of the original function which will then point to the version specific
@@ -91,3 +94,5 @@ def set_frontend_to_specific_version(frontend):
             orig_name = fn_name_from_version_specific_fn_name(i, f_version)
             if orig_name:
                 frontend.__dict__[orig_name] = frontend.__dict__[i]
+
+    return f_version

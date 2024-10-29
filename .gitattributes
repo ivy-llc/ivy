@@ -1,0 +1,2 @@
+# ivy/compiler/_cache/*.pkl filter=lfs diff=lfs merge=lfs -text
+# ivy/compiler/_cache/* filter=lfs diff=lfs merge=lfs -text

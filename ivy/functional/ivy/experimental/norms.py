@@ -1,4 +1,4 @@
-from typing import Union, Optional, Tuple
+from typing import Literal, Union, Optional, Tuple
 
 # local
 import ivy
@@ -11,7 +11,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
     handle_array_function,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -22,7 +22,7 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def l1_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -65,7 +65,7 @@ def l1_normalize(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def l2_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -108,10 +108,93 @@ def l2_normalize(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+def local_response_norm(
+    x: Union[ivy.NativeArray, ivy.Array],
+    size,
+    /,
+    *,
+    bias: Optional[float] = 1.0,
+    alpha: Optional[float] = 1.0,
+    beta: Optional[float] = 0.5,
+    average: bool = False,
+    data_format: Optional[Literal["NHWC", "NCHW"]] = "NHWC",
+    out: Optional[Tuple[ivy.Array, ivy.Array, ivy.Array]] = None,
+) -> ivy.Array:
+    """Apply local response normalization across the channels of a 4D input
+    array. The 4-D array is treated as a 3-D array of 1-D vectors (along the
+    channel dimension), and each vector is normalized independently. Within a
+    given vector, each component is divided by the squared sum of the
+    neighbouring components.
+
+    Parameters
+    ----------
+    x
+        Input array of default shape (N, H, W, C), where N is the batch dimension,
+        H and W correspond to the spatial dimensions and C corresponds to the
+        channel dimension.
+    size
+        The width of the normalization window.
+    alpha
+        The multiplicative factor.
+    beta
+        The exponent.
+    bias
+        An additive factor.
+    average
+        If True, each component is divided by the **averaged** squared sum.
+    data_format
+        The ordering of the dimensions in the input, either "NHWC" or "NCHW".
+    out
+        optional output arrays, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The normalized array.
+    """
+    if data_format == "NHWC":
+        x = ivy.permute_dims(x, axes=(0, 3, 1, 2))
+    x_shape = x.shape
+    alpha = alpha * size if not average else alpha
+    ret = ivy.square(x)
+    ret = ivy.reshape(ret, (x_shape[0], 1, x_shape[1], x_shape[2], -1))
+    ret = ivy.zero_pad(
+        ret, ((0, 0), (0, 0), (size // 2, (size - 1) // 2), (0, 0), (0, 0))
+    )
+    ret = ivy.avg_pool3d(
+        ret, (size, 1, 1), 1, "VALID", count_include_pad=True, data_format="NCDHW"
+    )
+    ret = ivy.squeeze(ret, axis=1)
+    ret = ivy.reshape(ret, x_shape)
+    ret = ivy.pow(ivy.add(ivy.multiply(ret, alpha), bias), beta)
+    ret = ivy.divide(x, ret)
+    if data_format == "NHWC":
+        ret = ivy.permute_dims(ret, axes=(0, 2, 3, 1))
+    return ret
+
+
+local_response_norm.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_device",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
+}
+
+
+@handle_exceptions
+@handle_nestable
+@handle_partial_mixed_function
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
 def batch_norm(
     x: Union[ivy.NativeArray, ivy.Array],
-    mean: Union[ivy.NativeArray, ivy.Array],
-    variance: Union[ivy.NativeArray, ivy.Array],
+    mean: Optional[Union[ivy.NativeArray, ivy.Array]],
+    variance: Optional[Union[ivy.NativeArray, ivy.Array]],
     /,
     *,
     offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
@@ -183,21 +266,25 @@ def batch_norm(
     runningvariance = variance
 
     if training:
-        numel = int(ivy.prod(x.shape))
-        n = numel if xdims == 1 else numel / x.shape[-1]
+        n = x.size if xdims == 1 else x.size / x.shape[-1]
         dims = (0, *range(1, xdims - 1))
         mean = ivy.mean(x, axis=dims)
         variance = ivy.var(x, axis=dims)
-        runningmean = (1 - momentum) * runningmean + momentum * mean
-        runningvariance = (1 - momentum) * runningvariance + momentum * variance * n / (
-            n - 1
+        runningmean = (
+            (1 - momentum) * runningmean + momentum * mean
+            if runningmean is not None
+            else runningmean
+        )
+        runningvariance = (
+            (1 - momentum) * runningvariance + momentum * variance * n / (n - 1)
+            if runningvariance is not None
+            else runningvariance
         )
     inv = 1.0 / ivy.sqrt(variance + eps)
+    offset = 0 if offset is None else offset
     if scale is not None:
         inv = inv * scale
-    xnormalized = x * inv.astype(x.dtype, copy=False) + ivy.astype(
-        offset - mean * inv if offset is not None else -mean * inv, x.dtype, copy=False
-    )
+    xnormalized = x * inv + offset - mean * inv
 
     if data_format == "NCS":
         xnormalized = ivy.permute_dims(
@@ -218,7 +305,7 @@ batch_norm.mixed_backend_wrappers = {
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }
@@ -232,8 +319,8 @@ batch_norm.mixed_backend_wrappers = {
 @handle_array_function
 def instance_norm(
     x: Union[ivy.NativeArray, ivy.Array],
-    mean: Union[ivy.NativeArray, ivy.Array],
-    variance: Union[ivy.NativeArray, ivy.Array],
+    mean: Optional[Union[ivy.NativeArray, ivy.Array]],
+    variance: Optional[Union[ivy.NativeArray, ivy.Array]],
     /,
     *,
     offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
@@ -306,8 +393,8 @@ def instance_norm(
     C = x.shape[-1]
     S = x.shape[0:-2]
     x = x.reshape((1, *S, N * C))
-    mean = ivy.tile(mean, N)
-    variance = ivy.tile(variance, N)
+    mean = ivy.tile(mean, N) if mean is not None else mean
+    variance = ivy.tile(variance, N) if variance is not None else variance
     if scale is not None:
         scale = ivy.tile(scale, N)
     if offset is not None:
@@ -333,8 +420,16 @@ def instance_norm(
             xnormalized, axes=(xdims - 2, *range(0, xdims - 2), xdims - 1)
         )
 
-    runningmean = runningmean.reshape((N, C)).mean(axis=0)
-    runningvariance = runningvariance.reshape((N, C)).mean(axis=0)
+    runningmean = (
+        runningmean.reshape((N, C)).mean(axis=0)
+        if runningmean is not None
+        else runningmean
+    )
+    runningvariance = (
+        runningvariance.reshape((N, C)).mean(axis=0)
+        if runningvariance is not None
+        else runningvariance
+    )
 
     if ivy.exists(out):
         xnormalized = ivy.inplace_update(out[0], xnormalized)
@@ -350,7 +445,7 @@ instance_norm.mixed_backend_wrappers = {
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
-        "handle_device_shifting",
+        "handle_device",
     ),
     "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }
@@ -372,8 +467,8 @@ def group_norm(
     data_format: Optional[str] = "NSC",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Apply group normalization to the input array and returns the normalized input.
+    """Apply group normalization to the input array and returns the normalized
+    input.
 
     Parameters
     ----------
@@ -408,7 +503,7 @@ def group_norm(
         x = ivy.permute_dims(x, axes=(0, xdims - 1, *range(1, xdims - 1)))
     N = x.shape[0]
     C = x.shape[1]
-    S = ivy.to_scalar(ivy.prod(x.shape[2:])) if xdims > 2 else 1
+    S = int(ivy.to_scalar(ivy.prod(x.shape[2:])) if xdims > 2 else 1)
     assert C % num_groups == 0
     x_ = ivy.reshape(x, [N, num_groups, C // num_groups, S])
     mean = ivy.mean(x_, axis=(2, 3), keepdims=True)
@@ -448,7 +543,7 @@ group_norm.mixed_backend_wrappers = {
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
+@handle_device
 def lp_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

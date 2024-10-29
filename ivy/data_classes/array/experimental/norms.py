@@ -12,8 +12,7 @@ class _ArrayWithNormsExperimental(abc.ABC):
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        Normalize the array to have unit L1 norm.
+        """Normalize the array to have unit L1 norm.
 
         Parameters
         ----------
@@ -46,8 +45,7 @@ class _ArrayWithNormsExperimental(abc.ABC):
         axis: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        Normalize the array to have unit L2 norm.
+        """Normalize the array to have unit L2 norm.
 
         Parameters
         ----------
@@ -77,8 +75,8 @@ class _ArrayWithNormsExperimental(abc.ABC):
 
     def batch_norm(
         self: Union[ivy.NativeArray, ivy.Array],
-        mean: Union[ivy.NativeArray, ivy.Array],
-        variance: Union[ivy.NativeArray, ivy.Array],
+        mean: Optional[Union[ivy.NativeArray, ivy.Array]],
+        variance: Optional[Union[ivy.NativeArray, ivy.Array]],
         /,
         *,
         offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
@@ -89,10 +87,9 @@ class _ArrayWithNormsExperimental(abc.ABC):
         data_format: str = "NSC",
         out: Optional[Tuple[ivy.Array, ivy.Array, ivy.Array]] = None,
     ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
-        """
-        ivy.Array instance method variant of ivy.batch_norm. This method simply wraps
-        the function, and so the docstring for ivy.batch_norm also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.batch_norm. This method
+        simply wraps the function, and so the docstring for ivy.batch_norm also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -148,8 +145,8 @@ class _ArrayWithNormsExperimental(abc.ABC):
 
     def instance_norm(
         self: Union[ivy.NativeArray, ivy.Array],
-        mean: Union[ivy.NativeArray, ivy.Array],
-        variance: Union[ivy.NativeArray, ivy.Array],
+        mean: Optional[Union[ivy.NativeArray, ivy.Array]],
+        variance: Optional[Union[ivy.NativeArray, ivy.Array]],
         /,
         *,
         offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
@@ -160,10 +157,9 @@ class _ArrayWithNormsExperimental(abc.ABC):
         data_format: str = "NSC",
         out: Optional[Tuple[ivy.Array, ivy.Array, ivy.Array]] = None,
     ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
-        """
-        ivy.Array instance method variant of ivy.instance_norm. This method simply wraps
-        the function, and so the docstring for ivy.instance_norm also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.instance_norm. This method
+        simply wraps the function, and so the docstring for ivy.instance_norm
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -226,10 +222,9 @@ class _ArrayWithNormsExperimental(abc.ABC):
         data_format: Optional[str] = "NSC",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.group_norm. This method simply wraps
-        the function, and so the docstring for ivy.group_norm also applies to this
-        method with minimal changes.
+        """ivy.Array instance method variant of ivy.group_norm. This method
+        simply wraps the function, and so the docstring for ivy.group_norm also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -277,8 +272,7 @@ class _ArrayWithNormsExperimental(abc.ABC):
         axis: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """
-        Normalize the array to have Lp norm.
+        """Normalize the array to have Lp norm.
 
         Parameters
         ----------

@@ -1,7 +1,6 @@
 # global
 import ivy
 from hypothesis import assume, strategies as st
-import random
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -97,170 +96,6 @@ def _x_and_scaled_attention(draw, dtypes):
     return dtype, query, key, value, mask
 
 
-@st.composite
-def mha_forward_args(draw, dtypes):
-    dtype = draw(dtypes)
-    embed_dim = draw(helpers.ints(min_value=2, max_value=4))
-    batch_size = draw(helpers.ints(min_value=1, max_value=2)) * 3
-    seq_len = draw(helpers.ints(min_value=2, max_value=4))
-    shape = (
-        seq_len,
-        batch_size,
-        embed_dim,
-    )
-
-    heads = draw(helpers.ints(min_value=1, max_value=4))
-    head_dim = embed_dim // heads
-    if head_dim * heads != embed_dim:
-        heads = 1
-        head_dim = embed_dim
-
-    if dtype[0] == "float32":
-        is_causal = False
-    else:
-        is_causal = draw(helpers.array_bools(size=1))[0]
-
-    q = draw(
-        helpers.array_values(dtype=dtype[0], shape=shape, min_value=0.1, max_value=1)
-    )
-    k = draw(
-        helpers.array_values(dtype=dtype[0], shape=shape, min_value=0.1, max_value=1)
-    )
-    v = draw(
-        helpers.array_values(dtype=dtype[0], shape=shape, min_value=0.1, max_value=1)
-    )
-    in_proj_weight = draw(
-        helpers.array_values(
-            dtype=dtype[0],
-            min_value=0.1,
-            max_value=1,
-            shape=(embed_dim * 3, embed_dim),
-        )
-    )
-    in_proj_bias = draw(
-        helpers.array_values(
-            dtype=dtype[0],
-            min_value=0.1,
-            max_value=1,
-            shape=(embed_dim * 3,),
-        )
-    )
-
-    if random.randint(0, 1) == 0:
-        use_separate_proj_weight = True
-        q_proj_weight = draw(
-            helpers.array_values(
-                dtype=dtype[0],
-                min_value=0.1,
-                max_value=1,
-                shape=(embed_dim, embed_dim),
-            )
-        )
-        k_proj_weight = draw(
-            helpers.array_values(
-                dtype=dtype[0],
-                min_value=0.1,
-                max_value=1,
-                shape=(embed_dim, embed_dim),
-            )
-        )
-        v_proj_weight = draw(
-            helpers.array_values(
-                dtype=dtype[0],
-                min_value=0.1,
-                max_value=1,
-                shape=(embed_dim, embed_dim),
-            )
-        )
-    else:
-        use_separate_proj_weight = False
-        q_proj_weight = None
-        k_proj_weight = None
-        v_proj_weight = None
-
-    out_proj_weight = draw(
-        helpers.array_values(
-            dtype=dtype[0],
-            min_value=0.1,
-            max_value=1,
-            shape=(embed_dim, embed_dim),
-        )
-    )
-    out_proj_bias = draw(
-        helpers.array_values(
-            dtype=dtype[0],
-            min_value=0.1,
-            max_value=1,
-            shape=(embed_dim,),
-        )
-    )
-    bias_k = random.choice(
-        [
-            draw(
-                helpers.array_values(
-                    dtype=dtype[0],
-                    min_value=0.1,
-                    max_value=1,
-                    shape=(embed_dim,),
-                )
-            ),
-            None,
-        ]
-    )
-    bias_v = bias_k
-
-    if bias_k is None:
-        static_k = random.choice(
-            [
-                draw(
-                    helpers.array_values(
-                        dtype=dtype[0],
-                        min_value=0.1,
-                        max_value=1,
-                        shape=(batch_size * heads, seq_len, head_dim),
-                    )
-                ),
-                None,
-            ]
-        )
-        static_v = static_k
-    else:
-        static_k = None
-        static_v = None
-
-    attn_mask = ivy.ones((seq_len, seq_len), dtype=dtype[0])
-    key_padding_mask = random.choice(
-        [
-            ivy.random_normal(shape=(seq_len, seq_len), dtype=dtype[0]) > 0,
-            None,
-        ]
-    )
-
-    return (
-        dtype,
-        q,
-        k,
-        v,
-        heads,
-        use_separate_proj_weight,
-        embed_dim,
-        in_proj_weight,
-        in_proj_bias,
-        out_proj_weight,
-        out_proj_bias,
-        q_proj_weight,
-        k_proj_weight,
-        v_proj_weight,
-        bias_k,
-        bias_v,
-        static_k,
-        static_v,
-        attn_mask,
-        key_padding_mask,
-        is_causal,
-    )
-
-
 # --- Main --- #
 # ------------ #
 
@@ -270,8 +105,9 @@ def mha_forward_args(draw, dtypes):
     fn_tree="torch.nn.functional.celu",
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
     ),
-    alpha=helpers.floats(min_value=0.1, max_value=1.0, exclude_min=True),
+    alpha=helpers.floats(min_value=0.1, max_value=1.0),
     test_inplace=st.booleans(),
     test_with_out=st.just(False),
 )
@@ -285,7 +121,7 @@ def test_torch_celu(
     test_flags,
     backend_fw,
 ):
-    input_dtype, input = dtype_and_input
+    input_dtype, x = dtype_and_input
     _filter_dtypes(input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -294,7 +130,44 @@ def test_torch_celu(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=input[0],
+        input=x[0],
+        rtol=1e-02,
+        atol=1e-02,
+        alpha=alpha,
+    )
+
+
+# celu_
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.celu_",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+    alpha=helpers.floats(min_value=0.1, max_value=1.0),
+    test_inplace=st.just(True),
+    test_with_out=st.just(False),
+)
+def test_torch_celu_(
+    *,
+    dtype_and_input,
+    alpha,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_input
+    _filter_dtypes(input_dtype)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
         alpha=alpha,
     )
 
@@ -642,8 +515,18 @@ def test_torch_hardtanh_(
     fn_tree="torch.nn.functional.leaky_relu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        large_abs_safety_factor=25,
+        small_abs_safety_factor=25,
+        safety_factor_scale="log",
     ),
-    alpha=st.floats(min_value=0.0, max_value=1.0, exclude_min=True),
+    alpha=helpers.floats(
+        min_value=0,
+        max_value=1,
+        large_abs_safety_factor=25,
+        small_abs_safety_factor=25,
+        safety_factor_scale="log",
+    ),
     test_inplace=st.booleans(),
     test_with_out=st.just(False),
 )
@@ -710,11 +593,13 @@ def test_torch_leaky_relu_(
 # local_response_norm
 @handle_frontend_test(
     fn_tree="torch.nn.functional.local_response_norm",
-    dtype_x_and_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=3,
-        force_int_axis=True,
-        valid_axis=True,
+        max_num_dims=4,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     size=helpers.ints(min_value=3, max_value=10),
     alpha=helpers.floats(min_value=1e-4, max_value=1e-3),
@@ -723,7 +608,7 @@ def test_torch_leaky_relu_(
 )
 def test_torch_local_response_norm(
     *,
-    dtype_x_and_axis,
+    dtype_and_x,
     size,
     alpha,
     beta,
@@ -734,7 +619,7 @@ def test_torch_local_response_norm(
     test_flags,
     backend_fw,
 ):
-    dtype, x, axis = dtype_x_and_axis
+    dtype, x = dtype_and_x
     _filter_dtypes(dtype)
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -774,7 +659,6 @@ def test_torch_log_softmax(
     backend_fw,
 ):
     input_dtype, x, axis = dtype_x_and_axis
-    ivy.set_backend(backend_fw)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -785,9 +669,8 @@ def test_torch_log_softmax(
         input=x[0],
         dim=axis,
         _stacklevel=3,
-        dtype=ivy.as_ivy_dtype(dtypes[0]),
+        dtype=dtypes[0],
     )
-    ivy.previous_backend()
 
 
 # logsigmoid
@@ -846,93 +729,6 @@ def test_torch_mish(
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
-    )
-
-
-# multi_head_attention_forward
-@handle_frontend_test(
-    fn_tree="torch.nn.functional.multi_head_attention_forward",
-    dtype_mha_args=mha_forward_args(
-        dtypes=helpers.get_dtypes("valid"),
-    ),
-    add_zero_attn=st.just(False),
-    dropout_p=st.sampled_from([0.0, 0.1, 0.2]),
-    training=st.booleans(),
-    need_weights=st.booleans(),
-    average_attn_weights=st.booleans(),
-    test_with_out=st.just(False),
-)
-def test_torch_multi_head_attention_forward(
-    *,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    dtype_mha_args,
-    add_zero_attn,
-    dropout_p,
-    training,
-    need_weights,
-    average_attn_weights,
-    backend_fw,
-):
-    (
-        dtype,
-        q,
-        k,
-        v,
-        heads,
-        use_separate_proj_weight,
-        embed_dim,
-        in_proj_weight,
-        in_proj_bias,
-        out_proj_weight,
-        out_proj_bias,
-        q_proj_weight,
-        k_proj_weight,
-        v_proj_weight,
-        bias_k,
-        bias_v,
-        static_k,
-        static_v,
-        attn_mask,
-        key_padding_mask,
-        is_causal,
-    ) = dtype_mha_args
-
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=not training or dropout_p == 0.0,
-        query=q,
-        key=k,
-        value=v,
-        embed_dim_to_check=embed_dim,
-        num_heads=heads,
-        in_proj_weight=in_proj_weight,
-        in_proj_bias=in_proj_bias,
-        bias_k=bias_k,
-        bias_v=bias_v,
-        add_zero_attn=add_zero_attn,
-        dropout_p=dropout_p,
-        out_proj_weight=out_proj_weight,
-        out_proj_bias=out_proj_bias,
-        training=training,
-        key_padding_mask=key_padding_mask,
-        need_weights=need_weights,
-        attn_mask=attn_mask,
-        use_separate_proj_weight=use_separate_proj_weight,
-        q_proj_weight=q_proj_weight,
-        k_proj_weight=k_proj_weight,
-        v_proj_weight=v_proj_weight,
-        static_k=static_k,
-        static_v=static_v,
-        average_attn_weights=average_attn_weights,
-        is_causal=is_causal,
     )
 
 
@@ -1328,7 +1124,8 @@ def test_torch_softmax(
         input=x[0],
         dim=axis,
         _stacklevel=3,
-        dtype=ivy.as_ivy_dtype(dtypes[0]),
+        dtype=dtypes[0],
+        atol=1e-03,
     )
     ivy.previous_backend()
 

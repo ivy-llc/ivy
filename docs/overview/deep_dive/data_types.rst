@@ -2,29 +2,29 @@ Data Types
 ==========
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
-.. _`backend setting`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
-.. _`infer_dtype`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L249
-.. _`import time`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L225
-.. _`ivy.Dtype`: https://github.com/unifyai/ivy/blob/48c70bce7ff703d817e130a17f63f02209be08ec/ivy/__init__.py#L65
-.. _`empty class`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L38
-.. _`also specified`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L241
-.. _`tuples`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L256
-.. _`valid tuples`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L303
-.. _`invalid tuples`: https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L309
-.. _`data type class`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L14
-.. _`true native data types`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L16
-.. _`valid data types`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L29
-.. _`invalid data types`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L56
-.. _`original definition`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/__init__.py#L225
-.. _`new definition`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L16
-.. _`handled`: https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/backend_handler.py#L194
-.. _`data_type.py`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py
-.. _`ivy.can_cast`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L246
-.. _`ivy.default_dtype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879
-.. _`ivy.set_default_dtype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1555
-.. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`data types channel`: https://discord.com/channels/799879767196958751/982738078445760532
+.. _`backend setting`: https://github.com/ivy-llc/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
+.. _`infer_dtype`: https://github.com/ivy-llc/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L249
+.. _`import time`: https://github.com/ivy-llc/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L225
+.. _`ivy.Dtype`: https://github.com/ivy-llc/ivy/blob/48c70bce7ff703d817e130a17f63f02209be08ec/ivy/__init__.py#L65
+.. _`empty class`: https://github.com/ivy-llc/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L38
+.. _`also specified`: https://github.com/ivy-llc/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L241
+.. _`tuples`: https://github.com/ivy-llc/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L256
+.. _`valid tuples`: https://github.com/ivy-llc/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L303
+.. _`invalid tuples`: https://github.com/ivy-llc/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L309
+.. _`data type class`: https://github.com/ivy-llc/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L14
+.. _`true native data types`: https://github.com/ivy-llc/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L16
+.. _`valid data types`: https://github.com/ivy-llc/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L29
+.. _`invalid data types`: https://github.com/ivy-llc/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L56
+.. _`original definition`: https://github.com/ivy-llc/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/__init__.py#L225
+.. _`new definition`: https://github.com/ivy-llc/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L16
+.. _`handled`: https://github.com/ivy-llc/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/backend_handler.py#L194
+.. _`data_type.py`: https://github.com/ivy-llc/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py
+.. _`ivy.can_cast`: https://github.com/ivy-llc/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L246
+.. _`ivy.default_dtype`: https://github.com/ivy-llc/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879
+.. _`ivy.set_default_dtype`: https://github.com/ivy-llc/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1555
+.. _`repo`: https://github.com/ivy-llc/ivy
+.. _`discord`: https://discord.gg/uYRmyPxMQq
+.. _`data type thread`: https://discord.com/channels/799879767196958751/1190234670806351892
 
 
 The data types supported by Ivy are as follows:
@@ -339,7 +339,7 @@ Only one of these decorators can be specified for any given function.
 In the case of :attr:`@with_supported_dtypes` it is assumed that all unmentioned data types are unsupported, and in the case of :attr:`@with_unsupported_dtypes` it is assumed that all unmentioned data types are supported.
 
 The decorators take two arguments, a dictionary with the unsupported dtypes mapped to the corresponding version of the backend framework and the current version of the backend framework on the user's system.
-Based on that, the version specific unsupported dtypes and devices are set for the given function everytime the function is called.
+Based on that, the version specific unsupported dtypes and devices are set for the given function every time the function is called.
 
 For Backend Functions:
 
@@ -423,7 +423,7 @@ set of dtypes is not supported by a certain device.
 
 .. code-block:: python
 
-    @with_unsupported_device_and_dtypes({"2.5.1 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version)
+    @with_unsupported_device_and_dtypes({"2.6.0 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version)
     def gcd(
         x1: Union[paddle.Tensor, int, list, tuple],
         x2: Union[paddle.Tensor, float, list, tuple],
@@ -474,6 +474,73 @@ However, torch does not support ``uint32``, and so we cannot fully adhere to the
 Rather than breaking this rule and returning arrays of type ``uint8`` only with a torch backend, we instead opt to remove official support entirely for this combination of data type, function, and backend framework.
 This will avoid all of the potential confusion that could arise if we were to have inconsistent and unexpected outputs when using officially supported data types in Ivy.
 
+Another important point to note is that for cases where an entire dtype series is not supported or supported. For example if `float16`, `float32` and `float64` are not supported or is supported by a framework which could be a backend or frontend framework,
+then we simply identify that by simply replacing the different float dtypes with the str `float`. The same logic is applied to other dtypes such as `complex`, where we simply replace the entire dtypes with the str `complex`
+
+An example is :func:`ivy.fmin` with a tensorflow backend:
+
+.. code-block:: python
+
+    @with_supported_dtypes({"2.13.0 and below": ("float",)}, backend_version)
+    def fmin(
+        x1: Union[tf.Tensor, tf.Variable],
+        x2: Union[tf.Tensor, tf.Variable],
+        /,
+        *,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    ) -> Union[tf.Tensor, tf.Variable]:
+        x1, x2 = promote_types_of_inputs(x1, x2)
+        x1 = tf.where(tf.math.is_nan(x1), x2, x1)
+        x2 = tf.where(tf.math.is_nan(x2), x1, x2)
+        ret = tf.experimental.numpy.minimum(x1, x2)
+        return ret
+
+As seen in the above code, we simply use the str `float` instead of writing all the float dtypes that are supported
+
+Another example is :func:`ivy.floor_divide` with a tensorflow backend:
+
+.. code-block:: python
+
+    @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+    def floor_divide(
+        x1: Union[float, tf.Tensor, tf.Variable],
+        x2: Union[float, tf.Tensor, tf.Variable],
+        /,
+        *,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    ) -> Union[tf.Tensor, tf.Variable]:
+        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+        return tf.experimental.numpy.floor_divide(x1, x2)
+
+As seen in the above code, we simply use the str `complex` instead of writing all the complex dtypes that are not supported
+
+Supported and Unsupported Data Types Attributes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In addition to the unsupported / supported data types decorator, we also have the :attr:`unsupported_dtypes` and :attr:`supported_dtypes` attributes. These attributes operate in a manner similar to the attr:`@with_unsupported_dtypes` and attr:`@with_supported_dtypes` decorators.
+
+Special Case
+""""""""""""
+
+However, the major difference between the attributes and the decorators is that the attributes are set and assigned in the ivy function itself :mod:`ivy/functional/ivy/<ivy_functional_API>` ,
+while the decorators are used within the frontend :mod:`ivy/functional/frontends/<some_frontend>` and backend :mod:`ivy/functional/backends/<some_backend>` to identify the supported or unsupported data types, depending on the use case.
+The attributes are set for functions that don't have a specific backend implementation for each backend, where we provide the backend as one of the arguments to the attribute of the framework agnostic function (because all ivy functions are framework agnostic), which allows it to identify the supported or unsupported dtypes for each backend.
+
+An example of an ivy function which does not have a specific backend implementation for each backend is the :attr:`einops_reduce` function. `This function <https://github.com/unifyai/ivy/blob/8516d3f12a8dfc4ec5f819789937d196c7e28566/ivy/functional/ivy/general.py#L1964>`_ , makes use of a third-party library :attr:`einops` which has its own backend-agnostic implementations.
+
+The :attr:`unsupported_dtypes` and :attr:`supported_dtypes` attributes take two arguments, a dictionary with the unsupported dtypes mapped to the corresponding backend framework. Based on that, the specific unsupported dtypes are set for the given function every time the function is called.
+For example, we use the :attr:`unsupported_dtypes` attribute for the :attr:`einops_reduce` function within the ivy functional API as shown below:
+
+.. code-block:: python
+
+    einops_reduce.unsupported_dtypes = {
+        "torch": ("float16",),
+        "tensorflow": ("complex",),
+        "paddle": ("complex", "uint8", "int8", "int16", "float16"),
+    }
+
+With the above approach, we ensure that anytime the backend is set to torch, the :attr:`einops_reduce` function does not support float16, likewise, complex dtypes are not supported with a tensorflow backend and
+complex, uint8, int8, int16, float16 are not supported with a paddle backend.
 
 Backend Data Type Bugs
 ----------------------
@@ -672,13 +739,13 @@ As with all superset design decisions, this behavior makes it much easier to sup
 
 This should have hopefully given you a good feel for data types, and how these are handled in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `data types channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `data types thread`_!
 
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/2qOBzQdLXn4" class="video">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/2qOBzQdLXn4" class="video">
+..     </iframe>

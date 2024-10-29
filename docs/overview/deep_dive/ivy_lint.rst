@@ -21,13 +21,13 @@ This formatter ensures a standardized order of declarations within Python files,
 How the Formatter Works:
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. **Header Management**: 
+1. **Header Management**:
    - Removes pre-existing headers in the source code based on specific patterns.
 
-2. **Comments Handling**: 
+2. **Comments Handling**:
    - Extracts code components along with their leading comments, ensuring that relevant comments are retained during the reordering process.
 
-3. **Dependency Handling**: 
+3. **Dependency Handling**:
    - Constructs dependency graphs to understand and maintain the relationships between classes and assignments.
 
 4. **Sorting Logic**:
@@ -55,4 +55,4 @@ Round Up
 
 ``ivy-lint`` stands as a testament to Ivy's commitment to code clarity and uniformity. As the landscape of our needs shifts, we foresee further refining and expanding our suite of formatters.
 
-For all discussions or inquiries, you're always welcome on `discord <https://discord.gg/Y3prZYHS>`_ in the `formatting channel <https://discord.com/channels/799879767196958751/1028266706436624456>`_.
+For all discussions or inquiries, you're always welcome on `discord <https://discord.gg/uYRmyPxMQq>`_ in the `formatting thread <https://discord.com/channels/799879767196958751/1190247322626572408>`_.

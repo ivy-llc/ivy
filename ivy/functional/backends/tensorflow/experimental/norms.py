@@ -1,10 +1,11 @@
 import tensorflow as tf
-from typing import Union, Optional, Tuple
-from ivy.func_wrapper import with_unsupported_dtypes
+from typing import Literal, Union, Optional, Tuple
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from . import backend_version
+import math
 
 
-@with_unsupported_dtypes({"2.13.0 and below": "uint8"}, backend_version)
+@with_unsupported_dtypes({"2.15.0 and below": "uint8"}, backend_version)
 def l1_normalize(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -29,11 +30,47 @@ def l2_normalize(
     return tf.math.divide(x, denorm)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_supported_dtypes({"2.15.0 and below": ("float32", "float16")}, backend_version)
+def local_response_norm(
+    x: Union[tf.Tensor, tf.Variable],
+    size,
+    /,
+    *,
+    bias: Optional[float] = 1.0,
+    alpha: Optional[float] = 1.0,
+    beta: Optional[float] = 0.5,
+    average: bool = False,
+    data_format: Optional[Literal["NHWC", "NCHW"]] = "NHWC",
+    out: Optional[tf.Tensor] = None,
+) -> tf.Tensor:
+    if data_format == "NCHW":
+        x = tf.transpose(x, (0, 2, 3, 1))
+    # `alpha = alpha/size if average else alpha` was causing numerical instability
+    if average:
+        ret = tf.nn.local_response_normalization(
+            x / math.sqrt(size),
+            depth_radius=size // 2,
+            bias=bias,
+            alpha=alpha,
+            beta=beta,
+        ) * math.sqrt(size)
+    else:
+        ret = tf.nn.local_response_normalization(
+            x, depth_radius=size // 2, bias=bias, alpha=alpha, beta=beta
+        )
+    if data_format == "NCHW":
+        ret = tf.transpose(ret, (0, 3, 1, 2))
+    return ret
+
+
+local_response_norm.partial_mixed_handler = lambda x, size, **kwargs: size % 2 != 0
+
+
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, backend_version)
 def batch_norm(
     x: Union[tf.Tensor, tf.Variable],
-    mean: Union[tf.Tensor, tf.Variable],
-    variance: Union[tf.Tensor, tf.Variable],
+    mean: Optional[Union[tf.Tensor, tf.Variable]],
+    variance: Optional[Union[tf.Tensor, tf.Variable]],
     /,
     *,
     scale: Optional[Union[tf.Tensor, tf.Variable]] = None,
@@ -61,20 +98,29 @@ def batch_norm(
     runningmean = mean
     runningvariance = variance
     if training:
-        n = (
-            tf.size(x)
-            if xdims == 1
-            else tf.cast(tf.divide(tf.size(x), tf.shape(x)[-1]), x.dtype)
-        )
-        n = tf.cast(n, x.dtype)
+        n = tf.size(x) if xdims == 1 else tf.divide(tf.size(x), tf.shape(x)[-1])
+        n = tf.cast(n, x.dtype) if n.dtype != x.dtype else n
         dims = (0, *range(1, xdims - 1))
         mean = tf.math.reduce_mean(x, axis=dims)
         variance = tf.math.reduce_variance(x, axis=dims)
-        runningmean = (1 - momentum) * runningmean + momentum * mean
-        runningvariance = (1 - momentum) * runningvariance + momentum * variance * n / (
-            n - 1
+        runningmean = (
+            ((1 - momentum) * runningmean + momentum * mean)
+            if runningmean is not None
+            else runningmean
         )
-    xnormalized = tf.nn.batch_normalization(x, mean, variance, offset, scale, eps)
+        runningvariance = (
+            (1 - momentum) * runningvariance + momentum * variance * n / (n - 1)
+            if runningvariance is not None
+            else runningvariance
+        )
+
+    inv = 1.0 / tf.math.sqrt(variance + eps)
+    offset = 0 if offset is None else offset
+    if scale is not None:
+        inv = tf.math.multiply(inv, scale)
+    xnormalized = tf.math.add(tf.math.multiply(x, inv), offset)
+    xnormalized = tf.math.subtract(xnormalized, tf.math.multiply(mean, inv))
+    # the above approach is faster than tf.nn.batch_normalization
 
     if data_format == "NCS":
         xnormalized = tf.transpose(
@@ -86,8 +132,8 @@ def batch_norm(
 
 def instance_norm(
     x: Union[tf.Tensor, tf.Variable],
-    mean: Union[tf.Tensor, tf.Variable],
-    variance: Union[tf.Tensor, tf.Variable],
+    mean: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    variance: Optional[Union[tf.Tensor, tf.Variable]] = None,
     /,
     *,
     scale: Optional[Union[tf.Tensor, tf.Variable]] = None,
@@ -121,8 +167,8 @@ def instance_norm(
     C = x.shape[-1]
     S = x.shape[0:-2]
     x = tf.reshape(x, (1, *S, N * C))
-    mean = tf.tile(mean, [N])
-    variance = tf.tile(variance, [N])
+    mean = tf.tile(mean, [N]) if mean is not None else mean
+    variance = tf.tile(variance, [N]) if variance is not None else variance
     if scale is not None:
         scale = tf.tile(scale, [N])
     if offset is not None:
@@ -147,10 +193,21 @@ def instance_norm(
             xnormalized, perm=(xdims - 2, *range(0, xdims - 2), xdims - 1)
         )
 
+    runningmean = (
+        tf.reduce_mean(tf.reshape(runningmean, (N, C)), axis=0)
+        if runningmean is not None
+        else runningmean
+    )
+    runningvariance = (
+        tf.reduce_mean(tf.reshape(runningvariance, (N, C)), axis=0)
+        if runningvariance is not None
+        else runningvariance
+    )
+
     return (
         xnormalized,
-        tf.reduce_mean(tf.reshape(runningmean, (N, C)), axis=0),
-        tf.reduce_mean(tf.reshape(runningvariance, (N, C)), axis=0),
+        runningmean,
+        runningvariance,
     )
 
 

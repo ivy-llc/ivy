@@ -303,6 +303,7 @@ def test_tensorflow_stateless_poisson(
         available_dtypes=("int64", "int32"), min_value=0, max_value=10, shape=[2]
     ),
     minmaxval=helpers.get_bounds(dtype="int32"),
+    none_maxval=st.booleans(),
     dtype=helpers.array_dtypes(
         available_dtypes=("int32", "int64", "float16", "float32", "float64"),
     ),
@@ -312,6 +313,7 @@ def test_tensorflow_stateless_uniform(
     shape,
     seed,
     minmaxval,
+    none_maxval,
     dtype,
     frontend,
     test_flags,
@@ -321,6 +323,8 @@ def test_tensorflow_stateless_uniform(
 ):
     shape_input_dtypes, shape = shape
     seed_input_dtypes, seed = seed
+
+    maxval = None if none_maxval and "float" in dtype[0] else int(minmaxval[1])
 
     helpers.test_frontend_function(
         input_dtypes=shape_input_dtypes + seed_input_dtypes,
@@ -333,7 +337,7 @@ def test_tensorflow_stateless_uniform(
         shape=shape[0],
         seed=seed[0],
         minval=int(minmaxval[0]),
-        maxval=int(minmaxval[1]),
+        maxval=maxval,
         dtype=dtype[0],
     )
 

@@ -3,8 +3,8 @@ Formatting
 
 .. _`flake8`: https://flake8.pycqa.org/en/latest/index.html
 .. _`black`: https://black.readthedocs.io/en/stable/index.html
-.. _`formatting channel`: https://discord.com/channels/799879767196958751/1028266706436624456
-.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`formatting thread`: https://discord.com/channels/799879767196958751/1190247322626572408
+.. _`discord`: https://discord.gg/uYRmyPxMQq
 
 Currently, Ivy follows the `black`_ code style, and `flake8`_ formatter in order to ensure that our code is consistent,
 readable, and bug free. This deep-dive will explain how to use these tools to ensure that your code is formatted
@@ -27,7 +27,7 @@ We use the following linters:
 * `autoflake <https://github.com/PyCQA/autoflake>`_
 * `docformatter <https://github.com/PyCQA/docformatter>`_
 * `pydocstyle <https://github.com/pycqa/pydocstyle>`_
-* `ivy-lint <https://github.com/unifyai/lint-hook>`_ 
+* `ivy-lint <https://github.com/unifyai/lint-hook>`_
 
 You can also take a look at our configuration for linting in `setup.cfg <https://github.com/unifyai/ivy/blob/main/setup.cfg>`_
 file.
@@ -185,19 +185,19 @@ be applied by the ``ivy-gardener`` properly.
 On the other hand, ``ivy-gardener`` itself can fail if the bot handling it (ivy-branch) can not apply the changes
 suggested by the linters, for example, when it does not have access to edit the target branch. In this case, you
 should try to give the maintainer bot the access to your branch (which is an option shown in GitHub UI) and give it
-another try, or manually resolve the formatting errors by commiting the changes yourself.
+another try, or manually resolve the formatting errors by committing the changes yourself.
 
 **Round Up**
 
 This should have hopefully given you a good feel for what is our coding style and how to format your code to contribute
 to Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `formatting channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `formatting thread`_!
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/JXQ8aI8vJ_8" class="video">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/JXQ8aI8vJ_8" class="video">
+..     </iframe>

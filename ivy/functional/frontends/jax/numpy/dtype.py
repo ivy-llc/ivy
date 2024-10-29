@@ -10,6 +10,13 @@ from ivy import with_supported_dtypes
 
 
 @to_ivy_arrays_and_back
+def astype(x, dtype, /, *, copy=True):
+    if not copy and dtype == x.dtype:
+        return x
+    return ivy.astype(x, dtype, copy=copy)
+
+
+@to_ivy_arrays_and_back
 def can_cast(from_, to, casting="safe"):
     ivy.utils.assertions.check_elem_in_list(
         casting,
@@ -37,7 +44,7 @@ def can_cast(from_, to, casting="safe"):
             "to must be one of dtype, or dtype specifier"
         )
 
-    if casting == "no" or casting == "equiv":
+    if casting in ["no", "equiv"]:
         return from_ == to
 
     if casting == "safe":
@@ -73,7 +80,7 @@ def can_cast(from_, to, casting="safe"):
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("float16", "float32", "float64")},
+    {"2.15.0 and below": ("float16", "float32", "float64")},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -82,7 +89,7 @@ def finfo(dtype):
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("integer",)},
+    {"2.15.0 and below": ("integer",)},
     "jax",
 )
 @to_ivy_arrays_and_back

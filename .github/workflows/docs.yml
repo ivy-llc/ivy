@@ -1,15 +1,17 @@
 name: Update docs
 on:
   workflow_call:
-  push:
-    branches:
-      - main
-    tags:
-      - v*
   workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * *"
+
+permissions:
+  contents: write
 
 jobs:
   update-docs:
     name: Update docs
-    uses: unifyai/workflows/.github/workflows/docs.yml@main
+    uses: ./.github/workflows/build-docs.yml
     secrets: inherit
+    with:
+      repo-name: ''

@@ -38,7 +38,7 @@ def cholesky(input, name=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, "tensorflow")
 def cholesky_solve(chol, rhs, name=None):
     chol, rhs = check_tensorflow_casting(chol, rhs)
     y = ivy.solve(chol, rhs)
@@ -107,7 +107,7 @@ def eigh(tensor, name=None):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.13.0 and below": ("float32", "float64", "complex64", "complex128")},
+    {"2.15.0 and below": ("float32", "float64", "complex64", "complex128")},
     "tensorflow",
 )
 def eigvals(tensor, name=None):
@@ -130,24 +130,22 @@ def expm(input, name=None):
 
 @handle_tf_dtype
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, "tensorflow")
 def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=None):
     return ivy.eye(num_rows, num_columns, batch_shape=batch_shape, dtype=dtype)
 
 
-@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, "tensorflow")
+@with_supported_dtypes({"2.15.0 and below": ("float32", "float64")}, "tensorflow")
 @to_ivy_arrays_and_back
 def global_norm(t_list, name=None):
-    l2_norms = [
-        ivy.sqrt((ivy.sum(ivy.square(t)))) ** 2 for t in t_list if t is not None
-    ]
+    l2_norms = [ivy.sqrt(ivy.sum(ivy.square(t))) ** 2 for t in t_list if t is not None]
     return ivy.sqrt(ivy.sum(ivy.asarray(l2_norms, dtype=ivy.dtype(l2_norms[0]))))
 
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "float32",
             "float64",
             "complex64",
@@ -161,7 +159,7 @@ def inv(input, adjoint=False, name=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, "tensorflow")
+@with_supported_dtypes({"2.15.0 and below": ("float32", "float64")}, "tensorflow")
 def l2_normalize(x, axis=None, epsilon=1e-12, name=None):
     square_sum = ivy.sum(ivy.square(x), axis=axis, keepdims=True)
     x_inv_norm = ivy.reciprocal(ivy.sqrt(ivy.maximum(square_sum, epsilon)))
@@ -170,7 +168,7 @@ def l2_normalize(x, axis=None, epsilon=1e-12, name=None):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.13.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    {"2.15.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
     "tensorflow",
 )
 def logdet(matrix, name=None):
@@ -187,7 +185,7 @@ def lu_matrix_inverse(lower_upper, perm, validate_args=False, name=None):
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "float16",
             "float32",
             "float64",
@@ -246,7 +244,7 @@ def matrix_transpose(a, name="matrix_transpose", conjugate=False):
     return ivy.matrix_transpose(a)
 
 
-@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, "tensorflow")
+@with_supported_dtypes({"2.15.0 and below": ("float32", "float64")}, "tensorflow")
 @to_ivy_arrays_and_back
 def norm(tensor, ord="euclidean", axis=None, keepdims=None, name=None):
     keepdims = keepdims or False
@@ -259,7 +257,7 @@ def norm(tensor, ord="euclidean", axis=None, keepdims=None, name=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, "tensorflow")
+@with_supported_dtypes({"2.15.0 and below": ("float32", "float64")}, "tensorflow")
 def normalize(tensor, ord="euclidean", axis=None, name=None):
     tensor = tf_frontend.convert_to_tensor(
         tensor, dtype=ivy.dtype(tensor), dtype_hint="Any"
@@ -282,7 +280,7 @@ def qr(input, /, *, full_matrices=False, name=None):
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "bfloat16",
             "half",
             "float32",
@@ -352,10 +350,10 @@ def slogdet(input, name=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
-def solve(matrix, rhs):
+@with_unsupported_dtypes({"2.15.0 and below": ("float16", "bfloat16")}, "tensorflow")
+def solve(matrix, rhs, /, *, adjoint=False, name=None):
     matrix, rhs = check_tensorflow_casting(matrix, rhs)
-    return ivy.solve(matrix, rhs)
+    return ivy.solve(matrix, rhs, adjoint=adjoint)
 
 
 @to_ivy_arrays_and_back
@@ -366,7 +364,7 @@ def svd(a, /, *, full_matrices=False, compute_uv=True, name=None):
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "bfloat16",
             "half",
             "float32",
@@ -390,7 +388,7 @@ def tensor_diag(diagonal, /, *, name=None):
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "float32",
             "float64",
             "int32",
@@ -426,7 +424,7 @@ def tensor_diag_part(input, name=None):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.13.0 and below": ("float32", "float64", "int32")}, "tensorflow"
+    {"2.15.0 and below": ("float32", "float64", "int32")}, "tensorflow"
 )
 def tensordot(a, b, axes, name=None):
     a, b = check_tensorflow_casting(a, b)
@@ -438,7 +436,7 @@ def tensordot(a, b, axes, name=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "2.13.0 and below": (
+        "2.15.0 and below": (
             "float16",
             "bfloat16",
             "int8",
@@ -460,3 +458,54 @@ def tensorsolve(a, b, axes):
 @to_ivy_arrays_and_back
 def trace(x, name=None):
     return ivy.trace(x, axis1=-2, axis2=-1)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
+def tridiagonal_solve(
+    diagonals,
+    rhs,
+    diagonals_format="compact",
+    transpose_rhs=False,
+    conjugate_rhs=False,
+    name=None,
+    partial_pivoting=True,
+    perturb_singular=False,
+):
+    if transpose_rhs is True:
+        rhs_copy = ivy.matrix_transpose(rhs)
+    if conjugate_rhs is True:
+        rhs_copy = ivy.conj(rhs)
+    if not transpose_rhs and not conjugate_rhs:
+        rhs_copy = ivy.array(rhs)
+
+    if diagonals_format == "matrix":
+        return ivy.solve(diagonals, rhs_copy)
+    elif diagonals_format in ["sequence", "compact"]:
+        diagonals = ivy.array(diagonals)
+        dim = diagonals[0].shape[0]
+        diagonals[[0, -1], [-1, 0]] = 0
+        dummy_idx = [0, 0]
+        indices = ivy.array(
+            [
+                [(i, i + 1) for i in range(dim - 1)] + [dummy_idx],
+                [(i, i) for i in range(dim)],
+                [dummy_idx] + [(i + 1, i) for i in range(dim - 1)],
+            ]
+        )
+        constructed_matrix = ivy.scatter_nd(
+            indices, diagonals, shape=ivy.array([dim, dim])
+        )
+        return ivy.solve(constructed_matrix, rhs_copy)
+    else:
+        raise ValueError("Unexpected diagonals_format")

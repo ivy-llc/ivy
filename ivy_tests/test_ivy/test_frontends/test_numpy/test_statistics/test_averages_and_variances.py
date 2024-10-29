@@ -130,9 +130,9 @@ def test_numpy_average(
     on_device,
 ):
     try:
-        input_dtype, a, axis = dtype_and_a
+        input_dtype, a, axis, *_ = dtype_and_a
 
-        input_dtypes, xs, axiss = dtype_and_x
+        input_dtypes, xs, axiss, *_ = dtype_and_x
 
         if isinstance(axis, tuple):
             axis = axis[0]
@@ -222,32 +222,26 @@ def test_numpy_mean(
     on_device,
     keep_dims,
 ):
-    input_dtypes, x, axis = dtype_and_x
-    if isinstance(axis, tuple):
-        axis = axis[0]
-
+    input_dtypes, x, axis, _, _ = dtype_and_x
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
         test_flags=test_flags,
     )
-
-    np_frontend_helpers.test_frontend_function(
+    helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
         backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        atol=1e-2,
-        rtol=1e-2,
-        x=x[0],
+        a=x[0],
         axis=axis,
         dtype=dtype[0],
         out=None,
+        atol=0.0005,
         keepdims=keep_dims,
         where=where,
-        test_values=False,
     )
 
 
@@ -280,7 +274,7 @@ def test_numpy_nanmean(
         test_flags=test_flags,
     )
 
-    np_frontend_helpers.test_frontend_function(
+    helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
         backend_to_test=backend_fw,
@@ -295,7 +289,6 @@ def test_numpy_nanmean(
         out=None,
         keepdims=keep_dims,
         where=where,
-        test_values=False,
     )
 
 

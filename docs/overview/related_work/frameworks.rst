@@ -48,7 +48,7 @@ Frameworks
 .. _`Adam Paszke`: https://github.com/apaszke
 .. _`Dex language`: https://github.com/google-research/dex-lang
 .. _`Haskell`: https://www.haskell.org/
-.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`discord`: https://discord.gg/uYRmyPxMQq
 
 .. |matlab| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/frameworks/matlab.png
     :height: 20pt

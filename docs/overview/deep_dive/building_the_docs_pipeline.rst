@@ -6,6 +6,21 @@ Building the Docs Pipeline
 .. _autosummary: https://www.sphinx-doc.org/en/master/usage/extensions/autosummary.html
 .. _doc-builder repository: https://github.com/unifyai/doc-builder
 
+.. warning::
+
+    Be aware that the doc-builder was developed originally for Linux, although, in theory, you can run
+    it on any platform (supporting either docker or windows), it's only tested it on
+    Linux. If you find any windows related issues, feel free to open an issue for that to review it.
+
+.. note::
+
+    Recommendation:
+    You can use the convenience script if you build the docs regularly,
+    as it will not re-download the dependencies.
+
+    If you have a slow internet connection, you can use GitHub Codespaces since it will help you to build the
+    docs faster since our script downloads large dependency files.
+
 To build our docs, we use `Sphinx`_. Sphinx is an extendable documentation generator
 for Python. As our building pipeline is complex, we heavily customize Sphinx using
 custom and third party extensions. As well as having a convenience script to build
@@ -273,7 +288,7 @@ configurations and their values:
 - ``discussion_paragraph``: ``"This should have hopefully given you an overview of the
   {{submodule}} submodule, if you have any questions, please feel free to reach out on
   our [discord]({{discord_link}}) in the [{{submodule}} channel]({{channel_link}})!"``
-- ``discord_link``: ``"https://discord.gg/ZVQdvbzNQJ"``
+- ``discord_link``: ``"https://discord.gg/uYRmyPxMQq"``
 - ``channel_link``: ``"https://discord.com/channels/799879767196958751/{{channel_id}}"``
 
 Here is an example of how it works for ``ivy.functional.ivy.creation``:
@@ -285,7 +300,7 @@ Here is an example of how it works for ``ivy.functional.ivy.creation``:
 
     This should have hopefully given you an overview of the
     **creation** submodule, if you have any questions, please feel free to reach out on
-    our [discord]({{discord_link}}) in the [**creation** channel]({{channel_link}})!
+    our [discord]({{discord_link}})!
 
 2. Then we resolve the ``{{discord_link}}`` template string.
 
@@ -293,7 +308,7 @@ Here is an example of how it works for ``ivy.functional.ivy.creation``:
 
     This should have hopefully given you an overview of the
     creation submodule, if you have any questions, please feel free to reach out on
-    our [discord](**https://discord.gg/ZVQdvbzNQJ**) in the [creation channel]({{channel_link}})!
+    our [discord](**https://discord.gg/uYRmyPxMQq**)!
 
 3. Then we resolve the ``{{channel_link}}`` template string.
 
@@ -301,7 +316,7 @@ Here is an example of how it works for ``ivy.functional.ivy.creation``:
 
     This should have hopefully given you an overview of the
     creation submodule, if you have any questions, please feel free to reach out on
-    our [discord](\https://discord.gg/ZVQdvbzNQJ) in the [creation channel](**https://discord.com/channels/799879767196958751/{{channel_id}}**)!
+    our [discord](\https://discord.gg/uYRmyPxMQq)!
 
 4. We finally resolve ``{{channel_id}}`` template strings.
 
@@ -309,14 +324,13 @@ Here is an example of how it works for ``ivy.functional.ivy.creation``:
 
     This should have hopefully given you an overview of the
     creation submodule, if you have any questions, please feel free to reach out on
-    our [discord](\https://discord.gg/ZVQdvbzNQJ) in the [creation channel](\https://discord.com/channels/799879767196958751/**1000043690254946374**)!
+    our [discord](\https://discord.gg/uYRmyPxMQq)!
 
 5. After that we render the node paragraph as if it's a Markdown text resulting this:
 
     This should have hopefully given you an overview of the
     creation submodule, if you have any questions, please feel free to reach out on
-    our `discord <https://discord.gg/ZVQdvbzNQJ>`_ in the `creation channel
-    <https://discord.com/channels/799879767196958751/1000043690254946374>`_!
+    our `discord <https://discord.gg/uYRmyPxMQq>`_!
 
 All of the above template strings can be customized using the configuration, so feel free
 to change them to your liking.
@@ -348,8 +362,8 @@ This is a custom documenter for ``autodoc`` that documents Ivy data attributes t
 in ``ivy.functional.ivy``, it will replace the module to ``ivy.`` instead of
 ``ivy.functional.ivy.<submodule>``.
 
-It's used instead of simply using ``ivy.<data atribute>`` because data attributes have
-no ``__doc__`` atribute, instead docs are discovered by parsing the source code itself.
+It's used instead of simply using ``ivy.<data attribute>`` because data attributes have
+no ``__doc__`` attribute, instead docs are discovered by parsing the source code itself.
 So for Sphinx to find the required docs, it needs to be supplied the full module name,
 then using the ``autoivydata`` directive will replace the module name to ``ivy.``.
 

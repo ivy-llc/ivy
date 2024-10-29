@@ -1,9 +1,9 @@
-"""
-MXNet activation functions.
+"""MXNet activation functions.
 
 Collection of MXNet activation functions, wrapped to fit Ivy syntax and
 signature.
 """
+
 import mxnet as mx
 import numpy as np
 
@@ -20,9 +20,7 @@ def gelu(
     out: Optional[None] = None,
 ) -> None:
     if approximate:
-        return (
-            0.5 * x * (1 + mx.nd.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x**3)))
-        )
+        return 0.5 * x * (1 + mx.nd.tanh(((2 / np.pi) ** 0.5) * (x + 0.044715 * x**3)))
     return mx.nd.LeakyReLU(x, act_type="gelu")
 
 
@@ -78,7 +76,7 @@ def softsign(x: None, /, *, out: Optional[None] = None) -> None:
     return mx.nd.softsign(x)
 
 
-def log_softmax(x: None, /, *, axis: Optional[int] = None, out: Optional[None] = None):
+def log_softmax(x: None, /, *, axis: Optional[int] = -1, out: Optional[None] = None):
     raise IvyNotImplementedException()
 
 

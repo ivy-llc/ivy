@@ -1,8 +1,8 @@
 Gradients
 =========
 
-.. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`gradients channel`: https://discord.com/channels/799879767196958751/1000043921633722509
+.. _`discord`: https://discord.gg/uYRmyPxMQq
+.. _`gradients thread`: https://discord.com/channels/799879767196958751/1190235826806853672
 
 Overview
 --------
@@ -172,13 +172,13 @@ Framework-specific Considerations
 
 This should have hopefully given you a good feel for how the gradient API is implemented in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `gradients channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `gradients thread`_!
 
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/riNddnTgDdk" class="video">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/riNddnTgDdk" class="video">
+..     </iframe>

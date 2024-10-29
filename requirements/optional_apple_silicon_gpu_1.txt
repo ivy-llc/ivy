@@ -1,16 +1,17 @@
 h5py
-pytest
-networkx
-hypothesis
-pymongo
-redis
-matplotlib
-opencv-python  # mod_name=cv2
 jax
 jaxlib
 jax-metal
+hypothesis
+matplotlib
+networkx
+opencv-python  # mod_name=cv2
+paddlepaddle  # unpinned , mod_name=paddle
+pymongo
+pytest
+redis
 tensorflow-macos  # mod_name=tensorflow_macos
 tensorflow-metal
 tensorflow-probability  # mod_name=tensorflow_probability
 torch
-paddlepaddle  # unpinned , mod_name=paddle
+torchvision

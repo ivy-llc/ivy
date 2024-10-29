@@ -66,7 +66,7 @@ def indices(dimensions, dtype=int, sparse=False):
     N = len(dimensions)
     shape = (1,) * N
     if sparse:
-        res = tuple()
+        res = ()
     else:
         res = ivy.empty((N,) + dimensions, dtype=dtype)
     for i, dim in enumerate(dimensions):
@@ -81,6 +81,12 @@ def indices(dimensions, dtype=int, sparse=False):
 @inputs_to_ivy_arrays
 def put_along_axis(arr, indices, values, axis):
     ivy.put_along_axis(arr, indices, values, axis)
+
+
+@to_ivy_arrays_and_back
+@handle_numpy_out
+def take(a, indices, /, *, axis=None, out=None, mode="raise"):
+    return ivy.take(a, indices, axis=axis, out=out, mode=mode)
 
 
 @to_ivy_arrays_and_back

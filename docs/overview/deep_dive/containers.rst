@@ -1,37 +1,37 @@
 Containers
 ==========
 
-.. _`ivy.Container`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L52
-.. _`dict`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L51
-.. _`ivy.Container.cont_map`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3070
-.. _`ivy.Container.cont_all_true`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L1592
-.. _`ivy.Container.cont_to_iterator`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L2043
-.. _`ContainerBase`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L51
-.. _`ivy.Container.cont_multi_map`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L623
-.. _`ivy.Container.cont_diff`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L427
-.. _`ivy.Container.cont_common_key_chains`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L741
-.. _`ivy.Container.cont_multi_map_in_function`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L162
-.. _`ivy.Container.tan`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/elementwise.py#L7347
-.. _`ivy.Container.roll`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/manipulation.py#L927
-.. _`instance method is added`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/__init__.py#L683
-.. _`inherits`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L52
-.. _`ContainerWithElementwise`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/elementwise.py#L9
-.. _`__repr__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3629
-.. _`__getattr__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3860
-.. _`__setattr__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3882
-.. _`__getitem__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3934
-.. _`__setitem__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3976
-.. _`__contains__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3996
-.. _`__getstate__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L4004
-.. _`__setstate__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L4019
-.. _`implemented`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L133
-.. _`__add__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L191
-.. _`__sub__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L290
-.. _`__mul__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L389
-.. _`__truediv__`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L399
-.. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`containers channel`: https://discord.com/channels/799879767196958751/982738042886422598
+.. _`ivy.Container`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L52
+.. _`dict`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L51
+.. _`ivy.Container.cont_map`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3070
+.. _`ivy.Container.cont_all_true`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L1592
+.. _`ivy.Container.cont_to_iterator`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L2043
+.. _`ContainerBase`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L51
+.. _`ivy.Container.cont_multi_map`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L623
+.. _`ivy.Container.cont_diff`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L427
+.. _`ivy.Container.cont_common_key_chains`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L741
+.. _`ivy.Container.cont_multi_map_in_function`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L162
+.. _`ivy.Container.tan`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/elementwise.py#L7347
+.. _`ivy.Container.roll`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/manipulation.py#L927
+.. _`instance method is added`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/__init__.py#L683
+.. _`inherits`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L52
+.. _`ContainerWithElementwise`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/elementwise.py#L9
+.. _`__repr__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3629
+.. _`__getattr__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3860
+.. _`__setattr__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3882
+.. _`__getitem__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3934
+.. _`__setitem__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3976
+.. _`__contains__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3996
+.. _`__getstate__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L4004
+.. _`__setstate__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L4019
+.. _`implemented`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L133
+.. _`__add__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L191
+.. _`__sub__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L290
+.. _`__mul__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L389
+.. _`__truediv__`: https://github.com/ivy-llc/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L399
+.. _`repo`: https://github.com/ivy-llc/ivy
+.. _`discord`: https://discord.gg/uYRmyPxMQq
+.. _`containers thread`: https://discord.com/channels/799879767196958751/1189906066549506048
 
 
 The `ivy.Container`_ inherits from `dict`_, and is useful for storing nested data.
@@ -252,8 +252,8 @@ There may be some compositional functions which are not implicitly nestable for 
 One such example is the :func:`ivy.linear` function which is not implicitly nestable despite being compositional. This is because of the use of special functions like :func:`__len__` and :func:`__list__` which, among other functions, are not nestable and can't be made nestable.
 But we should try to avoid this, in order to make the flow of computation as intuitive to the user as possible.
 
-When compiling the code, the computation graph is **identical** in either case, and there will be no implications on performance whatsoever.
-The implicit nestable solution may be slightly less efficient in eager mode, as the leaves of the container are traversed multiple times rather than once, but if performance is of concern then the code should always be compiled in any case.
+When tracing the code, the computation graph is **identical** in either case, and there will be no implications on performance whatsoever.
+The implicit nestable solution may be slightly less efficient in eager mode, as the leaves of the container are traversed multiple times rather than once, but if performance is of concern then the code should always be traced in any case.
 The distinction is only really relevant when stepping through and debugging with eager mode execution, and for the reasons outlined above, the preference is to keep compositional functions implicitly nestable where possible.
 
 **Shared Nested Structure**
@@ -334,13 +334,13 @@ This is for three reasons, (a) the key chain :code:`g` is not shared by any cont
 
 This should have hopefully given you a good feel for containers, and how these are handled in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `containers channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `containers thread`_!
 
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/oHcoYFi2rvI" class="video">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/oHcoYFi2rvI" class="video">
+..     </iframe>

@@ -2,15 +2,14 @@ Ivy Frontend Tests
 ==================
 
 .. _`here`: ../design/ivy_as_a_transpiler.rst
-.. _`ivy frontends tests channel`: https://discord.com/channels/799879767196958751/1028267758028337193
-.. _`test ivy`: https://github.com/unifyai/ivy/tree/db9a22d96efd3820fb289e9997eb41dda6570868/ivy_tests/test_ivy
-.. _`test_frontend_function`: https://github.com/unifyai/ivy/blob/591ac37a664ebdf2ca50a5b0751a3a54ee9d5934/ivy_tests/test_ivy/helpers.py#L1047
-.. _`discord`: https://discord.gg/sXyFF8tDtm
+.. _`ivy frontends tests thread`: https://discord.com/channels/799879767196958751/1190246804940402738
+.. _`test ivy`: https://github.com/ivy-llc/ivy/tree/db9a22d96efd3820fb289e9997eb41dda6570868/ivy_tests/test_ivy
+.. _`test_frontend_function`: https://github.com/ivy-llc/ivy/blob/591ac37a664ebdf2ca50a5b0751a3a54ee9d5934/ivy_tests/test_ivy/helpers.py#L1047
+.. _`discord`: https://discord.gg/uYRmyPxMQq
 .. _`Function Wrapping`: function_wrapping.rst
 .. _`open task`: ../contributing/open_tasks.rst
 .. _`Ivy Tests`: ivy_tests.rst
-.. _`Function Testing Helpers`: https://github.com/unifyai/ivy/blob/bf0becd459004ae6cffeb3c38c02c94eab5b7721/ivy_tests/test_ivy/helpers/function_testing.py
-.. _`CI Pipeline`: continuous_integration.rst
+.. _`Function Testing Helpers`: https://github.com/ivy-llc/ivy/blob/bf0becd459004ae6cffeb3c38c02c94eab5b7721/ivy_tests/test_ivy/helpers/function_testing.py
 
 
 Introduction
@@ -61,7 +60,7 @@ Frontend Test Examples
 -----------------------
 
 Before you begin writing a frontend test, make sure you are placing it in the correct location.
-See the 'Where to place a frontend function' sub-section of the frontend APIs `open task`_ for more details.
+See the :ref:`/overview/contributing/open_tasks:Where to place a frontend function` sub-section of the frontend APIs `open task`_ for more details.
 
 ivy.tan()
 ^^^^^^^^^
@@ -619,7 +618,7 @@ Frontend Instance Method Tests
 
 The frontend instance method tests are similar to the frontend function test, but instead of testing the function directly we test the instance method of the frontend class.
 major difference is that we have more flags to pass now, most initialization functions take an array as an input. also some methods may take an array as input,
-for example, :code:`ndarray.__add__` would expect an array as input, despite the :code:`self.array`. and to make our test **complete** we need to generate seperate flags for each.
+for example, :code:`ndarray.__add__` would expect an array as input, despite the :code:`self.array`. and to make our test **complete** we need to generate separate flags for each.
 
 **Important Helper Functions**
 
@@ -630,8 +629,8 @@ for example, :code:`ndarray.__add__` would expect an array as input, despite the
 
 :func:`helpers.test_frontend_method` is used to test frontend instance methods. It is used in the same way as :func:`helpers.test_frontend_function`. A few important arguments for this function are following:
   - :code:`init_input_dtypes` Input dtypes of the arguments on which we are initializing the array on.
-  - :code:`init_all_as_kwargs_np` The data to be passed when intializing, this will be a dictionary in which the numpy array which will contain the data will be passed in the :code:`data` key.
-  - :code:`method_input_dtypes` The input dtypes of the argument which are to be passed to the instance method after the intialization of the array.
+  - :code:`init_all_as_kwargs_np` The data to be passed when initializing, this will be a dictionary in which the numpy array which will contain the data will be passed in the :code:`data` key.
+  - :code:`method_input_dtypes` The input dtypes of the argument which are to be passed to the instance method after the initialization of the array.
   - :code:`method_all_as_kwargs_np` All the arguments which are to be passed to the instance method.
 
 
@@ -785,7 +784,7 @@ Naturally, many of the functions in the various frontend APIs are very similar t
 Therefore, the unit tests will follow very similar structures with regards to the data generated for testing.
 There are many data generation helper functions defined in the Ivy API test files, such as :func:`_arrays_idx_n_dtypes` defined in :mod:`ivy/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py`.
 This helper generates: a set of concatenation-compatible arrays, the index for the concatenation, and the data types of each array.
-Not surprisingly, this helper is used for testing :func:`ivy.concat`, as shown `here <https://github.com/unifyai/ivy/blob/86287f4e45bbe581fe54e37d5081c684130cba2b/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L53>`_.
+Not surprisingly, this helper is used for testing :func:`ivy.concat`, as shown `here <https://github.com/ivy-llc/ivy/blob/86287f4e45bbe581fe54e37d5081c684130cba2b/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L53>`_.
 
 Clearly, this helper would also be very useful for testing the various frontend concatenation functions, such as :code:`jax.numpy.concatenate`, :code:`numpy.concatenate`, :code:`tensorflow.concat` and :code:`torch.cat`.
 We could simply copy and paste the implementation from :mod:`/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py` into each file :mod:`/ivy_tests/test_ivy/test_frontends/test_<framework>/test_<group>.py`, but this would result in needless duplication.
@@ -816,13 +815,13 @@ The configuration files are located at: :code:`ivy_tests/test_ivy/test_frontends
 
 This should have hopefully given you a good understanding of Ivy Frontend Tests!
 
-If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends tests channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends tests thread`_!
 
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/iS7QFsQa9bI" class="video">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/iS7QFsQa9bI" class="video">
+..     </iframe>

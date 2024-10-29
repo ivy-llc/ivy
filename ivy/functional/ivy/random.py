@@ -8,12 +8,11 @@ import ivy
 from ivy.func_wrapper import (
     handle_array_function,
     infer_dtype,
-    infer_device,
     handle_out_argument,
     to_native_arrays_and_back,
     inputs_to_native_shapes,
     handle_nestable,
-    handle_device_shifting,
+    handle_device,
     handle_backend_invalid,
 )
 from ivy.utils.backend import backend_stack
@@ -26,13 +25,6 @@ from ivy.utils.exceptions import handle_exceptions
 
 def _check_bounds_and_get_shape(low, high, shape):
     if shape is not None:
-        ivy.utils.assertions.check_all_or_any_fn(
-            low,
-            high,
-            fn=lambda x: isinstance(x, (int, float)),
-            type="all",
-            message="low and high bounds must be numerics when shape is specified",
-        )
         return ivy.Shape(shape)
 
     valid_types = (ivy.Array,)
@@ -41,10 +33,6 @@ def _check_bounds_and_get_shape(low, high, shape):
     else:
         valid_types += (ivy.NativeArray,)
     if isinstance(low, valid_types):
-        if isinstance(high, valid_types):
-            ivy.utils.assertions.check_equal(
-                ivy.shape(low), ivy.shape(high), as_array=False
-            )
         return ivy.shape(low)
     if isinstance(high, valid_types):
         return ivy.shape(high)
@@ -96,8 +84,7 @@ def _check_shapes_broadcastable(out, inp):
 @to_native_arrays_and_back
 @handle_array_function
 @infer_dtype
-@handle_device_shifting
-@infer_device
+@handle_device
 def random_uniform(
     *,
     low: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
@@ -108,11 +95,10 @@ def random_uniform(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Draws samples from a uniform distribution. Samples are uniformly distributed over
-    the half-open interval ``[low, high)`` (includes ``low``, but excludes ``high``). In
-    other words, any value within the given interval is equally likely to be drawn by
-    uniform.
+    """Draws samples from a uniform distribution. Samples are uniformly
+    distributed over the half-open interval ``[low, high)`` (includes ``low``,
+    but excludes ``high``). In other words, any value within the given interval
+    is equally likely to be drawn by uniform.
 
     Parameters
     ----------
@@ -213,8 +199,7 @@ def random_uniform(
 @to_native_arrays_and_back
 @handle_array_function
 @infer_dtype
-@handle_device_shifting
-@infer_device
+@handle_device
 def random_normal(
     *,
     mean: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
@@ -225,8 +210,7 @@ def random_normal(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Draws samples from a normal distribution.
+    """Draws samples from a normal distribution.
 
     Parameters
     ----------
@@ -324,8 +308,7 @@ def random_normal(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
-@infer_device
+@handle_device
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -338,10 +321,10 @@ def multinomial(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Draws samples from a multinomial distribution. Specifically, returns a tensor where
-    each row contains num_samples indices sampled from the multinomial probability
-    distribution located in the corresponding row of tensor input.
+    """Draws samples from a multinomial distribution. Specifically, returns a
+    tensor where each row contains num_samples indices sampled from the
+    multinomial probability distribution located in the corresponding row of
+    tensor input.
 
     Parameters
     ----------
@@ -436,8 +419,7 @@ def multinomial(
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
-@infer_device
+@handle_device
 def randint(
     low: Union[int, ivy.NativeArray, ivy.Array],
     high: Union[int, ivy.NativeArray, ivy.Array],
@@ -449,9 +431,8 @@ def randint(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Return an array filled with random integers generated uniformly between low
-    (inclusive) and high (exclusive).
+    """Return an array filled with random integers generated uniformly between
+    low (inclusive) and high (exclusive).
 
     Parameters
     ----------
@@ -513,8 +494,7 @@ def randint(
 @handle_exceptions
 @handle_nestable
 def seed(*, seed_value: int = 0) -> None:
-    """
-    Set the seed for random number generation.
+    """Set the seed for random number generation.
 
     Parameters
     ----------
@@ -535,7 +515,7 @@ def seed(*, seed_value: int = 0) -> None:
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_device_shifting
+@handle_device
 def shuffle(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = 0,
@@ -544,8 +524,7 @@ def shuffle(
     seed: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Shuffles the given array along a given axis.
+    """Shuffles the given array along a given axis.
 
     Parameters
     ----------

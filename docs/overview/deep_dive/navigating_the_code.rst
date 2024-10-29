@@ -2,9 +2,9 @@ Navigating the Code
 ===================
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
-.. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`navigating the code channel`: https://discord.com/channels/799879767196958751/982737793476345888
+.. _`repo`: https://github.com/ivy-llc/ivy
+.. _`discord`: https://discord.gg/uYRmyPxMQq
+.. _`navigating the code thread`: https://discord.com/channels/799879767196958751/1189905165373935616
 .. _`Array API Standard convention`: https://data-apis.org/array-api/2021.12/API_specification/array_object.html#api-specification-array-object--page-root
 .. _`flake8`: https://flake8.pycqa.org/en/latest/index.html
 
@@ -13,31 +13,31 @@ Categorization
 
 Ivy uses the following categories taken from the `Array API Standard`_:
 
-* `constants <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/constants.py>`_
-* `creation <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/creation.py>`_
-* `data_type <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/data_type.py>`_
-* `elementwise <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/elementwise.py>`_
-* `linear_algebra <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/linear_algebra.py>`_
-* `manipulation <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/manipulation.py>`_
-* `searching <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/searching.py>`_
-* `set <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/set.py>`_
-* `sorting <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/sorting.py>`_
-* `statistical <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/statistical.py>`_
-* `utility <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/utility.py>`_
+* `constants <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/constants.py>`_
+* `creation <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/creation.py>`_
+* `data_type <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/data_type.py>`_
+* `elementwise <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/elementwise.py>`_
+* `linear_algebra <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/linear_algebra.py>`_
+* `manipulation <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/manipulation.py>`_
+* `searching <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/searching.py>`_
+* `set <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/set.py>`_
+* `sorting <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/sorting.py>`_
+* `statistical <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/statistical.py>`_
+* `utility <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/utility.py>`_
 
 In addition to these, we also add the following categories, used for additional functions in Ivy that are not in the `Array API Standard`_:
 
-* `activations <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/activations.py>`_
-* `compilation <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/compilation.py>`_
-* `device <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/device.py>`_
-* `general <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/general.py>`_
-* `gradients <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/gradients.py>`_
-* `layers <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/layers.py>`_
-* `losses <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/losses.py>`_
-* `meta <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/meta.py>`_
-* `nest <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/nest.py>`_
-* `norms <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/norms.py>`_
-* `random <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/random.py>`_
+* `activations <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/activations.py>`_
+* `compilation <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/compilation.py>`_
+* `device <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/device.py>`_
+* `general <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/general.py>`_
+* `gradients <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/gradients.py>`_
+* `layers <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/layers.py>`_
+* `losses <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/losses.py>`_
+* `meta <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/meta.py>`_
+* `nest <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/nest.py>`_
+* `norms <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/norms.py>`_
+* `random <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/random.py>`_
 
 Some functions that you're considering adding might overlap several of these categorizations, and in such cases you should look at the other functions included in each file, and use your best judgement for which categorization is most suitable.
 
@@ -51,7 +51,7 @@ Therefore, inside any of the folders :mod:`ivy.functional.ivy`, :mod:`ivy.functi
 This makes it very simple to refactor and re-organize parts of the code structure in an ongoing manner.
 
 The :code:`__init__.py` inside each of the subfolders are very similar, importing each function via :code:`from .file_name import *` and also importing each file as a submodule via :code:`from . import file_name`.
-For example, an extract from `ivy/ivy/functional/ivy/__init__.py <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/__init__.py>`_ is given below:
+For example, an extract from `ivy/ivy/functional/ivy/__init__.py <https://github.com/ivy-llc/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/__init__.py>`_ is given below:
 
 .. code-block:: python
 
@@ -192,16 +192,14 @@ To have a better idea on this, let's look at an example!
             )
         ):
             raise ivy.utils.exceptions.IvyException(
-                "the fill_value: {} and data type: {} are not compatible".format(
-                    fill_value, dtype
-                )
+                f"the fill_value: {fill_value} and data type: {dtype} are not compatible"
             )
 
 
 In the :func:`full_like` function in :mod:`creation.py`, the types of :code:`fill_value` and :code:`dtype` has to be verified to avoid errors.
 This check has to be applied to all backends, which means the related code is common and identical.
 In this case, we can extract the code to be a helper function on its own, placed in its related submodule (:mod:`creation.py` here).
-In this example, the helper function is named as :func:`_assert_fill_value_and_dtype_are_compatible`.
+In this example, the helper function is named as :func:`check_fill_value_and_dtype_are_compatible`.
 
 Then, we import this submodule-specific helper function to the respective backends, where examples for each backend is shown below.
 
@@ -301,13 +299,13 @@ This helps to prevent our work from culminating over a fixed version while strid
 
 This should have hopefully given you a good feel for how to navigate the Ivy codebase.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `navigating the code channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `navigating the code thread`_!
 
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/67UYuLcAKbY" class="video">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/67UYuLcAKbY" class="video">
+..     </iframe>

@@ -1,10 +1,10 @@
 Contributing
 ============
 
-.. _`issues`: https://github.com/unifyai/ivy/issues
-.. _`pull-requests`: https://github.com/unifyai/ivy/pulls
+.. _`issues`: https://github.com/ivy-llc/ivy/issues
+.. _`pull-requests`: https://github.com/ivy-llc/ivy/pulls
 
-We **strongly** welcome contributions and/or any form of engagement from absolutely anyone in the community, regardless of skill-level!
+We welcome contributions and/or any form of engagement from absolutely anyone in the community, regardless of skill-level!
 
 Whether you're a veteran developer 🥷 or a total beginner 🤷, everyone is welcome to create `issues`_ and create `pull-requests`_.
 
@@ -27,13 +27,10 @@ The contributor guide is split into the sections below, it's best to go from sta
 | (d) `Deep Dive <deep_dive.rst>`_
 | Take a deep dive into the codebase 🤿
 |
-| (e) `Open Tasks <contributing/open_tasks.rst>`_
-| See where you can help us out! 🙋
-|
-| (f) `Helpful Resources <contributing/helpful_resources.rst>`_
+| (e) `Helpful Resources <contributing/helpful_resources.rst>`_
 | Resources you would find useful when learning Ivy 📖
 |
-| (g) `Error Handling <contributing/error_handling.rst>`_
+| (f) `Error Handling <contributing/error_handling.rst>`_
 | Common errors you will be facing contributing to Ivy ❌
 
 .. toctree::
@@ -44,15 +41,14 @@ The contributor guide is split into the sections below, it's best to go from sta
    contributing/setting_up.rst
    contributing/the_basics.rst
    contributing/building_the_docs.rst
-   Deep Dive <https://unify.ai/docs/ivy/overview/deep_dive.html>
-   contributing/open_tasks.rst
+   Deep Dive <https://docs.ivy.dev/overview/deep_dive.html>
    contributing/helpful_resources.rst
    contributing/error_handling.rst
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/HF-ZLF23g38" class="video" allowfullscreen="true">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/HF-ZLF23g38" class="video" allowfullscreen="true">
+..     </iframe>

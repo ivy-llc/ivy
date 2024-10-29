@@ -32,7 +32,7 @@ class matrix:
         if self._data.ndim < 2:
             self._data = self._data.reshape((1, -1))
         elif self._data.ndim > 2:
-            newshape = tuple([x for x in self._data.shape if x > 1])
+            newshape = tuple(x for x in self._data.shape if x > 1)
             ndim = len(newshape)
             if ndim == 2:
                 self._data = self._data.reshape(newshape)

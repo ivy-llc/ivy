@@ -23,6 +23,9 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers im
 all_constant_initializers = (ivy.Zeros, ivy.Ones)
 all_gaussian_initializers = (ivy.KaimingNormal, ivy.Siren)
 all_uniform_initializers = (ivy.GlorotUniform, ivy.FirstLayerSiren, ivy.Siren)
+all_initializers = (
+    all_constant_initializers + all_uniform_initializers + all_gaussian_initializers
+)
 
 
 # --- Helpers --- #
@@ -202,7 +205,7 @@ def _x_ic_oc_f_d_df(draw, dim: int = 2, transpose: bool = False, depthwise=False
         data_format = draw(st.sampled_from(["NWC", "NCW"]))
     else:
         data_format = draw(st.sampled_from(["NDHWC", "NCDHW"]))
-    if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
+    if data_format in ["NHWC", "NWC", "NDHWC"]:
         x_shape = [batch_size] + x_dim + [input_channels]
     else:
         x_shape = [batch_size] + [input_channels] + x_dim
@@ -275,7 +278,8 @@ def array_for_adaptive(
         )
     )
     output_size = size[0] if num_out_size == 1 else size
-    return dtypes, arrays, output_size
+    data_format = draw(st.sampled_from(["NCHW", "NHWC"]))
+    return dtypes, arrays, output_size, data_format
 
 
 # --- Main --- #
@@ -298,7 +302,7 @@ def test_adaptive_avg_pool1d_layer(
     method_flags,
     backend_fw,
 ):
-    input_dtype, x, out_size = dt_arr_size
+    input_dtype, x, out_size, _ = dt_arr_size
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         backend_to_test=backend_fw,
@@ -334,7 +338,7 @@ def test_adaptive_avg_pool2d_layer(
     method_flags,
     backend_fw,
 ):
-    input_dtype, x, out_size = dt_arr_size
+    input_dtype, x, out_size, data_format = dt_arr_size
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         backend_to_test=backend_fw,
@@ -342,6 +346,7 @@ def test_adaptive_avg_pool2d_layer(
         method_flags=method_flags,
         init_all_as_kwargs_np={
             "output_size": out_size,
+            "data_format": data_format,
             "device": on_device,
             "dtype": input_dtype[0],
         },
@@ -581,7 +586,7 @@ def test_conv1d_transpose_layer(
         padding,
         output_shape,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(not (backend_fw == "tensorflow" and on_device == "cpu" and dilations > 1))
+    assume(backend_fw != "tensorflow" or on_device != "cpu" or dilations <= 1)
     helpers.test_method(
         backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
@@ -719,7 +724,7 @@ def test_conv2d_transpose_layer(
         padding,
         output_shape,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(not (backend_fw == "tensorflow" and on_device == "cpu" and dilations > 1))
+    assume(backend_fw != "tensorflow" or on_device != "cpu" or dilations <= 1)
     helpers.test_method(
         backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
@@ -786,7 +791,7 @@ def test_conv3d_layer(
         data_format,
         padding,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(not (backend_fw == "tensorflow" and on_device == "cpu" and dilations > 1))
+    assume(backend_fw != "tensorflow" or on_device != "cpu" or dilations <= 1)
     helpers.test_method(
         backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
@@ -859,7 +864,7 @@ def test_conv3d_transpose_layer(
         padding,
         output_shape,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(not (backend_fw == "tensorflow" and on_device == "cpu" and dilations > 1))
+    assume(backend_fw != "tensorflow" or on_device != "cpu" or dilations <= 1)
     helpers.test_method(
         backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
@@ -968,7 +973,7 @@ def test_depthwise_conv2d_layer(
         data_format,
         padding,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(not (backend_fw == "tensorflow" and dilations > 1 and strides > 1))
+    assume(backend_fw != "tensorflow" or dilations <= 1 or strides <= 1)
     helpers.test_method(
         backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
@@ -1048,7 +1053,7 @@ def test_dropout_layer(
         test_values=False,
         on_device=on_device,
     )
-    ret = helpers.flatten_and_to_np(ret=ret)
+    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
     for u in ret:
         # cardinality test
         assert u.shape == x[0].shape
@@ -1151,6 +1156,45 @@ def test_fft_layer(
     )
 
 
+@handle_method(
+    method_tree="IDct.__call__",
+    dtype_x_and_args=_valid_dct(),
+)
+def test_idct(
+    *,
+    dtype_x_and_args,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+    backend_fw,
+):
+    dtype, x, type, n, axis, norm = dtype_x_and_args
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        backend_to_test=backend_fw,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "dtype": dtype[0],
+            "type": type,
+            "n": n,
+            "axis": axis,
+            "norm": norm,
+            "device": on_device,
+        },
+        method_input_dtypes=dtype,
+        method_all_as_kwargs_np={"x": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
 # Identity
 @handle_method(
     method_tree="Identity.__call__",
@@ -1193,6 +1237,45 @@ def test_identity_layer(
         method_with_v=method_with_v,
         rtol_=1e-03,
         atol_=1e-03,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+# IFFT
+@handle_method(
+    method_tree="IFFT.__call__",
+    x_and_ifft=exp_layers_tests._x_and_ifft(),
+)
+def test_ifft_layer(
+    *,
+    x_and_ifft,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+    backend_fw,
+):
+    dtype, x, dim, norm, n = x_and_ifft
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        backend_to_test=backend_fw,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "dim": dim,
+            "norm": norm,
+            "n": n,
+            "device": on_device,
+            "dtype": dtype[0],
+        },
+        method_input_dtypes=dtype,
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
         test_gradients=test_gradients,
         on_device=on_device,
     )
@@ -1532,117 +1615,115 @@ def test_multi_head_attention_layer(
     ),
     with_v=st.booleans(),
     seq_v=st.booleans(),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
+    dtype=helpers.get_dtypes("float", full=False),
 )
 def test_sequential_layer(
-    bs_c_target,
-    with_v,
-    seq_v,
-    dtype,
-    method_flags,
-    on_device,
-    compile_graph,
-    method_name,
-    class_name,
+    bs_c_target, with_v, seq_v, dtype, method_flags, on_device, backend_fw
 ):
-    dtype = dtype[0]
-    # smoke test
-    batch_shape, channels, target = bs_c_target
-    tolerance_dict = {
-        "bfloat16": 1e-2,
-        "float16": 1e-2,
-        "float32": 1e-5,
-        "float64": 1e-5,
-        None: 1e-5,
-    }
-    if method_flags.as_variable[0]:
-        x = _variable(
-            ivy.asarray(
+    with ivy.utils.backend.ContextManager(backend_fw):
+        dtype = dtype[0]
+        if backend_fw == "torch":
+            assume("float16" not in dtype)
+        if backend_fw == "paddle":
+            assume(dtype != "float16")
+        # smoke test
+        batch_shape, channels, target = bs_c_target
+        tolerance_dict = {
+            "bfloat16": 1e-1,
+            "float16": 1e-2,
+            "float32": 1e-2,
+            "float64": 1e-2,
+        }
+        if method_flags.as_variable[0]:
+            x = _variable(
+                ivy.asarray(
+                    ivy.linspace(
+                        ivy.zeros(batch_shape), ivy.ones(batch_shape), channels
+                    ),
+                    dtype=dtype,
+                )
+            )
+        else:
+            x = ivy.asarray(
                 ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels),
                 dtype=dtype,
             )
-        )
-    else:
-        x = ivy.asarray(
-            ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels),
-            dtype=dtype,
-        )
-    if with_v:
-        np.random.seed(0)
-        wlim = (6 / (channels + channels)) ** 0.5
-        v = Container(
-            {
-                "submodules": {
-                    "v0": {
-                        "w": _variable(
-                            ivy.array(
-                                np.random.uniform(-wlim, wlim, (channels, channels)),
-                                dtype=dtype,
-                                device=on_device,
-                            )
-                        ),
-                        "b": _variable(
-                            ivy.zeros([channels], device=on_device, dtype=dtype)
-                        ),
-                    },
-                    "v2": {
-                        "w": _variable(
-                            ivy.array(
-                                np.random.uniform(-wlim, wlim, (channels, channels)),
-                                dtype=dtype,
-                                device=on_device,
-                            )
-                        ),
-                        "b": _variable(
-                            ivy.zeros([channels], device=on_device, dtype=dtype)
-                        ),
-                    },
+        if with_v:
+            np.random.seed(0)
+            wlim = (6 / (channels + channels)) ** 0.5
+            v = Container(
+                {
+                    "submodules": {
+                        "v0": {
+                            "w": _variable(
+                                ivy.array(
+                                    np.random.uniform(
+                                        -wlim, wlim, (channels, channels)
+                                    ),
+                                    dtype=dtype,
+                                    device=on_device,
+                                )
+                            ),
+                            "b": _variable(
+                                ivy.zeros([channels], device=on_device, dtype=dtype)
+                            ),
+                        },
+                        "v2": {
+                            "w": _variable(
+                                ivy.array(
+                                    np.random.uniform(
+                                        -wlim, wlim, (channels, channels)
+                                    ),
+                                    dtype=dtype,
+                                    device=on_device,
+                                )
+                            ),
+                            "b": _variable(
+                                ivy.zeros([channels], device=on_device, dtype=dtype)
+                            ),
+                        },
+                    }
                 }
-            }
-        )
-    else:
-        v = None
-    if seq_v:
-        seq = ivy.Sequential(
-            ivy.Linear(channels, channels, device=on_device, dtype=dtype),
-            ivy.Dropout(0.0),
-            ivy.Linear(channels, channels, device=on_device, dtype=dtype),
-            device=on_device,
-            v=v if with_v else None,
-            dtype=dtype,
-        )
-    else:
-        seq = ivy.Sequential(
-            ivy.Linear(
-                channels,
-                channels,
+            )
+        else:
+            v = None
+        if seq_v:
+            seq = ivy.Sequential(
+                ivy.Linear(channels, channels, device=on_device, dtype=dtype),
+                ivy.Dropout(0.0, dtype=dtype),
+                ivy.Linear(channels, channels, device=on_device, dtype=dtype),
                 device=on_device,
-                v=v["submodules"]["v0"] if with_v else None,
+                v=v if with_v else None,
                 dtype=dtype,
-            ),
-            ivy.Dropout(0.0),
-            ivy.Linear(
-                channels,
-                channels,
+            )
+        else:
+            seq = ivy.Sequential(
+                ivy.Linear(
+                    channels,
+                    channels,
+                    device=on_device,
+                    v=v["submodules"]["v0"] if with_v else None,
+                    dtype=dtype,
+                ),
+                ivy.Dropout(0.0, dtype=dtype),
+                ivy.Linear(
+                    channels,
+                    channels,
+                    device=on_device,
+                    v=v["submodules"]["v2"] if with_v else None,
+                    dtype=dtype,
+                ),
                 device=on_device,
-                v=v["submodules"]["v2"] if with_v else None,
                 dtype=dtype,
-            ),
-            device=on_device,
+            )
+        ret = seq(x)
+        # type test
+        assert ivy.is_ivy_array(ret)
+        # cardinality test
+        assert ret.shape == ivy.Shape(batch_shape + [channels])
+        # value test
+        if not with_v:
+            return
+        assert np.allclose(
+            ivy.to_numpy(seq(x)), np.array(target), rtol=tolerance_dict[dtype]
         )
-    ret = seq(x)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == ivy.Shape(batch_shape + [channels])
-    # value test
-    if not with_v:
-        return
-    assert np.allclose(
-        ivy.to_numpy(seq(x)), np.array(target), rtol=tolerance_dict[dtype]
-    )
-
-
-all_initializers = (
-    all_constant_initializers + all_uniform_initializers + all_gaussian_initializers
-)

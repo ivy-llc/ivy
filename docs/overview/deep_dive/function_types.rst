@@ -1,39 +1,39 @@
 Function Types
 ==============
 
-.. _`_wrap_function`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L412
-.. _`backend setting`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
-.. _`handle_nestable`: https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L370
-.. _`at import time`: https://github.com/unifyai/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/__init__.py#L114
-.. _`add_ivy_array_instance_methods`: https://github.com/unifyai/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/array/wrapping.py#L26
-.. _`add_ivy_container_instance_methods`: https://github.com/unifyai/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/container/wrapping.py#L69
-.. _`from being added`: https://github.com/unifyai/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/container/wrapping.py#L78
-.. _`_function_w_arrays_n_out_handled`: https://github.com/unifyai/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L166
-.. _`NON_WRAPPED_FUNCTIONS`: https://github.com/unifyai/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9
-.. _`ivy.set_backend`: https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/backend_handler.py#L153
-.. _`ivy.get_backend`: https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/backend_handler.py#L211
-.. _`ivy.nested_map`: https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/nest.py#L618
-.. _`ivy.index_nest`: https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/nest.py#L15
-.. _`ivy.set_default_dtype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1555
-.. _`ivy.set_default_device`: https://github.com/unifyai/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/device.py#L464
-.. _`submodules`: https://github.com/unifyai/ivy/tree/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy
-.. _`nest.py`: https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/nest.py
-.. _`ivy.default`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/general.py#L622
-.. _`ivy.cache_fn`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/general.py#L747
-.. _`ivy.stable_divide`: https://github.com/unifyai/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/general.py#L928
-.. _`ivy.can_cast`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L246
-.. _`ivy.dtype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1096
-.. _`ivy.dev`: https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L325
-.. _`ivy.default_dtype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879
-.. _`ivy.get_all_arrays_on_dev`: https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L131
-.. _`inside the _wrap_function`: https://github.com/unifyai/ivy/blob/1a00001017ceca11baf0a7b83adcc51234d43fce/ivy/func_wrapper.py#L1115
-.. _`FN_DECORATORS`: https://github.com/unifyai/ivy/blob/1a00001017ceca11baf0a7b83adcc51234d43fce/ivy/func_wrapper.py#L15
-.. _`handle_partial_mixed_function`: https://github.com/unifyai/ivy/blob/1a00001017ceca11baf0a7b83adcc51234d43fce/ivy/functional/ivy/layers.py#L77
-.. _`partial_mixed_handler`: https://github.com/unifyai/ivy/blob/1a00001017ceca11baf0a7b83adcc51234d43fce/ivy/functional/backends/torch/layers.py#L29
-.. _`handle`: https://github.com/unifyai/ivy/blob/0ef2888cbabeaa8f61ce8aaea4f1175071f7c396/ivy/func_wrapper.py#L1027-L1030
-.. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`function types channel`: https://discord.com/channels/799879767196958751/982737839861145630
+.. _`_wrap_function`: https://github.com/ivy-llc/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L412
+.. _`backend setting`: https://github.com/ivy-llc/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204
+.. _`handle_nestable`: https://github.com/ivy-llc/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L370
+.. _`at import time`: https://github.com/ivy-llc/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/__init__.py#L114
+.. _`add_ivy_array_instance_methods`: https://github.com/ivy-llc/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/array/wrapping.py#L26
+.. _`add_ivy_container_instance_methods`: https://github.com/ivy-llc/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/container/wrapping.py#L69
+.. _`from being added`: https://github.com/ivy-llc/ivy/blob/055dcb3b863b70c666890c580a1d6cb9677de854/ivy/container/wrapping.py#L78
+.. _`_function_w_arrays_n_out_handled`: https://github.com/ivy-llc/ivy/blob/ee0da7d142ba690a317a4fe00a4dd43cf8634642/ivy/func_wrapper.py#L166
+.. _`NON_WRAPPED_FUNCTIONS`: https://github.com/ivy-llc/ivy/blob/fdaea62380c9892e679eba37f26c14a7333013fe/ivy/func_wrapper.py#L9
+.. _`ivy.set_backend`: https://github.com/ivy-llc/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/backend_handler.py#L153
+.. _`ivy.get_backend`: https://github.com/ivy-llc/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/backend_handler.py#L211
+.. _`ivy.nested_map`: https://github.com/ivy-llc/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/nest.py#L618
+.. _`ivy.index_nest`: https://github.com/ivy-llc/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/nest.py#L15
+.. _`ivy.set_default_dtype`: https://github.com/ivy-llc/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1555
+.. _`ivy.set_default_device`: https://github.com/ivy-llc/ivy/blob/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy/device.py#L464
+.. _`submodules`: https://github.com/ivy-llc/ivy/tree/30b7ca4f8a50a52f51884738fe7323883ce891bd/ivy/functional/ivy
+.. _`nest.py`: https://github.com/ivy-llc/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/nest.py
+.. _`ivy.default`: https://github.com/ivy-llc/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/general.py#L622
+.. _`ivy.cache_fn`: https://github.com/ivy-llc/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/general.py#L747
+.. _`ivy.stable_divide`: https://github.com/ivy-llc/ivy/blob/f18df2e19d6a5a56463fa1a15760c555a30cb2b2/ivy/functional/ivy/general.py#L928
+.. _`ivy.can_cast`: https://github.com/ivy-llc/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L246
+.. _`ivy.dtype`: https://github.com/ivy-llc/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1096
+.. _`ivy.dev`: https://github.com/ivy-llc/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L325
+.. _`ivy.default_dtype`: https://github.com/ivy-llc/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879
+.. _`ivy.get_all_arrays_on_dev`: https://github.com/ivy-llc/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L131
+.. _`inside the _wrap_function`: https://github.com/ivy-llc/ivy/blob/1a00001017ceca11baf0a7b83adcc51234d43fce/ivy/func_wrapper.py#L1115
+.. _`FN_DECORATORS`: https://github.com/ivy-llc/ivy/blob/1a00001017ceca11baf0a7b83adcc51234d43fce/ivy/func_wrapper.py#L15
+.. _`handle_partial_mixed_function`: https://github.com/ivy-llc/ivy/blob/1a00001017ceca11baf0a7b83adcc51234d43fce/ivy/functional/ivy/layers.py#L77
+.. _`partial_mixed_handler`: https://github.com/ivy-llc/ivy/blob/1a00001017ceca11baf0a7b83adcc51234d43fce/ivy/functional/backends/torch/layers.py#L29
+.. _`handle`: https://github.com/ivy-llc/ivy/blob/0ef2888cbabeaa8f61ce8aaea4f1175071f7c396/ivy/func_wrapper.py#L1027-L1030
+.. _`repo`: https://github.com/ivy-llc/ivy
+.. _`discord`: https://discord.gg/uYRmyPxMQq
+.. _`function types thread`: https://discord.com/channels/799879767196958751/1189905318650576896
 
 Firstly, we explain the difference between *primary*, *compositional*, *mixed* and *standalone* functions.
 These four function categorizations are all **mutually exclusive**, and combined they constitute the set of **all** functions in Ivy, as outlined in the simple Venn diagram below.
@@ -103,7 +103,7 @@ For example, the implementation of :func:`ivy.cross_entropy` in :mod:`ivy/functi
         *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        reduction: str = "sum",
+        reduction: str = "mean",
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
@@ -249,12 +249,12 @@ Feel free to have a look through all of the `submodules`_, you should be able to
 
 This should have hopefully given you a good feel for the different function types.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `function types channel`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `function types thread`_!
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/mWYhQRu1Vuk" class="video">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/mWYhQRu1Vuk" class="video">
+..     </iframe>

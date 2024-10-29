@@ -1,15 +1,17 @@
 Setting Up
 ==========
 
-.. _`repo`: https://github.com/unifyai/ivy
-.. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`pycharm channel`: https://discord.com/channels/799879767196958751/942114831039856730
-.. _`docker channel`: https://discord.com/channels/799879767196958751/942114744691740772
-.. _`pre-commit channel`: https://discord.com/channels/799879767196958751/982725464110034944
-.. _`pip packages channel`: https://discord.com/channels/799879767196958751/942114789642080317
+.. _`repo`: https://github.com/ivy-llc/ivy
+.. _`discord`: https://discord.gg/uYRmyPxMQq
+.. _`pycharm thread`: https://discord.com/channels/799879767196958751/1186628916522262629
+.. _`docker thread`: https://discord.com/channels/799879767196958751/1186629067966009424
+.. _`pre-commit thread`: https://discord.com/channels/799879767196958751/1186629635694399539
+.. _`pip packages thread`: https://discord.com/channels/799879767196958751/1186629837515935765
 .. _`miniconda`: https://docs.conda.io/en/latest/miniconda.html
 .. _`venv`: https://docs.python.org/3/library/venv.html
-.. _`ivy/run_tests_CLI`: https://github.com/unifyai/ivy/tree/f71a414417646e1dfecb5de27fb555f80333932c/run_tests_CLI
+.. _`ivy/scripts`: https://github.com/unifyai/ivy/tree/bcddc79978afe447958dfa3ea660716845c85846/scripts
+.. _`platform compatibility tags`: https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/
+.. _`logging level`: https://docs.python.org/3/library/logging.html#logging.Logger.setLevel
 
 We're really happy you'd like to learn how to contribute towards Ivy 🙂
 
@@ -64,7 +66,7 @@ In order to install and properly set up pre-commit, these steps should be follow
 
 That's it! Now when you make a commit, the pre-commit hooks will all be run correctly, as explained above.
 
-For questions, please reach out on `discord`_ in the `pre-commit channel`_!
+For questions, please reach out on `discord`_ in the `pre-commit thread`_!
 
 
 PyCharm
@@ -81,7 +83,7 @@ Many people seem to miss this option, so we thought we would add an explicit rem
 #. To continue using PyCharm Professional, you can use the trial version making a jetbrains account but that would be only valid for 1 month.
 #. After the trial expires you have to buy the paid version of PyCharm Professional.
 
-For questions, please reach out on `discord`_ in the `pycharm channel`_!
+For questions, please reach out on `discord`_ in the `pycharm thread`_!
 
 Virtual environments - No Docker
 --------------------------------
@@ -120,7 +122,7 @@ Using miniconda
 
    .. code-block:: none
 
-      pip install e .
+      pip install -e .
 
 #. Setup the interpreter by:
 
@@ -152,6 +154,16 @@ Using miniconda
 
          pip install -r requirements/optional_apple_silicon_1.txt
          pip install -r requirements/optional_apple_silicon_2.txt
+
+#. Installing array API testing dependencies.
+
+   To make sure you have all the packages for running tests available change the directory to :code:`ivy/ivy_tests/array_api_testing/test_array_api` in your cloned fork using the :code:`cd` command and run the command below (while your :code:`ivy_dev` environment is active):
+
+   .. code-block:: none
+
+      pip install -r requirements.txt
+
+   This will install packages required for running the tests in Array API suite.
 
 Using venv
 **********
@@ -219,8 +231,8 @@ This is a builtin package and doesn't require explicit installation.
 
       .. code-block:: none
 
-         wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
-         sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
+         wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.20_amd64.deb
+         sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.20_amd64.deb
 
       PS: If the link gets expired at some point in the future, check http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/?C=M;O=D for a valid one.
 
@@ -284,7 +296,7 @@ Windows
 
    a. Docker image -> Docker
    b. Image -> Pull
-   c. Image tag -> unifyai/ivy:latest
+   c. Image tag -> ivyllc/ivy:latest
    d. Select "Next"
 #. The image will start pulling. It will take a respectable amount of time to complete. Once you see the "Introspection Completed" message, select "Next".
 #. Another window will appear, at this step select the following:
@@ -311,13 +323,13 @@ If Docker's latest version causes an error, try using an earlier version by visi
 For some Windows users, it might be necessary to enable virtualisation from the BIOS setup.
 
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/7I_46c2AvJg" class="video" allowfullscreen="true">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/7I_46c2AvJg" class="video" allowfullscreen="true">
+..     </iframe>
 
 
 MacOS
@@ -328,7 +340,7 @@ MacOS
 #. Get the latest Docker Image for Ivy by:
 
    a. Running Docker desktop.
-   b. Opening the terminal, and running the command: :code:`docker pull unifyai/ivy:latest`
+   b. Opening the terminal, and running the command: :code:`docker pull ivyllc/ivy:latest`
 
 #. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_
 #. Open pycharm with your cloned Ivy repository.
@@ -339,7 +351,7 @@ MacOS
    b. Going to settings -> project -> Python Interpreter
    c. Clicking add interpreter (currently by clicking the ⚙ icon on the right side) which should open a new window.
    d. Choosing "On Docker" from the dropdown menu.
-   e. Choosing "Docker" from the "Docker server" dropdown menu, choosing "Pull" if you want to use a remote interpreter, and using :code:`unifyai/ivy:latest` as the image tag.
+   e. Choosing "Docker" from the "Docker server" dropdown menu, choosing "Pull" if you want to use a remote interpreter, and using :code:`ivyllc/ivy:latest` as the image tag.
    f. If you don't want to use a remote interpreter, choose "Build" and use the suitable Dockerfile; then choosing :code:`docker/Dockerfile` to be the Dockerfile.
    g. Clicking next and navigating to the system interpreter tab from the menu on the left.
    h. Choosing the built interpreter from the dropdown menu.
@@ -351,13 +363,13 @@ If Docker's latest version causes an error, try using an earlier version by visi
 
 When setting up on an M1 Mac, you would have to update the Dockerfile to install libraries from :code:`requirements/optional_apple_silicon_1.txt` and :code:`requirements/optional_apple_silicon_2.txt` instead of :code:`requirements/optional.txt`.
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/5BxizBIC-GQ" class="video" allowfullscreen="true">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/5BxizBIC-GQ" class="video" allowfullscreen="true">
+..     </iframe>
 
 
 Ubuntu
@@ -404,7 +416,7 @@ Ubuntu
 #. Get the latest Docker Image for Ivy by:
 
    a. Opening terminal and running :code:`systemctl start docker`
-   b. Running the command: :code:`docker pull unifyai/ivy:latest`
+   b. Running the command: :code:`docker pull ivyllc/ivy:latest`
 
    Note: If you get permission related errors please visit the simple steps at `Linux post-installation page <https://docs.docker.com/engine/install/linux-postinstall/>`_.
 
@@ -420,7 +432,7 @@ Ubuntu
    d. Choosing "Docker" from the left panel.
       Type python3 (with the number) in python interpreter path and press ok.
 
-**Docker Connection not Successfull**
+**Docker Connection not Successful**
 
 This is a common error which you might face. If you are not successfully able to connect docker with Pycharm(point 4a) and your docker is also running, the issue is that you are not able to use your docker socket. So, executing the below two commands should solve this.
 
@@ -433,15 +445,15 @@ This is a common error which you might face. If you are not successfully able to
    sudo chmod a+rwx /var/run/docker.pid
 
 
-For questions, please reach out on `discord`_ in the `docker channel`_!
+For questions, please reach out on `discord`_ in the `docker thread`_!
 
-**Video**
+.. **Video**
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video" allowfullscreen="true">
-    </iframe>
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video" allowfullscreen="true">
+..     </iframe>
 
 Setting Up Testing in PyCharm
 -----------------------------
@@ -476,31 +488,31 @@ Click this and you should see a progress bar of all the tests running in the fil
   :width: 420
 
 It is also possible to run the entire set of ivy tests or the array api test suite using pre-written shell scripts that can be run from the 'Terminal' tab in PyCharm.
-There are a number of such shell scripts in `ivy/run_tests_CLI`_:
+There are a number of such shell scripts in `ivy/scripts`_:
 
 .. code-block:: bash
     :emphasize-lines: 4,5,8,9,10
 
-    run_ivy_core_test.py
-    run_ivy_nn_test.py
-    run_ivy_stateful_test.py
-    run_tests.sh
-    test_array_api.sh
-    test_dependencies.py
-    test_dependencies.sh
-    test_ivy_core.sh
-    test_ivy_nn.sh
-    test_ivy_stateful.sh
+    scripts/setup_tests/run_ivy_core_test.py
+    scripts/setup_tests/run_ivy_nn_test.py
+    scripts/setup_tests/run_ivy_stateful_test.py
+    scripts/shell/run_tests.sh
+    scripts/shell/test_array_api.sh
+    scripts/test_dependencies.py
+    scripts/shell/test_dependencies.sh
+    scripts/shell/test_ivy_core.sh
+    scripts/shell/test_ivy_nn.sh
+    scripts/shell/test_ivy_stateful.sh
 
 **For Unix-based systems (Linux and macOS):**
 
-* :code:`run_tests.sh` is run by typing :code:`./run_tests_CLI/run_tests.sh` in the :code:`/ivy` directory.
+* :code:`scripts/shell/run_tests.sh` is run by typing :code:`./scripts/shell/run_tests.sh` in the :code:`/ivy` directory.
   This runs all tests in :code:`ivy/ivy_tests`.
-* :code:`test_array_api.sh` is run by typing :code:`./test_array_api.sh [backend] test_[submodule]`.
+* :code:`scripts/shell/test_array_api.sh` is run by typing :code:`./scripts/shell/test_array_api.sh [backend] test_[submodule]`.
   This runs all array-api tests for a certain submodule in a certain backend.
-* :code:`test_ivy_core.sh` is run by typing :code:`./run_tests_CLI/test_ivy_core.sh [backend] test_[submodule]` in the ivy directory.
+* :code:`scripts/shell/test_ivy_core.sh` is run by typing :code:`./scripts/shell/test_ivy_core.sh [backend] test_[submodule]` in the ivy directory.
   This runs all ivy tests for a certain submodule in a certain backend in :code:`test_ivy/test_functional/test_core`.
-* :code:`test_ivy_nn.sh`, :code:`test_ivy_stateful.sh` are run in a similar manner to :code:`test_ivy_core.sh`.
+* :code:`scripts/shell/test_ivy_nn.sh`, :code:`scripts/shell/test_ivy_stateful.sh` are run in a similar manner to :code:`scripts/shell/test_ivy_core.sh`.
   Make sure to check the submodule names in the source code before running.
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_run_array_api_tests.png?raw=true
@@ -512,19 +524,19 @@ There are a number of such shell scripts in `ivy/run_tests_CLI`_:
 For Windows users, you may need to specify that the shell scripts should be run by :code:`sh`, which comes with Git. In the Terminal, prepend sh to the script commands like so:
 
 
-* To run :code:`run_tests.sh` on Windows, type :code:`sh ./run_tests_CLI/run_tests.sh` in the :code:`/ivy` directory.
+* To run :code:`scripts/shell/run_tests.sh` on Windows, type :code:`sh ./scripts/shell/run_tests.sh` in the :code:`/ivy` directory.
   This runs all tests in :code:`ivy/ivy_tests`.
-* To run :code:`test_array_api.sh` on Windows, type :code:`sh ./test_array_api.sh [backend] test_[submodule]`.
+* To run :code:`scripts/shell/test_array_api.sh` on Windows, type :code:`sh ./scripts/shell/test_array_api.sh [backend] test_[submodule]`.
   This runs all array-api tests for a certain submodule in a certain backend.
-* To run :code:`test_ivy_core.sh` on Windows, type :code:`sh ./run_tests_CLI/test_ivy_core.sh [backend] test_[submodule]` in the ivy directory.
+* To run :code:`scripts/shell/test_ivy_core.sh` on Windows, type :code:`sh ./scripts/shell/test_ivy_core.sh [backend] test_[submodule]` in the ivy directory.
   This runs all ivy tests for a certain submodule in a certain backend in :code:`test_ivy/test_functional/test_core`.
-* :code:`test_ivy_nn.sh`, :code:`test_ivy_stateful.sh` are run in a similar manner to :code:`test_ivy_core.sh` on Windows.
+* :code:`scripts/shell/test_ivy_nn.sh`, :code:`scripts/shell/test_ivy_stateful.sh` are run in a similar manner to :code:`scripts/shell/test_ivy_core.sh` on Windows.
   Make sure to check the submodule names in the source code before running.
 
 The above instructions for running tests on Windows assume that you have installed Git and have access to the Git Bash terminal. If you do not have Git Bash, you can download it from the `official Git website <https://git-scm.com/downloads>`_.
 
-If you wish to run tests of all submodules of `ivy_core`, `ivy_nn` or `ivy_stateful`, there are :code:`.py` available in :code:`run_tests_CLI`.
-All are run like: :code:`python run_tests_CLI/run_ivy_nn_test.py 1`, where 1 = numpy, 2 = torch, 3 = jax, and 4 = tensorflow.
+If you wish to run tests of all submodules of `ivy_core`, `ivy_nn` or `ivy_stateful`, there are :code:`.py` available in :code:`scripts/shell`.
+All are run like: :code:`python scripts/setup_tests/run_ivy_nn_test.py 1`, where 1 = numpy, 2 = torch, 3 = jax, and 4 = tensorflow.
 
 
 More Detailed Hypothesis Logs in PyCharm
@@ -548,7 +560,7 @@ Now, if Hypothesis detects an error in the code it will return more detailed inf
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_example.png?raw=true
    :width: 420
 
-For questions, please reach out on `discord`_ in the `docker channel`_!
+For questions, please reach out on `discord`_ in the `docker thread`_!
 
 **"Empty Suite" error fix:**
 
@@ -638,7 +650,7 @@ the steps explained below will help you in setting up a less resource-intensive 
 
       pip install git+https://github.com/unifyai/ivy.git
 
-#. If you want to set up a local repository, you can do so by following :ref:`this guide <overview/contributing/setting_up:Forking and cloning the repo>`
+#. Or else, if you want to set up a local repository, you can do so by following :ref:`this guide <overview/contributing/setting_up:Forking and cloning the repo>`
    as explained above and install the required development dependencies by running:
 
    .. code-block:: none
@@ -648,6 +660,7 @@ the steps explained below will help you in setting up a less resource-intensive 
    .. code-block:: none
 
       pip install -r requirements/requirements.txt
+      pip install -r requirements/optional.txt
 
 #. Once done, you can now open VSCode right from your terminal and get started with your development by just running:
 
@@ -750,7 +763,7 @@ If you want to setup a GPU instance on codespaces and also have access to it, ki
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/setting_up/github_codespaces/Selecting_the_GPU.png?raw=true
    :width: 420
 
-2. Refer to the ref:`Setting up Codespaces` section for the other configurations such as the "Dev conatiner configuration". Your Machine Type section will look like the following image shown below. Feel free to click on the green button to create the instance.
+2. Refer to the ref:`Setting up Codespaces` section for the other configurations such as the "Dev container configuration". Your Machine Type section will look like the following image shown below. Feel free to click on the green button to create the instance.
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/contributing/setting_up/github_codespaces/Interface_after_selecting_the_GPU_1.png?raw=true
    :width: 420
@@ -825,17 +838,60 @@ The steps are as following to setup testing on VS Code when using a new Codespac
 
 Note: Currently you do not need to comment out the :code:`conftest.py` file in the :code:`array_api_tests` directory.
 
-**Video**
 
-.. raw:: html
+The Binaries
+------------
 
-    <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/8rDcMMIl8dM" class="video" allowfullscreen="true">
-    </iframe>
+Some features in :code:`ivy` are served as compiled binaries, such as the transpiler.
+These binaries aren't maintained in the :code:`ivy` repository directly, but on a separate :code:`binaries` repository.
+All the binaries that are required to make use of the full potential of :code:`ivy` are recorded in the :code:`binaries.json`.
+The supported configurations (Python version - OS - Architecture) are recorded in the :code:`available_configs.json`.
+
+The format of representing a configuration is based on PyPI's `platform compatibility tags`_,
+meaning :code:`cp310-none-manylinux_2_17_x86_64` represents a configuration that can be used in a Python 3.10 environment on a linux system with x86-64.
+We continue to add support to many more supported configurations to our binaries to work with various python versions, OS and architecture.
+
+On installing :code:`ivy` with :code:`pip install -e .` all the required binaries with a supported configuration to your system get downloaded.
+Just to have another check on whether all binaries are present, there's a warning that gets thrown when you :code:`import ivy` if any binaries are missing of the form,
+
+.. code-block:: none
+
+   WARNING:root:   Some binaries seem to be missing in your system. This could be either because we don't have compatible binaries for your system or that newer binaries were available.
+                   In the latter case, calling ivy.utils.cleanup_and_fetch_binaries() should fetch the binaries binaries. Feel free to create an issue on https://github.com/unifyai/ivy.git in case of the former
+
+   WARNING:root:
+   Following are the supported configurations :
+   compiler : cp38-none-manylinux_2_17_x86_64, cp310-none-manylinux_2_17_x86_64
+   engines : cp310-none-manylinux_2_17_x86_64
+
+   WARNING:root:   /workspaces/ivy/ivy/compiler/_compiler.so not found.
+
+In case there are no supported binaries for your configuration, then feel free to create an issue on the :code:`ivy` repo asking for adding support to the same.
+Feel free to ignore the warning in the meantime, set a `logging level`_ to avoid receiving the warning.
+In case the you are using a supported configuration and still receiving this warning, it indicates that you are yet to do a :code:`pip install -e .` as mentioned in the previous sections.
+Running a :code:`pip install -e .` is sufficient to download the binaries if they're supported but the :func:`ivy.utils.cleanup_and_fetch_binaries` function is provided just in case you want to download the binaries without a local installation.
+
+.. code-block:: python
+
+   import ivy
+
+   ivy.utils.cleanup_and_fetch_binaries()
+
+
+.. note:: Bear in mind that the binaries are **not** required for working on the open tasks for the most part, so it's totally fine to not have the binaries downloaded on your system for working on any of the open tasks.
+
+
+.. **Video**
+
+.. .. raw:: html
+
+..     <iframe width="420" height="315" allow="fullscreen;"
+..     src="https://www.youtube.com/embed/8rDcMMIl8dM" class="video" allowfullscreen="true">
+..     </iframe>
 
 
 **Round Up**
 
 This should have hopefully given you a good understanding of how to get things properly set up.
 
-If you have any questions, please feel free to reach out on `discord`_  in the `pycharm channel`_, `docker channel`_, `pre-commit channel`_, `pip packages channel`_ depending on the question!
+If you have any questions, please feel free to reach out on `discord`_  in the `pycharm thread`_, `docker thread`_, `pre-commit thread`_, `pip packages thread`_ depending on the question!

@@ -1,27 +1,21 @@
 # Ivy Framework
-ivy/func_wrapper.py @VedPatwardhan
-**/gradients.py @VedPatwardhan
-ivy/utils/backend @VedPatwardhan @CatB1t
-ivy/utils/backend/ast_helpers.py @CatB1t
+ivy/func_wrapper.py @Sam-Armstrong
+**/gradients.py @Sam-Armstrong
+ivy/utils/backend @Sam-Armstrong
+ivy/utils/backend/ast_helpers.py @Sam-Armstrong
 
 # Ivy Testing
-ivy_tests/test_ivy/helpers/ @CatB1t
-ivy_tests/array_api_testing/ @aarsh2001 @hirwa-nshuti
+ivy_tests/test_ivy/helpers/ @Sam-Armstrong
 
 # Docs builder
-docs/index.rst @KareemMAX
-docs/make_docs.sh @KareemMAX
-docs/partial_conf.py @KareemMAX
-docs/prebuild.sh @KareemMAX
-docs/overview/contributing/building_the_docs.rst @KareemMAX
-docs/overview/deep_dive/building_the_docs_pipline.rst @KareemMAX
-docs/_templates @KareemMAX
-
-# Docker
-docker/* @ricksanchezstoic
-
-# Idea files
-.idea/* @Aarsh2001 @zaeemansari70
+docs/index.rst @Sam-Armstrong
+docs/make_docs.sh @Sam-Armstrong
+docs/partial_conf.py @Sam-Armstrong
+docs/prebuild.sh @Sam-Armstrong
+docs/overview/contributing/building_the_docs.rst @Sam-Armstrong
+docs/overview/deep_dive/building_the_docs_pipeline.rst @Sam-Armstrong
+docs/_templates @Sam-Armstrong
+docs/demos @Sam-Armstrong
 
 # README
-README.md @guillesanbri
+README.md @Sam-Armstrong

@@ -1,12 +1,12 @@
-"""Collection of Jax activation functions, wrapped to fit Ivy syntax and signature."""
-
+"""Collection of Jax activation functions, wrapped to fit Ivy syntax and
+signature."""
 
 # global
 
 
 import jax
 import jax.numpy as jnp
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 
 # local
 from ivy.functional.backends.jax import JaxArray
@@ -37,10 +37,12 @@ def leaky_relu(
 def relu(
     x: JaxArray, /, *, complex_mode="jax", out: Optional[JaxArray] = None
 ) -> JaxArray:
-    return jnp.maximum(x, 0)
+    return jax.nn.relu(x)
 
 
-def sigmoid(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def sigmoid(
+    x: JaxArray, /, *, complex_mode="jax", out: Optional[JaxArray] = None
+) -> JaxArray:
     return 1 / (1 + jnp.exp(-x))
 
 
@@ -66,18 +68,18 @@ def softplus(
         res = (
             jnp.add(
                 jnp.log1p(jnp.exp(-jnp.abs(x_beta))),
-                jnp.maximum(x_beta, 0).astype(x.dtype),
+                jnp.astype(jnp.maximum(x_beta, 0), x.dtype),
             )
         ) / beta
     else:
         x_beta = x
         res = jnp.add(
             jnp.log1p(jnp.exp(-jnp.abs(x_beta))),
-            jnp.maximum(x_beta, 0).astype(x.dtype),
+            jnp.astype(jnp.maximum(x_beta, 0), x.dtype),
         )
     if threshold is not None:
-        return jnp.where(x_beta > threshold, x, res).astype(x.dtype)
-    return res.astype(x.dtype)
+        return jnp.astype(jnp.where(x_beta > threshold, x, res), x.dtype)
+    return jnp.astype(res, x.dtype)
 
 
 # Softsign
@@ -86,16 +88,31 @@ def softsign(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def log_softmax(
-    x: JaxArray, /, *, axis: Optional[int] = None, out: Optional[JaxArray] = None
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[int] = -1,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[JaxArray] = None,
 ):
-    if axis is None:
-        axis = -1
     return jax.nn.log_softmax(x, axis)
 
 
-def mish(x: JaxArray, /, *, out: Optional[JaxArray] = None):
+def mish(
+    x: JaxArray,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     return x * jnp.tanh(jax.nn.softplus(x))
 
 
-def hardswish(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def hardswish(
+    x: JaxArray,
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     return jax.nn.hard_swish(x)
