@@ -260,7 +260,7 @@ class Array(
     @property
     def size(self) -> Optional[int]:
         """Number of elements in the array."""
-        return ivy.size(self)
+        return ivy.size(self._data)
 
     @property
     def itemsize(self) -> Optional[int]:
