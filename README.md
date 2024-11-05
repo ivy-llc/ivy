@@ -1248,21 +1248,3 @@ perfect place to ask questions, share ideas, and get help from both
 fellow developers and the Ivy Team directly.
 
 <b> See you there! </b>
-
-
-<br>
-
-# Citation
-
-If you use Ivy for your work, please don\'t forget to give proper credit
-by including the accompanying [paper](https://arxiv.org/abs/2102.02886)
-📄 in your references. It\'s a small way to show appreciation and help
-to continue to support this and other open source projects 🙌
-
-
-    @article{lenton2021ivy,
-      title={Ivy: Templated deep learning for inter-framework portability},
-      author={Lenton, Daniel and Pardo, Fabio and Falck, Fabian and James, Stephen and Clark, Ronald},
-      journal={arXiv preprint arXiv:2102.02886},
-      year={2021}
-    }
