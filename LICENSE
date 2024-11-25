@@ -175,9 +175,10 @@ Copyright 2024 Transpile AI Ltd.  All rights reserved.
       incurred by, or claims asserted against, such Contributor by reason
       of your accepting any such warranty or additional liability.
 
-   10. The software in this directory and its subdirectories is licensed under the Apache License,
-       Version 2.0, except for the software contained within the ivy/compiler directory,
-       which is subject to the license set forth in the LICENSE file located within that directory.
+   10. The software in this directory and its subdirectories is licensed 
+       under the Apache License 2.0, except for the software contained 
+       within the ivy/compiler directory, which is subject to the license 
+       set forth in the LICENSE file located within that directory.
 
    END OF TERMS AND CONDITIONS
 
