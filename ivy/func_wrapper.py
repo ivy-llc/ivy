@@ -397,8 +397,6 @@ def inputs_to_native_arrays(fn: Callable) -> Callable:
         -------
             The return of the function, with native arrays passed in the arguments.
         """
-        if not ivy.array_mode:
-            return fn(*args, **kwargs)
         # check if kwargs contains an out argument, and if so, remove it
         has_out = False
         out = None
