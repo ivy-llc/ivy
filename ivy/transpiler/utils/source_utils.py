@@ -11,14 +11,14 @@ from typing import Any, Union, Optional, TYPE_CHECKING
 from types import FunctionType
 
 # local
-from source_to_source_translator.translations.data.object_like import BaseObjectLike
-from source_to_source_translator.utils.naming_utils import NAME_GENERATOR
-from source_to_source_translator.utils.ast_utils import (
+from transpiler.translations.data.object_like import BaseObjectLike
+from transpiler.utils.naming_utils import NAME_GENERATOR
+from transpiler.utils.ast_utils import (
     FileNameStrategy,
 )
 
 if TYPE_CHECKING:
-    from source_to_source_translator.translations.data.object_like import (
+    from transpiler.translations.data.object_like import (
         FuncObjectLike,
         TypeObjectLike,
     )
@@ -47,7 +47,7 @@ def _maybe_create_stateful_module(target: str, output_dir: str):
 
 
 def _maybe_create_stateful_layers_module(target: str, output_dir: str):
-    from source_to_source_translator.transformations.transformers.native_layers_transformer import (
+    from transpiler.transformations.transformers.native_layers_transformer import (
         KerasNativeLayers,
         FlaxNativeLayers,
     )
@@ -193,7 +193,7 @@ def create_output_dir(
     root_dir = os.getcwd()
     if os.environ.get("UPDATE_S2S_CACHE", None) == "true":
         # write the translated files inside ivy_repo/compiler/_cache directory
-        from source_to_source_translator.utils.cache_utils import ensure_cache_directory
+        from transpiler.utils.cache_utils import ensure_cache_directory
 
         cache_dir = ensure_cache_directory()
         base_output_dir = os.path.join(cache_dir, base_output_dir)
@@ -277,17 +277,6 @@ def add_license(file_path: str):
     # if the file is empty, do nothing
     if not lines or (len(lines) == 1 and not lines[0].strip()):
         return
-
-    # if the license already exists, do nothing
-    if any(LICENSE in line for line in lines):
-        return
-
-    if lines and lines[0].strip().startswith('"""'):
-        # if there's already a docstring, insert the license before it
-        lines.insert(0, LICENSE + "\n\n")
-    else:
-        # if there's no docstring, add the license at the very top
-        lines.insert(0, LICENSE + "\n\n")
 
     with open(file_path, "w", encoding="utf-8", newline="\n") as f:
         f.writelines(lines)
@@ -448,7 +437,7 @@ def format_all_files_in_directory(
     Returns:
         translated_object: The retrieved class from the loaded module.
     """
-    from source_to_source_translator.utils.ast_utils import (
+    from transpiler.utils.ast_utils import (
         reorder_module_objects,
         FileNameStrategy,
     )
@@ -596,7 +585,7 @@ def maybe_add_profiling_imports(output_dir: str):
                 lines.insert(idx, "\n")
                 lines.insert(
                     idx,
-                    "from source_to_source_translator import profiling_utils as profiling",
+                    "from transpiler import profiling_utils as profiling",
                 )
 
                 with open(file_path, "w", encoding="utf-8", newline="\n") as f:
