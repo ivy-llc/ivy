@@ -1,0 +1,16 @@
+TENSOR_ALIAS = {
+    "torch.FloatTensor": "torch.Tensor",
+    "torch.DoubleTensor": "torch.Tensor",
+    "torch.BFloat16Tensor": "torch.Tensor",
+    "torch.LongTensor": "torch.Tensor",
+    "torch.IntTensor": "torch.Tensor",
+    "torch.HalfTensor": "torch.Tensor",
+    "torch.CharTensor": "torch.Tensor",
+    "torch.ByteTensor": "torch.Tensor",
+    "torch.BoolTensor": "torch.Tensor",
+    "torch.Size": "tuple",
+    "torch.nan": "ivy.nan",
+    "torch.inf": "ivy.inf",
+    "torch.pi": "ivy.pi",
+    "torch.e": "ivy.e",
+}
