@@ -2,11 +2,11 @@
 from typing import Dict
 
 # local
-from source_to_source_translator.transformations.configurations.base_transformer_config import (
+from transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
 
-import source_to_source_translator.configs.transformer.ivy_postprocessing_transformer_config_dev as ivy_postprocessing_config
+import transpiler.configs.transformer.ivy_postprocessing_transformer_config_dev as ivy_postprocessing_config
 
 
 class IvyCodePostProcessorConfig(BaseTransformerConfig):

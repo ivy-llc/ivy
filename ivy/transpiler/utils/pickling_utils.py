@@ -12,15 +12,15 @@ import types
 import logging
 
 # local
-from source_to_source_translator.utils.type_utils import Types
+from transpiler.utils.type_utils import Types
 
 
 def get_object_hash(obj):
     """
     Generate a hash for a given object, object-like, function, method, class or builtins.
     """
-    from source_to_source_translator.translations.data.object_like import BaseObjectLike
-    from source_to_source_translator.utils.cache_utils import AtomicCacheUnit
+    from transpiler.translations.data.object_like import BaseObjectLike
+    from transpiler.utils.cache_utils import AtomicCacheUnit
 
     # If the object is a BaseObjectLike, use its hash method
     if isinstance(obj, BaseObjectLike):
@@ -101,10 +101,10 @@ class ACUPickler:
         """
         Deserialize the object-like properties of a unit, including object-like and global-object-like.
         """
-        from source_to_source_translator.translations.data.object_like import (
+        from transpiler.translations.data.object_like import (
             BaseObjectLike,
         )
-        from source_to_source_translator.translations.data.global_like import (
+        from transpiler.translations.data.global_like import (
             GlobalObjectLike,
         )
 
@@ -136,7 +136,7 @@ class ACUPickler:
 
     @staticmethod
     def deserialize_cache(cache: Dict, cache_file: str = ""):
-        from source_to_source_translator.utils.cache_utils import AtomicCacheUnit
+        from transpiler.utils.cache_utils import AtomicCacheUnit
 
         def deserialize_acus(
             acus: List[AtomicCacheUnit],
@@ -173,7 +173,7 @@ class ACUPickler:
         """
         # Handle unit.ast_root
         # TODO: figure out why the transformed AST is non-serializable in case of TF code for some reason.
-        from source_to_source_translator.utils import ast_utils
+        from transpiler.utils import ast_utils
 
         unit.ast_root: str = (  # type: ignore
             unit.ast_root
@@ -197,7 +197,7 @@ class ACUPickler:
 
     @staticmethod
     def serialize_cache(cache: Dict, cache_file: str = "") -> Dict:
-        from source_to_source_translator.utils.cache_utils import AtomicCacheUnit
+        from transpiler.utils.cache_utils import AtomicCacheUnit
 
         def serialize_acus(
             acus: List[AtomicCacheUnit],

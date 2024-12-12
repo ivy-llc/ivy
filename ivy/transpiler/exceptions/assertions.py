@@ -4,7 +4,7 @@ from packaging.version import parse
 import sys
 
 # local
-from source_to_source_translator.exceptions import exceptions
+from transpiler.exceptions import exceptions
 
 
 def _check_framework_installed(

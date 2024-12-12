@@ -11,7 +11,7 @@ class BaseTransformer(gast.NodeTransformer):
             msg = f'Expected "gast.AST", but got "{type(node)}".'
             raise ValueError(msg)
 
-        from source_to_source_translator.utils.origin_utils import ORIGI_INFO
+        from transpiler.utils.origin_utils import ORIGI_INFO
 
         origin_info = getattr(node, ORIGI_INFO, None)
 

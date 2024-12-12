@@ -6,25 +6,25 @@ import os
 
 # local
 import gast
-from source_to_source_translator.transformations.configurations.base_transformer_config import (
+from transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from source_to_source_translator.transformations.transformer import Transformer
-from source_to_source_translator.translations.translator import Translator
-from source_to_source_translator.utils.ast_utils import (
+from transpiler.transformations.transformer import Transformer
+from transpiler.translations.translator import Translator
+from transpiler.utils.ast_utils import (
     ast_to_source_code,
     extract_target_object_name,
     get_function_vars,
     get_module,
     TranslatedContext,
 )
-from source_to_source_translator.utils.conversion_utils import is_builtin_function
-from source_to_source_translator.utils.api_utils import (
+from transpiler.utils.conversion_utils import is_builtin_function
+from transpiler.utils.api_utils import (
     TRANSLATED_OBJ_SUFFIX,
     is_ivy_api,
     has_conv_args,
 )
-from source_to_source_translator.utils.decorator_utils import (
+from transpiler.utils.decorator_utils import (
     handle_methods,
     handle_get_item,
     handle_set_item,
@@ -35,16 +35,16 @@ from source_to_source_translator.utils.decorator_utils import (
     handle_transpose_in_pad,
     store_config_info,
 )
-from source_to_source_translator.transformations.transformers.base_transformer import (
+from transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from source_to_source_translator.transformations.transformers.rename_transformer import (
+from transpiler.transformations.transformers.rename_transformer import (
     BaseRenameTransformer,
 )
-from source_to_source_translator.utils.naming_utils import NAME_GENERATOR
-from source_to_source_translator.utils.origin_utils import ORIGI_INFO
-import source_to_source_translator.transformations.transformer_globals as glob
-from source_to_source_translator.utils.type_utils import Types
+from transpiler.utils.naming_utils import NAME_GENERATOR
+from transpiler.utils.origin_utils import ORIGI_INFO
+import transpiler.transformations.transformer_globals as glob
+from transpiler.utils.type_utils import Types
 
 
 def has_same_code(obj, orig_obj):
@@ -199,7 +199,7 @@ class BaseRecurser(BaseTransformer, ABC):
         from_global, parent = self.preprocess_origin_info(obj_to_translate, new_name)
 
         # 3 Recursively transform the function
-        from source_to_source_translator.translations.data.object_like import (
+        from transpiler.translations.data.object_like import (
             BaseObjectLike,
         )
 
@@ -401,7 +401,7 @@ class BaseRecurser(BaseTransformer, ABC):
             from_global, parent = self.preprocess_origin_info(base, base_new_name)
 
             # 3 Recursively transform the function
-            from source_to_source_translator.translations.data.object_like import (
+            from transpiler.translations.data.object_like import (
                 BaseObjectLike,
             )
 

@@ -2,55 +2,55 @@
 from typing import Dict, List
 
 # local
-from source_to_source_translator.transformations.configurations.base_transformer_config import (
+from transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from source_to_source_translator.translations.configurations.base_translator_config import (
+from transpiler.translations.configurations.base_translator_config import (
     BaseTranslatorConfig,
 )
-from source_to_source_translator.transformations.transformers.deletion_transformer.base_transformer import (
+from transpiler.transformations.transformers.deletion_transformer.base_transformer import (
     BaseNodeDeleter,
 )
-from source_to_source_translator.transformations.transformers.base_transformer import (
+from transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from source_to_source_translator.transformations.transformers.canonicalize_transformer.base_transformer import (
+from transpiler.transformations.transformers.canonicalize_transformer.base_transformer import (
     BaseNameCanonicalizer,
 )
-from source_to_source_translator.transformations.transformers.globals_transformer.base_transformer import (
+from transpiler.transformations.transformers.globals_transformer.base_transformer import (
     BaseGlobalsTransformer,
 )
-from source_to_source_translator.transformations.transformers.decorator_transformer.native_torch_decorator_transformer import (
+from transpiler.transformations.transformers.decorator_transformer.native_torch_decorator_transformer import (
     NativeTorchDecoratorRemover,
 )
-from source_to_source_translator.transformations.transformers.typing_transformer.base_transformer import (
+from transpiler.transformations.transformers.typing_transformer.base_transformer import (
     BaseTypeHintRemover,
 )
-from source_to_source_translator.transformations.transformers.closure_transformer.base_transformer import (
+from transpiler.transformations.transformers.closure_transformer.base_transformer import (
     BaseClosureToLocalTransformer,
 )
-from source_to_source_translator.transformations.transformers.docstring_transformer.base_transformer import (
+from transpiler.transformations.transformers.docstring_transformer.base_transformer import (
     BaseDocstringRemover,
 )
-from source_to_source_translator.transformations.transformers.annotation_transformer.base_transformer import (
+from transpiler.transformations.transformers.annotation_transformer.base_transformer import (
     BaseTypeAnnotationRemover,
 )
-from source_to_source_translator.transformations.transformers.recursive_transformer.native_torch_recursive_transformer import (
+from transpiler.transformations.transformers.recursive_transformer.native_torch_recursive_transformer import (
     NativeTorchRecurser,
 )
-from source_to_source_translator.transformations.transformers.postprocessing_transformer.native_torch_postprocessing_transformer import (
+from transpiler.transformations.transformers.postprocessing_transformer.native_torch_postprocessing_transformer import (
     NativeTorchCodePostProcessor,
 )
-from source_to_source_translator.transformations.configurations.native_torch_postprocessing_config import (
+from transpiler.transformations.configurations.native_torch_postprocessing_config import (
     NativeTorchCodePostProcessorConfig,
 )
-from source_to_source_translator.transformations.transformers.method_transformer.native_torch_method_transformer import (
+from transpiler.transformations.transformers.method_transformer.native_torch_method_transformer import (
     NativeTorchMethodToFunctionConverter,
 )
-from source_to_source_translator.transformations.transformers.profiling_transformer.base_transformer import (
+from transpiler.transformations.transformers.profiling_transformer.base_transformer import (
     BaseProfilingTransformer,
 )
-import source_to_source_translator.configs.translator.source_to_frontend_translator_config_dev as source_to_frontend_translator_config
+import transpiler.configs.translator.source_to_frontend_translator_config_dev as source_to_frontend_translator_config
 
 
 class SourceToFrontendTranslatorConfig(BaseTranslatorConfig):

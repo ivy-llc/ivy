@@ -1,15 +1,15 @@
 # local
 import gast
-from source_to_source_translator.transformations.configurations.base_transformer_config import (
+from transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from source_to_source_translator.transformations.transformer import Transformer
-from source_to_source_translator.utils.ast_utils import (
+from transpiler.transformations.transformer import Transformer
+from transpiler.utils.ast_utils import (
     ast_to_source_code,
     is_unpacking_assignment,
     replace_placeholders,
 )
-from source_to_source_translator.transformations.transformers.preprocessing_transformer.base_transformer import (
+from transpiler.transformations.transformers.preprocessing_transformer.base_transformer import (
     BaseCodePreProcessor,
 )
 

@@ -2,67 +2,67 @@
 from typing import Dict, List
 
 # local
-from source_to_source_translator.translations.configurations.base_translator_config import (
+from transpiler.translations.configurations.base_translator_config import (
     BaseTranslatorConfig,
 )
-from source_to_source_translator.transformations.transformers.base_transformer import (
+from transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from source_to_source_translator.transformations.transformers.canonicalize_transformer.base_transformer import (
+from transpiler.transformations.transformers.canonicalize_transformer.base_transformer import (
     BaseNameCanonicalizer,
 )
-from source_to_source_translator.transformations.transformers.globals_transformer.base_transformer import (
+from transpiler.transformations.transformers.globals_transformer.base_transformer import (
     BaseGlobalsTransformer,
 )
-from source_to_source_translator.transformations.transformers.deletion_transformer.ivy_deletion_transformer import (
+from transpiler.transformations.transformers.deletion_transformer.ivy_deletion_transformer import (
     IvyNodeDeleter,
 )
-from source_to_source_translator.transformations.transformers.decorator_transformer.ivy_decorator_transformer import (
+from transpiler.transformations.transformers.decorator_transformer.ivy_decorator_transformer import (
     IvyDecoratorRemover,
 )
-from source_to_source_translator.transformations.configurations.base_transformer_config import (
+from transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from source_to_source_translator.transformations.transformers.docstring_transformer.base_transformer import (
+from transpiler.transformations.transformers.docstring_transformer.base_transformer import (
     BaseDocstringRemover,
 )
-from source_to_source_translator.transformations.configurations.ivy_recursive_transformer_config import (
+from transpiler.transformations.configurations.ivy_recursive_transformer_config import (
     IvyRecurserConfig,
 )
-from source_to_source_translator.transformations.configurations.ivy_postprocessing_transformer_config import (
+from transpiler.transformations.configurations.ivy_postprocessing_transformer_config import (
     IvyCodePostProcessorConfig,
 )
-from source_to_source_translator.transformations.transformers.method_transformer.ivy_method_transformer import (
+from transpiler.transformations.transformers.method_transformer.ivy_method_transformer import (
     IvyMethodToFunctionConverter,
 )
-from source_to_source_translator.transformations.transformers.dunders_transformer.base_transformer import (
+from transpiler.transformations.transformers.dunders_transformer.base_transformer import (
     BaseDundersTransformer,
 )
-from source_to_source_translator.transformations.transformers.preprocessing_transformer.ivy_preprocessing_transformer import (
+from transpiler.transformations.transformers.preprocessing_transformer.ivy_preprocessing_transformer import (
     IvyCodePreProcessor,
 )
-from source_to_source_translator.transformations.transformers.postprocessing_transformer.ivy_to_tf_postprocessing_transformer import (
+from transpiler.transformations.transformers.postprocessing_transformer.ivy_to_tf_postprocessing_transformer import (
     IvyToTFCodePostProcessor,
 )
-from source_to_source_translator.transformations.transformers.postprocessing_transformer.ivy_to_jax_postprocessing_transformer import (
+from transpiler.transformations.transformers.postprocessing_transformer.ivy_to_jax_postprocessing_transformer import (
     IvyToJAXCodePostProcessor,
 )
-from source_to_source_translator.transformations.transformers.postprocessing_transformer.ivy_to_numpy_postprocessing_transformer import (
+from transpiler.transformations.transformers.postprocessing_transformer.ivy_to_numpy_postprocessing_transformer import (
     IvyToNumpyCodePostProcessor,
 )
-from source_to_source_translator.transformations.transformers.recursive_transformer.ivy_recursive_transformer import (
+from transpiler.transformations.transformers.recursive_transformer.ivy_recursive_transformer import (
     IvyRecurser,
 )
-from source_to_source_translator.transformations.transformers.native_layers_transformer.ivy_to_tf_native_layer_transformer import (
+from transpiler.transformations.transformers.native_layers_transformer.ivy_to_tf_native_layer_transformer import (
     PytorchToKerasLayer,
 )
-from source_to_source_translator.transformations.transformers.native_layers_transformer.ivy_to_jax_native_layer_transformer import (
+from transpiler.transformations.transformers.native_layers_transformer.ivy_to_jax_native_layer_transformer import (
     PytorchToFlaxLayer,
 )
-from source_to_source_translator.transformations.transformers.miscellaneous_transformers.hf_flax_transformer import (
+from transpiler.transformations.transformers.miscellaneous_transformers.hf_flax_transformer import (
     HFPretrainedFlaxTransformer,
 )
-import source_to_source_translator.configs.translator.ivy_to_source_translator_config_dev as ivy_to_source_translator_config
+import transpiler.configs.translator.ivy_to_source_translator_config_dev as ivy_to_source_translator_config
 
 
 class IvyToSourceTranslatorConfig(BaseTranslatorConfig):

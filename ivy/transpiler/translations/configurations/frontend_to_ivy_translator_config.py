@@ -2,56 +2,56 @@
 from typing import Dict, List
 
 # local
-from source_to_source_translator.translations.configurations.base_translator_config import (
+from transpiler.translations.configurations.base_translator_config import (
     BaseTranslatorConfig,
 )
-from source_to_source_translator.transformations.transformers.base_transformer import (
+from transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from source_to_source_translator.transformations.transformers.annotation_transformer.base_transformer import (
+from transpiler.transformations.transformers.annotation_transformer.base_transformer import (
     BaseTypeAnnotationRemover,
 )
-from source_to_source_translator.transformations.transformers.canonicalize_transformer.base_transformer import (
+from transpiler.transformations.transformers.canonicalize_transformer.base_transformer import (
     BaseNameCanonicalizer,
 )
-from source_to_source_translator.transformations.transformers.globals_transformer.base_transformer import (
+from transpiler.transformations.transformers.globals_transformer.base_transformer import (
     BaseGlobalsTransformer,
 )
-from source_to_source_translator.transformations.transformers.decorator_transformer.frontend_torch_decorator_transformer import (
+from transpiler.transformations.transformers.decorator_transformer.frontend_torch_decorator_transformer import (
     FrontendTorchDecoratorRemover,
 )
-from source_to_source_translator.transformations.transformers.inject_transformer.base_transformer import (
+from transpiler.transformations.transformers.inject_transformer.base_transformer import (
     BaseSuperMethodsInjector,
 )
-from source_to_source_translator.transformations.transformers.method_transformer.frontend_torch_method_transformer import (
+from transpiler.transformations.transformers.method_transformer.frontend_torch_method_transformer import (
     FrontendTorchMethodToFunctionConverter,
 )
-from source_to_source_translator.transformations.transformers.postprocessing_transformer.frontend_torch_postprocessing_transformer import (
+from transpiler.transformations.transformers.postprocessing_transformer.frontend_torch_postprocessing_transformer import (
     FrontendTorchCodePostProcessor,
 )
-from source_to_source_translator.transformations.transformers.preprocessing_transformer.frontend_torch_preprocessing_transformer import (
+from transpiler.transformations.transformers.preprocessing_transformer.frontend_torch_preprocessing_transformer import (
     FrontendTorchCodePreProcessor,
 )
-from source_to_source_translator.transformations.transformers.recursive_transformer.frontend_torch_recursive_transformer import (
+from transpiler.transformations.transformers.recursive_transformer.frontend_torch_recursive_transformer import (
     FrontendTorchRecurser,
 )
-from source_to_source_translator.transformations.transformers.typing_transformer.base_transformer import (
+from transpiler.transformations.transformers.typing_transformer.base_transformer import (
     BaseTypeHintRemover,
 )
-from source_to_source_translator.transformations.configurations.base_transformer_config import (
+from transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from source_to_source_translator.transformations.configurations.frontend_torch_postprocessing_transformer_config import (
+from transpiler.transformations.configurations.frontend_torch_postprocessing_transformer_config import (
     FrontendTorchCodePostProcessorConfig,
 )
-from source_to_source_translator.transformations.transformers.inplace_update_transformer.base_transformer import (
+from transpiler.transformations.transformers.inplace_update_transformer.base_transformer import (
     BaseInplaceUpdateTransformer,
 )
 
-from source_to_source_translator.transformations.transformers.profiling_transformer.base_transformer import (
+from transpiler.transformations.transformers.profiling_transformer.base_transformer import (
     BaseProfilingTransformer,
 )
-import source_to_source_translator.configs.translator.frontend_to_ivy_translator_config_dev as frontend_to_ivy_translator_config
+import transpiler.configs.translator.frontend_to_ivy_translator_config_dev as frontend_to_ivy_translator_config
 
 
 class FrontendToIvyTranslatorConfig(BaseTranslatorConfig):

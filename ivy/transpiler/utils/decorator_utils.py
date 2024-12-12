@@ -1,6 +1,6 @@
 import inspect
 import types
-from source_to_source_translator.exceptions import exceptions
+from transpiler.exceptions import exceptions
 from ivy.utils.decorator_utils import (
     handle_get_item,
     handle_set_item,
@@ -11,8 +11,8 @@ from ivy.utils.decorator_utils import (
     handle_transpose_in_pad,
     store_config_info,
 )
-from source_to_source_translator.translations.data.object_like import BaseObjectLike
-from source_to_source_translator.utils.type_utils import Types
+from transpiler.translations.data.object_like import BaseObjectLike
+from transpiler.utils.type_utils import Types
 
 
 CONVERSION_OPTIONS = "not_s2s"

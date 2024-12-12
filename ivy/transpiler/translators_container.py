@@ -3,10 +3,10 @@ from types import FunctionType, MethodType
 from typing import List, Optional, Union
 
 # local
-from source_to_source_translator.translations.translator import Translator
-from source_to_source_translator.configurations_container import ConfigurationsContainer
-from source_to_source_translator.utils.cache_utils import Cacher
-from source_to_source_translator.utils.logging_utils import Logger
+from transpiler.translations.translator import Translator
+from transpiler.configurations_container import ConfigurationsContainer
+from transpiler.utils.cache_utils import Cacher
+from transpiler.utils.logging_utils import Logger
 
 
 class TranslatorsContainer:

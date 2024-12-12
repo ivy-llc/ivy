@@ -2,11 +2,11 @@
 from typing import Dict
 
 # local
-from source_to_source_translator.transformations.configurations.base_transformer_config import (
+from transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
 
-import source_to_source_translator.configs.transformer.ivy_recursive_transformer_config_dev as ivy_recursive_config
+import transpiler.configs.transformer.ivy_recursive_transformer_config_dev as ivy_recursive_config
 
 
 class IvyRecurserConfig(BaseTransformerConfig):

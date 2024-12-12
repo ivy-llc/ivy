@@ -1,10 +1,10 @@
 import json
 from typing import Dict
-from source_to_source_translator.caching.assets.torch_cache_assets import (
+from transpiler.caching.assets.torch_cache_assets import (
     ALL_TORCH_FRONTEND_FUNCTIONS,
     ALL_TORCH_LAYERS,
 )
-from source_to_source_translator.caching.assets.ivy_cache_assets import (
+from transpiler.caching.assets.ivy_cache_assets import (
     ALL_IVY_FUNCTIONS,
 )
 

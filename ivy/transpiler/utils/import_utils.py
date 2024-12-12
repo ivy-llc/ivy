@@ -7,9 +7,9 @@ import types
 from typing import Callable, Iterable, Set, List, Any, Union
 
 # local
-from source_to_source_translator.utils.ast_utils import ast_to_source_code
+from transpiler.utils.ast_utils import ast_to_source_code
 import gast
-from source_to_source_translator.transformations.transformers.base_transformer import (
+from transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
 

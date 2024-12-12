@@ -16,20 +16,20 @@ from packaging.version import parse
 # local
 import astor
 import gast
-from source_to_source_translator.translations.data.object_like import BaseObjectLike
-from source_to_source_translator.utils.api_utils import (
+from transpiler.translations.data.object_like import BaseObjectLike
+from transpiler.utils.api_utils import (
     get_native_module_str_from_backend,
     SUPPORTED_BACKENDS_PREFIX,
     TRANSLATED_OBJ_PREFIX,
 )
-from source_to_source_translator.utils.cache_utils import (
+from transpiler.utils.cache_utils import (
     GlobalStatementCache,
     ImportStatementCache,
     ObjectLikeBytesToTranslatedObjectStringCache,
     EmittedSourceCache,
 )
-from source_to_source_translator.utils.naming_utils import NAME_GENERATOR
-from source_to_source_translator.utils.type_utils import Types
+from transpiler.utils.naming_utils import NAME_GENERATOR
+from transpiler.utils.type_utils import Types
 
 
 MODULE_TO_ALIAS = {
@@ -208,10 +208,10 @@ MONKEY_PATCH_GLOBALS = {
 }
 
 if TYPE_CHECKING:
-    from source_to_source_translator.translations.data.global_like import (
+    from transpiler.translations.data.global_like import (
         GlobalObjectLike,
     )
-    from source_to_source_translator.translations.data.object_like import (
+    from transpiler.translations.data.object_like import (
         TypeObjectLike,
         FuncObjectLike,
     )

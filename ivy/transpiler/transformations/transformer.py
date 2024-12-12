@@ -5,20 +5,20 @@ from typing import Optional
 
 # local
 import gast
-from source_to_source_translator.translations.configurations.base_translator_config import (
+from transpiler.translations.configurations.base_translator_config import (
     BaseTranslatorConfig,
 )
-from source_to_source_translator.utils import logging_utils
-from source_to_source_translator.utils.cache_utils import Cacher
-from source_to_source_translator.utils.origin_utils import attach_origin_info
-from source_to_source_translator.utils.naming_utils import NAME_GENERATOR
-from source_to_source_translator.transformations.transformers.base_transformer import (
+from transpiler.utils import logging_utils
+from transpiler.utils.cache_utils import Cacher
+from transpiler.utils.origin_utils import attach_origin_info
+from transpiler.utils.naming_utils import NAME_GENERATOR
+from transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from source_to_source_translator.translations.data.object_like import (
+from transpiler.translations.data.object_like import (
     BaseObjectLike,
 )
-from source_to_source_translator.transformations.transformers.rename_transformer import (
+from transpiler.transformations.transformers.rename_transformer import (
     BaseRenameTransformer,
 )
 
@@ -26,16 +26,16 @@ from types import ModuleType
 from typing import List, Set, Union, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from source_to_source_translator.transformations.transformers.globals_transformer.base_transformer import (
+    from transpiler.transformations.transformers.globals_transformer.base_transformer import (
         GlobalObj,
     )
-    from source_to_source_translator.translations.data.object_like import (
+    from transpiler.translations.data.object_like import (
         TypeObjectLike,
     )
-    from source_to_source_translator.translations.data.object_like import (
+    from transpiler.translations.data.object_like import (
         FuncObjectLike,
     )
-    from source_to_source_translator.utils.ast_utils import ImportObj, FromImportObj
+    from transpiler.utils.ast_utils import ImportObj, FromImportObj
 
 
 class Transformer(BaseTransformer):

@@ -2,11 +2,11 @@
 from typing import Dict
 
 # local
-from source_to_source_translator.transformations.configurations.base_transformer_config import (
+from transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
 
-import source_to_source_translator.configs.transformer.frontend_torch_postprocessing_transformer_config_dev as frontend_torch_postprocessing_config
+import transpiler.configs.transformer.frontend_torch_postprocessing_transformer_config_dev as frontend_torch_postprocessing_config
 
 
 class FrontendTorchCodePostProcessorConfig(BaseTransformerConfig):
