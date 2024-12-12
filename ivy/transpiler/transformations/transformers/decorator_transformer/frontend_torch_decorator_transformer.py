@@ -1,14 +1,14 @@
 # global
 
 # local
-from source_to_source_translator.transformations.configurations.base_transformer_config import (
+from transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from source_to_source_translator.transformations.transformer import Transformer
-from source_to_source_translator.transformations.transformers.decorator_transformer.base_transformer import (
+from transpiler.transformations.transformer import Transformer
+from transpiler.transformations.transformers.decorator_transformer.base_transformer import (
     BaseDecoratorRemover,
 )
-import source_to_source_translator.transformations.transformer_globals as glob
+import transpiler.transformations.transformer_globals as glob
 
 
 class FrontendTorchDecoratorRemover(BaseDecoratorRemover):

@@ -5,21 +5,21 @@ import textwrap
 
 # local
 import gast
-from source_to_source_translator.transformations.configurations.base_transformer_config import (
+from transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from source_to_source_translator.transformations.transformer import Transformer
-from source_to_source_translator.utils import pickling_utils
-from source_to_source_translator.utils.api_utils import is_frontend_stateful_api
-from source_to_source_translator.utils.ast_utils import (
+from transpiler.transformations.transformer import Transformer
+from transpiler.utils import pickling_utils
+from transpiler.utils.api_utils import is_frontend_stateful_api
+from transpiler.utils.ast_utils import (
     ast_to_source_code,
     is_super_call_node,
 )
-from source_to_source_translator.utils.origin_utils import ORIGI_INFO
-from source_to_source_translator.transformations.transformers.base_transformer import (
+from transpiler.utils.origin_utils import ORIGI_INFO
+from transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from source_to_source_translator.transformations.transformers.rename_transformer.base_transformer import (
+from transpiler.transformations.transformers.rename_transformer.base_transformer import (
     BaseRenameTransformer,
 )
 

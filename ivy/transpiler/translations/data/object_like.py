@@ -9,7 +9,7 @@ from types import FunctionType, MethodType, ModuleType
 from typing import Dict, Optional, Union, TYPE_CHECKING
 
 # local
-from source_to_source_translator.utils.api_utils import (
+from transpiler.utils.api_utils import (
     TRANSLATED_OBJ_SUFFIX,
     is_mixed_function,
     maybe_get_methods,
@@ -25,20 +25,20 @@ from source_to_source_translator.utils.api_utils import (
     is_submodule_of,
     from_conv_block,
 )
-from source_to_source_translator.utils.inspect_utils import (
+from transpiler.utils.inspect_utils import (
     get_closure_vars,
     object_to_source_code,
 )
-from source_to_source_translator.utils import pickling_utils
-from source_to_source_translator.utils.type_utils import Types
-from source_to_source_translator.exceptions.exceptions import (
+from transpiler.utils import pickling_utils
+from transpiler.utils.type_utils import Types
+from transpiler.exceptions.exceptions import (
     ProhibitedObjectAccessError,
     InvalidObjectException,
 )
-import source_to_source_translator.transformations.transformer_globals as glob
+import transpiler.transformations.transformer_globals as glob
 
 if TYPE_CHECKING:
-    from source_to_source_translator.utils.ast_utils import TranslatedContext
+    from transpiler.utils.ast_utils import TranslatedContext
 
 
 class BaseObjectLike:
@@ -301,7 +301,7 @@ class BaseObjectLike:
         return getattr(self._get_obj(), "__qualname__", "")
 
     def _derive_module(self):
-        from source_to_source_translator.utils.ast_utils import FileNameStrategy
+        from transpiler.utils.ast_utils import FileNameStrategy
 
         obj_mod = inspect.getmodule(self._get_obj())
         if obj_mod:
@@ -538,7 +538,7 @@ class BaseObjectLike:
 
         obj_type = Types.get_type(obj)
 
-        from source_to_source_translator.utils.ast_utils import FileNameStrategy
+        from transpiler.utils.ast_utils import FileNameStrategy
 
         ObjectLike = BaseObjectLike._infer_object_like(obj_type)
         object_like = ObjectLike(

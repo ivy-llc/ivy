@@ -3,21 +3,21 @@ import importlib
 
 # local
 import gast
-from source_to_source_translator.transformations.configurations.base_transformer_config import (
+from transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from source_to_source_translator.transformations.transformer import Transformer
-from source_to_source_translator.utils.conversion_utils import (
+from transpiler.transformations.transformer import Transformer
+from transpiler.utils.conversion_utils import (
     BUILTIN_LIKELY_MODULE_NAMES,
 )
-from source_to_source_translator.transformations.transformers.method_transformer.base_transformer import (
+from transpiler.transformations.transformers.method_transformer.base_transformer import (
     BaseMethodToFunctionConverter,
 )
-from source_to_source_translator.utils.api_utils import (
+from transpiler.utils.api_utils import (
     is_method_of_class,
     get_hf_class,
 )
-from source_to_source_translator.utils.ast_utils import (
+from transpiler.utils.ast_utils import (
     ast_to_source_code,
     MODULE_TO_ALIAS,
 )

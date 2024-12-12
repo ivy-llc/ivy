@@ -7,8 +7,8 @@ import gast
 from enum import Enum
 
 # local
-from source_to_source_translator.translations.data.object_like import BaseObjectLike
-from source_to_source_translator.utils.ast_utils import (
+from transpiler.translations.data.object_like import BaseObjectLike
+from transpiler.utils.ast_utils import (
     ast_to_source_code,
     TranslatedContext,
 )

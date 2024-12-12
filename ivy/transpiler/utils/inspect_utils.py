@@ -7,8 +7,8 @@ from typing import Union
 from types import FunctionType, MethodType
 
 # local
-import source_to_source_translator.transformations.transformer_globals as glob
-from source_to_source_translator.exceptions.exceptions import (
+import transpiler.transformations.transformer_globals as glob
+from transpiler.exceptions.exceptions import (
     InvalidSourceException,
     InvalidObjectException,
 )
@@ -31,7 +31,7 @@ def get_globals_from_module(obj):
     with open(file, "r") as f:
         module = gast.parse(f.read())
 
-    from source_to_source_translator.utils.ast_utils import ast_to_source_code
+    from transpiler.utils.ast_utils import ast_to_source_code
 
     globals = [node for node in module.body if isinstance(node, (gast.Assign))]
     globals_code = [ast_to_source_code(node) for node in globals]

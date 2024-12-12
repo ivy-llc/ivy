@@ -14,16 +14,16 @@ import logging
 import time
 
 # local
-from source_to_source_translator.utils import pickling_utils
+from transpiler.utils import pickling_utils
 
 if TYPE_CHECKING:
-    from source_to_source_translator.translations.data.object_like import (
+    from transpiler.translations.data.object_like import (
         BaseObjectLike,
     )
-    from source_to_source_translator.translations.data.global_like import (
+    from transpiler.translations.data.global_like import (
         GlobalObjectLike,
     )
-    from source_to_source_translator.utils.ast_utils import FromImportObj, ImportObj
+    from transpiler.utils.ast_utils import FromImportObj, ImportObj
 
 """
 Asyncio Helpers
@@ -132,7 +132,7 @@ class AtomicCacheUnit:
         base_output_dir: str,
         from_cache: bool = False,
     ):
-        from source_to_source_translator.utils import ast_utils
+        from transpiler.utils import ast_utils
 
         return ast_utils.generate_source_code(
             ast_root=unit.ast_root,

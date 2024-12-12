@@ -6,7 +6,7 @@ import ivy
 import gast
 import os
 import types
-from source_to_source_translator.utils.type_utils import Types
+from transpiler.utils.type_utils import Types
 
 FRONTEND_ARRAY_MODULES = [
     "ivy.functional.frontends.torch.tensor",
@@ -180,7 +180,7 @@ def is_builtin_method(method, to_ignore=()):
 
 
 def is_method_of_class(method_name, cls, to_ignore=()):
-    from source_to_source_translator.translations.data.object_like import BaseObjectLike
+    from transpiler.translations.data.object_like import BaseObjectLike
 
     if isinstance(cls, BaseObjectLike):
         return method_name in cls.methods
@@ -195,7 +195,7 @@ def is_method_of_class(method_name, cls, to_ignore=()):
 
 
 def is_property(method_name, cls, to_ignore=()):
-    from source_to_source_translator.translations.data.object_like import BaseObjectLike
+    from transpiler.translations.data.object_like import BaseObjectLike
 
     if isinstance(cls, BaseObjectLike):
         return method_name in cls.properties

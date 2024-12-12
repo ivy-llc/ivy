@@ -1,5 +1,5 @@
 import gast
-from source_to_source_translator.transformations.transformers.native_layers_transformer.base_transformer import (
+from transpiler.transformations.transformers.native_layers_transformer.base_transformer import (
     PytorchToFrameworkLayer,
 )
 

@@ -5,8 +5,8 @@ import sys
 import pytest
 import logging
 
-from source_to_source_translator import transpile
-from source_to_source_translator.utils.api_utils import get_function_from_modules
+from transpiler import transpile
+from transpiler.utils.api_utils import get_function_from_modules
 
 
 def populate_cache(func_name: str, module: str, source: str, target: str):

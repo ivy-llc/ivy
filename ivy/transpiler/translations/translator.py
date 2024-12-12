@@ -10,39 +10,39 @@ import importlib
 import collections
 
 # local
-from source_to_source_translator.utils.cache_utils import (
+from transpiler.utils.cache_utils import (
     Cacher,
     AtomicCacheUnit,
     PRELOAD_CACHE,
     cache_sort_key,
 )
-from source_to_source_translator.transformations.transformer import Transformer
-from source_to_source_translator.utils.logging_utils import Logger
-from source_to_source_translator.utils.naming_utils import NAME_GENERATOR
-import source_to_source_translator.utils.api_utils as api_utils
-from source_to_source_translator.utils.api_utils import get_function_from_modules
-from source_to_source_translator.translations.data.object_like import (
+from transpiler.transformations.transformer import Transformer
+from transpiler.utils.logging_utils import Logger
+from transpiler.utils.naming_utils import NAME_GENERATOR
+import transpiler.utils.api_utils as api_utils
+from transpiler.utils.api_utils import get_function_from_modules
+from transpiler.translations.data.object_like import (
     BaseObjectLike,
     TypeObjectLike,
     FuncObjectLike,
 )
-from source_to_source_translator.translations.configurations.base_translator_config import (
+from transpiler.translations.configurations.base_translator_config import (
     BaseTranslatorConfig,
 )
-from source_to_source_translator.utils.source_utils import (
+from transpiler.utils.source_utils import (
     create_output_dir,
     format_all_files_in_directory,
     maybe_add_profiling_imports,
     maybe_add_profiling_decorators,
     safe_get_object_from_translated_directory,
 )
-from source_to_source_translator.transformations.transformers.rename_transformer import (
+from transpiler.transformations.transformers.rename_transformer import (
     BaseRenameTransformer,
 )
-from source_to_source_translator.exceptions.exceptions import (
+from transpiler.exceptions.exceptions import (
     format_missing_frontends_msg,
 )
-import source_to_source_translator.transformations.transformer_globals as glob
+import transpiler.transformations.transformer_globals as glob
 
 
 class Translator:
@@ -390,7 +390,7 @@ class Translator:
         If the translation of `A.foo` happens after `B.foo`, it will reuse
         the transformed ast node of `B.foo` to speed up the conversion.
         """
-        from source_to_source_translator.translations.configurations.ivy_to_source_translator_config import (
+        from transpiler.translations.configurations.ivy_to_source_translator_config import (
             IvyToSourceTranslatorConfig,
         )
 
@@ -421,7 +421,7 @@ class Translator:
             msg = format_missing_frontends_msg(frequency)
             DEBUG = int(os.getenv("DEBUG", 1))
             if DEBUG == 0 or DEBUG == 1:
-                from source_to_source_translator.main import _set_debug_level
+                from transpiler.main import _set_debug_level
 
                 # set the level to 1 to print warnings to the terminal
                 _set_debug_level(1)

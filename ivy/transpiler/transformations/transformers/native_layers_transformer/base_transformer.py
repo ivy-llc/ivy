@@ -2,24 +2,24 @@ import gast
 from typing import Dict, Tuple, List
 
 # local
-from source_to_source_translator.transformations.configurations.base_transformer_config import (
+from transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from source_to_source_translator.transformations.transformer import Transformer
-from source_to_source_translator.transformations.transformers.base_transformer import (
+from transpiler.transformations.transformer import Transformer
+from transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from source_to_source_translator.utils.ast_utils import (
+from transpiler.utils.ast_utils import (
     ast_to_source_code,
     create_relative_import_statement,
     _inject_local_imports_in_function,
     _inject_local_imports_in_class,
     TranslatedContext,
 )
-from source_to_source_translator.utils.naming_utils import NAME_GENERATOR
+from transpiler.utils.naming_utils import NAME_GENERATOR
 import os
 
-from source_to_source_translator.utils.type_utils import Types
+from transpiler.utils.type_utils import Types
 
 from abc import ABC, abstractmethod
 

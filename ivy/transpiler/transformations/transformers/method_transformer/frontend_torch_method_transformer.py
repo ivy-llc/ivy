@@ -3,17 +3,17 @@ import builtins
 
 # local
 import gast
-from source_to_source_translator.transformations.configurations.base_transformer_config import (
+from transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from source_to_source_translator.transformations.transformer import Transformer
-from source_to_source_translator.utils.conversion_utils import (
+from transpiler.transformations.transformer import Transformer
+from transpiler.utils.conversion_utils import (
     BUILTIN_LIKELY_MODULE_NAMES,
 )
-from source_to_source_translator.transformations.transformers.method_transformer.base_transformer import (
+from transpiler.transformations.transformers.method_transformer.base_transformer import (
     BaseMethodToFunctionConverter,
 )
-from source_to_source_translator.utils.api_utils import (
+from transpiler.utils.api_utils import (
     is_property,
     is_builtin_method,
     is_method_of_class,
@@ -21,13 +21,13 @@ from source_to_source_translator.utils.api_utils import (
     is_frontend_api,
     is_ivy_api,
 )
-from source_to_source_translator.utils.ast_utils import (
+from transpiler.utils.ast_utils import (
     ast_to_source_code,
     is_super_call_node,
     MODULE_TO_ALIAS,
     get_function_vars,
 )
-import source_to_source_translator.transformations.transformer_globals as glob
+import transpiler.transformations.transformer_globals as glob
 
 
 class FrontendTorchMethodToFunctionConverter(BaseMethodToFunctionConverter):

@@ -26,20 +26,20 @@ import gast
 import ivy  # type: ignore
 
 # local
-from source_to_source_translator.configurations_container import ConfigurationsContainer
-from source_to_source_translator.translators_container import TranslatorsContainer
-from source_to_source_translator.utils.api_utils import copy_module
-from source_to_source_translator.utils.cache_utils import (
+from transpiler.configurations_container import ConfigurationsContainer
+from transpiler.translators_container import TranslatorsContainer
+from transpiler.utils.api_utils import copy_module
+from transpiler.utils.cache_utils import (
     PRELOAD_CACHE,
 )
-from source_to_source_translator.utils.conversion_utils import (
+from transpiler.utils.conversion_utils import (
     BUILTIN_LIKELY_MODULE_NAMES,
     is_builtin_function,
 )
-from source_to_source_translator.utils.inspect_utils import (
+from transpiler.utils.inspect_utils import (
     _validate_object,
 )
-from source_to_source_translator.utils.source_utils import (
+from transpiler.utils.source_utils import (
     get_object_from_translated_directory,
     get_new_output_dir_name,
     sanitize_dir_name,

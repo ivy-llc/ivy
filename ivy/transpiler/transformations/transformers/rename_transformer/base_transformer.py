@@ -1,9 +1,9 @@
 # local
 import gast
-from source_to_source_translator.transformations.transformers.base_transformer import (
+from transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from source_to_source_translator.utils.ast_utils import get_attribute_full_name
+from transpiler.utils.ast_utils import get_attribute_full_name
 
 
 class BaseRenameTransformer(BaseTransformer):

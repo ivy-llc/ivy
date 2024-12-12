@@ -3,15 +3,15 @@ import os
 
 # local
 import gast
-from source_to_source_translator.transformations.configurations.base_transformer_config import (
+from transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from source_to_source_translator.transformations.transformer import Transformer
-from source_to_source_translator.utils.ast_utils import (
+from transpiler.transformations.transformer import Transformer
+from transpiler.utils.ast_utils import (
     ast_to_source_code,
 )
-from source_to_source_translator.utils.api_utils import is_ivy_api
-from source_to_source_translator.transformations.transformers.postprocessing_transformer.base_transformer import (
+from transpiler.utils.api_utils import is_ivy_api
+from transpiler.transformations.transformers.postprocessing_transformer.base_transformer import (
     BaseCodePostProcessor,
 )
 

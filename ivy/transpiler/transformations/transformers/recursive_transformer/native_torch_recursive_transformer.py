@@ -3,14 +3,14 @@ import inspect
 
 # local
 import gast
-from source_to_source_translator.utils.conversion_utils import is_builtin_function
-from source_to_source_translator.utils.api_utils import get_function_from_modules
-from source_to_source_translator.transformations.transformers.recursive_transformer.base_transformer import (
+from transpiler.utils.conversion_utils import is_builtin_function
+from transpiler.utils.api_utils import get_function_from_modules
+from transpiler.transformations.transformers.recursive_transformer.base_transformer import (
     BaseRecurser,
 )
 
-from source_to_source_translator.transformations.transformer import Transformer
-from source_to_source_translator.transformations.configurations.base_transformer_config import (
+from transpiler.transformations.transformer import Transformer
+from transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
 
