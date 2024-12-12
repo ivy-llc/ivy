@@ -1070,16 +1070,17 @@ def test_tensorflow_solve(
     )
 
 
+# svd
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.svd",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: (x, x)),
     ),
     full_matrices=st.booleans(),
-    compute_uv=st.just(True),
+    compute_uv=st.booleans(),
 )
 def test_tensorflow_svd(
     *,
@@ -1094,7 +1095,7 @@ def test_tensorflow_svd(
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
-    # make symmetric positive definite beforehand
+    # make symmetric positive definite
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -1104,26 +1105,35 @@ def test_tensorflow_svd(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
-        atol=1e-03,
-        rtol=1e-05,
         a=x,
         full_matrices=full_matrices,
         compute_uv=compute_uv,
     )
-    ret = [ivy.to_numpy(x) for x in ret]
-    frontend_ret = [np.asarray(x) for x in frontend_ret]
 
-    u, s, vh = ret
-    frontend_s, frontend_u, frontend_vh = frontend_ret
+    if compute_uv:
+        ret = [np.asarray(x) for x in ret]
+        frontend_ret = [np.asarray(x) for x in frontend_ret]
 
-    assert_all_close(
-        ret_np=u @ np.diag(s) @ vh,
-        ret_from_gt_np=frontend_u @ np.diag(frontend_s) @ frontend_vh.T,
-        rtol=1e-2,
-        atol=1e-2,
-        ground_truth_backend=frontend,
-        backend=backend_fw,
-    )
+        s, u, v = ret
+        frontend_s, frontend_u, frontend_v = frontend_ret
+
+        assert_all_close(
+            ret_np=u @ np.diag(s) @ v.T,
+            ret_from_gt_np=frontend_u @ np.diag(frontend_s) @ frontend_v.T,
+            rtol=1e-2,
+            atol=1e-2,
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+        )
+    else:
+        assert_all_close(
+            ret_np=np.asarray(ret),
+            ret_from_gt_np=np.asarray(frontend_ret),
+            rtol=1e-2,
+            atol=1e-2,
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+        )
 
 
 # tensor_diag
