@@ -804,6 +804,7 @@ try:
 except:  # noqa: E722
     pass
 try:
+    from .tracer import trace_graph
     from .transpiler import (
         source_to_source,
         transpile,
