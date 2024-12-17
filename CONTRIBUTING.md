@@ -15,7 +15,6 @@ Please, follow the next process when you work on your subtask:
 
    Currently, there are three open tasks:
 
-   - [Function Reformatting](https://docs.ivy.dev/overview/contributing/open_tasks.html#function-formatting)
    - [Frontend APIs](https://docs.ivy.dev/overview/contributing/open_tasks.html#frontend-apis)
    - [Ivy Experimental API](https://docs.ivy.dev/overview/contributing/open_tasks.html#ivy-experimental-api)
 
@@ -33,15 +32,9 @@ Please, follow the next process when you work on your subtask:
    - When you have finished PR or need help open the PR make sure to follow our PR template.
 
 5. **Review Process:**
-   - Wait for us to review your PR. Please be patient, our engineers will look into your PR based on the queue we have, no need to ping them.
+   - Wait for us to review your PR. 
    - Every time you respond to our requested changes you must re-request a review in order for us to re-engage with the PR.
    - Once the PR is in good shape, we will merge into main, and then you become an Ivy contributor!
 
-### Important Notes
-
-- If your PR is not created within 7 days of creating the issue, then a warning message will appear on the issue, we do this in order to keep our ToDo lists moving quickly,
-- Please don't take it personally if your issue or PR gets closed because of this 7-day inactivity time limit.
-
-- Finally, we limit the maximum number of open and incomplete sub-task issues to three per person.
 
 For questions, please reach out on [discord](https://discord.gg/uYRmyPxMQq)!
