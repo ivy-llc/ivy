@@ -11,6 +11,7 @@ import dill
 import os
 from dataclasses import dataclass
 import logging
+from pathlib import Path
 import time
 
 # local
@@ -48,6 +49,47 @@ def run_async(coroutine):
 Caching Helpers
 """
 
+def get_ivy_root() -> Path:
+    if "IVY_ROOT" not in os.environ:
+        # traverse backwards through the directory tree, searching for .ivy
+        current_dir = os.getcwd()
+        ivy_folder = None
+        
+        # Keep traversing until we hit the root directory
+        while current_dir != os.path.dirname(current_dir):  # Stop at root directory
+            possible_ivy_folder = os.path.join(current_dir, ".ivy")
+            if os.path.isdir(possible_ivy_folder):
+                ivy_folder = possible_ivy_folder
+                break
+            current_dir = os.path.dirname(current_dir)
+        
+        if ivy_folder:
+            os.environ["IVY_ROOT"] = ivy_folder
+        else:
+            # If no .ivy folder was found, create one in the cwd
+            ivy_folder = os.path.join(os.getcwd(), ".ivy")
+            os.mkdir(ivy_folder)
+            os.environ["IVY_ROOT"] = ivy_folder
+    else:
+        ivy_folder = os.environ["IVY_ROOT"]
+        # If the IVY_ROOT environment variable is set, check if it points to a valid .ivy folder
+        if not os.path.isdir(ivy_folder):
+            # If not, raise an exception explaining that the user needs to set it to a valid .ivy folder
+            raise Exception(
+                "IVY_ROOT environment variable is not set to a valid directory. "
+                "Please create a hidden folder '.ivy' and set IVY_ROOT to this location "
+                "to set up your local Ivy environment correctly."
+            )
+        # If the IVY_ROOT environment variable is set and points to a valid .ivy folder,
+        # inform the user about preserving the tracer and transpiler caches across multiple machines
+        # logging.warning(
+        #     "To preserve the tracer and transpiler caches across multiple machines, ensure that "
+        #     "the relative path of your projects from the .ivy folder is consistent across all machines. "
+        #     "You can do this by adding .ivy to your home folder and placing all projects in the same "
+        #     "place relative to the home folder on all machines."
+        # )
+    return Path(ivy_folder)
+
 
 def ensure_cache_directory():
     """
@@ -58,7 +100,6 @@ def ensure_cache_directory():
     if "tracer-transpiler" in __file__:
         cache_dir = os.path.join(project_root, "ivy_repo", "ivy", "compiler", "_cache")
     else:
-        from tracing_caching.connection import get_ivy_root
         cache_dir = os.path.join(str(get_ivy_root().absolute()), "compiler", "_cache")
     os.makedirs(cache_dir, exist_ok=True)
     return cache_dir
