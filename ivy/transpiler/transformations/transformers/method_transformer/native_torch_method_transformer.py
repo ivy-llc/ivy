@@ -3,21 +3,21 @@ import importlib
 
 # local
 import gast
-from transpiler.transformations.configurations.base_transformer_config import (
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from transpiler.transformations.transformer import Transformer
-from transpiler.utils.conversion_utils import (
+from ivy.transpiler.transformations.transformer import Transformer
+from ivy.transpiler.utils.conversion_utils import (
     BUILTIN_LIKELY_MODULE_NAMES,
 )
-from transpiler.transformations.transformers.method_transformer.base_transformer import (
+from ivy.transpiler.transformations.transformers.method_transformer.base_transformer import (
     BaseMethodToFunctionConverter,
 )
-from transpiler.utils.api_utils import (
+from ivy.transpiler.utils.api_utils import (
     is_method_of_class,
     get_hf_class,
 )
-from transpiler.utils.ast_utils import (
+from ivy.transpiler.utils.ast_utils import (
     ast_to_source_code,
     MODULE_TO_ALIAS,
 )

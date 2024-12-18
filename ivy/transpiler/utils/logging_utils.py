@@ -223,7 +223,7 @@ class Logger:
         self, level, ast_node, transformer_name, position="AFTER", *args, **kwargs
     ):
         if USE_LOGGING and self.has_code_level(level):
-            from transpiler.utils.ast_utils import ast_to_source_code
+            from ivy.transpiler.utils.ast_utils import ast_to_source_code
 
             source_code = ast_to_source_code(ast_node)
             if level == MAX_TRANSFORMERS:

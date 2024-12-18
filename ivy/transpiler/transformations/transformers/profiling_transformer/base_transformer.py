@@ -1,11 +1,11 @@
 import gast
 
 # local
-from transpiler.transformations.configurations.base_transformer_config import (
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from transpiler.transformations.transformer import Transformer
-from transpiler.transformations.transformers.base_transformer import (
+from ivy.transpiler.transformations.transformer import Transformer
+from ivy.transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
 

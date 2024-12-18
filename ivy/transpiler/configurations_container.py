@@ -1,26 +1,26 @@
 # global
 import os
 from typing import List
-from transpiler.exceptions.assertions import (
+from ivy.transpiler.exceptions.assertions import (
     assert_valid_source,
     assert_valid_target,
 )
 
 # local
-from transpiler.translations.configurations.base_translator_config import (
+from ivy.transpiler.translations.configurations.base_translator_config import (
     BaseTranslatorConfig,
 )
-from transpiler.translations.configurations.source_to_frontend_translator_config import (
+from ivy.transpiler.translations.configurations.source_to_frontend_translator_config import (
     SourceToFrontendTranslatorConfig,
 )
-from transpiler.translations.configurations.frontend_to_ivy_translator_config import (
+from ivy.transpiler.translations.configurations.frontend_to_ivy_translator_config import (
     FrontendToIvyTranslatorConfig,
 )
-from transpiler.translations.configurations.ivy_to_source_translator_config import (
+from ivy.transpiler.translations.configurations.ivy_to_source_translator_config import (
     IvyToSourceTranslatorConfig,
 )
 
-import transpiler.main_config as main_config
+import ivy.transpiler.main_config as main_config
 
 
 class ConfigurationsContainer:

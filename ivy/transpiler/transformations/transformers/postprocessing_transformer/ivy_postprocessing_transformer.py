@@ -6,18 +6,18 @@ import importlib
 
 # local
 import gast
-from transpiler.transformations import transformer_globals as glob
-from transpiler.transformations.configurations.base_transformer_config import (
+from ivy.transpiler.transformations import transformer_globals as glob
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from transpiler.transformations.transformer import Transformer
-from transpiler.utils.ast_utils import (
+from ivy.transpiler.transformations.transformer import Transformer
+from ivy.transpiler.utils.ast_utils import (
     ast_to_source_code,
 )
-from transpiler.transformations.transformers.postprocessing_transformer.base_transformer import (
+from ivy.transpiler.transformations.transformers.postprocessing_transformer.base_transformer import (
     BaseCodePostProcessor,
 )
-from transpiler.utils.type_utils import Types
+from ivy.transpiler.utils.type_utils import Types
 
 
 class IvyCodePostProcessor(BaseCodePostProcessor):

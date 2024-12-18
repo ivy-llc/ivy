@@ -11,9 +11,9 @@ import functools
 from inspect import signature, Parameter
 
 # local
-from transpiler.utils import pickling_utils
-from transpiler.utils.profiling_utils import name_map
-from transpiler.utils.type_utils import Types
+from ivy.transpiler.utils import pickling_utils
+from ivy.transpiler.utils.profiling_utils import name_map
+from ivy.transpiler.utils.type_utils import Types
 
 
 def unwrap_obj(func):
@@ -80,7 +80,7 @@ class UniqueNameGenerator:
 
     def get_suffix(self, obj: Optional[Any]) -> str:
         """Get the suffix for the candidate name based on the object's module."""
-        from transpiler.translations.data.object_like import (
+        from ivy.transpiler.translations.data.object_like import (
             BaseObjectLike,
         )
 
@@ -101,7 +101,7 @@ class UniqueNameGenerator:
 
     def get_candidate_name(self, obj: Optional[Any]):
         """Generate a candidate name for an object."""
-        from transpiler.translations.data.object_like import (
+        from ivy.transpiler.translations.data.object_like import (
             BaseObjectLike,
         )
 

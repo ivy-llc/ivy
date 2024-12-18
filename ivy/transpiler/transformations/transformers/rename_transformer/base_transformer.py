@@ -1,9 +1,9 @@
 # local
 import gast
-from transpiler.transformations.transformers.base_transformer import (
+from ivy.transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from transpiler.utils.ast_utils import get_attribute_full_name
+from ivy.transpiler.utils.ast_utils import get_attribute_full_name
 
 
 class BaseRenameTransformer(BaseTransformer):

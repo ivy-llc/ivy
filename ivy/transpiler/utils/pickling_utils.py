@@ -12,15 +12,15 @@ import types
 import logging
 
 # local
-from transpiler.utils.type_utils import Types
+from ivy.transpiler.utils.type_utils import Types
 
 
 def get_object_hash(obj):
     """
     Generate a hash for a given object, object-like, function, method, class or builtins.
     """
-    from transpiler.translations.data.object_like import BaseObjectLike
-    from transpiler.utils.cache_utils import AtomicCacheUnit
+    from ivy.transpiler.translations.data.object_like import BaseObjectLike
+    from ivy.transpiler.utils.cache_utils import AtomicCacheUnit
 
     # If the object is a BaseObjectLike, use its hash method
     if isinstance(obj, BaseObjectLike):
@@ -101,10 +101,10 @@ class ACUPickler:
         """
         Deserialize the object-like properties of a unit, including object-like and global-object-like.
         """
-        from transpiler.translations.data.object_like import (
+        from ivy.transpiler.translations.data.object_like import (
             BaseObjectLike,
         )
-        from transpiler.translations.data.global_like import (
+        from ivy.transpiler.translations.data.global_like import (
             GlobalObjectLike,
         )
 
@@ -136,7 +136,7 @@ class ACUPickler:
 
     @staticmethod
     def deserialize_cache(cache: Dict, cache_file: str = ""):
-        from transpiler.utils.cache_utils import AtomicCacheUnit
+        from ivy.transpiler.utils.cache_utils import AtomicCacheUnit
 
         def deserialize_acus(
             acus: List[AtomicCacheUnit],
@@ -173,7 +173,7 @@ class ACUPickler:
         """
         # Handle unit.ast_root
         # TODO: figure out why the transformed AST is non-serializable in case of TF code for some reason.
-        from transpiler.utils import ast_utils
+        from ivy.transpiler.utils import ast_utils
 
         unit.ast_root: str = (  # type: ignore
             unit.ast_root
@@ -197,7 +197,7 @@ class ACUPickler:
 
     @staticmethod
     def serialize_cache(cache: Dict, cache_file: str = "") -> Dict:
-        from transpiler.utils.cache_utils import AtomicCacheUnit
+        from ivy.transpiler.utils.cache_utils import AtomicCacheUnit
 
         def serialize_acus(
             acus: List[AtomicCacheUnit],

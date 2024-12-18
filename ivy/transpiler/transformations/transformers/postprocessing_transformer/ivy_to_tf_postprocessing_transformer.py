@@ -3,19 +3,19 @@ import ivy
 
 # local
 import gast
-from transpiler.transformations.configurations.base_transformer_config import (
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from transpiler.transformations.transformer import Transformer
-from transpiler.utils.ast_utils import (
+from ivy.transpiler.transformations.transformer import Transformer
+from ivy.transpiler.utils.ast_utils import (
     ast_to_source_code,
 )
-from transpiler.utils.api_utils import (
+from ivy.transpiler.utils.api_utils import (
     get_native_array_str_from_backend,
     get_native_module_str_from_backend,
 )
-from transpiler.utils.naming_utils import NAME_GENERATOR
-from transpiler.transformations.transformers.postprocessing_transformer.ivy_postprocessing_transformer import (
+from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
+from ivy.transpiler.transformations.transformers.postprocessing_transformer.ivy_postprocessing_transformer import (
     IvyCodePostProcessor,
 )
 

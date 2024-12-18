@@ -5,21 +5,21 @@ import textwrap
 
 # local
 import gast
-from transpiler.transformations.configurations.base_transformer_config import (
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from transpiler.transformations.transformer import Transformer
-from transpiler.utils import pickling_utils
-from transpiler.utils.api_utils import is_frontend_stateful_api
-from transpiler.utils.ast_utils import (
+from ivy.transpiler.transformations.transformer import Transformer
+from ivy.transpiler.utils import pickling_utils
+from ivy.transpiler.utils.api_utils import is_frontend_stateful_api
+from ivy.transpiler.utils.ast_utils import (
     ast_to_source_code,
     is_super_call_node,
 )
-from transpiler.utils.origin_utils import ORIGI_INFO
-from transpiler.transformations.transformers.base_transformer import (
+from ivy.transpiler.utils.origin_utils import ORIGI_INFO
+from ivy.transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from transpiler.transformations.transformers.rename_transformer.base_transformer import (
+from ivy.transpiler.transformations.transformers.rename_transformer.base_transformer import (
     BaseRenameTransformer,
 )
 
