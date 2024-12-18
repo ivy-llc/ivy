@@ -2,10 +2,10 @@
 import importlib
 
 # local
-from ivy.transpiler.transformations.transformers.base_transformer import (
+from ...transformers.base_transformer import (
     BaseTransformer,
 )
-from ivy.transpiler.transformations.transformer import Transformer
+from ...transformer import Transformer
 import gast
 from types import FunctionType, ModuleType
 from ivy.transpiler.utils.api_utils import (
@@ -20,11 +20,11 @@ from ivy.transpiler.utils.ast_utils import (
     get_module,
     get_function_vars,
 )
-import ivy.transpiler.transformations.transformer_globals as glob
+from ... import transformer_globals as glob
 from ivy.transpiler.utils.conversion_utils import (
     BUILTIN_LIKELY_MODULE_NAMES,
 )
-from ivy.transpiler.transformations.configurations.base_transformer_config import (
+from ...configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
 

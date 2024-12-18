@@ -1,19 +1,19 @@
 # global
 import builtins
+import gast
 
 # local
-import gast
-from ivy.transpiler.transformations.configurations.base_transformer_config import (
+from ...configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from ivy.transpiler.transformations.transformer import Transformer
-from ivy.transpiler.utils.conversion_utils import (
+from ...transformer import Transformer
+from ....utils.conversion_utils import (
     BUILTIN_LIKELY_MODULE_NAMES,
 )
-from ivy.transpiler.transformations.transformers.method_transformer.base_transformer import (
+from ..method_transformer.base_transformer import (
     BaseMethodToFunctionConverter,
 )
-from ivy.transpiler.utils.api_utils import (
+from ....utils.api_utils import (
     is_property,
     is_builtin_method,
     is_method_of_class,
@@ -21,13 +21,13 @@ from ivy.transpiler.utils.api_utils import (
     is_frontend_api,
     is_ivy_api,
 )
-from ivy.transpiler.utils.ast_utils import (
+from ....utils.ast_utils import (
     ast_to_source_code,
     is_super_call_node,
     MODULE_TO_ALIAS,
     get_function_vars,
 )
-import ivy.transpiler.transformations.transformer_globals as glob
+from ... import transformer_globals as glob
 
 
 class FrontendTorchMethodToFunctionConverter(BaseMethodToFunctionConverter):

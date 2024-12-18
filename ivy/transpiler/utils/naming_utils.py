@@ -11,9 +11,9 @@ import functools
 from inspect import signature, Parameter
 
 # local
-from ivy.transpiler.utils import pickling_utils
-from ivy.transpiler.utils.profiling_utils import name_map
-from ivy.transpiler.utils.type_utils import Types
+from . import pickling_utils
+from .profiling_utils import name_map
+from .type_utils import Types
 
 
 def unwrap_obj(func):

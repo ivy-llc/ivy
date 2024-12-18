@@ -16,20 +16,20 @@ from packaging.version import parse
 # local
 import astor
 import gast
-from ivy.transpiler.translations.data.object_like import BaseObjectLike
-from ivy.transpiler.utils.api_utils import (
+from ..translations.data.object_like import BaseObjectLike
+from .api_utils import (
     get_native_module_str_from_backend,
     SUPPORTED_BACKENDS_PREFIX,
     TRANSLATED_OBJ_PREFIX,
 )
-from ivy.transpiler.utils.cache_utils import (
+from .cache_utils import (
     GlobalStatementCache,
     ImportStatementCache,
     ObjectLikeBytesToTranslatedObjectStringCache,
     EmittedSourceCache,
 )
-from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
-from ivy.transpiler.utils.type_utils import Types
+from .naming_utils import NAME_GENERATOR
+from .type_utils import Types
 
 
 MODULE_TO_ALIAS = {

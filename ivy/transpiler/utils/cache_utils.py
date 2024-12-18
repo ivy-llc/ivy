@@ -15,16 +15,16 @@ from pathlib import Path
 import time
 
 # local
-from ivy.transpiler.utils import pickling_utils
+from . import pickling_utils
 
 if TYPE_CHECKING:
-    from ivy.transpiler.translations.data.object_like import (
+    from ..translations.data.object_like import (
         BaseObjectLike,
     )
-    from ivy.transpiler.translations.data.global_like import (
+    from ..translations.data.global_like import (
         GlobalObjectLike,
     )
-    from ivy.transpiler.utils.ast_utils import FromImportObj, ImportObj
+    from .ast_utils import FromImportObj, ImportObj
 
 """
 Asyncio Helpers

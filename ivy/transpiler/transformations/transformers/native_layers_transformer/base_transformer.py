@@ -1,27 +1,26 @@
+# global
+from abc import ABC, abstractmethod
 import gast
-from typing import Dict, Tuple, List
+import os
+from typing import Dict, List, Tuple
 
 # local
-from ivy.transpiler.transformations.configurations.base_transformer_config import (
+from ...configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from ivy.transpiler.transformations.transformer import Transformer
-from ivy.transpiler.transformations.transformers.base_transformer import (
+from ...transformer import Transformer
+from ..base_transformer import (
     BaseTransformer,
 )
-from ivy.transpiler.utils.ast_utils import (
+from ....utils.ast_utils import (
     ast_to_source_code,
     create_relative_import_statement,
     _inject_local_imports_in_function,
     _inject_local_imports_in_class,
     TranslatedContext,
 )
-from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
-import os
-
-from ivy.transpiler.utils.type_utils import Types
-
-from abc import ABC, abstractmethod
+from ....utils.naming_utils import NAME_GENERATOR
+from ....utils.type_utils import Types
 
 
 # Base class for converting PyTorch layers to various frameworks

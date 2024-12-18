@@ -5,20 +5,20 @@ from typing import Optional
 
 # local
 import gast
-from ivy.transpiler.translations.configurations.base_translator_config import (
+from ..translations.configurations.base_translator_config import (
     BaseTranslatorConfig,
 )
-from ivy.transpiler.utils import logging_utils
-from ivy.transpiler.utils.cache_utils import Cacher
-from ivy.transpiler.utils.origin_utils import attach_origin_info
-from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
-from ivy.transpiler.transformations.transformers.base_transformer import (
+from ..utils import logging_utils
+from ..utils.cache_utils import Cacher
+from ..utils.origin_utils import attach_origin_info
+from ..utils.naming_utils import NAME_GENERATOR
+from ..transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from ivy.transpiler.translations.data.object_like import (
+from ..translations.data.object_like import (
     BaseObjectLike,
 )
-from ivy.transpiler.transformations.transformers.rename_transformer import (
+from ..transformations.transformers.rename_transformer import (
     BaseRenameTransformer,
 )
 
@@ -26,16 +26,16 @@ from types import ModuleType
 from typing import List, Set, Union, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ivy.transpiler.transformations.transformers.globals_transformer.base_transformer import (
+    from ..transformations.transformers.globals_transformer.base_transformer import (
         GlobalObj,
     )
-    from ivy.transpiler.translations.data.object_like import (
+    from ..translations.data.object_like import (
         TypeObjectLike,
     )
-    from ivy.transpiler.translations.data.object_like import (
+    from ..translations.data.object_like import (
         FuncObjectLike,
     )
-    from ivy.transpiler.utils.ast_utils import ImportObj, FromImportObj
+    from ..utils.ast_utils import ImportObj, FromImportObj
 
 
 class Transformer(BaseTransformer):

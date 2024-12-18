@@ -1,17 +1,17 @@
 # global
+import gast
 import os
 
 # local
-import gast
-from ivy.transpiler.transformations.configurations.base_transformer_config import (
+from ...configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from ivy.transpiler.transformations.transformer import Transformer
-from ivy.transpiler.utils.ast_utils import (
+from ...transformer import Transformer
+from ....utils.ast_utils import (
     ast_to_source_code,
 )
-from ivy.transpiler.utils.api_utils import is_ivy_api
-from ivy.transpiler.transformations.transformers.postprocessing_transformer.base_transformer import (
+from ....utils.api_utils import is_ivy_api
+from .base_transformer import (
     BaseCodePostProcessor,
 )
 

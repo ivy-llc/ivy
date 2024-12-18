@@ -1,23 +1,23 @@
 # global
+import gast
 import importlib
 
 # local
-import gast
-from ivy.transpiler.transformations.configurations.base_transformer_config import (
+from ...configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from ivy.transpiler.transformations.transformer import Transformer
-from ivy.transpiler.utils.conversion_utils import (
+from ...transformer import Transformer
+from ....utils.conversion_utils import (
     BUILTIN_LIKELY_MODULE_NAMES,
 )
-from ivy.transpiler.transformations.transformers.method_transformer.base_transformer import (
+from ..method_transformer.base_transformer import (
     BaseMethodToFunctionConverter,
 )
-from ivy.transpiler.utils.api_utils import (
+from ....utils.api_utils import (
     is_method_of_class,
     get_hf_class,
 )
-from ivy.transpiler.utils.ast_utils import (
+from ....utils.ast_utils import (
     ast_to_source_code,
     MODULE_TO_ALIAS,
 )

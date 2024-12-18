@@ -7,8 +7,8 @@ import gast
 from enum import Enum
 
 # local
-from ivy.transpiler.translations.data.object_like import BaseObjectLike
-from ivy.transpiler.utils.ast_utils import (
+from ...translations.data.object_like import BaseObjectLike
+from ...utils.ast_utils import (
     ast_to_source_code,
     TranslatedContext,
 )
