@@ -16,20 +16,20 @@ from packaging.version import parse
 # local
 import astor
 import gast
-from transpiler.translations.data.object_like import BaseObjectLike
-from transpiler.utils.api_utils import (
+from ivy.transpiler.translations.data.object_like import BaseObjectLike
+from ivy.transpiler.utils.api_utils import (
     get_native_module_str_from_backend,
     SUPPORTED_BACKENDS_PREFIX,
     TRANSLATED_OBJ_PREFIX,
 )
-from transpiler.utils.cache_utils import (
+from ivy.transpiler.utils.cache_utils import (
     GlobalStatementCache,
     ImportStatementCache,
     ObjectLikeBytesToTranslatedObjectStringCache,
     EmittedSourceCache,
 )
-from transpiler.utils.naming_utils import NAME_GENERATOR
-from transpiler.utils.type_utils import Types
+from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
+from ivy.transpiler.utils.type_utils import Types
 
 
 MODULE_TO_ALIAS = {
@@ -208,10 +208,10 @@ MONKEY_PATCH_GLOBALS = {
 }
 
 if TYPE_CHECKING:
-    from transpiler.translations.data.global_like import (
+    from ivy.transpiler.translations.data.global_like import (
         GlobalObjectLike,
     )
-    from transpiler.translations.data.object_like import (
+    from ivy.transpiler.translations.data.object_like import (
         TypeObjectLike,
         FuncObjectLike,
     )

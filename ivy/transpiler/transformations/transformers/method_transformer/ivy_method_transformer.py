@@ -4,17 +4,17 @@ import re
 
 # local
 import gast
-from transpiler.transformations.configurations.base_transformer_config import (
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from transpiler.transformations.transformer import Transformer
-from transpiler.utils.conversion_utils import (
+from ivy.transpiler.transformations.transformer import Transformer
+from ivy.transpiler.utils.conversion_utils import (
     BUILTIN_LIKELY_MODULE_NAMES,
 )
-from transpiler.transformations.transformers.method_transformer.base_transformer import (
+from ivy.transpiler.transformations.transformers.method_transformer.base_transformer import (
     BaseMethodToFunctionConverter,
 )
-from transpiler.utils.api_utils import (
+from ivy.transpiler.utils.api_utils import (
     is_property,
     is_builtin_method,
     is_method_of_class,
@@ -22,13 +22,13 @@ from transpiler.utils.api_utils import (
     is_ivy_api,
     get_function_from_modules,
 )
-from transpiler.utils.ast_utils import (
+from ivy.transpiler.utils.ast_utils import (
     ast_to_source_code,
     is_super_call_node,
     MODULE_TO_ALIAS,
     get_function_vars,
 )
-import transpiler.transformations.transformer_globals as glob
+import ivy.transpiler.transformations.transformer_globals as glob
 
 
 class IvyMethodToFunctionConverter(BaseMethodToFunctionConverter):

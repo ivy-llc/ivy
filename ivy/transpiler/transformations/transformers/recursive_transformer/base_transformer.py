@@ -6,25 +6,25 @@ import os
 
 # local
 import gast
-from transpiler.transformations.configurations.base_transformer_config import (
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from transpiler.transformations.transformer import Transformer
-from transpiler.translations.translator import Translator
-from transpiler.utils.ast_utils import (
+from ivy.transpiler.transformations.transformer import Transformer
+from ivy.transpiler.translations.translator import Translator
+from ivy.transpiler.utils.ast_utils import (
     ast_to_source_code,
     extract_target_object_name,
     get_function_vars,
     get_module,
     TranslatedContext,
 )
-from transpiler.utils.conversion_utils import is_builtin_function
-from transpiler.utils.api_utils import (
+from ivy.transpiler.utils.conversion_utils import is_builtin_function
+from ivy.transpiler.utils.api_utils import (
     TRANSLATED_OBJ_SUFFIX,
     is_ivy_api,
     has_conv_args,
 )
-from transpiler.utils.decorator_utils import (
+from ivy.transpiler.utils.decorator_utils import (
     handle_methods,
     handle_get_item,
     handle_set_item,
@@ -35,16 +35,16 @@ from transpiler.utils.decorator_utils import (
     handle_transpose_in_pad,
     store_config_info,
 )
-from transpiler.transformations.transformers.base_transformer import (
+from ivy.transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from transpiler.transformations.transformers.rename_transformer import (
+from ivy.transpiler.transformations.transformers.rename_transformer import (
     BaseRenameTransformer,
 )
-from transpiler.utils.naming_utils import NAME_GENERATOR
-from transpiler.utils.origin_utils import ORIGI_INFO
-import transpiler.transformations.transformer_globals as glob
-from transpiler.utils.type_utils import Types
+from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
+from ivy.transpiler.utils.origin_utils import ORIGI_INFO
+import ivy.transpiler.transformations.transformer_globals as glob
+from ivy.transpiler.utils.type_utils import Types
 
 
 def has_same_code(obj, orig_obj):
@@ -199,7 +199,7 @@ class BaseRecurser(BaseTransformer, ABC):
         from_global, parent = self.preprocess_origin_info(obj_to_translate, new_name)
 
         # 3 Recursively transform the function
-        from transpiler.translations.data.object_like import (
+        from ivy.transpiler.translations.data.object_like import (
             BaseObjectLike,
         )
 
@@ -401,7 +401,7 @@ class BaseRecurser(BaseTransformer, ABC):
             from_global, parent = self.preprocess_origin_info(base, base_new_name)
 
             # 3 Recursively transform the function
-            from transpiler.translations.data.object_like import (
+            from ivy.transpiler.translations.data.object_like import (
                 BaseObjectLike,
             )
 

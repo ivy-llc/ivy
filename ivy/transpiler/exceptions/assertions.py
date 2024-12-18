@@ -4,7 +4,7 @@ from packaging.version import parse
 import sys
 
 # local
-from transpiler.exceptions import exceptions
+from ivy.transpiler.exceptions import exceptions
 
 
 def _check_framework_installed(

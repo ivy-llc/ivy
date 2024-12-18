@@ -2,24 +2,24 @@ import gast
 from typing import Dict, Tuple, List
 
 # local
-from transpiler.transformations.configurations.base_transformer_config import (
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from transpiler.transformations.transformer import Transformer
-from transpiler.transformations.transformers.base_transformer import (
+from ivy.transpiler.transformations.transformer import Transformer
+from ivy.transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from transpiler.utils.ast_utils import (
+from ivy.transpiler.utils.ast_utils import (
     ast_to_source_code,
     create_relative_import_statement,
     _inject_local_imports_in_function,
     _inject_local_imports_in_class,
     TranslatedContext,
 )
-from transpiler.utils.naming_utils import NAME_GENERATOR
+from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
 import os
 
-from transpiler.utils.type_utils import Types
+from ivy.transpiler.utils.type_utils import Types
 
 from abc import ABC, abstractmethod
 

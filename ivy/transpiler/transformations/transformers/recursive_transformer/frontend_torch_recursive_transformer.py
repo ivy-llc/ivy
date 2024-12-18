@@ -6,20 +6,20 @@ import ivy
 
 # local
 import gast
-from transpiler.utils.api_utils import (
+from ivy.transpiler.utils.api_utils import (
     get_function_from_modules,
     is_ivy_api,
     is_frontend_api,
     SUPPORTED_BACKENDS_PREFIX,
 )
-from transpiler.utils.ast_utils import property_to_func
-from transpiler.utils.conversion_utils import is_builtin_function
-from transpiler.transformations.transformers.recursive_transformer.base_transformer import (
+from ivy.transpiler.utils.ast_utils import property_to_func
+from ivy.transpiler.utils.conversion_utils import is_builtin_function
+from ivy.transpiler.transformations.transformers.recursive_transformer.base_transformer import (
     BaseRecurser,
 )
 
-from transpiler.transformations.transformer import Transformer
-from transpiler.transformations.configurations.base_transformer_config import (
+from ivy.transpiler.transformations.transformer import Transformer
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
 

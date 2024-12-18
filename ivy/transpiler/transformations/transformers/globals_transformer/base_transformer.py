@@ -4,18 +4,18 @@ from typing import List, Tuple, Optional, Union, TYPE_CHECKING
 from copy import copy, deepcopy
 
 # local
-from transpiler.transformations.transformers.base_transformer import (
+from ivy.transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from transpiler.transformations.transformer import Transformer
+from ivy.transpiler.transformations.transformer import Transformer
 import gast
-from transpiler.translations.data.global_like import (
+from ivy.transpiler.translations.data.global_like import (
     GlobalObjectLike,
     Position,
     StackObjectLike,
 )
-from transpiler.translations.data.object_like import BaseObjectLike
-from transpiler.utils.ast_utils import (
+from ivy.transpiler.translations.data.object_like import BaseObjectLike
+from ivy.transpiler.utils.ast_utils import (
     FRONTEND_STANDARD_GLOBALS_TARGET_TO_MODULE,
     IVY_STANDARD_GLOBALS_TARGET_TO_MODULE,
     ast_to_source_code,
@@ -27,21 +27,21 @@ from transpiler.utils.ast_utils import (
     FileNameStrategy,
     TranslatedContext,
 )
-from transpiler.utils.api_utils import (
+from ivy.transpiler.utils.api_utils import (
     get_function_from_modules,
     SUPPORTED_BACKENDS_PREFIX,
 )
-from transpiler.utils.naming_utils import NAME_GENERATOR
-from transpiler.utils.origin_utils import ORIGI_INFO
-from transpiler.utils.conversion_utils import (
+from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
+from ivy.transpiler.utils.origin_utils import ORIGI_INFO
+from ivy.transpiler.utils.conversion_utils import (
     BUILTIN_LIKELY_MODULE_NAMES,
 )
-from transpiler.transformations.configurations.base_transformer_config import (
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
 
 if TYPE_CHECKING:
-    from transpiler.translations.data.object_like import (
+    from ivy.transpiler.translations.data.object_like import (
         TypeObjectLike,
         FuncObjectLike,
     )

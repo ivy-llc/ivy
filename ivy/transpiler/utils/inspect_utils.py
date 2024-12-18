@@ -7,8 +7,8 @@ from typing import Union
 from types import FunctionType, MethodType
 
 # local
-import transpiler.transformations.transformer_globals as glob
-from transpiler.exceptions.exceptions import (
+import ivy.transpiler.transformations.transformer_globals as glob
+from ivy.transpiler.exceptions.exceptions import (
     InvalidSourceException,
     InvalidObjectException,
 )
@@ -31,7 +31,7 @@ def get_globals_from_module(obj):
     with open(file, "r") as f:
         module = gast.parse(f.read())
 
-    from transpiler.utils.ast_utils import ast_to_source_code
+    from ivy.transpiler.utils.ast_utils import ast_to_source_code
 
     globals = [node for node in module.body if isinstance(node, (gast.Assign))]
     globals_code = [ast_to_source_code(node) for node in globals]

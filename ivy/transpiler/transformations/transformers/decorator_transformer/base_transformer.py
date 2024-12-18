@@ -2,16 +2,16 @@
 import types
 
 # local
-from transpiler.transformations.configurations.base_transformer_config import (
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
 import gast
-from transpiler.transformations.transformer import Transformer
-from transpiler.transformations.transformers.base_transformer import (
+from ivy.transpiler.transformations.transformer import Transformer
+from ivy.transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from transpiler.utils.ast_utils import ast_to_source_code
-from transpiler.utils.type_utils import Types
+from ivy.transpiler.utils.ast_utils import ast_to_source_code
+from ivy.transpiler.utils.type_utils import Types
 
 
 class BaseDecoratorRemover(BaseTransformer):

@@ -2,18 +2,18 @@
 import copy
 import re
 import gast
-from transpiler.transformations.configurations.base_transformer_config import (
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from transpiler.transformations.transformer import Transformer
-from transpiler.transformations.transformers.base_transformer import (
+from ivy.transpiler.transformations.transformer import Transformer
+from ivy.transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from transpiler.utils.api_utils import (
+from ivy.transpiler.utils.api_utils import (
     TRANSLATED_OBJ_PREFIX,
     TRANSLATED_OBJ_SUFFIX,
 )
-from transpiler.utils.ast_utils import ast_to_source_code, set_parents
+from ivy.transpiler.utils.ast_utils import ast_to_source_code, set_parents
 
 
 def clean_function_name(func_name):

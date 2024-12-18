@@ -11,14 +11,14 @@ from typing import Any, Union, Optional, TYPE_CHECKING
 from types import FunctionType
 
 # local
-from transpiler.translations.data.object_like import BaseObjectLike
-from transpiler.utils.naming_utils import NAME_GENERATOR
-from transpiler.utils.ast_utils import (
+from ivy.transpiler.translations.data.object_like import BaseObjectLike
+from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
+from ivy.transpiler.utils.ast_utils import (
     FileNameStrategy,
 )
 
 if TYPE_CHECKING:
-    from transpiler.translations.data.object_like import (
+    from ivy.transpiler.translations.data.object_like import (
         FuncObjectLike,
         TypeObjectLike,
     )
@@ -47,7 +47,7 @@ def _maybe_create_stateful_module(target: str, output_dir: str):
 
 
 def _maybe_create_stateful_layers_module(target: str, output_dir: str):
-    from transpiler.transformations.transformers.native_layers_transformer import (
+    from ivy.transpiler.transformations.transformers.native_layers_transformer import (
         KerasNativeLayers,
         FlaxNativeLayers,
     )
@@ -193,7 +193,7 @@ def create_output_dir(
     root_dir = os.getcwd()
     if os.environ.get("UPDATE_S2S_CACHE", None) == "true":
         # write the translated files inside ivy_repo/compiler/_cache directory
-        from transpiler.utils.cache_utils import ensure_cache_directory
+        from ivy.transpiler.utils.cache_utils import ensure_cache_directory
 
         cache_dir = ensure_cache_directory()
         base_output_dir = os.path.join(cache_dir, base_output_dir)
@@ -437,7 +437,7 @@ def format_all_files_in_directory(
     Returns:
         translated_object: The retrieved class from the loaded module.
     """
-    from transpiler.utils.ast_utils import (
+    from ivy.transpiler.utils.ast_utils import (
         reorder_module_objects,
         FileNameStrategy,
     )
@@ -585,7 +585,7 @@ def maybe_add_profiling_imports(output_dir: str):
                 lines.insert(idx, "\n")
                 lines.insert(
                     idx,
-                    "from transpiler import profiling_utils as profiling",
+                    "from ivy.transpiler import profiling_utils as profiling",
                 )
 
                 with open(file_path, "w", encoding="utf-8", newline="\n") as f:

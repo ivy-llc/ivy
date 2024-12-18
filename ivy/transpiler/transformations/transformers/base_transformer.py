@@ -11,7 +11,7 @@ class BaseTransformer(gast.NodeTransformer):
             msg = f'Expected "gast.AST", but got "{type(node)}".'
             raise ValueError(msg)
 
-        from transpiler.utils.origin_utils import ORIGI_INFO
+        from ivy.transpiler.utils.origin_utils import ORIGI_INFO
 
         origin_info = getattr(node, ORIGI_INFO, None)
 

@@ -2,55 +2,55 @@
 from typing import Dict, List
 
 # local
-from transpiler.transformations.configurations.base_transformer_config import (
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from transpiler.translations.configurations.base_translator_config import (
+from ivy.transpiler.translations.configurations.base_translator_config import (
     BaseTranslatorConfig,
 )
-from transpiler.transformations.transformers.deletion_transformer.base_transformer import (
+from ivy.transpiler.transformations.transformers.deletion_transformer.base_transformer import (
     BaseNodeDeleter,
 )
-from transpiler.transformations.transformers.base_transformer import (
+from ivy.transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from transpiler.transformations.transformers.canonicalize_transformer.base_transformer import (
+from ivy.transpiler.transformations.transformers.canonicalize_transformer.base_transformer import (
     BaseNameCanonicalizer,
 )
-from transpiler.transformations.transformers.globals_transformer.base_transformer import (
+from ivy.transpiler.transformations.transformers.globals_transformer.base_transformer import (
     BaseGlobalsTransformer,
 )
-from transpiler.transformations.transformers.decorator_transformer.native_torch_decorator_transformer import (
+from ivy.transpiler.transformations.transformers.decorator_transformer.native_torch_decorator_transformer import (
     NativeTorchDecoratorRemover,
 )
-from transpiler.transformations.transformers.typing_transformer.base_transformer import (
+from ivy.transpiler.transformations.transformers.typing_transformer.base_transformer import (
     BaseTypeHintRemover,
 )
-from transpiler.transformations.transformers.closure_transformer.base_transformer import (
+from ivy.transpiler.transformations.transformers.closure_transformer.base_transformer import (
     BaseClosureToLocalTransformer,
 )
-from transpiler.transformations.transformers.docstring_transformer.base_transformer import (
+from ivy.transpiler.transformations.transformers.docstring_transformer.base_transformer import (
     BaseDocstringRemover,
 )
-from transpiler.transformations.transformers.annotation_transformer.base_transformer import (
+from ivy.transpiler.transformations.transformers.annotation_transformer.base_transformer import (
     BaseTypeAnnotationRemover,
 )
-from transpiler.transformations.transformers.recursive_transformer.native_torch_recursive_transformer import (
+from ivy.transpiler.transformations.transformers.recursive_transformer.native_torch_recursive_transformer import (
     NativeTorchRecurser,
 )
-from transpiler.transformations.transformers.postprocessing_transformer.native_torch_postprocessing_transformer import (
+from ivy.transpiler.transformations.transformers.postprocessing_transformer.native_torch_postprocessing_transformer import (
     NativeTorchCodePostProcessor,
 )
-from transpiler.transformations.configurations.native_torch_postprocessing_config import (
+from ivy.transpiler.transformations.configurations.native_torch_postprocessing_config import (
     NativeTorchCodePostProcessorConfig,
 )
-from transpiler.transformations.transformers.method_transformer.native_torch_method_transformer import (
+from ivy.transpiler.transformations.transformers.method_transformer.native_torch_method_transformer import (
     NativeTorchMethodToFunctionConverter,
 )
-from transpiler.transformations.transformers.profiling_transformer.base_transformer import (
+from ivy.transpiler.transformations.transformers.profiling_transformer.base_transformer import (
     BaseProfilingTransformer,
 )
-import transpiler.configs.translator.source_to_frontend_translator_config_dev as source_to_frontend_translator_config
+import ivy.transpiler.configs.translator.source_to_frontend_translator_config_dev as source_to_frontend_translator_config
 
 
 class SourceToFrontendTranslatorConfig(BaseTranslatorConfig):

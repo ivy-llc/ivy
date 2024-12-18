@@ -3,24 +3,24 @@ import copy
 import ivy
 
 # local
-from transpiler.transformations.transformers.base_transformer import (
+from ivy.transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from transpiler.transformations.transformer import Transformer
+from ivy.transpiler.transformations.transformer import Transformer
 import gast
-from transpiler.transformations.configurations.base_transformer_config import (
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from transpiler.transformations.transformer import Transformer
-from transpiler.utils.ast_utils import ast_to_source_code
-from transpiler.utils.api_utils import (
+from ivy.transpiler.transformations.transformer import Transformer
+from ivy.transpiler.utils.ast_utils import ast_to_source_code
+from ivy.transpiler.utils.api_utils import (
     get_function_from_modules,
     is_backend_api,
 )
 
-import transpiler.transformations.transformer_globals as glob
-from transpiler.utils.type_utils import Types
-from transpiler.utils.naming_utils import NAME_GENERATOR
+import ivy.transpiler.transformations.transformer_globals as glob
+from ivy.transpiler.utils.type_utils import Types
+from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
 
 
 class NameNodeVisitor(gast.NodeVisitor):

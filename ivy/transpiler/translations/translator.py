@@ -10,39 +10,39 @@ import importlib
 import collections
 
 # local
-from transpiler.utils.cache_utils import (
+from ivy.transpiler.utils.cache_utils import (
     Cacher,
     AtomicCacheUnit,
     PRELOAD_CACHE,
     cache_sort_key,
 )
-from transpiler.transformations.transformer import Transformer
-from transpiler.utils.logging_utils import Logger
-from transpiler.utils.naming_utils import NAME_GENERATOR
-import transpiler.utils.api_utils as api_utils
-from transpiler.utils.api_utils import get_function_from_modules
-from transpiler.translations.data.object_like import (
+from ivy.transpiler.transformations.transformer import Transformer
+from ivy.transpiler.utils.logging_utils import Logger
+from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
+import ivy.transpiler.utils.api_utils as api_utils
+from ivy.transpiler.utils.api_utils import get_function_from_modules
+from ivy.transpiler.translations.data.object_like import (
     BaseObjectLike,
     TypeObjectLike,
     FuncObjectLike,
 )
-from transpiler.translations.configurations.base_translator_config import (
+from ivy.transpiler.translations.configurations.base_translator_config import (
     BaseTranslatorConfig,
 )
-from transpiler.utils.source_utils import (
+from ivy.transpiler.utils.source_utils import (
     create_output_dir,
     format_all_files_in_directory,
     maybe_add_profiling_imports,
     maybe_add_profiling_decorators,
     safe_get_object_from_translated_directory,
 )
-from transpiler.transformations.transformers.rename_transformer import (
+from ivy.transpiler.transformations.transformers.rename_transformer import (
     BaseRenameTransformer,
 )
-from transpiler.exceptions.exceptions import (
+from ivy.transpiler.exceptions.exceptions import (
     format_missing_frontends_msg,
 )
-import transpiler.transformations.transformer_globals as glob
+import ivy.transpiler.transformations.transformer_globals as glob
 
 
 class Translator:
@@ -390,7 +390,7 @@ class Translator:
         If the translation of `A.foo` happens after `B.foo`, it will reuse
         the transformed ast node of `B.foo` to speed up the conversion.
         """
-        from transpiler.translations.configurations.ivy_to_source_translator_config import (
+        from ivy.transpiler.translations.configurations.ivy_to_source_translator_config import (
             IvyToSourceTranslatorConfig,
         )
 
@@ -421,7 +421,7 @@ class Translator:
             msg = format_missing_frontends_msg(frequency)
             DEBUG = int(os.getenv("DEBUG", 1))
             if DEBUG == 0 or DEBUG == 1:
-                from transpiler.main import _set_debug_level
+                from ivy.transpiler.main import _set_debug_level
 
                 # set the level to 1 to print warnings to the terminal
                 _set_debug_level(1)

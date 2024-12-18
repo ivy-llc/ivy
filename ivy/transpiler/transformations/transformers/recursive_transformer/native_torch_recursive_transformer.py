@@ -3,14 +3,14 @@ import inspect
 
 # local
 import gast
-from transpiler.utils.conversion_utils import is_builtin_function
-from transpiler.utils.api_utils import get_function_from_modules
-from transpiler.transformations.transformers.recursive_transformer.base_transformer import (
+from ivy.transpiler.utils.conversion_utils import is_builtin_function
+from ivy.transpiler.utils.api_utils import get_function_from_modules
+from ivy.transpiler.transformations.transformers.recursive_transformer.base_transformer import (
     BaseRecurser,
 )
 
-from transpiler.transformations.transformer import Transformer
-from transpiler.transformations.configurations.base_transformer_config import (
+from ivy.transpiler.transformations.transformer import Transformer
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
 
