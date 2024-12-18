@@ -1,30 +1,30 @@
 # global
-import inspect
 from abc import abstractmethod, ABC
-import types
+import gast
+import inspect
 import os
+import types
 
 # local
-import gast
-from ivy.transpiler.transformations.configurations.base_transformer_config import (
+from ...configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from ivy.transpiler.transformations.transformer import Transformer
-from ivy.transpiler.translations.translator import Translator
-from ivy.transpiler.utils.ast_utils import (
+from ...transformer import Transformer
+from ....translations.translator import Translator
+from ....utils.ast_utils import (
     ast_to_source_code,
     extract_target_object_name,
     get_function_vars,
     get_module,
     TranslatedContext,
 )
-from ivy.transpiler.utils.conversion_utils import is_builtin_function
-from ivy.transpiler.utils.api_utils import (
+from ....utils.conversion_utils import is_builtin_function
+from ....utils.api_utils import (
     TRANSLATED_OBJ_SUFFIX,
     is_ivy_api,
     has_conv_args,
 )
-from ivy.transpiler.utils.decorator_utils import (
+from ....utils.decorator_utils import (
     handle_methods,
     handle_get_item,
     handle_set_item,
@@ -35,16 +35,16 @@ from ivy.transpiler.utils.decorator_utils import (
     handle_transpose_in_pad,
     store_config_info,
 )
-from ivy.transpiler.transformations.transformers.base_transformer import (
+from ..base_transformer import (
     BaseTransformer,
 )
-from ivy.transpiler.transformations.transformers.rename_transformer import (
+from ..rename_transformer import (
     BaseRenameTransformer,
 )
-from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
-from ivy.transpiler.utils.origin_utils import ORIGI_INFO
-import ivy.transpiler.transformations.transformer_globals as glob
-from ivy.transpiler.utils.type_utils import Types
+from ....utils.naming_utils import NAME_GENERATOR
+from ....utils.origin_utils import ORIGI_INFO
+from ....utils.type_utils import Types
+from ... import transformer_globals as glob
 
 
 def has_same_code(obj, orig_obj):

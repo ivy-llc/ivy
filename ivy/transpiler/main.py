@@ -26,20 +26,20 @@ import gast
 import ivy  # type: ignore
 
 # local
-from ivy.transpiler.configurations_container import ConfigurationsContainer
-from ivy.transpiler.translators_container import TranslatorsContainer
-from ivy.transpiler.utils.api_utils import copy_module
-from ivy.transpiler.utils.cache_utils import (
+from .configurations_container import ConfigurationsContainer
+from .translators_container import TranslatorsContainer
+from .utils.api_utils import copy_module
+from .utils.cache_utils import (
     PRELOAD_CACHE,
 )
-from ivy.transpiler.utils.conversion_utils import (
+from .utils.conversion_utils import (
     BUILTIN_LIKELY_MODULE_NAMES,
     is_builtin_function,
 )
-from ivy.transpiler.utils.inspect_utils import (
+from .utils.inspect_utils import (
     _validate_object,
 )
-from ivy.transpiler.utils.source_utils import (
+from .utils.source_utils import (
     get_object_from_translated_directory,
     get_new_output_dir_name,
     sanitize_dir_name,
@@ -51,12 +51,6 @@ LOG_DATA = True  # whether to log telemetry data to the server
 EXISTING_TRANSPILATION = False  # whether the current transpilation is an existing one, i.e., the function has been transpiled before and is saved in the translated directory
 VERIFIED_UNRESTRICTED = False  # whether the fn/cls being transpiled is verified to be from a unrestricted module (such as kornia)
 TARGET = "tensorflow"
-from utils.exceptions import (
-    IvyServerConnectionException,
-    InvalidAPIKeyException,
-    ExhaustedUsageException,
-    IvyServerException,
-)
 
 
 # Helpers #

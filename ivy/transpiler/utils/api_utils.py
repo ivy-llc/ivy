@@ -6,7 +6,7 @@ import ivy
 import gast
 import os
 import types
-from ivy.transpiler.utils.type_utils import Types
+from .type_utils import Types
 
 FRONTEND_ARRAY_MODULES = [
     "ivy.functional.frontends.torch.tensor",

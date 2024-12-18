@@ -3,10 +3,10 @@ from types import FunctionType, MethodType
 from typing import List, Optional, Union
 
 # local
-from ivy.transpiler.translations.translator import Translator
-from ivy.transpiler.configurations_container import ConfigurationsContainer
-from ivy.transpiler.utils.cache_utils import Cacher
-from ivy.transpiler.utils.logging_utils import Logger
+from .translations.translator import Translator
+from .configurations_container import ConfigurationsContainer
+from .utils.cache_utils import Cacher
+from .utils.logging_utils import Logger
 
 
 class TranslatorsContainer:

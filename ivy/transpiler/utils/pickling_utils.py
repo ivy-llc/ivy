@@ -12,15 +12,15 @@ import types
 import logging
 
 # local
-from ivy.transpiler.utils.type_utils import Types
+from .type_utils import Types
 
 
 def get_object_hash(obj):
     """
     Generate a hash for a given object, object-like, function, method, class or builtins.
     """
-    from ivy.transpiler.translations.data.object_like import BaseObjectLike
-    from ivy.transpiler.utils.cache_utils import AtomicCacheUnit
+    from ..translations.data.object_like import BaseObjectLike
+    from .cache_utils import AtomicCacheUnit
 
     # If the object is a BaseObjectLike, use its hash method
     if isinstance(obj, BaseObjectLike):

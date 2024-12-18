@@ -1,31 +1,31 @@
 # global
-import ivy
+import gast
 import inspect
+import ivy
 import re
 
 # local
-import gast
-from ivy.transpiler.utils.api_utils import (
+from ....utils.api_utils import (
     get_function_from_modules,
     is_ivy_functional_api,
     is_backend_api,
     is_native_backend_api,
     SUPPORTED_BACKENDS_PREFIX,
 )
-from ivy.transpiler.utils.ast_utils import (
+from ....utils.ast_utils import (
     property_to_func,
     ast_to_source_code,
 )
-from ivy.transpiler.utils.origin_utils import ORIGI_INFO
-from ivy.transpiler.utils.conversion_utils import is_builtin_function
-from ivy.transpiler.transformations.transformers.recursive_transformer.base_transformer import (
+from ....utils.origin_utils import ORIGI_INFO
+from ....utils.conversion_utils import is_builtin_function
+from ..recursive_transformer.base_transformer import (
     BaseRecurser,
 )
-from ivy.transpiler.transformations.transformer import Transformer
-from ivy.transpiler.transformations.configurations.base_transformer_config import (
+from ...transformer import Transformer
+from ...configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-import ivy.transpiler.transformations.transformer_globals as glob
+from ... import transformer_globals as glob
 
 
 def func_from_call_node(node):

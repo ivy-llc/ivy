@@ -1,15 +1,15 @@
 # global
+import gast
 import importlib.util
-import sys
-from pathlib import Path
 import inspect
+from pathlib import Path
+import sys
 import types
 from typing import Callable, Iterable, Set, List, Any, Union
 
 # local
-from ivy.transpiler.utils.ast_utils import ast_to_source_code
-import gast
-from ivy.transpiler.transformations.transformers.base_transformer import (
+from .ast_utils import ast_to_source_code
+from ..transformations.transformers.base_transformer import (
     BaseTransformer,
 )
 

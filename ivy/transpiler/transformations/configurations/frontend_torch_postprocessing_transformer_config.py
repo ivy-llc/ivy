@@ -2,11 +2,11 @@
 from typing import Dict
 
 # local
-from ivy.transpiler.transformations.configurations.base_transformer_config import (
+from ..configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
 
-import ivy.transpiler.configs.transformer.frontend_torch_postprocessing_transformer_config_dev as frontend_torch_postprocessing_config
+from ...configs.transformer import frontend_torch_postprocessing_transformer_config_dev as frontend_torch_postprocessing_config
 
 
 class FrontendTorchCodePostProcessorConfig(BaseTransformerConfig):

@@ -2,14 +2,13 @@
 from typing import Any, Dict, List
 
 # local
-from ivy.transpiler.transformations.transformers.base_transformer import (
+from ...transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from ivy.transpiler.transformations.configurations.base_transformer_config import (
+from ...transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from ivy.transpiler.utils.import_utils import load_module_from_path
-
+from ...utils.import_utils import load_module_from_path
 
 class BaseTranslatorConfig:
     _transformers: Dict[str, BaseTransformer] = {}

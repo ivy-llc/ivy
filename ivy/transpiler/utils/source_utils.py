@@ -11,14 +11,14 @@ from typing import Any, Union, Optional, TYPE_CHECKING
 from types import FunctionType
 
 # local
-from ivy.transpiler.translations.data.object_like import BaseObjectLike
-from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
-from ivy.transpiler.utils.ast_utils import (
+from ..translations.data.object_like import BaseObjectLike
+from .naming_utils import NAME_GENERATOR
+from .ast_utils import (
     FileNameStrategy,
 )
 
 if TYPE_CHECKING:
-    from ivy.transpiler.translations.data.object_like import (
+    from ..translations.data.object_like import (
         FuncObjectLike,
         TypeObjectLike,
     )

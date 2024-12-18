@@ -1,16 +1,15 @@
 # global
+import gast
 import inspect
 
 # local
-import gast
-from ivy.transpiler.utils.conversion_utils import is_builtin_function
-from ivy.transpiler.utils.api_utils import get_function_from_modules
-from ivy.transpiler.transformations.transformers.recursive_transformer.base_transformer import (
+from ....utils.conversion_utils import is_builtin_function
+from ....utils.api_utils import get_function_from_modules
+from ..recursive_transformer.base_transformer import (
     BaseRecurser,
 )
-
-from ivy.transpiler.transformations.transformer import Transformer
-from ivy.transpiler.transformations.configurations.base_transformer_config import (
+from ...transformer import Transformer
+from ...configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
 
