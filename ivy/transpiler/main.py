@@ -5,22 +5,16 @@ import ctypes
 from dataclasses import is_dataclass
 from enum import Enum
 import functools
-import hashlib
 import importlib
 import inspect
 import logging
 import os
-import platform
-import re
 import shutil
-import socket
-import subprocess
 import sys
 import threading
 import time
 from types import FunctionType, BuiltinFunctionType, MethodType, ModuleType
 from typing import Union
-import uuid
 import warnings
 import gast
 import ivy  # type: ignore
@@ -45,13 +39,7 @@ from .utils.source_utils import (
     sanitize_dir_name,
 )
 
-
-# NOTE: needed for infuser
-LOG_DATA = True  # whether to log telemetry data to the server
-EXISTING_TRANSPILATION = False  # whether the current transpilation is an existing one, i.e., the function has been transpiled before and is saved in the translated directory
-VERIFIED_UNRESTRICTED = False  # whether the fn/cls being transpiled is verified to be from a unrestricted module (such as kornia)
 TARGET = "tensorflow"
-
 
 # Helpers #
 # ------- #
@@ -74,176 +62,6 @@ def _animate(stop_animation, animation_str):
         idx += 1
         time.sleep(0.32)  # speed of animation
     sys.stdout.write("\r" + " " * len(write_str) + "\r")  # clear the line
-
-
-def _get_machine_id():
-    """
-    Attempts to generate a unique machine identifier using several methods in a prioritized order.
-    Used in infuser.
-
-    This function tries the following methods to obtain a unique identifier:
-    1. Uses the MAC address from `uuid.getnode()` if it is globally unique (i.e., not locally administered).
-    2. Gathers all MAC addresses using `psutil.net_if_addrs()`, hashes them collectively, and uses this hash if it meets the length criteria.
-    3. Combines various system properties (hostname, OS type, architecture, CPU info, and OS version), hashes this combination, and uses it if the hash is sufficiently long.
-    4. Uses a random UUID as a last resort if all other methods fail.
-    """
-    try:
-        # First attempt: Use the MAC address via uuid.getnode()
-        node = uuid.getnode()
-        if (node >> 40) & 0x02 == 0:
-            # The "locally administered" bit is not set; node is a valid MAC address
-            return str(node)
-        else:
-            # Second attempt: Use psutil to get MAC addresses
-            try:
-                import psutil
-
-                mac_addresses = set()
-                for interface, addrs in psutil.net_if_addrs().items():
-                    for addr in addrs:
-                        # Check for MAC address families
-                        if (
-                            hasattr(psutil, "AF_LINK") and addr.family == psutil.AF_LINK
-                        ) or (
-                            hasattr(socket, "AF_PACKET")
-                            and addr.family == socket.AF_PACKET
-                        ):
-                            mac = addr.address
-                            mac_bytes = bytes(int(b, 16) for b in mac.split(":"))
-
-                            # do not include addresses that can be random
-                            if (
-                                mac_bytes[0]
-                                & 0x02  # Locally administered MAC address (potentially random)
-                                or mac_bytes[0] & 0x01  # Multicast MAC address
-                            ):
-                                continue
-
-                            if mac and mac != "00:00:00:00:00:00":
-                                mac_addresses.add(mac)
-                if mac_addresses:
-                    # Create a consistent and unique identifier
-                    mac_addresses = sorted(mac_addresses)
-                    unique_id = "".join(mac_addresses)
-                    unique_id_hash = hashlib.md5(unique_id.encode("utf-8")).hexdigest()
-                    if len(unique_id_hash) > 255:
-                        unique_id_hash = unique_id_hash[:255]
-                    if (
-                        len(unique_id_hash) > 10
-                    ):  # Only accept as valid if over a certain length
-                        return unique_id_hash
-            except:
-                pass
-
-            # Third attempt: Get unique id with system-specific methodologies
-            # based on https://github.com/keygen-sh/py-machineid/blob/master/machineid/__init__.py
-            try:
-                try:
-                    from winregistry import WinRegistry  # type: ignore
-                except ImportError:
-                    WinRegistry = None
-
-                def sanitize(id):
-                    return re.sub(r"[\x00-\x1f\x7f-\x9f\s]", "", id).strip()
-
-                def execute(cmd):
-                    try:
-                        return subprocess.run(
-                            cmd,
-                            shell=True,
-                            capture_output=True,
-                            check=True,
-                            encoding="utf-8",
-                        ).stdout.strip()
-                    except:
-                        return None
-
-                def read(path):
-                    try:
-                        with open(path) as f:
-                            return f.read().strip()
-                    except:
-                        return None
-
-                def reg(registry, key):
-                    try:
-                        with WinRegistry() as reg:
-                            return reg.read_entry(registry, key).value.strip()
-                    except:
-                        return None
-
-                id = None
-                if sys.platform == "darwin":
-                    id = execute(
-                        "ioreg -d2 -c IOPlatformExpertDevice | awk -F\\\" '/IOPlatformUUID/{print $(NF-1)}'"
-                    )
-                elif sys.platform in ("win32", "cygwin", "msys"):
-                    if WinRegistry is not None:
-                        id = reg(
-                            r"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography",
-                            "MachineGuid",
-                        )
-                    else:
-                        id = execute(
-                            "powershell.exe -ExecutionPolicy bypass -command (Get-CimInstance -Class Win32_ComputerSystemProduct).UUID"
-                        )
-                    if not id:
-                        id = execute("wmic csproduct get uuid").split("\n")[2].strip()
-                elif sys.platform.startswith("linux"):
-                    id = read("/var/lib/dbus/machine-id")
-                    if not id:
-                        id = read("/etc/machine-id")
-                    if not id:
-                        cgroup = read("/proc/self/cgroup")
-                    if cgroup and "docker" in cgroup:
-                        id = execute("head -1 /proc/self/cgroup | cut -d/ -f3")
-                    if not id:
-                        mountinfo = read("/proc/self/mountinfo")
-                    if mountinfo and "docker" in mountinfo:
-                        id = execute(
-                            "grep -oP '(?<=docker/containers/)([a-f0-9]+)(?=/hostname)' /proc/self/mountinfo"
-                        )
-                    if not id and "microsoft" in platform.uname().release:  # wsl
-                        id = execute(
-                            "powershell.exe -ExecutionPolicy bypass -command '(Get-CimInstance -Class Win32_ComputerSystemProduct).UUID'"
-                        )
-                elif sys.platform.startswith(("openbsd", "freebsd")):
-                    id = read("/etc/hostid")
-                    if not id:
-                        id = execute("kenv -q smbios.system.uuid")
-
-                assert id
-                return sanitize(id)
-            except:
-                pass
-
-            # Fourth attempt: Hash system properties
-            try:
-                import getpass
-
-                system_data = [
-                    getpass.getuser() or "",
-                    socket.gethostname(),
-                    platform.system(),
-                    platform.machine(),
-                ]
-                unique_id_str = "-".join(filter(None, system_data))
-                unique_id_hash = hashlib.sha256(
-                    unique_id_str.encode("utf-8")
-                ).hexdigest()
-                if len(unique_id_hash) > 255:
-                    unique_id_hash = unique_id_hash[:255]
-                if (
-                    len(unique_id_hash) > 10
-                ):  # Only accept as valid if over a certain length
-                    return unique_id_hash
-            except:
-                pass
-
-            # Final fallback: Use the random uuid
-            return str(uuid.getnode())
-    except:
-        raise ivy.exceptions.IvyException("Unable to verify device.") from None
 
 
 def _is_frozen(obj):
@@ -797,8 +615,7 @@ def translate(
     DEBUG = int(os.getenv("DEBUG", 1))
     _set_debug_level(DEBUG)
 
-    global EXISTING_TRANSPILATION, TARGET
-    EXISTING_TRANSPILATION = False
+    global TARGET
     TARGET = target
 
     if isinstance(object, ModuleType):
@@ -807,11 +624,8 @@ def translate(
         # immediately return builtin functions; these don't need to be transpiled
         return object
 
-    infuser_injection = "S2S API KEY"  # needed for infuser
-
     # 0. Return directly if already translated
     if getattr(object, "__already_s2s", None) == target:
-        EXISTING_TRANSPILATION = True
         return object
 
     # 1. Initialize cache preloading
@@ -843,7 +657,6 @@ def translate(
         reuse_existing=reuse_existing,
     )
     if translated_object:
-        EXISTING_TRANSPILATION = True
         logging.debug(
             f"Reusing existing object ... {translated_object.__name__} from translated directory. "
         )
@@ -956,27 +769,13 @@ def transpile(
     Returns:
         The translated object.
     """
-
-    infuser_injection = "S2S OBFUSCATION"  # adds a try-except block around the translate call to obfuscate the internal source code if an error if thrown
-
-    # only allow a transpilation when telemetry isn't included if the code is not compiled, or one of the allowed paths is within the cwd
-    if __file__.endswith(".py") or any(
-        [
-            allow_str in os.getcwd()
-            for allow_str in ["/ivy-integration-tests", "/ivy", "/tracer-transpiler"]
-        ]
-    ):
-        return translate(
-            object,
-            source=source,
-            target=target,
-            reuse_existing=reuse_existing,
-            output_dir=output_dir,
-        )
-    else:
-        raise ivy.exceptions.IvyException(
-            "The installed binaries are incompatible with Ivy."
-        ) from None
+    return translate(
+        object,
+        source=source,
+        target=target,
+        reuse_existing=reuse_existing,
+        output_dir=output_dir,
+    )
 
 
 def source_to_source(
