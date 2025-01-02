@@ -23,10 +23,10 @@ except ModuleNotFoundError:
 # local
 import ivy
 from ivy.data_classes.array.conversions import _to_native
-from tracer import tracked_var_proxy as tvp
-from tracer import globals as glob
-from tracer import source_gen as sg  # infuse
-from tracer.param import (
+from . import tracked_var_proxy as tvp
+from . import globals as glob
+from . import source_gen as sg  # infuse
+from .param import (
     Param,
     _get_unique_id,
     is_parameter,
@@ -36,19 +36,19 @@ from tracer.param import (
     get_shapes,
     get_types,
 )
-from tracer.helpers import (
+from .helpers import (
     _is_tracked_variable,
     _find_missing_frontends,
     _format_missing_frontends_msg,
     NoParametersError,
 )
-from tracer.conversion import (
+from .conversion import (
     is_frontend_array,
     to_custom_numpy_type,
     to_native,
     nest_array_to_new_backend,
 )
-from tracer.visualisation import (
+from .visualisation import (
     _args_str_from_fn,
     _output_str_from_fn,
     _param_to_label,

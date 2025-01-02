@@ -4,7 +4,7 @@ import logging
 import copy
 import enum
 import ivy
-from tracer import globals as glob
+from . import globals as glob
 
 # helpers
 

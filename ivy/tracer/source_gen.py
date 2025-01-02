@@ -14,10 +14,10 @@ import linecache
 
 # local
 import ivy
-from tracer import helpers
-from tracer.param import _get_unique_id
-import tracer.globals as glob
-from tracer.special_ops.vmap_helpers import generate_vmap_subgraph
+from . import helpers
+from .param import _get_unique_id
+from . import globals as glob
+from .special_ops.vmap_helpers import generate_vmap_subgraph
 
 BINARY_OPERATORS = {
     "__add__": "+",

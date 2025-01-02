@@ -7,12 +7,12 @@ from typing import Union, Tuple, Iterable
 from collections import UserDict
 
 import ivy
-from tracer.numpy_proxy import (
+from .numpy_proxy import (
     NewNDArray,
     NUMPY_TO_CUSTOM,
     CUSTOM_TO_NUMPY,
 )
-from tracer.tracked_var_proxy import (
+from .tracked_var_proxy import (
     TrackedVarProxy,
     type_to_proxy,
     get_types_to_ignore,

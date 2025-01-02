@@ -13,10 +13,10 @@ import weakref
 
 # local
 import ivy
-from tracer import globals as glob
-from tracer.conversion import is_array, array_to_new_backend, nest_array_to_new_backend
-from tracer.numpy_proxy import custom_np_classes
-from tracer.tracked_var_proxy import TrackedVarProxy
+from . import globals as glob
+from .conversion import is_array, array_to_new_backend, nest_array_to_new_backend
+from .numpy_proxy import custom_np_classes
+from .tracked_var_proxy import TrackedVarProxy
 
 
 class NoParametersError(Exception):

@@ -1,6 +1,6 @@
 # this file makes these functions available through the gc namespace.
 # Probably needs to be revisited depending on the traced binary requirements.
-from tracer import tracked_var_proxy as tvp
+from . import tracked_var_proxy as tvp
 
 
 def len(x):

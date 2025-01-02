@@ -5,10 +5,10 @@ from typing import Optional, Tuple, Type
 from random import randint
 
 # local
-from tracer.conversion import is_array
-from tracer.helpers import _is_tracked_np_proxy, _is_tracked_variable
-import tracer.tracked_var_proxy as tvp
-import tracer.globals as glob
+from .conversion import is_array
+from .helpers import _is_tracked_np_proxy, _is_tracked_variable
+from . import tracked_var_proxy as tvp
+from . import globals as glob
 import ivy
 
 

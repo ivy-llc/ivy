@@ -15,37 +15,31 @@ import copy
 import os  # used for infuser
 import warnings
 import sys
-from module import module
+from .. import module
 
 # local
 import ivy
-from tracing_caching.cacher import CACHER
-from tracing_caching.telemetry import get_func_stats, get_graph_repr
-from utils import assertions
-from tracer.graph import Graph, LazyGraph, SubGraph
-from tracer import globals as glob
-from tracer.wrapping import (
+# from tracing_caching.cacher import CACHER
+# from tracing_caching.telemetry import get_func_stats, get_graph_repr
+from ..utils import assertions
+from .graph import Graph, LazyGraph, SubGraph
+from . import globals as glob
+from .wrapping import (
     _wrap_functions_for_op_logging,
     _unwrap_functions_from_op_logging,
     _wrap_function_for_op_logging,
     FUNC_TO_PATH,
 )
-from tracer.helpers import (
+from .helpers import (
     _apply_fn_to_class,
     _deepcopy,
     _apply_fn_to_module,
     _check_is_trainable_module,
 )
-from tracer.reloader import apply_and_reload
-from tracer.conversion import nest_array_to_new_backend, track, to_native
-import tracer.tracked_var_proxy as tvp
-from tracer.special_ops import builtin_helpers as bh
-
-
-# NOTE: needed for infuser
-from utils.exceptions import (
-    IvyServerConnectionException,
-)
+from .reloader import apply_and_reload
+from .conversion import nest_array_to_new_backend, track, to_native
+from . import tracked_var_proxy as tvp
+from .special_ops import builtin_helpers as bh
 
 
 # Helpers #
@@ -683,21 +677,21 @@ def trace_graph(
                 to=_trace_kwargs["to"],
             )
         
-        if glob.connector is not None:
-            if not (glob.is_transpile or glob.is_unify):
-                ivy_func = "compile"
-                flags = copy.copy(_trace_kwargs)
-                if flags["stateful"] is not None:
-                    flags["stateful"] = [str(s) for s in flags["stateful"]]
-                funcs, func_freq = get_func_stats(traced_graph)
-                graph_dict = get_graph_repr(traced_graph, ivy_func)
-                glob.connector.log_api_call(
-                    ivy_func,
-                    flags,
-                    funcs=funcs,
-                    func_freq=func_freq,
-                    graph=graph_dict,
-                )
+        # if glob.connector is not None:
+        #     if not (glob.is_transpile or glob.is_unify):
+        #         ivy_func = "compile"
+        #         flags = copy.copy(_trace_kwargs)
+        #         if flags["stateful"] is not None:
+        #             flags["stateful"] = [str(s) for s in flags["stateful"]]
+        #         funcs, func_freq = get_func_stats(traced_graph)
+        #         graph_dict = get_graph_repr(traced_graph, ivy_func)
+        #         glob.connector.log_api_call(
+        #             ivy_func,
+        #             flags,
+        #             funcs=funcs,
+        #             func_freq=func_freq,
+        #             graph=graph_dict,
+        #         )
 
         if ivy.current_backend_str() != original_backend:
             ivy.previous_backend()

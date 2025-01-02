@@ -15,33 +15,33 @@ from typing import Any, Callable
 from types import FunctionType, MethodType, BuiltinFunctionType, BuiltinMethodType
 
 # local
-from control_flow_experimental.autograph_ivy.pyct import parser
-from control_flow_experimental.autograph_ivy.pyct import inspect_utils
-from control_flow_experimental.autograph_ivy.pyct import qual_names
-from control_flow_experimental.autograph_ivy.pyct import templates
-from control_flow_experimental.autograph_ivy.converters import functions
-from control_flow_experimental.autograph_ivy.operators import py_builtins
-from control_flow_experimental.autograph_ivy import operators
-from control_flow_experimental.autograph_ivy.pyct import (
+from ..control_flow_experimental.autograph_ivy.pyct import parser
+from ..control_flow_experimental.autograph_ivy.pyct import inspect_utils
+from ..control_flow_experimental.autograph_ivy.pyct import qual_names
+from ..control_flow_experimental.autograph_ivy.pyct import templates
+from ..control_flow_experimental.autograph_ivy.converters import functions
+from ..control_flow_experimental.autograph_ivy.operators import py_builtins
+from ..control_flow_experimental.autograph_ivy import operators
+from ..control_flow_experimental.autograph_ivy.pyct import (
     anno,
     cache,
     cfg,
     loader,
     transpiler as py_transpiler,
 )
-from control_flow_experimental.autograph_ivy.core import (
+from ..control_flow_experimental.autograph_ivy.core import (
     converter,
     function_wrappers,
     unsupported_features_checker,
 )
-from control_flow_experimental.autograph_ivy.pyct.static_analysis import (
+from ..control_flow_experimental.autograph_ivy.pyct.static_analysis import (
     activity,
     reaching_definitions,
 )
-from control_flow_experimental.autograph_ivy.converters.call_trees import (
+from ..control_flow_experimental.autograph_ivy.converters.call_trees import (
     _ArgTemplateBuilder,
 )
-from tracer import globals as glob
+from .. import globals as glob
 
 
 # Globals #
