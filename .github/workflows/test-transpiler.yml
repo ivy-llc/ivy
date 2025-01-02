@@ -19,3 +19,54 @@ jobs:
         run: |
           cd ivy
           docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest python3 -m pytest ivy_tests/test_transpiler/transformations -p no:warnings
+
+  translations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ivy
+          persist-credentials: false
+      - uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+
+      - name: Run Translations Tests
+        id: tests
+        run: |
+          cd ivy
+          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest python3 -m pytest ivy_tests/test_transpiler/translations -p no:warnings
+
+  module:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ivy
+          persist-credentials: false
+      - uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+
+      - name: Run Module Tests
+        id: tests
+        run: |
+          cd ivy
+          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest python3 -m pytest ivy_tests/test_transpiler/module -p no:warnings
+
+  sourcegen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ivy
+          persist-credentials: false
+      - uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+
+      - name: Run SoureGen Tests
+        id: tests
+        run: |
+          cd ivy
+          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest python3 -m pytest ivy_tests/test_transpiler/sourcegen -p no:warnings
