@@ -1,7 +1,7 @@
 import functools
 
-from tracer.param import _generate_id
-import tracer.globals as glob
+from ..param import _generate_id
+from .. import globals as glob
 
 # -------- #
 # Wrapping

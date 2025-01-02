@@ -8,8 +8,8 @@ import gc
 import functools
 
 # local
-from tracer import globals as glob
-from tracer.helpers import WrappedCallable
+from . import globals as glob
+from .helpers import WrappedCallable
 
 # propagate changes to these modules
 modules_to_update = [

@@ -11,7 +11,7 @@ import functools
 
 # local
 import ivy
-from tracer.conversion import (
+from .conversion import (
     nest_native_array_to_new_frontend,
     to_custom_numpy_type,
     nest_native_array_to_new_frontend,
@@ -25,25 +25,25 @@ from tracer.conversion import (
     track,
     untrack,
 )
-from tracer import globals as glob
-from tracer.graph import Graph, LazyGraph
-from tracer import tracked_var_proxy as tvp
-from tracer.numpy_proxy import custom_np_classes, custom_np_class_names
-from tracer.param import (
+from . import globals as glob
+from .graph import Graph, LazyGraph
+from . import tracked_var_proxy as tvp
+from .numpy_proxy import custom_np_classes, custom_np_class_names
+from .param import (
     store_unique_id,
     _get_unique_id,
     delete_parameter,
     record_parameters_info,
 )
-from tracer.helpers import (
+from .helpers import (
     MethodDescriptor,
     _convert_callbacks_to_lazy_graphs,
     _is_untracked_enum,
     _wraps,
     copy_dict,
 )
-from tracer.visualisation import _get_argument_reprs, _get_output_reprs
-from tracer.special_ops.vmap_helpers import (
+from .visualisation import _get_argument_reprs, _get_output_reprs
+from .special_ops.vmap_helpers import (
     process_vmap_fn,
     process_scalar_fn,
     process_vectorized_fn,
