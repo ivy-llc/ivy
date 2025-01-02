@@ -45,15 +45,10 @@ def _array_to_new_backend(
 # ---- #
 
 @pytest.mark.parametrize("target", ["jax", "tensorflow"])
-@pytest.mark.parametrize("inplace", [True, False])
-def test_module(target, inplace):
+def test_module(target):
     import kornia
 
-    if inplace:
-        transpile(kornia, source="torch", target=target, inplace=True)
-        transpiled_kornia = kornia
-    else:
-        transpiled_kornia = transpile(kornia, source="torch", target=target)
+    transpiled_kornia = transpile(kornia, source="torch", target=target)
 
     img = _array_to_new_backend(torch.rand((1, 3, 144, 256)), target)
     coords = _array_to_new_backend(torch.tensor([[[125, 40.0], [185.0, 75.0]]]), target)
@@ -197,14 +192,10 @@ def test_module(target, inplace):
 
 
 @pytest.mark.parametrize("target", ["jax", "numpy", "tensorflow"])
-@pytest.mark.parametrize("inplace", [True, False])
-def test_module_wrapping(target, inplace):
+def test_module_wrapping(target):
     import kornia
 
-    if inplace:
-        transpile(kornia, source="torch", target=target, inplace=True)
-    else:
-        kornia = transpile(kornia, source="torch", target=target)
+    kornia = transpile(kornia, source="torch", target=target)
 
     assert hasattr(kornia.geometry.transform.affwarp.affine, "__wrapped__")
     assert hasattr(kornia.geometry.transform.affine, "__wrapped__")
