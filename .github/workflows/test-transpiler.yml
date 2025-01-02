@@ -19,8 +19,3 @@ jobs:
         run: |
           cd ivy
           docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest python3 -m pytest ivy_tests/test_transpiler/transformations -p no:warnings
-        continue-on-error: true
-
-      - name: Check on failures
-        if: steps.tests.outcome != 'success'
-        run: exit 1
