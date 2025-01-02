@@ -18,7 +18,7 @@ jobs:
         id: tests
         run: |
           cd ivy
-          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest python3 -m pytest ivy_tests/test_transpiler/transformations -p no:warnings
+          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/run_transpiler_tests.sh transformations
 
   translations:
     runs-on: ubuntu-latest
@@ -34,7 +34,7 @@ jobs:
         id: tests
         run: |
           cd ivy
-          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest python3 -m pytest ivy_tests/test_transpiler/translations -p no:warnings
+          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/run_transpiler_tests.sh translations
 
   module:
     runs-on: ubuntu-latest
@@ -51,7 +51,7 @@ jobs:
         id: tests
         run: |
           cd ivy
-          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest python3 -m pytest ivy_tests/test_transpiler/module -p no:warnings
+          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/run_transpiler_tests.sh module
 
   sourcegen:
     runs-on: ubuntu-latest
@@ -67,7 +67,7 @@ jobs:
         id: tests
         run: |
           cd ivy
-          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest python3 -m pytest ivy_tests/test_transpiler/sourcegen -p no:warnings
+          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/run_transpiler_tests.sh sourcegen
 
   hf:
     runs-on: ubuntu-latest
@@ -83,7 +83,7 @@ jobs:
         id: tests
         run: |
           cd ivy
-          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest python3 -m pytest ivy_tests/test_transpiler/hf -p no:warnings
+          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/run_transpiler_tests.sh hf
 
   kornia:
     runs-on: ubuntu-latest
@@ -99,4 +99,4 @@ jobs:
         id: tests
         run: |
           cd ivy
-          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest python3 -m pytest ivy_tests/test_transpiler/kornia -p no:warnings
+          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/run_transpiler_tests.sh kornia
