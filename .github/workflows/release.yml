@@ -12,8 +12,6 @@ jobs:
   integration-tests:
     name: Run Integration Tests
     uses: ivy-llc/ivy-integration-tests/.github/workflows/qa-integration-tests.yml@main
-    with:
-      binaries-branch: testing-nightly
     secrets: inherit
 
   deploy:
