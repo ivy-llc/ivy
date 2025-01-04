@@ -16,12 +16,6 @@ jobs:
       binaries-branch: testing-nightly
     secrets: inherit
 
-  publish-binaries:
-    name: Publish Binaries
-    needs: integration-tests
-    uses: ./.github/workflows/binaries.yml
-    secrets: inherit
-
   deploy:
     name: Deploy to PyPI
     needs: integration-tests
