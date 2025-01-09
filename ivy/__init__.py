@@ -804,24 +804,19 @@ try:
 except:  # noqa: E722
     pass
 try:
-    from .compiler.compiler import (
-        clear_graph_cache,
+    from .tracer import trace_graph
+    from .transpiler import (
         source_to_source,
         transpile,
-        trace_graph,
     )
 except:  # noqa: E722
     pass  # Added for the finally statement
-try:
-    from .compiler.replace_with import replace_with, transform_function
-except:  # noqa: E722
-    pass
-finally:
-    # Skip framework imports done by Ivy compiler for now
-    for backend_framework in _not_imported_backends.copy():
-        if backend_framework in sys.modules:
-            if backend_framework not in _imported_frameworks_before_compiler:
-                _not_imported_backends.remove(backend_framework)
+
+# Skip framework imports done by Ivy compiler for now
+for backend_framework in _not_imported_backends.copy():
+    if backend_framework in sys.modules:
+        if backend_framework not in _imported_frameworks_before_compiler:
+            _not_imported_backends.remove(backend_framework)
 
 
 # add instance methods to Ivy Array and Container
@@ -1189,7 +1184,7 @@ ivy.cython_wrappers_mode = cython_wrappers_stack[-1] if cython_wrappers_stack el
 
 
 @handle_exceptions
-def set_cython_wrappers_mode(flag: bool = True) -> None:
+def set_cython_wrappers_mode(flag=True) -> None:
     """Set the mode of whether to use cython wrappers for functions.
 
     Parameter
