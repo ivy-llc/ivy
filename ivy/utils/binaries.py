@@ -21,43 +21,6 @@ def _get_paths_from_binaries(binaries, root_dir=""):
     return paths
 
 
-def check_for_binaries():
-    folder_path = os.sep.join(__file__.split(os.sep)[:-3])
-    binaries_path = os.path.join(folder_path, "binaries.json")
-    available_configs_path = os.path.join(folder_path, "available_configs.json")
-    initial = True
-    if os.path.exists(binaries_path):
-        binaries_dict = json.load(open(binaries_path))
-        available_configs = json.load(open(available_configs_path))
-        binaries_paths = _get_paths_from_binaries(binaries_dict, folder_path)
-        # verify if all binaries are available
-        for path in binaries_paths:
-            if not os.path.exists(path):
-                if initial:
-                    config_str = "\n".join(
-                        [
-                            f"{module} : {', '.join(configs)}"
-                            for module, configs in available_configs.items()
-                        ]
-                    )
-                    logging.warning(
-                        "\tSome binaries seem to be missing in your system. This could "
-                        "be either because we don't have compatible binaries for your "
-                        "system or that newer binaries were available. In the latter "
-                        "case, calling ivy.utils.cleanup_and_fetch_binaries() should "
-                        "fetch the binaries binaries. Feel free to create an issue on "
-                        "https://github.com/ivy-llc/ivy.git in "
-                        "case of the former\n"
-                    )
-                    logging.warning(
-                        "\nFollowing are the supported configurations"
-                        f" :\n{config_str}\n"
-                    )
-                    initial = False
-        if not initial:
-            print()
-
-
 def cleanup_and_fetch_binaries(clean=True):
     folder_path = os.sep.join(__file__.split(os.sep)[:-3])
     binaries_path = os.path.join(folder_path, "binaries.json")
