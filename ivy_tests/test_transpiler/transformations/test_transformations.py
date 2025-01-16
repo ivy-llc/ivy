@@ -29,8 +29,8 @@ def test_transform_fn_w_list_comp(target):
     from ivy.transpiler.transformations.configurations.ivy_postprocessing_transformer_config import (
         IvyCodePostProcessorConfig,
     )
-    from ivy.transpiler.transformations.transformers.postprocessing_transformer.ivy_postprocessing_transformer import (
-        IvyCodePostProcessor,
+    from ivy.transpiler.transformations.transformers.postprocessing_transformer.ivy_to_tf_postprocessing_transformer import (
+        IvyToTFCodePostProcessor,
     )
 
     # Set up the configurations container
@@ -43,7 +43,9 @@ def test_transform_fn_w_list_comp(target):
 
     # Instantiate the transformer and transform the object
     configuration = IvyCodePostProcessorConfig()
-    processor = IvyCodePostProcessor(
+
+    # TODO: generalize this for other target frameworks
+    processor = IvyToTFCodePostProcessor(
         root,
         Transformer(object_like, container.translator_configurations[0]),
         configuration,
