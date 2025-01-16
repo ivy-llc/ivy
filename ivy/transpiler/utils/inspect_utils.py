@@ -172,7 +172,11 @@ def _validate_object(object: Union[FunctionType, MethodType, type], source: str)
         )
 
     # Check if the object belongs to the Ivy framework
-    if hasattr(object, "__module__") and object.__module__.startswith("ivy."):
+    if (
+        hasattr(object, "__module__") and
+        object.__module__.startswith("ivy.") and
+        "ivy.transpiler" not in object.__module__
+    ):
         if source == "ivy":
             return object
         raise InvalidSourceException(
