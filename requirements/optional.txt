@@ -15,7 +15,6 @@ nvidia-ml-py # mod_name=pynvml
 opencv-python # mod_name=cv2
 paddlepaddle # mod_name=paddle
 pandas
-pydriller
 pymongo
 pyspark
 pytest
