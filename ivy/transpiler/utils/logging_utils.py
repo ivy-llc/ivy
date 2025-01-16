@@ -108,7 +108,7 @@ class Logger:
                 self.logger_name,
                 1,
                 fmt="%(asctime)s %(name)s %(levelname)s: %(message)s",
-                filename="s2s_logs.txt",
+                filename="ivy_logs.txt",
             )
             if USE_LOGGING
             else None

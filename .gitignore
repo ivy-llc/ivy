@@ -34,7 +34,7 @@ fn_path_cache
 ivy/engines/XLA/rust_api/target/
 ivy/engines/XLA/rust_api/xla_extension/
 ivy_transpiled_outputs/
-s2s_logs/
+ivy_logs.txt
 
 # Environments
 .env
