@@ -10,7 +10,6 @@ matplotlib
 networkx
 opencv-python # mod_name=cv2
 pandas
-pydriller
 pymongo
 pyspark
 pytest
