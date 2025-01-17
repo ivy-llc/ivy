@@ -1149,9 +1149,11 @@ ret = tf_fn(x1)
 #### `ivy.transpile` will lazily transpile if a module (library) is provided
 
 ``` python
+import ivy
 import kornia
+import tensorflow as tf
 
-x2 = torch.rand(5, 3, 4, 4)
+x2 = tf.random.normal((5, 3, 4, 4))
 
 # Module is provided -> transpilation happens lazily
 tf_kornia = ivy.transpile(kornia, source="torch", target="tensorflow")
