@@ -565,6 +565,8 @@ def test_translate_torch_lstm(target):
 
 @pytest.mark.parametrize("target", get_target_list())
 def test_translate_torch_inplace(target):
+    ivy.set_backend(target)
+
     def inplace_fn():
         M = torch.zeros(4, 16)
         M[..., -1].fill_(1)
