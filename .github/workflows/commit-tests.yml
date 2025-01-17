@@ -1,8 +1,5 @@
-name: tests
+name: pr-tests
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
@@ -30,7 +27,6 @@ jobs:
           else
             git diff HEAD^ HEAD --output="commit-diff.txt"
           fi
-
 
       - name: Install ivy and fetch binaries
         run: |
