@@ -1,4 +1,4 @@
-name: tests
+name: qa
 on:
   push:
     branches:
