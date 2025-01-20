@@ -6,19 +6,19 @@ target=$2
 export IVY_KEY=$3
 export DEBUG=0
 
-pip3 install -r requirements/requirements.txt --upgrade
-pip3 install jax
-pip3 install jaxlib
-pip3 install flax
-pip3 install opencv-python
-pip3 install pytest
-pip3 install tensorflow
-pip3 install torch
-pip3 install torchvision
-pip3 install kornia
-pip3 install accelerate
-pip3 install transformers
-pip3 install redis
-pip3 install hypothesis
+pip install -r requirements/requirements.txt --upgrade
+pip install jax
+pip install jaxlib
+pip install flax
+pip install opencv-python
+pip install pytest
+pip install tensorflow
+pip install torch
+pip install torchvision
+pip install kornia
+pip install accelerate
+pip install transformers
+pip install redis
+pip install hypothesis
 
 pytest ivy_tests/test_integrations/test_$integration.py -p no:warnings --tb=short --target $target
