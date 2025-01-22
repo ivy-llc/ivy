@@ -16,7 +16,7 @@ jobs:
           sudo apt-get install python3-venv
           python3 -m pip install --upgrade pip
           python3 -m pip install --upgrade build
-          python3 -m pip install --upgrade twine
+          python3 -m pip install twine==6.0.1
 
       - name: Add Tag to Version
         run: |
