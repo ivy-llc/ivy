@@ -1,0 +1,27 @@
+name: python-build
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+
+      - name: Run Build Test
+        run: |
+          cd ivy
+          version=$(python -c "exec(open('ivy/_version.py').read()); print(__version__)")
+          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/test_build.sh "$version"
