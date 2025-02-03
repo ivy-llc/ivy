@@ -312,22 +312,19 @@ def tile(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if x.shape == ():
-        x = tf.reshape(x, (-1,))
-    if isinstance(repeats, Number):
-        repeats = [repeats]
-    if isinstance(repeats, tf.Tensor) and repeats.shape == ():
-        repeats = tf.reshape(repeats, (-1,))
-    # code to unify behaviour with numpy and torch
-    if len(x.shape) < len(repeats):
-        while len(x.shape) != len(repeats):
-            x = tf.expand_dims(x, 0)
-    elif len(x.shape) > len(repeats):
-        repeats = list(repeats)
-        while len(x.shape) != len(repeats):
-            repeats = [1] + repeats
+    # Unify behaviour with numpy and torch
     # TODO remove the unifying behaviour code if tensorflow handles this
     # https://github.com/tensorflow/tensorflow/issues/58002
+    if len(repeats) < len(x.shape):
+        repeats = (
+            repeats.numpy().tolist()
+            if isinstance(repeats, (tf.Tensor, tf.Variable))
+            else list(repeats)
+        )
+        repeats = [1] * (len(x.shape) - len(repeats)) + repeats
+    elif len(repeats) > len(x.shape):
+        shape = [1] * (len(repeats) - len(x.shape)) + x.shape
+        x = tf.reshape(x, shape)
     return tf.tile(x, repeats)
 
 
