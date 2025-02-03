@@ -162,3 +162,33 @@ def recall_score(y_true, y_pred, *, sample_weight=None):
 
     ret = ret.astype("float64")
     return ret
+
+
+@to_ivy_arrays_and_back
+def log_loss(y_true, y_pred, *, eps=1e-15, sample_weight=None):
+    # Ensure that y_true and y_pred have the same shape
+    if y_true.shape != y_pred.shape:
+        raise IvyValueError("y_true and y_pred must have the same shape")
+    
+    # Clip y_pred to avoid log(0) issues
+    y_pred = ivy.clip(y_pred, eps, 1 - eps)
+    
+    # Calculate the log loss component-wise
+    log_loss = -(y_true * ivy.log(y_pred) + (1 - y_true) * ivy.log(1 - y_pred))
+    
+    # Check if sample_weight is provided and normalize it
+    if sample_weight is not None:
+        sample_weight = ivy.array(sample_weight)
+        if sample_weight.shape[0] != y_true.shape[0]:
+            raise IvyValueError(
+                "sample_weight must have the same length as y_true and y_pred"
+            )
+
+        sample_weight = sample_weight / ivy.sum(sample_weight)
+        log_loss = log_loss * sample_weight
+    
+    # Compute the mean log loss
+    loss = ivy.mean(log_loss)
+
+    loss = loss.astype("float64")
+    return loss
