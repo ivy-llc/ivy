@@ -27,7 +27,7 @@ We have made the decision to import the test suite directly from this repository
 This means that the test suite you see in the ivy source code cannot be modified in the usual way of pushing to the ivy main branch.
 Instead, the change must be made to the array-api repository directly and then our submodule must be updated with the commands:
 
-.. code-block:: none
+.. code-block:: bash
 
         # to initialise local config file and fetch + checkout submodule (not needed every time)
         git submodule update --init --recursive
@@ -38,7 +38,7 @@ Instead, the change must be made to the array-api repository directly and then o
 Sometimes you will face strange behaviour when staging changes from Ivy's main repo which includes submodule updates.
 And this is being caused by your submodule being out of date because we update the submodule iteratively. You can get around this by running the following command:
 
-.. code-block:: none
+.. code-block:: bash
 
         # Updating your submodule to the latest commit
         git submodule update --remote
@@ -63,10 +63,10 @@ Using Terminal
 
 Using the terminal, you can run all array-api tests in a given file for a certain backend using the bash file `scripts/shell/test_array_api.sh`_:
 
-.. code-block:: none
+.. code-block:: bash
 
         # /ivy
-        /bin/bash -e ./scripts/shell/scripts/shell/test_array_api.sh jax test_linalg
+        /bin/bash -e ./scripts/shell/test_array_api.sh jax test_linalg
 
 You can change the argument with any of our supported frameworks - tensorflow, numpy, torch, or jax - and the individual test function categories in :code:`ivy/ivy_tests/array_api_testing/test_array_api/array_api_tests`, e.g. *test_set_functions*, *test_signatures* etc.
 
@@ -75,20 +75,20 @@ To make this work, you should set the backend explicitly in the `_array_module.p
 At the beginning of the file, you will see the following line of code :code:`array_module = None`.
 You need to comment out that line and add the following:
 
-.. code-block:: none
+.. code-block:: bash
 
         import ivy as array_module
         array_module.set_backend("jax") # or numpy, tensorflow, torch
 
 You should now be able to run the following commands via terminal:
 
-.. code-block:: none
+.. code-block:: bash
 
         # run all tests in a file
         pytest -vv ivy_tests/array_api_testing/test_array_api/array_api_tests/test_manipulation_functions.py
 
         # run a single test
-        pytest -vv ivy_tests/array_api_testing/test_array_api/array_api_tests/test_manipulation_functions.py -k "test_concat"
+        pytest -vv ivy_tests/array_api_testing/test_array_api/array_api_tests/test_manipulation_functions.py::test_concat
 
 Using the IDE
 *************
@@ -107,7 +107,7 @@ However, unlike the ivy tests, the Array-API tests make liberal use of :code:`da
 This means that failed tests cannot be re-run with the :code:`@example` decorator, as explained in the :ref:`final section <overview/deep_dive/ivy_tests:Re-Running Failed Ivy Tests>` of the ivy tests deep dive.
 Fortunately, it is possible to regenerate test failures using a unique decorator that appears in the final line of the falsifying example in the error stack trace:
 
-.. code-block:: none
+.. code-block:: bash
 
     =================================== FAILURES ===================================
     ______________________ test_remainder[remainder(x1, x2)] _______________________
@@ -134,7 +134,7 @@ Fortunately, it is possible to regenerate test failures using a unique decorator
 Copy the :code:`@reproduce_failure` decorator and paste it after the usual decorators of `test_remainder`.
 You may also need to include the hypothesis import of `reproduce_failure` as shown below.
 
-.. code-block:: none
+.. code-block:: python
 
     from hypothesis import reproduce_failure
 
