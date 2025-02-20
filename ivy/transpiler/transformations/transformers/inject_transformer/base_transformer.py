@@ -1,5 +1,4 @@
 # global
-from ast import FunctionDef
 import gast
 import inspect
 import textwrap
@@ -10,7 +9,6 @@ from ...configurations.base_transformer_config import (
 )
 from ...transformer import Transformer
 from ....utils import pickling_utils
-from ....utils.api_utils import is_frontend_stateful_api
 from ....utils.ast_utils import (
     ast_to_source_code,
     is_super_call_node,
@@ -161,6 +159,7 @@ class BaseSuperMethodsInjector(BaseTransformer):
             keywords=cls_node.keywords,
             body=[*cls_node.body, *method_nodes_to_add],
             decorator_list=cls_node.decorator_list,
+            type_params=cls_node.type_params if hasattr(cls_node, "type_params") else [],
         )
         new_node = gast.copy_location(new_node, cls_node)
         # attach origin info to the new node
