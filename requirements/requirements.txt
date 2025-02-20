@@ -2,7 +2,7 @@ astor
 cryptography>=40.0.0
 dill
 einops
-gast<=0.5.4
+gast
 networkx
 numpy
 packaging
