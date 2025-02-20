@@ -113,6 +113,7 @@ class BaseSuperMethodsInjector(BaseTransformer):
                         decorator_list=method_node.decorator_list,
                         returns=method_node.returns,
                         type_comment=method_node.type_comment,
+                        type_params=method_node.type_params if hasattr(method_node, "type_params") else [],
                     )
                     new_method_node = gast.copy_location(new_method_node, method_node)
                     BaseRenameTransformer(new_method_node).rename(
@@ -223,6 +224,7 @@ class BaseSuperMethodsInjector(BaseTransformer):
             decorator_list=method_node.decorator_list,
             returns=method_node.returns,
             type_comment=method_node.type_comment,
+            type_params=method_node.type_params if hasattr(method_node, "type_params") else [],
         )
         new_method_node = gast.copy_location(new_method_node, method_node)
         self._method_nodes_to_add.append(new_method_node)
