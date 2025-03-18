@@ -1,4 +1,4 @@
-name: tests
+name: docstrings
 on:
   push:
     branches:
@@ -6,16 +6,15 @@ on:
   workflow_dispatch:
 jobs:
   docstring-tests:
-    if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') || contains(github.event.pull_request.labels.*.name, 'Function Reformatting')}}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           path: ivy
           persist-credentials: false
       - uses: actions/setup-python@v3
         with:
-          python-version: "3.8"
+          python-version: "3.10"
 
       - name: Run Docstring Tests
         run: |

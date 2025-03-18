@@ -115,7 +115,7 @@ with open("ivy/_version.py") as f:
 setup(
     name="ivy",
     version=__version__,
-    author="Transpile AI",
+    author="Ivy",
     author_email="contact@ivy.dev",
     description="Convert Machine Learning Code Between Frameworks",
     long_description=long_description,
@@ -131,7 +131,9 @@ setup(
         _strip(line)
         for line in open("requirements/requirements.txt", "r", encoding="utf-8")
     ],
-    classifiers=[],
-    license="End-User License Agreement for Ivy",
+    classifiers=[
+        "License :: OSI Approved :: Apache Software License",
+    ],
+    license="Apache 2.0",
     options=options,
 )

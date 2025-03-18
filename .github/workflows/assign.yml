@@ -16,7 +16,7 @@ jobs:
       - name: Get random assignee
         id: random
         run: |
-          ASSIGNEES=("Sam-Armstrong" "hmahmood24" "YushaArif99")
+          ASSIGNEES=("Sam-Armstrong")
           RANDOM_INDEX=$((RANDOM % ${#ASSIGNEES[@]}))
           echo "assignee=${ASSIGNEES[$RANDOM_INDEX]}" >> $GITHUB_OUTPUT
 

@@ -10,6 +10,7 @@ on:
 permissions:
   actions: read
   contents: write
+
 jobs:
   kornia:
     runs-on: ubuntu-latest
@@ -25,16 +26,21 @@ jobs:
           persist-credentials: false
           fetch-depth: 100
 
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
       - name: Install ivy
         run: |
           cd ivy
-          sudo pip3 install -e .
+          pip install -e .
 
       - name: Run Tests
         id: tests
         run: |
           cd ivy
-          sudo scripts/shell/run_integration_tests.sh kornia ${{ matrix.target }} ${{ secrets.IVY_API_KEY }}
+          scripts/shell/run_integration_tests.sh kornia ${{ matrix.target }} ${{ secrets.IVY_API_KEY }}
         continue-on-error: true
 
       - name: Check on failures

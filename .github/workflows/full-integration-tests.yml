@@ -1,8 +1,7 @@
-name: tests
+name: qa
 on:
-  push:
-    branches:
-      - main
+  schedule:
+    - cron:  '0 3 * * 0'
   workflow_dispatch:
 
 permissions:
@@ -12,6 +11,4 @@ permissions:
 jobs:
   integration-tests:
     uses: ivy-llc/ivy-integration-tests/.github/workflows/qa-integration-tests.yml@main
-    with:
-      binaries-branch: testing-nightly
     secrets: inherit

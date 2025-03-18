@@ -1,0 +1,124 @@
+name: transpiler-tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+
+  transformations:
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ivy
+          persist-credentials: false
+      - uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run Transformations Tests
+        id: tests
+        run: |
+          cd ivy
+          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/run_transpiler_tests.sh transformations
+
+  translations:
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ivy
+          persist-credentials: false
+      - uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run Translations Tests
+        id: tests
+        run: |
+          cd ivy
+          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/run_transpiler_tests.sh translations
+
+  module:
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ivy
+          persist-credentials: false
+      - uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run Module Tests
+        id: tests
+        run: |
+          cd ivy
+          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/run_transpiler_tests.sh module
+
+  sourcegen:
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ivy
+          persist-credentials: false
+      - uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run SourceGen Tests
+        id: tests
+        run: |
+          cd ivy
+          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/run_transpiler_tests.sh sourcegen
+
+  hf:
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ivy
+          persist-credentials: false
+      - uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run HuggingFace Tests
+        id: tests
+        run: |
+          cd ivy
+          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/run_transpiler_tests.sh hf
+
+  kornia:
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ivy
+          persist-credentials: false
+      - uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run Kornia Tests
+        id: tests
+        run: |
+          cd ivy
+          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/run_transpiler_tests.sh kornia

@@ -5,7 +5,6 @@ flax
 ml-dtypes==0.2.0
 pandas
 protobuf
-pydriller
 pyspark
 scikit-learn  # mod_name=sklearn
 scipy

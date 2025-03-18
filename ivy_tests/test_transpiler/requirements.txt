@@ -1,0 +1,12 @@
+transformers
+cryptography
+junitparser
+black
+ruff
+timm
+tqdm
+simplex
+freia
+ntplib
+kornia # adding temporarily
+datasets

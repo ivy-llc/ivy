@@ -274,9 +274,4 @@ class IvyLoader(Loader):
             ast.fix_missing_locations(ast_tree)
             compiled_obj = compile(ast_tree, filename=self.filename, mode="exec")
             _compiled_modules_cache[self.filename] = compiled_obj
-        try:
-            exec(compiled_obj, module.__dict__)
-        except Exception as e:
-            print(e)
-            traceback.print_exc()
-            raise e
+        exec(compiled_obj, module.__dict__)
