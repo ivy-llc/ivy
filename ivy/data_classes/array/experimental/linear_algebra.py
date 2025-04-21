@@ -110,6 +110,29 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
             out=out,
         )
 
+    def lu(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.lu. This method simply
+        wraps the function, and so the docstring for ivy.lu also applies to
+        this method with minimal changes.
+
+        Examples
+        --------
+               >>> x = ivy.array([[1.0,2.0],[3.0,4.0]])
+               >>> ivy.lu(x)
+               ivy.array([[0., 1.],
+               [1., 0.]]),
+        ivy.array([[1.        , 0.        ],
+               [0.33333334, 1.        ]]),
+        ivy.array([[3.        , 4.        ],
+               [0.        , 0.66666663]])
+        """
+        return ivy.lu(self._data, out=out)
+
     def kron(
         self: ivy.Array,
         b: ivy.Array,
