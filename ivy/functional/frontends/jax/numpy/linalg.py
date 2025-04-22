@@ -120,10 +120,32 @@ def solve(a, b):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "0.4.24 and below": (
+            "float64",
+            "float32",
+            "half",
+            "complex32",
+            "complex64",
+            "complex128",
+        )
+    },
+    "jax",
+)
 def svd(a, /, *, full_matrices=True, compute_uv=True, hermitian=None):
-    if not compute_uv:
-        return ivy.svdvals(a)
-    return ivy.svd(a, full_matrices=full_matrices)
+    # TODO: handle hermitian
+    if ivy.is_complex_dtype(a.dtype):
+        d = ivy.complex128
+    else:
+        d = ivy.float64
+    if compute_uv:
+        svd = ivy.svd(a, compute_uv=compute_uv, full_matrices=full_matrices)
+        return tuple(
+            [ivy.astype(svd.U, d), ivy.astype(svd.S, d), ivy.astype(svd.Vh, d)]
+        )
+    else:
+        return ivy.astype(ivy.svdvals(a), ivy.float64)
 
 
 @to_ivy_arrays_and_back

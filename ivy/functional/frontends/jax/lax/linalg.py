@@ -1,6 +1,6 @@
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 
 
 @to_ivy_arrays_and_back
@@ -44,7 +44,29 @@ def qr(x, /, *, full_matrices=False):
 
 
 @to_ivy_arrays_and_back
-def svd(x, /, *, full_matrices=True, compute_uv=True):
-    if not compute_uv:
-        return ivy.svdvals(x)
-    return ivy.svd(x, full_matrices=full_matrices)
+@with_supported_dtypes(
+    {
+        "0.4.14 and below": (
+            "float64",
+            "float32",
+            "half",
+            "complex32",
+            "complex64",
+            "complex128",
+        )
+    },
+    "jax",
+)
+def svd(x, /, *, full_matrices=True, compute_uv=True, subset_by_index=None):
+    # TODO: handle subset_by_index
+    if ivy.is_complex_dtype(x.dtype):
+        d = ivy.complex128
+    else:
+        d = ivy.float64
+    if compute_uv:
+        svd = ivy.svd(x, compute_uv=compute_uv, full_matrices=full_matrices)
+        return tuple(
+            [ivy.astype(svd.U, d), ivy.astype(svd.S, d), ivy.astype(svd.Vh, d)]
+        )
+    else:
+        return ivy.astype(ivy.svdvals(x), ivy.float64)

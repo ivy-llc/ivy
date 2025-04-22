@@ -1,7 +1,8 @@
 # global
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 import ivy.functional.frontends.torch as torch_frontend
+from collections import namedtuple
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
@@ -189,13 +190,36 @@ def slogdet(A, *, out=None):
     return torch_frontend.linalg.slogdet(A, out=out)
 
 
+@with_supported_dtypes(
+    {
+        "2.2 and below": (
+            "float64",
+            "float32",
+            "half",
+            "complex32",
+            "complex64",
+            "complex128",
+        )
+    },
+    "torch",
+)
 @to_ivy_arrays_and_back
 def svd(input, some=True, compute_uv=True, *, out=None):
-    # TODO: add compute_uv
-    if some:
-        ret = ivy.svd(input, full_matrices=False)
+    retu = ivy.svd(input, full_matrices=not some, compute_uv=compute_uv)
+    results = namedtuple("svd", "U S V")
+    if compute_uv:
+        ret = results(retu[0], retu[1], ivy.adjoint(retu[2]))
     else:
-        ret = ivy.svd(input, full_matrices=True)
+        shape = list(input.shape)
+        shape1 = shape
+        shape2 = shape
+        shape1[-2] = shape[-1]
+        shape2[-1] = shape[-2]
+        ret = results(
+            ivy.zeros(shape1, device=input.device, dtype=input.dtype),
+            ivy.astype(retu[0], input.dtype),
+            ivy.zeros(shape2, device=input.device, dtype=input.dtype),
+        )
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
