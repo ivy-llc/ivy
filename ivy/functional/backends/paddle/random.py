@@ -6,7 +6,6 @@ import paddle
 import ivy.functional.backends.paddle as paddle_backend
 from typing import Optional, Union, Sequence
 
-# local
 import ivy
 from paddle.device import core
 from ivy.functional.ivy.random import (
@@ -52,7 +51,6 @@ def random_uniform(
     low = paddle.cast(low, "float32") if isinstance(low, paddle.Tensor) else low
     high = paddle.cast(high, "float32") if isinstance(high, paddle.Tensor) else high
     shape = _check_bounds_and_get_shape(low, high, shape).shape
-    # Set range and seed
     rng = high - low
     if seed:
         _ = paddle.seed(seed)
@@ -64,7 +62,8 @@ def random_uniform(
 
 
 @with_unsupported_dtypes(
-    {"2.6.0 and below": ("float16", "int16", "int8")}, backend_version
+    {"2.6.0 and below": ("float16", "int16", "int8")},
+    backend_version,
 )
 def random_normal(
     *,
@@ -162,10 +161,67 @@ def shuffle(
 ) -> paddle.Tensor:
     if seed:
         _ = paddle.seed(seed)
-    # Use Paddle's randperm function to generate shuffled indices
     indices = paddle.randperm(x.ndim, dtype="int64")
     if paddle.is_complex(x):
         shuffled_real = paddle.index_select(x.real(), indices, axis=axis)
         shuffled_imag = paddle.index_select(x.imag(), indices, axis=axis)
         return paddle.complex(shuffled_real, shuffled_imag)
     return paddle.index_select(x, indices, axis=axis)
+
+
+# New Random Distribution Functions
+# -----------------------------------
+
+
+def random_exponential(
+    *,
+    scale: Union[float, paddle.Tensor],
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    dtype: paddle.dtype,
+    seed: Optional[int] = None,
+) -> paddle.Tensor:
+    _check_valid_scale(scale)
+    shape = _check_bounds_and_get_shape(scale, None, shape).shape
+    if seed:
+        paddle.seed(seed)
+    return paddle.exponential(scale, shape).cast(dtype)
+
+
+def random_poisson(
+    *,
+    lam: Union[float, paddle.Tensor],
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    dtype: paddle.dtype,
+    seed: Optional[int] = None,
+) -> paddle.Tensor:
+    shape = _check_bounds_and_get_shape(lam, None, shape).shape
+    if seed:
+        paddle.seed(seed)
+    return paddle.poisson(lam, shape).cast(dtype)
+
+
+def random_bernoulli(
+    *,
+    p: Union[float, paddle.Tensor],
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    dtype: paddle.dtype,
+    seed: Optional[int] = None,
+) -> paddle.Tensor:
+    shape = _check_bounds_and_get_shape(p, None, shape).shape
+    if seed:
+        paddle.seed(seed)
+    return paddle.bernoulli(p, shape).cast(dtype)
+
+
+def random_beta(
+    *,
+    alpha: Union[float, paddle.Tensor],
+    beta: Union[float, paddle.Tensor],
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    dtype: paddle.dtype,
+    seed: Optional[int] = None,
+) -> paddle.Tensor:
+    shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
+    if seed:
+        paddle.seed(seed)
+    return paddle.beta(alpha, beta, shape).cast(dtype)
