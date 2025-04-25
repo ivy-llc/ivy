@@ -6,6 +6,21 @@ import torch as torch
 import ivy
 from ivy.func_wrapper import _dtype_from_version
 
+all_dtypes = (
+    ivy.int8,
+    ivy.int16,
+    ivy.int32,
+    ivy.int64,
+    ivy.uint8,
+    ivy.bfloat16,
+    ivy.float16,
+    ivy.float32,
+    ivy.float64,
+    ivy.complex64,
+    ivy.complex128,
+    ivy.bool,
+)
+
 backend_version = {"version": torch.__version__.split("+")[0]}
 
 # Registering ivy.Array as trackable submodule
@@ -69,7 +84,6 @@ valid_dtypes = {
         ivy.bool,
     )
 }
-
 
 valid_numeric_dtypes = {
     "2.2 and below": (

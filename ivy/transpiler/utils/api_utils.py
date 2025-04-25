@@ -28,6 +28,7 @@ SUPPORTED_BACKENDS_MODULE_STRS = {
     "tensorflow": {True: "tensorflow.keras.Model", False: "tensorflow.keras.Layer"},
     "jax": {True: "flax.nnx.Module", False: "flax.nnx.Module"},
     "numpy": {True: "type", False: "type"},
+    "torch": {True: "torch.nn.Module", False: "torch.nn.Module"},
 }
 TRANSLATED_OBJ_PREFIX = [
     "Translated_",

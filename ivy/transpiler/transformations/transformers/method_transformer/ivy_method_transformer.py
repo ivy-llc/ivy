@@ -67,6 +67,29 @@ class IvyMethodToFunctionConverter(BaseMethodToFunctionConverter):
                 "itemsize",
                 "ndim",
             )
+        elif self.transformer.target == "torch":
+            # PyTorch tensor properties to ignore
+            self.properties_to_ignore = (
+                "data",
+                "shape",
+                "dtype",
+                "device",
+                "strides",
+                "size",
+                "ndim",
+                "T",
+                "real",
+                "imag",
+            )
+        else:
+            # Default properties to ignore for other targets
+            self.properties_to_ignore = (
+                "data",
+                "shape",
+                "dtype",
+                "device",
+                "strides",
+            )
 
     def transform(self):
         # no need to transform method calls for backend impl in ivy.
