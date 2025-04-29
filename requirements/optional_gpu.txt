@@ -1,6 +1,5 @@
 autoflake # for backend generation
 coverage
-dm-haiku # mod_name=haiku
 flax
 h5py
 hypothesis
