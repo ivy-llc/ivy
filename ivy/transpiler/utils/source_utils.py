@@ -83,6 +83,15 @@ def _maybe_create_stateful_layers_module(target: str, output_dir: str):
 
         source = FlaxNativeLayers
         module_name = "jax__stateful_layers"
+    elif target == "torch":
+        # For torch target, we don't have specific native layers yet
+        # Just create an empty module for now
+        source = "# PyTorch stateful layers module\n"
+        module_name = "torch__stateful_layers"
+    else:
+        # For any other targets, return without creating a module
+        return
+        
     stateful_file = os.path.join(output_dir, f"{module_name}.py")
 
     f = open(stateful_file, "w", encoding="utf-8", newline="\n")

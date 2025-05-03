@@ -50,6 +50,9 @@ from ...transformations.transformers.postprocessing_transformer.ivy_to_jax_postp
 from ...transformations.transformers.postprocessing_transformer.ivy_to_numpy_postprocessing_transformer import (
     IvyToNumpyCodePostProcessor,
 )
+from ...transformations.transformers.postprocessing_transformer.ivy_to_torch_postprocessing_transformer import (
+    IvyToTorchCodePostProcessor,
+)
 from ...transformations.transformers.recursive_transformer.ivy_recursive_transformer import (
     IvyRecurser,
 )
@@ -75,6 +78,7 @@ class IvyToSourceTranslatorConfig(BaseTranslatorConfig):
         IvyToTFCodePostProcessor: IvyCodePostProcessorConfig,
         IvyToJAXCodePostProcessor: IvyCodePostProcessorConfig,
         IvyToNumpyCodePostProcessor: IvyCodePostProcessorConfig,
+        IvyToTorchCodePostProcessor: IvyCodePostProcessorConfig,
     }
 
     def __init__(self, source="ivy", target="tensorflow", base_output_dir="") -> None:
@@ -121,6 +125,21 @@ class IvyToSourceTranslatorConfig(BaseTranslatorConfig):
                 IvyToJAXCodePostProcessor,
                 PytorchToFlaxLayer,
                 HFPretrainedFlaxTransformer,
+            ]
+        elif target == "torch":
+            self.transformers: List[BaseTransformer] = [
+                IvyNodeDeleter,
+                IvyDecoratorRemover,
+                # BaseTypeHintRemover,
+                BaseDocstringRemover,
+                # BaseTypeAnnotationRemover,
+                IvyMethodToFunctionConverter,
+                BaseDundersTransformer,
+                IvyCodePreProcessor,
+                BaseNameCanonicalizer,
+                BaseGlobalsTransformer,
+                IvyRecurser,
+                IvyToTorchCodePostProcessor,
             ]
         elif target == "numpy":
             self.transformers: List[BaseTransformer] = [

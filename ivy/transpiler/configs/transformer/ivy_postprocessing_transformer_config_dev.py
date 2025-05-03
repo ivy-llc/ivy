@@ -91,6 +91,16 @@ HUGGINGFACE_CLS_MAPPING = {
         ),
     },
     "numpy": {},
+    "torch": {
+        "PreTrainedModel": (
+            "PreTrainedModel",
+            "from transformers.modeling_utils import PreTrainedModel",
+        ),
+        "BaseModelOutput": (
+            "BaseModelOutput",
+            "from transformers.modeling_outputs import BaseModelOutput",
+        ),
+    },
 }
 
 IVY_DEFAULT_DTYPE_MAPPING = {
@@ -231,6 +241,12 @@ NATIVE_ARR_DTYPE_DEVICE = {
     },
     "jax": {None: None},
     "numpy": {None: None},
+    "torch": {
+        "torch.dtype": "torch.dtype",
+        "torch.Size": "torch.Size",
+        "torch.Tensor": "torch.Tensor",
+        "torch.device": "torch.device",
+    },
 }
 
 IVY_GLOBS = {
