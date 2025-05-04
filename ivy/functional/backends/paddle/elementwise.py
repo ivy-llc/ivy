@@ -538,11 +538,7 @@ def logical_xor(
 
 
 @with_supported_device_and_dtypes(
-    {
-        "2.6.0 and below": {
-            "cpu": ("bool", "float32", "int32", "float64", "int64", "complex")
-        }
-    },
+    {"2.6.0 and below": {"cpu": ("bool", "float32", "int32", "float64", "int64")}},
     backend_version,
 )
 def logical_and(
