@@ -4,9 +4,9 @@ black
 coverage
 flax
 h5py
-hypothesis==6.98.10 # fixed version till this get solved: https://github.com/HypothesisWorks/hypothesis/issues/3896
-jax
-jaxlib
+hypothesis==6.98.10
+jax<=0.4.33
+jaxlib<=0.4.33
 matplotlib
 ml-dtypes # mod_name=ml_dtypes
 networkx
@@ -22,7 +22,7 @@ redis
 scikit-learn # mod_name=sklearn
 scipy
 snakeviz # for profiling
-tensorflow
-torch
-torchvision
+tensorflow<=2.17.0
+torch<=2.4.1
+torchvision<=0.19.1
 xgboost
