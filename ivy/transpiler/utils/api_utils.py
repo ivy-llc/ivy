@@ -130,9 +130,9 @@ def get_frontend_class(class_name):
 def get_hf_class(class_name):
     try:
         module = importlib.import_module(f"transformers.modeling_utils")
+        return getattr(module, class_name)
     except (TypeError, AttributeError, ModuleNotFoundError):
         return None
-    return getattr(module, class_name)
 
 
 def maybe_get_methods(cls):
