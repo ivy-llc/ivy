@@ -62,7 +62,7 @@ else:
     NativeArray = jaxlib.xla_extension.DeviceArray
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
-NativeDevice = jaxlib.xla_extension.Device
+NativeDevice = jax.Device if version.parse(jax.__version__) >= version.parse("0.4.11") else jaxlib.xla_extension.Device
 NativeDtype = jnp.dtype
 NativeShape = tuple
 
