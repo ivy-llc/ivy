@@ -7,7 +7,6 @@ import jax
 import jax.dlpack
 import jax.numpy as jnp
 import jax._src as _src
-import jaxlib.xla_extension
 
 # local
 import ivy
@@ -36,7 +35,7 @@ def arange(
     step: float = 1,
     *,
     dtype: Optional[jnp.dtype] = None,
-    device: jaxlib.xla_extension.Device = None,
+    device: jax.Device = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if dtype:
@@ -71,7 +70,7 @@ def asarray(
     *,
     copy: Optional[bool] = None,
     dtype: Optional[jnp.dtype] = None,
-    device: jaxlib.xla_extension.Device = None,
+    device: jax.Device = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     ivy.utils.assertions._check_jax_x64_flag(dtype)
@@ -92,7 +91,7 @@ def empty(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device = None,
+    device: jax.Device = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.empty(shape, dtype)
@@ -103,7 +102,7 @@ def empty_like(
     /,
     *,
     dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device = None,
+    device: jax.Device = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.empty_like(x, dtype=dtype)
@@ -117,7 +116,7 @@ def eye(
     k: int = 0,
     batch_shape: Optional[Union[int, Sequence[int]]] = None,
     dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device = None,
+    device: jax.Device = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if n_cols is None:
@@ -144,7 +143,7 @@ def full(
     fill_value: Union[int, float, bool],
     *,
     dtype: Optional[Union[ivy.Dtype, jnp.dtype]] = None,
-    device: jaxlib.xla_extension.Device = None,
+    device: jax.Device = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
@@ -157,7 +156,7 @@ def full_like(
     fill_value: Number,
     *,
     dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device = None,
+    device: jax.Device = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.full_like(x, fill_value, dtype=dtype)
@@ -174,7 +173,7 @@ def linspace(
     axis: Optional[int] = None,
     endpoint: bool = True,
     dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device = None,
+    device: jax.Device = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if axis is None:
@@ -248,7 +247,7 @@ def ones(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device = None,
+    device: jax.Device = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.ones(shape, dtype)
@@ -259,7 +258,7 @@ def ones_like(
     /,
     *,
     dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device = None,
+    device: jax.Device = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.ones_like(x, dtype=dtype)
@@ -277,7 +276,7 @@ def zeros(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device = None,
+    device: jax.Device = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.zeros(shape, dtype)
@@ -288,7 +287,7 @@ def zeros_like(
     /,
     *,
     dtype: jnp.dtype,
-    device: jaxlib.xla_extension.Device = None,
+    device: jax.Device = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.zeros_like(x, dtype=dtype)
@@ -323,7 +322,7 @@ def one_hot(
     off_value: Optional[Number] = None,
     axis: Optional[int] = None,
     dtype: Optional[jnp.dtype] = None,
-    device: jaxlib.xla_extension.Device = None,
+    device: jax.Device = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     on_none = on_value is None
@@ -365,6 +364,6 @@ def triu_indices(
     k: int = 0,
     /,
     *,
-    device: jaxlib.xla_extension.Device = None,
+    device: jax.Device = None,
 ) -> Tuple[JaxArray]:
     return jnp.triu_indices(n=n_rows, k=k, m=n_cols)

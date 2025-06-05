@@ -182,7 +182,7 @@ class FlaxLinear(flax.linen.Module):
 class FlaxModule(flax.linen.Module):
     in_size: Sequence[int]
     out_size: Sequence[int]
-    device: jaxlib.xla_extension.Device = None
+    device: jax.Device = None
     hidden_size: Sequence[int] = 64
 
     def setup(self):

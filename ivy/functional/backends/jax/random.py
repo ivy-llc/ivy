@@ -4,7 +4,6 @@ signature."""
 # global
 import jax
 import jax.numpy as jnp
-import jaxlib.xla_extension
 from typing import Optional, Union, Sequence
 
 # local
@@ -45,7 +44,7 @@ def random_uniform(
     low: Union[float, JaxArray] = 0.0,
     high: Union[float, JaxArray, None] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: jaxlib.xla_extension.Device = None,
+    device: jax.Device = None,
     dtype: jnp.dtype,
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
@@ -75,7 +74,7 @@ def random_normal(
     mean: Union[float, JaxArray] = 0.0,
     std: Union[float, JaxArray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: jaxlib.xla_extension.Device = None,
+    device: jax.Device = None,
     dtype: jnp.dtype,
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
@@ -100,7 +99,7 @@ def multinomial(
     batch_size: int = 1,
     probs: Optional[JaxArray] = None,
     replace: bool = True,
-    device: jaxlib.xla_extension.Device = None,
+    device: jax.Device = None,
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -141,7 +140,7 @@ def randint(
     /,
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: jaxlib.xla_extension.Device = None,
+    device: jax.Device = None,
     dtype: Optional[Union[jnp.dtype, ivy.Dtype]] = None,
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
