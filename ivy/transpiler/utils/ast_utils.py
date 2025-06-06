@@ -1,6 +1,7 @@
 # global
 import ast
 import inspect
+import jax
 import types
 import os
 import sys
@@ -203,7 +204,7 @@ BACKEND_STANDARD_GLOBALS = {
 
 MONKEY_PATCH_GLOBALS = {
     "tensorflow": f"\n{TF_DUNDERS_MONKEY_PATCH}\n",
-    "jax": f"\n{JAX_DUNDER_PROPERTY_PATCH}\n",
+    "jax": f"\n{JAX_DUNDER_PROPERTY_PATCH}\n" if jax.__version__ < "0.4.11" else "\n",
     "numpy": "\n",
 }
 
