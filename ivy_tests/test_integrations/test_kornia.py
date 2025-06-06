@@ -1218,13 +1218,13 @@ def test_unproject_meshgrid(target_framework, backend_compile):
     trace_args = (
         4,
         4,
-        torch.eye(3),
+        torch.eye(3).unsqueeze(0),
     )
     trace_kwargs = {"normalize_points": False, "device": "cpu"}
     test_args = (
         5,
         5,
-        torch.eye(3),
+        torch.eye(3).unsqueeze(0),
     )
     test_kwargs = {"normalize_points": False, "device": "cpu"}
     _test_function(
