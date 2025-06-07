@@ -26,7 +26,7 @@ from ivy.transpiler.utils.ast_utils import (
     MODULE_TO_ALIAS,
     get_function_vars,
 )
-from ivy.transpiler.transformations.transformer_globals import CONFLICTING_METHODS
+from ivy.transpiler.transformations import transformer_globals as glob
 
 
 class IvyMethodToFunctionConverter(BaseMethodToFunctionConverter):
@@ -105,7 +105,7 @@ class IvyMethodToFunctionConverter(BaseMethodToFunctionConverter):
             node = new_call
 
             # add the transformed method to the CONFLICTING_METHODS set
-            CONFLICTING_METHODS.add(right)
+            glob.CONFLICTING_METHODS.add(right)
 
         return node
 
@@ -174,7 +174,7 @@ class IvyMethodToFunctionConverter(BaseMethodToFunctionConverter):
         new_node = gast.Call(func=new_func, args=new_args, keywords=node.keywords)
 
         # add the transformed method to the CONFLICTING_METHODS set
-        CONFLICTING_METHODS.add(right)
+        glob.CONFLICTING_METHODS.add(right)
 
         return new_node
 
