@@ -1,23 +1,21 @@
-# global
 import gast
-import ivy
 
-# local
-from ...configurations.base_transformer_config import (
+import ivy
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from ...transformer import Transformer
-from ....utils.ast_utils import (
-    ast_to_source_code,
+from ivy.transpiler.transformations.transformer import Transformer
+from ivy.transpiler.transformations.transformers.postprocessing_transformer.ivy_postprocessing_transformer import (
+    IvyCodePostProcessor,
 )
-from ....utils.api_utils import (
+from ivy.transpiler.utils.api_utils import (
     get_native_array_str_from_backend,
     get_native_module_str_from_backend,
 )
-from ....utils.naming_utils import NAME_GENERATOR
-from .ivy_postprocessing_transformer import (
-    IvyCodePostProcessor,
+from ivy.transpiler.utils.ast_utils import (
+    ast_to_source_code,
 )
+from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
 
 
 class IvyToTFCodePostProcessor(IvyCodePostProcessor):
