@@ -1,10 +1,10 @@
-"""Main driver code for the Source-to-Source Translator."""
+"""Main driver code for the Source-to-Source Transpiler."""
 
-# global
 import ctypes
 from dataclasses import is_dataclass
 from enum import Enum
 import functools
+import gast
 import importlib
 import inspect
 import logging
@@ -16,24 +16,22 @@ import time
 from types import FunctionType, BuiltinFunctionType, MethodType, ModuleType
 from typing import Union
 import warnings
-import gast
-import ivy  # type: ignore
 
-# local
-from .configurations_container import ConfigurationsContainer
-from .translators_container import TranslatorsContainer
-from .utils.api_utils import copy_module
-from .utils.cache_utils import (
+import ivy  # type: ignore
+from ivy.transpiler.configurations_container import ConfigurationsContainer
+from ivy.transpiler.translators_container import TranslatorsContainer
+from ivy.transpiler.utils.api_utils import copy_module
+from ivy.transpiler.utils.cache_utils import (
     PRELOAD_CACHE,
 )
-from .utils.conversion_utils import (
+from ivy.transpiler.utils.conversion_utils import (
     BUILTIN_LIKELY_MODULE_NAMES,
     is_builtin_function,
 )
-from .utils.inspect_utils import (
+from ivy.transpiler.utils.inspect_utils import (
     _validate_object,
 )
-from .utils.source_utils import (
+from ivy.transpiler.utils.source_utils import (
     get_object_from_translated_directory,
     get_new_output_dir_name,
     sanitize_dir_name,
@@ -41,9 +39,9 @@ from .utils.source_utils import (
 
 TARGET = "tensorflow"
 
+
 # Helpers #
 # ------- #
-
 
 def _animate(stop_animation, animation_str):
     """
