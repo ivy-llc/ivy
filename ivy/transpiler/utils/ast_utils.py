@@ -124,7 +124,7 @@ import jaxlib
 import flax.nnx as nnx 
 
 def _define_dunders(orig_method_name):
-    original_method = getattr(jaxlib._jax.ArrayImpl, orig_method_name)
+    original_method = getattr(jaxlib._jax.ArrayImpl if jax.__version__ >= '0.6.0' else jaxlib.xla_extension.ArrayImpl, orig_method_name)
     patched_method = {
         '__add__': jax___add___frnt_,
         '__sub__': jax___sub___frnt_,
@@ -140,7 +140,7 @@ def _define_dunders(orig_method_name):
         except Exception as e:
             return patched_method(self, rhs)
 
-    setattr(jaxlib._jax.ArrayImpl, orig_method_name, impl)
+    setattr(jaxlib._jax.ArrayImpl if jax.__version__ >= '0.6.0' else jaxlib.xla_extension.ArrayImpl, orig_method_name, impl)
 
 def _define_properties(orig_property_name):
     def device_getter(
@@ -174,14 +174,14 @@ def _define_properties(orig_property_name):
                 # Attempt to retrieve the attribute from the wrapped object (`value`)
                 return getattr(value, name)
         return object.__getattribute__(self, name)
-    original_property = getattr(jaxlib._jax.ArrayImpl, orig_property_name, None)
+    original_property = getattr(jaxlib._jax.ArrayImpl if jax.__version__ >= '0.6.0' else jaxlib.xla_extension.ArrayImpl, orig_property_name, None)
     patched_method = {
         'device': device_getter,
         'shape': shape_getter,
         'dtype': dtype_getter,
     }[orig_property_name]
     
-    setattr(jaxlib._jax.ArrayImpl, orig_property_name, property(patched_method))
+    setattr(jaxlib._jax.ArrayImpl if jax.__version__ >= '0.6.0' else jaxlib.xla_extension.ArrayImpl, orig_property_name, property(patched_method))
     setattr(nnx.Variable, orig_property_name, property(patched_method))
     setattr(nnx.Variable, '__getattr__', custom_getattr)
 
