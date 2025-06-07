@@ -1,6 +1,3 @@
-# global
-
-# local
 from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
