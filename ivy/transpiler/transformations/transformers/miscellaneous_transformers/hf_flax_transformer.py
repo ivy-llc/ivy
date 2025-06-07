@@ -1,18 +1,14 @@
-# global
-from ast import FunctionDef
 import gast
-from typing import Any
 
-# local
-from ...configurations.base_transformer_config import (
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from ...transformer import Transformer
-from ..base_transformer import (
+from ivy.transpiler.transformations.transformer import Transformer
+from ivy.transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from ....utils.api_utils import is_submodule_of
-from ....utils.ast_utils import ast_to_source_code
+from ivy.transpiler.utils.api_utils import is_submodule_of
+from ivy.transpiler.utils.ast_utils import ast_to_source_code
 
 
 class HFPretrainedFlaxTransformer(BaseTransformer):
