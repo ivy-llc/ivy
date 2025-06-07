@@ -1,19 +1,17 @@
-# global
 import builtins
 import gast
 
-# local
-from ...configurations.base_transformer_config import (
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from ...transformer import Transformer
-from ....utils.conversion_utils import (
+from ivy.transpiler.transformations.transformer import Transformer
+from ivy.transpiler.utils.conversion_utils import (
     BUILTIN_LIKELY_MODULE_NAMES,
 )
-from ..method_transformer.base_transformer import (
+from ivy.transpiler.transformations.transformers.method_transformer.base_transformer import (
     BaseMethodToFunctionConverter,
 )
-from ....utils.api_utils import (
+from ivy.transpiler.utils.api_utils import (
     is_property,
     is_builtin_method,
     is_method_of_class,
@@ -21,13 +19,13 @@ from ....utils.api_utils import (
     is_frontend_api,
     is_ivy_api,
 )
-from ....utils.ast_utils import (
+from ivy.transpiler.utils.ast_utils import (
     ast_to_source_code,
     is_super_call_node,
     MODULE_TO_ALIAS,
     get_function_vars,
 )
-from ... import transformer_globals as glob
+from ivy.transpiler.transformations.transformer_globals import CONFLICTING_METHODS
 
 
 class FrontendTorchMethodToFunctionConverter(BaseMethodToFunctionConverter):
@@ -90,7 +88,7 @@ class FrontendTorchMethodToFunctionConverter(BaseMethodToFunctionConverter):
                 node = new_call
 
                 # add the transformed method to the CONFLICTING_METHODS set
-                glob.CONFLICTING_METHODS.add(right)
+                CONFLICTING_METHODS.add(right)
 
                 return node
 
@@ -163,7 +161,7 @@ class FrontendTorchMethodToFunctionConverter(BaseMethodToFunctionConverter):
         new_node = gast.Call(func=new_func, args=new_args, keywords=node.keywords)
 
         # add the transformed method to the CONFLICTING_METHODS set
-        glob.CONFLICTING_METHODS.add(right)
+        CONFLICTING_METHODS.add(right)
 
         """
         Motivating example for using the @handle_methods decorator.

@@ -1,23 +1,21 @@
-# global
 import gast
 import inspect
 import textwrap
 
-# local
-from ...configurations.base_transformer_config import (
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from ...transformer import Transformer
-from ....utils import pickling_utils
-from ....utils.ast_utils import (
+from ivy.transpiler.transformations.transformer import Transformer
+from ivy.transpiler.utils import pickling_utils
+from ivy.transpiler.utils.ast_utils import (
     ast_to_source_code,
     is_super_call_node,
 )
-from ....utils.origin_utils import ORIGI_INFO
-from ..base_transformer import (
+from ivy.transpiler.utils.origin_utils import ORIGI_INFO
+from ivy.transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from ..rename_transformer.base_transformer import (
+from ivy.transpiler.transformations.transformers.rename_transformer.base_transformer import (
     BaseRenameTransformer,
 )
 
