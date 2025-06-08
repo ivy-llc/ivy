@@ -35,7 +35,7 @@ from ...exceptions.exceptions import (
     ProhibitedObjectAccessError,
     InvalidObjectException,
 )
-from ...transformations import transformer_globals as glob
+from ivy.transpiler import globals as glob
 
 if TYPE_CHECKING:
     from ...utils.ast_utils import TranslatedContext

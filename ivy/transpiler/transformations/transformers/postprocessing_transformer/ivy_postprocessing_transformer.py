@@ -6,7 +6,7 @@ import os
 import importlib
 
 # local
-from ....transformations import transformer_globals as glob
+from ivy.transpiler import globals as glob
 from ...configurations.base_transformer_config import (
     BaseTransformerConfig,
 )

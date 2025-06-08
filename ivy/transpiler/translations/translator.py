@@ -42,7 +42,7 @@ from ..transformations.transformers.rename_transformer import (
 from ..exceptions.exceptions import (
     format_missing_frontends_msg,
 )
-from ..transformations import transformer_globals as glob
+from ivy.transpiler import globals as glob
 
 
 class Translator:

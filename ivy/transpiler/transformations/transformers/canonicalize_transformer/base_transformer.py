@@ -20,7 +20,7 @@ from ivy.transpiler.utils.ast_utils import (
     get_module,
     get_function_vars,
 )
-from ... import transformer_globals as glob
+from ivy.transpiler import globals as glob
 from ivy.transpiler.utils.conversion_utils import (
     BUILTIN_LIKELY_MODULE_NAMES,
 )

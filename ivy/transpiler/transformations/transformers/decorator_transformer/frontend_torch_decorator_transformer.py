@@ -8,7 +8,7 @@ from ivy.transpiler.transformations.transformer import Transformer
 from ivy.transpiler.transformations.transformers.decorator_transformer.base_transformer import (
     BaseDecoratorRemover,
 )
-import ivy.transpiler.transformations.transformer_globals as glob
+from ivy.transpiler import globals as glob
 
 
 class FrontendTorchDecoratorRemover(BaseDecoratorRemover):

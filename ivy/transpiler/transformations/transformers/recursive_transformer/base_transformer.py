@@ -44,7 +44,7 @@ from ..rename_transformer import (
 from ....utils.naming_utils import NAME_GENERATOR
 from ....utils.origin_utils import ORIGI_INFO
 from ....utils.type_utils import Types
-from ... import transformer_globals as glob
+from ivy.transpiler import globals as glob
 
 
 def has_same_code(obj, orig_obj):
