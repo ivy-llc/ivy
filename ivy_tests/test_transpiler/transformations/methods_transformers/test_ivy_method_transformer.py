@@ -684,7 +684,7 @@ def test_method_call_with_conflicting_cls_method_name(target):
         def mean(self):
             pass
 
-    import ivy.transpiler.transformations.transformer_globals as glob
+    from ivy.transpiler import globals as glob
 
     glob.CONFLICTING_METHODS = set()
     transformed = transform_function(DummyCls, target)
@@ -738,7 +738,7 @@ def test_method_call_with_conflicting_property_name(target):
             shp = self.shape  # shape refers to DummyCls.shape
             shp = self.data.shape  # shape refers to ivy.Array.shape
 
-    import ivy.transpiler.transformations.transformer_globals as glob
+    from ivy.transpiler import globals as glob
 
     glob.CONFLICTING_METHODS = set()
 
