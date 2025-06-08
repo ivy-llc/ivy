@@ -1,48 +1,46 @@
 """Exposes interface for the translators."""
 
-# global
-import ivy
+import collections
+import importlib
 import logging
+import os
 from types import FunctionType, MethodType
 from typing import List, Optional, Union
-import os
-import importlib
-import collections
 
-# local
-from ..utils.cache_utils import (
-    Cacher,
-    AtomicCacheUnit,
-    PRELOAD_CACHE,
-    cache_sort_key,
+import ivy
+from ivy.transpiler.exceptions.exceptions import (
+    format_missing_frontends_msg,
 )
-from ..transformations.transformer import Transformer
-from ..utils.logging_utils import Logger
-from ..utils.naming_utils import NAME_GENERATOR
-from ..utils import api_utils
-from ..utils.api_utils import get_function_from_modules
-from ..translations.data.object_like import (
+from ivy.transpiler.transformations import transformer_globals as glob
+from ivy.transpiler.transformations.transformer import Transformer
+from ivy.transpiler.transformations.transformers.rename_transformer import (
+    BaseRenameTransformer,
+)
+from ivy.transpiler.translations.configurations.base_translator_config import (
+    BaseTranslatorConfig,
+)
+from ivy.transpiler.translations.data.object_like import (
     BaseObjectLike,
     TypeObjectLike,
     FuncObjectLike,
 )
-from ..translations.configurations.base_translator_config import (
-    BaseTranslatorConfig,
+from ivy.transpiler.utils import api_utils
+from ivy.transpiler.utils.api_utils import get_function_from_modules
+from ivy.transpiler.utils.cache_utils import (
+    AtomicCacheUnit,
+    cache_sort_key,
+    Cacher,
+    PRELOAD_CACHE,
 )
-from ..utils.source_utils import (
+from ivy.transpiler.utils.logging_utils import Logger
+from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
+from ivy.transpiler.utils.source_utils import (
     create_output_dir,
     format_all_files_in_directory,
     maybe_add_profiling_imports,
     maybe_add_profiling_decorators,
     safe_get_object_from_translated_directory,
 )
-from ..transformations.transformers.rename_transformer import (
-    BaseRenameTransformer,
-)
-from ..exceptions.exceptions import (
-    format_missing_frontends_msg,
-)
-from ..transformations import transformer_globals as glob
 
 
 class Translator:
