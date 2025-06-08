@@ -1,12 +1,9 @@
-# global
 from typing import Dict
 
-# local
-from ..configurations.base_transformer_config import (
+from ivy.transpiler.configs.transformer import ivy_recursive_transformer_config_dev as ivy_recursive_config
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-
-from ...configs.transformer import ivy_recursive_transformer_config_dev as ivy_recursive_config
 
 
 class IvyRecurserConfig(BaseTransformerConfig):

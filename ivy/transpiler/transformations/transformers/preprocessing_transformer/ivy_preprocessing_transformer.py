@@ -1,17 +1,15 @@
-# global
 import gast
 
-# local
-from ...configurations.base_transformer_config import (
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from ...transformer import Transformer
-from ....utils.ast_utils import (
+from ivy.transpiler.transformations.transformer import Transformer
+from ivy.transpiler.utils.ast_utils import (
     ast_to_source_code,
     is_unpacking_assignment,
     replace_placeholders,
 )
-from .base_transformer import (
+from ivy.transpiler.transformations.transformers.preprocessing_transformer.base_transformer import (
     BaseCodePreProcessor,
 )
 

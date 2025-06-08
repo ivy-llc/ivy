@@ -1,14 +1,12 @@
-# global
 from typing import Any, Dict, List
 
-# local
-from ...transformations.transformers.base_transformer import (
+from ivy.transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from ...transformations.configurations.base_transformer_config import (
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from ...utils.import_utils import load_module_from_path
+
 
 class BaseTranslatorConfig:
     _transformers: Dict[str, BaseTransformer] = {}

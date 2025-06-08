@@ -1,13 +1,15 @@
-# global
+import gast
 import importlib
+from types import FunctionType, ModuleType
 
-# local
-from ...transformers.base_transformer import (
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
+    BaseTransformerConfig,
+)
+from ivy.transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from ...transformer import Transformer
-import gast
-from types import FunctionType, ModuleType
+from ivy.transpiler.transformations.transformer import Transformer
+from ivy.transpiler.transformations.transformer_globals import CLASSES_TO_IGNORE
 from ivy.transpiler.utils.api_utils import (
     get_function_from_modules,
     is_compiled_module,
@@ -20,12 +22,8 @@ from ivy.transpiler.utils.ast_utils import (
     get_module,
     get_function_vars,
 )
-from ... import transformer_globals as glob
 from ivy.transpiler.utils.conversion_utils import (
     BUILTIN_LIKELY_MODULE_NAMES,
-)
-from ...configurations.base_transformer_config import (
-    BaseTransformerConfig,
 )
 
 
@@ -136,7 +134,7 @@ class BaseNameCanonicalizer(BaseTransformer):
                         for prefix in BUILTIN_LIKELY_MODULE_NAMES
                     )
                     or is_compiled_module(import_obj.module)
-                    or func_str in glob.CLASSES_TO_IGNORE
+                    or func_str in CLASSES_TO_IGNORE
                 ):
                     # case 1. following objects aren't canonicalized, they are just captured.
                     # i) builtin imports

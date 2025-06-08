@@ -1,5 +1,6 @@
 import gast
-from .base_transformer import (
+
+from ivy.transpiler.transformations.transformers.native_layers_transformer.base_transformer import (
     PytorchToFrameworkLayer,
 )
 

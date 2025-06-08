@@ -1,6 +1,5 @@
 """Main file to hold DTOs for object likes."""
 
-# global
 from __future__ import annotations
 import ivy
 import dill
@@ -8,8 +7,12 @@ import inspect
 from types import FunctionType, MethodType, ModuleType
 from typing import Dict, Optional, Union, TYPE_CHECKING
 
-# local
-from ...utils.api_utils import (
+from ivy.transpiler.exceptions.exceptions import (
+    ProhibitedObjectAccessError,
+    InvalidObjectException,
+)
+from ivy.transpiler.transformations import transformer_globals as glob
+from ivy.transpiler.utils.api_utils import (
     TRANSLATED_OBJ_SUFFIX,
     is_mixed_function,
     maybe_get_methods,
@@ -25,20 +28,15 @@ from ...utils.api_utils import (
     is_submodule_of,
     from_conv_block,
 )
-from ...utils.inspect_utils import (
+from ivy.transpiler.utils.inspect_utils import (
     get_closure_vars,
     object_to_source_code,
 )
-from ...utils import pickling_utils
-from ...utils.type_utils import Types
-from ...exceptions.exceptions import (
-    ProhibitedObjectAccessError,
-    InvalidObjectException,
-)
-from ...transformations import transformer_globals as glob
+from ivy.transpiler.utils import pickling_utils
+from ivy.transpiler.utils.type_utils import Types
 
 if TYPE_CHECKING:
-    from ...utils.ast_utils import TranslatedContext
+    from ivy.transpiler.utils.ast_utils import TranslatedContext
 
 
 class BaseObjectLike:

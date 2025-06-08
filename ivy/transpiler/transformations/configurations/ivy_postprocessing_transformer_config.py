@@ -1,12 +1,9 @@
-# global
 from typing import Dict
 
-# local
-from ..configurations.base_transformer_config import (
+from ivy.transpiler.configs.transformer import ivy_postprocessing_transformer_config_dev as ivy_postprocessing_config
+from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-
-from ...configs.transformer import ivy_postprocessing_transformer_config_dev as ivy_postprocessing_config
 
 
 class IvyCodePostProcessorConfig(BaseTransformerConfig):
