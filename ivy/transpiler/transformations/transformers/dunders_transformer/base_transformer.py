@@ -18,7 +18,7 @@ from ....utils.api_utils import (
     is_backend_api,
 )
 
-from ... import transformer_globals as glob
+from ivy.transpiler import globals as glob
 from ....utils.type_utils import Types
 from ....utils.naming_utils import NAME_GENERATOR
 

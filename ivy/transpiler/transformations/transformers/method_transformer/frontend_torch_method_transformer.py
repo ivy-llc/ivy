@@ -27,7 +27,7 @@ from ....utils.ast_utils import (
     MODULE_TO_ALIAS,
     get_function_vars,
 )
-from ... import transformer_globals as glob
+from ivy.transpiler import globals as glob
 
 
 class FrontendTorchMethodToFunctionConverter(BaseMethodToFunctionConverter):

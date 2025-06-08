@@ -7,7 +7,7 @@ from typing import Union
 from types import FunctionType, MethodType
 
 # local
-from ..transformations import transformer_globals as glob
+from ivy.transpiler import globals as glob
 from ..exceptions.exceptions import (
     InvalidSourceException,
     InvalidObjectException,

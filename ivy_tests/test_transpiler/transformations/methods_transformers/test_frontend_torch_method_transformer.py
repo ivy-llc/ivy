@@ -411,7 +411,7 @@ def test_numel_method_call():
             shp = x.shape.numel()
             shp = x.data.shape.numel()
 
-    import ivy.transpiler.transformations.transformer_globals as glob
+    from ivy.transpiler import globals as glob
 
     glob.CONFLICTING_METHODS = set()
 
@@ -456,7 +456,7 @@ def test_method_call_with_conflicting_cls_method_name():
         def clone(self):
             pass
 
-    import ivy.transpiler.transformations.transformer_globals as glob
+    from ivy.transpiler import globals as glob
 
     glob.CONFLICTING_METHODS = set()
 
@@ -513,7 +513,7 @@ def test_method_call_with_conflicting_property_name():
     assert "torch.Tensor.data(self.data)" in transformed
     assert "torch.Tensor.shape(self.data)" in transformed
 
-    import ivy.transpiler.transformations.transformer_globals as glob
+    from ivy.transpiler import globals as glob
 
     assert "T" in glob.CONFLICTING_METHODS
     assert "data" in glob.CONFLICTING_METHODS

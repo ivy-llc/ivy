@@ -25,7 +25,7 @@ from ...transformer import Transformer
 from ...configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from ... import transformer_globals as glob
+from ivy.transpiler import globals as glob
 
 
 def func_from_call_node(node):

@@ -4,7 +4,7 @@ import gast
 import inspect
 
 # local
-from ..transformations import transformer_globals as glob
+from ivy.transpiler import globals as glob
 
 # NOTE: Please use `getattr(ast_node, ORIGI_INFO)` instead of . operation to get the original information of ast node.
 ORIGI_INFO = "Original information of source code for ast node."
