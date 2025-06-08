@@ -7,10 +7,6 @@ from typing import List, Optional, Set, TYPE_CHECKING, Union
 from ivy.transpiler.translations.configurations.base_translator_config import (
     BaseTranslatorConfig,
 )
-from ivy.transpiler.utils import logging_utils
-from ivy.transpiler.utils.cache_utils import Cacher
-from ivy.transpiler.utils.origin_utils import attach_origin_info
-from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
 from ivy.transpiler.transformations.transformers.base_transformer import (
     BaseTransformer,
 )
@@ -20,6 +16,10 @@ from ivy.transpiler.translations.data.object_like import (
 from ivy.transpiler.transformations.transformers.rename_transformer import (
     BaseRenameTransformer,
 )
+from ivy.transpiler.utils import logging_utils
+from ivy.transpiler.utils.cache_utils import Cacher
+from ivy.transpiler.utils.origin_utils import attach_origin_info
+from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
 
 if TYPE_CHECKING:
     from ivy.transpiler.transformations.transformers.globals_transformer.base_transformer import (

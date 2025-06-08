@@ -1,2 +1,2 @@
-from . import base_transformer
-from .base_transformer import BaseRenameTransformer
+from ivy.transpiler.transformations.transformers.rename_transformer import base_transformer
+from ivy.transpiler.transformations.transformers.rename_transformer.base_transformer import BaseRenameTransformer
