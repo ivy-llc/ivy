@@ -21,6 +21,7 @@ import ivy  # type: ignore
 
 # local
 from .configurations_container import ConfigurationsContainer
+from .translations.helpers import get_object_from_translated_directory
 from .translators_container import TranslatorsContainer
 from .utils.api_utils import copy_module
 from .utils.cache_utils import (
@@ -34,7 +35,6 @@ from .utils.inspect_utils import (
     _validate_object,
 )
 from .utils.source_utils import (
-    get_object_from_translated_directory,
     get_new_output_dir_name,
     sanitize_dir_name,
 )
