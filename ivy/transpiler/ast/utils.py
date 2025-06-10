@@ -1,0 +1,349 @@
+import ast
+import astor
+import gast
+import inspect
+import jax
+import types
+import os
+import sys
+import re
+import textwrap
+from typing import Union, List, Dict, Set, Tuple, Optional, TYPE_CHECKING
+from collections.abc import Iterable
+import importlib
+from types import ModuleType
+from enum import Enum, auto
+from packaging.version import parse
+
+from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
+
+from .visitors import ObjectOrderVisitor
+
+
+def ast_to_source_code(ast_node):
+    """
+    Transforms ast node into source code.
+    """
+    if isinstance(ast_node, str):
+        return ast_node
+
+    if not isinstance(ast_node, (gast.AST, ast.AST)):
+        raise TypeError(
+            "Type of ast_root should be gast.AST or ast.AST, but received %s."
+            % type(ast_node)
+        )
+    if isinstance(ast_node, gast.AST):
+        ast_node = gast.gast_to_ast(ast_node)
+
+    # Do not wrap lines even if they are too long
+    def pretty_source(source):
+        return "".join(source)
+
+    source_code = astor.to_source(ast_node, pretty_source=pretty_source)
+    return source_code
+
+
+def check_syntax(source_code: str) -> bool:
+    """
+    Check if the provided Python source code is syntactically correct.
+
+    Args:
+        source_code (str): The source code to check.
+
+    Returns:
+        bool: True if the code is syntactically correct, False otherwise.
+    """
+    try:
+        # Attempt to compile the source code to check for syntax errors
+        compile(source_code, "<string>", "exec")
+        return True
+    except SyntaxError as e:
+        raise SyntaxError(f"Syntax Error: {e}")
+
+
+def parse_source_code(module):
+    try:
+        source_code = inspect.getsource(module)
+        return gast.parse(source_code)
+    except (TypeError, OSError):
+        return None
+
+
+def replace_placeholders(
+    input_node: gast.AST, variable_nodes: List[gast.AST], placeholder="_"
+) -> gast.AST:
+    """
+    Use this function to replace a recurring `placeholder`
+    in an `input_node` stringified representation with all the
+    stringified representations from the list of `variable_nodes` provided.
+    """
+    input_string = ast_to_source_code(input_node).strip()
+    variable_names = [ast_to_source_code(node).strip() for node in variable_nodes]
+
+    var_index = 0
+
+    # Convert the string to a list for easy modification
+    string_list = list(input_string)
+
+    for i, char in enumerate(input_string):
+        if char == placeholder:
+            if var_index < len(variable_names):
+                # Replace '_' with the next variable name
+                string_list[i] = variable_names[var_index]
+                var_index += 1
+            else:
+                # If the list of variable names is exhausted, break the loop
+                break
+
+    # Join the list back into a string
+    result_string = "".join(string_list).replace("_", "'_'")
+    return gast.parse(result_string).body[0].value
+
+
+def set_parents(node, parent=None):
+    """Assign parents for each node in a gast tree."""
+    node.parent = parent
+    for child in gast.iter_child_nodes(node):
+        set_parents(child, node)
+
+def extract_target_object_name(name):
+    """
+    Extracts the target object name by removing specific prefixes and suffixes from the input name.
+
+    Args:
+        name (str): The input name from which to extract the target object name.
+
+    Returns:
+        str: The cleaned name with prefixes and suffixes removed.
+
+    This function:
+        - Removes the prefix if it matches the `new_prefix` or `old_prefix` from `NAME_GENERATOR`.
+        - Removes specific suffixes like "_bknd", "_frnt", and numeric suffixes (e.g., "base_count_1", "base_count_2").
+    """
+
+    def remove_prefix(s):
+        if s.startswith(NAME_GENERATOR.new_prefix):
+            return s[len(NAME_GENERATOR.new_prefix) :]
+        elif s.startswith(NAME_GENERATOR.old_prefix):
+            return s[len(NAME_GENERATOR.old_prefix) :]
+        else:
+            return s
+
+    def remove_suffix(s):
+        # Remove numeric suffix(eg: _base_count_1, _base_count_2 etc.) if present
+        s = re.sub(r"(_base_count_\d)+$", "", s)
+        # Remove frontend/backend suffix
+        pattern = r"_bknd_|_bknd|_frnt_|_frnt"
+        s = re.sub(pattern, "", s)
+        return s
+
+    return remove_suffix(remove_prefix(name))
+
+
+def get_object_order(module_ast, return_as_dict=True):
+    """
+    Extracts and returns the order of class, function, and global variable definitions
+    from the given AST of a module.
+
+    Args:
+        module_ast (gast.AST): The root of the AST representing the module.
+        return_as_dict (bool): If True, returns a dictionary where the keys are tuples
+                               describing the type ("class", "function", or "global") and
+                               the object name, and the values are the corresponding AST nodes.
+                               If False, returns a list of the object keys (type, name).
+
+    Returns:
+        Union[Dict[Tuple[str, str], gast.AST], List[Tuple[str, str]]]:
+            Either a dictionary with object type and name as keys and AST nodes as values,
+            or a list of the object type-name tuples.
+
+    Example:
+        >>> import gast
+        >>> source_code = '''
+        ... class MyClass:
+        ...     def my_method(self):
+        ...         pass
+        ...
+        ... def my_function():
+        ...     pass
+        ... '''
+        >>> module_ast = gast.parse(source_code)
+        >>> object_order = get_object_order(module_ast, return_as_dict=True)
+        >>> print(object_order.keys())
+        dict_keys([('class', 'MyClass'), ('function', 'my_function')])
+    """
+    visitor = ObjectOrderVisitor()
+    visitor.visit(module_ast)
+    if not return_as_dict:
+        return list(visitor.order.keys())
+    return visitor.order
+
+
+def get_module(name, package=None):
+    try:
+        if package:
+            name = package + "." + name
+        return importlib.import_module(name)
+    except ImportError:
+        return None
+
+
+def keyword_in_keyword_args(node, keyword: str):
+    return any(kw.arg == keyword for kw in node.keywords)
+
+
+def is_super_call_node(node):
+    """
+    Check if a node represents a call to super.
+
+    """
+    _node = node if not isinstance(node, ast.AST) else gast.ast_to_gast(node)
+    return (
+        isinstance(_node, gast.Attribute)
+        and isinstance(_node.value, gast.Call)
+        and isinstance(_node.value.func, gast.Name)
+        and _node.value.func.id == "super"
+    )
+
+
+def get_attribute_full_name(node):
+    assert isinstance(
+        node, gast.Attribute
+    ), "Input non-Attribute node to get attribute full name"
+    return astor.to_source(gast.gast_to_ast(node)).strip()
+
+
+def property_to_func(orig_obj, node):
+    """
+    Retrieves the function (getter, setter, or deleter) associated with a Python property
+    based on the context of use.
+    """
+    # Determine the function associated with the property based on the context
+    if isinstance(node.ctx, gast.Load):
+        property_func = orig_obj.fget
+    elif isinstance(node.ctx, gast.Store):
+        property_func = orig_obj.fset
+    else:
+        property_func = orig_obj.fdel
+
+    return property_func
+
+
+def is_builtin_type_call_node(node):
+    assert isinstance(node, gast.Call), "Input non-Call node for is_builtin_api"
+    func_str = astor.to_source(gast.gast_to_ast(node.func))
+    try:
+        func = func_str.strip().split(".")[-1]
+        return any([func in dir(cls) for cls in (list, dict, set, str)])
+    except Exception:
+        return False
+
+
+def is_unpacking_assignment(node):
+    if not isinstance(node, gast.Assign):
+        return False
+
+    if len(node.targets) != 1 or not isinstance(node.targets[0], gast.Tuple):
+        return False
+
+    # Check if any element in the tuple is a Name (variable)
+    if any(isinstance(elt, gast.Name) for elt in node.targets[0].elts):
+        # Check if the value being assigned is a Name (variable)
+        if isinstance(node.value, gast.Name):
+            return True
+
+        # Check if the value being assigned is an attribute (e.g., object.attribute)
+        elif isinstance(node.value, gast.Attribute):
+            return True
+
+        # Check if the value being assigned is a Subscript (e.g., list[index])
+        elif isinstance(node.value, gast.Subscript):
+            return True
+
+    return False
+
+
+def reorder_objects(source_module, target_module, logger):
+    """
+    Reorders objects in the target module to match the order of objects in the source module.
+
+    Args:
+        source_module (str): Source module's code as a string to derive object order.
+        target_module (str): Target module's code as a string to be reordered.
+        logger (Logger): Logger instance used to log any mismatches between the source and target modules.
+
+    Returns:
+        str: The reordered target module code as a string.
+
+    The function:
+        - Parses the source and target modules into ASTs.
+        - Extracts the order of objects (classes, functions, etc.) from the source module.
+        - Reorders the objects in the target module to match the source module.
+        - Logs any objects in the target module that don't match the source.
+        - Returns the reordered target module as source code.
+    """
+    assert isinstance(source_module, str), "source_module must be a string"
+    assert isinstance(target_module, str), "target_module must be a string"
+
+    source_ast = gast.parse(source_module)
+    target_ast = gast.parse(target_module)
+
+    # Get the order of objects from the source module
+    source_order = get_object_order(source_ast, return_as_dict=False)
+    target_objects = get_object_order(target_ast)
+
+    experimental_node = None
+    for key, value in target_objects.items():
+        if "tf.experimental.numpy.experimental_enable_numpy_behavior" in key:
+            experimental_node = key
+            break
+    # Separate imports from the rest of the code
+    imports = [
+        node
+        for node in target_ast.body
+        if isinstance(node, (gast.Import, gast.ImportFrom))
+    ]
+
+    # Reorder objects based on source_order
+    reordered_body = imports[:]
+    if experimental_node:
+        reordered_body.append(target_objects.pop(experimental_node))
+    for obj_type, obj_name in source_order:
+        key = (obj_type, obj_name)
+        if key in target_objects:
+            reordered_body.append(target_objects.pop(key))
+
+    if target_objects:
+        # If there are any remaining objects in target_objects, add them to the end
+        key_mismatches = list(target_objects.keys())
+        logger.warn(f"Not all objects were reordered: {key_mismatches}")
+        reordered_body.extend(target_objects.values())
+
+    # Create a new AST with reordered body
+    new_target_ast = gast.Module(body=reordered_body, type_ignores=[])
+
+    # Convert the AST back to source code
+    new_target_code = ast_to_source_code(new_target_ast)
+
+    return new_target_code
+
+
+def reorder_module_objects(source_file_path, target_file_path, logger):
+
+    assert isinstance(source_file_path, str) and source_file_path.endswith(
+        ".py"
+    ), "source_file_path must be a string ending with '.py'"
+    assert isinstance(target_file_path, str) and target_file_path.endswith(
+        ".py"
+    ), "target_file_path must be a string ending with '.py'"
+
+    with open(source_file_path, "r", encoding="utf-8", newline="\n") as source_file:
+        source_code = source_file.read()
+
+    with open(target_file_path, "r", encoding="utf-8", newline="\n") as target_file:
+        target_code = target_file.read()
+
+    reordered_code = reorder_objects(source_code, target_code, logger)
+
+    with open(target_file_path, "w", encoding="utf-8", newline="\n") as target_file:
+        target_file.write(reordered_code)
