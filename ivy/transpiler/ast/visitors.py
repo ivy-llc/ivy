@@ -1,36 +1,13 @@
-import ast
-import astor
 import gast
 import inspect
-import jax
-import types
-import os
-import sys
-import re
-import textwrap
-from typing import Union, List, Dict, Set, Tuple, Optional, TYPE_CHECKING
-from collections.abc import Iterable
-import importlib
-from types import ModuleType
-from enum import Enum, auto
-from packaging.version import parse
 
+from .analysis import get_global_assignment
 from .globals import TranslatedContext
+from .nodes import FromImportObj, ImportObj, InternalObj
+from .utils import ast_to_source_code, extract_target_object_name, get_module
 
-from ..translations.data.object_like import BaseObjectLike
-from ivy.transpiler.utils.api_utils import (
-    get_native_module_str_from_backend,
-    SUPPORTED_BACKENDS_PREFIX,
-    TRANSLATED_OBJ_PREFIX,
-)
-from ivy.transpiler.utils.cache_utils import (
-    GlobalStatementCache,
-    ImportStatementCache,
-    ObjectLikeBytesToTranslatedObjectStringCache,
-    EmittedSourceCache,
-)
+from ivy.transpiler.utils.api_utils import TRANSLATED_OBJ_PREFIX
 from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
-from ivy.transpiler.utils.type_utils import Types
 
 
 class TranslatedFunctionVisitor(gast.NodeVisitor):

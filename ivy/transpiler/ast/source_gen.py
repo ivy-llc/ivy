@@ -1,18 +1,7 @@
-import ast
-import astor
 import gast
-import inspect
-import jax
-import types
 import os
-import sys
-import re
 import textwrap
 from typing import Union, List, Dict, Set, Tuple, Optional, TYPE_CHECKING
-from collections.abc import Iterable
-import importlib
-from types import ModuleType
-from enum import Enum, auto
 from packaging.version import parse
 
 from .globals import (
@@ -25,7 +14,8 @@ from .globals import (
     IVY_STANDARD_GLOBALS_TARGET_TO_MODULE,
 )
 from .analysis import get_translated_nodes
-from .utils import check_syntax
+from .utils import ast_to_source_code, check_syntax
+from .nodes import FromImportObj, ImportObj, InternalObj
 
 from ..translations.data.object_like import BaseObjectLike
 from ivy.transpiler.utils.api_utils import (
