@@ -27,6 +27,7 @@ jobs:
         run: |
           cd ivy
           python3 -m pip install -r requirements/requirements.txt
+          python3 -m pip install -r requirements/optional.txt
           scripts/shell/run_transpiler_tests.sh transformations
 
   translations:
@@ -47,6 +48,7 @@ jobs:
         run: |
           cd ivy
           python3 -m pip install -r requirements/requirements.txt
+          python3 -m pip install -r requirements/optional.txt
           scripts/shell/run_transpiler_tests.sh translations
 
   module:
@@ -67,6 +69,7 @@ jobs:
         run: |
           cd ivy
           python3 -m pip install -r requirements/requirements.txt
+          python3 -m pip install -r requirements/optional.txt
           scripts/shell/run_transpiler_tests.sh module
 
   sourcegen:
@@ -87,6 +90,7 @@ jobs:
         run: |
           cd ivy
           python3 -m pip install -r requirements/requirements.txt
+          python3 -m pip install -r requirements/optional.txt
           scripts/shell/run_transpiler_tests.sh sourcegen
 
   kornia:
@@ -107,4 +111,5 @@ jobs:
         run: |
           cd ivy
           python3 -m pip install -r requirements/requirements.txt
+          python3 -m pip install -r requirements/optional.txt
           scripts/shell/run_transpiler_tests.sh kornia
