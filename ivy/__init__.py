@@ -598,7 +598,6 @@ warning_level_stack = []
 nan_policy_stack = []
 dynamic_backend_stack = []
 warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
-cython_wrappers_stack = []
 
 # local
 import threading
@@ -748,7 +747,6 @@ invalid_complex_dtypes = ()
 
 locks = {"backend_setter": threading.Lock()}
 
-from .wrappers import *
 from .func_wrapper import *
 from .data_classes.array import Array, add_ivy_array_instance_methods
 from .data_classes.array.conversions import *
@@ -783,7 +781,6 @@ from ivy.utils.backend import (
     choose_random_backend,
     unset_backend,
 )
-from . import wrappers
 from . import func_wrapper
 from .utils import assertions, exceptions
 from .utils.backend import handler
@@ -970,7 +967,6 @@ globals_vars = GlobalsDict(
         "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
         "nan_policy_stack": nan_policy_stack,
         "dynamic_backend_stack": dynamic_backend_stack,
-        "cython_wrappers_stack": cython_wrappers_stack,
     }
 )
 
@@ -1179,12 +1175,14 @@ def unset_dynamic_backend():
 
 # Cython wrappers
 
-ivy.cython_wrappers_mode = cython_wrappers_stack[-1] if cython_wrappers_stack else False
+ivy.cython_wrappers_mode = False
 
 
 @handle_exceptions
 def set_cython_wrappers_mode(flag=True) -> None:
-    """Set the mode of whether to use cython wrappers for functions.
+    """
+    DEPRECATED
+    Set the mode of whether to use cython wrappers for functions.
 
     Parameter
     ---------
@@ -1201,11 +1199,7 @@ def set_cython_wrappers_mode(flag=True) -> None:
     >>> ivy.cython_wrappers_mode
     True
     """
-    global cython_wrappers_stack
-    if flag not in [True, False]:
-        raise ValueError("cython_wrappers_mode must be a boolean value (True or False)")
-    cython_wrappers_stack.append(flag)
-    ivy.__setattr__("cython_wrappers_mode", flag, True)
+    warnings.warn("Ivy Cython wrappers are no longer supported", DeprecationWarning)
 
 
 # Context Managers

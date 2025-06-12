@@ -6,4 +6,3 @@ include ivy/compiler/*.pyd
 include ivy/compiler/*.py
 include binaries.json
 include available_configs.json
-include wrappers.json
