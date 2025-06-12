@@ -1,64 +1,15 @@
-"""
-Function wrapping module for Ivy.
-
-This module provides a comprehensive function wrapping system for Ivy that handles 
-type conversions, device management, backend compatibility, and various array 
-operations. It contains decorators and helper functions that ensure Ivy functions 
-work consistently across different backends (PyTorch, TensorFlow, JAX, NumPy, etc.).
-
-The module includes the following main components:
-
-1. **Type Casting and Promotion**: Functions to handle dtype casting according to 
-   different casting modes (upcast, downcast, crosscast) and promotion rules.
-
-2. **Array Conversion Wrappers**: Decorators that convert between ivy.Array and 
-   ivy.NativeArray instances, ensuring proper data flow between Ivy's unified 
-   interface and backend-specific array types.
-
-3. **Device Handling**: Functions to manage array placement on different devices 
-   (CPU, GPU, TPU) and handle device consistency across operations.
-
-4. **Backend Validation**: Utilities to ensure array operations are performed 
-   with the correct backend and handle backend-specific quirks.
-
-5. **Complex Number Support**: Specialized handling for complex-valued arrays 
-   across different backends with varying complex number support.
-
-6. **View and Memory Management**: Functions to handle array views, memory 
-   sharing, and manipulation stack tracking for functional backends.
-
-7. **Context Managers**: Classes for temporarily restricting or enabling 
-   specific dtypes and devices during function execution.
-
-The wrapper system follows a specific order defined in FN_DECORATORS to ensure 
-proper layering of functionality. This allows Ivy to provide a unified interface 
-while maintaining backend-specific optimizations and handling edge cases.
-
-Key Features:
-- Automatic type promotion and casting
-- Device consistency enforcement
-- Memory-efficient view handling
-- NaN and exception handling
-- Nestable container support
-- Frontend/backend array conversion
-- Version-specific attribute management
-
-This module is central to Ivy's ability to provide framework-agnostic array 
-programming while maintaining compatibility with backend-specific features.
-"""
-
 import contextlib
-import copy as python_copy
+import ivy
 import functools
-import inspect
 import logging
-import numpy as np
+import weakref
+import warnings
+import copy as python_copy
 from types import FunctionType
 from typing import Callable, Literal
-import warnings
-import weakref
+import inspect
+import numpy as np
 
-import ivy
 from ivy.utils.exceptions import IvyValueError
 
 
@@ -103,34 +54,6 @@ casting_modes_dict = {
 
 
 def caster(dtype, intersect):
-    """
-    Determine the appropriate dtype to cast to based on casting modes.
-
-    This function checks if a given dtype needs to be cast to a different 
-    supported dtype based on the current casting mode settings and a set 
-    of unsupported dtypes (intersect).
-
-    Parameters
-    ----------
-    dtype : ivy.Dtype or array-like
-        The input dtype to potentially cast. Can be a dtype object or an 
-        array with a dtype attribute.
-    intersect : set
-        Set of unsupported dtypes that should be avoided.
-
-    Returns
-    -------
-    str or None
-        The target dtype to cast to, or None if no casting is needed.
-
-    Notes
-    -----
-    The function respects the following casting mode hierarchy:
-    - cast_dtypes(): Enables all casting types
-    - crosscast_dtypes: Enables cross-type casting
-    - upcast_dtypes: Enables upcasting to higher precision
-    - downcast_dtypes: Enables downcasting to lower precision
-    """
     if hasattr(dtype, "dtype"):
         dtype = ivy.as_ivy_dtype(dtype.dtype)
     else:
@@ -169,33 +92,6 @@ def caster(dtype, intersect):
 
 
 def cast_helper(arg, dtype, intersect, is_upcast=True):
-    """
-    Helper function to find the next available dtype in a casting hierarchy.
-
-    This function traverses the dtype hierarchy (uint, int, float, complex) 
-    to find the next supported dtype in the specified direction (up or down).
-
-    Parameters
-    ----------
-    arg : str
-        The dtype category ("uint", "int", "float", or "complex").
-    dtype : ivy.Dtype
-        The current dtype to cast from.
-    intersect : set
-        Set of unsupported dtypes to avoid.
-    is_upcast : bool, optional
-        Whether to cast up (True) or down (False) the hierarchy. Default is True.
-
-    Returns
-    -------
-    str
-        The next available dtype in the hierarchy, or empty string if none found.
-
-    Notes
-    -----
-    Upcasting moves to higher precision (e.g., int8 -> int16 -> int32).
-    Downcasting moves to lower precision (e.g., float64 -> float32 -> float16).
-    """
     step = 1 if is_upcast else -1
     index = casting_modes_dict[arg]().index(dtype) + step
     result = ""
@@ -209,34 +105,6 @@ def cast_helper(arg, dtype, intersect, is_upcast=True):
 
 
 def upcaster(dtype, intersect):
-    """
-    Cast a dtype to a higher precision type within the same category.
-
-    This function attempts to upcast a dtype to the next higher precision 
-    dtype within the same category (uint, int, float, complex) that is 
-    not in the unsupported set.
-
-    Parameters
-    ----------
-    dtype : ivy.Dtype
-        The dtype to upcast from.
-    intersect : set
-        Set of unsupported dtypes to avoid.
-
-    Returns
-    -------
-    str
-        The higher precision dtype to cast to, or empty string if no suitable 
-        dtype is found.
-
-    Examples
-    --------
-    >>> upcaster("int8", {"int16"})
-    "int32"
-
-    >>> upcaster("float32", {"float64"})
-    ""
-    """
     # upcasting is enabled, we upcast to the highest
     if "uint" in str(dtype):
         return cast_helper("uint", dtype, intersect, is_upcast=True)
@@ -249,31 +117,6 @@ def upcaster(dtype, intersect):
 
 
 def downcaster(dtype, intersect):
-    """
-    Cast a dtype to a lower precision type within the same category.
-
-    This function attempts to downcast a dtype to the next lower precision 
-    dtype within the same category (uint, int, float, complex) that is 
-    not in the unsupported set.
-
-    Parameters
-    ----------
-    dtype : ivy.Dtype
-        The dtype to downcast from.
-    intersect : set
-        Set of unsupported dtypes to avoid.
-
-    Returns
-    -------
-    str
-        The lower precision dtype to cast to, or empty string if no suitable 
-        dtype is found.
-
-    Examples
-    --------
-    >>> downcaster("int32", {"int16"})
-    "int8"
-    """
     # downcasting is enabled, we upcast to the highest
     if "uint" in str(dtype):
         return cast_helper("uint", dtype, intersect, is_upcast=False)
@@ -286,31 +129,6 @@ def downcaster(dtype, intersect):
 
 
 def cross_caster(intersect):
-    """
-    Perform cross-category dtype casting based on supported dtypes.
-
-    This function implements cross-category casting by checking if entire 
-    dtype categories are unsupported and providing alternative default dtypes.
-    For example, if all integer types are unsupported, it may return a 
-    default float dtype.
-
-    Parameters
-    ----------
-    intersect : set
-        Set of unsupported dtypes.
-
-    Returns
-    -------
-    str
-        A default dtype for cross-casting, or empty string if no 
-        cross-casting is applicable.
-
-    Notes
-    -----
-    Cross-casting rules:
-    - If all int dtypes are unsupported -> use default float dtype
-    - If all float/bool dtypes are unsupported -> use default int dtype
-    """
     # check if this is an integer unsupported case
     # intersect is unordered, sorting it makes a list
     # and remaking it a set messes the order
@@ -332,32 +150,6 @@ def cross_caster(intersect):
 
 
 def try_array_function_override(func, overloaded_args, types, args, kwargs):
-    """
-    Attempt to call the __ivy_array_function__ override for the given function.
-
-    This function checks if any of the provided arguments implement the
-    __ivy_array_function__ protocol, and if so, attempts to call the override
-    with the given function, types, arguments, and keyword arguments.
-
-    Parameters
-    ----------
-    func : callable
-        The function to be overridden.
-    overloaded_args : list
-        List of arguments that may implement __ivy_array_function__.
-    types : tuple
-        Tuple of argument types.
-    args : tuple
-        Positional arguments to pass to the override.
-    kwargs : dict
-        Keyword arguments to pass to the override.
-
-    Returns
-    -------
-    tuple
-        (True, result) if an override was found and returned a result other than NotImplemented,
-        (False, None) if no override was found.
-    """
     if not overloaded_args:
         return False, None
 
@@ -382,32 +174,6 @@ def try_array_function_override(func, overloaded_args, types, args, kwargs):
 
 
 def _get_first_array(*args, **kwargs):
-    """
-    Find and return the first array in the provided arguments.
-
-    This function searches through positional and keyword arguments to find 
-    the first array-like object, which can be used for device and dtype 
-    inference purposes.
-
-    Parameters
-    ----------
-    *args
-        Positional arguments to search through.
-    **kwargs
-        Keyword arguments to search through. Can include 'array_fn' to 
-        customize the array detection function.
-
-    Returns
-    -------
-    array or None
-        The first array found in the arguments, or None if no array is found.
-
-    Notes
-    -----
-    The function uses ivy.nested_argwhere to recursively search nested 
-    structures like lists and tuples. It checks for both ivy.Array and 
-    objects with an '_ivy_array' attribute.
-    """
     # ToDo: make this more efficient, with function ivy.nested_nth_index_where
     def array_fn(x):
         return (
@@ -434,40 +200,6 @@ def _get_first_array(*args, **kwargs):
 
 
 def _build_view(original, view, fn, args, kwargs, index=None):
-    """
-    Build a view relationship between original and view arrays.
-
-    This function establishes a view relationship for functional backends
-    (JAX and TensorFlow) by setting up the base reference, manipulation
-    stack, and view references. It handles both regular views and
-    PyTorch-specific non-native view functions.
-
-    Parameters
-    ----------
-    original : ivy.Array
-        The original array that the view is created from.
-    view : ivy.Array
-        The view array to be configured.
-    fn : str
-        The name of the function that created the view.
-    args : tuple
-        The arguments passed to the view-creating function (excluding the first).
-    kwargs : dict
-        The keyword arguments passed to the view-creating function.
-    index : int, optional
-        The index for multi-output functions. Default is None.
-
-    Returns
-    -------
-    ivy.Array
-        The configured view array with proper base references and manipulation
-        stack.
-
-    Notes
-    -----
-    This function handles the complex relationships needed for view tracking
-    in functional backends where true views don't exist natively.
-    """
     if ivy.exists(original._base):
         base = original._base
         view._manipulation_stack = python_copy.copy(original._manipulation_stack)
@@ -496,8 +228,7 @@ _torch_non_native_view_functions = ("flip", "flipud", "rot90", "fliplr")
 
 
 def _check_in_nested_sequence(sequence, value=None, _type=None):
-    """
-    Check `sequence` for either a `value` or a value of type `_type`.
+    """Check `sequence` for either a `value` or a value of type `_type`.
 
     Helper to recursively check if a N-level nested `sequence` contains
     either a `value` or contains a value of type `_type` and return a
@@ -519,33 +250,10 @@ def _check_in_nested_sequence(sequence, value=None, _type=None):
 
 
 def _get_preferred_device(args, kwargs):
-    """
-    Determine the preferred device for array creation.
-
-    When new arrays are created, they should be created on the same device as
-    existing array inputs. If a device is specified as a kwarg, create them there.
-    If not, scan for any other inputs which are already arrays and use the device
-    of the first one found (unless we're in soft device mode).
-
-    Parameters
-    ----------
-    args : tuple
-        Positional arguments that may contain arrays.
-    kwargs : dict
-        Keyword arguments that may contain arrays or a 'device' specification.
-
-    Returns
-    -------
-    device
-        The preferred device for array creation. Returns the specified device
-        from kwargs if available, otherwise the device of the first array found,
-        or the default device.
-
-    Notes
-    -----
-    In soft device mode, always returns the default device regardless of
-    input array devices.
-    """
+    # When new arrays are created, they should be created on the same device as
+    # existing array inputs. If a device is specified as a kwarg, create them there.
+    # If not, scan for any other inputs which are already arrays and use the device
+    # of the first one found (unless we're in soft device mode).
     device = None
     if "device" in kwargs and kwargs["device"] is not None:
         return device
@@ -560,8 +268,7 @@ def _get_preferred_device(args, kwargs):
 
 
 def handle_array_function(fn):
-    """
-    Wrap a function `fn` to be passed to array_function method.
+    """Wrap a function `fn` to be passed to array_function method.
 
     Wrap a function to extract the relevant argument types to be passed
     to array_function method.
@@ -625,27 +332,6 @@ def handle_array_function(fn):
 
 
 def handle_array_like_without_promotion(fn: Callable) -> Callable:
-    """
-    Decorator to convert array-like inputs to ``ivy.Array`` without dtype promotion.
-
-    Many backend functions expect true array objects.  This decorator scans the
-    positional and keyword arguments *before* calling *fn* and converts any
-    plain Python scalars, lists, tuples, or other array-like objects to
-    ``ivy.Array`` **without** invoking Ivy's dtype-promotion semantics.  This
-    is different from the standard ``inputs_to_ivy_arrays`` wrapper which *may*
-    trigger type promotion.  It is therefore useful for low-level wrappers
-    where the original dtype must be preserved exactly as provided by the user.
-
-    Parameters
-    ----------
-    fn : Callable
-        The function to wrap.
-
-    Returns
-    -------
-    Callable
-        The wrapped function with array-like to ``ivy.Array`` conversion.
-    """
     @functools.wraps(fn)
     def _handle_array_like_without_promotion(*args, **kwargs):
         args = list(args)
@@ -693,25 +379,6 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
 
 
 def inputs_to_native_arrays(fn: Callable) -> Callable:
-    """
-    Decorator to convert ``ivy.Array`` inputs to backend native arrays.
-
-    Prior to executing *fn*, this decorator traverses all positional and keyword
-    arguments and converts every ``ivy.Array`` instance to its underlying
-    backend-specific **native** representation (e.g., ``torch.Tensor`` when the
-    backend is PyTorch).  The conversion is **deep** – nested containers and
-    sequences are handled as well – ensuring the wrapped backend function never
-    encounters an ``ivy.Array``.
-
-    Notes
-    -----
-    * The optional ``out`` argument, if present, is removed **before** the
-      conversion and re-inserted afterwards so that an ``ivy.Array`` can still
-      be used for inplace updates.
-    * The decorator only affects the *inputs*.  Use
-      ``outputs_to_ivy_arrays`` if you also need to convert the *outputs* back
-      to ``ivy.Array``.
-    """
     @functools.wraps(fn)
     def _inputs_to_native_arrays(*args, **kwargs):
         """Convert all `ivy.Array` instances in both the positional and keyword
@@ -749,15 +416,6 @@ def inputs_to_native_arrays(fn: Callable) -> Callable:
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
-    """
-    Decorator to convert backend native array inputs to ``ivy.Array``.
-
-    This is the converse of :func:`inputs_to_native_arrays`.  It ensures that a
-    compositional Ivy function always operates on ``ivy.Array`` objects even if
-    the caller supplied native backend tensors.  This is crucial because
-    compositional implementations often rely on ``ivy`` operators which expect
-    Ivy arrays and not backend natives.
-    """
     @functools.wraps(fn)
     def _inputs_to_ivy_arrays(*args, **kwargs):
         """Convert all `ivy.NativeArray` instances in both the positional and
@@ -800,28 +458,6 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 
 
 def inputs_to_native_shapes(fn: Callable) -> Callable:
-    """
-    Decorator to convert ivy.Shape instances to native shapes in function inputs.
-
-    This decorator converts all ivy.Shape instances in the function arguments
-    to their underlying native shape representations when array_mode is enabled.
-
-    Parameters
-    ----------
-    fn : Callable
-        The function to be decorated.
-
-    Returns
-    -------
-    Callable
-        The decorated function that handles shape conversions in inputs.
-
-    Notes
-    -----
-    This conversion is only applied when ivy.array_mode is True. When False,
-    ivy.Shape instances are left unchanged.
-    """
-
     @functools.wraps(fn)
     def _inputs_to_native_shapes(*args, **kwargs):
         args, kwargs = ivy.nested_map(
@@ -835,28 +471,6 @@ def inputs_to_native_shapes(fn: Callable) -> Callable:
 
 
 def outputs_to_ivy_shapes(fn: Callable) -> Callable:
-    """
-    Decorator to convert native shapes to ivy.Shape instances in function outputs.
-
-    This decorator converts native shape representations back to ivy.Shape
-    instances in the function's return values when array_mode is enabled.
-
-    Parameters
-    ----------
-    fn : Callable
-        The function to be decorated.
-
-    Returns
-    -------
-    Callable
-        The decorated function that handles shape conversions in outputs.
-
-    Notes
-    -----
-    This conversion is only applied when ivy.array_mode is True. When False,
-    native shapes are left unchanged.
-    """
-
     @functools.wraps(fn)
     def _outputs_to_ivy_shapes(*args, **kwargs):
         args, kwargs = ivy.nested_map(
@@ -870,8 +484,7 @@ def outputs_to_ivy_shapes(fn: Callable) -> Callable:
 
 
 def to_native_shapes_and_back(fn: Callable) -> Callable:
-    """
-    Make `fn` receive `ivy.NativeShape` and return `ivy.Shape`.
+    """Make `fn` receive `ivy.NativeShape` and return `ivy.Shape`.
 
     Wrap `fn` so that input shapes are all converted to
     `ivy.NativeShape` instances and return shapes are all converted to
@@ -881,13 +494,6 @@ def to_native_shapes_and_back(fn: Callable) -> Callable:
 
 
 def outputs_to_ivy_arrays(fn: Callable) -> Callable:
-    """
-    Decorator to convert backend native arrays **in the return value** to ``ivy.Array``.
-
-    After *fn* returns, this decorator walks the returned structure (which can
-    be arbitrarily nested) and converts every backend native array to
-    ``ivy.Array`` so that downstream Ivy code continues to be framework-agnostic.
-    """
     @functools.wraps(fn)
     def _outputs_to_ivy_arrays(*args, **kwargs):
         """Call the function, and then converts all `ivy.NativeArray` instances
@@ -919,8 +525,7 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
 
 
 def output_to_native_arrays(fn: Callable) -> Callable:
-    """
-    Call the function, and then converts all `ivy.Array` instances in the
+    """Call the function, and then converts all `ivy.Array` instances in the
     function return into `ivy.NativeArray` instances.
 
     Parameters
@@ -946,8 +551,7 @@ def output_to_native_arrays(fn: Callable) -> Callable:
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
-    """
-    Make `fn` receive `ivy.Array` and return `ivy.NativeArray`.
+    """Make `fn` receive `ivy.Array` and return `ivy.NativeArray`.
 
     Wrap `fn` so that input arrays are all converted to `ivy.Array`
     instances and return arrays are all converted to `ivy.NativeArray`
@@ -957,8 +561,7 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
 
 
 def to_native_arrays_and_back(fn: Callable) -> Callable:
-    """
-    Make `fn` receive `ivy.NativeArray` and return `ivy.Array`.
+    """Make `fn` receive `ivy.NativeArray` and return `ivy.Array`.
 
     Wrap `fn` so that input arrays are all converted to
     `ivy.NativeArray` instances and return arrays are all converted to
@@ -968,8 +571,7 @@ def to_native_arrays_and_back(fn: Callable) -> Callable:
 
 
 def frontend_outputs_to_ivy_arrays(fn: Callable) -> Callable:
-    """
-    Wrap `fn` and convert all frontend arrays in its return to ivy arrays.
+    """Wrap `fn` and convert all frontend arrays in its return to ivy arrays.
 
     Used in cases when a frontend function receives a callable (frontend
     function) argument. To be able to use that callable in a composition
@@ -989,8 +591,7 @@ def frontend_outputs_to_ivy_arrays(fn: Callable) -> Callable:
 
 
 def handle_view(fn: Callable) -> Callable:
-    """
-    Wrap `fn` and performs view handling if copy is False.
+    """Wrap `fn` and performs view handling if copy is False.
 
     Used for functional backends (Jax and TensorFlow). Checks if the
     first arg is a view or original array by checking if the ._base
@@ -1021,8 +622,7 @@ def handle_view(fn: Callable) -> Callable:
 
 
 def handle_view_indexing(fn: Callable) -> Callable:
-    """
-    Wrap `fn` and performs view handling specifically for indexing.
+    """Wrap `fn` and performs view handling specifically for indexing.
 
     As with NumPy it returns a copy if advanced indexing is performed.
     Used for functional backends (Jax and TensorFlow). Checks if the
@@ -1065,8 +665,7 @@ def _convert_numpy_arrays_to_backend_specific(*args):
 
 
 def handle_numpy_arrays_in_specific_backend(fn: Callable) -> Callable:
-    """
-    Wrap `fn` and converts all `numpy.ndarray` inputs to `torch.Tensor`
+    """Wrap `fn` and converts all `numpy.ndarray` inputs to `torch.Tensor`
     instances.
 
     Used for functional backends (PyTorch). Converts all `numpy.ndarray`
@@ -1127,8 +726,7 @@ def infer_dtype(fn: Callable) -> Callable:
 def handle_device(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _handle_device(*args, **kwargs):
-        """
-        Move all array inputs of the function to `ivy.default_device()`.
+        """Move all array inputs of the function to `ivy.default_device()`.
 
         Parameters
         ----------
@@ -1178,28 +776,11 @@ def handle_device(fn: Callable) -> Callable:
 
 
 def handle_out_argument(fn: Callable) -> Callable:
-    """
-    Decorator implementing NumPy-style ``out`` semantics for Ivy functions.
-
-    Ivy functions support an optional ``out`` keyword for inplace updates.  This
-    decorator standardises the behaviour across backends:
-
-    1.  If *out* is ``None`` the function is called normally.
-    2.  If the backend supports native ``out`` tensors, delegate the inplace
-        update to the backend implementation.
-    3.  Otherwise, call the function, then manually copy the result into
-        *out* using :func:`ivy.inplace_update`.
-
-    The decorator also handles edge cases such as gradient-tracking variables
-    and tuples/lists of outputs.
-    """
-
     handle_out_in_backend = hasattr(fn, "support_native_out")
 
     @functools.wraps(fn)
     def _handle_out_argument(*args, out=None, **kwargs):
-        """
-        Call `fn` with the `out` argument handled correctly for performing
+        """Call `fn` with the `out` argument handled correctly for performing
         an inplace update.
 
         Parameters
@@ -1257,27 +838,6 @@ def handle_out_argument(fn: Callable) -> Callable:
 
 
 def _update_torch_views(x, visited_view=None):
-    """
-    Update PyTorch views recursively when the base array changes.
-
-    This function propagates changes from a base array to all its views
-    for PyTorch backend, handling both direct view references and torch
-    manipulation operations.
-
-    Parameters
-    ----------
-    x : ivy.Array
-        The array whose views need to be updated.
-    visited_view : ivy.Array, optional
-        A view that has already been visited to avoid infinite recursion.
-        Default is None.
-
-    Notes
-    -----
-    This function is specific to PyTorch backend and handles the complex
-    view update semantics required for maintaining consistency between
-    base arrays and their views.
-    """
     if x._torch_view_refs != []:
         _update_torch_references(x, visited_view)
     if ivy.exists(x._torch_manipulation):
@@ -1293,25 +853,6 @@ def _update_torch_views(x, visited_view=None):
 
 
 def _update_torch_references(x, visited_view=None):
-    """
-    Update PyTorch view references when the base array changes.
-
-    This function updates all view references of an array by recomputing
-    their data based on the current state of their parent tensors.
-
-    Parameters
-    ----------
-    x : ivy.Array
-        The array whose view references need to be updated.
-    visited_view : ivy.Array, optional
-        A view that has already been visited to avoid infinite recursion.
-        Default is None.
-
-    Notes
-    -----
-    This function works in conjunction with _update_torch_views to maintain
-    consistency in the PyTorch view system.
-    """
     for ref in x._torch_view_refs:
         view = ref()
         if ivy.exists(view) and view is not visited_view:
@@ -1332,8 +873,7 @@ def handle_nestable(fn: Callable) -> Callable:
 
     @functools.wraps(fn)
     def _handle_nestable(*args, **kwargs):
-        """
-        Call `fn` with the *nestable* property of the function correctly
+        """Call `fn` with the *nestable* property of the function correctly
         handled. This means mapping the function to the container leaves if any
         containers are passed in the input.
 
@@ -1376,8 +916,7 @@ def handle_nestable(fn: Callable) -> Callable:
 def handle_ragged(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _handle_ragged(*args, **kwargs):
-        """
-        Call `fn` with the *ragged* property of the function correctly
+        """Call `fn` with the *ragged* property of the function correctly
         handled. This means mapping the function to the RaggedArray arrays if
         any RaggedArrays are passed in the input.
 
@@ -1414,31 +953,6 @@ def handle_ragged(fn: Callable) -> Callable:
 
 
 def handle_partial_mixed_function(fn) -> Callable:
-    """
-    Decorator to handle partial mixed function implementations.
-
-    This decorator manages functions that have mixed implementations, where
-    some backends have native implementations while others use compositional
-    fallbacks. It determines whether to use the backend-specific implementation
-    or the compositional version based on the function's condition.
-
-    Parameters
-    ----------
-    fn : Callable
-        The function to be decorated.
-
-    Returns
-    -------
-    Callable
-        The decorated function that routes between native and compositional
-        implementations.
-
-    Notes
-    -----
-    If the function has a 'partial_mixed_handler' attribute, it uses that
-    condition to determine which implementation to use. Otherwise, it
-    defaults to the backend implementation.
-    """
     @functools.wraps(fn)
     def _handle_partial_mixed_function(*args, **kwargs):
         handle_mixed_in_backend = False
@@ -1460,37 +974,9 @@ def handle_partial_mixed_function(fn) -> Callable:
 
 
 def temp_asarray_wrapper(fn: Callable) -> Callable:
-    """
-    Temporary decorator to convert frontend Tensor objects to ivy arrays.
-
-    This decorator converts frontend framework tensors (e.g., torch.Tensor)
-    that have an 'ivy_array' attribute to their underlying ivy.Array
-    representation before passing them to the function.
-
-    Parameters
-    ----------
-    fn : Callable
-        The function to be decorated.
-
-    Returns
-    -------
-    Callable
-        The decorated function that handles frontend tensor conversion.
-
-    Notes
-    -----
-    This is a temporary wrapper and should be used with caution. It specifically
-    handles objects with an 'ivy_array' attribute, extracting the underlying
-    ivy array for processing.
-
-    The wrapper uses nested_map to recursively convert all frontend tensors
-    in the input arguments and keyword arguments.
-    """
-
     @functools.wraps(fn)
     def _temp_asarray_wrapper(*args, **kwargs):
-        """
-        Convert `Tensor` into `ivy.Array` instances.
+        """Convert `Tensor` into `ivy.Array` instances.
 
         Convert all `Tensor` instances in both the positional and keyword arguments
         into `ivy.Array` instances, and then call the function with the updated
@@ -1522,8 +1008,7 @@ def temp_asarray_wrapper(fn: Callable) -> Callable:
 def _wrap_function(
     key: str, to_wrap: Callable, original: Callable, compositional: bool = False
 ) -> Callable:
-    """
-    Apply wrapping to backend implementation `to_wrap` if the original
+    """Apply wrapping to backend implementation `to_wrap` if the original
     implementation `original` is also wrapped, and if `to_wrap` is not already
     wrapped. Attributes `handle_nestable` etc are set during wrapping, hence
     indicate to us whether a certain function has been wrapped or not. Also
@@ -1614,34 +1099,6 @@ def _wrap_function(
 
 
 def casting_modes_ops(fn, ret_dtype_target=None):
-    """
-    Apply casting mode operations to a function.
-
-    This decorator wrapper applies dtype casting based on unsupported dtypes
-    and the current casting mode settings. It handles argument casting and
-    return type casting according to the function's dtype restrictions.
-
-    Parameters
-    ----------
-    fn : Callable
-        The function to apply casting operations to.
-    ret_dtype_target : list, optional
-        List of argument names to use for return dtype promotion.
-        Default is None.
-
-    Returns
-    -------
-    Callable
-        A method that applies casting operations before calling the original
-        function and casts the return value if needed.
-
-    Notes
-    -----
-    The function checks for unsupported dtypes in the function's metadata
-    and applies appropriate casting based on the current casting mode
-    (upcast, downcast, crosscast). It also handles return type promotion
-    when ret_dtype_target is specified.
-    """
     @functools.wraps(fn)
     def method(*args, **kwargs):
         # Get the function signature
@@ -1718,42 +1175,6 @@ def casting_modes_ops(fn, ret_dtype_target=None):
 
 # Gets dtype from a version dictionary
 def _dtype_from_version(dic, version):
-    """
-    Extract dtype information from a version-specific dictionary.
-
-    This function retrieves dtype restrictions or attributes based on the
-    specified version. It supports various version formats including exact
-    matches, ranges, and version bounds.
-
-    Parameters
-    ----------
-    dic : dict
-        Dictionary mapping version strings to dtype information.
-    version : str or dict
-        Version specification. Can be a version string, a dictionary with
-        version information, or a frontend version reference.
-
-    Returns
-    -------
-    any
-        The dtype information corresponding to the specified version.
-
-    Raises
-    ------
-    ValueError
-        If the version dictionary is empty.
-
-    Notes
-    -----
-    Supported version formats:
-    - Exact version: "1.2.3"
-    - Version ranges: "1.2.3 to 1.4.0"
-    - Lower bounds: "1.2.3 and above"
-    - Upper bounds: "1.2.3 and below"
-
-    If no exact match is found, the function returns the last version's
-    information as a fallback.
-    """
     # if version is a string, it's a frontend function
     if isinstance(version, str):
         version = ivy.functional.frontends.__dict__["versions"][version]
@@ -1791,32 +1212,6 @@ def _dtype_from_version(dic, version):
 
 
 def _versioned_attribute_factory(attribute_function, base):
-    """
-    Create a versioned attribute class that inherits from a base type.
-
-    This factory function creates a descriptor class that provides version-aware
-    attribute access. The resulting class inherits from the specified base type
-    to maintain isinstance compatibility.
-
-    Parameters
-    ----------
-    attribute_function : Callable
-        Function that returns the current version's attribute value.
-    base : type
-        Base type to inherit from (e.g., tuple, list).
-
-    Returns
-    -------
-    VersionedAttributes
-        A descriptor class that provides version-aware attribute access.
-
-    Notes
-    -----
-    The created class maintains isinstance compatibility with the base type
-    while providing dynamic attribute resolution based on the current
-    backend version. This is useful for dtype and device restrictions
-    that vary by backend version.
-    """
     class VersionedAttributes(base):
         """Class which add versioned attributes to a class, inheriting from
         `base`.
@@ -1848,8 +1243,7 @@ def _versioned_attribute_factory(attribute_function, base):
 
 
 def _dtype_device_wrapper_creator(attrib, t):
-    """
-    Create a wrapper for a dtype or device attribute.
+    """Create a wrapper for a dtype or device attribute.
 
     The wrapper returns the correct dtype or device for the current version of the
     backend.
@@ -1933,29 +1327,6 @@ def _dtype_device_wrapper_creator(attrib, t):
 
 
 def _leaf_has_nans(x):
-    """
-    Check if a single value or array contains NaN values.
-
-    This function checks whether a leaf value (single array or scalar) 
-    contains any NaN (Not a Number) values.
-
-    Parameters
-    ----------
-    x : any
-        The value to check for NaN values. Can be an ivy.Array,
-        ivy.Container, numpy array, or scalar.
-
-    Returns
-    -------
-    bool
-        True if the value contains any NaN values, False otherwise.
-
-    Notes
-    -----
-    For ivy.Container objects, this delegates to the container's has_nans method.
-    For arrays, it uses ivy.isnan to detect NaN values.
-    For scalars, it uses numpy.isnan.
-    """
     if isinstance(x, ivy.Container):
         return x.has_nans()
     elif ivy.is_array(x):
@@ -1966,35 +1337,13 @@ def _leaf_has_nans(x):
 
 
 def _nest_has_nans(x):
-    """
-    Check if a nested structure contains any NaN values.
-
-    This function recursively checks nested structures (lists, tuples, dicts)
-    to determine if any leaf values contain NaN values.
-
-    Parameters
-    ----------
-    x : any
-        The nested structure to check for NaN values.
-
-    Returns
-    -------
-    bool
-        True if any value in the nested structure contains NaN, False otherwise.
-
-    Notes
-    -----
-    This function uses ivy.nested_any to recursively traverse the nested
-    structure and apply the _leaf_has_nans function to each leaf.
-    """
     return ivy.nested_any(x, _leaf_has_nans)
 
 
 def handle_nans(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _handle_nans(*args, **kwargs):
-        """
-        Check for the existence of nans in all arrays in the `args` and
+        """Check for the existence of nans in all arrays in the `args` and
         `kwargs`.
 
         The presence of nans is then handled depending on the enabled `nan_policy`.
@@ -2049,8 +1398,7 @@ def handle_complex_input(fn: Callable) -> Callable:
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         **kwargs,
     ):
-        """
-        Check whether the first positional argument is an array of complex
+        """Check whether the first positional argument is an array of complex
         type, and if so handle it according to the provided `complex_mode`.
 
         The options are:
@@ -2247,37 +1595,6 @@ attribute_conflict = {
 
 
 def globals_getter_func(x=None):
-    """
-    Get or set global variables in the current module context.
-
-    This function provides access to the global namespace of the module
-    where it's called. It can either return the globals dictionary or
-    set a specific global variable.
-
-    Parameters
-    ----------
-    x : list or None, optional
-        If None, returns the globals dictionary.
-        If a list with two elements [name, value], sets globals()[name] = value.
-        Default is None.
-
-    Returns
-    -------
-    dict or None
-        The globals dictionary if x is None, otherwise None.
-
-    Notes
-    -----
-    This function is designed to be redefined in modules where the
-    dtype/device decorators are used as context managers. It provides
-    a way to access and modify the global namespace for dynamic
-    decorator application.
-
-    Warning
-    -------
-    This function modifies global state and should be used with caution.
-    It's primarily intended for internal use with context manager decorators.
-    """
     # define and assign this function to
     # ivy.func_wrapper.globals_getter_func in the module
     # where you want to use the decorators as a context
@@ -2289,45 +1606,6 @@ def globals_getter_func(x=None):
 
 
 class with_unsupported_dtypes(contextlib.ContextDecorator):
-    """
-    Context manager and decorator for specifying unsupported dtypes.
-
-    This class can be used both as a decorator and as a context manager to
-    specify which data types are not supported by a function or code block.
-    When used as a context manager, it automatically applies the restriction
-    to all functions defined within the context.
-
-    Parameters
-    ----------
-    *args
-        Arguments passed to the dtype restriction system, typically including
-        a version dictionary and backend version.
-    **kwargs
-        Keyword arguments for the dtype restriction system.
-
-    Examples
-    --------
-    As a decorator:
-
-    >>> @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "numpy")
-    ... def my_function(x):
-    ...     return x + 1
-
-    As a context manager:
-
-    >>> with with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "numpy"):
-    ...     def my_function(x):
-    ...         return x + 1
-
-    Notes
-    -----
-    When used as a context manager, the class maintains a snapshot of the
-    global namespace and applies the dtype restrictions to any new functions
-    defined within the context.
-
-    The dtype restrictions are applied using the _dtype_device_wrapper_creator
-    system, which integrates with Ivy's casting mode operations.
-    """
     def __init__(self, *args, **kwargs):
         self.args = args
         self.kwargs = kwargs
@@ -2364,40 +1642,6 @@ class with_unsupported_dtypes(contextlib.ContextDecorator):
 
 
 class with_supported_dtypes(contextlib.ContextDecorator):
-    """
-    Context manager and decorator for specifying supported dtypes.
-
-    This class can be used both as a decorator and as a context manager to
-    specify which data types are supported by a function or code block.
-    Functions will only accept the specified dtypes and restrict others.
-
-    Parameters
-    ----------
-    *args
-        Arguments passed to the dtype restriction system, typically including
-        a version dictionary and backend version.
-    **kwargs
-        Keyword arguments for the dtype restriction system.
-
-    Examples
-    --------
-    As a decorator:
-
-    >>> @with_supported_dtypes({"1.11.0 and above": ("float32", "float64")}, "numpy")
-    ... def my_function(x):
-    ...     return x + 1
-
-    As a context manager:
-
-    >>> with with_supported_dtypes({"1.11.0 and above": ("float32",)}, "numpy"):
-    ...     def my_function(x):
-    ...         return x + 1
-
-    Notes
-    -----
-    This is the complement of with_unsupported_dtypes. When supported dtypes
-    are specified, all other dtypes become implicitly unsupported.
-    """
     def __init__(self, *args, **kwargs):
         self.args = args
         self.kwargs = kwargs
@@ -2434,41 +1678,6 @@ class with_supported_dtypes(contextlib.ContextDecorator):
 
 
 class with_unsupported_devices(contextlib.ContextDecorator):
-    """
-    Context manager and decorator for specifying unsupported devices.
-
-    This class can be used both as a decorator and as a context manager to
-    specify which devices are not supported by a function or code block.
-    Arrays on unsupported devices will be moved or cause errors.
-
-    Parameters
-    ----------
-    *args
-        Arguments passed to the device restriction system, typically including
-        a version dictionary and backend version.
-    **kwargs
-        Keyword arguments for the device restriction system.
-
-    Examples
-    --------
-    As a decorator:
-
-    >>> @with_unsupported_devices({"1.11.0 and below": ("gpu",)}, "numpy")
-    ... def my_function(x):
-    ...     return x + 1
-
-    As a context manager:
-
-    >>> with with_unsupported_devices({"1.11.0 and below": ("tpu",)}, "jax"):
-    ...     def my_function(x):
-    ...         return x + 1
-
-    Notes
-    -----
-    Device restrictions help ensure functions are only called with arrays
-    on supported devices, preventing runtime errors and ensuring optimal
-    performance.
-    """
     def __init__(self, *args, **kwargs):
         self.args = args
         self.kwargs = kwargs
@@ -2505,15 +1714,6 @@ class with_unsupported_devices(contextlib.ContextDecorator):
 
 
 class with_supported_devices(contextlib.ContextDecorator):
-    """
-    Context manager/decorator to specify **supported** devices for a function.
-
-    This is the logical inverse of :class:`with_unsupported_devices`.  When used
-    the decorated function will *only* accept arrays that reside on the listed
-    devices.  Passing arrays from any other device will raise an
-    :class:`ivy.utils.exceptions.IvyException` (or enable automatic device
-    handling when *soft device* mode is active).
-    """
     def __init__(self, *args, **kwargs):
         self.args = args
         self.kwargs = kwargs
@@ -2550,15 +1750,6 @@ class with_supported_devices(contextlib.ContextDecorator):
 
 
 class with_unsupported_device_and_dtypes(contextlib.ContextDecorator):
-    """
-    Specify **unsupported (device, dtype)** combinations for a function.
-
-    The accepted argument is a *nested mapping* ``{version: {device: (dtypes,)}}``
-    in the same format used throughout the wrapper module.  When an array with
-    a disallowed *(device, dtype)* tuple is passed to the decorated function, a
-    runtime error will be raised **unless** one of the casting modes is enabled
-    that can automatically convert to a supported dtype.
-    """
     def __init__(self, *args, **kwargs):
         # arg inspection
         dicti = args[0]
@@ -2617,13 +1808,6 @@ class with_unsupported_device_and_dtypes(contextlib.ContextDecorator):
 
 
 class with_supported_device_and_dtypes(contextlib.ContextDecorator):
-    """
-    Specify **supported (device, dtype)** combinations for a function.
-
-    This class mirrors :class:`with_unsupported_device_and_dtypes` but marks the
-    provided combinations as *allowed* - everything else becomes implicitly
-    unsupported.
-    """
     def __init__(self, *args, **kwargs):
         # arg inspection
         dicti = args[0]
@@ -2682,36 +1866,6 @@ class with_supported_device_and_dtypes(contextlib.ContextDecorator):
 
 
 class override(contextlib.ContextDecorator):
-    """
-    Context manager and decorator to override dtype/device restrictions.
-
-    This class marks functions to bypass normal dtype or device restrictions
-    that would otherwise be applied by the wrapper system. It's useful for
-    special functions that need to handle all dtypes/devices regardless of
-    backend limitations.
-
-    Examples
-    --------
-    As a decorator:
-
-    >>> @override
-    ... def my_special_function(x):
-    ...     # This function will bypass dtype restrictions
-    ...     return x + 1
-
-    As a context manager:
-
-    >>> with override:
-    ...     def my_function(x):
-    ...         # This function will bypass restrictions
-    ...         return x + 1
-
-    Notes
-    -----
-    Functions marked with override will not have automatic dtype casting
-    applied and must handle unsupported types manually. Use with caution
-    as it bypasses Ivy's safety mechanisms.
-    """
     def __call__(self, func=None):
         if func:
             setattr(func, "override", "override")
