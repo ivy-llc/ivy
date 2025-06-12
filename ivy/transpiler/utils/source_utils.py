@@ -85,10 +85,8 @@ def format_all_files_in_directory(
     Returns:
         translated_object: The retrieved class from the loaded module.
     """
-    from ivy.transpiler.utils.ast_utils import (
-        reorder_module_objects,
-        FileNameStrategy,
-    )
+    from ivy.transpiler.ast.source_gen import FileNameStrategy
+    from ivy.transpiler.ast.utils import reorder_module_objects
 
     _reload_translated_modules(base_output_dir)
 

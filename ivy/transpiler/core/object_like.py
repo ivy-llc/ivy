@@ -301,7 +301,7 @@ class BaseObjectLike:
         return getattr(self._get_obj(), "__qualname__", "")
 
     def _derive_module(self):
-        from ..utils.ast_utils import FileNameStrategy
+        from ..ast.source_gen import FileNameStrategy
 
         obj_mod = inspect.getmodule(self._get_obj())
         if obj_mod:
@@ -538,7 +538,7 @@ class BaseObjectLike:
 
         obj_type = Types.get_type(obj)
 
-        from ..utils.ast_utils import FileNameStrategy
+        from ..ast.source_gen import FileNameStrategy
 
         ObjectLike = BaseObjectLike._infer_object_like(obj_type)
         object_like = ObjectLike(

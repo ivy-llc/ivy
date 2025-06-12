@@ -9,11 +9,15 @@ import sys
 from typing import Any, Union, Optional, TYPE_CHECKING
 from types import FunctionType
 
-from ..utils.ast_utils import FileNameStrategy
-
+from ivy.transpiler.ast.source_gen import FileNameStrategy
 from ivy.transpiler.core.object_like import BaseObjectLike
 from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
-from ivy.transpiler.utils.source_utils import get_new_output_dir_name, maybe_create_stateful_module, maybe_create_stateful_layers_module, sanitize_dir_name
+from ivy.transpiler.utils.source_utils import (
+    get_new_output_dir_name,
+    maybe_create_stateful_module,
+    maybe_create_stateful_layers_module,
+    sanitize_dir_name,
+)
 
 if TYPE_CHECKING:
     from ivy.transpiler.core.object_like import (

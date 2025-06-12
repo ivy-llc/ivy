@@ -11,12 +11,12 @@ from ...configurations.base_transformer_config import (
 )
 from ...transformer import Transformer
 from ....translations.translator import Translator
+from ....ast.analysis import get_function_vars
+from ....ast.globals import TranslatedContext
 from ....utils.ast_utils import (
     ast_to_source_code,
     extract_target_object_name,
-    get_function_vars,
     get_module,
-    TranslatedContext,
 )
 from ....utils.conversion_utils import is_builtin_function
 from ....utils.api_utils import (

@@ -173,9 +173,9 @@ class AtomicCacheUnit:
         base_output_dir: str,
         from_cache: bool = False,
     ):
-        from ivy.transpiler.utils import ast_utils
+        from ivy.transpiler.ast.source_gen import generate_source_code
 
-        return ast_utils.generate_source_code(
+        return generate_source_code(
             ast_root=unit.ast_root,
             object_like=unit.object_like,
             globals=unit.globals,

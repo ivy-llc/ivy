@@ -15,17 +15,21 @@ from ....core.global_like import (
     StackObjectLike,
 )
 from ....core.object_like import BaseObjectLike
-from ....utils.ast_utils import (
+from ....ast.analysis import get_function_vars, get_module_globals
+from ....ast.visitors import get_global_assignment
+from ....ast.globals import (
+    TranslatedContext,
     FRONTEND_STANDARD_GLOBALS_TARGET_TO_MODULE,
     IVY_STANDARD_GLOBALS_TARGET_TO_MODULE,
-    ast_to_source_code,
-    get_module_globals,
-    get_global_assignment,
-    get_function_vars,
-    get_module,
-    create_relative_import_statement,
+)
+from ....ast.source_gen import (
     FileNameStrategy,
-    TranslatedContext,
+    add_global_assignments_and_create_imports,
+    create_relative_import_statement,
+)
+from ....utils.ast_utils import (
+    ast_to_source_code,
+    get_module,
 )
 from ....utils.api_utils import (
     get_function_from_modules,
