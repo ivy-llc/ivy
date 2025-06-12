@@ -1,15 +1,14 @@
 """Main file to hold DTOs to represent globals captured during transformations."""
 
-# global
 from __future__ import annotations
-from typing import Dict
-import gast
 from enum import Enum
+import gast
+from typing import Dict
 
-# local
+from ivy.transpiler.ast.globals import TranslatedContext
+from ivy.transpiler.utils.ast_utils import ast_to_source_code
+
 from .object_like import BaseObjectLike
-from ..ast.globals import TranslatedContext
-from ..utils.ast_utils import ast_to_source_code
 
 
 class Position(Enum):

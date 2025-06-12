@@ -1,44 +1,42 @@
 """Main file to hold DTOs for object likes."""
 
-# global
 from __future__ import annotations
-import ivy
 import dill
 import inspect
+import ivy
 from types import FunctionType, MethodType, ModuleType
 from typing import Dict, Optional, Union, TYPE_CHECKING
 
-# local
-from ..utils.api_utils import (
-    TRANSLATED_OBJ_SUFFIX,
-    is_mixed_function,
-    maybe_get_methods,
-    maybe_get_properties,
-    maybe_get_frontend_base_methods,
-    maybe_get_frontend_base_module_source,
-    is_backend_api,
-    is_frontend_api,
-    is_ivy_api,
-    is_translated_api,
-    is_hf_pretrained_class,
-    is_helper_func,
-    is_submodule_of,
-    from_conv_block,
-)
-from ..utils.inspect_utils import (
-    get_closure_vars,
-    object_to_source_code,
-)
-from ..utils import pickling_utils
-from ..utils.type_utils import Types
-from ..exceptions.exceptions import (
+from ivy.transpiler import globals as glob
+from ivy.transpiler.exceptions.exceptions import (
     ProhibitedObjectAccessError,
     InvalidObjectException,
 )
-from ivy.transpiler import globals as glob
+from ivy.transpiler.utils.api_utils import (
+    from_conv_block,
+    is_backend_api,
+    is_frontend_api,
+    is_helper_func,
+    is_hf_pretrained_class,
+    is_ivy_api,
+    is_mixed_function,
+    is_submodule_of,
+    is_translated_api,
+    maybe_get_frontend_base_methods,
+    maybe_get_frontend_base_module_source,
+    maybe_get_methods,
+    maybe_get_properties,
+    TRANSLATED_OBJ_SUFFIX,
+)
+from ivy.transpiler.utils.inspect_utils import (
+    get_closure_vars,
+    object_to_source_code,
+)
+from ivy.transpiler.utils import pickling_utils
+from ivy.transpiler.utils.type_utils import Types
 
 if TYPE_CHECKING:
-    from ..utils.ast_utils import TranslatedContext
+    from ivy.transpiler.ast.globals import TranslatedContext
 
 
 class BaseObjectLike:
