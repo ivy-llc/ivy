@@ -1,27 +1,26 @@
 import gast
 import os
+from packaging.version import parse
 import textwrap
 from typing import Union, List, Dict, Set, Tuple, Optional, TYPE_CHECKING
-from packaging.version import parse
 
 import ivy.transpiler.ast.globals as glob
 from .globals import (
-    TRANSLATED_OUTPUTS_SUBDIR,
-    MONKEY_PATCH_GLOBALS,
-    MODULE_TO_ALIAS,
-    TranslatedContext,
-    FRONTEND_STANDARD_GLOBALS_TARGET_TO_MODULE,
     BACKEND_STANDARD_GLOBALS,
+    FRONTEND_STANDARD_GLOBALS_TARGET_TO_MODULE,
     IVY_STANDARD_GLOBALS_TARGET_TO_MODULE,
+    MODULE_TO_ALIAS,
+    MONKEY_PATCH_GLOBALS,
+    TranslatedContext,
+    TRANSLATED_OUTPUTS_SUBDIR,
 )
 from .analysis import get_translated_nodes
-from .nodes import FromImportObj, ImportObj, InternalObj
+from .nodes import FromImportObj, ImportObj
 
-from ..translations.data.object_like import BaseObjectLike
+from ivy.transpiler.core.object_like import BaseObjectLike
 from ivy.transpiler.utils.api_utils import (
     get_native_module_str_from_backend,
     SUPPORTED_BACKENDS_PREFIX,
-    TRANSLATED_OBJ_PREFIX,
 )
 from ivy.transpiler.utils.ast_utils import ast_to_source_code, check_syntax
 from ivy.transpiler.utils.cache_utils import (
@@ -34,10 +33,10 @@ from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
 from ivy.transpiler.utils.type_utils import Types
 
 if TYPE_CHECKING:
-    from ivy.transpiler.translations.data.global_like import (
+    from ivy.transpiler.core.global_like import (
         GlobalObjectLike,
     )
-    from ivy.transpiler.translations.data.object_like import (
+    from ivy.transpiler.core.object_like import (
         TypeObjectLike,
         FuncObjectLike,
     )
