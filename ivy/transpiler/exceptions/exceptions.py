@@ -36,11 +36,6 @@ class ProhibitedObjectAccessError(SourceToSourceTranslatorException):
         super().__init__(*messages, include_backend=include_backend, propagate=propagate)
 
 
-class ExpiredBinariesException(SourceToSourceTranslatorException):
-    def __init__(self, *messages, include_backend=False, propagate=False):
-        super().__init__(*messages, include_backend=include_backend, propagate=propagate)
-
-
 def format_missing_frontends_msg(frequency):
     """Format the missing frontends warning message."""
     missing_functions = "\n-> ".join(
