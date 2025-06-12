@@ -807,10 +807,13 @@ try:
 except:  # noqa: E722
     pass  # Added for the finally statement
 
-from .transpiler import (
-    source_to_source,
-    transpile,
-)
+try:
+    from .transpiler import (
+        source_to_source,
+        transpile,
+    )
+except Exception as e:  # noqa: E722
+    print(e)
 
 # Skip framework imports done by Ivy compiler for now
 for backend_framework in _not_imported_backends.copy():
