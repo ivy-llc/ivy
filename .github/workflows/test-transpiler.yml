@@ -26,7 +26,8 @@ jobs:
         id: tests
         run: |
           cd ivy
-          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/run_transpiler_tests.sh transformations
+          python3 -m pip install -r requirements/requirements.txt
+          scripts/shell/run_transpiler_tests.sh transformations
 
   translations:
     strategy:
@@ -45,7 +46,8 @@ jobs:
         id: tests
         run: |
           cd ivy
-          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/run_transpiler_tests.sh translations
+          python3 -m pip install -r requirements/requirements.txt
+          scripts/shell/run_transpiler_tests.sh translations
 
   module:
     strategy:
@@ -64,7 +66,8 @@ jobs:
         id: tests
         run: |
           cd ivy
-          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/run_transpiler_tests.sh module
+          python3 -m pip install -r requirements/requirements.txt
+          scripts/shell/run_transpiler_tests.sh module
 
   sourcegen:
     strategy:
@@ -83,7 +86,8 @@ jobs:
         id: tests
         run: |
           cd ivy
-          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/run_transpiler_tests.sh sourcegen
+          python3 -m pip install -r requirements/requirements.txt
+          scripts/shell/run_transpiler_tests.sh sourcegen
 
   kornia:
     strategy:
@@ -102,4 +106,5 @@ jobs:
         id: tests
         run: |
           cd ivy
-          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/run_transpiler_tests.sh kornia
+          python3 -m pip install -r requirements/requirements.txt
+          scripts/shell/run_transpiler_tests.sh kornia
