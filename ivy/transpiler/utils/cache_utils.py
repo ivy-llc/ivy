@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from ..core.global_like import (
         GlobalObjectLike,
     )
-    from .ast_utils import FromImportObj, ImportObj
+    from ..ast.nodes import FromImportObj, ImportObj
 
 """
 Asyncio Helpers
