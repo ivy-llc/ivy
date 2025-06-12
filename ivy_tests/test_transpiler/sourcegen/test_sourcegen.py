@@ -1,13 +1,11 @@
 import gast
 import textwrap
-from ivy.transpiler.utils.ast_utils import (
-    TranslatedContext,
-    TranslatedFunctionVisitor,
-    extract_target_object_name,
-    reorder_objects,
-)
+from ivy.transpiler.utils.ast_utils import extract_target_object_name
 from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
 from ivy.transpiler.utils.logging_utils import Logger
+from ivy.transpiler.ast.visitors import TranslatedFunctionVisitor
+from ivy.transpiler.ast.globals import TranslatedContext
+from ivy.transpiler.ast.utils import reorder_objects
 
 
 def test_TranslatedFunctionVisitor_fn():

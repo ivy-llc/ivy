@@ -25,9 +25,9 @@ from ....utils.api_utils import (
 from ....utils.ast_utils import (
     ast_to_source_code,
     is_super_call_node,
-    MODULE_TO_ALIAS,
-    get_function_vars,
 )
+from ....ast.globals import MODULE_TO_ALIAS
+from ....ast.analysis import get_function_vars
 from ivy.transpiler import globals as glob
 
 

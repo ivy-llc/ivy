@@ -8,6 +8,7 @@ from ...transformers.base_transformer import (
 from ...transformer import Transformer
 import gast
 from types import FunctionType, ModuleType
+from ivy.transpiler.ast.analysis import get_import_dict, get_function_vars
 from ivy.transpiler.utils.api_utils import (
     get_function_from_modules,
     is_compiled_module,
@@ -16,9 +17,7 @@ from ivy.transpiler.utils.api_utils import (
 )
 from ivy.transpiler.utils.ast_utils import (
     ast_to_source_code,
-    get_import_dict,
     get_module,
-    get_function_vars,
 )
 from ivy.transpiler import globals as glob
 from ivy.transpiler.utils.conversion_utils import (
