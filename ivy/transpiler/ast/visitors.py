@@ -1,13 +1,70 @@
 import gast
 import inspect
+from types import ModuleType
+from typing import Set
 
-from .analysis import get_global_assignment
-from .globals import TranslatedContext
-from .nodes import FromImportObj, ImportObj, InternalObj
-from .utils import ast_to_source_code, extract_target_object_name, get_module
-
+from ivy.transpiler.utils.ast_utils import (
+    ast_to_source_code,
+    extract_target_object_name,
+    get_module,
+    parse_source_code,
+)
 from ivy.transpiler.utils.api_utils import TRANSLATED_OBJ_PREFIX
 from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
+
+from .globals import TranslatedContext
+from .nodes import FromImportObj, ImportObj, InternalObj
+
+
+def get_global_assignment(
+    module: ModuleType, target_str: str, visited_modules: Set[ModuleType] = None
+):
+    """
+    Analyzes the source code of a given module to find the assignment of a specific
+    global variable. It uses the GlobalAssignmentVisitor to traverse the AST and
+    identify the assignment.
+
+    Args:
+        module (module): The module to analyze.
+        target_str (str): The name of the target global variable to find.
+        visited_modules (set, optional): A set of modules that have already been visited
+                                         to avoid cyclic dependencies. Defaults to None.
+
+    Returns:
+        tuple: A tuple containing:
+               - The assignment expression of the target variable as a string.
+               - The name of the module where the assignment was found.
+               If the assignment is not found, returns (None, None).
+
+    Example:
+        >>> import types
+        >>> module = types.ModuleType("example_module")
+        >>> module.__name__ = "example_module"
+        >>> module.__package__ = ""
+        >>> source_code = '''
+        ... my_var = 42
+        ... '''
+        >>> def parse_source_code(mod):
+        ...     return gast.parse(source_code)
+        >>> def get_module(name, package):
+        ...     return module
+        >>> assignment, mod_name = get_global_assignment(module, 'my_var')
+        >>> print(assignment)
+        "my_var = 42"
+        >>> print(mod_name)
+        "example_module"
+    """
+    if visited_modules is None:
+        visited_modules = set()
+    tree = parse_source_code(module)
+    if tree is not None:
+        visitor = GlobalAssignmentVisitor(
+            target_str, module, module.__package__, visited_modules
+        )
+        visitor.visit(tree)
+        if visitor.assignments:
+            return visitor.assignments, visitor.module_str
+    return None, None
 
 
 class TranslatedFunctionVisitor(gast.NodeVisitor):

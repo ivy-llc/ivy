@@ -12,12 +12,14 @@ from ...transformer import Transformer
 from ..base_transformer import (
     BaseTransformer,
 )
-from ....utils.ast_utils import (
-    ast_to_source_code,
+from ....ast.globals import TranslatedContext
+from ....ast.source_gen import (
     create_relative_import_statement,
     _inject_local_imports_in_function,
     _inject_local_imports_in_class,
-    TranslatedContext,
+)
+from ....utils.ast_utils import (
+    ast_to_source_code,
 )
 from ....utils.naming_utils import NAME_GENERATOR
 from ....utils.type_utils import Types

@@ -8,10 +8,8 @@ from enum import Enum
 
 # local
 from ...translations.data.object_like import BaseObjectLike
-from ...utils.ast_utils import (
-    ast_to_source_code,
-    TranslatedContext,
-)
+from ...ast.globals import TranslatedContext
+from ...utils.ast_utils import ast_to_source_code
 
 
 class Position(Enum):

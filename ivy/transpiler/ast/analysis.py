@@ -1,23 +1,17 @@
-import ast
-import astor
 import gast
 import inspect
-import jax
 import types
-import os
-import sys
-import re
-import textwrap
-from typing import Union, List, Dict, Set, Tuple, Optional, TYPE_CHECKING
+from typing import Dict, Set, Tuple
 from collections.abc import Iterable
-import importlib
-from types import ModuleType
-from enum import Enum, auto
-from packaging.version import parse
 
 from .globals import TranslatedContext
-from .visitors import TranslatedFunctionVisitor, VariableCaptureVisitor, GlobalAssignmentVisitor, GlobalsVisitor, ImportVisitor
-from .utils import parse_source_code
+from .nodes import FromImportObj, ImportObj, InternalObj
+from .visitors import (
+    TranslatedFunctionVisitor,
+    VariableCaptureVisitor,
+    GlobalsVisitor,
+    ImportVisitor,
+)
 
 
 def get_translated_nodes(node: gast.AST) -> Dict[str, TranslatedContext]:
@@ -81,57 +75,6 @@ def get_function_vars(node: gast.AST) -> Tuple[Set[str], Set[str]]:
     visitor = VariableCaptureVisitor()
     visitor.visit(node)
     return visitor.variables, visitor.non_locals_and_globals
-
-
-def get_global_assignment(
-    module: ModuleType, target_str: str, visited_modules: Set[ModuleType] = None
-):
-    """
-    Analyzes the source code of a given module to find the assignment of a specific
-    global variable. It uses the GlobalAssignmentVisitor to traverse the AST and
-    identify the assignment.
-
-    Args:
-        module (module): The module to analyze.
-        target_str (str): The name of the target global variable to find.
-        visited_modules (set, optional): A set of modules that have already been visited
-                                         to avoid cyclic dependencies. Defaults to None.
-
-    Returns:
-        tuple: A tuple containing:
-               - The assignment expression of the target variable as a string.
-               - The name of the module where the assignment was found.
-               If the assignment is not found, returns (None, None).
-
-    Example:
-        >>> import types
-        >>> module = types.ModuleType("example_module")
-        >>> module.__name__ = "example_module"
-        >>> module.__package__ = ""
-        >>> source_code = '''
-        ... my_var = 42
-        ... '''
-        >>> def parse_source_code(mod):
-        ...     return gast.parse(source_code)
-        >>> def get_module(name, package):
-        ...     return module
-        >>> assignment, mod_name = get_global_assignment(module, 'my_var')
-        >>> print(assignment)
-        "my_var = 42"
-        >>> print(mod_name)
-        "example_module"
-    """
-    if visited_modules is None:
-        visited_modules = set()
-    tree = parse_source_code(module)
-    if tree is not None:
-        visitor = GlobalAssignmentVisitor(
-            target_str, module, module.__package__, visited_modules
-        )
-        visitor.visit(tree)
-        if visitor.assignments:
-            return visitor.assignments, visitor.module_str
-    return None, None
 
 
 def get_module_globals(modules: Iterable, prefix: str = ""):

@@ -13,13 +13,13 @@ from ....utils.conversion_utils import (
 from ..method_transformer.base_transformer import (
     BaseMethodToFunctionConverter,
 )
+from ....ast.globals import MODULE_TO_ALIAS
 from ....utils.api_utils import (
     is_method_of_class,
     get_hf_class,
 )
 from ....utils.ast_utils import (
     ast_to_source_code,
-    MODULE_TO_ALIAS,
 )
 
 

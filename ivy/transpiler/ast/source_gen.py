@@ -4,6 +4,7 @@ import textwrap
 from typing import Union, List, Dict, Set, Tuple, Optional, TYPE_CHECKING
 from packaging.version import parse
 
+import ivy.transpiler.ast.globals as glob
 from .globals import (
     TRANSLATED_OUTPUTS_SUBDIR,
     MONKEY_PATCH_GLOBALS,
@@ -14,7 +15,6 @@ from .globals import (
     IVY_STANDARD_GLOBALS_TARGET_TO_MODULE,
 )
 from .analysis import get_translated_nodes
-from .utils import ast_to_source_code, check_syntax
 from .nodes import FromImportObj, ImportObj, InternalObj
 
 from ..translations.data.object_like import BaseObjectLike
@@ -23,6 +23,7 @@ from ivy.transpiler.utils.api_utils import (
     SUPPORTED_BACKENDS_PREFIX,
     TRANSLATED_OBJ_PREFIX,
 )
+from ivy.transpiler.utils.ast_utils import ast_to_source_code, check_syntax
 from ivy.transpiler.utils.cache_utils import (
     GlobalStatementCache,
     ImportStatementCache,
@@ -519,8 +520,7 @@ def _maybe_inject_frontend_standard_globals(
             # ivy standard globals
             import ivy
 
-            global IVY_STANDARD_GLOBALS
-            for target_str, assign_str in IVY_STANDARD_GLOBALS.items():
+            for target_str, assign_str in glob.IVY_STANDARD_GLOBALS.items():
                 ivy_standard_global = f"\n{target_str} = {assign_str}\n"
 
                 # inject global into the correct module
@@ -554,8 +554,7 @@ def _maybe_inject_frontend_standard_globals(
         import ivy.functional.frontends.torch
         import ivy.functional.frontends.numpy
 
-        global FRONTEND_STANDARD_GLOBALS
-        for target_str, assign_str in FRONTEND_STANDARD_GLOBALS.items():
+        for target_str, assign_str in glob.FRONTEND_STANDARD_GLOBALS.items():
             frontend_standard_global = f"\n{target_str} = {assign_str}\n"
 
             # inject global into the correct module
@@ -663,9 +662,8 @@ def _maybe_populate_frontend_standard_globals(source: str, target: str) -> None:
             # ivy standard globals
             import ivy
 
-            global IVY_STANDARD_GLOBALS
-            IVY_STANDARD_GLOBALS["promotion_table"] = repr(ivy.promotion_table)
-            IVY_STANDARD_GLOBALS["array_api_promotion_table"] = repr(
+            glob.IVY_STANDARD_GLOBALS["promotion_table"] = repr(ivy.promotion_table)
+            glob.IVY_STANDARD_GLOBALS["array_api_promotion_table"] = repr(
                 ivy.array_api_promotion_table
             )
 
@@ -673,20 +671,19 @@ def _maybe_populate_frontend_standard_globals(source: str, target: str) -> None:
     import ivy.functional.frontends.torch
     import ivy.functional.frontends.numpy
 
-    global FRONTEND_STANDARD_GLOBALS
-    FRONTEND_STANDARD_GLOBALS["torch_promotion_table"] = repr(
+    glob.FRONTEND_STANDARD_GLOBALS["torch_promotion_table"] = repr(
         ivy.functional.frontends.torch.torch_promotion_table
     )
-    FRONTEND_STANDARD_GLOBALS["numpy_promotion_table"] = repr(
+    glob.FRONTEND_STANDARD_GLOBALS["numpy_promotion_table"] = repr(
         ivy.functional.frontends.numpy.numpy_promotion_table
     )
-    FRONTEND_STANDARD_GLOBALS["numpy_str_to_type_table"] = repr(
+    glob.FRONTEND_STANDARD_GLOBALS["numpy_str_to_type_table"] = repr(
         ivy.functional.frontends.numpy.numpy_str_to_type_table
     )
     # TODO: Add support translating these globals which contain custom objects from the numpy frontend
     # FRONTEND_STANDARD_GLOBALS["numpy_scalar_to_dtype"] = repr(ivy.functional.frontends.numpy.numpy_scalar_to_dtype)
     # FRONTEND_STANDARD_GLOBALS["numpy_dtype_to_scalar"] = repr(ivy.functional.frontends.numpy.numpy_dtype_to_scalar)
-    FRONTEND_STANDARD_GLOBALS["numpy_casting_rules"] = repr(
+    glob.FRONTEND_STANDARD_GLOBALS["numpy_casting_rules"] = repr(
         ivy.functional.frontends.numpy.numpy_casting_rules
     )
 
