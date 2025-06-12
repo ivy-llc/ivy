@@ -80,7 +80,7 @@ class UniqueNameGenerator:
 
     def get_suffix(self, obj: Optional[Any]) -> str:
         """Get the suffix for the candidate name based on the object's module."""
-        from ivy.transpiler.translations.data.object_like import (
+        from ivy.transpiler.core.object_like import (
             BaseObjectLike,
         )
 
@@ -101,7 +101,7 @@ class UniqueNameGenerator:
 
     def get_candidate_name(self, obj: Optional[Any]):
         """Generate a candidate name for an object."""
-        from ivy.transpiler.translations.data.object_like import (
+        from ivy.transpiler.core.object_like import (
             BaseObjectLike,
         )
 

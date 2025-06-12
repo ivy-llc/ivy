@@ -199,7 +199,7 @@ class BaseRecurser(BaseTransformer, ABC):
         from_global, parent = self.preprocess_origin_info(obj_to_translate, new_name)
 
         # 3 Recursively transform the function
-        from ivy.transpiler.translations.data.object_like import (
+        from ivy.transpiler.core.object_like import (
             BaseObjectLike,
         )
 
@@ -401,7 +401,7 @@ class BaseRecurser(BaseTransformer, ABC):
             from_global, parent = self.preprocess_origin_info(base, base_new_name)
 
             # 3 Recursively transform the function
-            from ivy.transpiler.translations.data.object_like import (
+            from ivy.transpiler.core.object_like import (
                 BaseObjectLike,
             )
 

@@ -10,7 +10,7 @@ from typing import Any, Union, Optional, TYPE_CHECKING
 from types import FunctionType
 
 from ivy.transpiler.ast.source_gen import FileNameStrategy
-from ivy.transpiler.translations.data.object_like import BaseObjectLike
+from ivy.transpiler.core.object_like import BaseObjectLike
 from ivy.transpiler.utils.naming_utils import NAME_GENERATOR
 from ivy.transpiler.utils.source_utils import (
     get_new_output_dir_name,
@@ -20,7 +20,7 @@ from ivy.transpiler.utils.source_utils import (
 )
 
 if TYPE_CHECKING:
-    from ivy.transpiler.translations.data.object_like import (
+    from ivy.transpiler.core.object_like import (
         FuncObjectLike,
         TypeObjectLike,
     )

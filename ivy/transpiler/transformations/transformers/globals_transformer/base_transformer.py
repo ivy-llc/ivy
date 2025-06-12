@@ -9,12 +9,12 @@ from ..base_transformer import (
     BaseTransformer,
 )
 from ...transformer import Transformer
-from ....translations.data.global_like import (
+from ....core.global_like import (
     GlobalObjectLike,
     Position,
     StackObjectLike,
 )
-from ....translations.data.object_like import BaseObjectLike
+from ....core.object_like import BaseObjectLike
 from ....ast.analysis import get_function_vars, get_module_globals
 from ....ast.visitors import get_global_assignment
 from ....ast.globals import (
@@ -45,7 +45,7 @@ from ...configurations.base_transformer_config import (
 )
 
 if TYPE_CHECKING:
-    from ....translations.data.object_like import (
+    from ....core.object_like import (
         TypeObjectLike,
         FuncObjectLike,
     )
