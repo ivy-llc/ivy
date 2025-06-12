@@ -180,7 +180,7 @@ def is_builtin_method(method, to_ignore=()):
 
 
 def is_method_of_class(method_name, cls, to_ignore=()):
-    from ivy.transpiler.translations.data.object_like import BaseObjectLike
+    from ivy.transpiler.core.object_like import BaseObjectLike
 
     if isinstance(cls, BaseObjectLike):
         return method_name in cls.methods
@@ -195,7 +195,7 @@ def is_method_of_class(method_name, cls, to_ignore=()):
 
 
 def is_property(method_name, cls, to_ignore=()):
-    from ivy.transpiler.translations.data.object_like import BaseObjectLike
+    from ivy.transpiler.core.object_like import BaseObjectLike
 
     if isinstance(cls, BaseObjectLike):
         return method_name in cls.properties

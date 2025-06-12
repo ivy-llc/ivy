@@ -11,7 +11,6 @@ from ivy.utils.decorator_utils import (
     handle_transpose_in_pad,
     store_config_info,
 )
-from ..translations.data.object_like import BaseObjectLike
 from .type_utils import Types
 
 

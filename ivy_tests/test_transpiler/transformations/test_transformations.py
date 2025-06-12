@@ -2,7 +2,7 @@ import pytest
 import ivy
 import gast
 from ivy.transpiler.transformations.transformer import Transformer
-from ivy.transpiler.translations.data.object_like import (
+from ivy.transpiler.core.object_like import (
     BaseObjectLike,
 )
 from ivy.transpiler.configurations_container import (

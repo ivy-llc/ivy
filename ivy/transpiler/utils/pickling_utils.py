@@ -19,7 +19,7 @@ def get_object_hash(obj):
     """
     Generate a hash for a given object, object-like, function, method, class or builtins.
     """
-    from ..translations.data.object_like import BaseObjectLike
+    from ..core.object_like import BaseObjectLike
     from .cache_utils import AtomicCacheUnit
 
     # If the object is a BaseObjectLike, use its hash method
@@ -101,10 +101,10 @@ class ACUPickler:
         """
         Deserialize the object-like properties of a unit, including object-like and global-object-like.
         """
-        from ivy.transpiler.translations.data.object_like import (
+        from ivy.transpiler.core.object_like import (
             BaseObjectLike,
         )
-        from ivy.transpiler.translations.data.global_like import (
+        from ivy.transpiler.core.global_like import (
             GlobalObjectLike,
         )
 

@@ -15,4 +15,4 @@ BASE_OUTPUT_DIR = "ivy_transpiled_outputs/"
 
 # Frameworks whose code S2S supports currently
 SUPPORTED_S2S_SOURCES = ["torch", "ivy"]
-SUPPORTED_S2S_TARGETS = ["tensorflow", "jax", "numpy", "ivy"]
+SUPPORTED_S2S_TARGETS = ["tensorflow", "jax", "numpy", "ivy", "torch"]

@@ -9,7 +9,7 @@ from types import FunctionType, MethodType, ModuleType
 from typing import Dict, Optional, Union, TYPE_CHECKING
 
 # local
-from ...utils.api_utils import (
+from ..utils.api_utils import (
     TRANSLATED_OBJ_SUFFIX,
     is_mixed_function,
     maybe_get_methods,
@@ -25,20 +25,20 @@ from ...utils.api_utils import (
     is_submodule_of,
     from_conv_block,
 )
-from ...utils.inspect_utils import (
+from ..utils.inspect_utils import (
     get_closure_vars,
     object_to_source_code,
 )
-from ...utils import pickling_utils
-from ...utils.type_utils import Types
-from ...exceptions.exceptions import (
+from ..utils import pickling_utils
+from ..utils.type_utils import Types
+from ..exceptions.exceptions import (
     ProhibitedObjectAccessError,
     InvalidObjectException,
 )
 from ivy.transpiler import globals as glob
 
 if TYPE_CHECKING:
-    from ...utils.ast_utils import TranslatedContext
+    from ..utils.ast_utils import TranslatedContext
 
 
 class BaseObjectLike:
@@ -301,7 +301,7 @@ class BaseObjectLike:
         return getattr(self._get_obj(), "__qualname__", "")
 
     def _derive_module(self):
-        from ...utils.ast_utils import FileNameStrategy
+        from ..utils.ast_utils import FileNameStrategy
 
         obj_mod = inspect.getmodule(self._get_obj())
         if obj_mod:
@@ -538,7 +538,7 @@ class BaseObjectLike:
 
         obj_type = Types.get_type(obj)
 
-        from ...utils.ast_utils import FileNameStrategy
+        from ..utils.ast_utils import FileNameStrategy
 
         ObjectLike = BaseObjectLike._infer_object_like(obj_type)
         object_like = ObjectLike(

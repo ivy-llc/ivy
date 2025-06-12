@@ -25,7 +25,7 @@ from ..utils.logging_utils import Logger
 from ..utils.naming_utils import NAME_GENERATOR
 from ..utils import api_utils
 from ..utils.api_utils import get_function_from_modules
-from ..translations.data.object_like import (
+from ..core.object_like import (
     BaseObjectLike,
     TypeObjectLike,
     FuncObjectLike,

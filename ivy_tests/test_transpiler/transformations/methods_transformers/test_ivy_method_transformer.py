@@ -3,7 +3,7 @@ import gast
 import ivy
 from ivy.utils.backend import current_backend
 from ivy.transpiler.transformations.transformer import Transformer
-from ivy.transpiler.translations.data.object_like import (
+from ivy.transpiler.core.object_like import (
     BaseObjectLike,
 )
 from ivy.transpiler.configurations_container import ConfigurationsContainer

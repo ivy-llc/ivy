@@ -9,7 +9,7 @@ from ivy.transpiler.transformations.transformer import Transformer
 from ivy.transpiler.transformations.transformers.postprocessing_transformer.ivy_to_tf_postprocessing_transformer import (
     IvyToTFCodePostProcessor,
 )
-from ivy.transpiler.translations.data.object_like import (
+from ivy.transpiler.core.object_like import (
     BaseObjectLike,
 )
 from ivy.transpiler.configurations_container import ConfigurationsContainer

@@ -12,7 +12,7 @@ from ivy.transpiler.transformations.transformers.postprocessing_transformer.ivy_
 from ivy.transpiler.transformations.transformers.postprocessing_transformer.ivy_to_jax_postprocessing_transformer import (
     IvyToJAXCodePostProcessor,
 )
-from ivy.transpiler.translations.data.object_like import (
+from ivy.transpiler.core.object_like import (
     BaseObjectLike,
 )
 from ivy.transpiler.configurations_container import ConfigurationsContainer

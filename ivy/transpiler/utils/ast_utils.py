@@ -17,7 +17,7 @@ from packaging.version import parse
 # local
 import astor
 import gast
-from ..translations.data.object_like import BaseObjectLike
+from ..core.object_like import BaseObjectLike
 from .api_utils import (
     get_native_module_str_from_backend,
     SUPPORTED_BACKENDS_PREFIX,
@@ -209,10 +209,10 @@ MONKEY_PATCH_GLOBALS = {
 }
 
 if TYPE_CHECKING:
-    from ivy.transpiler.translations.data.global_like import (
+    from ivy.transpiler.core.global_like import (
         GlobalObjectLike,
     )
-    from ivy.transpiler.translations.data.object_like import (
+    from ivy.transpiler.core.object_like import (
         TypeObjectLike,
         FuncObjectLike,
     )

@@ -15,7 +15,7 @@ from ..utils.naming_utils import NAME_GENERATOR
 from ..transformations.transformers.base_transformer import (
     BaseTransformer,
 )
-from ..translations.data.object_like import (
+from ..core.object_like import (
     BaseObjectLike,
 )
 from ..transformations.transformers.rename_transformer import (
@@ -29,10 +29,10 @@ if TYPE_CHECKING:
     from ..transformations.transformers.globals_transformer.base_transformer import (
         GlobalObj,
     )
-    from ..translations.data.object_like import (
+    from ..core.object_like import (
         TypeObjectLike,
     )
-    from ..translations.data.object_like import (
+    from ..core.object_like import (
         FuncObjectLike,
     )
     from ..utils.ast_utils import ImportObj, FromImportObj

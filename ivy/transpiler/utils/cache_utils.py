@@ -18,10 +18,10 @@ import time
 from . import pickling_utils
 
 if TYPE_CHECKING:
-    from ..translations.data.object_like import (
+    from ..core.object_like import (
         BaseObjectLike,
     )
-    from ..translations.data.global_like import (
+    from ..core.global_like import (
         GlobalObjectLike,
     )
     from .ast_utils import FromImportObj, ImportObj

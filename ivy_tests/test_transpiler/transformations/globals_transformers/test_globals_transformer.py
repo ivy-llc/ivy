@@ -10,7 +10,7 @@ from ivy.transpiler.transformations.transformers.canonicalize_transformer.base_t
 from ivy.transpiler.transformations.configurations.base_transformer_config import (
     BaseTransformerConfig,
 )
-from ivy.transpiler.translations.data.object_like import (
+from ivy.transpiler.core.object_like import (
     BaseObjectLike,
 )
 from ivy.transpiler.configurations_container import ConfigurationsContainer
