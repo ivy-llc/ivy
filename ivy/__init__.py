@@ -804,16 +804,12 @@ except:  # noqa: E722
     pass
 try:
     from .tracer import trace_graph
-except:  # noqa: E722
-    pass  # Added for the finally statement
-
-try:
     from .transpiler import (
         source_to_source,
         transpile,
     )
-except Exception as e:  # noqa: E722
-    print(e)
+except:  # noqa: E722
+    pass  # Added for the finally statement
 
 # Skip framework imports done by Ivy compiler for now
 for backend_framework in _not_imported_backends.copy():
