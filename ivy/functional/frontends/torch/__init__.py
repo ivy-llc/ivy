@@ -322,6 +322,12 @@ from .casting_ops import *
 from . import serialization
 from .serialization import *
 
+# make private fns accessible
+from .reduction_ops import (
+    _is_all_true,
+    _is_any_true,
+)
+
 _frontend_array = tensor
 
 # setting to specific version #

@@ -8,6 +8,18 @@ from collections import namedtuple
 import ivy.functional.frontends.torch as torch_frontend
 
 
+@to_ivy_arrays_and_back
+def _is_all_true(input):
+    # TODO: add test
+    return ivy.all(input)
+
+
+@to_ivy_arrays_and_back
+def _is_any_true(input):
+    # TODO: add test
+    return ivy.any(input)
+
+
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def all(input, dim=None, keepdim=False, *, out=None):
