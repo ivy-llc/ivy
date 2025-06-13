@@ -795,11 +795,6 @@ add_array_specs()
 _imported_frameworks_before_compiler = list(sys.modules.keys())
 
 try:
-    from .engines import XLA as xla
-    from .engines import ivy2xla
-except:  # noqa: E722
-    pass
-try:
     from .tracer import trace_graph
     from .transpiler import (
         source_to_source,
