@@ -22,12 +22,15 @@ jobs:
       - uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Run Transformations Tests
-        id: tests
+      - name: Install Dependencies
         run: |
           cd ivy
           python3 -m pip install -r requirements/requirements.txt
           python3 -m pip install -r requirements/optional.txt
+      - name: Run Transformations Tests
+        id: tests
+        run: |
+          cd ivy
           scripts/shell/run_transpiler_tests.sh transformations
 
   translations:
@@ -43,12 +46,15 @@ jobs:
       - uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Run Translations Tests
-        id: tests
+      - name: Install Dependencies
         run: |
           cd ivy
           python3 -m pip install -r requirements/requirements.txt
           python3 -m pip install -r requirements/optional.txt
+      - name: Run Translations Tests
+        id: tests
+        run: |
+          cd ivy
           scripts/shell/run_transpiler_tests.sh translations
 
   module:
@@ -64,12 +70,15 @@ jobs:
       - uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Run Module Tests
-        id: tests
+      - name: Install Dependencies
         run: |
           cd ivy
           python3 -m pip install -r requirements/requirements.txt
           python3 -m pip install -r requirements/optional.txt
+      - name: Run Module Tests
+        id: tests
+        run: |
+          cd ivy
           scripts/shell/run_transpiler_tests.sh module
 
   sourcegen:
@@ -85,12 +94,15 @@ jobs:
       - uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Run SourceGen Tests
-        id: tests
+      - name: Install Dependencies
         run: |
           cd ivy
           python3 -m pip install -r requirements/requirements.txt
           python3 -m pip install -r requirements/optional.txt
+      - name: Run SourceGen Tests
+        id: tests
+        run: |
+          cd ivy
           scripts/shell/run_transpiler_tests.sh sourcegen
 
   kornia:
@@ -106,10 +118,13 @@ jobs:
       - uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Run Kornia Tests
-        id: tests
+      - name: Install Dependencies
         run: |
           cd ivy
           python3 -m pip install -r requirements/requirements.txt
           python3 -m pip install -r requirements/optional.txt
+      - name: Run Kornia Tests
+        id: tests
+        run: |
+          cd ivy
           scripts/shell/run_transpiler_tests.sh kornia
