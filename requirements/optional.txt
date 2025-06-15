@@ -1,23 +1,17 @@
 astunparse
 autoflake # for backend generation
 black
-coverage
 flax
 h5py
 hypothesis==6.98.10 # fixed version till this get solved: https://github.com/HypothesisWorks/hypothesis/issues/3896
 jax
 jaxlib
-matplotlib
 ml-dtypes # mod_name=ml_dtypes
 networkx
 nvidia-ml-py # mod_name=pynvml
-opencv-python # mod_name=cv2
 paddlepaddle # mod_name=paddle
 pandas
-pymongo
-pyspark
 pytest
-pyvis
 redis
 scikit-learn # mod_name=sklearn
 scipy
