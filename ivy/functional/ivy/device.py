@@ -19,7 +19,7 @@ try:
         pass
 except ImportError:
     pynvml = None
-    # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile and is only in requirements/optional.txt
+    # nvidia-ml-py (pynvml) is in requirements/optional.txt
 
 from typing import Union, Callable, Iterable, Any
 

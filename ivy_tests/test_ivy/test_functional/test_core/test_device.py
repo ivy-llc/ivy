@@ -14,8 +14,6 @@ import psutil
 import subprocess
 from hypothesis import strategies as st, assume
 
-# nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
-
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
