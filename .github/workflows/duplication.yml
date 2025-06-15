@@ -10,18 +10,28 @@ jobs:
   duplicate-tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Ivy 🛎
-        uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: "3.12"
+
+      - name: Checkout Ivy
+        uses: actions/checkout@v4
         with:
           path: ivy
           persist-credentials: false
           fetch-depth: 100
 
+      - name: Install Dependencies
+        run: |
+          cd ivy
+          python3 -m pip install -r requirements/requirements.txt
+          python3 -m pip install -r requirements/optional.txt
+
       - name: Check Duplicate Function
         id: tests
         run: |
           cd ivy
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest python3 scripts/duplicate.py
+          python3 scripts/duplicate.py
         continue-on-error: true
 
       - name: Check on failures
