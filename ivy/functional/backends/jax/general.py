@@ -24,27 +24,8 @@ from ivy.utils.exceptions import _check_inplace_update_support
 from . import backend_version
 
 
-def container_types() -> List[Type]:
-    """Gets list of container types supported.
-
-    Returns
-    -------
-        List[Type]: List containing the FlatMapping container type.
-
-    Examples
-    --------
-        >>> container_types()
-        [FlatMapping]
-    """
-    flat_mapping_spec = importlib.util.find_spec(
-        "FlatMapping", "haiku._src.data_structures"
-    )
-    if not flat_mapping_spec:
-        from haiku._src.data_structures import FlatMapping
-    else:
-        FlatMapping = importlib.util.module_from_spec(flat_mapping_spec)
-
-    return [FlatMapping]
+def container_types():
+    return []
 
 
 def current_backend_str() -> str:
