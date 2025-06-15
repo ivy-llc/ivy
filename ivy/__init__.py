@@ -1004,9 +1004,30 @@ def vec_sig_fig(x, sig_fig=3):
     if isinstance(x, builtins.complex):
         return builtins.complex(x)
     if np.issubdtype(x.dtype, np.floating):
+        # Handle float16 and other low-precision dtypes by converting to float32
+        # to avoid overflow in calculations
+        original_dtype = x.dtype
+        if x.dtype == np.float16:
+            x = x.astype(np.float32)
+
         x_positive = np.where(np.isfinite(x) & (x != 0), np.abs(x), 10 ** (sig_fig - 1))
-        mags = 10 ** (sig_fig - 1 - np.floor(np.log10(x_positive)))
-        return np.round(x * mags) / mags
+
+        # Protect against overflow in magnitude calculations
+        log_vals = np.log10(x_positive)
+        mags_exp = sig_fig - 1 - np.floor(log_vals)
+
+        # Clamp the exponent to prevent overflow
+        max_exp = np.log10(np.finfo(x.dtype).max) - 1
+        mags_exp = np.clip(mags_exp, -max_exp, max_exp)
+
+        mags = 10 ** mags_exp
+        result = np.round(x * mags) / mags
+
+        # Convert back to original dtype if it was low precision
+        if original_dtype == np.float16:
+            result = result.astype(original_dtype)
+
+        return result
     return x
 
 
