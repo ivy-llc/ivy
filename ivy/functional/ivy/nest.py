@@ -941,7 +941,7 @@ def map(
     ...                   unique = {'x' : [1,2,3]},
     ...                   mean = False)
     >>> print(results)
-    [1, 4, 9]
+    [np.int64(1), np.int64(4), np.int64(9)]
 
     >>> results = ivy.map(fn = special_square,
     ...                   constant = None,
