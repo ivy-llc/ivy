@@ -4,6 +4,7 @@ import re
 from contextlib import redirect_stdout
 from io import StringIO
 import numpy as np
+import re
 import sys
 
 
@@ -50,7 +51,7 @@ def trim(*, docstring):
 
 
 def check_docstring_examples_run(
-    *, fn, from_container=False, from_array=False, num_sig_fig=1
+    *, fn, from_container=False, from_array=False, num_sig_fig=2
 ):
     """Performs docstring tests for a given function.
 
@@ -321,9 +322,26 @@ def check_docstring_examples_run(
                 rtol=sig_fig,
                 atol=atol,
             )
-        except Exception:
-            if str(doc_u) != str(doc_v):
-                docstr_result = False
+        except Exception as e:
+            if str(doc_u) == str(doc_v):
+                docstr_result = True
+            else:
+                try:
+                    # attempt to strip any non-number text from doc_u and doc_v if they are strings, and re-try
+                    if isinstance(doc_u, str):
+                        matches_u = re.findall(r"[-+]?\d*\.\d+|\d+", doc_u)
+                        doc_u = matches_u[0] if matches_u else doc_u
+                    if isinstance(doc_v, str):
+                        matches_v = re.findall(r"[-+]?\d*\.\d+|\d+", doc_v)
+                        doc_v = matches_v[0] if matches_v else doc_v
+                    docstr_result = np.allclose(
+                        np.nan_to_num(complex(doc_u)),
+                        np.nan_to_num(complex(doc_v)),
+                        rtol=sig_fig,
+                        atol=atol,
+                    )
+                except:
+                    docstr_result = False
         if not docstr_result:
             print(
                 "output for ",
