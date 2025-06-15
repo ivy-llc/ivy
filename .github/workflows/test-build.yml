@@ -25,8 +25,8 @@ jobs:
       - name: Install Dependencies
         run: |
           cd ivy
-          python3 -m pip install -r requirements/requirements.txt
-          python3 -m pip install -r requirements/optional.txt
+          python3 -m pip install -U -r requirements/requirements.txt
+          python3 -m pip install -U -r requirements/optional.txt
 
       - name: Run Build Test
         run: |
