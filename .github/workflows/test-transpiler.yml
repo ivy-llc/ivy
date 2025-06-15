@@ -25,8 +25,8 @@ jobs:
       - name: Install Dependencies
         run: |
           cd ivy
-          python3 -m pip install -r requirements/requirements.txt
-          python3 -m pip install -r requirements/optional.txt
+          python3 -m pip install -U -r requirements/requirements.txt
+          python3 -m pip install -U -r requirements/optional.txt
       - name: Run Transformations Tests
         id: tests
         run: |
@@ -49,8 +49,8 @@ jobs:
       - name: Install Dependencies
         run: |
           cd ivy
-          python3 -m pip install -r requirements/requirements.txt
-          python3 -m pip install -r requirements/optional.txt
+          python3 -m pip install -U -r requirements/requirements.txt
+          python3 -m pip install -U -r requirements/optional.txt
       - name: Run Translations Tests
         id: tests
         run: |
@@ -73,8 +73,8 @@ jobs:
       - name: Install Dependencies
         run: |
           cd ivy
-          python3 -m pip install -r requirements/requirements.txt
-          python3 -m pip install -r requirements/optional.txt
+          python3 -m pip install -U -r requirements/requirements.txt
+          python3 -m pip install -U -r requirements/optional.txt
       - name: Run Module Tests
         id: tests
         run: |
@@ -97,8 +97,8 @@ jobs:
       - name: Install Dependencies
         run: |
           cd ivy
-          python3 -m pip install -r requirements/requirements.txt
-          python3 -m pip install -r requirements/optional.txt
+          python3 -m pip install -U -r requirements/requirements.txt
+          python3 -m pip install -U -r requirements/optional.txt
       - name: Run SourceGen Tests
         id: tests
         run: |
@@ -121,8 +121,8 @@ jobs:
       - name: Install Dependencies
         run: |
           cd ivy
-          python3 -m pip install -r requirements/requirements.txt
-          python3 -m pip install -r requirements/optional.txt
+          python3 -m pip install -U -r requirements/requirements.txt
+          python3 -m pip install -U -r requirements/optional.txt
       - name: Run Kornia Tests
         id: tests
         run: |

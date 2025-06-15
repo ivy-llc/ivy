@@ -10,8 +10,12 @@ jobs:
   relevant-tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Ivy 🛎
-        uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: "3.12"
+
+      - name: Checkout Ivy
+        uses: actions/checkout@v4
         with:
           path: ivy
           persist-credentials: false
@@ -39,12 +43,17 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           job_name: ${{ github.job }}
 
+      - name: Install Dependencies
+        run: |
+          cd ivy
+          python3 -m pip install -U -r requirements/requirements.txt
+          python3 -m pip install -U -r requirements/optional.txt
+
       - name: Run Tests
         id: tests
         run: |
-          pip3 install pymongo
           cd ivy
-          docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis ivyllc/ivy:latest python3 scripts/run_tests_from_diff.py
+          python3 scripts/run_tests_from_diff.py
         continue-on-error: true
 
       - name: Check on failures

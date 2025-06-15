@@ -114,17 +114,6 @@ pip install ivy
 ```
 
 <details>
-<summary><b>Docker Image</b></summary>
-
-You can pull the Docker image for Ivy from:
-
-``` bash
-docker pull ivyllc/ivy:latest
-```
-
-</details>
-
-<details>
 <summary><b>From Source</b></summary>
 
 You can also install Ivy from source if you want to take advantage of

@@ -23,7 +23,7 @@ body:
     attributes:
       label: Environment
       description: What environment did you encounter the bug in?
-      placeholder: e.g. Windows 11 using PyCharm CE & Docker.
+      placeholder: e.g. Windows 11, Linux, etc.
     validations:
       required: true
   - type: input
@@ -31,7 +31,7 @@ body:
     attributes:
       label: Ivy Version
       description: Which version of Ivy are you using?
-      placeholder: ex. v1.1.9
+      placeholder: ex. v1.0.0.5
     validations:
       required: true
   - type: checkboxes

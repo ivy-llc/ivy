@@ -12,11 +12,18 @@ jobs:
         with:
           path: ivy
           persist-credentials: false
+
       - uses: actions/setup-python@v3
         with:
-          python-version: "3.10"
+          python-version: "3.12"
+
+      - name: Install Dependencies
+        run: |
+          cd ivy
+          python3 -m pip install -U -r requirements/requirements.txt
+          python3 -m pip install -U -r requirements/optional.txt
 
       - name: Run Docstring Tests
         run: |
           cd ivy
-          docker run --rm -i -v "$(pwd)":/ivy ivyllc/ivy:latest python3 -m pytest ivy_tests/test_docstrings.py -p no:warnings
+          python3 -m pytest ivy_tests/test_docstrings.py -p no:warnings
