@@ -1607,11 +1607,11 @@ class Graph:
         # assert that required visualization packages are installed
         if not ivy.exists(nx):
             raise Exception(
-                "networkx python package must be installed in order to visualize computation graphs."
+                "networkx python package must be installed in order to visualize computation graphs. install using `pip install networkx`"
             )
         if not ivy.exists(Network):
             raise Exception(
-                "pyvis python package must be installed in order to visualize computation graphs."
+                "pyvis python package must be installed in order to visualize computation graphs. install using `pip install pyvis`"
             )
 
         # ensure graph is connected
