@@ -22,11 +22,16 @@ jobs:
       - uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Install Dependencies
+        run: |
+          cd ivy
+          python3 -m pip install -r requirements/requirements.txt
+          python3 -m pip install -r requirements/optional.txt
       - name: Run Transformations Tests
         id: tests
         run: |
           cd ivy
-          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/run_transpiler_tests.sh transformations
+          scripts/shell/run_transpiler_tests.sh transformations
 
   translations:
     strategy:
@@ -41,11 +46,16 @@ jobs:
       - uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Install Dependencies
+        run: |
+          cd ivy
+          python3 -m pip install -r requirements/requirements.txt
+          python3 -m pip install -r requirements/optional.txt
       - name: Run Translations Tests
         id: tests
         run: |
           cd ivy
-          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/run_transpiler_tests.sh translations
+          scripts/shell/run_transpiler_tests.sh translations
 
   module:
     strategy:
@@ -60,11 +70,16 @@ jobs:
       - uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Install Dependencies
+        run: |
+          cd ivy
+          python3 -m pip install -r requirements/requirements.txt
+          python3 -m pip install -r requirements/optional.txt
       - name: Run Module Tests
         id: tests
         run: |
           cd ivy
-          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/run_transpiler_tests.sh module
+          scripts/shell/run_transpiler_tests.sh module
 
   sourcegen:
     strategy:
@@ -79,11 +94,16 @@ jobs:
       - uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Install Dependencies
+        run: |
+          cd ivy
+          python3 -m pip install -r requirements/requirements.txt
+          python3 -m pip install -r requirements/optional.txt
       - name: Run SourceGen Tests
         id: tests
         run: |
           cd ivy
-          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/run_transpiler_tests.sh sourcegen
+          scripts/shell/run_transpiler_tests.sh sourcegen
 
   kornia:
     strategy:
@@ -98,8 +118,13 @@ jobs:
       - uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Install Dependencies
+        run: |
+          cd ivy
+          python3 -m pip install -r requirements/requirements.txt
+          python3 -m pip install -r requirements/optional.txt
       - name: Run Kornia Tests
         id: tests
         run: |
           cd ivy
-          docker run --rm -v "$(pwd)":/ivy ivyllc/ivy:latest scripts/shell/run_transpiler_tests.sh kornia
+          scripts/shell/run_transpiler_tests.sh kornia
