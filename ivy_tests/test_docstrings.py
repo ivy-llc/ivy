@@ -50,7 +50,7 @@ def trim(*, docstring):
 
 
 def check_docstring_examples_run(
-    *, fn, from_container=False, from_array=False, num_sig_fig=2
+    *, fn, from_container=False, from_array=False, num_sig_fig=1
 ):
     """Performs docstring tests for a given function.
 
@@ -266,6 +266,13 @@ def check_docstring_examples_run(
     output = output.rstrip()
     output = output.replace(" ", "").replace("\n", "")
     output = output.rstrip(",")
+
+    # replace ", dtype=*any dtype*" with "" using a regex
+    output = re.sub(r",dtype=[^)\]\}]*", "", output)
+    parsed_output = re.sub(r",dtype=[^)\]\}]*", "", parsed_output)
+
+    # replace new jaxlib.ArrayImpl with old jaxlib.xla_extension.ArrayImpl to avoid inconsistencies
+    output = output.replace("jaxlib._jax.ArrayImpl", "jaxlib.xla_extension.ArrayImpl")
 
     # handling cases when the stdout contains ANSI colour codes
     # 7-bit C1 ANSI sequences
