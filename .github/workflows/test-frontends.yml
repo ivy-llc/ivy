@@ -34,4 +34,4 @@ jobs:
         id: tests
         run: |
           cd ivy
-          python3 -m pytest ivy_tests\test_ivy\test_frontends\test_torch -p no:warnings --tb=no --backend ${{ matrix.backend }} --num-examples 4 --deadline 1000
+          python3 -m pytest ivy_tests/test_ivy/test_frontends/test_torch -p no:warnings --tb=no --backend ${{ matrix.backend }} --num-examples 4 --deadline 1000
