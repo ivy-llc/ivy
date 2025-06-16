@@ -24,7 +24,6 @@ with_time_logs/
 *.so
 *.pyd
 .hypothesis
-.array_api_tests_k_flag*
 .vscode/*
 .idea/*
 .ivy/*
