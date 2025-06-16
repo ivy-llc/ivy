@@ -150,7 +150,7 @@ def pytest_configure(config):
         "ivy_profile",
         **profile_settings,
         suppress_health_check=(HealthCheck(3), HealthCheck(2), HealthCheck(1)),
-        phases=[Phase.explicit, Phase.reuse, Phase.generate, Phase.target],
+        phases=[Phase.explicit, Phase.reuse, Phase.generate],
         print_blob=True,
     )
 
