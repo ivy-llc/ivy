@@ -1,0 +1,35 @@
+# TODO: run these tests on commit/PR when we have them passing
+name: frontend-tests
+on:
+  schedule:
+    - cron: "0 0 * * 0"
+  workflow_dispatch:
+
+jobs:
+
+  torch:
+    strategy:
+      matrix:
+        backend: [ "jax" ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - uses: actions/setup-python@v3
+        with:
+          python-version: 3.12
+
+      - name: Install Dependencies
+        run: |
+          cd ivy
+          python3 -m pip install -U -r requirements/requirements.txt
+          python3 -m pip install -U -r requirements/optional.txt
+
+      - name: Run Transformations Tests
+        id: tests
+        run: |
+          cd ivy
+          python3 -m pytest ivy_tests/test_ivy/test_frontends/test_torch -p no:warnings --tb=no --backend ${{ matrix.backend }} --num-examples 4 --deadline 1000
