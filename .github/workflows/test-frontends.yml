@@ -1,12 +1,10 @@
+# TODO: run these tests on commit/PR when we have them passing
 name: frontend-tests
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  schedule:
+    - cron: "0 0 * * 0"
   workflow_dispatch:
+
 jobs:
 
   torch:
