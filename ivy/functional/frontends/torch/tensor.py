@@ -1057,6 +1057,7 @@ class Tensor:
     def fliplr(self):
         return torch_frontend.fliplr(self)
 
+    @with_unsupported_dtypes({"2.2 and below": ("complex",)}, "torch")
     def sort(self, dim=-1, descending=False):
         return torch_frontend.sort(self, dim=dim, descending=descending)
 
