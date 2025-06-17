@@ -154,7 +154,7 @@ def clone(input, *, memory_format=None):
     return ivy.copy_array(input)
 
 
-@with_unsupported_dtypes({"2.2 and below": ("float16", "bool")}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("float16", "bool", "complex")}, "torch")
 @to_ivy_arrays_and_back
 def corrcoef(input):
     if len(ivy.shape(input)) > 2:
@@ -162,7 +162,11 @@ def corrcoef(input):
             "corrcoef(): expected input to have two or fewer dimensions but got an"
             f" input with {ivy.shape(input)} dimensions"
         )
-    return ivy.corrcoef(input, y=None, rowvar=True)
+    if ivy.is_int_dtype(input.dtype):
+        input = ivy.astype(input, ivy.float32)
+    orig_dtype = input.dtype
+    ret = ivy.corrcoef(input, y=None, rowvar=True)
+    return ivy.astype(ret, orig_dtype)
 
 
 @to_ivy_arrays_and_back

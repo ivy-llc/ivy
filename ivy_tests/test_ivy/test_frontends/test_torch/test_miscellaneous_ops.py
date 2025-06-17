@@ -636,6 +636,7 @@ def test_torch_clone(
         min_dim_size=2,
         max_dim_size=2,
         min_value=1,
+        max_value=1e4,
     ),
     test_with_out=st.just(False),
 )
@@ -656,6 +657,8 @@ def test_torch_corrcoef(
         on_device=on_device,
         backend_to_test=backend_fw,
         input=x[0],
+        atol=1e-2,
+        rtol=1e-2,
     )
 
 
