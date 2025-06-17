@@ -10569,7 +10569,7 @@ def test_torch_new_empty(
         init_input_dtypes=[input_dtype[0]],
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
-            "data": x,
+            "data": x[0],
         },
         method_input_dtypes=[ivy.int32],
         method_all_as_kwargs_np={
@@ -10580,6 +10580,7 @@ def test_torch_new_empty(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
+        test_values=False,
     )
 
 
