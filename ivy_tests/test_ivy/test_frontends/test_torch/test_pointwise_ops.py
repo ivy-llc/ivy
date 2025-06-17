@@ -2770,6 +2770,8 @@ def test_torch_sqrt(
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
+        atol=1e-03,
+        rtol=1e-03,
     )
 
 

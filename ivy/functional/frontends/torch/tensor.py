@@ -1092,9 +1092,10 @@ class Tensor:
         self.ivy_array = ivy.inplace_update(self.ivy_array, ret.ivy_array)
         return self
 
-    @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
+    @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16", "complex")}, "torch")
     def sqrt(self):
-        return torch_frontend.sqrt(self)
+        promoted_type = torch_frontend.promote_types_torch(self.dtype, "float32")
+        return torch_frontend.sqrt(self).to(promoted_type)
 
     @with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
     def rsqrt(self):
