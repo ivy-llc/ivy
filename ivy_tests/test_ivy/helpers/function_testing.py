@@ -1093,7 +1093,7 @@ def test_frontend_function(
             if isinstance(x, np.ndarray)
             else (
                 frontend_config.as_native_dtype(x)
-                if isinstance(x, frontend_config.Dtype)
+                if isinstance(x, frontend_config.Dtype) or isinstance(x, ivy.Dtype)
                 else x
             )
         ),
@@ -2287,7 +2287,7 @@ def test_frontend_method(
             if isinstance(x, np.ndarray)
             else (
                 frontend_config.as_native_dtype(x)
-                if isinstance(x, frontend_config.Dtype)
+                if isinstance(x, frontend_config.Dtype) or isinstance(x, ivy.Dtype)
                 else (
                     frontend_config.as_native_device(x)
                     if isinstance(x, frontend_config.Device)
