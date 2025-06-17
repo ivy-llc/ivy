@@ -540,7 +540,9 @@ class Tensor:
     )
     def not_equal_(self, other, *, out=None):
         ret = self.not_equal(other)
-        self.ivy_array = ivy.inplace_update(self.ivy_array, ret.ivy_array)
+        self.ivy_array = ivy.inplace_update(
+            self.ivy_array, ivy.astype(ret.ivy_array, self.dtype)
+        )
         return self
 
     def eq(self, other):
