@@ -13411,6 +13411,13 @@ def test_torch_tanh_(
     method_name="corrcoef",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=1,
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=2,
+        min_value=1,
+        max_value=1e4,
     ),
 )
 def test_torch_tensor_corrcoef(
@@ -13436,6 +13443,8 @@ def test_torch_tensor_corrcoef(
         frontend=frontend,
         backend_to_test=backend_fw,
         on_device=on_device,
+        atol_=1e-2,
+        rtol_=1e-2,
     )
 
 

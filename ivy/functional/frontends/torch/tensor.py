@@ -2445,10 +2445,7 @@ class Tensor:
         self.ivy_array = ivy.inplace_update(self.ivy_array, ret)
         return self
 
-    @with_supported_dtypes(
-        {"2.2 and below": "valid"},
-        "torch",
-    )
+    @with_unsupported_dtypes({"2.2 and below": ("float16", "bool", "complex")}, "torch")
     def corrcoef(self):
         return torch_frontend.corrcoef(self)
 
