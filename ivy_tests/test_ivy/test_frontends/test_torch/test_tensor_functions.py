@@ -135,6 +135,7 @@ def test_torch_is_nonzero(
 @handle_frontend_test(
     fn_tree="torch.is_tensor",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    number_positional_args=st.just(1),
 )
 def test_torch_is_tensor(
     *,
