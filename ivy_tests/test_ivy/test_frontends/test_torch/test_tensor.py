@@ -202,6 +202,9 @@ def _fill_value_and_size(
         helpers.array_values(
             dtype=dtype[0],
             shape=(1,),
+            max_value=100,
+            min_value=-100,
+            abs_smallest_val=1e-03,
         )
     )
     dtype.append("int32")
@@ -216,7 +219,11 @@ def _fill_value_and_size(
             key="shape",
         )
     )
-    fill_value = draw(helpers.ints()) if "int" in dtype[0] else draw(helpers.floats())
+    fill_value = (
+        draw(helpers.ints(max_value=100, min_value=-100))
+        if "int" in dtype[0] else
+        draw(helpers.floats(max_value=100, min_value=-100, abs_smallest_val=1e-03))
+    )
 
     return dtype, [array, size, fill_value]
 
