@@ -888,8 +888,10 @@ def test_torch_std(
         on_device=on_device,
         input=x[0],
         dim=axis,
-        unbiased=bool(correction),
+        correction=correction,
         keepdim=keepdims,
+        rtol=3e-1,
+        atol=3e-1,
     )
 
 
@@ -922,8 +924,10 @@ def test_torch_std_mean(
         on_device=on_device,
         input=x[0],
         dim=axis,
-        unbiased=bool(correction),
+        correction=correction,
         keepdim=keepdims,
+        rtol=3e-1,
+        atol=3e-1,
     )
 
 

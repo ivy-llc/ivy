@@ -1743,9 +1743,9 @@ class Tensor:
         return self
 
     @numpy_to_torch_style_args
-    def std(self, dim=None, unbiased=True, keepdim=False, *, out=None):
+    def std(self, dim=None, correction=1, keepdim=False, *, out=None):
         return torch_frontend.std(
-            self, dim=dim, unbiased=unbiased, keepdim=keepdim, out=out
+            self, dim=dim, correction=correction, keepdim=keepdim, out=out
         )
 
     @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
