@@ -11000,7 +11000,7 @@ def test_torch_numpy(
     # manual testing required as function return is numpy frontend
     helpers.value_test(
         ret_np_flat=helpers.flatten_and_to_np(ret=ret, backend=backend_fw),
-        ret_np_from_gt_flat=frontend_ret[0],
+        ret_np_from_gt_flat=helpers.flatten_and_to_np(ret=frontend_ret, backend=backend_fw),
         ground_truth_backend="torch",
         backend=backend_fw,
     )
