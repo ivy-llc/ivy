@@ -31,7 +31,7 @@ def is_tensor(obj):
 
 @to_ivy_arrays_and_back
 def numel(input):
-    return ivy.astype(ivy.array(input.size), ivy.int64)
+    return ivy.astype(ivy.array(input.size), ivy.int32)
 
 
 @to_ivy_arrays_and_back
