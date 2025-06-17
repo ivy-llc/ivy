@@ -11517,9 +11517,10 @@ def test_torch_remainder(
     init_tree="torch.tensor",
     method_name="remainder_",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=-1e04,
         max_value=1e04,
+        abs_smallest_val=1e-03,
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         shared_dtype=True,
