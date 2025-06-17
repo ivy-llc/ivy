@@ -296,7 +296,7 @@ def nansum(input, dim=None, keepdim=False, *, dtype=None):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.2 and below": ("float", "complex")},
+    {"2.2 and below": ("float",)},
     "torch",
 )
 def norm(input, p="fro", dim=None, keepdim=False, out=None, dtype=None):

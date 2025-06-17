@@ -10791,12 +10791,10 @@ def test_torch_nonzero(
     method_name="norm",
     p_dtype_x_axis=_get_axis_and_p(),
     keepdim=st.booleans(),
-    dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_torch_norm(
     p_dtype_x_axis,
     keepdim,
-    dtype,
     frontend,
     frontend_method_data,
     init_flags,
@@ -10804,18 +10802,18 @@ def test_torch_norm(
     on_device,
     backend_fw,
 ):
-    p, values = p_dtype_x_axis
-    input_dtype, x, axis = values
+    p, x_dtype, x, axis, dtype = p_dtype_x_axis
+
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
+        init_input_dtypes=[dtype],
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
-        method_input_dtypes=input_dtype,
+        method_input_dtypes=x_dtype,
         method_all_as_kwargs_np={
             "p": p,
             "dim": axis,
             "keepdim": keepdim,
-            "dtype": dtype[0],
+            "dtype": dtype,
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
