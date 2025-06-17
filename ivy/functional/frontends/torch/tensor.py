@@ -2237,7 +2237,7 @@ class Tensor:
             low=from_, high=to, shape=self.size(), dtype=self.dtype
         )
         self.ivy_array = ivy.inplace_update(self.ivy_array, ret)
-        return self.ivy_array
+        return self
 
     @with_unsupported_dtypes(
         {
