@@ -113,6 +113,11 @@ def sum(
     if dtype != x.dtype and not ivy.is_bool_dtype(x):
         x = jnp.astype(x, dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
+    if ivy.is_bool_dtype(x):
+        if jax.config.jax_enable_x64:
+            dtype = ivy.as_native_dtype("int64")
+        else:
+            dtype = ivy.as_native_dtype("int32")
     return jnp.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
 
 
