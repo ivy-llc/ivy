@@ -802,24 +802,23 @@ class Tensor:
         return torch_frontend.tensor(_data)
 
     def unfold(self, dimension, size, step):
+        if dimension < 0:
+            dimension = len(self.shape) + dimension
+
         slices = []
-        self_shape = tuple(self.shape)
-        for i in range(0, self_shape[dimension] - size + 1, step):
+        for i in range(0, self.shape[dimension] - size + 1, step):
             slicing = [slice(None)] * len(self.shape)
             slicing[dimension] = slice(i, i + size)
             slices.append(self.ivy_array[tuple(slicing)])
-        stacked = torch_frontend.stack(slices, dim=dimension)
-        new_shape = list(self.shape)
-        num_slices = (self.shape[dimension] - size) // step + 1
-        new_shape[dimension] = num_slices
-        if dimension == -1:
-            new_shape.insert(dimension, size)
-        else:
-            new_shape.insert(dimension + 1, size)
-        reshaped = stacked.reshape(new_shape)
-        dims = list(range(len(stacked.shape)))
-        dims[-2], dims[-1] = dims[-1], dims[-2]
-        return reshaped.permute(*dims)
+
+        stacked = torch_frontend.stack(slices, dim=0)
+        current_shape = list(stacked.shape)
+        new_axes = list(range(len(current_shape)))
+        slice_axis = new_axes.pop(0)
+        size_axis = new_axes.pop(dimension)
+        new_axes.insert(dimension, slice_axis)
+        new_axes.append(size_axis)
+        return stacked.permute(*new_axes)
 
     def long(self, memory_format=None):
         self.ivy_array = ivy.astype(self.ivy_array, ivy.int64, copy=False)
