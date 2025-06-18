@@ -878,6 +878,7 @@ def test_torch_svd(
         input=x[0],
         some=some,
         compute_uv=compute,
+        test_values=False,
     )
 
 

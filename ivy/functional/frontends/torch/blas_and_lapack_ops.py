@@ -1,4 +1,5 @@
-# global
+from collections import namedtuple
+
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 import ivy.functional.frontends.torch as torch_frontend
@@ -191,11 +192,31 @@ def slogdet(A, *, out=None):
 
 @to_ivy_arrays_and_back
 def svd(input, some=True, compute_uv=True, *, out=None):
-    # TODO: add compute_uv
-    if some:
-        ret = ivy.svd(input, full_matrices=False)
+    SVDResult = namedtuple("svd", ["U", "S", "V"])
+
+    if compute_uv:
+        if some:
+            u, s, vh = ivy.svd(input, full_matrices=False)
+        else:
+            u, s, vh = ivy.svd(input, full_matrices=True)
+
+        v = ivy.matrix_transpose(vh)
+        ret = SVDResult(u, s, v)
     else:
-        ret = ivy.svd(input, full_matrices=True)
+        _, s, _ = ivy.svd(input, full_matrices=False)
+
+        input_shape = ivy.shape(input)
+        batch_shape = list(input_shape[:-2])
+        m, n = input_shape[-2], input_shape[-1]
+
+        u_shape = batch_shape + [m, m]
+        v_shape = batch_shape + [n, n]
+
+        u_zeros = ivy.zeros(u_shape, dtype=ivy.dtype(input))
+        v_zeros = ivy.zeros(v_shape, dtype=ivy.dtype(input))
+
+        ret = SVDResult(u_zeros, s, v_zeros)
+
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret

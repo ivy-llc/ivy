@@ -13152,8 +13152,9 @@ def test_torch_svd(
         on_device=on_device,
         test_values=False,
     )
-    with helpers.update_backend(backend_fw) as ivy_backend:
-        ret = [ivy_backend.to_numpy(x) for x in ret]
+    ivy.set_backend(backend_fw)
+    ret = [ivy.to_numpy(x) for x in ret]
+    ivy.previous_backend()
     frontend_ret = [np.asarray(x) for x in frontend_ret]
 
     u, s, vh = ret
@@ -14376,7 +14377,7 @@ def test_torch_unfold(
     backend_fw,
 ):
     input_dtype, x, axis, size, step = dtype_values_args
-    print(axis, size, step)
+
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
