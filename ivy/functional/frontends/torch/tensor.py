@@ -238,7 +238,7 @@ class Tensor:
         return torch_frontend.float_power(self, exponent)
 
     @numpy_to_torch_style_args
-    @with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
+    @with_unsupported_dtypes({"2.2 and below": ("bfloat16", "bool")}, "torch")
     def sum(self, dim=None, keepdim=False, *, dtype=None):
         return torch_frontend.sum(self, dim=dim, keepdim=keepdim, dtype=dtype)
 
