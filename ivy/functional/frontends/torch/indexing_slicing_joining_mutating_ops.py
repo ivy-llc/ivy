@@ -529,13 +529,7 @@ def unsqueeze(input, dim=0):
 
 @to_ivy_arrays_and_back
 def vsplit(input, indices_or_sections=None, /):
-    if isinstance(indices_or_sections, (list, tuple, ivy.Array)):
-        indices_or_sections = (
-            ivy.diff(indices_or_sections, prepend=[0], append=[input.shape[0]])
-            .astype(ivy.int8)
-            .to_list()
-        )
-    return tuple(ivy.vsplit(input, indices_or_sections))
+    return tensor_split(input, indices_or_sections, dim=0)
 
 
 @to_ivy_arrays_and_back
