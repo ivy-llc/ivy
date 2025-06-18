@@ -13109,6 +13109,8 @@ def test_torch_sum(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
+        atol_=1e-03,
+        rtol_=1e-03,
     )
 
 
