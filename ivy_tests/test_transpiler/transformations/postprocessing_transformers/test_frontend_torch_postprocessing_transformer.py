@@ -94,7 +94,7 @@ def test_frontend_class_attributes():
 
     # part of ivy api so attributes should  be deleted
     transformed = transform_function(torch.Tensor.item)
-    assert "return tf.squeeze(arr)" in transformed
+    assert "ivy.squeeze(arr)" in transformed
 
     transformed = transform_function(torch.Tensor.expm1_)
     assert "ret = torch_frontend.expm1(arr)" in transformed
