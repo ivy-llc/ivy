@@ -2033,6 +2033,7 @@ def test_frontend_method(
     atol_: float = 1e-06,
     tolerance_dict: Optional[dict] = None,
     test_values: Union[bool, str] = True,
+    test_dtypes: bool = True,
 ):
     """Test a class-method that consumes (or returns) arrays for the current
     backend by comparing the result with numpy.
@@ -2067,6 +2068,8 @@ def test_frontend_method(
     test_values
         can be a bool or a string to indicate whether correctness of values should be
         tested. If the value is `with_v`, shapes are tested but not values.
+    test_dtypes
+        whether to check the dtypes of the return values match.
 
     Returns
     -------
@@ -2353,6 +2356,7 @@ def test_frontend_method(
         specific_tolerance_dict=tolerance_dict,
         backend=backend_to_test,
         ground_truth_backend=frontend,
+        test_dtypes=test_dtypes,
     )
 
 
