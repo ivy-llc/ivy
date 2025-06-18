@@ -167,6 +167,7 @@ def value_test(
                 rtol=rtol,
                 atol=atol,
                 ground_truth_backend=ground_truth_backend,
+                test_dtypes=test_dtypes,
             )
     elif rtol is not None:
         for ret_np, ret_np_from_gt in zip(ret_np_flat, ret_np_from_gt_flat):
@@ -177,6 +178,7 @@ def value_test(
                 rtol=rtol,
                 atol=atol,
                 ground_truth_backend=ground_truth_backend,
+                test_dtypes=test_dtypes,
             )
     else:
         for ret_np, ret_np_from_gt in zip(ret_np_flat, ret_np_from_gt_flat):
