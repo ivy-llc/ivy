@@ -240,10 +240,7 @@ class Tensor:
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
     def sum(self, dim=None, keepdim=False, *, dtype=None):
-        promoted_type = self.dtype if dtype is None else dtype
-        return torch_frontend.sum(
-            self.to(promoted_type), dim=dim, keepdim=keepdim, dtype=dtype
-        ).to(promoted_type)
+        return torch_frontend.sum(self, dim=dim, keepdim=keepdim, dtype=dtype)
 
     @with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
     def sin(self):
