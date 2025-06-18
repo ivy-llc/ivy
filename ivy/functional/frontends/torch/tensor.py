@@ -824,8 +824,7 @@ class Tensor:
         return stacked.permute(*new_axes)
 
     def long(self, memory_format=None):
-        self.ivy_array = ivy.astype(self.ivy_array, ivy.int64, copy=False)
-        return self
+        return self.to(torch_frontend.int64)
 
     @numpy_to_torch_style_args
     def max(self, dim=None, keepdim=False):
@@ -1359,7 +1358,7 @@ class Tensor:
         return torch_frontend.pow(other, self)
 
     def __long__(self, memory_format=None):
-        return self.long()
+        return self.long().item()
 
     def __getitem__(self, query, /):
         ivy_args = ivy.nested_map(_to_ivy_array, [self, query])
@@ -1538,12 +1537,7 @@ class Tensor:
 
     def item(self):
         if all(dim == 1 for dim in self.shape):
-            if ivy.current_backend_str() == "tensorflow":
-                import tensorflow as tf
-
-                return tf.squeeze(self.ivy_array.data)
-            else:
-                return self.ivy_array.to_scalar()
+            return self.ivy_array.to_scalar()
         else:
             raise ValueError(
                 "only one element tensors can be converted to Python scalars"

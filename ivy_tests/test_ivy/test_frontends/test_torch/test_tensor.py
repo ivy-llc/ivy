@@ -905,6 +905,10 @@ def test_torch___invert__(
         min_value=-1e04,
         max_value=1e04,
         allow_inf=False,
+        min_num_dims=0,
+        max_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=1,
     ),
 )
 def test_torch___long__(
