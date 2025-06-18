@@ -33,7 +33,7 @@ jobs:
           python3 -m pip install -U -r requirements/requirements.txt
           python3 -m pip install -U -r requirements/optional.txt
 
-      - name: Run Transformations Tests
+      - name: Run Frontend Tests
         id: tests
         run: |
           cd ivy
