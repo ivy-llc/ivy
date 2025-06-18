@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "0 0 * * 0"
   workflow_dispatch:
+    inputs:
+      num_examples:
+        description: "Number of Hypothesis examples to run for each test"
+        required: false
+        default: "5"
 
 jobs:
 
@@ -32,4 +37,4 @@ jobs:
         id: tests
         run: |
           cd ivy
-          python3 -m pytest ivy_tests/test_ivy/test_frontends/test_torch -p no:warnings --tb=no --backend ${{ matrix.backend }} --num-examples 10 --deadline 1000
+          python3 -m pytest ivy_tests/test_ivy/test_frontends/test_torch -p no:warnings --tb=no --backend ${{ matrix.backend }} --num-examples ${{ github.event.inputs.num_examples }} --deadline 1000
