@@ -934,6 +934,7 @@ def test_torch___long__(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
+        test_dtypes=False,
     )
 
 

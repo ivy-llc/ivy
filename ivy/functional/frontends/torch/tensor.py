@@ -1534,7 +1534,10 @@ class Tensor:
 
     def item(self):
         if all(dim == 1 for dim in self.shape):
-            return self.ivy_array.to_scalar()
+            if ivy.current_backend_str() == "tensorflow":
+                return torch_frontend.tensor(ivy.squeeze(self.ivy_array))
+            else:
+                return self.ivy_array.to_scalar()
         else:
             raise ValueError(
                 "only one element tensors can be converted to Python scalars"
