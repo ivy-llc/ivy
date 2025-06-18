@@ -441,13 +441,53 @@ def take_along_dim(input, indices, dim, *, out=None):
 @to_ivy_arrays_and_back
 def tensor_split(input, indices_or_sections, dim=0):
     if isinstance(indices_or_sections, (list, tuple, ivy.Array)):
-        indices_or_sections = (
-            ivy.diff(indices_or_sections, prepend=[0], append=[input.shape[dim]])
-            .astype(ivy.int8)
-            .to_list()
-        )
+        if isinstance(indices_or_sections, ivy.Array):
+            indices = indices_or_sections
+        else:
+            indices = ivy.array(indices_or_sections)
+
+        if indices.shape[0] <= 1:
+            is_sorted = True
+        else:
+            diffs = ivy.diff(indices)
+            is_sorted = ivy.all(diffs >= 0)
+
+        if is_sorted:
+            dim_size = input.shape[dim]            
+            split_points = ivy.concat([
+                ivy.array([0]),
+                indices,
+                ivy.array([dim_size])
+            ])
+            sizes = ivy.diff(split_points)
+            sizes = ivy.maximum(sizes, 0)
+            return ivy.split(
+                input, num_or_size_splits=sizes, axis=dim, with_remainder=True
+            )
+        else:
+            # Fallback: manual slicing for unsorted indices
+            # This is needed for cases like [6, 1, 1] where PyTorch's semantics
+            # cannot be expressed efficiently with pure tensor operations
+            indices_list = indices.to_list()
+            dim_size = input.shape[dim]
+            split_points = [0] + indices_list + [dim_size]
+
+            splits = []
+            for i in range(len(split_points) - 1):
+                start = split_points[i]
+                end = split_points[i + 1]
+
+                slices = [slice(None)] * input.ndim
+                slices[dim] = slice(start, end)
+                splits.append(input[tuple(slices)])
+
+            return tuple(splits)
+
     return ivy.split(
-        input, num_or_size_splits=indices_or_sections, axis=dim, with_remainder=True
+        input,
+        num_or_size_splits=indices_or_sections,
+        axis=dim,
+        with_remainder=True,
     )
 
 
