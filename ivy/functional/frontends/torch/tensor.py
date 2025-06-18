@@ -821,7 +821,8 @@ class Tensor:
         return stacked.permute(*new_axes)
 
     def long(self, memory_format=None):
-        return self.to(torch_frontend.int64)
+        self.ivy_array = ivy.astype(self.ivy_array, ivy.int64, copy=False)
+        return self
 
     @numpy_to_torch_style_args
     def max(self, dim=None, keepdim=False):
