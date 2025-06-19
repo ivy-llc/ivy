@@ -2289,7 +2289,7 @@ class Tensor:
         self.ivy_array = ivy.inplace_update(self.ivy_array, ret.ivy_array)
         return self
 
-    @with_unsupported_dtypes({"2.2 and below": ("uint8",)}, "torch")
+    @with_unsupported_dtypes({"2.2 and below": ("int8", "uint8")}, "torch")
     def index_fill(self, dim, index, value):
         arr = torch_frontend.moveaxis(self, dim, 0)
         arr[ivy.to_list(index)] = value
