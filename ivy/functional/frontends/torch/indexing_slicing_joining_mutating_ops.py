@@ -144,20 +144,11 @@ def gather(input, dim, index, *, sparse_grad=False, out=None):
 
 @to_ivy_arrays_and_back
 def hsplit(input, indices_or_sections=None, /):
-    if isinstance(indices_or_sections, (list, tuple, ivy.Array)):
-        if input.ndim == 1:
-            indices_or_sections = (
-                ivy.diff(indices_or_sections, prepend=[0], append=[input.shape[0]])
-                .astype(ivy.int8)
-                .to_list()
-            )
-        else:
-            indices_or_sections = (
-                ivy.diff(indices_or_sections, prepend=[0], append=[input.shape[1]])
-                .astype(ivy.int8)
-                .to_list()
-            )
-    return tuple(ivy.hsplit(input, indices_or_sections))
+    if input.ndim == 1:
+        dim = 0
+    else:
+        dim = 1
+    return tensor_split(input, indices_or_sections, dim=dim)
 
 
 @to_ivy_arrays_and_back
