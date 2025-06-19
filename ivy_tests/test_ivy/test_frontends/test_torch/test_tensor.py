@@ -14209,6 +14209,9 @@ def test_torch_trunc_(
     method_name="type",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-1e04,
+        max_value=1e04,
+        abs_smallest_val=1e-03,
     ),
     dtype=helpers.get_dtypes("valid", full=False),
 )

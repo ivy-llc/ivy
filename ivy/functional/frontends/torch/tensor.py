@@ -1022,6 +1022,7 @@ class Tensor:
         self.ivy_array = ivy.astype(self.ivy_array, ivy.bool, copy=False)
         return self
 
+    @with_unsupported_dtypes({"2.2 and below": ("complex", "int8", "uint8")}, "torch")
     def type(self, dtype=None, non_blocking=False, **kwargs):
         if ivy.exists(dtype):
             self.ivy_array = ivy.astype(self.ivy_array, dtype)
