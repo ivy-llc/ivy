@@ -3,6 +3,7 @@
         <img class="dark-light" width="50%" src="https://raw.githubusercontent.com/ivy-llc/assets/refs/heads/main/assets/logos/ivy-long.svg"/>
     </a>
 </div>
+<br clear="all" />
 
 <div style="margin-top: 10px; margin-bottom: 10px; display: block;" align="center">
     <a href="https://github.com/ivy-llc/ivy/stargazers">
@@ -63,6 +64,7 @@ pip install ivy
 
 <details>
 <summary><b>From Source</b></summary>
+<br clear="all" />
 
 You can also install Ivy from source if you want to take advantage of
 the latest changes:
@@ -75,7 +77,7 @@ pip install --user -e .
 
 </details>
 
-<br>
+<br clear="all" />
 
 # Supported Frameworks
 
@@ -88,7 +90,7 @@ These are the frameworks that `ivy.transpile` currently supports conversions fro
 | JAX        |   🚧   |   ✅   |
 | NumPy      |   🚧   |   ✅   |
 
-<br>
+<br clear="all" />
 
 # Using ivy
 
@@ -96,7 +98,8 @@ Here's some examples, to help you get started using Ivy! The [examples page](htt
 demos and tutorials showcasing some more use cases for Ivy.
 
   <details>
-   <summary><b>Transpiling any code from one framework to another</b></summary>
+    <summary><b>Transpiling any code from one framework to another</b></summary>
+    <br clear="all" />
 
    ``` python
    import ivy
@@ -114,10 +117,11 @@ demos and tutorials showcasing some more use cases for Ivy.
    ret = tf_fn(tf_x)
    ```
 
-   </details>
+  </details>
 
   <details>
-   <summary><b>Tracing a computational graph of any code</b></summary>
+    <summary><b>Tracing a computational graph of any code</b></summary>
+    <br clear="all" />
 
    ``` python
    import ivy
@@ -137,6 +141,7 @@ demos and tutorials showcasing some more use cases for Ivy.
 
 <details>
 <summary><b>How does ivy work?</b></summary>
+<br clear="all" />
 
 Ivy\'s transpiler allows you to use code from any other framework in your own code.
 Feel free to head over to the docs for the full API
@@ -191,7 +196,7 @@ ret = tf_kornia.color.rgb_to_grayscale(x2)
 ```
 </details>
 
-<br>
+<br clear="all" />
 
 # Contributing
 
@@ -203,11 +208,14 @@ Check out all of our [Open Tasks](https://docs.ivy.dev/overview/contributing/ope
 and find out more info in our [Contributing Guide](https://docs.ivy.dev/overview/contributing.html)
 in the docs.
 
+<br clear="all" />
+
 <a href="https://github.com/ivy-llc/ivy/graphs/contributors">
   <img class="dark-light" src="https://contrib.rocks/image?repo=ivy-llc/ivy&anon=0&columns=20&max=100&r=true" />
 </a>
 
-<br>
+<br clear="all" />
+<br clear="all" />
 
 # Citation
 
