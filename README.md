@@ -53,7 +53,7 @@ Ivy enables you to convert ML models, tools and libraries between frameworks usi
 
 <br clear="all" />
 
-# Installing ivy
+# Installation
 
 The easiest way to install Ivy is using **pip**:
 
@@ -135,26 +135,9 @@ demos and tutorials showcasing some more use cases for Ivy.
 
    </details>
 
-<br>
-
-# How ivy works?
-
-Let's take a look at how Ivy works as a transpiler in more detail to get an idea of why and where to use it.
-
 <details>
-<summary><b>When is Ivy's transpiler useful?</b></summary>
+<summary><b>How does ivy work?</b></summary>
 
-If you want to use building blocks published in other frameworks (neural
-networks, layers, array computing libraries, training pipelines\...),
-you want to integrate code developed in various frameworks, or maybe
-straight up migrate code from one framework to another or even between versions of the same framework, the transpiler is
-definitely the tool for the job! You can use the converted code just
-as if it was code originally developed in that framework, applying
-framework-specific optimizations or tools, instantly exposing your
-project to all of the unique perks of a different framework.
-</details>
-
-\
 Ivy\'s transpiler allows you to use code from any other framework in your own code.
 Feel free to head over to the docs for the full API
 reference, but the functions you\'d most likely want to use are:
@@ -206,6 +189,7 @@ ret = tf_kornia.color.rgb_to_grayscale(x2)
 # Transpilation has already occurred, the tensorflow function runs efficiently
 ret = tf_kornia.color.rgb_to_grayscale(x2)
 ```
+</details>
 
 <br>
 
