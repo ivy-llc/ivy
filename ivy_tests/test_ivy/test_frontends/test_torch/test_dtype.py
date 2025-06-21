@@ -70,7 +70,7 @@ def test_torch_promote_types(
         type1=type1[0],
         type2=type2[0],
     )
-    assert ret == repr(frontend_ret[0]).split(".")[1]
+    assert ret == repr(frontend_ret).split(".")[1]
 
 
 # set_default_dtype
