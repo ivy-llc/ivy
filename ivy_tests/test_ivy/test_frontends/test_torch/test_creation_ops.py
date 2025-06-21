@@ -24,20 +24,25 @@ def _as_strided_helper(draw):
         )
     )
     ndim = len(shape)
-    numel = x[0].size
-    offset = draw(st.integers(min_value=0, max_value=numel - 1))
-    numel = numel - offset
+    numel_total = x[0].size
+    offset = draw(st.integers(min_value=0, max_value=max(0, numel_total - 1)))
+    numel_after_offset = numel_total - offset
     size = draw(
         helpers.get_shape(
             min_num_dims=ndim,
             max_num_dims=ndim,
-        ).filter(lambda s: math.prod(s) <= numel)
+        ).filter(lambda s: math.prod(s) <= numel_after_offset)
     )
     stride = draw(
         helpers.get_shape(
             min_num_dims=ndim,
             max_num_dims=ndim,
-        ).filter(lambda s: all(numel // s_i >= size[i] for i, s_i in enumerate(s)))
+            max_dim_size=max(1, numel_after_offset),
+        ).filter(
+            lambda s: offset
+            + sum((size_i - 1) * s_i for size_i, s_i in zip(size, s) if size_i > 0)
+            < numel_total
+        )
     )
     return x_dtype, x, size, stride, offset
 
