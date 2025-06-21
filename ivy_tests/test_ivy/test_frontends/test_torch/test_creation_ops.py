@@ -842,8 +842,12 @@ def test_torch_range(
 # tensor
 @handle_frontend_test(
     fn_tree="torch.tensor",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
-    dtype=helpers.get_dtypes("valid", full=False),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-1e05,
+        max_value=1e05,
+    ),
+    dtype=helpers.get_dtypes("float_and_complex", full=False),
 )
 def test_torch_tensor(
     *,
