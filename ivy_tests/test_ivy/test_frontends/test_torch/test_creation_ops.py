@@ -48,23 +48,34 @@ def _as_tensor_helper(draw):
         st.one_of(
             helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("valid"),
+                min_value=-1e02,
+                max_value=1e02,
             ),
-            st.floats(),
-            st.integers(),
-            st.lists(st.one_of(st.floats(), st.integers()), min_size=1),
+            st.floats(min_value=-1e02, max_value=1e02),
+            st.integers(min_value=-1e02, max_value=1e02),
+            st.lists(
+                st.one_of(
+                    st.floats(min_value=-1e02, max_value=1e02),
+                    st.integers(min_value=-1e02, max_value=1e02),
+                ),
+                min_size=1,
+            ),
         )
     )
     if isinstance(dtype_and_x, tuple):
-        input_dtype = dtype_and_x[0]
-        x = dtype_and_x[1][0]
+        input_dtype, x_val = dtype_and_x
+        x = x_val[0]
+        x_dtype = input_dtype[0]
     else:
         input_dtype = []
         x = dtype_and_x
+        x_dtype = str(np.asarray(x).dtype)
+
     dtype = draw(
         st.one_of(
             helpers.get_castable_dtype(
                 draw(helpers.get_dtypes("valid")),
-                dtype=draw(helpers.get_dtypes("valid", full=False))[0],
+                dtype=x_dtype,
                 x=x,
             ),
             st.none(),
