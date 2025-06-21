@@ -152,6 +152,7 @@ def eye(
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
 def from_numpy(data, /):
     return ivy.asarray(data, dtype=ivy.dtype(data))
 

@@ -2,8 +2,11 @@
 from hypothesis import strategies as st, assume
 import math
 import numpy as np
+import torch
 
 # local
+import ivy
+import ivy.functional.frontends.torch as torch_frontend
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.helpers.globals as test_globals
 from ivy_tests.test_ivy.helpers import handle_frontend_test, BackendHandler
@@ -480,16 +483,14 @@ def test_torch_from_numpy(
     test_flags,
     backend_fw,
 ):
-    dtype, input = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
-        on_device=on_device,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        data=input[0],
-    )
+    # manual testing as the inputs to this function are numpy arrays rather than tensors
+    _, x = dtype_and_x
+
+    frontend_ret = torch_frontend.from_numpy(x[0])
+    gt_ret = torch.from_numpy(x[0])
+
+    assert frontend_ret.dtype == ivy.as_ivy_dtype(str(gt_ret.dtype).split(".")[-1])
+    assert np.allclose(frontend_ret.numpy(), gt_ret.numpy())
 
 
 @handle_frontend_test(
