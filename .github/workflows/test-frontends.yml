@@ -15,7 +15,7 @@ jobs:
   torch:
     strategy:
       matrix:
-        backend: [ "jax" ]
+        backend: [ "jax", "numpy", "tensorflow" ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,4 +37,4 @@ jobs:
         id: tests
         run: |
           cd ivy
-          python3 -m pytest ivy_tests/test_ivy/test_frontends/test_torch -p no:warnings --tb=no --backend ${{ matrix.backend }} --num-examples ${{ github.event.inputs.num_examples }} --deadline 1000
+          python3 -m pytest ivy_tests/test_ivy/test_frontends/test_torch -p no:warnings --tb=no --backend ${{ matrix.backend }} --num-examples ${{ github.event.inputs.num_examples }}
