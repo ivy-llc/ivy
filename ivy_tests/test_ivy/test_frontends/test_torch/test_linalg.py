@@ -1111,7 +1111,6 @@ def test_torch_qr(
     on_device,
 ):
     input_dtype, x = dtype_and_input
-    ivy.set_backend(backend_fw)
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -1122,7 +1121,7 @@ def test_torch_qr(
         A=x[0],
         test_values=False,
     )
-    ret = [ivy.to_numpy(x) for x in ret]
+    ret = [np.asarray(x.detach()) if backend_fw == "torch" else np.asarray(x) for x in ret]
     frontend_ret = [np.asarray(x) for x in frontend_ret]
 
     q, r = ret
@@ -1136,7 +1135,6 @@ def test_torch_qr(
         ground_truth_backend=frontend,
         backend=backend_fw,
     )
-    ivy.previous_backend()
 
 
 # slogdet
