@@ -5,7 +5,7 @@ from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers import assert_all_close, handle_frontend_test
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
     matrix_is_stable,
 )
@@ -831,16 +831,32 @@ def test_torch_qr(
     backend_fw,
 ):
     dtype, x = dtype_and_x
-    helpers.test_frontend_function(
+    ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        test_values=False,
         rtol=1e-02,
         input=x[0],
         some=some,
+    )
+
+    ret = [np.asarray(x.detach()) if backend_fw == "torch" else np.asarray(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
+
+    q, r = ret
+    frontend_q, frontend_r = frontend_ret
+
+    assert_all_close(
+        ret_np=q @ r,
+        ret_from_gt_np=frontend_q @ frontend_r,
+        rtol=1e-2,
+        atol=1e-2,
+        ground_truth_backend=frontend,
+        backend=backend_fw,
     )
 
 
