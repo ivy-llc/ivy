@@ -551,6 +551,7 @@ def test_torch_eig(
     fn_tree="torch.linalg.eigh",
     dtype_and_x=_get_dtype_and_matrix(dtype="valid", square=True, invertible=True),
     UPLO=st.sampled_from(("L", "U")),
+    number_positional_args=st.just(1),
 )
 def test_torch_eigh(
     *,
@@ -565,7 +566,10 @@ def test_torch_eigh(
     dtype, x = dtype_and_x
     x = np.array(x[0], dtype=dtype[0])
     # make symmetric positive-definite beforehand
-    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+    if "complex" in dtype[0]:
+        x = np.matmul(x.T.conj(), x) + np.identity(x.shape[0]) * 1e-3
+    else:
+        x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
 
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -578,18 +582,28 @@ def test_torch_eigh(
         a=x,
         UPLO=UPLO,
     )
-    ret = [ivy.to_numpy(x) for x in ret]
+    ret = [np.asarray(x.detach()) if backend_fw == "torch" else np.asarray(x) for x in ret]
     frontend_ret = [np.asarray(x) for x in frontend_ret]
 
     L, Q = ret
     frontend_L, frontend_Q = frontend_ret
 
-    assert_all_close(
-        ret_np=Q @ np.diag(L) @ Q.T,
-        ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
-        atol=1e-02,
-        backend=backend_fw,
-    )
+    if "complex" in dtype[0]:
+        assert_all_close(
+            ret_np=Q @ np.diag(L) @ Q.conj().T,
+            ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.conj().T,
+            atol=1e-02,
+            backend=backend_fw,
+            ground_truth_backend="torch",
+        )
+    else:
+        assert_all_close(
+            ret_np=Q @ np.diag(L) @ Q.T,
+            ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
+            atol=1e-02,
+            backend=backend_fw,
+            ground_truth_backend="torch",
+        )
 
 
 # eigvals

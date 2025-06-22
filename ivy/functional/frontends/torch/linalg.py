@@ -79,7 +79,12 @@ def eig(input, *, out=None):
     "torch",
 )
 def eigh(A, UPLO="L", *, out=None):
-    return ivy.eigh(A, UPLO=UPLO, out=out)
+    result_tuple = namedtuple("eigh", ["eigenvalues", "eigenvectors"])
+    eigenvalues, eigenvectors = ivy.eigh(A, UPLO=UPLO, out=out)
+    return result_tuple(
+        ivy.astype(eigenvalues, ivy.float64),
+        ivy.astype(eigenvectors, A.dtype),
+    )
 
 
 @to_ivy_arrays_and_back
