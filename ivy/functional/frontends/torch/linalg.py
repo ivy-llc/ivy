@@ -156,6 +156,9 @@ def lu_factor(A, *, pivot=True, out=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.2 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def lu_factor_ex(A, *, pivot=True, check_errors=False, out=None):
     try:
         # Perform LU factorization and get the result as a named tuple

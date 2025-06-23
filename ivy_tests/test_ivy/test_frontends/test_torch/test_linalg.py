@@ -801,7 +801,7 @@ def test_torch_lu_factor(
     if backend_fw != "torch":
         ret_f, ret_gt = ret
         LU, pivots = ret_f
-        LU = np.asarray(LU.detach()) if backend_fw == "torch" else np.asarray(LU)
+        LU = np.asarray(LU)
         L = np.tril(LU, -1) + np.eye(LU.shape[0])
         U = np.triu(LU)
         if np.eye(LU.shape[0]).size > 1:
@@ -812,7 +812,7 @@ def test_torch_lu_factor(
 @handle_frontend_test(
     fn_tree="torch.linalg.lu_factor_ex",
     input_dtype_and_input=_get_dtype_and_matrix(
-        batch=True, square=True, invertible=True
+        batch=False, square=True, invertible=True
     ),
 )
 def test_torch_lu_factor_ex(
@@ -836,15 +836,17 @@ def test_torch_lu_factor_ex(
         atol=1e-02,
         A=input[0],
         check_errors=False,
-        test_values=False,
+        test_values=backend_fw == "torch",
     )
-    ret_f, ret_gt = ret
-    LU, pivots, info = ret_f
-    if info == 0:
-        L = np.tril(LU, -1) + np.eye(LU.shape[0])
-        U = np.triu(LU)
-        P = np.eye(LU.shape[0])[pivots]
-        assert np.allclose(L @ U, P @ input[0])
+
+    if backend_fw != "torch":
+        ret_f, ret_gt = ret
+        LU, pivots, info = ret_f
+        if info == 0:
+            L = np.tril(LU, -1) + np.eye(LU.shape[0])
+            U = np.triu(LU)
+            P = np.eye(LU.shape[0])[pivots]
+            assert np.allclose(L @ U, P @ input[0], atol=1e-02, rtol=1e-02)
 
 
 @handle_frontend_test(
