@@ -14,6 +14,7 @@ jobs:
 
   torch:
     strategy:
+      fail-fast: false
       matrix:
         backend: [ "jax", "numpy", "tensorflow" ]
     runs-on: ubuntu-latest
