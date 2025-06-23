@@ -1467,6 +1467,8 @@ def test_torch_vecdot(
         available_dtypes=helpers.get_dtypes("valid"),
         valid_axis=True,
         abs_smallest_val=1e04,
+        min_value=-1e04,
+        max_value=1e04,
     ),
     kd=st.booleans(),
     ord=st.one_of(
