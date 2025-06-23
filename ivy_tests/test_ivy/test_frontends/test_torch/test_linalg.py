@@ -1,6 +1,7 @@
 # global
 import math
 import sys
+import scipy.linalg
 import numpy as np
 from hypothesis import strategies as st, assume, settings, HealthCheck
 
@@ -150,6 +151,30 @@ def _get_dtype_and_symmetrix_matrix(draw):
     return [input_dtype], array_vals
 
 
+@st.composite
+def _get_lu_solve_inputs(draw):
+    dtype, matrices = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=helpers.get_shape(
+                min_num_dims=2,
+                max_num_dims=2,
+                min_dim_size=2,
+                max_dim_size=2,
+            ),
+            num_arrays=2,
+            shared_dtype=True,
+            min_value=-1e02,
+            max_value=1e02,
+            abs_smallest_val=1e-02,
+        ).filter(lambda x: np.linalg.cond(x[1][0]) < 1000)
+    )
+    a, b = matrices[0], matrices[1]
+    lu, piv = scipy.linalg.lu_factor(a)
+    piv = (piv + 1).astype(np.int32)
+    return [dtype[0], "int32", dtype[1]], a, b, lu, piv
+
+
 # tensorsolve
 @st.composite
 def _get_solve_matrices(draw):
@@ -269,38 +294,6 @@ def _vander_helper(draw):
 
 # --- Main --- #
 # ------------ #
-
-
-@handle_frontend_test(
-    fn_tree="torch.linalg.lu_solve",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shape=helpers.get_shape(
-            min_num_dims=2, max_num_dims=2, min_dim_size=2, max_dim_size=2
-        ),
-        num_arrays=2,
-        shared_dtype=True,
-    ).filter(lambda x: helpers.matrix_is_stable(x[1][0], cond_limit=10)),
-)
-def test_lu_solve(dtype_x, test_flags, backend_fw, fn_name, on_device):
-    dtype, arr = dtype_x
-    A, B = arr[0], arr[1]
-    ivy.set_backend(backend_fw)
-    lu_ = ivy.lu_factor(A)
-    lu, p = lu_.LU, lu_.p
-    X, X_gt = helpers.test_frontend_function(
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        on_device=on_device,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        lu=lu,
-        p=p,
-        b=B,
-        test_values=False,
-    )
-    assert np.allclose(A @ X, B)
-
 
 @handle_frontend_test(
     fn_tree="torch.linalg.cholesky",
@@ -847,6 +840,59 @@ def test_torch_lu_factor_ex(
             U = np.triu(LU)
             P = np.eye(LU.shape[0])[pivots]
             assert np.allclose(L @ U, P @ input[0], atol=1e-02, rtol=1e-02)
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.lu_solve",
+    dtype_and_inputs=_get_lu_solve_inputs(),
+    number_positional_args=st.just(3),
+)
+def test_torch_lu_solve(
+    *,
+    dtype_and_inputs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, A, B, lu, piv = dtype_and_inputs
+    if backend_fw == "torch":
+        helpers.test_frontend_function(
+            input_dtypes=dtype,
+            backend_to_test=backend_fw,
+            test_flags=test_flags,
+            frontend=frontend,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            LU=lu,
+            pivots=piv,
+            B=B,
+            test_values=True,
+        )
+    else:
+        X, X_gt = helpers.test_frontend_function(
+            input_dtypes=dtype,
+            backend_to_test=backend_fw,
+            test_flags=test_flags,
+            frontend=frontend,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            LU=lu,
+            pivots=piv,
+            B=B,
+            test_values=False,
+        )
+
+        X = np.asarray(X)
+        assert_all_close(
+            ret_np=A @ X,
+            ret_from_gt_np=B,
+            atol=1e-02,
+            rtol=1e-02,
+            backend=backend_fw,
+            ground_truth_backend="torch",
+        )
 
 
 @handle_frontend_test(

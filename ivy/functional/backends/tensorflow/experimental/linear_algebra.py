@@ -251,7 +251,29 @@ def lu_solve(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.linalg.lu_solve(lu, p, b)
+    p = p - 1
+
+    # convert lapack pivots to permutation vector
+    n = tf.shape(lu)[-1]
+    perm_vector = tf.range(n, dtype=p.dtype)
+
+    def body(i, perm):
+        p_i = p[i]
+        val_at_i = perm[i]
+        val_at_p_i = perm[p_i]
+        indices = tf.expand_dims(tf.stack([i, p_i]), axis=-1)
+        updates = tf.stack([val_at_p_i, val_at_i])
+        perm = tf.tensor_scatter_nd_update(perm, indices, updates)
+        return i + 1, perm
+
+    num_pivots = tf.shape(p)[-1]
+    _, permutation_vector = tf.while_loop(
+        lambda i, perm: i < num_pivots,
+        body,
+        [tf.constant(0, dtype=p.dtype), perm_vector],
+        shape_invariants=[tf.TensorShape([]), perm_vector.get_shape()],
+    )
+    return tf.linalg.lu_solve(lu, permutation_vector, b)
 
 
 @with_supported_dtypes(
