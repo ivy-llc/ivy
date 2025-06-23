@@ -201,6 +201,7 @@ def lu_solve(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    p = p - 1
     return jla.lu_solve((lu, p), b)
 
 
