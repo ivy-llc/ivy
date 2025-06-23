@@ -100,15 +100,19 @@ def eigvals(input, *, out=None):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.2 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+    {
+        "2.2 and below": (
+            "float32",
+            "float64",
+            "complex32",
+            "complex64",
+            "complex128",
+        )
+    }, "torch"
 )
 def eigvalsh(input, UPLO="L", *, out=None):
     ret = ivy.eigvalsh(input, UPLO=UPLO, out=out)
-    if "complex64" in ivy.as_ivy_dtype(ret.dtype):
-        ret = ivy.astype(ret, ivy.float32)
-    elif "complex128" in ivy.as_ivy_dtype(ret.dtype):
-        ret = ivy.astype(ret, ivy.float64)
-    return ret
+    return ivy.astype(ret, ivy.float64)
 
 
 @to_ivy_arrays_and_back
