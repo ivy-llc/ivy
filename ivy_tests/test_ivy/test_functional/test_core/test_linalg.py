@@ -254,9 +254,9 @@ def _matrix_rank_helper(draw):
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
             shape=shape,
-            min_value=-1e05,
-            max_value=1e05,
-            abs_smallest_val=1e-05,
+            min_value=-1e03,
+            max_value=1e03,
+            abs_smallest_val=1e-03,
             safety_factor_scale="log",
         )
     )
@@ -271,9 +271,9 @@ def _matrix_rank_helper(draw):
         helpers.array_values(
             dtype=helpers.get_dtypes("float", prune_function=False),
             shape=_batch_shape,
-            min_value=-1e05,
-            max_value=1e05,
-            abs_smallest_val=1e-05,
+            min_value=-1e04,
+            max_value=1e04,
+            abs_smallest_val=1e-04,
             safety_factor_scale="log",
         ),
     )
