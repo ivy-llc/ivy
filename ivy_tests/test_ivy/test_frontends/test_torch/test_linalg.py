@@ -654,27 +654,28 @@ def test_torch_eigvals(
     """
 
     frontend_ret = np.asarray(frontend_ret[0])
-    frontend_ret = np.sort(frontend_ret)
-    frontend_ret_modulus = np.zeros(len(frontend_ret), dtype=np.float64)
-    for i in range(len(frontend_ret)):
-        frontend_ret_modulus[i] = math.sqrt(
-            math.pow(frontend_ret[i].real, 2) + math.pow(frontend_ret[i].imag, 2)
+    if frontend_ret.ndim > 0:
+        frontend_ret = np.sort(frontend_ret)
+        frontend_ret_modulus = np.zeros(len(frontend_ret), dtype=np.float64)
+        for i in range(len(frontend_ret)):
+            frontend_ret_modulus[i] = math.sqrt(
+                math.pow(frontend_ret[i].real, 2) + math.pow(frontend_ret[i].imag, 2)
+            )
+
+        ret = ivy.to_numpy(ret).astype(str(frontend_ret.dtype))
+        ret = np.sort(ret)
+        ret_modulus = np.zeros(len(ret), dtype=np.float64)
+        for i in range(len(ret)):
+            ret_modulus[i] = math.sqrt(math.pow(ret[i].real, 2) + math.pow(ret[i].imag, 2))
+
+        assert_all_close(
+            ret_np=ret_modulus,
+            ret_from_gt_np=frontend_ret_modulus,
+            rtol=1e-2,
+            atol=1e-2,
+            ground_truth_backend=frontend,
+            backend=backend_fw,
         )
-
-    ret = ivy.to_numpy(ret).astype(str(frontend_ret.dtype))
-    ret = np.sort(ret)
-    ret_modulus = np.zeros(len(ret), dtype=np.float64)
-    for i in range(len(ret)):
-        ret_modulus[i] = math.sqrt(math.pow(ret[i].real, 2) + math.pow(ret[i].imag, 2))
-
-    assert_all_close(
-        ret_np=ret_modulus,
-        ret_from_gt_np=frontend_ret_modulus,
-        rtol=1e-2,
-        atol=1e-2,
-        ground_truth_backend=frontend,
-        backend=backend_fw,
-    )
 
 
 # eigvalsh
