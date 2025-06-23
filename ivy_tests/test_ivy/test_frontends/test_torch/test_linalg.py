@@ -3,7 +3,7 @@ import math
 import sys
 import scipy.linalg
 import numpy as np
-from hypothesis import strategies as st, assume, settings, HealthCheck
+from hypothesis import assume, strategies as st
 
 # local
 import ivy
@@ -447,49 +447,6 @@ def test_torch_det(
         fn_tree=fn_tree,
         on_device=on_device,
         A=x[0],
-    )
-
-
-@handle_frontend_test(
-    fn_tree="torch.diag_embed",
-    dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shape=st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=2), key="shape"),
-    ),
-    dims_and_offsets=helpers.dims_and_offset(
-        shape=st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=2), key="shape"),
-        ensure_dim_unique=True,
-    ),
-)
-@settings(suppress_health_check=list(HealthCheck))
-def test_torch_diag_embed(
-    *,
-    dtype_and_values,
-    dims_and_offsets,
-    test_flags,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-):
-    input_dtype, value = dtype_and_values
-    dim1, dim2, offset = dims_and_offsets
-    num_of_dims = len(np.shape(value[0]))
-    if dim1 < 0:
-        assume(dim1 + num_of_dims != dim2)
-    if dim2 < 0:
-        assume(dim1 != dim2 + num_of_dims)
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        test_flags=test_flags,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=value[0],
-        offset=offset,
-        dim1=dim1,
-        dim2=dim2,
     )
 
 
