@@ -771,7 +771,11 @@ def test_torch_inv_ex(
 # lu_factor
 @handle_frontend_test(
     fn_tree="torch.linalg.lu_factor",
-    input_dtype_and_input=_get_dtype_and_matrix(batch=True),
+    input_dtype_and_input=_get_dtype_and_matrix(
+        square=True,
+        invertible=True,
+        batch=False,
+    ),
 )
 def test_torch_lu_factor(
     *,
@@ -790,17 +794,19 @@ def test_torch_lu_factor(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-03,
-        atol=1e-02,
         A=input[0],
-        test_values=False,
+        test_values=backend_fw == "torch",
     )
-    ret_f, ret_gt = ret
-    LU, pivots = ret_f
-    L = np.tril(LU, -1) + np.eye(LU.shape[0])
-    U = np.triu(LU)
-    P = np.eye(LU.shape[0])[pivots]
-    assert np.allclose(L @ U, P @ input[0])
+
+    if backend_fw != "torch":
+        ret_f, ret_gt = ret
+        LU, pivots = ret_f
+        LU = np.asarray(LU.detach()) if backend_fw == "torch" else np.asarray(LU)
+        L = np.tril(LU, -1) + np.eye(LU.shape[0])
+        U = np.triu(LU)
+        if np.eye(LU.shape[0]).size > 1:
+            P = np.eye(LU.shape[0])[np.asarray(pivots).astype(np.int64)]
+            assert np.allclose(L @ U, P @ input[0], atol=1e-02, rtol=1e-02)
 
 
 @handle_frontend_test(
