@@ -130,8 +130,7 @@ def eigh(
         eigenvalues, eigenvectors = tf.linalg.eigh(x)
 
     elif UPLO == "U":
-        axes = list(range(len(x.shape) - 2)) + [len(x.shape) - 1, len(x.shape) - 2]
-        eigenvalues, eigenvectors = tf.linalg.eigh(tf.transpose(x, perm=axes))
+        eigenvalues, eigenvectors = tf.linalg.eigh(tf.linalg.adjoint(x))
     return result_tuple(eigenvalues, eigenvectors)
 
 
