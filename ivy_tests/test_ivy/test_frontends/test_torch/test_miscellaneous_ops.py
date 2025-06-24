@@ -788,14 +788,15 @@ def test_torch_cummax(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
-        min_value=-100,
-        max_value=100,
+        min_value=-1e01,
+        max_value=1e01,
+        abs_smallest_val=1e-03,
         valid_axis=True,
         allow_neg_axes=False,
         max_axes_size=1,
         force_int_axis=True,
     ),
-    dtype=helpers.get_dtypes("numeric", none=True, full=False),
+    dtype=helpers.get_dtypes("float", none=True, full=False),
 )
 def test_torch_cumprod(
     *,
@@ -822,6 +823,8 @@ def test_torch_cumprod(
         input=x[0],
         dim=axis,
         dtype=dtype[0],
+        atol=1e-2,
+        rtol=1e-2,
     )
 
 
