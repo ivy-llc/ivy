@@ -794,6 +794,7 @@ def test_frontend_function(
     atol: float = 1e-06,
     tolerance_dict: Optional[dict] = None,
     test_values: bool = True,
+    test_dtypes: bool = True,
     **all_as_kwargs_np,
 ):
     """Test a frontend function for the current backend by comparing the result
@@ -821,6 +822,8 @@ def test_frontend_function(
         dictionary of tolerance values for specific dtypes.
     test_values
         if True, test for the correctness of the resulting values.
+    test_dtypes
+        if True, test for the correctness of the resulting dtypes.
     all_as_kwargs_np
         input arguments to the function as keyword arguments.
         If an input argument has the same name as any other parameter
@@ -1165,6 +1168,7 @@ def test_frontend_function(
         specific_tolerance_dict=tolerance_dict,
         backend=backend_to_test,
         ground_truth_backend=frontend,
+        test_dtypes=test_dtypes,
     )
 
 
