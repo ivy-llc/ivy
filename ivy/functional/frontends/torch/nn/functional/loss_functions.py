@@ -412,18 +412,6 @@ def norm(input, axis):
     return ivy.sqrt(ivy.sum(ivy.square(input), axis=axis))
 
 
-def pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
-    x1, x2 = torch_frontend.promote_types_of_torch_inputs(x1, x2)
-    x1_dim = len(x1.shape)
-    x2_dim = len(x2.shape)
-    if x1_dim > x2_dim:
-        output_dim = x1_dim
-    else:
-        output_dim = x2_dim
-
-    return ivy.vector_norm(x1 - x2 + eps, ord=p, axis=output_dim - 1, keepdims=keepdim)
-
-
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
 def poisson_nll_loss(
@@ -558,7 +546,7 @@ def triplet_margin_with_distance_loss(
     )
 
     if distance_function is None:
-        distance_function = pairwise_distance
+        distance_function = torch_frontend.nn.functional.pairwise_distance
 
     dist_pos = distance_function(anchor, positive)
     dist_neg = distance_function(anchor, negative)
