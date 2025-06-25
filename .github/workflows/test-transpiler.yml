@@ -10,9 +10,6 @@ on:
 jobs:
 
   transformations:
-    strategy:
-      matrix:
-        python-version: ["3.10", "3.12"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,7 +18,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v3
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.12"
       - name: Install Dependencies
         run: |
           cd ivy
@@ -34,9 +31,6 @@ jobs:
           scripts/shell/run_transpiler_tests.sh transformations
 
   translations:
-    strategy:
-      matrix:
-        python-version: ["3.10", "3.12"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -45,7 +39,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v3
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.12"
       - name: Install Dependencies
         run: |
           cd ivy
@@ -58,9 +52,6 @@ jobs:
           scripts/shell/run_transpiler_tests.sh translations
 
   module:
-    strategy:
-      matrix:
-        python-version: ["3.10", "3.12"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -69,7 +60,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v3
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.12"
       - name: Install Dependencies
         run: |
           cd ivy
@@ -82,9 +73,6 @@ jobs:
           scripts/shell/run_transpiler_tests.sh module
 
   sourcegen:
-    strategy:
-      matrix:
-        python-version: ["3.10", "3.12"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -93,7 +81,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v3
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.12"
       - name: Install Dependencies
         run: |
           cd ivy
@@ -106,9 +94,6 @@ jobs:
           scripts/shell/run_transpiler_tests.sh sourcegen
 
   kornia:
-    strategy:
-      matrix:
-        python-version: ["3.10", "3.12"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -117,7 +102,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v3
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.12"
       - name: Install Dependencies
         run: |
           cd ivy
