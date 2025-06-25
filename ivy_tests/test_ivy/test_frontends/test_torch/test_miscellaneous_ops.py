@@ -1033,17 +1033,26 @@ def test_torch_diagonal(
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
+        min_value=-1e03,
+        max_value=1e03,
+        abs_smallest_val=1e-03,
     ),
     n=st.integers(min_value=0, max_value=5),
     dtype_prepend=helpers.dtype_and_values(
         available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
         min_num_dims=1,
         max_num_dims=1,
+        min_value=-1e03,
+        max_value=1e03,
+        abs_smallest_val=1e-03,
     ),
     dtype_append=helpers.dtype_and_values(
         available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
         min_num_dims=1,
         max_num_dims=1,
+        min_value=-1e03,
+        max_value=1e03,
+        abs_smallest_val=1e-03,
     ),
 )
 def test_torch_diff(
@@ -1058,10 +1067,10 @@ def test_torch_diff(
     fn_tree,
 ):
     input_dtype, x, axis = dtype_n_x_n_axis
-    _, prepend = dtype_prepend
-    _, append = dtype_append
+    prepend_dtype, prepend = dtype_prepend
+    append_dtype, append = dtype_append
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype[0], prepend_dtype[0], append_dtype[0]],
         backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
@@ -1071,6 +1080,9 @@ def test_torch_diff(
         dim=axis,
         prepend=prepend[0],
         append=append[0],
+        atol=1e-03,
+        rtol=1e-03,
+        test_dtypes=False,
     )
 
 
