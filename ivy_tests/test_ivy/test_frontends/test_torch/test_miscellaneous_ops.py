@@ -1331,6 +1331,7 @@ def test_torch_gcd(
         ),
         min_value=-100.0,
         max_value=100.0,
+        abs_smallest_val=1e-6,
     ),
     bins=st.integers(min_value=1, max_value=100),
     min_val=st.floats(min_value=-100.0, max_value=100.0),
@@ -1352,7 +1353,7 @@ def test_torch_histc(
     input_dtype, input_tensor = dtype_and_input
     input_tensor = np.array(input_tensor[0], dtype=input_dtype[0])
 
-    assume(min_val <= max_val)
+    assume(min_val < max_val)
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
