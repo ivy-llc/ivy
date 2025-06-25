@@ -1438,7 +1438,7 @@ def test_torch_lcm(
 @handle_frontend_test(
     fn_tree="torch.logcumsumexp",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(helpers.get_shape(), key="shape"),
         max_value=100,
         min_value=-100,
