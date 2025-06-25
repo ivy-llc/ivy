@@ -359,6 +359,7 @@ def histc(input, bins=100, min=0, max=0, *, out=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.2 and below": ("float16", "float32", "float64")}, "torch")
 def kron(input, other, *, out=None):
     return ivy.kron(input, other, out=out)
 

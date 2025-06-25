@@ -1372,7 +1372,7 @@ def test_torch_histc(
 @handle_frontend_test(
     fn_tree="torch.kron",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=2
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
     ),
 )
 def test_torch_kron(
@@ -1386,7 +1386,7 @@ def test_torch_kron(
     input_dtypes, x = dtype_and_x
     input, label = x[0], x[1]
     helpers.test_frontend_function(
-        input_dtypes=["float32"],
+        input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
