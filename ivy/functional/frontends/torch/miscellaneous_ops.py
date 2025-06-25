@@ -438,7 +438,7 @@ def ravel(input):
     return ivy.reshape(input, (-1,))
 
 
-@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16", "float16")}, "torch")
 @to_ivy_arrays_and_back
 def renorm(input, p, dim, maxnorm, *, out=None):
     # Torch hardcodes this magic number

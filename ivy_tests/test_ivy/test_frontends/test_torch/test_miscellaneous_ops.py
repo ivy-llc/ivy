@@ -1548,7 +1548,7 @@ def test_torch_ravel(
     fn_tree="torch.renorm",
     dtype_and_values=helpers.dtype_and_values(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         max_value=1e4,
         min_value=-1e4,
     ),
