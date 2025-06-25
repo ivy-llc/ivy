@@ -178,17 +178,6 @@ def cosine_embedding_loss(
     return loss
 
 
-def cosine_similarity(x1, x2):
-    axis = None
-    if len(x1.shape) == len(x2.shape) and len(x2.shape) == 2:
-        axis = 1
-    input1_norm = norm(x1, axis=axis)
-    input2_norm = norm(x2, axis=axis)
-    norm_mm = input1_norm * input2_norm
-    norm_mm, eps = torch_frontend.promote_types_of_torch_inputs(norm_mm, 1e-08)
-    return ivy.sum(x1 * x2, axis=axis) / ivy.maximum(norm_mm, eps)
-
-
 @to_ivy_arrays_and_back
 def cross_entropy(
     input,
