@@ -350,12 +350,35 @@ def histc(input, bins=100, min=0, max=0, *, out=None):
     if min == 0.0 and max == 0.0:
         min = ivy.min(input)
         max = ivy.max(input)
-    input = ivy.flatten(input)
-    bin_edges = ivy.linspace(min, max, bins + 1)
-    bin_indices = ivy.searchsorted(bin_edges, input, side="right") - 1
+
+    if min == max:
+        count = ivy.sum(ivy.astype(input == min, input.dtype))
+        ret = ivy.zeros((bins,), dtype=input.dtype)
+        if bins > 0:
+            ret[0] = count
+        return ret
+
+    # filter out values outside of range
+    input_filtered = input[(input >= min) & (input <= max)]
+
+    if input_filtered.size == 0:
+        return ivy.zeros(bins, dtype=input.dtype)
+
+    # handle max value including in last bin
+    epsilon = (max - min) / 1e6
+    input_adjusted = ivy.where(
+        input_filtered == max, input_filtered - epsilon, input_filtered
+    )
+
+    # calculate bin indices
+    bin_indices = ivy.floor(((input_adjusted - min) / (max - min)) * bins)
+
+    # clip bin_indices to be within [0, bins-1]
     bin_indices = ivy.clip(bin_indices, 0, bins - 1)
-    histogram = ivy.bincount(bin_indices, minlength=bins)
-    return ivy.astype(histogram, input.dtype)
+
+    return ivy.bincount(bin_indices.astype("int64"), minlength=bins).astype(
+        input.dtype
+    )
 
 
 @to_ivy_arrays_and_back
