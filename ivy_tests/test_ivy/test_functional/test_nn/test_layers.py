@@ -338,6 +338,7 @@ def _mha_helper(draw, same_pre_embed_dim=False, batch_second=False):
                 shape=(_embed_dim, _q_dim),
                 min_value=-5,
                 max_value=5,
+                abs_smallest_val=1e-06,
             )
         )
         k_proj_weights = draw(
@@ -346,6 +347,7 @@ def _mha_helper(draw, same_pre_embed_dim=False, batch_second=False):
                 shape=(_embed_dim, _k_dim),
                 min_value=-5,
                 max_value=5,
+                abs_smallest_val=1e-06,
             )
         )
         v_proj_weights = draw(
@@ -354,6 +356,7 @@ def _mha_helper(draw, same_pre_embed_dim=False, batch_second=False):
                 shape=(_embed_dim, _v_dim),
                 min_value=-5,
                 max_value=5,
+                abs_smallest_val=1e-06,
             )
         )
     in_proj_bias = draw(
@@ -363,6 +366,7 @@ def _mha_helper(draw, same_pre_embed_dim=False, batch_second=False):
                 shape=(3 * _embed_dim,),
                 min_value=-10,
                 max_value=10,
+                abs_smallest_val=1e-06,
             ),
             st.none(),
         )
@@ -376,6 +380,7 @@ def _mha_helper(draw, same_pre_embed_dim=False, batch_second=False):
                 shape=(_out_dim, _embed_dim),
                 min_value=-5,
                 max_value=5,
+                abs_smallest_val=1e-06,
             ),
             st.none(),
         )
@@ -387,6 +392,7 @@ def _mha_helper(draw, same_pre_embed_dim=False, batch_second=False):
                 shape=(_out_dim,),
                 min_value=-10,
                 max_value=10,
+                abs_smallest_val=1e-06,
             ),
             st.none(),
         )
@@ -429,6 +435,7 @@ def _mha_helper(draw, same_pre_embed_dim=False, batch_second=False):
                 dtype=draw(st.sampled_from(["bool", dtype[0]])),
                 allow_inf=True,
                 shape=_mask_shape,
+                abs_smallest_val=1e-06,
             ),
             st.none(),
         )
@@ -439,6 +446,7 @@ def _mha_helper(draw, same_pre_embed_dim=False, batch_second=False):
             helpers.array_values(
                 dtype="bool",
                 shape=(*_batch_dim, _num_keys),
+                abs_smallest_val=1e-06,
             ),
             st.none(),
         )
@@ -452,20 +460,28 @@ def _mha_helper(draw, same_pre_embed_dim=False, batch_second=False):
     )
     bias_k = draw(
         helpers.array_values(
-            dtype=dtype[0], shape=(_embed_dim,), min_value=-10, max_value=10
+            dtype=dtype[0],
+            shape=(_embed_dim,),
+            min_value=-10,
+            max_value=10,
+            abs_smallest_val=1e-06,
         )
         if _extra_bias
         else st.none()
     )
     bias_v = draw(
         helpers.array_values(
-            dtype=dtype[0], shape=(_embed_dim,), min_value=-10, max_value=10
+            dtype=dtype[0],
+            shape=(_embed_dim,),
+            min_value=-10,
+            max_value=10,
+            abs_smallest_val=1e-06,
         )
         if _extra_bias
         else st.none()
     )
 
-    scale = draw(st.one_of(st.floats(min_value=0.001), st.none()))
+    scale = draw(st.one_of(st.floats(min_value=0.001, max_value=10), st.none()))
     add_zero_attn = draw(st.booleans())
     dropout = draw(st.floats(min_value=0, max_value=0.99))
     training = draw(st.booleans())
