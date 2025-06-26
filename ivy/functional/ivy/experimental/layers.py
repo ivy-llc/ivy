@@ -1273,7 +1273,7 @@ def dft(
         The length of the signal.If greater than the axis dimension,
         the signal will be zero-padded up to dft_length. If less than
         the axis dimension, only the first dft_length values will be
-        used as the signal. It’s an optional value.
+        used as the signal. It's an optional value.
     norm
           Optional argument, "backward", "ortho" or "forward". Defaults to be
           "backward".
@@ -1777,7 +1777,6 @@ def interpolate(
         - trilinear
         - nd
         - nearest
-        - nearest-exact
         - area
         - tf_area
         - bicubic
@@ -2252,64 +2251,93 @@ def adaptive_max_pool3d(
         squeeze = True
     elif input.ndim != 5:
         raise ivy.utils.exceptions.IvyException(
-            f"Got {len(input.shape)}D input, but only 4D and 5D inputs are supported.",
+            f"Got {len(input.shape)}D input, but only 4D and 5D inputs are supported."
         )
 
     if isinstance(output_size, int):
         output_size = (output_size, output_size, output_size)
 
-    if all(i_s % o_s == 0 for i_s, o_s in zip(input.shape[-3:], output_size)):
-        stride = tuple(i_s // o_s for i_s, o_s in zip(input.shape[-3:], output_size))
-        kernel_size = stride
-        pooled_output = ivy.max_pool3d(
-            input, kernel_size, stride, "VALID", data_format="NCDHW"
-        )
-        if squeeze:
-            return ivy.squeeze(pooled_output, axis=0)
-        return pooled_output
+    in_d, in_h, in_w = input.shape[-3:]
+    out_d, out_h, out_w = output_size
 
     idxd, length_d, range_max_d, adaptive_d = _compute_idx(
-        input.shape[-3], output_size[-3], input.device
+        in_d, out_d, input.device
     )
     idxh, length_h, range_max_h, adaptive_h = _compute_idx(
-        input.shape[-2], output_size[-2], input.device
+        in_h, out_h, input.device
     )
     idxw, length_w, range_max_w, adaptive_w = _compute_idx(
-        input.shape[-1], output_size[-1], input.device
+        in_w, out_w, input.device
     )
 
-    # to numpy and back in order to bypass a slicing error in tensorflow
+    all_adaptive = adaptive_d or adaptive_h or adaptive_w
+
+    if not all_adaptive:
+        max_len_d = length_d
+        max_len_h = length_h
+        max_len_w = length_w
+    else:
+        max_len_d = ivy.shape(range_max_d)[0]
+        max_len_h = ivy.shape(range_max_h)[0]
+        max_len_w = ivy.shape(range_max_w)[0]
+
+    grid = ivy.meshgrid(
+        ivy.arange(out_d),
+        ivy.arange(out_h),
+        ivy.arange(out_w),
+        ivy.arange(max_len_d),
+        ivy.arange(max_len_h),
+        ivy.arange(max_len_w),
+        indexing="ij",
+    )
+
+    d_indices = idxd[grid[0], grid[3]]
+    h_indices = idxh[grid[1], grid[4]]
+    w_indices = idxw[grid[2], grid[5]]
+
     vals = ivy.array(
-        input.to_numpy()[..., _expand_to_dim(idxd, 5), _expand_to_dim(idxh, 4), idxw],
-        device=input.device,
+        input.to_numpy()[..., d_indices, h_indices, w_indices], device=input.device
     )
 
-    if not (adaptive_d or adaptive_h or adaptive_w):
-        ret = ivy.max(vals, axis=(-3, -1))
-        ret = ivy.squeeze(ret, axis=0) if squeeze else ret
-        return ret
-
-    vals, length_d = _mask(
-        vals, length_d, range_max_d, dim=-3, mask_value=float("-inf")
-    )
-    vals, length_h = _mask(
-        vals, length_h, range_max_h, dim=-2, mask_value=float("-inf")
-    )
-    vals, length_w = _mask(
-        vals, length_w, range_max_w, dim=-1, mask_value=float("-inf")
-    )
-
-    ret = None
-    for i, j, k in itertools.product(
-        range(vals.shape[-4]), range(vals.shape[-2]), range(vals.shape[-1])
-    ):
-        if ret is None:
-            ret = vals[..., i, :, j, k]
+    if all_adaptive:
+        if adaptive_d:
+            mask_d = ivy.greater_equal(
+                range_max_d, ivy.expand_dims(length_d, axis=-1)
+            )
+            mask_d_expanded = mask_d[grid[0], grid[3]]
         else:
-            ret = ivy.maximum(ret, vals[..., i, :, j, k])
-    pooled_output = ret.astype(vals.dtype)
-    pooled_output = ivy.squeeze(pooled_output, axis=0) if squeeze else pooled_output
-    return pooled_output
+            mask_d = ivy.greater_equal(range_max_d, length_d)
+            mask_d_expanded = mask_d[grid[3]]
+
+        if adaptive_h:
+            mask_h = ivy.greater_equal(
+                range_max_h, ivy.expand_dims(length_h, axis=-1)
+            )
+            mask_h_expanded = mask_h[grid[1], grid[4]]
+        else:
+            mask_h = ivy.greater_equal(range_max_h, length_h)
+            mask_h_expanded = mask_h[grid[4]]
+
+        if adaptive_w:
+            mask_w = ivy.greater_equal(
+                range_max_w, ivy.expand_dims(length_w, axis=-1)
+            )
+            mask_w_expanded = mask_w[grid[2], grid[5]]
+        else:
+            mask_w = ivy.greater_equal(range_max_w, length_w)
+            mask_w_expanded = mask_w[grid[5]]
+
+        mask = ivy.logical_or(
+            ivy.logical_or(mask_d_expanded, mask_h_expanded), mask_w_expanded
+        )
+
+        vals = ivy.where(mask, ivy.array(float("-inf"), device=vals.device), vals)
+
+    ret = ivy.max(vals, axis=(-3, -2, -1)).astype(input.dtype)
+
+    if squeeze:
+        return ivy.squeeze(ret, axis=0)
+    return ret
 
 
 adaptive_max_pool3d.mixed_backend_wrappers = {
@@ -2664,7 +2692,7 @@ def sliding_window(
     stride
         The stride of the sliding window for each dimension of input
     padding
-        Either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        Either the string 'SAME' (padding with zeros evenly), the string 'VALID' (no
         padding), or a sequence of n (low, high) integer pairs that give the padding to
         apply before and after each spatial dimension.
     dilation
@@ -2800,7 +2828,7 @@ def reduce_window(
     window_strides
         A sequence containing the window strides.
     padding
-        Either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        Either the string 'SAME' (padding with zeros evenly), the string 'VALID' (no
         padding), or a sequence of n (low, high) integer pairs that give the padding to
         apply before and after each spatial dimension.
     base_dilation

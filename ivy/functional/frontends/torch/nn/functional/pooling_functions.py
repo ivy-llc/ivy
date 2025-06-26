@@ -48,18 +48,6 @@ def adaptive_max_pool2d(
     return ivy.adaptive_max_pool2d(input, output_size).astype(input.dtype)
 
 
-@with_unsupported_dtypes(
-    {
-        "2.2 and below": (
-            "float16",
-            "int8",
-            "int16",
-            "bool",
-            "uint8",
-        )
-    },
-    "torch",
-)
 @to_ivy_arrays_and_back
 def adaptive_max_pool3d(
     input,
