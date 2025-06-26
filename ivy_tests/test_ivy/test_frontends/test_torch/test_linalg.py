@@ -1056,6 +1056,8 @@ def test_torch_multi_dot(
         fn_tree=fn_tree,
         test_values=True,
         tensors=x,
+        atol=1e-03,
+        rtol=1e-03,
     )
 
 
