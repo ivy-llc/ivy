@@ -1273,7 +1273,7 @@ def dft(
         The length of the signal.If greater than the axis dimension,
         the signal will be zero-padded up to dft_length. If less than
         the axis dimension, only the first dft_length values will be
-        used as the signal. It’s an optional value.
+        used as the signal. It's an optional value.
     norm
           Optional argument, "backward", "ortho" or "forward". Defaults to be
           "backward".
@@ -1777,7 +1777,6 @@ def interpolate(
         - trilinear
         - nd
         - nearest
-        - nearest-exact
         - area
         - tf_area
         - bicubic
@@ -2256,46 +2255,85 @@ def adaptive_max_pool3d(
         )
 
     if isinstance(output_size, int):
-        out_d, out_h, out_w = output_size, output_size, output_size
-    else:
-        out_d, out_h, out_w = output_size
+        output_size = (output_size, output_size, output_size)
 
     in_d, in_h, in_w = input.shape[-3:]
+    out_d, out_h, out_w = output_size
 
-    if out_d is None:
-        out_d = in_d
-    if out_h is None:
-        out_h = in_h
-    if out_w is None:
-        out_w = in_w
+    idxd, length_d, range_max_d, adaptive_d = _compute_idx(
+        in_d, out_d, input.device
+    )
+    idxh, length_h, range_max_h, adaptive_h = _compute_idx(
+        in_h, out_h, input.device
+    )
+    idxw, length_w, range_max_w, adaptive_w = _compute_idx(
+        in_w, out_w, input.device
+    )
 
-    start_indices_d = ivy.floor(ivy.arange(out_d) * (in_d / out_d)).astype("int64")
-    end_indices_d = ivy.ceil((ivy.arange(out_d) + 1) * (in_d / out_d)).astype("int64")
+    all_adaptive = adaptive_d or adaptive_h or adaptive_w
 
-    start_indices_h = ivy.floor(ivy.arange(out_h) * (in_h / out_h)).astype("int64")
-    end_indices_h = ivy.ceil((ivy.arange(out_h) + 1) * (in_h / out_h)).astype("int64")
+    if not all_adaptive:
+        max_len_d = length_d
+        max_len_h = length_h
+        max_len_w = length_w
+    else:
+        max_len_d = ivy.shape(range_max_d)[0]
+        max_len_h = ivy.shape(range_max_h)[0]
+        max_len_w = ivy.shape(range_max_w)[0]
 
-    start_indices_w = ivy.floor(ivy.arange(out_w) * (in_w / out_w)).astype("int64")
-    end_indices_w = ivy.ceil((ivy.arange(out_w) + 1) * (in_w / out_w)).astype("int64")
+    grid = ivy.meshgrid(
+        ivy.arange(out_d),
+        ivy.arange(out_h),
+        ivy.arange(out_w),
+        ivy.arange(max_len_d),
+        ivy.arange(max_len_h),
+        ivy.arange(max_len_w),
+        indexing="ij",
+    )
 
-    pooled = []
-    for i in range(out_d):
-        d_start, d_end = start_indices_d[i], end_indices_d[i]
-        pooled_rows = []
-        for j in range(out_h):
-            h_start, h_end = start_indices_h[j], end_indices_h[j]
-            pooled_cols = []
-            for k in range(out_w):
-                w_start, w_end = start_indices_w[k], end_indices_w[k]
-                
-                window = input[..., d_start:d_end, h_start:h_end, w_start:w_end]
-                
-                pooled_val = ivy.max(window, axis=(-3, -2, -1))
-                pooled_cols.append(pooled_val)
-            pooled_rows.append(ivy.stack(pooled_cols, axis=-1))
-        pooled.append(ivy.stack(pooled_rows, axis=-2))
+    d_indices = idxd[grid[0], grid[3]]
+    h_indices = idxh[grid[1], grid[4]]
+    w_indices = idxw[grid[2], grid[5]]
 
-    ret = ivy.stack(pooled, axis=-3)
+    vals = ivy.array(
+        input.to_numpy()[..., d_indices, h_indices, w_indices], device=input.device
+    )
+
+    if all_adaptive:
+        if adaptive_d:
+            mask_d = ivy.greater_equal(
+                range_max_d, ivy.expand_dims(length_d, axis=-1)
+            )
+            mask_d_expanded = mask_d[grid[0], grid[3]]
+        else:
+            mask_d = ivy.greater_equal(range_max_d, length_d)
+            mask_d_expanded = mask_d[grid[3]]
+
+        if adaptive_h:
+            mask_h = ivy.greater_equal(
+                range_max_h, ivy.expand_dims(length_h, axis=-1)
+            )
+            mask_h_expanded = mask_h[grid[1], grid[4]]
+        else:
+            mask_h = ivy.greater_equal(range_max_h, length_h)
+            mask_h_expanded = mask_h[grid[4]]
+
+        if adaptive_w:
+            mask_w = ivy.greater_equal(
+                range_max_w, ivy.expand_dims(length_w, axis=-1)
+            )
+            mask_w_expanded = mask_w[grid[2], grid[5]]
+        else:
+            mask_w = ivy.greater_equal(range_max_w, length_w)
+            mask_w_expanded = mask_w[grid[5]]
+
+        mask = ivy.logical_or(
+            ivy.logical_or(mask_d_expanded, mask_h_expanded), mask_w_expanded
+        )
+
+        vals = ivy.where(mask, ivy.array(float("-inf"), device=vals.device), vals)
+
+    ret = ivy.max(vals, axis=(-3, -2, -1)).astype(input.dtype)
 
     if squeeze:
         return ivy.squeeze(ret, axis=0)
@@ -2654,7 +2692,7 @@ def sliding_window(
     stride
         The stride of the sliding window for each dimension of input
     padding
-        Either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        Either the string 'SAME' (padding with zeros evenly), the string 'VALID' (no
         padding), or a sequence of n (low, high) integer pairs that give the padding to
         apply before and after each spatial dimension.
     dilation
@@ -2790,7 +2828,7 @@ def reduce_window(
     window_strides
         A sequence containing the window strides.
     padding
-        Either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        Either the string 'SAME' (padding with zeros evenly), the string 'VALID' (no
         padding), or a sequence of n (low, high) integer pairs that give the padding to
         apply before and after each spatial dimension.
     base_dilation
