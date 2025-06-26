@@ -84,13 +84,12 @@ def test_torch_blackman_window(
         max_value=5,
     ),
     dtype=helpers.get_dtypes("float"),
-    test_with_out=st.just(False),
 )
 def test_torch_hamming_window(
+    *,
     dtype_and_window_length,
     periodic,
     dtype_and_coefficients,
-    *,
     dtype,
     fn_tree,
     frontend,
