@@ -99,6 +99,7 @@ def binary_cross_entropy(
     pred: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     from_logits: bool = False,
     epsilon: float = 0.0,
     reduction: str = "mean",
@@ -114,8 +115,10 @@ def binary_cross_entropy(
         input array containing true labels.
     pred
         input array containing Predicted labels.
+    weight
+        a manual rescaling weight if provided it's repeated to match input array shape.
     from_logits
-        Whether `pred` is expected to be a logits tensor. By
+        whether `pred` is expected to be a logits tensor. By
         default, we assume that `pred` encodes a probability distribution.
     epsilon
         a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
@@ -128,7 +131,7 @@ def binary_cross_entropy(
         a weight for positive examples. Must be an array with length equal to the number
         of classes.
     axis
-        Axis along which to compute crossentropy.
+        axis along which to compute crossentropy.
     out
         optional output array, for writing the result to. It must have a shape
         that the inputs broadcast to.
@@ -136,7 +139,7 @@ def binary_cross_entropy(
     Returns
     -------
     ret
-        The binary cross entropy between the given distributions.
+        the binary cross entropy between the given distributions.
 
 
     Examples
@@ -271,6 +274,7 @@ def binary_cross_entropy(
             1 - pred + epsilon_
         )
 
+    if weight is not None: loss *= weight
     return _reduce_loss(reduction, loss, axis, out)
 
 
