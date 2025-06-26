@@ -38,15 +38,6 @@ def adaptive_avg_pool2d(input, output_size):
     return ivy.adaptive_avg_pool2d(input, output_size, data_format="NCHW")
 
 
-@with_unsupported_dtypes(
-    {
-        "2.2 and below": (
-            "bfloat16",
-            "float16",
-        )
-    },
-    "torch",
-)
 @to_ivy_arrays_and_back
 def adaptive_max_pool2d(
     input,
@@ -54,7 +45,7 @@ def adaptive_max_pool2d(
     return_indices=False,
 ):
     # ToDo: Add return_indices once superset is implemented
-    return ivy.adaptive_max_pool2d(input, output_size)
+    return ivy.adaptive_max_pool2d(input, output_size).astype(input.dtype)
 
 
 @with_unsupported_dtypes(
