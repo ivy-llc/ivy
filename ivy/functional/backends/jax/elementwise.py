@@ -152,6 +152,8 @@ def ceil(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def cos(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    if ivy.is_int_dtype(x.dtype):
+        x = jnp.astype(x, jnp.float32)
     return jnp.cos(x)
 
 

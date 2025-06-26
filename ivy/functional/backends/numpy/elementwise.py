@@ -210,6 +210,8 @@ ceil.support_native_out = True
 
 @_scalar_output_to_0d_array
 def cos(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    if ivy.is_int_dtype(x.dtype):
+        x = np.astype(x, np.float32)
     return np.cos(x, out=out)
 
 

@@ -1027,7 +1027,7 @@ def test_torch_copysign(
 @handle_frontend_test(
     fn_tree="torch.cos",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
 def test_torch_cos(
