@@ -2252,64 +2252,54 @@ def adaptive_max_pool3d(
         squeeze = True
     elif input.ndim != 5:
         raise ivy.utils.exceptions.IvyException(
-            f"Got {len(input.shape)}D input, but only 4D and 5D inputs are supported.",
+            f"Got {len(input.shape)}D input, but only 4D and 5D inputs are supported."
         )
 
     if isinstance(output_size, int):
-        output_size = (output_size, output_size, output_size)
+        out_d, out_h, out_w = output_size, output_size, output_size
+    else:
+        out_d, out_h, out_w = output_size
 
-    if all(i_s % o_s == 0 for i_s, o_s in zip(input.shape[-3:], output_size)):
-        stride = tuple(i_s // o_s for i_s, o_s in zip(input.shape[-3:], output_size))
-        kernel_size = stride
-        pooled_output = ivy.max_pool3d(
-            input, kernel_size, stride, "VALID", data_format="NCDHW"
-        )
-        if squeeze:
-            return ivy.squeeze(pooled_output, axis=0)
-        return pooled_output
+    in_d, in_h, in_w = input.shape[-3:]
 
-    idxd, length_d, range_max_d, adaptive_d = _compute_idx(
-        input.shape[-3], output_size[-3], input.device
-    )
-    idxh, length_h, range_max_h, adaptive_h = _compute_idx(
-        input.shape[-2], output_size[-2], input.device
-    )
-    idxw, length_w, range_max_w, adaptive_w = _compute_idx(
-        input.shape[-1], output_size[-1], input.device
-    )
+    if out_d is None:
+        out_d = in_d
+    if out_h is None:
+        out_h = in_h
+    if out_w is None:
+        out_w = in_w
 
-    # to numpy and back in order to bypass a slicing error in tensorflow
-    vals = ivy.array(
-        input.to_numpy()[..., _expand_to_dim(idxd, 5), _expand_to_dim(idxh, 4), idxw],
-        device=input.device,
-    )
+    start_indices_d = ivy.floor(ivy.arange(out_d) * (in_d / out_d)).astype("int64")
+    end_indices_d = ivy.ceil((ivy.arange(out_d) + 1) * (in_d / out_d)).astype("int64")
 
-    if not (adaptive_d or adaptive_h or adaptive_w):
-        ret = ivy.max(vals, axis=(-3, -1))
-        ret = ivy.squeeze(ret, axis=0) if squeeze else ret
-        return ret
+    start_indices_h = ivy.floor(ivy.arange(out_h) * (in_h / out_h)).astype("int64")
+    end_indices_h = ivy.ceil((ivy.arange(out_h) + 1) * (in_h / out_h)).astype("int64")
 
-    vals, length_d = _mask(
-        vals, length_d, range_max_d, dim=-3, mask_value=float("-inf")
-    )
-    vals, length_h = _mask(
-        vals, length_h, range_max_h, dim=-2, mask_value=float("-inf")
-    )
-    vals, length_w = _mask(
-        vals, length_w, range_max_w, dim=-1, mask_value=float("-inf")
-    )
+    start_indices_w = ivy.floor(ivy.arange(out_w) * (in_w / out_w)).astype("int64")
+    end_indices_w = ivy.ceil((ivy.arange(out_w) + 1) * (in_w / out_w)).astype("int64")
 
-    ret = None
-    for i, j, k in itertools.product(
-        range(vals.shape[-4]), range(vals.shape[-2]), range(vals.shape[-1])
-    ):
-        if ret is None:
-            ret = vals[..., i, :, j, k]
-        else:
-            ret = ivy.maximum(ret, vals[..., i, :, j, k])
-    pooled_output = ret.astype(vals.dtype)
-    pooled_output = ivy.squeeze(pooled_output, axis=0) if squeeze else pooled_output
-    return pooled_output
+    pooled = []
+    for i in range(out_d):
+        d_start, d_end = start_indices_d[i], end_indices_d[i]
+        pooled_rows = []
+        for j in range(out_h):
+            h_start, h_end = start_indices_h[j], end_indices_h[j]
+            pooled_cols = []
+            for k in range(out_w):
+                w_start, w_end = start_indices_w[k], end_indices_w[k]
+                
+                window = input[..., d_start:d_end, h_start:h_end, w_start:w_end]
+                
+                pooled_val = ivy.max(window, axis=(-3, -2, -1))
+                pooled_cols.append(pooled_val)
+            pooled_rows.append(ivy.stack(pooled_cols, axis=-1))
+        pooled.append(ivy.stack(pooled_rows, axis=-2))
+
+    ret = ivy.stack(pooled, axis=-3)
+
+    if squeeze:
+        return ivy.squeeze(ret, axis=0)
+    return ret
 
 
 adaptive_max_pool3d.mixed_backend_wrappers = {

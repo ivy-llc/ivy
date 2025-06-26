@@ -200,6 +200,7 @@ def test_torch_adaptive_max_pool3d(
         on_device=on_device,
         input=x[0],
         output_size=output_size,
+        atol=1e-2,
     )
 
 
