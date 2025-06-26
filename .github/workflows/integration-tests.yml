@@ -41,8 +41,3 @@ jobs:
         run: |
           cd ivy
           scripts/shell/run_integration_tests.sh kornia ${{ matrix.target }} ${{ secrets.IVY_API_KEY }}
-        continue-on-error: true
-
-      - name: Check on failures
-        if: steps.tests.outcome != 'success'
-        run: exit 1

@@ -54,8 +54,3 @@ jobs:
         run: |
           cd ivy
           python3 scripts/run_tests_from_diff.py
-        continue-on-error: true
-
-      - name: Check on failures
-        if: steps.tests.outcome != 'success'
-        run: exit 1

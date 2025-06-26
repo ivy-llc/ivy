@@ -7,8 +7,8 @@ on:
     branches:
       - main
   workflow_dispatch:
-jobs:
 
+jobs:
   transformations:
     runs-on: ubuntu-latest
     steps:
@@ -16,14 +16,17 @@ jobs:
         with:
           path: ivy
           persist-credentials: false
+
       - uses: actions/setup-python@v3
         with:
           python-version: "3.12"
+
       - name: Install Dependencies
         run: |
           cd ivy
           python3 -m pip install -U -r requirements/requirements.txt
           python3 -m pip install -U -r requirements/optional.txt
+
       - name: Run Transformations Tests
         id: tests
         run: |
@@ -37,14 +40,17 @@ jobs:
         with:
           path: ivy
           persist-credentials: false
+
       - uses: actions/setup-python@v3
         with:
           python-version: "3.12"
+
       - name: Install Dependencies
         run: |
           cd ivy
           python3 -m pip install -U -r requirements/requirements.txt
           python3 -m pip install -U -r requirements/optional.txt
+
       - name: Run Translations Tests
         id: tests
         run: |
@@ -58,14 +64,17 @@ jobs:
         with:
           path: ivy
           persist-credentials: false
+
       - uses: actions/setup-python@v3
         with:
           python-version: "3.12"
+
       - name: Install Dependencies
         run: |
           cd ivy
           python3 -m pip install -U -r requirements/requirements.txt
           python3 -m pip install -U -r requirements/optional.txt
+
       - name: Run Module Tests
         id: tests
         run: |
@@ -79,14 +88,17 @@ jobs:
         with:
           path: ivy
           persist-credentials: false
+
       - uses: actions/setup-python@v3
         with:
           python-version: "3.12"
+
       - name: Install Dependencies
         run: |
           cd ivy
           python3 -m pip install -U -r requirements/requirements.txt
           python3 -m pip install -U -r requirements/optional.txt
+
       - name: Run SourceGen Tests
         id: tests
         run: |
@@ -100,14 +112,17 @@ jobs:
         with:
           path: ivy
           persist-credentials: false
+
       - uses: actions/setup-python@v3
         with:
           python-version: "3.12"
+
       - name: Install Dependencies
         run: |
           cd ivy
           python3 -m pip install -U -r requirements/requirements.txt
           python3 -m pip install -U -r requirements/optional.txt
+
       - name: Run Kornia Tests
         id: tests
         run: |
