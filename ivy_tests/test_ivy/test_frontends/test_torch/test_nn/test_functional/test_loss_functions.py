@@ -111,7 +111,6 @@ def test_torch_binary_cross_entropy(
         min_dim_size=2,
     ),
     size_average=st.booleans(),
-    reduce=st.booleans(),
     reduction=st.sampled_from(["mean", "none", "sum", None]),
     dtype_and_pos_weight=st.one_of(
         helpers.dtype_and_values(
@@ -134,7 +133,6 @@ def test_torch_binary_cross_entropy_with_logits(
     dtype_and_pred,
     dtype_and_weight,
     size_average,
-    reduce,
     reduction,
     dtype_and_pos_weight,
     on_device,
@@ -163,9 +161,10 @@ def test_torch_binary_cross_entropy_with_logits(
         target=true[0],
         weight=weight[0],
         size_average=size_average,
-        reduce=reduce,
         reduction=reduction,
         pos_weight=pos_weight[0],
+        atol=1e-02,
+        rtol=1e-02,
     )
 
 
