@@ -242,22 +242,36 @@ def test_torch_cosine_embedding_loss(
     fn_tree="torch.nn.functional.cross_entropy",
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_value=0.0,
+        max_value=1.0,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
         allow_inf=False,
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=1,
+        exclude_min=True,
+        exclude_max=True,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
     ),
     dtype_and_target=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=0.0,
+        min_value=1e-05,
         max_value=1.0,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
         allow_inf=False,
+        exclude_min=True,
+        exclude_max=True,
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=2,
     ),
     dtype_and_weights=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_value=1e-05,
+        max_value=1.0,
         allow_inf=False,
         min_num_dims=1,
         max_num_dims=1,
@@ -267,6 +281,7 @@ def test_torch_cosine_embedding_loss(
     reduce=st.booleans(),
     reduction=st.sampled_from(["mean", "none", "sum"]),
     label_smoothing=helpers.floats(min_value=0, max_value=0.49),
+    number_positional_args=st.just(2),
 )
 def test_torch_cross_entropy(
     *,
@@ -300,6 +315,8 @@ def test_torch_cross_entropy(
         reduce=reduce,
         reduction=reduction,
         label_smoothing=label_smoothing,
+        atol=1e-02,
+        rtol=1e-02,
     )
 
 

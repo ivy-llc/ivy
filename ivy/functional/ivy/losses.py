@@ -39,6 +39,7 @@ def cross_entropy(
     pred: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     axis: Optional[int] = None,
     epsilon: float = 1e-7,
     reduction: str = "mean",
@@ -52,6 +53,8 @@ def cross_entropy(
         input array containing true labels.
     pred
         input array containing the predicted labels.
+    weight
+        a manual rescaling weight if provided it's repeated to match input array shape.
     axis
         the axis along which to compute the cross-entropy. If axis is ``-1``,
         the cross-entropy will be computed along the last dimension. Default: ``-1``.
@@ -77,16 +80,24 @@ def cross_entropy(
     >>> x = ivy.array([0, 0, 1, 0])
     >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
     >>> print(ivy.cross_entropy(x, y))
-    ivy.array(0.34657359)
+    ivy.array(5.5451775)
 
     >>> z = ivy.array([0.1, 0.1, 0.7, 0.1])
     >>> print(ivy.cross_entropy(x, z))
-    ivy.array(0.08916873)
+    ivy.array(6.292853)
     """
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
-    pred = ivy.clip(pred, epsilon, 1 - epsilon)
-    log_pred = ivy.log(pred)
-    return _reduce_loss(reduction, log_pred * true, axis, out)
+
+    if epsilon > 0:
+        num_classes = pred.shape[axis or -1]
+        if ivy.is_int_dtype(true):
+            true = ivy.one_hot(true, num_classes)
+        true = (1 - epsilon) * true + epsilon / num_classes
+
+    log_pred = ivy.log_softmax(pred, axis=axis)
+    if weight is not None: log_pred *= weight
+    loss = ivy.sum(true * log_pred, axis=axis)
+    return _reduce_loss(reduction, loss, axis, out)
 
 
 @handle_exceptions

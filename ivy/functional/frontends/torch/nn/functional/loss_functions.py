@@ -185,17 +185,35 @@ def cross_entropy(
     reduction="mean",
     label_smoothing=0.0,
 ):
-    loss = ivy.cross_entropy(target, input, epsilon=label_smoothing, reduction="none")
+    if size_average is not None or reduce is not None:
+        reduction = _get_reduction_string(size_average, reduce)
 
-    if ignore_index != -100:
+    if ignore_index != -100 and target.dtype.is_integer():
+        orig_reduction = reduction
+        loss = ivy.cross_entropy(
+            target,
+            input,
+            weight=weight,
+            epsilon=label_smoothing,
+            reduction="none",
+        )
         mask = ivy.not_equal(target, ignore_index)
         loss = ivy.where(mask, loss, ivy.zeros_like(loss))
 
-    if weight is not None:
-        result = ivy.multiply(weight, loss)
+        if orig_reduction == "mean":
+            return ivy.sum(loss) / ivy.sum(ivy.astype(mask, "float32"))
+        elif orig_reduction == "sum":
+            return ivy.sum(loss)
+        return loss
 
-    reduction = _get_reduction(reduction, size_average, reduce)
-    return reduction(result).astype(target.dtype)
+    loss = ivy.cross_entropy(
+        target,
+        input,
+        weight=weight,
+        epsilon=label_smoothing,
+        reduction=reduction,
+    )
+    return loss
 
 
 @to_ivy_arrays_and_back
