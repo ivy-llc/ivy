@@ -492,6 +492,13 @@ def repeat_interleave(input, repeats, dim=None, *, output_size=None):
 
 
 @to_ivy_arrays_and_back
+def resolve_conj(input):
+    if input.is_conj():
+        return ivy.clone(ivy.conj(input))
+    return input
+
+
+@to_ivy_arrays_and_back
 def roll(input, shifts, dims=None):
     return ivy.roll(input, shifts, axis=dims)
 
