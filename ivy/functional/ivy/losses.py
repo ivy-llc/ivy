@@ -214,6 +214,13 @@ def binary_cross_entropy(
 
     >>> x = ivy.array([[0, 1, 1, 0]])
     >>> y = ivy.array([[2.6, 6.2, 3.7, 5.3]])
+    >>> pos_weight = ivy.array([1, 2, 3, 4])
+    >>> z = ivy.binary_cross_entropy(x, y, pos_weight=pos_weight, from_logits=True, reduction='sum', axis=1)
+    >>> print(z)
+    ivy.array([8.05393649])
+
+    >>> x = ivy.array([[0, 1, 1, 0]])
+    >>> y = ivy.array([[2.6, 6.2, 3.7, 5.3]])
     >>> z = ivy.binary_cross_entropy(x, y, reduction='none', epsilon=0.5)
     >>> print(z)
     ivy.array([[11.49992943,  3.83330965,  3.83330965, 11.49992943]])
