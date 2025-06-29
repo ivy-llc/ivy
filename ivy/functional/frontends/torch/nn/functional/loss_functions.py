@@ -185,6 +185,10 @@ def cross_entropy(
     reduction="mean",
     label_smoothing=0.0,
 ):
+    promoted_type = torch_frontend.promote_types(input.dtype, target.dtype)
+    if weight is not None:
+        promoted_type = torch_frontend.promote_types(weight.dtype, promoted_type)
+
     if size_average is not None or reduce is not None:
         reduction = _get_reduction_string(size_average, reduce)
 
@@ -206,14 +210,13 @@ def cross_entropy(
             return ivy.sum(loss)
         return loss
 
-    loss = ivy.cross_entropy(
+    return ivy.cross_entropy(
         target,
         input,
         weight=weight,
         epsilon=label_smoothing,
         reduction=reduction,
-    )
-    return loss
+    ).astype(promoted_type)
 
 
 @to_ivy_arrays_and_back
