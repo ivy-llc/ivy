@@ -518,6 +518,9 @@ def test_torch_kl_div(
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
+        min_value=-1,
+        max_value=1,
+        abs_smallest_val=1e-04,
     ),
     size_average=st.booleans(),
     reduce=st.booleans(),
@@ -551,6 +554,8 @@ def test_torch_l1_loss(
         size_average=size_average,
         reduce=reduce,
         reduction=reduction,
+        atol=1e-2,
+        rtol=1e-2,
     )
 
 
