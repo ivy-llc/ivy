@@ -537,6 +537,8 @@ def soft_margin_loss(
     reduce=None,
     reduction="mean",
 ):
+    if size_average is not None or reduce is not None:
+        reduction = _get_reduction_string(size_average, reduce)
     return ivy.soft_margin_loss(input, target, reduction=reduction)
 
 

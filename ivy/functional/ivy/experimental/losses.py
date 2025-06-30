@@ -400,7 +400,7 @@ def soft_margin_loss(
     >>> ivy.soft_margin_loss(input, target, reduction='none')
     ivy.array([0.3711, 0.4032, 0.6931, 0.6931])
     """
-    loss = ivy.sum(ivy.log1p(ivy.exp(-input * target))) / input.size
+    loss = ivy.log1p(ivy.exp(-input * target))
 
     if reduction == "sum":
         return ivy.sum(loss, out=out)
@@ -432,7 +432,7 @@ def kl_div(
         Tensor of arbitrary shape in log-probabilities
     target : array_like
         Tensor of the same shape as input. See log_target for
-        the target’s interpretation
+        the target's interpretation
     reduction : {'mean', 'sum', 'batchmean', 'none'}, optional
         Type of reduction to apply to the output. Default is 'mean'.
     log_target : bool

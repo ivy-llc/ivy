@@ -53,6 +53,7 @@ def smooth_l1_loss(
 
 
 @with_unsupported_dtypes({"2.15.0 and below": "bool"}, backend_version)
+@to_native_arrays_and_back
 def soft_margin_loss(
     input: tf.Tensor,
     target: tf.Tensor,
@@ -60,7 +61,7 @@ def soft_margin_loss(
     *,
     reduction: Optional[str] = "mean",
 ) -> tf.Tensor:
-    loss = tf.reduce_sum(tf.math.log1p(tf.exp(-input * target))) / tf.size(input)
+    loss = tf.math.log1p(tf.exp(-input * target))
 
     if reduction == "sum":
         return tf.reduce_sum(loss)

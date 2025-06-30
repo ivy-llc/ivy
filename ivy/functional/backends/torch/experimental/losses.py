@@ -89,6 +89,7 @@ def huber_loss(
     },
     backend_version,
 )
+@to_native_arrays_and_back
 def soft_margin_loss(
     input: torch.Tensor,
     target: torch.Tensor,

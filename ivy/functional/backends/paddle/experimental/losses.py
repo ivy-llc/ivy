@@ -41,7 +41,6 @@ def l1_loss(
     return F.l1_loss(input, target, reduction=reduction)
 
 
-@to_native_arrays_and_back
 @with_unsupported_device_and_dtypes(
     {
         "2.6.0 and below": {
@@ -59,6 +58,7 @@ def l1_loss(
     },
     backend_version,
 )
+@to_native_arrays_and_back
 def smooth_l1_loss(
     input: paddle.Tensor,
     target: paddle.Tensor,
@@ -118,6 +118,7 @@ def huber_loss(
     },
     backend_version,
 )
+@to_native_arrays_and_back
 def soft_margin_loss(
     input: paddle.Tensor,
     label: paddle.Tensor,

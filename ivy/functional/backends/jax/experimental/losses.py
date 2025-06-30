@@ -48,6 +48,7 @@ def smooth_l1_loss(
         return loss
 
 
+@to_native_arrays_and_back
 def soft_margin_loss(
     input: JaxArray,
     target: JaxArray,
@@ -55,7 +56,7 @@ def soft_margin_loss(
     *,
     reduction: str = "mean",
 ) -> JaxArray:
-    loss = jnp.sum(jnp.log1p(jnp.exp(-input * target))) / jnp.size(input)
+    loss = jnp.log1p(jnp.exp(-input * target))
 
     if reduction == "mean":
         return jnp.mean(loss)
