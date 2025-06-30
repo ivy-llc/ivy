@@ -783,9 +783,10 @@ def test_torch_multilabel_soft_margin_loss(
     fn_tree="torch.nn.functional.nll_loss",
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        shared_dtype=True,
+        num_arrays=2,
         min_value=0.01,
         max_value=1.0,
-        allow_inf=False,
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=1,
@@ -795,31 +796,20 @@ def test_torch_multilabel_soft_margin_loss(
         available_dtypes=helpers.get_dtypes("integer"),
         min_value=0.0,
         max_value=1.0,
-        allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=1,
-        max_dim_size=1,
-    ),
-    dtype_and_weights=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        allow_inf=False,
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=1,
         max_dim_size=1,
     ),
     size_average=st.booleans(),
-    reduce=st.booleans(),
     reduction=st.sampled_from(["mean", "none", "sum"]),
+    number_positional_args=st.just(2),
 )
 def test_torch_nll_loss(
     *,
     dtype_and_input,
     dtype_and_target,
-    dtype_and_weights,
     size_average,
-    reduce,
     reduction,
     on_device,
     fn_tree,
@@ -829,9 +819,8 @@ def test_torch_nll_loss(
 ):
     inputs_dtype, input = dtype_and_input
     target_dtype, target = dtype_and_target
-    weights_dtype, weights = dtype_and_weights
     helpers.test_frontend_function(
-        input_dtypes=inputs_dtype + target_dtype + weights_dtype,
+        input_dtypes=[inputs_dtype[0]] + target_dtype + [inputs_dtype[1]],
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
@@ -839,9 +828,8 @@ def test_torch_nll_loss(
         on_device=on_device,
         input=input[0],
         target=target[0],
-        weight=weights[0],
+        weight=input[1],
         size_average=size_average,
-        reduce=reduce,
         reduction=reduction,
     )
 

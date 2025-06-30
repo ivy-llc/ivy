@@ -432,7 +432,8 @@ def multilabel_soft_margin_loss(
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"2.2 and below": ("float16", "int8", "int16", "int32")}, "torch"
+    {"2.2 and below": ("float16", "int8", "int16", "int32", "float64", "bfloat16")},
+    "torch",
 )
 def nll_loss(
     input,
@@ -443,22 +444,42 @@ def nll_loss(
     reduce=None,
     reduction="mean",
 ):
-    out = ivy.zeros_like(target)
+    if input.ndim < 1 or input.ndim > 2:
+        raise ValueError("input is expected to be 1D or 2D")
 
-    if len(input.shape) == 1:
-        for i in range(len(target)):
-            out[i] = input[target[i]]
+    if input.ndim == 2 and input.shape[0] != target.shape[0]:
+        raise ValueError(
+            f"Expected input batch_size ({input.shape[0]}) to match target "
+            f"batch_size ({target.shape[0]})."
+        )
+
+    promoted_type = input.dtype
+    target = ivy.astype(target, "int32")
+
+    if input.ndim == 1:
+        loss = -ivy.gather(input, target)
     else:
-        for i in range(len(target)):
-            out[i] = input[i][target[i]]
-    loss = -out
+        loss = -ivy.gather(input, ivy.expand_dims(target, axis=-1), axis=1)
+        loss = ivy.squeeze(loss, axis=-1)
 
-    if weight is not None:
-        loss = ivy.multiply(weight, loss)
-    reduct = _get_reduction(reduction, size_average, reduce)
-    ret = reduct(loss)
+    if (size_average is None or size_average is False) and weight is not None:
+        loss = loss * ivy.gather(weight, target)
 
-    return ret
+    reduction_fn = _get_reduction(reduction, size_average, reduce)
+    if ignore_index != -100:
+        mask = ivy.not_equal(target, ignore_index)
+        loss = ivy.where(mask, loss, ivy.zeros_like(loss))
+
+        if reduction_fn is ivy.mean:
+            ret = ivy.sum(loss) / ivy.sum(mask.astype(promoted_type))
+        else:
+            ret = reduction_fn(loss)
+    else:
+        ret = reduction_fn(loss)
+
+    if ivy.is_array(ret) and ret.size <= 1:
+        return ivy.sum(ret).astype(promoted_type)
+    return ret.astype(promoted_type)
 
 
 def norm(input, axis):
