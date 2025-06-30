@@ -220,7 +220,7 @@ def cross_entropy(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.2 and below": ("bool", "integer")}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("bool", "complex", "integer")}, "torch")
 def gaussian_nll_loss(input, target, var, full=False, eps=1e-6, reduction="mean"):
     input, target = torch_frontend.promote_types_of_torch_inputs(input, target)
     target, var = torch_frontend.promote_types_of_torch_inputs(target, var)
