@@ -670,8 +670,6 @@ def test_torch_mse_loss(
 
 
 # multilabel_margin_loss
-
-
 @handle_frontend_test(
     fn_tree="torch.nn.functional.multilabel_margin_loss",
     dtype_and_input=helpers.dtype_and_values(
@@ -726,43 +724,52 @@ def test_torch_multilabel_margin_loss(
 # multilabel soft margin loss
 @handle_frontend_test(
     fn_tree="torch.nn.functional.multilabel_soft_margin_loss",
-    dtype_and_inputs=helpers.dtype_and_values(
+    dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        allow_inf=False,
-        shared_dtype=True,
         min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=5,
+        min_value=-1,
+        max_value=1,
+        abs_smallest_val=1e-04,
+    ),
+    dtype_and_target=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_num_dims=1,
+        max_num_dims=2,
+        min_value=-2,
+        max_value=2,
     ),
     size_average=st.booleans(),
-    reduce=st.booleans(),
     reduction=st.sampled_from(["none", "mean", "sum"]),
     test_with_out=st.just(False),
+    number_positional_args=st.just(2),
 )
 def test_torch_multilabel_soft_margin_loss(
     *,
-    dtype_and_inputs,
-    size_average,
-    reduce,
+    dtype_and_input,
+    dtype_and_target,
     reduction,
+    size_average,
     test_flags,
     fn_tree,
     backend_fw,
     frontend,
     on_device,
 ):
-    input_dtype, x = dtype_and_inputs
+    input_dtype, x = dtype_and_input
+    target_dtype, y = dtype_and_target
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
         backend_to_test=backend_fw,
+        input_dtypes=[input_dtype[0], target_dtype[0]],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
-        target=x[1],
-        size_average=size_average,
-        reduce=reduce,
+        target=y[0],
         reduction=reduction,
+        size_average=size_average,
     )
 
 

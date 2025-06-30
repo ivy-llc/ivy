@@ -406,7 +406,7 @@ def multilabel_margin_loss(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
+@with_supported_dtypes({"2.2 and below": ("float32", "float64", "int64")}, "torch")
 def multilabel_soft_margin_loss(
     input,
     target,
@@ -427,11 +427,7 @@ def multilabel_soft_margin_loss(
     C = ivy.shape(input)[class_dim]
 
     loss = ivy.sum(loss, axis=class_dim) / C
-
-    reduction = _get_reduction(reduction, size_average, reduce)
-    ret = reduction(loss)
-
-    return ret
+    return _get_reduction(reduction, size_average, reduce)(loss).astype(input.dtype)
 
 
 @to_ivy_arrays_and_back
