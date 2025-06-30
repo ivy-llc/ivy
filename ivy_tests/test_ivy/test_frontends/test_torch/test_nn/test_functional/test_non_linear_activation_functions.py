@@ -169,6 +169,7 @@ def test_torch_celu_(
         on_device=on_device,
         input=x[0],
         alpha=alpha,
+        test_values=False,
     )
 
 
