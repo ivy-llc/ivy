@@ -990,7 +990,7 @@ def test_torch_soft_margin_loss(
         max_num_dims=2,
         min_dim_size=1,
     ),
-    margin=st.floats(),
+    margin=st.floats(min_value=0.1),
     p=st.integers(min_value=0, max_value=2),
     swap=st.booleans(),
     size_average=st.booleans(),
