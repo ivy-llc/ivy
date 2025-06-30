@@ -158,7 +158,7 @@ def l1_loss(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
-@inputs_to_ivy_arrays
+@to_native_arrays_and_back
 @handle_array_function
 def huber_loss(
     true: Union[ivy.Array, ivy.NativeArray],
