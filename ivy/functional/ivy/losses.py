@@ -39,7 +39,8 @@ def cross_entropy(
     pred: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[int] = None,
+    weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    axis: int = -1,
     epsilon: float = 1e-7,
     reduction: str = "mean",
     out: Optional[ivy.Array] = None,
@@ -49,12 +50,14 @@ def cross_entropy(
     Parameters
     ----------
     true
-        input array containing true labels.
+        input array containing true labels. Can be class indices of shape (N,) or 
+        one-hot encoded labels of shape (N, C) where N is batch size and C is number of classes.
     pred
-        input array containing the predicted labels.
+        input array containing the logits of shape (N, C).
+    weight
+        a manual rescaling weight given to each class. If given, has to be a array of size C.
     axis
-        the axis along which to compute the cross-entropy. If axis is ``-1``,
-        the cross-entropy will be computed along the last dimension. Default: ``-1``.
+        the axis along which to compute the cross-entropy. Default: ``-1``.
     epsilon
         a float in [0.0, 1.0] specifying the amount of smoothing when calculating
         the loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
@@ -77,16 +80,61 @@ def cross_entropy(
     >>> x = ivy.array([0, 0, 1, 0])
     >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
     >>> print(ivy.cross_entropy(x, y))
-    ivy.array(0.34657359)
+    ivy.array(1.3862944)
 
     >>> z = ivy.array([0.1, 0.1, 0.7, 0.1])
     >>> print(ivy.cross_entropy(x, z))
-    ivy.array(0.08916873)
+    ivy.array(0.9732134)
     """
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
-    pred = ivy.clip(pred, epsilon, 1 - epsilon)
-    log_pred = ivy.log(pred)
-    return _reduce_loss(reduction, log_pred * true, axis, out)
+
+    if ivy.is_int_dtype(true) and len(true.shape) == len(pred.shape) - 1:
+        num_classes = pred.shape[axis]
+        true_one_hot = ivy.one_hot(true, num_classes, axis=axis)
+    elif ivy.is_int_dtype(true) and len(true.shape) == len(pred.shape):
+        if ivy.max(true) == 1 and ivy.min(true) == 0:
+            true_one_hot = ivy.astype(true, pred.dtype)
+        else:
+            num_classes = pred.shape[axis]
+            true_one_hot = ivy.one_hot(true, num_classes, axis=axis)
+    else:
+        true_one_hot = ivy.astype(true, pred.dtype)
+
+    if epsilon > 0:
+        num_classes = pred.shape[axis]
+        true_one_hot = (1 - epsilon) * true_one_hot + epsilon / num_classes
+
+    log_pred = ivy.log_softmax(pred, axis=axis)
+
+    loss = -ivy.sum(true_one_hot * log_pred, axis=axis)
+
+    if weight is not None:
+        weight = ivy.asarray(weight, dtype=pred.dtype)
+        if ivy.is_int_dtype(true) and len(true.shape) == len(pred.shape) - 1:
+            sample_weights = ivy.gather(weight, true, axis=0)
+            loss = loss * sample_weights
+        else:
+            if len(weight.shape) == 1:
+                weight_shape = [1] * len(pred.shape)
+                weight_shape[axis] = weight.shape[0]
+                weight = ivy.reshape(weight, weight_shape)
+            weighted_log_pred = log_pred * weight
+            loss = -ivy.sum(true_one_hot * weighted_log_pred, axis=axis)
+
+    if reduction == "sum":
+        return ivy.sum(loss, out=out)
+    elif reduction == "mean":
+        if weight is not None and ivy.is_int_dtype(true) and len(true.shape) == len(pred.shape) - 1:
+            sample_weights = ivy.gather(weight, true, axis=0)
+            total_weight = ivy.sum(sample_weights)
+            if out is not None:
+                return ivy.inplace_update(out, ivy.sum(loss) / ivy.clip(total_weight, 1e-8))
+            return ivy.sum(loss) / ivy.clip(total_weight, 1e-8)
+        else:
+            return ivy.mean(loss, out=out)
+    else:
+        if out is not None: return ivy.inplace_update(out, loss)
+        return loss
 
 
 @handle_exceptions
