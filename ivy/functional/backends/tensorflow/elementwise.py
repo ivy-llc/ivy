@@ -438,7 +438,7 @@ def less_equal(
 
 
 @with_unsupported_dtypes(
-    {"2.15.0 and below": ("float16", "bfloat16", "integer")}, backend_version
+    {"2.15.0 and below": ("float16", "bfloat16")}, backend_version
 )
 def log(
     x: Union[tf.Tensor, tf.Variable],
@@ -446,6 +446,8 @@ def log(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if ivy.is_int_dtype(x):
+        x = tf.cast(x, ivy.default_float_dtype(input=x, as_native=True))
     return tf.math.log(x)
 
 
