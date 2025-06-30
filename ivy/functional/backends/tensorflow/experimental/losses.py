@@ -20,12 +20,12 @@ def huber_loss(
     abs_diff = tf.abs(input - target)
     quadratic_loss = 0.5 * (abs_diff**2)
     linear_loss = delta * (abs_diff - 0.5 * delta)
-    loss = tf.where(abs_diff <= delta, quadratic_loss, linear_loss)
+    loss = tf.cast(tf.where(abs_diff <= delta, quadratic_loss, linear_loss), input.dtype)
 
     if reduction == "sum":
-        return tf.sum(loss)
+        return tf.reduce_sum(loss)
     elif reduction == "mean":
-        return tf.mean(loss)
+        return tf.reduce_mean(loss)
     else:
         return loss
 

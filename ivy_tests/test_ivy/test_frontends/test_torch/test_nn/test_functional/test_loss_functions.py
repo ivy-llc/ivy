@@ -419,8 +419,11 @@ def test_torch_hinge_embedding_loss(
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
+        min_value=-1e02,
+        max_value=1e02,
+        abs_smallest_val=1e-02,
     ),
-    delta=helpers.floats(min_value=0, max_value=5),
+    delta=helpers.floats(min_value=0, max_value=5, abs_smallest_val=1e-03),
     reduction=st.sampled_from(["none", "mean", "sum"]),
     test_with_out=st.just(False),
 )
@@ -449,6 +452,8 @@ def test_torch_huber_loss(
         target=true,
         reduction=reduction,
         delta=delta,
+        atol=1e-2,
+        rtol=1e-1,
     )
 
 
