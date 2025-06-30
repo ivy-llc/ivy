@@ -157,8 +157,8 @@ class _ContainerWithLosses(ContainerBase):
         >>> z = x.cross_entropy(y)
         >>> print(z)
         {
-            a: ivy.array(0.17027519),
-            b: ivy.array(0.53647931)
+            a: ivy.array(0.880099),
+            b: ivy.array(1.3408049)
         }
         """
         return self._static_cross_entropy(
