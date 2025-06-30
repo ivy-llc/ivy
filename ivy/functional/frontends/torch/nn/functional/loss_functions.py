@@ -346,7 +346,7 @@ def mse_loss(input, target, size_average=None, reduce=None, reduction="mean"):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
+@with_supported_dtypes({"2.2 and below": ("float32", "float64", "int64")}, "torch")
 def multilabel_margin_loss(
     input, target, size_average=None, reduce=None, reduction="mean"
 ):
@@ -357,12 +357,52 @@ def multilabel_margin_loss(
             f" output {input.shape} and target : {target.shape}"
         ),
     )
-    input, target = torch_frontend.promote_types_of_torch_inputs(input, target)
-    pos = input[ivy.astype(target, bool)]
-    neg = input[ivy.astype(1 - target, bool)]
-    loss = ivy.maximum(0, 1 - (torch_frontend.unsqueeze(pos, dim=1) - neg))
-    reduct = _get_reduction(reduction, size_average, reduce)
-    return reduct(loss)
+
+    orig_shape = input.shape
+    num_classes = orig_shape[-1]
+
+    if len(orig_shape) > 2:
+        input = ivy.reshape(input, (-1, num_classes))
+        target = ivy.reshape(target, (-1, num_classes))
+    elif len(orig_shape) == 1:
+        input = ivy.expand_dims(input, axis=0)
+        target = ivy.expand_dims(target, axis=0)
+    target = ivy.astype(target, "int64")
+
+    neg_mask = target < 0
+    has_neg = ivy.any(neg_mask, axis=1)
+    first_neg_idx = ivy.argmax(ivy.astype(neg_mask, "int32"), axis=1)
+    stop_indices = ivy.where(has_neg, first_neg_idx, num_classes)
+
+    valid_target_mask = ivy.expand_dims(ivy.arange(num_classes), axis=0) < ivy.expand_dims(
+        stop_indices, axis=1
+    )
+
+    target_indices = ivy.where(valid_target_mask, target, -1)
+    target_one_hot = ivy.one_hot(ivy.maximum(0, target_indices), num_classes)
+    valid_target_one_hot = ivy.where(
+        ivy.expand_dims(valid_target_mask, axis=2), target_one_hot, 0
+    )
+    is_target_mask = ivy.sum(ivy.astype(valid_target_one_hot, "int32"), axis=1) > 0
+    target_values = ivy.gather(input, ivy.maximum(0, target_indices), axis=1, batch_dims=1)
+
+    diff = ivy.expand_dims(target_values, axis=2) - ivy.expand_dims(input, axis=1)
+    loss_terms = ivy.maximum(0, 1 - diff)
+
+    mask1 = ivy.expand_dims(valid_target_mask, axis=2)
+    mask2 = ivy.logical_not(ivy.expand_dims(is_target_mask, axis=1))
+    final_mask = ivy.logical_and(mask1, mask2)
+
+    masked_loss_terms = ivy.where(final_mask, loss_terms, 0)
+    losses = ivy.sum(masked_loss_terms, axis=(1, 2)) / num_classes
+    losses = ivy.astype(losses, input.dtype)
+
+    if len(orig_shape) > 2:
+        losses = ivy.reshape(losses, orig_shape[:-1])
+    elif len(orig_shape) == 1:
+        losses = losses[0]
+
+    return _get_reduction(reduction, size_average, reduce)(losses)
 
 
 @to_ivy_arrays_and_back
