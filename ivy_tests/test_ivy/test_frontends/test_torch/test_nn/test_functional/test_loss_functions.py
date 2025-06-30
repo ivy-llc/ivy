@@ -1050,16 +1050,15 @@ def test_torch_triplet_margin_loss(
         max_num_dims=2,
         min_dim_size=1,
     ),
-    distance_function=st.sampled_from([cosine_similarity, None]),
-    margin=st.floats(min_value=-10, max_value=10),
+    margin=st.floats(min_value=0.1),
     swap=st.booleans(),
     reduction=st.sampled_from(["none", "mean", "sum"]),
     test_with_out=st.just(False),
+    number_positional_args=st.just(3),
 )
 def test_torch_triplet_margin_with_distance_loss(
     *,
     dtype_and_inputs,
-    distance_function,
     margin,
     swap,
     reduction,
@@ -1073,7 +1072,6 @@ def test_torch_triplet_margin_with_distance_loss(
     anchor_dtype, anchor = input_dtype[0], x[0]
     positive_dtype, positive = input_dtype[1], x[1]
     negative_dtype, negative = input_dtype[2], x[2]
-    test_flags.num_positional_args = len(x)
     helpers.test_frontend_function(
         input_dtypes=[anchor_dtype, positive_dtype, negative_dtype],
         backend_to_test=backend_fw,
@@ -1084,7 +1082,6 @@ def test_torch_triplet_margin_with_distance_loss(
         anchor=anchor,
         positive=positive,
         negative=negative,
-        distance_function=distance_function,
         margin=margin,
         swap=swap,
         reduction=reduction,

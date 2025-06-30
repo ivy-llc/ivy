@@ -626,10 +626,10 @@ def triplet_margin_with_distance_loss(
     if distance_function is None:
         distance_function = torch_frontend.nn.functional.pairwise_distance
 
-    dist_pos = distance_function(anchor, positive)
-    dist_neg = distance_function(anchor, negative)
+    dist_pos = distance_function(anchor, positive).ivy_array
+    dist_neg = distance_function(anchor, negative).ivy_array
     if swap:
-        dist_swap = distance_function(positive, negative)
+        dist_swap = distance_function(positive, negative).ivy_array
         dist_neg = ivy.minimum(dist_neg, dist_swap)
 
     loss = ivy.maximum(dist_pos - dist_neg + ivy.array(margin), ivy.array(0.0))
