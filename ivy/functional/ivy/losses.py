@@ -346,7 +346,7 @@ def sparse_cross_entropy(
     Parameters
     ----------
     true
-     input array containing the true labels as logits.
+     input array containing the true labels as class indices.
     pred
      input array containing the predicted labels as logits.
     axis
@@ -355,6 +355,11 @@ def sparse_cross_entropy(
     epsilon
      a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
      loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
+    reduction
+     ``'none'``: No reduction will be applied to the output.
+     ``'mean'``: The output will be averaged.
+     ``'sum'``: The output will be summed.
+     Default: ``'mean'``.
     out
      optional output array, for writing the result to. It must have a shape
      that the inputs broadcast to.
@@ -368,27 +373,17 @@ def sparse_cross_entropy(
     --------
     With :class:`ivy.Array` input:
 
-    >> x = ivy.array([2])
-    >> y = ivy.array([0.1, 0.1, 0.7, 0.1])
-    >> print(ivy.sparse_cross_entropy(x, y))
-    ivy.array([0.08916873])
-
-    >>> x = ivy.array([3])
+    >>> x = ivy.array([2])
     >>> y = ivy.array([0.1, 0.1, 0.7, 0.1])
-    >>> print(ivy.cross_entropy(x, y))
-    ivy.array(5.44832274)
-
-    >>> x = ivy.array([2,3])
-    >>> y = ivy.array([0.1, 0.1])
-    >>> print(ivy.cross_entropy(x, y))
-    ivy.array(5.75646281)
+    >>> print(ivy.sparse_cross_entropy(x, y))
+    ivy.array(0.9732134)
 
     With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([4])
     >>> y = ivy.native_array([0.1, 0.2, 0.1, 0.1, 0.5])
     >>> print(ivy.sparse_cross_entropy(x, y))
-    ivy.array([0.13862944])
+    ivy.array(1.32223)
 
     With :class:`ivy.Container` input:
 
@@ -396,23 +391,23 @@ def sparse_cross_entropy(
     >>> y = ivy.Container(a=ivy.array([0.1, 0.2, 0.1, 0.1, 0.5]))
     >>> print(ivy.sparse_cross_entropy(x, y))
     {
-        a: ivy.array([0.13862944])
+        a: ivy.array(1.32223)
     }
 
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
     >>> x = ivy.array([0])
     >>> y = ivy.native_array([0.1, 0.2, 0.6, 0.1])
-    >>> print(ivy.sparse_cross_entropy(x,y))
-    ivy.array([0.57564628])
+    >>> print(ivy.sparse_cross_entropy(x, y))
+    ivy.array(1.5589634)
 
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> x = ivy.array([0])
     >>> y = ivy.Container(a=ivy.array([0.1, 0.2, 0.6, 0.1]))
-    >>> print(ivy.sparse_cross_entropy(x,y))
+    >>> print(ivy.sparse_cross_entropy(x, y))
     {
-        a: ivy.array([0.57564628])
+        a: ivy.array(1.5589634)
     }
 
     Instance Method Examples
@@ -422,7 +417,7 @@ def sparse_cross_entropy(
     >>> x = ivy.array([2])
     >>> y = ivy.array([0.1, 0.1, 0.7, 0.1])
     >>> print(x.sparse_cross_entropy(y))
-    ivy.array([0.08916873])
+    ivy.array(0.9732134)
 
     With :class:`ivy.Container` input:
 
@@ -430,7 +425,7 @@ def sparse_cross_entropy(
     >>> y = ivy.Container(a=ivy.array([0.1, 0.1, 0.7, 0.1]))
     >>> print(x.sparse_cross_entropy(y))
     {
-        a: ivy.array([0.08916873])
+        a: ivy.array(0.9732134)
     }
     """
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])

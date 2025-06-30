@@ -517,8 +517,8 @@ class _ContainerWithLosses(ContainerBase):
         >>> z = x.sparse_cross_entropy(y)
         >>> print(z)
         {
-            a: ivy.array([0.53647929, 0.1702752, 0.1702752]),
-            b: ivy.array([0.07438118, 0.07438118, 0.53647929])
+            a: ivy.array(1.0134323),
+            b: ivy.array(0.9408049)
         }
         """
         return self._static_sparse_cross_entropy(
