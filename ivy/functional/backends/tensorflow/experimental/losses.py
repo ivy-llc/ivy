@@ -2,6 +2,7 @@ import tensorflow as tf
 import math
 from typing import Optional
 from ivy.func_wrapper import (
+    to_native_arrays_and_back,
     with_unsupported_dtypes,
     with_supported_device_and_dtypes,
 )
@@ -31,6 +32,7 @@ def huber_loss(
 
 
 @with_unsupported_dtypes({"2.15.0 and below": "bool"}, backend_version)
+@to_native_arrays_and_back
 def smooth_l1_loss(
     input: tf.Tensor,
     target: tf.Tensor,

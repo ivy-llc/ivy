@@ -6,6 +6,7 @@ import math
 
 # local
 from ivy.func_wrapper import (
+    to_native_arrays_and_back,
     with_unsupported_device_and_dtypes,
     with_supported_device_and_dtypes,
 )
@@ -40,6 +41,7 @@ def l1_loss(
     return F.l1_loss(input, target, reduction=reduction)
 
 
+@to_native_arrays_and_back
 @with_unsupported_device_and_dtypes(
     {
         "2.6.0 and below": {

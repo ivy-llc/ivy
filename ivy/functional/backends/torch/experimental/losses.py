@@ -1,13 +1,12 @@
 from typing import Optional
 import torch
 from ivy.func_wrapper import (
+    to_native_arrays_and_back,
     with_unsupported_dtypes,
     with_supported_device_and_dtypes,
     with_supported_dtypes,
 )
 from . import backend_version
-
-# Assuming ivy and backend_version are imported and defined properly
 
 
 @with_unsupported_dtypes(
@@ -42,6 +41,7 @@ def l1_loss(
     },
     backend_version,
 )
+@to_native_arrays_and_back
 def smooth_l1_loss(
     input: torch.Tensor,
     target: torch.Tensor,

@@ -523,6 +523,8 @@ def smooth_l1_loss(
     reduction="mean",
     beta=1.0,
 ):
+    if size_average is not None or reduce is not None:
+        reduction = _get_reduction_string(size_average, reduce)
     return ivy.smooth_l1_loss(input, target, beta=beta, reduction=reduction)
 
 

@@ -3,6 +3,7 @@ from ivy.functional.backends.jax import JaxArray
 
 # local
 from ivy.func_wrapper import (
+    to_native_arrays_and_back,
     with_supported_device_and_dtypes,
 )
 from . import backend_version
@@ -24,6 +25,7 @@ def huber_loss(
     return loss
 
 
+@to_native_arrays_and_back
 def smooth_l1_loss(
     input: JaxArray,
     target: JaxArray,
