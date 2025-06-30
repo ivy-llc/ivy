@@ -15,7 +15,10 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
     "torch",
 )
 def celu(input, alpha=1.0, inplace=False):
-    return ivy.celu(input, alpha=alpha)
+    ret = ivy.celu(input, alpha=alpha)
+    if inplace:
+        return ivy.inplace_update(input, ret)
+    return ret
 
 
 def celu_(input, alpha=1.0):

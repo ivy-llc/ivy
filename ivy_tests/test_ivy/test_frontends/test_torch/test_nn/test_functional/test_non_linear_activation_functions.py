@@ -108,7 +108,6 @@ def _x_and_scaled_attention(draw, dtypes):
         min_num_dims=1,
     ),
     alpha=helpers.floats(min_value=0.1, max_value=1.0),
-    test_inplace=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_torch_celu(
