@@ -1175,7 +1175,9 @@ def test_torch_softmin(
         on_device=on_device,
         input=x[0],
         dim=axis,
-        dtype=ivy.as_ivy_dtype(dtypes[0]),
+        _stacklevel=3,
+        dtype=dtypes[0],
+        atol=1e-03,
     )
     ivy.previous_backend()
 

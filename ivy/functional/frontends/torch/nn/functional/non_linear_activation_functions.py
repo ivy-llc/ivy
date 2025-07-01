@@ -277,7 +277,7 @@ def softmax(input, dim=None, _stacklevel=3, dtype=None):
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
-def softmin(input, dim=None, dtype=None):
+def softmin(input, dim=None, _stacklevel=3, dtype=None):
     if dtype:
         input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
     return ivy.softmax(-input, axis=dim)
