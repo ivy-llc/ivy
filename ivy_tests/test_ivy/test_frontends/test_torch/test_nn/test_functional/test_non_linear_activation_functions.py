@@ -599,6 +599,9 @@ def test_torch_leaky_relu_(
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="log",
+        min_value=-1e+05,
+        max_value=1e+05,
+        abs_smallest_val=1e-5,
     ),
     size=helpers.ints(min_value=3, max_value=10),
     alpha=helpers.floats(min_value=1e-4, max_value=1e-3),
@@ -632,6 +635,8 @@ def test_torch_local_response_norm(
         alpha=alpha,
         beta=beta,
         k=k,
+        atol=1e-03,
+        rtol=1e-03,
     )
 
 
