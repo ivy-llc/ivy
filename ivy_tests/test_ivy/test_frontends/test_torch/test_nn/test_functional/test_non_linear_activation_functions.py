@@ -750,6 +750,9 @@ def test_torch_mish(
         max_axes_size=1,
         force_int_axis=True,
         valid_axis=True,
+        min_value=-1e+05,
+        max_value=1e+05,
+        abs_smallest_val=1e-05,
     ),
     p=helpers.ints(min_value=2, max_value=5),
 )
