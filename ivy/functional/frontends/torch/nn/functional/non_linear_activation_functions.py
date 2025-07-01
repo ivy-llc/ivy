@@ -301,7 +301,7 @@ def softplus(input, beta=1, threshold=20):
 def softshrink(input, lambd=0.5):
     low = ivy.where(ivy.less(input, -lambd), ivy.add(input, lambd), 0)
     up = ivy.where(ivy.greater(input, lambd), ivy.subtract(input, lambd), 0)
-    return ivy.add(low, up)
+    return ivy.add(low, up).astype(input.dtype)
 
 
 @to_ivy_arrays_and_back
