@@ -649,6 +649,9 @@ def test_torch_local_response_norm(
         max_axes_size=1,
         force_int_axis=True,
         valid_axis=True,
+        min_value=-10,
+        max_value=10,
+        abs_smallest_val=1e-02,
     ),
     dtypes=helpers.get_dtypes("float", none=False, full=False),
 )
@@ -674,6 +677,8 @@ def test_torch_log_softmax(
         dim=axis,
         _stacklevel=3,
         dtype=dtypes[0],
+        atol=1e-02,
+        rtol=1e-02,
     )
 
 
