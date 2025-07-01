@@ -690,8 +690,10 @@ def scaled_dot_product_attention(
     embed_dim = query.shape[-1]
     scale = scale if scale else 1 / (embed_dim**0.5)
     sim = ivy.einsum("... q f, ... k f -> ... q k", query, key) * scale
-    sim = ivy.dropout(sim, dropout_p, training=training)
+    
+    fully_masked_rows = None
     if ivy.exists(mask):
+        fully_masked_rows = ivy.logical_not(ivy.any(mask, axis=-1))
         sim = ivy.where(
             ivy.logical_not(mask),
             -ivy.ones_like(sim) * ivy.finfo(ivy.dtype(sim)).max,
@@ -702,13 +704,22 @@ def scaled_dot_product_attention(
         S = key.shape[-2]  # Target sequence length
         mask = ivy.tril(ivy.ones((L, S)), k=0)
         mask = ivy.astype(mask, ivy.bool)
+        fully_masked_rows = ivy.logical_not(ivy.any(mask, axis=-1))
         sim = ivy.where(
             ivy.logical_not(mask),
             -ivy.ones_like(sim) * ivy.finfo(ivy.dtype(sim)).max,
             sim,
         )
+
     attn = ivy.softmax(sim, axis=-1)
+    attn = ivy.dropout(attn, dropout_p, training=training)
     result = ivy.einsum("... qk, ...kf -> ...qf", attn, value)
+    result = ivy.nan_to_num(result, nan=0.0)
+
+    if fully_masked_rows is not None and ivy.any(fully_masked_rows):
+        fully_masked_expanded = ivy.expand_dims(fully_masked_rows, axis=-1)
+        result = ivy.where(fully_masked_expanded, ivy.zeros_like(result), result)
+
     return ivy.inplace_update(out, result) if ivy.exists(out) else result
 
 
