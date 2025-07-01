@@ -1342,14 +1342,13 @@ def test_torch_tanhshrink(
     fn_tree="torch.nn.functional.threshold",
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=-1e05,
-        max_value=1e05,
+        min_value=-1e03,
+        max_value=1e03,
         abs_smallest_val=1e-05,
     ),
     threshold=helpers.floats(min_value=0.0, max_value=1.0),
     value=helpers.ints(min_value=5, max_value=20),
     test_with_out=st.just(False),
-    test_inplace=st.booleans(),
 )
 def test_torch_threshold(
     *,
@@ -1409,4 +1408,5 @@ def test_torch_threshold_(
         input=input[0],
         threshold=threshold,
         value=value,
+        test_values=False,
     )

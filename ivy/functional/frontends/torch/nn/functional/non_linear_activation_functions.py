@@ -2,6 +2,7 @@
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+import ivy.functional.frontends.torch as torch_frontend
 
 
 @to_ivy_arrays_and_back
@@ -324,9 +325,12 @@ def tanhshrink(input):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 def threshold(input, threshold, value, inplace=False):
-    return ivy.where(ivy.greater(input, threshold), input, value).astype(input.dtype)
+    ret = ivy.where(ivy.greater(input, threshold), input, value).astype(input.dtype)
+    if inplace:
+        return ivy.inplace_update(input, ret)
+    return ret
 
 
 @with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 def threshold_(input, threshold, value):
-    return threshold(input, threshold, value, inplace=True)
+    return torch_frontend.nn.functional.threshold(input, threshold, value, inplace=True)
