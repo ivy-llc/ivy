@@ -324,7 +324,7 @@ def tanhshrink(input):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
 def threshold(input, threshold, value, inplace=False):
-    return ivy.where(ivy.greater(input, threshold), input, value)
+    return ivy.where(ivy.greater(input, threshold), input, value).astype(input.dtype)
 
 
 @with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
