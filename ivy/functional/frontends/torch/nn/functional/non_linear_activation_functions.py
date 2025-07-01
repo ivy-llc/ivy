@@ -67,22 +67,20 @@ def glu(input, dim=-1):
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
-def gumbel_softmax(logits, tau=1, hard=False, eps=1e-10, dim=-1):
-    gumbels = -ivy.empty_like(logits).exponential().log()
-    gumbels = (logits + gumbels) / tau
-    y_soft = ivy.softmax(gumbels, axis=dim)
-
+def gumbel_softmax(logits, tau=1., hard=False, eps=1e-10, dim=-1):
+    if logits.ndim == 0:
+        return ivy.ones_like(logits)
+    gumbel_noise = -ivy.log(
+        -ivy.log(ivy.random_uniform(low=0, high=1, shape=logits.shape) + eps) + eps
+    )
+    y = (logits + gumbel_noise) / tau
+    y_soft = ivy.softmax(y, axis=dim)
     if hard:
-        indices = y_soft.max(axis=dim, keepdims=True)[1]
-        y_hard = ivy.zeros_like(logits)
-        updates = ivy.ones_like(indices)
-        y_hard = ivy.scatter_nd(indices, updates, reduction="replace", out=y_hard)
-
-        ret = y_hard - y_soft.stop_gradient(preserve_type=True) + y_soft
-    else:
-        ret = y_soft
-
-    return ret
+        index = ivy.argmax(y_soft, axis=dim)
+        y_hard = ivy.one_hot(index, logits.shape[dim], axis=dim).astype(y_soft.dtype)
+        ret = y_hard - ivy.stop_gradient(y_soft) + y_soft
+        return ret.astype(logits.dtype)
+    return y_soft.astype(logits.dtype)
 
 
 @to_ivy_arrays_and_back

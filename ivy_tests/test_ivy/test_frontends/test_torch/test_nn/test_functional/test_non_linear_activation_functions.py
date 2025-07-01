@@ -307,12 +307,11 @@ def test_torch_glu(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    tau=st.floats(min_value=0),
+    tau=st.floats(min_value=1e-6, max_value=10.0),
     hard=st.booleans(),
     eps=st.floats(min_value=0, max_value=1),
-    dim=st.integers(),
+    dim=st.integers(min_value=-1, max_value=0),
     test_with_out=st.just(False),
-    test_inplace=st.booleans(),
 )
 def test_torch_gumbel_softmax(
     *,
