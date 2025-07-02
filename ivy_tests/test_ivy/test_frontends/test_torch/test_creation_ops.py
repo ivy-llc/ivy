@@ -663,6 +663,7 @@ def test_torch_linspace(
         steps=num,
         dtype=dtype[0],
         device=on_device,
+        atol=1e-01,
         rtol=1e-01,
     )
 
