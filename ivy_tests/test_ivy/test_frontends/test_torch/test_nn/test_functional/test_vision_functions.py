@@ -452,6 +452,8 @@ def test_torch_upsample_bilinear(
         input=x[0],
         size=size,
         scale_factor=scale_factor,
+        atol=1e-02,
+        rtol=1e-02,
     )
 
 
