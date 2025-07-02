@@ -509,7 +509,7 @@ def sin(input, *, out=None):
     return ivy.sin(input, out=out)
 
 
-@with_unsupported_dtypes({"2.2 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16", "float16",)}, "torch")
 @to_ivy_arrays_and_back
 def sinc(input, *, out=None):
     return ivy.sinc(input, out=out)

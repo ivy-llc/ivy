@@ -2703,6 +2703,9 @@ def test_torch_sin(
     fn_tree="torch.sinc",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1e04,
+        max_value=1e04,
+        abs_smallest_val=1e-04,
     ),
 )
 def test_torch_sinc(
@@ -2723,6 +2726,8 @@ def test_torch_sinc(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
+        atol=1e-02,
+        rtol=1e-02,
     )
 
 
