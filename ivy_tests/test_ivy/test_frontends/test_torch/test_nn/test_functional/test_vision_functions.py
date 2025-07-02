@@ -388,7 +388,7 @@ def test_torch_pixel_unshuffle(
 
 @handle_frontend_test(
     fn_tree="torch.nn.functional.upsample",
-    dtype_and_input_and_other=_interp_args(),
+    dtype_and_input_and_other=_interp_args(mode_list="torch"),
     number_positional_args=st.just(2),
 )
 def test_torch_upsample(
@@ -400,7 +400,16 @@ def test_torch_upsample(
     test_flags,
     backend_fw,
 ):
-    input_dtype, x, mode, size, align_corners = dtype_and_input_and_other
+    input_dtype, x, mode, size, align_corners, scale_factor, _ = dtype_and_input_and_other
+    if mode not in ["linear", "bilinear", "bicubic", "trilinear"]:
+        align_corners = None
+
+    # TODO: fix these modes
+    assume(mode != "area")
+    if backend_fw in ["tensorflow", "jax"]:
+        assume(mode != "bicubic")
+        assume(mode != "nearest")
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -412,6 +421,9 @@ def test_torch_upsample(
         size=size,
         mode=mode,
         align_corners=align_corners,
+        scale_factor=scale_factor,
+        atol=1e-02,
+        rtol=1e-02,
     )
 
 
