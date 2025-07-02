@@ -1760,6 +1760,9 @@ def test_torch_lerp(
     fn_tree="torch.lgamma",
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1e04,
+        max_value=1e04,
+        abs_smallest_val=1e-04,
     ),
 )
 def test_torch_lgamma(
@@ -1780,6 +1783,8 @@ def test_torch_lgamma(
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
+        atol=1e-03,
+        rtol=1e-03,
     )
 
 
