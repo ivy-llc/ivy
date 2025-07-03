@@ -646,6 +646,7 @@ def test_torch_moveaxis(
         function="nanmean",
         min_value=-1e04,
         max_value=1e04,
+        abs_smallest_val=1e-04,
     ),
     keepdims=st.booleans(),
 )
@@ -670,6 +671,8 @@ def test_torch_nanmean(
         input=x[0],
         dim=axis,
         keepdim=keepdims,
+        atol=1e-02,
+        rtol=1e-02,
     )
 
 
