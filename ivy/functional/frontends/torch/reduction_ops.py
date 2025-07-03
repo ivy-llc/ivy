@@ -93,9 +93,12 @@ def dist(input, other, p=2):
     return ivy.vector_norm(ivy.subtract(input, other), ord=p)
 
 
+@with_unsupported_dtypes({"2.2 and below": ("complex",)}, "torch")
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def logsumexp(input, dim, keepdim=False, *, out=None):
+    if ivy.is_int_dtype(input):
+        input = ivy.astype(input, ivy.float32)
     c = ivy.max(input, axis=dim, keepdims=True)
     if ivy.get_num_dims(c) > 0:
         c = ivy.where(ivy.isinf(c), ivy.zeros_like(c), c)
