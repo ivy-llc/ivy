@@ -37,7 +37,7 @@ def _get_castable_dtype(draw, min_value=None, max_value=None):
 
 
 @st.composite
-def _statistical_dtype_values(draw, *, function, min_value=None, max_value=None):
+def _statistical_dtype_values(draw, *, function, min_value=None, max_value=None, abs_smallest_val=None):
     large_abs_safety_factor = 2
     small_abs_safety_factor = 2
     if any(ele in function for ele in ["mean", "std", "var"]):
@@ -57,6 +57,7 @@ def _statistical_dtype_values(draw, *, function, min_value=None, max_value=None)
             min_axes_size=1,
             min_value=min_value,
             max_value=max_value,
+            abs_smallest_val=abs_smallest_val,
             allow_nan=True if "nan" in function else False,
         )
     )
