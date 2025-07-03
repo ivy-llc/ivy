@@ -374,8 +374,10 @@ def norm(input, p="fro", dim=None, keepdim=False, out=None, dtype=None):
 @with_unsupported_dtypes(
     {
         "2.2 and below": (
-            "float16",
             "bfloat16",
+            "float16",
+            "int8",
+            "uint8",
         )
     },
     "torch",
