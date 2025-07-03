@@ -256,30 +256,78 @@ def nanmean(input, dim=None, keepdim=False, *, dtype=None, out=None):
 def nanmedian(input, dim=None, keepdim=False, *, out=None):
     if dim is None:
         flattened_input = ivy.flatten(input)
-        sorted_input = ivy.sort(flattened_input)
-        nonnan_index = int(sorted_input.shape[0] - ivy.isnan(sorted_input).sum())
-        return sorted_input[(nonnan_index - 1) // 2]
+        non_nan_mask = ~ivy.isnan(flattened_input)
+        non_nan_values = flattened_input[non_nan_mask]
+
+        if non_nan_values.size == 0:
+            return ivy.array(float('nan'))
+
+        sorted_values = ivy.sort(non_nan_values)
+        n = sorted_values.shape[0]
+        if n % 2 == 1:
+            return sorted_values[n // 2]
+        else:
+            return sorted_values[n // 2 - 1]
 
     nanmedian_tuple = namedtuple("nanmedian", ["values", "indices"])
 
     if input.ndim == 0:
         result = nanmedian_tuple(input, ivy.array(0))
     else:
-        sorted_indices = ivy.argsort(input, axis=dim)
-        nonnan_index = (
-            sorted_indices.shape[dim] - ivy.isnan(input).sum(axis=1) - 1
-        ) // 2
-        nonnan_index = ivy.expand_dims(nonnan_index, axis=1)
-        nanmedian_indices = ivy.gather_nd(sorted_indices, nonnan_index, batch_dims=1)
-        nanmedian_values = ivy.take_along_axis(
-            input, ivy.expand_dims(nanmedian_indices, axis=dim), dim
-        ).squeeze(axis=dim)
+        if dim < 0:
+            dim = input.ndim + dim
+
+        input_transposed = ivy.moveaxis(input, dim, -1)
+        original_shape = list(input_transposed.shape)
+
+        reshaped = ivy.reshape(input_transposed, (-1, original_shape[-1]))
+
+        median_values = []
+        median_indices = []
+
+        for i in range(reshaped.shape[0]):
+            row = reshaped[i]
+            non_nan_mask = ~ivy.isnan(row)
+            non_nan_values = row[non_nan_mask]
+
+            if non_nan_values.size == 0:
+                median_values.append(float('nan'))
+                median_indices.append(0)
+            else:
+                non_nan_indices = ivy.nonzero(non_nan_mask)[0]
+
+                sorted_indices = ivy.argsort(non_nan_values)
+                n = non_nan_values.shape[0]
+
+                if n % 2 == 1:
+                    median_idx = n // 2
+                    median_val = non_nan_values[sorted_indices[median_idx]]
+                    original_idx = non_nan_indices[sorted_indices[median_idx]]
+                else:
+                    median_idx = n // 2 - 1
+                    median_val = non_nan_values[sorted_indices[median_idx]]
+                    original_idx = non_nan_indices[sorted_indices[median_idx]]
+
+                median_values.append(median_val)
+                median_indices.append(original_idx)
+
+        median_values = ivy.array(median_values)
+        median_indices = ivy.array(median_indices)
+
+        result_shape = original_shape[:-1]
+        if result_shape:
+            median_values = ivy.reshape(median_values, result_shape)
+            median_indices = ivy.reshape(median_indices, result_shape)
+        else:
+            median_values = median_values[0]
+            median_indices = median_indices[0]
 
         if keepdim:
-            nanmedian_values = ivy.expand_dims(nanmedian_values, axis=dim)
-            nanmedian_indices = ivy.expand_dims(nanmedian_tuple, axis=dim)
+            median_values = ivy.expand_dims(median_values, axis=dim)
+            median_indices = ivy.expand_dims(median_indices, axis=dim)
 
-        result = nanmedian_tuple(nanmedian_values, nanmedian_indices)
+        result = nanmedian_tuple(median_values, median_indices)
+
     if out is not None:
         ivy.inplace_update(out[0], result.values)
         ivy.inplace_update(out[1], result.indices)
