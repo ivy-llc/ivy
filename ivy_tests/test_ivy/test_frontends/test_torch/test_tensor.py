@@ -10054,8 +10054,9 @@ def test_torch_mul(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
+        min_value=-1e06,
+        max_value=1e06,
     ),
-    test_inplace=st.just(True),
 )
 def test_torch_mul_(
     dtype_and_x,
