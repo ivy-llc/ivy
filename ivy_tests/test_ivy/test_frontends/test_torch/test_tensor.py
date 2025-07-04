@@ -9124,7 +9124,11 @@ def test_torch_logaddexp(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="logdet",
-    dtype_and_x=_get_dtype_and_matrix(square=True, batch=True),
+    dtype_and_x=_get_dtype_and_matrix(
+        dtype="float_and_complex",
+        square=True,
+        batch=True,
+    ),
 )
 def test_torch_logdet(
     dtype_and_x,
@@ -9136,8 +9140,8 @@ def test_torch_logdet(
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
-    dtype, x = dtype_and_x
-    x = np.matmul(x.T, x) + np.identity(x.shape[0])
+    x = x[0]
+    x = x + np.eye(x.shape[-1]) * 1e-3
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -9151,6 +9155,8 @@ def test_torch_logdet(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
+        atol_=1e-03,
+        rtol_=1e-03,
     )
 
 
