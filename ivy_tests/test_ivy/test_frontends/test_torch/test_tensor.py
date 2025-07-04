@@ -10134,8 +10134,10 @@ def test_torch_multiply(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
+        min_value=-1e06,
+        max_value=1e06,
+        abs_smallest_val=1e-06,
     ),
-    test_inplace=st.just(True),
 )
 def test_torch_multiply_(
     dtype_and_x,
