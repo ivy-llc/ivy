@@ -9722,7 +9722,7 @@ def test_torch_mean(
     on_device,
     backend_fw,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis, _, _ = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
