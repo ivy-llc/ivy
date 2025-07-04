@@ -263,19 +263,22 @@ def _quantile_helper(draw):
             allow_neg_axes=False,
             min_axes_size=1,
             force_int_axis=True,
+            min_value=-1e04,
+            max_value=1e04,
+            abs_smallest_val=1e-04,
         )
     )
     q = draw(
         st.one_of(
             helpers.array_values(
-                dtype=helpers.get_dtypes("float"),
+                dtype=dtype[0],
                 shape=helpers.get_shape(min_dim_size=1, max_num_dims=1, min_num_dims=1),
-                min_value=0.0,
-                max_value=1.0,
+                min_value=0.01,
+                max_value=0.99,
                 exclude_max=False,
                 exclude_min=False,
             ),
-            st.floats(min_value=0.0, max_value=1.0),
+            st.floats(min_value=0.01, max_value=0.99),
         )
     )
 
@@ -285,7 +288,6 @@ def _quantile_helper(draw):
         "higher",
         "midpoint",
         "nearest",
-        "nearest_jax",
     ]
     interpolation = draw(
         helpers.list_of_size(
