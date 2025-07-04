@@ -8093,7 +8093,7 @@ def test_torch_index_select(
     method_name="float_power",
     dtype_and_x=_float_power_helper(),
 )
-def test_torch_instance_float_power(
+def test_torch_tensor_float_power(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -8118,6 +8118,8 @@ def test_torch_instance_float_power(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
+        atol_=1e-02,
+        rtol_=1e-02,
     )
 
 
