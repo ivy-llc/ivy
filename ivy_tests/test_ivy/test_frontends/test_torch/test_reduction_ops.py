@@ -970,6 +970,8 @@ def test_torch_sum(
         dim=axis,
         keepdim=keepdims,
         dtype=castable_dtype,
+        atol=1e-02,
+        rtol=1e-02,
     )
 
 

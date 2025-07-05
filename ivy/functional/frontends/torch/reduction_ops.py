@@ -418,6 +418,7 @@ def std_mean(input, dim, *, correction=1, keepdim=False, out=None):
     return temp_std, temp_mean
 
 
+@with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def sum(input, dim=None, keepdim=False, *, dtype=None, out=None):
