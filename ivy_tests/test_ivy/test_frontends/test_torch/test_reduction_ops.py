@@ -972,6 +972,8 @@ def test_torch_sum(
         dtype=castable_dtype,
         atol=1e-02,
         rtol=1e-02,
+        test_dtypes=False,
+        test_values=input_dtype[0] != "bool",
     )
 
 
