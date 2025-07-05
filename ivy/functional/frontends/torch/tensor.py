@@ -1495,7 +1495,7 @@ class Tensor:
     def __le__(self, other):
         return torch_frontend.less_equal(self, other)
 
-    @with_unsupported_dtypes({"2.2 and below": ("bfloat16",)}, "torch")
+    @with_supported_dtypes({"2.2 and below": ("integer", "bool")}, "torch")
     def __or__(self, other):
         return torch_frontend.bitwise_or(self, other)
 
