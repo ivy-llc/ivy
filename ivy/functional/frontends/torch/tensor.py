@@ -2057,6 +2057,7 @@ class Tensor:
     def requires_grad_(self, requires_grad=True):
         if ivy.requires_gradient(self.ivy_array) and not requires_grad:
             return ivy.stop_gradient(self.ivy_array)
+        self.requires_grad = requires_grad
         return self
 
     def backward(self, gradient=None, retain_graph=None, create_graph=False):
