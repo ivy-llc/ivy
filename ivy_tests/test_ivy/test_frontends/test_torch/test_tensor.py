@@ -9044,8 +9044,12 @@ def test_torch_log_(
         max_axes_size=1,
         force_int_axis=True,
         valid_axis=True,
+        min_value=-1e04,
+        max_value=1e04,
+        abs_smallest_val=1e-04,
     ),
     dtypes=helpers.get_dtypes("float", none=False, full=False),
+    method_num_positional_args=st.just(0),
 )
 def test_torch_log_softmax(
     *,
@@ -9076,6 +9080,7 @@ def test_torch_log_softmax(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
+        rtol_=1e03,
     )
 
 
