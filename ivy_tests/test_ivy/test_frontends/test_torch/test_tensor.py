@@ -1020,6 +1020,9 @@ def test_torch___matmul__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
+        min_value=-1e06,
+        max_value=1e06,
+        abs_smallest_val=1e-06,
     ),
 )
 def test_torch___mod__(
