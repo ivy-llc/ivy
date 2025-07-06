@@ -1797,10 +1797,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
     def logdet(self):
-        chol = torch_frontend.cholesky(self)
-        return 2 * torch_frontend.sum(
-            torch_frontend.log(torch_frontend.real(torch_frontend.diagonal(chol)))
-        )
+        return torch_frontend.logdet(self)
 
     @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
     def copysign(self, other, *, out=None):
