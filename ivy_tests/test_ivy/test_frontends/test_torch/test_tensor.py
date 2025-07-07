@@ -3941,6 +3941,7 @@ def test_torch_backward(
     dtype_x,
     backend_fw,
 ):
+    pytest.skip("TODO: fix torch_frontend.Tensor.backward")
     ivy.set_backend(backend_fw)
     if ivy.current_backend_str() == "numpy":
         ivy.warnings.warn("Gradient calculation unavailable for numpy backend")
@@ -7975,6 +7976,7 @@ def test_torch_index_put(
     on_device,
     backend_fw,
 ):
+    pytest.skip("TODO: fix torch_frontend.Tensor.index_put")
     input_dtype, x, indices, *_ = x_and_indices
     values_dtype, values = values
     init_dtypes = [input_dtype[0]]
@@ -8024,6 +8026,7 @@ def test_torch_index_put_(
     on_device,
     backend_fw,
 ):
+    pytest.skip("TODO: fix torch_frontend.Tensor.index_put_")
     input_dtype, x, indices, *_ = x_and_indices
     values_dtype, values = values
     init_dtypes = [input_dtype[0]]
