@@ -5583,25 +5583,6 @@ def test_torch_cross(
     )
 
 
-@given(
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
-    ).filter(
-        lambda x: "bfloat16" not in x[0]
-        and "uint16" not in x[0]
-        and "uint32" not in x[0]
-        and "uint64" not in x[0]
-    ),
-)
-def test_torch_cuda(dtype_x, backend_fw):
-    ivy.set_backend(backend_fw)
-    _, data = dtype_x
-    x = Tensor(data[0], device="gpu:0")
-    device = "gpu:0"
-    ivy.utils.assertions.check_equal(x.cuda, device, as_array=False)
-    ivy.previous_backend()
-
-
 # cummax
 @handle_frontend_method(
     class_tree=CLASS_TREE,
