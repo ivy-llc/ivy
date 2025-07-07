@@ -4642,6 +4642,9 @@ def test_torch_bool(
     method_name="byte",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        min_value=0,
+        max_value=10,
+        abs_smallest_val=1e-3,
     ),
 )
 def test_torch_byte(
