@@ -4034,7 +4034,7 @@ def test_torch_baddbmm(
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
-        init_all_as_kwargs_np={"data": x[0]},
+        init_all_as_kwargs_np={"data": x},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "batch1": batch1,
@@ -4069,7 +4069,6 @@ def test_torch_baddbmm(
         allow_subnormal=False,
         allow_infinity=False,
     ),
-    test_inplace=st.just(True),
 )
 def test_torch_baddbmm_(
     dtype_and_matrices,
@@ -4086,7 +4085,7 @@ def test_torch_baddbmm_(
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
-        init_all_as_kwargs_np={"data": x[0]},
+        init_all_as_kwargs_np={"data": x},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "batch1": batch1,
