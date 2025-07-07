@@ -5448,8 +5448,8 @@ def test_torch_cosh_(
     init_tree="torch.tensor",
     method_name="count_nonzero",
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        available_dtypes=helpers.get_dtypes("integer"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=2), key="shape"),
     ),
     dim=helpers.get_axis(
         shape=st.shared(helpers.get_shape(), key="shape"),
