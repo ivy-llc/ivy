@@ -4108,8 +4108,10 @@ def test_torch_baddbmm_(
     method_name="bernoulli",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        min_value=0,
+        max_value=1,
     ),
-    test_with_out=st.just(True),
+    init_num_positional_args=st.just(1),
 )
 def test_torch_bernoulli(
     dtype_and_x,
@@ -4128,12 +4130,13 @@ def test_torch_bernoulli(
             "input": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={"generator": x[1], "out": x[2]},
+        method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
+        test_values=False,
     )
 
 
