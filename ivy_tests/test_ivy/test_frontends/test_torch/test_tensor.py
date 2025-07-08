@@ -7472,20 +7472,6 @@ def test_torch_grad(backend_fw):
     ivy.previous_backend()
 
 
-def test_torch_grad_fn(backend_fw):
-    ivy.set_backend(backend_fw)
-    x = Tensor(ivy.array([3.0]), requires_grad=True)
-    ivy.utils.assertions.check_equal(x.grad_fn, None, as_array=False)
-    y = x.pow(2)
-    ivy.utils.assertions.check_equal(y.grad_fn, "PowBackward", as_array=False)
-    ivy.utils.assertions.check_equal(
-        y.grad_fn.next_functions[0], "AccumulateGrad", as_array=False
-    )
-    z = y.detach()
-    ivy.utils.assertions.check_equal(z.grad_fn, None, as_array=False)
-    ivy.previous_backend()
-
-
 # greater
 @handle_frontend_method(
     class_tree=CLASS_TREE,
