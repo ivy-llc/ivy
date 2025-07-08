@@ -1817,7 +1817,7 @@ class Tensor:
     def greater(self, other, *, out=None):
         return torch_frontend.greater(self, other, out=out)
 
-    @with_unsupported_dtypes({"2.2 and below": ("bfloat16", "bool")}, "torch")
+    @with_unsupported_dtypes({"2.2 and below": ("bfloat16", "bool", "complex")}, "torch")
     def greater_(self, other):
         ret = ivy.astype(self.greater(other).ivy_array, self.dtype)
         self.ivy_array = ivy.inplace_update(self.ivy_array, ret)

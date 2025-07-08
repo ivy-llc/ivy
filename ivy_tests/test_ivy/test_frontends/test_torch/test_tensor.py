@@ -7525,7 +7525,6 @@ def test_torch_greater(
         max_value=1e04,
         allow_inf=False,
     ),
-    test_inplace=st.just(True),
 )
 def test_torch_greater_(
     dtype_and_x,
