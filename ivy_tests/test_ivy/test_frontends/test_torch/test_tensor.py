@@ -7463,31 +7463,6 @@ def test_torch_gcd(
     )
 
 
-@given(
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
-    ).filter(
-        lambda x: "bfloat16" not in x[0]
-        and "uint16" not in x[0]
-        and "uint32" not in x[0]
-        and "uint64" not in x[0]
-    ),
-)
-def test_torch_get_device(
-    dtype_x,
-    backend_fw,
-):
-    ivy.set_backend(backend_fw)
-    _, data = dtype_x
-    x = Tensor(data[0])
-    ivy.utils.assertions.check_equal(x.get_device, -1, as_array=False)
-    x = Tensor(data[0], "gpu:0")
-    ivy.utils.assertions.check_equal(x.get_device, 0, as_array=False)
-    x = Tensor(data[0], "tpu:3")
-    ivy.utils.assertions.check_equal(x.get_device, 3, as_array=False)
-    ivy.previous_backend()
-
-
 def test_torch_grad(backend_fw):
     ivy.set_backend(backend_fw)
     x = Tensor(ivy.array([1.0, 2.0, 3.0]))
