@@ -6224,6 +6224,7 @@ def test_torch_divide(
         num_arrays=2,
         shape=(1,),
     ),
+    method_num_positional_args=st.just(1),
 )
 def test_torch_dot(
     dtype_and_x,
@@ -6243,7 +6244,7 @@ def test_torch_dot(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "tensor": x[1],
+            "other": x[1],
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,

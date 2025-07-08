@@ -1308,8 +1308,8 @@ class Tensor:
         return self
 
     @with_unsupported_dtypes({"2.2 and below": ("float16", "bfloat16")}, "torch")
-    def dot(self, inp):
-        return torch_frontend.dot(self, inp)
+    def dot(self, other):
+        return torch_frontend.dot(self, other)
 
     @with_supported_dtypes({"2.2 and below": ("float32", "float64")}, "torch")
     def bernoulli(self, *, generator=None, out=None):
