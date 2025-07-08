@@ -5683,6 +5683,8 @@ def test_torch_cumprod(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        min_value=0,
+        max_value=100,
     ),
     dim=helpers.get_axis(
         shape=st.shared(helpers.get_shape(), key="shape"),
@@ -5690,6 +5692,7 @@ def test_torch_cumprod(
         force_int=True,
     ),
     dtypes=_dtypes(),
+    method_num_positional_args=st.just(0),
 )
 def test_torch_cumsum(
     dtype_value,
