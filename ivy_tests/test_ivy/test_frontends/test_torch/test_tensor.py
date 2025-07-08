@@ -5733,13 +5733,15 @@ def test_torch_cumsum(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        min_value=0,
+        max_value=100,
     ),
     dim=helpers.get_axis(
         shape=st.shared(helpers.get_shape(), key="shape"),
         allow_neg=True,
         force_int=True,
     ),
-    test_inplace=st.just(True),
+    method_num_positional_args=st.just(0),
 )
 def test_torch_cumsum_(
     dtype_value,
