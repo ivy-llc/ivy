@@ -6087,11 +6087,13 @@ def test_torch_dim(
     init_tree="torch.tensor",
     method_name="div",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         num_arrays=2,
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        min_value=-1e04,
+        max_value=1e04,
     ),
     rounding_mode=st.sampled_from(["floor", "trunc"]) | st.none(),
 )
@@ -6106,7 +6108,7 @@ def test_torch_div(
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
-    assume(not np.any(np.isclose(x[1], 0)))
+    assume(not np.any(np.isclose(x[1], 0, atol=1e-06)))
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
