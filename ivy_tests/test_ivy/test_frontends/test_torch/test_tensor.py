@@ -428,6 +428,8 @@ def _to_helper(draw):
             available_dtypes=helpers.get_dtypes("valid"),
             num_arrays=2,
             large_abs_safety_factor=3,
+            min_value=0,
+            max_value=100,
         )
     )
     input_dtype, x = dtype_x
