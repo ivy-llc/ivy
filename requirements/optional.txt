@@ -12,7 +12,6 @@ nvidia-ml-py # mod_name=pynvml
 paddlepaddle # mod_name=paddle
 pandas
 pytest
-redis
 scikit-learn # mod_name=sklearn
 scipy
 snakeviz # for profiling
