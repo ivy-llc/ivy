@@ -18,7 +18,6 @@ pip install torchvision
 pip install kornia
 pip install accelerate
 pip install transformers
-pip install redis
 pip install hypothesis
 
 pytest ivy_tests/test_integrations/test_$integration.py -p no:warnings --tb=short --target $target
