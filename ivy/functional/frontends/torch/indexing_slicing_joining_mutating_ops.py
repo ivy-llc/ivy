@@ -102,13 +102,11 @@ def diagonal_scatter(input, src, offset=0, dim1=0, dim2=1):
 
 @to_ivy_arrays_and_back
 def dsplit(input, indices_or_sections, /):
-    if isinstance(indices_or_sections, (list, tuple, ivy.Array)):
-        indices_or_sections = (
-            ivy.diff(indices_or_sections, prepend=[0], append=[input.shape[2]])
-            .astype(ivy.int8)
-            .to_list()
+    if input.ndim < 3:
+        raise ValueError(
+            f"dsplit requires a tensor with at least 3 dimensions, but got a tensor with {input.ndim}"
         )
-    return tuple(ivy.dsplit(input, indices_or_sections))
+    return tensor_split(input, indices_or_sections, dim=2)
 
 
 @to_ivy_arrays_and_back
