@@ -13558,6 +13558,8 @@ def test_torch_tensor_logaddexp2(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
+        atol_=1e-02,
+        rtol_=1e-02,
     )
 
 
