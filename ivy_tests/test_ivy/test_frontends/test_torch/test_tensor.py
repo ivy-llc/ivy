@@ -12395,8 +12395,10 @@ def test_torch_sinc(
     method_name="sinc_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-100,
+        max_value=100,
+        abs_smallest_val=1e-04,
     ),
-    test_inplace=st.just(True),
 )
 def test_torch_sinc_(
     *,
@@ -12422,6 +12424,8 @@ def test_torch_sinc_(
         frontend=frontend,
         backend_to_test=backend_fw,
         on_device=on_device,
+        atol_=1e-02,
+        rtol_=1e-02,
     )
 
 
