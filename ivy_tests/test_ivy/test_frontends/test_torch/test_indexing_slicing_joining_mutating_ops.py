@@ -1,9 +1,7 @@
 # global
-import random
-
-from hypothesis import strategies as st
+from hypothesis import assume, strategies as st
 import math
-
+import random
 
 # local
 import ivy
