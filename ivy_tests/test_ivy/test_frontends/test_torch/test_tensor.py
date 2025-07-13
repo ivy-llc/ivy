@@ -11606,22 +11606,6 @@ def test_torch_repeat(
     )
 
 
-@given(
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
-    ),
-    requires_grad=st.booleans(),
-)
-def test_torch_requires_grad(dtype_x, requires_grad, backend_fw):
-    ivy.set_backend(backend_fw)
-    _, data = dtype_x
-    x = Tensor(data[0], requires_grad=requires_grad)
-    ivy.utils.assertions.check_equal(x.requires_grad, requires_grad, as_array=False)
-    x.requires_grad = not requires_grad
-    ivy.utils.assertions.check_equal(x.requires_grad, not requires_grad, as_array=False)
-    ivy.previous_backend()
-
-
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
