@@ -1511,8 +1511,10 @@ class Tensor:
         return self
 
     def new(self, *shape_list):
-        if isinstance(shape_list[0], (list, tuple)):
+        if len(shape_list) > 0 and isinstance(shape_list[0], (list, tuple)):
             shape_list = shape_list[0]
+        if len(shape_list) == 0:
+            return torch_frontend.tensor([], dtype=self.dtype, device=self.device)
         return torch_frontend.zeros(shape_list, dtype=self.dtype, device=self.device)
 
     def __array__(self, dtype=None):
