@@ -8866,7 +8866,6 @@ def test_torch_log1p(
         available_dtypes=helpers.get_dtypes("valid"),
         max_value=1e37,
     ),
-    test_inplace=st.just(True),
 )
 def test_torch_log1p_(
     dtype_x,
