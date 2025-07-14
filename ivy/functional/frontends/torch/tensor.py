@@ -1843,7 +1843,7 @@ class Tensor:
     def less(self, other, *, out=None):
         return torch_frontend.less(self, other, out=out)
 
-    @with_unsupported_dtypes({"2.2 and below": ("bfloat16", "bool")}, "torch")
+    @with_unsupported_dtypes({"2.2 and below": ("bfloat16", "bool", "complex")}, "torch")
     def less_(self, other):
         ret = self.less(other)
         self.ivy_array = ivy.inplace_update(
