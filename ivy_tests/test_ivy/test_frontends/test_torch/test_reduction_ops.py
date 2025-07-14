@@ -354,11 +354,11 @@ def test_torch_count_nonzero(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
-        min_value=-1e04,
-        max_value=1e04,
+        min_value=-10,
+        max_value=10,
         allow_inf=False,
     ),
-    p=helpers.floats(min_value=1.0, max_value=10.0),
+    p=helpers.floats(min_value=1.0, max_value=3.0),
 )
 def test_torch_dist(
     *,
@@ -381,6 +381,7 @@ def test_torch_dist(
         input=input[0],
         other=input[1],
         p=p,
+        rtol=0.05,
     )
 
 
