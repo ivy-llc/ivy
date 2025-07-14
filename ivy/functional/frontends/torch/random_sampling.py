@@ -1,6 +1,7 @@
 import ivy
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 @with_supported_dtypes(
@@ -261,4 +262,4 @@ def seed() -> int:
 )
 @to_ivy_arrays_and_back
 def set_rng_state(new_state):
-    return ivy.seed(seed_value=new_state)
+    raise IvyNotImplementedException("set_rng_state is not implemented")
