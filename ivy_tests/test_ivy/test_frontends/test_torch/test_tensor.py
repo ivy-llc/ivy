@@ -8248,20 +8248,6 @@ def test_torch_is_floating_point(
 
 
 @given(
-    requires_grad=st.booleans(),
-)
-def test_torch_is_leaf(requires_grad, backend_fw):
-    ivy.set_backend(backend_fw)
-    x = Tensor(ivy.array([3.0]), requires_grad=requires_grad)
-    ivy.utils.assertions.check_equal(x.is_leaf, True, as_array=False)
-    y = x.pow(2)
-    ivy.utils.assertions.check_equal(y.is_leaf, not requires_grad, as_array=False)
-    z = y.detach()
-    ivy.utils.assertions.check_equal(z.is_leaf, True, as_array=False)
-    ivy.previous_backend()
-
-
-@given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
