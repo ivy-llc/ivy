@@ -1900,16 +1900,11 @@ class Tensor:
         {"2.2 and below": ("float32", "float64", "bfloat16")}, "torch"
     )
     def log1p(self):
-        promoted_type = ivy.promote_types(self.dtype, "float32")
-        res = torch_frontend.log1p(self)
-        return res.to(promoted_type)
+        return torch_frontend.log1p(self)
 
     @with_supported_dtypes({"2.2 and below": ("float32", "float64")}, "torch")
     def log1p_(self):
-        promoted_type = ivy.promote_types(self.dtype, "float32")
-        ret = torch_frontend.log1p(self)
-        ret = ret.to(promoted_type)
-        self.ivy_array = ivy.inplace_update(self.ivy_array, ret.ivy_array)
+        self.ivy_array = ivy.inplace_update(self.ivy_array, self.log1p().ivy_array)
         return self
 
     def baddbmm(self, batch1, batch2, *, beta=1, alpha=1):
