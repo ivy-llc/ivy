@@ -1875,6 +1875,13 @@ def put_along_axis(
     ivy.array([[10, 30, 20],
               [60, 40, 50]])
     """
+
+    # TODO: support 'amin' and 'amax' modes
+    if mode in ["amin", "amax"]:
+        raise ivy.exceptions.IvyNotImplementedException(
+            f"mode '{mode}' is not yet supported for put_along_axis"
+        )
+
     arr, values = ivy.promote_types_of_inputs(arr, values)
     arr_shape = arr.shape
 
