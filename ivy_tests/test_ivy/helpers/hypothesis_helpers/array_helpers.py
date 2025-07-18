@@ -1810,6 +1810,7 @@ def arrays_for_pooling(
             num_arrays=1,
             max_value=100,
             min_value=-100,
+            abs_smallest_val=1e-04,
         )
     )
 

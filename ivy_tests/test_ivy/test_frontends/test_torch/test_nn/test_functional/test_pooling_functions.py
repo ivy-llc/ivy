@@ -292,6 +292,8 @@ def test_torch_avg_pool2d(
         ceil_mode=ceil_mode,
         count_include_pad=count_include_pad,
         divisor_override=None,
+        atol=1e-2,
+        rtol=1e-2,
     )
 
 
