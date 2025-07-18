@@ -8131,10 +8131,11 @@ def test_torch_int(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="inverse",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-    ).filter(lambda s: s[1][0].shape[-1] == s[1][0].shape[-2]),
+    dtype_and_x=_get_dtype_and_matrix(
+        dtype="float",
+        square=True,
+        invertible=True,
+    ),
 )
 def test_torch_inverse(
     dtype_and_x,
