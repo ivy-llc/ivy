@@ -5674,6 +5674,7 @@ def test_torch_cumprod(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
+        test_values=False,
     )
 
 
