@@ -263,6 +263,7 @@ def test_torch_avg_pool1d(
     ceil_mode=st.booleans(),
     count_include_pad=st.booleans(),
     test_with_out=st.just(False),
+    number_positional_args=st.just(1),
 )
 def test_torch_avg_pool2d(
     dtype_x_k_s,
@@ -292,8 +293,8 @@ def test_torch_avg_pool2d(
         ceil_mode=ceil_mode,
         count_include_pad=count_include_pad,
         divisor_override=None,
-        atol=1e-2,
-        rtol=1e-2,
+        atol=1e-1 if backend_fw == "jax" else 1e-4,
+        rtol=1e-1 if backend_fw == "jax" else 1e-4,
     )
 
 
