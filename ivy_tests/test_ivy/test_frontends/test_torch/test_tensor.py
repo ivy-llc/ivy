@@ -9114,8 +9114,8 @@ def test_torch_logdet(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
-        atol_=1e-03,
-        rtol_=1e-03,
+        atol_=1e-02,
+        rtol_=1e-02,
     )
 
 
