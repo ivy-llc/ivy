@@ -226,13 +226,6 @@ class EagerTensor:
             yield self[i]
 
     def tolist(self):
-        """Convert the tensor to a (possibly nested) list.
-
-        Returns
-        -------
-        list
-            A list representation of the tensor.
-        """
         return ivy.to_list(self.ivy_array)
 
 

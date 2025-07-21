@@ -414,13 +414,6 @@ class Array:
         return jax_frontend.numpy.swapaxes(self, axis1=axis1, axis2=axis2)
 
     def tolist(self):
-        """Convert the array to a (possibly nested) list.
-
-        Returns
-        -------
-        list
-            A list representation of the array.
-        """
         return ivy.to_list(self.ivy_array)
 
 

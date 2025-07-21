@@ -1620,6 +1620,8 @@ def test_tensorflow_shape(
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=10,
+        min_value=-1e05,
+        max_value=1e05,
     ),
 )
 def test_tensorflow_tensor_tolist(
