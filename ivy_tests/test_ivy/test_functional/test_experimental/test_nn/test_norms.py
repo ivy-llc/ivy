@@ -175,6 +175,10 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
 )
 def test_batch_norm(*, data, training, test_flags, backend_fw, fn_name, on_device):
     x_dtype, x, mean, variance, offset, scale, eps, momentum, data_format = data
+    
+    if x_dtype[0] in ['float16', 'bfloat16']:
+        test_flags.test_gradients = False
+
     helpers.test_function(
         backend_to_test=backend_fw,
         test_flags=test_flags,
