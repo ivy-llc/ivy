@@ -160,44 +160,86 @@ def conv1d(
 
 @with_unsupported_dtypes({"2.15.0 and below": ("bfloat16", "complex")}, backend_version)
 def conv1d_transpose(
-    x: Union[tf.Tensor, tf.Variable],
-    filters: Union[tf.Tensor, tf.Variable],
+    x: Union[ivy.Array, ivy.NativeArray],
+    filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int]],
     padding: str,
     /,
     *,
-    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     filter_format: str = "channel_last",
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
-    bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-):
+    bias: Optional[ivy.Array] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Compute a 1-D transpose convolution given 3-D input x and filters arrays.
+
+    Parameters
+    ----------
+    x
+        Input image *[batch_size,w,d_in]* or *[batch_size,d_in,w]*.
+    filters
+        Convolution filters *[fw,d_out,d_in]*.
+    strides
+        The stride of the sliding window for each dimension of input.
+    padding
+        Either 'SAME' (padding so that the output's shape is the same as the
+        input's), or 'VALID' (padding so that the output's shape is `output_shape`).
+    output_shape
+        Shape of the output (Default value = None)
+    filter_format
+        Either "channel_first" or "channel_last". "channel_first" corresponds
+        to "IOW",input data formats, while "channel_last" corresponds to "WOI".
+    data_format
+        The ordering of the dimensions in the input, one of "NWC" or "NCW". "NWC"
+        corresponds to input with shape (batch_size, width, channels), while "NCW"
+        corresponds to input with shape (batch_size, channels, width).
+    dilations
+        The dilation factor for each dimension of input. (Default value = 1)
+    bias
+        Bias array of shape *[d_out]*.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The result of the transpose convolution operation.
+    """
     if ivy.dev(x) == "cpu" and (
         (dilations > 1) if isinstance(dilations, int) else any(d > 1 for d in dilations)
     ):
         raise ivy.utils.exceptions.IvyException(
             "Tensorflow does not support dilations greater than 1 when device is cpu"
         )
+    
     permuted_x = False
     if data_format == "NCW" and ivy.dev(x) == "cpu":
         x = tf.transpose(x, (0, 2, 1))
         data_format = "NWC"
         permuted_x = True
+        
     if filter_format == "channel_first":
         filters = tf.transpose(filters, (2, 1, 0))
+        
     output_shape, padding = _transpose_out_pad(
         x.shape, filters.shape, strides, padding, 1, dilations, data_format
     )
+    
     res = tf.nn.conv1d_transpose(
         x, filters, output_shape, strides, padding, data_format, dilations
     )
+    
     if bias is not None:
         if data_format[1] == "C":
             bias = tf.reshape(bias, [1, -1, 1])
         res = tf.math.add(res, bias)
+        
     if permuted_x:
         res = tf.transpose(res, (0, 2, 1))
+        
     return res
 
 

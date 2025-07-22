@@ -1547,7 +1547,7 @@ class _ContainerWithLayers(ContainerBase):
     def _static_conv1d_transpose(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        strides: Union[int, Tuple[int], ivy.Container],
+        strides: Union[int, Tuple[int]],
         padding: Union[str, ivy.Container],
         /,
         *,
@@ -1562,9 +1562,9 @@ class _ContainerWithLayers(ContainerBase):
         bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.conv1d_transpose. This
-        method simply wraps the function, and so the docstring for
-        ivy.conv1d_transpose also applies to this method with minimal changes.
+        """ivy.Container static method variant of ivy.conv1d_transpose. This method
+        simply wraps the function, and so the docstring for ivy.conv1d_transpose also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1575,9 +1575,9 @@ class _ContainerWithLayers(ContainerBase):
         strides
             The stride of the sliding window for each dimension of input.
         padding
-            either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
-            padding), or a sequence of n (low, high) integer pairs that give the padding
-            to apply before and after each spatial dimension.
+            either the string 'SAME' (padding with zeros evenly), the string 'VALID' (no
+            padding), or a sequence of n (low, high) integer pairs that give the padding to
+            apply before and after each spatial dimension.
         output_shape
             Shape of the output (Default value = None)
         filter_format
@@ -1603,8 +1603,8 @@ class _ContainerWithLayers(ContainerBase):
         bias
             Bias array of shape *[d_out]*.
         out
-            optional output container, for writing the result to. It must have a shape
-            that the inputs broadcast to.
+            optional output container, for writing the result to. It must have a shape that the
+            inputs broadcast to.
 
         Returns
         -------
@@ -1616,11 +1616,11 @@ class _ContainerWithLayers(ContainerBase):
         >>> x = ivy.Container(a=ivy.random_normal(mean=0, std=1, shape=[1, 28, 3]),
         ...                   b=ivy.random_normal(mean=0, std=1, shape=[1, 56, 3]))
         >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 6, 3])
-        >>> y = ivy.Container.static_conv1d_transpose(x, filters, 2, 'SAME')
+        >>> y = ivy.Container.static_conv1d_transpose(x, filters, [2], 'SAME')
         >>> print(y.shape)
         {
-            a: [1,56,6],
-            b: [1,112,6]
+            a: ivy.Shape(1, 56, 6),
+            b: ivy.Shape(1, 112, 6)
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1672,9 +1672,9 @@ class _ContainerWithLayers(ContainerBase):
         strides
             The stride of the sliding window for each dimension of input.
         padding
-            either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
-            padding), or a sequence of n (low, high) integer pairs that give the padding
-            to apply before and after each spatial dimension.
+            either the string 'SAME' (padding with zeros evenly), the string 'VALID' (no
+            padding), or a sequence of n (low, high) integer pairs that give the padding to
+            apply before and after each spatial dimension.
         output_shape
             Shape of the output (Default value = None)
         filter_format
@@ -1700,8 +1700,8 @@ class _ContainerWithLayers(ContainerBase):
         bias
             Bias array of shape *[d_out]*.
         out
-            optional output container, for writing the result to. It must have a shape
-            that the inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
 
         Returns
         -------
@@ -1713,7 +1713,7 @@ class _ContainerWithLayers(ContainerBase):
         >>> x = ivy.Container(a=ivy.random_normal(mean=0, std=1, shape=[1, 28, 3]),
         ...                   b=ivy.random_normal(mean=0, std=1, shape=[1, 56, 3]))
         >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 6, 3])
-        >>> y = x.conv1d_transpose(filters, 2, 'SAME')
+        >>> y = x.conv1d_transpose(filters, [2], 'SAME')
         >>> print(y.shape)
         {
             a: ivy.Shape(1, 56, 6),

@@ -1187,20 +1187,20 @@ def conv1d_transpose(
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 3])
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 6, 3])
-    >>> y = ivy.conv1d_transpose(x, filters, 2, 'SAME')
+    >>> y = ivy.conv1d_transpose(x, filters, [2], 'SAME')
     >>> print(y.shape)
     ivy.Shape(1, 56, 6)
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 128, 64])
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[1, 64, 64])
-    >>> ivy.conv1d_transpose(x, filters, 1, 'VALID', out=x)
+    >>> ivy.conv1d_transpose(x, filters, [1], 'VALID', out=x)
     >>> print(x.shape)
     ivy.Shape(1, 128, 64)
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 256, 64])
     >>> y = ivy.zeros((1, 258, 32))
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 32, 64])
-    >>> ivy.conv1d_transpose(x, filters, 1, 'VALID', out=y)
+    >>> ivy.conv1d_transpose(x, filters, [1], 'VALID', out=y)
     >>> print(y.shape)
     ivy.Shape(1, 258, 32)
 
@@ -1210,7 +1210,7 @@ def conv1d_transpose(
     ...         ivy.random_normal(mean=0, std=1, shape=[1, 256, 128]))
     >>> filters = ivy.native_array(
     ...         ivy.random_normal(mean=0, std=1, shape=[3, 32, 128]))
-    >>> y = ivy.conv1d_transpose(x, filters, 2, 'SAME')
+    >>> y = ivy.conv1d_transpose(x, filters, [2], 'SAME')
     >>> print(y.shape)
     ivy.Shape(1, 512, 32)
 
@@ -1220,7 +1220,7 @@ def conv1d_transpose(
     >>> a = ivy.random_normal(mean=0, std=1, shape=[3, 1, 1])
     >>> b = ivy.random_normal(mean=0, std=1, shape=[3, 1, 1])
     >>> filters = ivy.Container(a=a, b=b)
-    >>> y = ivy.conv1d_transpose(x, filters, 1, 'VALID', dilations=2)
+    >>> y = ivy.conv1d_transpose(x, filters, [1], 'VALID', dilations=[2])
     >>> print(y.shape)
     {
         a: ivy.Shape(1, 10, 1),
@@ -1235,7 +1235,7 @@ def conv1d_transpose(
     >>> d = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3])
     >>> x = ivy.Container(a=a, b=b)
     >>> filters = ivy.Container(c=c, d=d)
-    >>> y = ivy.conv1d_transpose(x, filters, 2, 'SAME')
+    >>> y = ivy.conv1d_transpose(x, filters, [2], 'SAME')
     >>> print(y.shape)
     {
         a: {
@@ -1245,14 +1245,6 @@ def conv1d_transpose(
         b: {
             c: ivy.Shape(1, 56, 3),
             d: ivy.Shape(1, 56, 3)
-        },
-        c: {
-            c: ivy.Shape(6, 6, 3),
-            d: ivy.Shape(6, 6, 3)
-        },
-        d: {
-            c: ivy.Shape(6, 6, 3),
-            d: ivy.Shape(6, 6, 3)
         }
     }
     """
