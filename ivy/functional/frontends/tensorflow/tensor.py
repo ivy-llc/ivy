@@ -225,6 +225,13 @@ class EagerTensor:
         for i in range(self.shape[0]):
             yield self[i]
 
+    def floor(self):
+        return tensorflow_frontend.floor(self)
+
+    def floor_(self):
+        self.ivy_array = ivy.inplace_update(self.ivy_array, ivy.floor(self.ivy_array))
+        return self
+
     def tolist(self):
         return ivy.to_list(self.ivy_array)
 

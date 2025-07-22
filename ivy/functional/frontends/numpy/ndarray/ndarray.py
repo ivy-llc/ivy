@@ -649,6 +649,13 @@ class ndarray:
     def __ilshift__(self, value, /):
         return ivy.bitwise_left_shift(self.ivy_array, value, out=self)
 
+    def floor(self):
+        return np_frontend.floor(self)
+
+    def floor_(self):
+        self._ivy_array = ivy.inplace_update(self._ivy_array, ivy.floor(self._ivy_array))
+        return self
+
     def round(self, decimals=0, out=None):
         return np_frontend.round(self, decimals=decimals, out=out)
 

@@ -413,6 +413,13 @@ class Array:
     def swapaxes(self, axis1, axis2):
         return jax_frontend.numpy.swapaxes(self, axis1=axis1, axis2=axis2)
 
+    def floor(self):
+        return jax_frontend.numpy.floor(self)
+
+    def floor_(self):
+        self._ivy_array = ivy.inplace_update(self._ivy_array, ivy.floor(self._ivy_array))
+        return self
+
     def tolist(self):
         return ivy.to_list(self.ivy_array)
 
