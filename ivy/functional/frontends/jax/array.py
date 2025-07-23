@@ -413,6 +413,9 @@ class Array:
     def swapaxes(self, axis1, axis2):
         return jax_frontend.numpy.swapaxes(self, axis1=axis1, axis2=axis2)
 
+    def tolist(self):
+        return ivy.to_list(self.ivy_array)
+
 
 # Jax supports DeviceArray from 0.4.13 and below
 # Hence aliasing it here

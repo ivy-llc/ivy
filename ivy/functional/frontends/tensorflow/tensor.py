@@ -225,6 +225,9 @@ class EagerTensor:
         for i in range(self.shape[0]):
             yield self[i]
 
+    def tolist(self):
+        return ivy.to_list(self.ivy_array)
+
 
 class TensorShape:
     # TODO: there are still some methods that may need implementing
