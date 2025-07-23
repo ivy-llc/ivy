@@ -529,13 +529,13 @@ class _ArrayWithLayers(abc.ABC):
         bias: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Container static method variant of ivy.conv1d_transpose. This method
+        """ivy.Array instance method variant of ivy.conv1d_transpose. This method
         simply wraps the function, and so the docstring for ivy.conv1d_transpose also
         applies to this method with minimal changes.
-
+    
         Parameters
         ----------
-        x
+        self
             Input image *[batch_size,w,d_in]* or *[batch_size,d_in,w]*.
         filters
             Convolution filters *[fw,d_out,d_in]*.
@@ -556,39 +556,24 @@ class _ArrayWithLayers(abc.ABC):
             corresponds to input with shape (batch_size, channels, width).
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
         bias
             Bias array of shape *[d_out]*.
         out
-            optional output container, for writing the result to. It must have a shape that the
-            inputs broadcast to.
-
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+    
         Returns
         -------
         ret
             The result of the transpose convolution operation.
-
+    
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.random_normal(mean=0, std=1, shape=[1, 28, 3]),
-        ...                   b=ivy.random_normal(mean=0, std=1, shape=[1, 56, 3]))
+        >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 3])
         >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 6, 3])
-        >>> y = ivy.Container.static_conv1d_transpose(x, filters, [2], 'SAME')
+        >>> y = x.conv1d_transpose(filters, [2], 'SAME')
         >>> print(y.shape)
-        {
-            a: ivy.Shape(1, 56, 6),
-            b: ivy.Shape(1, 112, 6)
-        }
+        ivy.Shape(1, 56, 6)
         """
         return ivy.conv1d_transpose(
             self._data,
