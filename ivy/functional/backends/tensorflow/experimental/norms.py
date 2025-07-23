@@ -94,12 +94,12 @@ def batch_norm(
     xdims = len(x.shape)
     if data_format == "NCS":
         x = tf.transpose(x, perm=(0, *range(2, xdims), 1))
-
+    x_dtype = x.dtype
     runningmean = mean
     runningvariance = variance
     if training:
         n = tf.size(x) if xdims == 1 else tf.divide(tf.size(x), tf.shape(x)[-1])
-        n = tf.cast(n, x.dtype) if n.dtype != x.dtype else n
+        n = tf.cast(n, x_dtype) if n.dtype != x_dtype else n
         dims = (0, *range(1, xdims - 1))
         mean = tf.math.reduce_mean(x, axis=dims)
         variance = tf.math.reduce_variance(x, axis=dims)
@@ -114,9 +114,18 @@ def batch_norm(
             else runningvariance
         )
 
-    inv = 1.0 / tf.math.sqrt(variance + eps)
-    offset = 0 if offset is None else offset
+    one = tf.constant(1.0, dtype=x_dtype)
+    eps_tensor = tf.constant(eps, dtype=x_dtype)
+    mean = tf.cast(mean, x_dtype)
+    variance = tf.cast(variance, x_dtype)
+
+    inv = one / tf.math.sqrt(variance + eps_tensor)
+    if offset is None:
+        offset = tf.constant(0, dtype=x_dtype)
+    else:
+        offset = tf.cast(offset, x_dtype)
     if scale is not None:
+        scale = tf.cast(scale, x_dtype)
         inv = tf.math.multiply(inv, scale)
     xnormalized = tf.math.add(tf.math.multiply(x, inv), offset)
     xnormalized = tf.math.subtract(xnormalized, tf.math.multiply(mean, inv))
