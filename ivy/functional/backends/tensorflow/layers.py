@@ -160,8 +160,8 @@ def conv1d(
 
 @with_unsupported_dtypes({"2.15.0 and below": ("bfloat16", "complex")}, backend_version)
 def conv1d_transpose(
-    x: Union[ivy.Array, ivy.NativeArray],
-    filters: Union[ivy.Array, ivy.NativeArray],
+    x: Union[tf.Tensor, tf.Variable],
+    filters: Union[tf.Tensor, tf.Variable],
     strides: Union[int, Tuple[int]],
     padding: str,
     /,
