@@ -181,41 +181,6 @@ def conv1d_transpose(
     bias: Optional[np.ndarray] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    """Compute a 1-D transpose convolution given 3-D input x and filters arrays.
-
-    Parameters
-    ----------
-    x
-        Input image *[batch_size,w,d_in]* or *[batch_size,d_in,w]*.
-    filters
-        Convolution filters *[fw,d_out,d_in]*.
-    strides
-        The stride of the sliding window for each dimension of input.
-    padding
-        Either 'SAME' (padding so that the output's shape is the same as the
-        input's), or 'VALID' (padding so that the output's shape is `output_shape`).
-    output_shape
-        Shape of the output (Default value = None)
-    filter_format
-        Either "channel_first" or "channel_last". "channel_first" corresponds
-        to "IOW",input data formats, while "channel_last" corresponds to "WOI".
-    data_format
-        The ordering of the dimensions in the input, one of "NWC" or "NCW". "NWC"
-        corresponds to input with shape (batch_size, width, channels), while "NCW"
-        corresponds to input with shape (batch_size, channels, width).
-    dilations
-        The dilation factor for each dimension of input. (Default value = 1)
-    bias
-        Bias array of shape *[d_out]*.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        The result of the transpose convolution operation.
-    """
     if data_format == "NCW":
         x = np.transpose(x, (0, 2, 1))
     if filter_format == "channel_last":
