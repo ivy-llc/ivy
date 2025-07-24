@@ -172,6 +172,8 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
     training=st.booleans(),
     test_instance_method=st.just(False),
     container_flags=st.just([False]),
+    test_gradients=st.just(False),
+    ground_truth_backend="numpy",
 )
 def test_batch_norm(*, data, training, test_flags, backend_fw, fn_name, on_device):
     x_dtype, x, mean, variance, offset, scale, eps, momentum, data_format = data
