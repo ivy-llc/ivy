@@ -639,6 +639,12 @@ def subtract(x, y, name=None):
     return ivy.subtract(x, y)
 
 
+@with_unsupported_dtypes({"2.6.0 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def subtract_(x, y, name=None):
+    return ivy.inplace_update(x, subtract(x, y))
+
+
 @with_supported_dtypes(
     {
         "2.6.0 and below": (
