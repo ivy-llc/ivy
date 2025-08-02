@@ -539,7 +539,10 @@ def wrap_module(module, source, target, output_dir, inplace=False):
         for m in dir(module):
             val = getattr(module, m)
             if callable(val):
-                callable_map.setdefault(val, []).append((module_copy, m))
+                try:
+                    callable_map.setdefault(val, []).append((module_copy, m))
+                except Exception as e:
+                    logging.warning(f"Error adding {m} of type {type(val)} to callable_map: {e}")
             elif (
                 isinstance(val, ModuleType)
                 and "__file__" in val.__dict__
