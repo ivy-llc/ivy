@@ -163,12 +163,7 @@ def clip(x, min=None, max=None, name=None):
     return res
 
 
-@with_supported_dtypes(
-    {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
-)
-@to_ivy_arrays_and_back
-def clip_(x, min=None, max=None, name=None):
-    return ivy.inplace_update(x, clip(x, min, max))
+
 
 
 @with_supported_dtypes(

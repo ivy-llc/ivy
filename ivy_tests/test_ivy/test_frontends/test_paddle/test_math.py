@@ -61,23 +61,7 @@ def _test_paddle_take_helper(draw):
     return dtypes, xs, indices, mode
 
 
-@st.composite
-def _get_clip_inputs_(draw):
-    shape = draw(
-        helpers.get_shape(
-            min_num_dims=1, max_num_dims=5, min_dim_size=1, max_dim_size=10
-        )
-    )
-    x_dtype, x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            shape=shape,
-            min_value=0,
-            max_value=50,
-        )
-    )
 
-    return x_dtype, x
 
 
 # --- Main --- #
@@ -616,14 +600,18 @@ def test_paddle_ceil(
 
 # clip
 @handle_frontend_test(
-    fn_tree="paddle.math.clip",
-    input_and_ranges=_get_clip_inputs_(),
+    fn_tree="paddle.clip",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=0,
+        max_value=50,
+    ),
     min=st.integers(min_value=0, max_value=5),
     max=st.integers(min_value=5, max_value=10),
 )
 def test_paddle_clip(
     *,
-    input_and_ranges,
+    dtype_and_x,
     min,
     max,
     frontend,
@@ -632,7 +620,7 @@ def test_paddle_clip(
     backend_fw,
     on_device,
 ):
-    input_dtype, x = input_and_ranges
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -646,36 +634,7 @@ def test_paddle_clip(
     )
 
 
-# clip_
-@handle_frontend_test(
-    fn_tree="paddle.math.clip_",
-    input_and_ranges=_get_clip_inputs_(),
-    min=st.integers(min_value=0, max_value=5),
-    max=st.integers(min_value=5, max_value=10),
-)
-def test_paddle_clip_(
-    *,
-    input_and_ranges,
-    min,
-    max,
-    frontend,
-    fn_tree,
-    test_flags,
-    backend_fw,
-    on_device,
-):
-    input_dtype, x = input_and_ranges
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        min=min,
-        max=max,
-    )
+
 
 
 # conj
