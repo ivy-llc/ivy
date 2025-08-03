@@ -616,7 +616,7 @@ def test_paddle_ceil(
 
 # clip
 @handle_frontend_test(
-    fn_tree="paddle.clip",
+    fn_tree="paddle.math.clip",
     input_and_ranges=_get_clip_inputs_(),
     min=st.integers(min_value=0, max_value=5),
     max=st.integers(min_value=5, max_value=10),
@@ -648,7 +648,7 @@ def test_paddle_clip(
 
 # clip_
 @handle_frontend_test(
-    fn_tree="paddle.clip_",
+    fn_tree="paddle.math.clip_",
     input_and_ranges=_get_clip_inputs_(),
     min=st.integers(min_value=0, max_value=5),
     max=st.integers(min_value=5, max_value=10),
