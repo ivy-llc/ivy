@@ -555,7 +555,7 @@ def outer(x, y, name=None):
 
 
 @with_supported_dtypes(
-    {"2.6.0 and below": ("float16", "float32", "float64", "int32", "int64")}, "paddle"
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64", "complex64", "complex128", "bfloat16")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def pow(x, y, name=None):
@@ -582,7 +582,9 @@ def reciprocal(x, name=None):
     return ivy.reciprocal(x)
 
 
-@with_unsupported_dtypes({"2.6.0 and below": ("float16", "bfloat16")}, "paddle")
+@with_supported_dtypes(
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
 @to_ivy_arrays_and_back
 def remainder(x, y, name=None):
     return ivy.remainder(x, y)
@@ -665,10 +667,7 @@ def subtract(x, y, name=None):
     return ivy.subtract(x, y)
 
 
-@with_unsupported_dtypes({"2.6.0 and below": ("float16", "bfloat16")}, "paddle")
-@to_ivy_arrays_and_back
-def subtract_(x, y, name=None):
-    return ivy.inplace_update(x, subtract(x, y))
+
 
 
 @with_supported_dtypes(
