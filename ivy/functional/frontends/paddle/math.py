@@ -234,7 +234,15 @@ def cumsum(x, axis=None, dtype=None, name=None):
 @with_unsupported_dtypes({"2.6.0 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def deg2rad(x, name=None):
-    return ivy.deg2rad(x)
+    # Handle overflow cases to match Paddle's behavior
+    result = ivy.deg2rad(x)
+    # Clamp infinite values to large finite values to match Paddle
+    if ivy.any(ivy.isinf(result)):
+        dtype_info = ivy.finfo(result.dtype)
+        max_val = dtype_info.max
+        result = ivy.where(ivy.isinf(result) & (result > 0), max_val, result)
+        result = ivy.where(ivy.isinf(result) & (result < 0), -max_val, result)
+    return result
 
 
 @with_supported_dtypes(
