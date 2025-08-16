@@ -59,6 +59,16 @@ def kron(
     return paddle.kron(a, b)
 
 
+def lu(
+    x: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    # return paddle.lu(x)
+    raise IvyNotImplementedException()
+
+
 def matrix_exp(
     x: paddle.Tensor,
     /,

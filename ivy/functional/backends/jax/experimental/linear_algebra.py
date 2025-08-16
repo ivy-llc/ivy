@@ -13,6 +13,15 @@ from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimensio
 from . import backend_version
 
 
+def lu(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jla.lu(x)
+
+
 def diagflat(
     x: JaxArray,
     /,
