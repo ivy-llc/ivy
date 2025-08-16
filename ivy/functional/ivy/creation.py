@@ -128,6 +128,9 @@ def _remove_np_bfloat16(obj):
     # from numpy arrays that have bfloat16 dtype using any extension because
     # bfloat16 in not supported natively by numpy (as of version <=1.25)
     if isinstance(obj, np.ndarray) and obj.dtype.name == "bfloat16":
+        # change dtype of empty array instead so that it doesn't lose its shape
+        if 0 in obj.shape:
+            return obj.astype(np.float32)
         return obj.tolist()
     return obj
 
