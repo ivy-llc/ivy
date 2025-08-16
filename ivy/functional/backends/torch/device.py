@@ -7,6 +7,7 @@ import inspect
 import os
 import importlib
 import torch
+import torch_xla.core.xla_model as xm
 from typing import Optional, Union
 from torch.profiler import ProfilerActivity
 from torch.profiler import profile
@@ -33,6 +34,8 @@ def dev(
             dv = dv.type
         elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
             return torch.device(dv.replace("gpu", "mps"))
+        elif xm.xla_device().type == "xla":
+            return torch.device(dv.replace("tpu", "xla"))
         return torch.device(dv.replace("gpu", "cuda"))
     return as_ivy_dev(dv)
 
@@ -64,6 +67,11 @@ def as_ivy_dev(device: torch.device, /):
             dev_type.replace("mps", "gpu")
             + (":" + (str(dev_idx) if dev_idx is not None else "0"))
         )
+    elif dev_type == "xla":
+        return ivy.Device(
+            dev_type.replace("xla", "tpu")
+            + (":" + str((dev_idx) if dev_idx is not None else "0"))
+        )
     return ivy.Device(
         dev_type.replace("cuda", "gpu")
         + (":" + (str(dev_idx) if dev_idx is not None else "0"))
@@ -78,6 +86,8 @@ def as_native_dev(
         return device
     if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
         return torch.device(ivy.Device(device).replace("gpu", "mps"))
+    elif xm.xla_device().type == "xla":
+        return torch.device(ivy.Device(device).replace("tpu", "xla"))
     return torch.device(ivy.Device(device).replace("gpu", "cuda"))
 
 
