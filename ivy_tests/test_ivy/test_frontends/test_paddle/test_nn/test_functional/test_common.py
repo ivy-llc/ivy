@@ -514,3 +514,59 @@ def test_paddle_zeropad2d(
         padding=padding,
         data_format=dataformat,
     )
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.common.bilinear",
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=3,
+        shared_dtype=True,
+        min_value=-1.0,
+        max_value=1.0,
+        min_num_dims=2,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=5,
+    ),
+    with_bias=st.booleans(),
+)
+def test_paddle_bilinear(
+    *,
+    dtype_and_inputs,
+    with_bias,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, inputs = dtype_and_inputs
+    x1, x2, weight = inputs
+
+    if len(x1.shape) == 2:
+        output_size = weight.shape[0]
+        weight = ivy.reshape(weight, (output_size, x1.shape[1], x2.shape[1]))
+    else:
+        output_size = weight.shape[0]
+
+    if with_bias:
+        bias = ivy.random_uniform(
+            shape=(output_size,),
+            dtype=input_dtype[0],
+            device=on_device,
+        )
+    else:
+        bias = None
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x1,
+        x2=x2,
+        weight=weight,
+        bias=bias,
+    )
