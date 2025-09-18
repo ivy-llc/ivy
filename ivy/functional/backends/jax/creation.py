@@ -131,11 +131,11 @@ def eye(
 
 
 def to_dlpack(x, /, *, out: Optional[JaxArray] = None):
-    return jax.dlpack.to_dlpack(x)
+    return x.__dlpack__()
 
 
 def from_dlpack(x, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jax.dlpack.from_dlpack(x)
+    return jnp.from_dlpack(x)
 
 
 def full(
