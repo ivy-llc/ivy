@@ -70,7 +70,7 @@ def multinomial(
     seed: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if seed:
+    if seed is not None:
         np.random.seed(seed)
     if probs is None:
         probs = (
