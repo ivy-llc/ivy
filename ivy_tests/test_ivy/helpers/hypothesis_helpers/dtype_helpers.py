@@ -243,7 +243,8 @@ def get_dtypes(
             retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND, kind=kind)
         )
 
-    valid_dtypes = list(valid_dtypes)
+    # Ivy dtype comparisons use type promotion rather than lexicographic ordering.
+    valid_dtypes = sorted(valid_dtypes, key=str)
     if none:
         valid_dtypes.append(None)
     if full:

@@ -2197,7 +2197,7 @@ def einsum_helper(draw):
         output_length = draw(st.integers(min_value=1, max_value=len(common_symbols)))
         output_eq = draw(
             st.lists(
-                st.sampled_from(list(common_symbols)),
+                st.sampled_from(sorted(common_symbols)),
                 min_size=output_length,
                 max_size=output_length,
                 unique=True,
