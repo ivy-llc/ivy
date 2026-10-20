@@ -4,10 +4,7 @@ import numpy as np
 
 # local
 import ivy
-from ivy.functional.ivy.random import (
-    _check_bounds_and_get_shape,
-    _check_shapes_broadcastable,
-)
+from ivy.functional.ivy.random import _check_shapes_broadcastable
 
 
 # dirichlet
@@ -41,7 +38,8 @@ def beta(
     seed: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
+    if shape is not None:
+        shape = ivy.Shape(shape).shape
     if seed is not None:
         np.random.seed(seed)
     return np.asarray(np.random.beta(alpha, beta, shape), dtype=dtype)
@@ -58,7 +56,8 @@ def gamma(
     seed: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
+    if shape is not None:
+        shape = ivy.Shape(shape).shape
     if seed is not None:
         np.random.seed(seed)
     return np.asarray(np.random.gamma(alpha, beta, shape), dtype=dtype)
