@@ -2798,6 +2798,13 @@ def get_item(
     >>> print(ivy.get_item(x, query))
     ivy.array([  4,  -2, -10])
     """
+    if x.ndim == 0:
+        # Scalar indexing cannot use the gather_nd path, which requires rank >= 1.
+        return ivy.to_ivy(
+            current_backend(x).get_item(
+                ivy.to_native(x), ivy.to_native(query, nested=True), copy=copy
+            )
+        )
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         if query.ndim == 0:
             if query is False:
