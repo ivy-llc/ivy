@@ -49,6 +49,15 @@ def kron(
     raise IvyNotImplementedException()
 
 
+def lu(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
 def matrix_exp(
     x: Union[(None, mx.ndarray.NDArray)],
     /,

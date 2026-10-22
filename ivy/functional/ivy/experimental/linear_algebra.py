@@ -235,6 +235,33 @@ def diagflat(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_device
+def lu(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Perform LU decomposition of a square matrix using Doolittle's method.
+
+    Args:
+    ----
+    - x: a square numpy array representing the input matrix
+
+    Returns:
+    -------
+    - L: Lower triangular matrix
+    - U: Upper triangular matrix
+    """
+    return current_backend(x).lu(x, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device
 def kron(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],

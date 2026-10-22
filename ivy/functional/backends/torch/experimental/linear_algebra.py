@@ -99,6 +99,15 @@ def diagflat(
 diagflat.support_native_out = False
 
 
+def lu(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.tensor:
+    return torch.linalg.lu(x)
+
+
 def kron(
     a: torch.Tensor,
     b: torch.Tensor,
