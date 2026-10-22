@@ -16,11 +16,59 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
 
 @st.composite
 def _fold_helper(draw, dim=2):
-    stride, padding, dilation, kernel_size = draw(_fold_unfold_helper(dim))
+    x_shape, output_shape, kernel_sizes, dilations, paddings, strides = draw(
+        _fold_helper_with_filter(dim).filter(
+            lambda x: _fold_shape_check(dim, x[0], x[1], x[2], x[3], x[4], x[5])
+        )
+    )
+
+    dtype, [vals] = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=x_shape,
+            min_value=0.0,
+            max_value=1.0,
+        )
+    )
+    if vals.shape[0] == 1:  # un-batched inputs are also supported
+        vals = draw(st.sampled_from([vals, vals[0]]))
+
+    return dtype, vals, kernel_sizes, output_shape, dilations, strides, paddings
+
+
+@st.composite
+def _fold_helper_with_filter(draw, dim):
+    stride = draw(
+        st.one_of(
+            st.lists(st.integers(min_value=1, max_value=3), min_size=dim, max_size=dim),
+            st.integers(min_value=1, max_value=3),
+        )
+    )
+    padding = draw(
+        st.one_of(
+            st.integers(min_value=1, max_value=3),
+            st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
+        )
+    )
+    dilation = draw(
+        st.one_of(
+            st.lists(st.integers(min_value=1, max_value=3), min_size=dim, max_size=dim),
+            st.integers(min_value=1, max_value=3),
+        )
+    )
+    kernel_size = draw(
+        st.one_of(
+            st.integers(min_value=1, max_value=5),
+            helpers.get_shape(
+                min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
+            ),
+        )
+    )
     strides = [stride] * dim if isinstance(stride, int) else stride
     paddings = [padding] * dim if isinstance(padding, int) else padding
     dilations = [dilation] * dim if isinstance(dilation, int) else dilation
     kernel_sizes = [kernel_size] * dim if isinstance(kernel_size, int) else kernel_size
+
     output_shape = ()
     for i in range(dim):
         min_dim = kernel_sizes[i] + (kernel_sizes[i] - 1) * (dilations[i] - 1)
@@ -34,17 +82,34 @@ def _fold_helper(draw, dim=2):
         for i in range(2)
     ]
     x_shape = (batch_size, n_channels * math.prod(kernel_sizes), math.prod(x_shape))
-    dtype, [vals] = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
-            shape=x_shape,
-            min_value=0.0,
-            max_value=1.0,
-        )
-    )
-    if vals.shape[0] == 1:  # un-batched inputs are also supported
-        vals = draw(st.sampled_from([vals, vals[0]]))
-    return dtype, vals, kernel_size, output_shape, dilation, stride, padding
+    return x_shape, output_shape, kernel_sizes, dilations, paddings, strides
+
+
+def _fold_shape_check(
+    ndim,
+    input_shape,
+    output_shape,
+    kernel_sizes,
+    dilations,
+    paddings,
+    strides,
+):
+    batch_dim = 0 if ndim == 3 else -1
+
+    input_length = input_shape[batch_dim + 2]
+    n_blocks_height = (
+        (output_shape[0] + 2 * paddings[0] - dilations[0] * (kernel_sizes[0] - 1) - 1)
+        // strides[0]
+    ) + 1
+    n_blocks_width = (
+        (output_shape[1] + 2 * paddings[1] - dilations[1] * (kernel_sizes[1] - 1) - 1)
+        // strides[1]
+    ) + 1
+
+    if input_length != (n_blocks_height * n_blocks_width):
+        return False
+
+    return True
 
 
 @st.composite
