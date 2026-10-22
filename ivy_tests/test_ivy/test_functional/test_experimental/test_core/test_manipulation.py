@@ -261,6 +261,37 @@ def _pad_helper(draw):
 
 
 @st.composite
+def _pad_sequence_helper(draw):
+    # Generate sequences of varying lengths
+    num_sequences = draw(st.integers(min_value=2, max_value=5))
+    min_len = draw(st.integers(min_value=1, max_value=3))
+    max_len = draw(st.integers(min_value=min_len + 1, max_value=6))
+    
+    # Generate random sequences with variable lengths and dimensions
+    sequences = []
+    for _ in range(num_sequences):
+        seq_len = draw(st.integers(min_value=min_len, max_value=max_len))
+        trailing_dims = draw(st.integers(min_value=1, max_value=3))
+        shape = (seq_len, 5) + (trailing_dims,)
+        dtype, seq = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("float"),
+                shape=shape,
+                min_value=-1e-5,
+                max_value=1e5
+            ).filter(lambda x: x[0][0] not in ["float16", "bfloat16"])
+        )
+        sequences.append(ivy.native_array(seq[0]))
+
+    # Batch first flag
+    batch_first = draw(st.booleans())
+
+    # Padding value
+    constant_values = draw(helpers.number(min_value=-100, max_value=100))
+
+    return dtype, sequences, batch_first, constant_values
+
+@st.composite
 def _partial_fold_data(draw):
     shape = draw(
         helpers.get_shape(
@@ -1166,6 +1197,41 @@ def test_pad(
         reflect_type=reflect_type,
     )
 
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.pad_sequence",
+    #ground_truth_backend="torch",
+    dtype_and_input_and_other=_pad_sequence_helper(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_pad_sequence(
+    *,
+    dtype_and_input_and_other,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    if backend_fw != "tensorflow":
+        return
+
+    (
+        dtype,
+        input,
+        batch_first,
+        padding_value,
+    ) = dtype_and_input_and_other
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        sequences=input,
+        batch_first=batch_first,
+        padding_value=padding_value,
+    )
 
 @handle_test(
     fn_tree="functional.ivy.experimental.partial_fold",
