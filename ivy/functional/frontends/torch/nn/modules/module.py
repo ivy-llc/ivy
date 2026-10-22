@@ -449,16 +449,43 @@ class Module(ivy.Module):
             return super().__getattribute__(name)
         if "_module_dict" in self.__dict__:
             modules = self.__dict__["_module_dict"]
-            if name in modules:
-                return modules[name]
+            try:
+                if isinstance(modules, dict):
+                    if name in modules:
+                        return modules[name]
+                else:
+                    sentinel = object()
+                    val = getattr(modules, name, sentinel)
+                    if val is not sentinel:
+                        return val
+            except Exception:
+                pass
         if "_buffers" in self.__dict__:
             buffers = self.__dict__["_buffers"]
-            if name in buffers:
-                return buffers[name]
+            try:
+                if isinstance(buffers, dict):
+                    if name in buffers:
+                        return buffers[name]
+                else:
+                    sentinel = object()
+                    val = getattr(buffers, name, sentinel)
+                    if val is not sentinel:
+                        return val
+            except Exception:
+                pass
         if "_v" in self.__dict__:
             v = self.__dict__["_v"]
-            if name in v:
-                return v[name]
+            try:
+                if isinstance(v, dict):
+                    if name in v:
+                        return v[name]
+                else:
+                    sentinel = object()
+                    val = getattr(v, name, sentinel)
+                    if val is not sentinel:
+                        return val
+            except Exception:
+                pass
         # Adding this attribute mapping s.t if someone tries
         # to retrieve self._modules/self._parameters, we
         # can handle that here
@@ -478,7 +505,15 @@ class Module(ivy.Module):
                         d.discard(name)
 
         params = self.__dict__.get("_v")
-        if params is not None and name in params and isinstance(value, Parameter):
+        def _has_key_like(container, key):
+            if isinstance(container, dict):
+                return key in container
+            try:
+                return hasattr(container, key)
+            except Exception:
+                return False
+
+        if params is not None and _has_key_like(params, name) and isinstance(value, Parameter):
             remove_from(self.__dict__, self._buffers, self._module_dict)
             self.register_parameter(name, value)
             super().__setattr__(name, value)
@@ -513,9 +548,18 @@ class Module(ivy.Module):
     def __dir__(self):
         module_attrs = dir(self.__class__)
         attrs = list(self.__dict__.keys())
-        parameters = list(self._v.keys())
-        modules = list(self._module_dict.keys())
-        buffers = list(self._buffers.keys())
+        def _keys(container):
+            try:
+                return list(container.keys())
+            except Exception:
+                try:
+                    return [k for k in dir(container) if not k.startswith("_")]
+                except Exception:
+                    return []
+
+        parameters = _keys(self._v)
+        modules = _keys(self._module_dict)
+        buffers = _keys(self._buffers)
         keys = module_attrs + attrs + parameters + modules + buffers
 
         # Eliminate attrs that are not legal Python variable names

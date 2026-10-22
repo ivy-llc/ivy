@@ -698,8 +698,36 @@ class ModelHelpers:
         s = first + "\n" + s
         return s
 
+    @staticmethod
+    def _contains_array(value: Any) -> bool:
+        try:
+            for leaf in tree.tree_leaves(value):
+                if isinstance(leaf, (jax.Array, getattr(nnx, "Variable", object), nnx.Param)):
+                    return True
+            return False
+        except Exception:
+            return False
+
+    @staticmethod
+    def _contains_module(value: Any) -> bool:
+        # recursively inspect common python containers for modules
+        try:
+            if isinstance(value, (Module, nnx.Module)):
+                return True
+            if isinstance(value, (list, tuple)):
+                return any(ModelHelpers._contains_module(v) for v in value)
+            if isinstance(value, dict):
+                return any(ModelHelpers._contains_module(v) for v in value.values())
+        except Exception:
+            return False
+        return False
+
 
 class Module(nnx.Module, ModelHelpers, TorchModuleHelpers):
+    # mark private containers that hold arrays as data for nnx 0.12 strict pytree
+    _v: nnx.Data[dict]
+    _buffers: nnx.Data[dict]
+    _module_dict: nnx.Data[dict]
     _build_mode = None
     _with_partial_v = None
     _store_vars = True
@@ -739,7 +767,8 @@ class Module(nnx.Module, ModelHelpers, TorchModuleHelpers):
         self._store_vars = store_vars
         self._built = False
         self._v_from_constructor = v if isinstance(v, dict) or v is None else dict(v)
-        self._v = v if v is not None else dict()
+        # keep internal containers as plain dicts; type annotations mark them as data
+        self._v = v if isinstance(v, dict) else (v if v is not None else {})
         self._buffers = dict(buffers or {})
         self._module_dict = module_dict if module_dict is not None else dict()
         self._args = args
@@ -768,11 +797,17 @@ class Module(nnx.Module, ModelHelpers, TorchModuleHelpers):
         return
 
     def register_buffer(self, name: str, value: jax.Array, persistent: bool = False):
-        self._buffers.update({name: value})
+        if self._buffers is None:
+            # initialize buffers container on first use
+            self.__dict__["_buffers"] = {}
+        self._buffers[name] = value
         return value
 
     def register_parameter(self, name: str, value: jax.Array):
-        self._v.update({name: value})
+        if self._v is None:
+            # initialize parameters container on first use
+            self.__dict__["_v"] = {}
+        self._v[name] = value
 
     def train(self, mode: bool = True):
         for _, module in self.named_modules():
@@ -945,19 +980,20 @@ class Module(nnx.Module, ModelHelpers, TorchModuleHelpers):
 
     @property
     def v(self):
-        return self._v
+        return self._v if self._v is not None else {}
 
     @property
     def buffers(self):
-        return self._buffers
+        return self._buffers if self._buffers is not None else {}
 
     @property
     def state_dict(self):
-        return {**self.v, **self.buffers}
+        # ensure we return a plain mapping
+        return {**dict(self.v), **dict(self.buffers)}
 
     @property
     def module_dict(self):
-        return self._module_dict
+        return self._module_dict if self._module_dict is not None else {}
 
     # Dunder Methods #
     # ---------------#
@@ -982,8 +1018,18 @@ class Module(nnx.Module, ModelHelpers, TorchModuleHelpers):
         if name in _dict:
             return _dict[name]
 
-        elif "_v" in _dict and name in _dict["_v"]:
-            return _dict["_v"][name]
+        elif "_v" in _dict and _dict["_v"]:
+            container = _dict["_v"]
+            try:
+                # support nnx.Dict which exposes keys as attributes
+                sentinel = object()
+                val = getattr(container, name, sentinel)
+                if val is not sentinel:
+                    return val
+            except Exception:
+                pass
+            if isinstance(container, dict) and name in container:
+                return container[name]
 
         return super().__getattribute__(name)
 
@@ -1009,6 +1055,8 @@ class Module(nnx.Module, ModelHelpers, TorchModuleHelpers):
                 _dict[name] = value
 
             # compute the module dict
+            if "_module_dict" not in self.__dict__ or self.__dict__.get("_module_dict") is None:
+                object.__setattr__(self, "_module_dict", {})
             self._compute_module_dict()
 
             obj_to_search = (
@@ -1066,19 +1114,51 @@ class Module(nnx.Module, ModelHelpers, TorchModuleHelpers):
             return
         elif isinstance(value, jax.Array):
             _dict = getattr(self, "__dict__", None)
-            if _dict and name in _dict:
-                orig_value = _dict[name]
-                if isinstance(orig_value, nnx.Param):
-                    new_value = nnx.Param(value)
-                    _dict[name] = new_value
-                    self.register_parameter(name, new_value)
-                    object.__setattr__(self, name, new_value)
-                    return
-
+            # always wrap Arrays as nnx.Param to satisfy strict pytree rules
+            new_value = nnx.Param(value)
             if _dict:
-                _dict[name] = value
-            object.__setattr__(self, name, value)
+                _dict[name] = new_value
+            self.register_parameter(name, new_value)
+            object.__setattr__(self, name, new_value)
             return
+        elif value is None:
+            # keep private/internal attributes static None to avoid data tags inside Pytrees
+            if name.startswith("_"):
+                return object.__setattr__(self, name, None)
+            # for public attrs, explicitly mark as data
+            _dict = getattr(self, "__dict__", None)
+            data_value = nnx.data(None)
+            if _dict:
+                _dict[name] = data_value
+            object.__setattr__(self, name, data_value)
+            return
+        elif isinstance(value, list):
+            # wrap lists only if they contain arrays or modules
+            if ModelHelpers._contains_array(value) or ModelHelpers._contains_module(value):
+                _dict = getattr(self, "__dict__", None)
+                list_value = nnx.List(value)
+                if _dict:
+                    _dict[name] = list_value
+                object.__setattr__(self, name, list_value)
+                return
+        elif isinstance(value, tuple):
+            # tuples remain static unless they contain arrays or modules
+            if ModelHelpers._contains_array(value) or ModelHelpers._contains_module(value):
+                _dict = getattr(self, "__dict__", None)
+                list_value = nnx.List(list(value))
+                if _dict:
+                    _dict[name] = list_value
+                object.__setattr__(self, name, list_value)
+                return
+        elif isinstance(value, dict):
+            # wrap dicts only if they contain arrays or modules
+            if ModelHelpers._contains_array(value) or ModelHelpers._contains_module(value):
+                _dict = getattr(self, "__dict__", None)
+                dict_value = nnx.Dict(value)
+                if _dict:
+                    _dict[name] = dict_value
+                object.__setattr__(self, name, dict_value)
+                return
         else:
             try:
                 obj_to_search = getattr(self, name)
@@ -1107,6 +1187,8 @@ class Module(nnx.Module, ModelHelpers, TorchModuleHelpers):
                                 submod.register_buffer(b_key, value)
 
                 # finally update the module dict
+                if "_module_dict" not in self.__dict__ or self.__dict__.get("_module_dict") is None:
+                    object.__setattr__(self, "_module_dict", {})
                 self._module_dict[name] = value
 
             # TODO: super().__setattr__ leads to an error during jax.jit
@@ -1131,14 +1213,57 @@ class Module(nnx.Module, ModelHelpers, TorchModuleHelpers):
         if isinstance(obj, (Module)) and obj is not self:
             fn = "_build_and_return_v" if trainable else "_build_and_return_buffers"
             if not obj._built and without_initialisation:
+                obj_kwargs = obj._kwargs if isinstance(obj._kwargs, dict) else {}
                 return lambda: getattr(obj, fn)(
-                    *obj._args, dynamic_backend=self._dynamic_backend, **obj._kwargs
+                    *obj._args, dynamic_backend=self._dynamic_backend, **obj_kwargs
                 )
+            obj_kwargs = obj._kwargs if isinstance(obj._kwargs, dict) else {}
             return getattr(obj, fn)(
-                *obj._args, dynamic_backend=obj._dynamic_backend, **obj._kwargs
+                *obj._args, dynamic_backend=obj._dynamic_backend, **obj_kwargs
             )
         elif isinstance(obj, nnx.Module) and obj is not self:
-            return obj.v if trainable else obj.buffers
+            # Some nnx containers (e.g., nnx.Dict/nnx.List) are Pytree Modules but
+            # do not expose `.v`/`.buffers`. Treat them as plain containers.
+            try:
+                return obj.v if trainable else obj.buffers
+            except AttributeError:
+                # handle container-like nnx modules here
+                # nnx.Dict or dict-like
+                is_nnx_dict = hasattr(nnx, "Dict") and isinstance(obj, nnx.Dict)
+                is_nnx_list = hasattr(nnx, "List") and isinstance(obj, nnx.List)
+                if is_nnx_dict or isinstance(obj, dict):
+                    try:
+                        items_iter = obj.items() if hasattr(obj, "items") else dict(obj).items()
+                    except Exception:
+                        return {}
+                    for k, v_child in items_iter:
+                        ret = self._find_variables(
+                            obj=v_child,
+                            without_initialisation=without_initialisation,
+                            _visited=_visited,
+                            trainable=trainable,
+                        )
+                        if ret:
+                            vs[k[1:] if isinstance(k, str) and k and k[0] == "_" else k] = ret
+                    return vs
+                # nnx.List/list/tuple-like
+                if is_nnx_list or isinstance(obj, (list, tuple)):
+                    try:
+                        seq = list(obj)
+                    except Exception:
+                        return {}
+                    for i, v_child in enumerate(seq):
+                        ret = self._find_variables(
+                            obj=v_child,
+                            without_initialisation=without_initialisation,
+                            _visited=_visited,
+                            trainable=trainable,
+                        )
+                        if ret:
+                            vs[f"v{str(i)}"] = ret
+                    return vs
+                # unknown nnx.Module without v/buffers
+                return {}
 
         elif isinstance(obj, (list, tuple)):
             for i, v in enumerate(obj):
