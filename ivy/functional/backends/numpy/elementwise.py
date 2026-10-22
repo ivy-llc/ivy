@@ -1,6 +1,11 @@
 # global
 from typing import Union, Optional
 import numpy as np
+try:
+    from numpy import trapezoid as _trapz_impl
+except ImportError:
+    from numpy import trapz as _trapz_impl
+
 
 # local
 import ivy
@@ -746,7 +751,7 @@ def trapz(
     axis: int = -1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.trapz(y, x=x, dx=dx, axis=axis)
+    return _trapz_impl(y, x=x, dx=dx, axis=axis)
 
 
 trapz.support_native_out = False

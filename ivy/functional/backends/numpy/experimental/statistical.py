@@ -1,5 +1,10 @@
 from typing import Optional, Union, Tuple, Sequence
 import numpy as np
+try:
+    from numpy import trapezoid as _trapz_impl
+except ImportError:
+    from numpy import trapz as _trapz_impl
+
 import math
 import ivy  # noqa
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -564,7 +569,7 @@ def igamma(
     def igamma_cal(a, x):
         t = np.linspace(0, x, 10000, dtype=np.float64)
         y = np.exp(-t) * (t ** (a - 1))
-        integral = np.trapz(y, t)
+        integral = _trapz_impl(y, t)
         return integral / math.gamma(a)
 
     igamma_vec = np.vectorize(igamma_cal)
