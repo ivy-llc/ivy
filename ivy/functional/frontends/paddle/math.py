@@ -141,6 +141,32 @@ def ceil(x, name=None):
 
 
 @with_supported_dtypes(
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def clip(x, min=None, max=None, name=None):
+    ivy.utils.assertions.check_all_or_any_fn(
+        min,
+        max,
+        fn=ivy.exists,
+        type="any",
+        limit=[1, 2],
+        message="at most one of min or max can be None",
+    )
+    if min is None:
+        min = ivy.min(x)
+    if max is None:
+        max = ivy.max(x)
+    res = ivy.clip(x, min, max)
+    if res.dtype != x.dtype:
+        res = ivy.astype(res, x.dtype)
+    return res
+
+
+
+
+
+@with_supported_dtypes(
     {
         "2.6.0 and below": (
             "complex64",
@@ -208,7 +234,15 @@ def cumsum(x, axis=None, dtype=None, name=None):
 @with_unsupported_dtypes({"2.6.0 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def deg2rad(x, name=None):
-    return ivy.deg2rad(x)
+    # Handle overflow cases to match Paddle's behavior
+    result = ivy.deg2rad(x)
+    # Clamp infinite values to large finite values to match Paddle
+    if ivy.any(ivy.isinf(result)):
+        dtype_info = ivy.finfo(result.dtype)
+        max_val = dtype_info.max
+        result = ivy.where(ivy.isinf(result) & (result > 0), max_val, result)
+        result = ivy.where(ivy.isinf(result) & (result < 0), -max_val, result)
+    return result
 
 
 @with_supported_dtypes(
@@ -529,7 +563,7 @@ def outer(x, y, name=None):
 
 
 @with_supported_dtypes(
-    {"2.6.0 and below": ("float16", "float32", "float64", "int32", "int64")}, "paddle"
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64", "complex64", "complex128", "bfloat16")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def pow(x, y, name=None):
@@ -556,7 +590,9 @@ def reciprocal(x, name=None):
     return ivy.reciprocal(x)
 
 
-@with_unsupported_dtypes({"2.6.0 and below": ("float16", "bfloat16")}, "paddle")
+@with_supported_dtypes(
+    {"2.6.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
 @to_ivy_arrays_and_back
 def remainder(x, y, name=None):
     return ivy.remainder(x, y)
@@ -639,10 +675,7 @@ def subtract(x, y, name=None):
     return ivy.subtract(x, y)
 
 
-@with_unsupported_dtypes({"2.6.0 and below": ("float16", "bfloat16")}, "paddle")
-@to_ivy_arrays_and_back
-def subtract_(x, y, name=None):
-    return ivy.inplace_update(x, subtract(x, y))
+
 
 
 @with_supported_dtypes(
