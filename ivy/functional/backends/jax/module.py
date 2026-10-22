@@ -700,6 +700,11 @@ class ModelHelpers:
 
 
 class Module(nnx.Module, ModelHelpers, TorchModuleHelpers):
+    _v: nnx.Data[dict]
+    _buffers: nnx.Data[dict]
+    _module_dict: nnx.Data[dict]
+    _args: nnx.Data[tuple]
+    _kwargs: nnx.Data[dict]
     _build_mode = None
     _with_partial_v = None
     _store_vars = True
