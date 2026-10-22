@@ -1666,27 +1666,20 @@ def dtype(
 
     Examples
     --------
-    With :class:`ivy.Array` inputs:
-
-    >>> x1 = ivy.array([1.0, 2.0, 3.5, 4.5, 5, 6])
-    >>> y = ivy.dtype(x1)
-    >>> print(y)
-    float32
-
-    With :class:`ivy.NativeArray` inputs:
-
-    >>> x1 = ivy.native_array([1, 0, 1, -1, 0])
-    >>> y = ivy.dtype(x1)
-    >>> print(y)
-    int32
-
-    With :class:`ivy.Container` inputs:
-
-    >>> x = ivy.Container(a=ivy.native_array([1.0, 2.0, -1.0, 4.0, 1.0]),
-    ...                   b=ivy.native_array([1, 0, 0, 0, 1]))
-    >>> y = ivy.dtype(x.a)
-    >>> print(y)
-    float32
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([1, 2, 3], dtype="int32")
+    >>> ivy.dtype(x)
+    'int32'
+    With :class:`ivy.NativeArray` input:
+    >>> x = ivy.native_array([1, 2, 3], dtype="int32")
+    >>> ivy.dtype(x)
+    'int32'
+    With :class:`ivy.Container` input:
+    >>> c = ivy.Container(x=ivy.array([1, 2, 3], dtype="int32"))
+    >>> ivy.dtype(c)
+    {
+        x: 'int32'
+    }
     """
     return current_backend(x).dtype(x, as_native=as_native)
 
